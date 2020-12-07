@@ -117,6 +117,7 @@ export const DemoScreen = observer(function DemoScreen() {
       demo.getUser("1")
       // Let's do some async storage stuff
       await save("Cool Name", "Boaty McBoatface")
+      navigation.navigate("signin")
     },
     [],
   )

@@ -7,8 +7,7 @@
 import React from "react"
 
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
-import { WelcomeScreen, DemoScreen, SigninScreen } from "../screens"
-import BottomNavigator from './bottom-navigator'
+import { DetailScreen, HomeScreen } from "../screens"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
  * as well as what properties (if any) they might take when navigating to them.
@@ -21,31 +20,27 @@ import BottomNavigator from './bottom-navigator'
  *   https://reactnavigation.org/docs/params/
  *   https://reactnavigation.org/docs/typescript#type-checking-the-navigator
  */
-export type PrimaryParamList = {
-  welcome: undefined
-  demo: undefined
-  signin: undefined
-  home: undefined
+export type PrimaryHomeParamList = {
+    detail: undefined
+    home: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
-const Stack = createNativeStackNavigator<PrimaryParamList>()
+const Stack = createNativeStackNavigator<PrimaryHomeParamList>()
 
-export function PrimaryNavigator() {
-  
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-        gestureEnabled: true,
-      }}
-    >
-      <Stack.Screen name="welcome" component={WelcomeScreen} />
-      <Stack.Screen name="demo" component={DemoScreen} />
-      <Stack.Screen name="signin" component={SigninScreen} />
-      <Stack.Screen name="home" component={BottomNavigator} />
-    </Stack.Navigator>
-  )
+export function HomeNavigator() {
+
+    return (
+        <Stack.Navigator
+            screenOptions={{
+                headerShown: false,
+                gestureEnabled: true,
+            }}
+        >
+            <Stack.Screen name="home" component={HomeScreen} />
+            <Stack.Screen name="detail" component={DetailScreen} />
+        </Stack.Navigator>
+    )
 }
 
 /**
@@ -57,5 +52,5 @@ export function PrimaryNavigator() {
  *
  * `canExit` is used in ./app/app.tsx in the `useBackButtonHandler` hook.
  */
-const exitRoutes = ["welcome"]
-export const canExit = (routeName: string) => exitRoutes.includes(routeName)
+// const exitRoutes = ["home"]
+// export const canExit = (routeName: string) => exitRoutes.includes(routeName)

@@ -13,10 +13,16 @@ const RootStoreContext = createContext<RootStore>({} as RootStore)
  * The provider our root component will use to expose the root store
  */
 export const RootStoreProvider = RootStoreContext.Provider
-
 /**
  * A hook that screens can use to gain access to our stores, with
  * `const { someStore, someOtherStore } = useStores()`,
  * or less likely: `const rootStore = useStores()`
  */
-export const useStores = () => useContext(RootStoreContext)
+// export const useStores = () => useContext(RootStoreContext)
+export const useStores = () => {
+    const store = useContext(RootStoreContext);
+    if (store === null) {
+        throw new Error("Store cannot be null, please add a context provider");
+    }
+    return store;
+}
