@@ -28,6 +28,9 @@
   "homeScreen": {
     "logout": "Log out"
   },
+  "postJobScreen": {
+    "postjob": "post job"
+  },
   "storybook": {
     "placeholder": "Placeholder",
     "field": "Field"

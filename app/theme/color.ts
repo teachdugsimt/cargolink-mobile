@@ -63,5 +63,7 @@ export const color = {
   storybookTextColor: palette.black,
 
   mainTheme: palette.yellow,
-  grey: 'grey'
+  grey: 'grey',
+  snow: "#FFFFFF",
+  black: "#000000"
 }

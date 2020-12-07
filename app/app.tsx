@@ -35,7 +35,7 @@ export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 /**
  * This is the root component of our app.
  */
-function App() {
+function App(props: any) {
   const navigationRef = useRef<NavigationContainerRef>()
   const [rootStore, setRootStore] = useState<RootStore | undefined>(undefined)
 
@@ -48,7 +48,7 @@ function App() {
 
   // Kick off initial async loading actions, like loading fonts and RootStore
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       setupRootStore().then(setRootStore)
     })()
   }, [])
@@ -58,6 +58,8 @@ function App() {
   // color set in native by rootView's background color. You can replace
   // with your own loading component if you wish.
   if (!rootStore) return null
+
+  console.log("App js props : ", props)
 
   // otherwise, we're ready to render the app
   return (

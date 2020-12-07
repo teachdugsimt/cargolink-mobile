@@ -7,6 +7,8 @@ import { Header, Text, Button } from "../../components"
 import { spacing } from "../../theme"
 import { useStores } from "../../models/root-store/root-store-context";
 import BookStore from '../../store/test-store/book-store'
+import { GridView } from '../../components/home-element/home-element'
+import Icon2 from 'react-native-vector-icons/Ionicons'
 // const bowserLogo = require("./bowser.png")
 const { width, height } = Dimensions.get('window')
 const FULL: ViewStyle = { flex: 1 }
@@ -39,7 +41,6 @@ const TOP_VIEW: ViewStyle = {
 }
 const BOTTOM_VIEW: ViewStyle = {
     flex: 2,
-    backgroundColor: 'white'
 }
 
 const IMAGE_LOGO: ImageStyle = {
@@ -49,6 +50,15 @@ const IMG_VIEW: ViewStyle = {
     ...FULL,
     width: width - 40,
     alignSelf: 'center',
+}
+
+const VIEW_GRID_BOX: ViewStyle = {
+    marginTop: ((height / 2) - (height / 1.6))
+}
+
+const ROOT_HOME: ViewStyle = {
+    ...FULL,
+    // backgroundColor: color.dim
 }
 
 export const HomeScreen = observer((props) => {
@@ -85,16 +95,37 @@ export const HomeScreen = observer((props) => {
     }, [])
 
     console.tron.log('hello rendering world')
+    interface List {
+        title: string;
+        data: any
+    }
+    const dataTest: List[] = [
+        {
+            title: "ผู้ให้บริการขนส่ง / Carriers",
+            data: [{ id: 1, name: 'จัดการรถ', onPressButton: () => console.log("Press button 1.1"), img: images.truck1 },
+            { id: 2, name: 'หางาน', onPressButton: () => console.log("Press button 1.2"), img: images.pinbox }]
+        },
+        {
+            title: "เจ้าของสินค้า / Shippers",
+            data: [{ id: 3, name: 'โพสงาน', onPressButton: () => navigation.navigate("postjob"), img: images.sheet1 },
+            { id: 4, name: 'หารถ', onPressButton: () => console.log("Press button 2.2"), img: images.word1 }]
+        }
+    ]
     return (
         <>
             <Header
-                headerTx="homeScreen.logout"
-                leftIcon="back"
-                onLeftPress={logout}
+                // headerTx="homeScreen.logout"
+                // leftIcon="back"
+                // onLeftPress={logout}
                 style={HEADER}
-                titleStyle={HEADER_TITLE}
+                // titleStyle={HEADER_TITLE}
+                onRightPress={() => console.log("Press notification right home screen")}
+                rightIconReal={true}
+                rightIconName={"notifications-outline"}
+                rightIconSize={24}
+                rightIconColor={color.black}
             />
-            <View testID="HomeScreen" style={FULL}>
+            <View testID="HomeScreen" style={ROOT_HOME}>
 
 
                 <View style={TOP_VIEW}>
@@ -104,7 +135,9 @@ export const HomeScreen = observer((props) => {
                     </View>
                 </View>
                 <View style={BOTTOM_VIEW}>
-
+                    <View style={VIEW_GRID_BOX}>
+                        <GridView data={dataTest} />
+                    </View>
                 </View>
 
 

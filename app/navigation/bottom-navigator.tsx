@@ -25,8 +25,8 @@ export default function BottomNavigator() {
                             : 'clipboard-outline';
                     } else if (route.name === 'My Job') {
                         iconName = focused
-                            ? 'settings'
-                            : 'settings-outline';
+                            ? 'clipboard'
+                            : 'clipboard-outline';
                     } else if (route.name === 'Favorite') {
                         iconName = focused
                             ? 'heart'

@@ -41,4 +41,14 @@ export interface HeaderProps {
    * Title style overrides.
    */
   titleStyle?: TextStyle
+
+  rightIconReal?: boolean
+  rightIconName?: string
+  rightIconSize?: number
+  rightIconColor?: string
+
+  leftIconReal?: boolean
+  leftIconName?: string
+  leftIconSize?: number
+  leftIconColor?: string
 }

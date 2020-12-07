@@ -7,7 +7,7 @@
 import React from "react"
 
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
-import { DetailScreen, HomeScreen } from "../screens"
+import { DetailScreen, HomeScreen, PostJobScreen } from "../screens"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
  * as well as what properties (if any) they might take when navigating to them.
@@ -23,6 +23,7 @@ import { DetailScreen, HomeScreen } from "../screens"
 export type PrimaryHomeParamList = {
     detail: undefined
     home: undefined
+    postjob: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -39,6 +40,7 @@ export function HomeNavigator() {
         >
             <Stack.Screen name="home" component={HomeScreen} />
             <Stack.Screen name="detail" component={DetailScreen} />
+            <Stack.Screen name="postjob" component={PostJobScreen} />
         </Stack.Navigator>
     )
 }
