@@ -64,7 +64,7 @@ export function Header(props: HeaderProps) {
           <Icon icon={leftIcon} />
         </Button>
       ) : (
-          leftIconText ? <Text style={leftIconTextStyle}>{leftIconText}</Text> :
+          leftIconText ? <TouchableOpacity onPress={onLeftPress}><Text style={leftIconTextStyle}>{leftIconText}</Text></TouchableOpacity> :
             leftIconReal ? <TouchableOpacity
               style={RIGHT_ICON_REAL}
               onPress={onLeftPress}>
@@ -84,7 +84,7 @@ export function Header(props: HeaderProps) {
           <Icon icon={rightIcon} />
         </Button>
       ) : (
-          rightIconText ? <Text style={rightIconTextStyle}>{rightIconText}</Text> :
+          rightIconText ? <TouchableOpacity onPress={onRightPress}><Text style={rightIconTextStyle}>{rightIconText}</Text></TouchableOpacity> :
             rightIconReal ? <TouchableOpacity
               style={RIGHT_ICON_REAL}
               onPress={onRightPress}>
