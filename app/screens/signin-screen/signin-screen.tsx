@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
 import { Button, Header, Screen, Text, Wallpaper } from "../../components"
 import { color, spacing, typography } from "../../theme"
+import Ionicons from 'react-native-vector-icons/Ionicons'
 // const bowserLogo = require("./bowser.png")
 // import BookStore from "../../models/book-store"
 const FULL: ViewStyle = { flex: 1 }
@@ -70,12 +71,16 @@ export const SigninScreen = observer(function SigninScreen() {
             <Text style={{ color: 'red' }}>Test View</Text>
             <Text style={{ color: 'red' }}>Test View</Text>
             <Text style={{ color: 'red' }}>Test View</Text>
+
+            <View>
+                <Ionicons name={"arrow-back"} size={30} color={"red"}/>
+            </View>
             <View style={FOOTER_CONTENT}>
                 <Button
                     testID="next-screen-button"
                     style={CONTINUE}
                     textStyle={CONTINUE_TEXT}
-                    tx="goHome"
+                    tx="signinScreen.goHome"
                     onPress={() => {
                         // BookStore.addBook({
                         //     title: "book1",
