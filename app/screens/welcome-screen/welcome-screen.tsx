@@ -5,6 +5,7 @@ import { observer } from "mobx-react-lite"
 import { Button, Header, Screen, Text, Wallpaper } from "../../components"
 import { color, spacing, typography } from "../../theme"
 import Reactotron from 'reactotron-react-native'
+
 const bowserLogo = require("./bowser.png")
 
 const FULL: ViewStyle = { flex: 1 }
@@ -82,6 +83,7 @@ export const WelcomeScreen = observer(function WelcomeScreen() {
   Reactotron.log('hello rendering world')
   return (
     <View testID="WelcomeScreen" style={FULL}>
+
       <Wallpaper />
       <Screen style={CONTAINER} preset="scroll" backgroundColor={color.transparent}>
         <Header headerTx="welcomeScreen.poweredBy" style={HEADER} titleStyle={HEADER_TITLE} />
@@ -100,8 +102,10 @@ export const WelcomeScreen = observer(function WelcomeScreen() {
           For everyone else, this is where you'll see a live preview of your fully functioning app
           using Ignite.
         </Text>
+
       </Screen>
       <SafeAreaView style={FOOTER}>
+
         <View style={FOOTER_CONTENT}>
           <Button
             testID="next-screen-button"
@@ -110,6 +114,7 @@ export const WelcomeScreen = observer(function WelcomeScreen() {
             tx="welcomeScreen.continue"
             onPress={nextScreen}
           />
+          
         </View>
       </SafeAreaView>
     </View>
