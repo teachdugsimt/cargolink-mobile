@@ -35,7 +35,11 @@ export function Header(props: HeaderProps) {
     onLeftPress,
     onRightPress,
     rightIcon,
+    rightIconText,
     leftIcon,
+    leftIconText,
+    leftIconTextStyle,
+    rightIconTextStyle,
     headerText,
     headerTx,
     style,
@@ -60,12 +64,13 @@ export function Header(props: HeaderProps) {
           <Icon icon={leftIcon} />
         </Button>
       ) : (
-          leftIconReal ? <TouchableOpacity
-            style={RIGHT_ICON_REAL}
-            onPress={onLeftPress}>
+          leftIconText ? <Text style={leftIconTextStyle}>{leftIconText}</Text> :
+            leftIconReal ? <TouchableOpacity
+              style={RIGHT_ICON_REAL}
+              onPress={onLeftPress}>
               <Icon2 name={leftIconName} size={leftIconSize} color={leftIconColor} />
-          </TouchableOpacity> 
-          : <View style={LEFT} />
+            </TouchableOpacity>
+              : <View style={LEFT} />
         )}
 
 
@@ -79,11 +84,12 @@ export function Header(props: HeaderProps) {
           <Icon icon={rightIcon} />
         </Button>
       ) : (
-          rightIconReal ? <TouchableOpacity
-            style={RIGHT_ICON_REAL}
-            onPress={onRightPress}>
+          rightIconText ? <Text style={rightIconTextStyle}>{rightIconText}</Text> :
+            rightIconReal ? <TouchableOpacity
+              style={RIGHT_ICON_REAL}
+              onPress={onRightPress}>
               <Icon2 name={rightIconName} size={rightIconSize} color={rightIconColor} />
-          </TouchableOpacity> : <View style={RIGHT} />
+            </TouchableOpacity> : <View style={RIGHT} />
         )}
     </View>
   )
