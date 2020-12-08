@@ -159,6 +159,13 @@ export const HomeScreen = observer((props) => {
                 }}
             /> */}
             </View>
+            <Button
+                testID="continue-with-signin"
+                //   style={}
+                //   textStyle={}
+                text={'Search Job'}
+                onPress={() => navigation.navigate("searchJob")}
+            />
         </>
     )
 })
