@@ -42,6 +42,11 @@ export interface HeaderProps {
    */
   titleStyle?: TextStyle
 
+  leftIconText?: string
+  rightIconText?: string
+  leftIconTextStyle?: TextStyle
+  rightIconTextStyle?: TextStyle
+
   rightIconReal?: boolean
   rightIconName?: string
   rightIconSize?: number
