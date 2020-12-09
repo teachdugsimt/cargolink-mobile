@@ -14,9 +14,12 @@ target 'CargoLinkMobile' do
 
 
 
+<<<<<<< HEAD
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
   pod 'RNCPicker', :path => '../node_modules/@react-native-picker/picker'
+=======
+>>>>>>> d75fefddc130c2610cc4642edf275d080ed0f2f7
 
   target 'CargoLinkMobileTests' do
     inherit! :complete
