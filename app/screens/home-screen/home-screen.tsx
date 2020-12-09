@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { View, ViewStyle, TextStyle, Image, ImageStyle, Dimensions } from "react-native"
+import { View, ViewStyle, TextStyle, Image, ImageStyle, Dimensions, Platform } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
 import { images, color } from '../../theme'
@@ -8,7 +8,6 @@ import { spacing } from "../../theme"
 import { useStores } from "../../models/root-store/root-store-context";
 import BookStore from '../../store/test-store/book-store'
 import { GridView } from '../../components/home-element/home-element'
-import Icon2 from 'react-native-vector-icons/Ionicons'
 // const bowserLogo = require("./bowser.png")
 const { width, height } = Dimensions.get('window')
 const FULL: ViewStyle = { flex: 1 }
@@ -16,7 +15,7 @@ const FULL: ViewStyle = { flex: 1 }
 const BOLD: TextStyle = { fontWeight: "bold" }
 
 const HEADER: TextStyle = {
-    paddingTop: spacing[3],
+    paddingTop: Platform.OS == "ios" ? spacing[7] : spacing[3],
     paddingBottom: spacing[5] - 1,
     paddingHorizontal: 0,
     color: 'black',
@@ -53,7 +52,7 @@ const IMG_VIEW: ViewStyle = {
 }
 
 const VIEW_GRID_BOX: ViewStyle = {
-    marginTop: ((height / 2) - (height / 1.6))
+    marginTop: Platform.OS == "ios" ? ((height / 2) - (height / 1.69)) : ((height / 2) - (height / 1.6))
 }
 
 const ROOT_HOME: ViewStyle = {
@@ -80,7 +79,15 @@ export const HomeScreen = observer((props) => {
         })
         console.log("Props useeffect :: ", props)
         console.log("Store signin store :: ", signinStore)
+        console.log("All books 111 : ", JSON.parse(JSON.stringify(BookStore.allBooks)))
     }, [])
+
+    useEffect(() => {
+        let tmp: Array<any> = JSON.parse(JSON.stringify(BookStore.allBooks))
+        if (tmp.length) {
+            console.log("All books 222 : ", tmp)
+        }
+    }, [BookStore.allBooks.length])
 
     useEffect(() => {
         if (signinStore.totalItems) console.log("Total Item : ", signinStore.totalItems)
@@ -130,8 +137,11 @@ export const HomeScreen = observer((props) => {
 
                 <View style={TOP_VIEW}>
                     <View style={IMG_VIEW}>
-                        <Image style={IMAGE_LOGO} height={(height / 10)}
-                            resizeMode='stretch' source={images.logo} />
+                        {Platform.OS == "ios" ? <Image style={IMAGE_LOGO} height={(height / 12)}
+                            resizeMode='stretch'
+                            source={images.logo} /> : <Image style={IMAGE_LOGO} height={(height / 10)}
+                                resizeMode='stretch'
+                                source={images.logo} />}
                     </View>
                 </View>
                 <View style={BOTTOM_VIEW}>

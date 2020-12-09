@@ -19,6 +19,9 @@ const BookStore = types.model({
     },
     booksByAuthor(author) {
       return self.books.filter(book => book.author === author)
+    },
+    get allBooks(){
+      return self.books
     }
   })
 
