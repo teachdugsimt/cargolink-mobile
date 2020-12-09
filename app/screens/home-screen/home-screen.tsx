@@ -115,7 +115,7 @@ export const HomeScreen = observer((props) => {
         {
             title: "เจ้าของสินค้า / Shippers",
             data: [{ id: 3, name: 'โพสงาน', onPressButton: () => navigation.navigate("postjob"), img: images.sheet1 },
-            { id: 4, name: 'หารถ', onPressButton: () => console.log("Press button 2.2"), img: images.word1 }]
+            { id: 4, name: 'หารถ', onPressButton: () => navigation.navigate("searchCar"), img: images.word1 }]
         }
     ]
     return (

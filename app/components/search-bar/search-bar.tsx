@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react'
-import { Dimensions, ImageStyle, Text, TextStyle, View, ViewStyle } from 'react-native';
+import React, { useState } from 'react'
+import { Dimensions, ImageStyle, Text, TextStyle, TouchableHighlight, View, ViewStyle } from 'react-native';
 import { color, spacing } from '../../theme';
 import { Button } from '../button/button';
 import { Icon } from '../icon/icon';
@@ -40,10 +40,8 @@ const ARROW_ICON: ImageStyle = {
   borderRadius: Math.round(Dimensions.get('window').width + Dimensions.get('window').height) / 2,
 }
 const LOCATION_TEXT: TextStyle = {
-  fontSize: FONT_SIZE_SMALL,
   paddingLeft: spacing[1],
-  ...TEXT_BOLD,
-  width: 250,
+  width: '65%',
 }
 const LINE_ICON_ROOT: ViewStyle = {
   paddingLeft: spacing[5],
@@ -60,7 +58,7 @@ const LINE: ViewStyle = {
 }
 const SEARCH_BOTTON_ROOT: ViewStyle = {
   alignItems: 'center',
-  paddingTop: spacing[4],
+  paddingTop: spacing[3],
 }
 const SEARCH_BOTTON: ViewStyle = {
   backgroundColor: color.backgroundWhite,
@@ -104,6 +102,9 @@ const LOCATIONS: Array<LocationProps> = [
 
 export function SearchBar(props: SearchBarProps) {
   const navigation = useNavigation()
+  const [firstLocation, setFirstLocation] = useState<string>('C')
+  const [secondLocation, setSecondLocation] = useState<string>('C')
+
   const {
     fromText,
     toText,
@@ -111,15 +112,22 @@ export function SearchBar(props: SearchBarProps) {
     navigationTo,
     textStyle
   } = props
+
+  const switching = () => {
+    console.log('Click')
+    setFirstLocation(secondLocation)
+    setSecondLocation(firstLocation)
+  }
+
   return (
     <View style={{ ...ROOT, ...style }}>
       <View style={LOCATION}>
         <Icon icon="pinDropYellow" style={PIN_ICON} />
         <Picker
-          selectedValue={LOCATIONS[0].value}
+          selectedValue={firstLocation}
           style={{ ...LOCATION_TEXT, ...textStyle }}
           onValueChange={(itemValue, itemIndex) =>
-            console.log('itemValue', itemValue)
+            setFirstLocation(itemValue.toString())
           }>
           {LOCATIONS.map((location, index) => {
             return (<Picker.Item key={index + 1} label={location.label} value={location.value} />)
@@ -129,16 +137,25 @@ export function SearchBar(props: SearchBarProps) {
       <View style={LINE_ICON_ROOT}>
         <View style={LINE_ICON_CHILD}>
           <View style={LINE} />
-          <Icon icon="arrowUpDown" style={ARROW_ICON} />
+          <TouchableHighlight onPress={switching}>
+            <Icon icon="arrowUpDown" style={ARROW_ICON} containerStyle={{ width: 26, height: 26 }} />
+          </TouchableHighlight>
+          {/* <Button
+          testID="continue-with-signin"
+          style={{ backgroundColor: color.transparent}}
+          textStyle={{}}
+          text={'ยืนยันรหัส OTP'}
+          onPress={() => navigation.navigate("acceptPolicy")}
+        /> */}
         </View>
       </View>
       <View style={LOCATION}>
         <Icon icon="pinDropGreen" style={PIN_ICON} />
         <Picker
-          selectedValue={LOCATIONS[0].value}
+          selectedValue={secondLocation}
           style={{ ...LOCATION_TEXT, ...textStyle }}
           onValueChange={(itemValue, itemIndex) =>
-            console.log('itemValue', itemValue)
+            setSecondLocation(itemValue.toString())
           }>
           {LOCATIONS.map((location, index) => {
             return (<Picker.Item key={index + 1} label={location.label} value={location.value} />)

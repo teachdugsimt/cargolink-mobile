@@ -6,17 +6,9 @@ import { color, spacing } from '../../theme';
 import { SearchItem } from '../../components/search-item/search-item';
 import { useNavigation } from '@react-navigation/native';
 
-const TEXT: TextStyle = {
-  color: color.textBlack,
-  // fontFamily: typography.primary,
-}
+const TEXT: TextStyle = { color: color.textBlack, }
 const BOLD: TextStyle = { fontWeight: "bold" }
-const HEADER: TextStyle = {
-  // paddingTop: spacing[5],
-  // paddingBottom: spacing[4] + spacing[1],
-  // paddingHorizontal: 0,
-  backgroundColor: color.primary
-}
+const HEADER: TextStyle = { backgroundColor: color.primary }
 const HEADER_TITLE: TextStyle = {
   ...TEXT,
   ...BOLD,
@@ -34,96 +26,9 @@ const SEARCH_BAR: ViewStyle = {
 }
 const RESULT_CONTAINER: ViewStyle = {
   flex: 1,
-  // marginTop: StatusBar.currentHeight || 0,
 }
 
-const DATA_FIRST = [
-  {
-    id: 1,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: true,
-    isLike: true,
-    rating: '4.9',
-    ratingCount: '122',
-    isCrown: true,
-    isRecommened: true,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-  {
-    id: 2,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: false,
-    isLike: false,
-    rating: '1.9',
-    ratingCount: '3',
-    isCrown: false,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-  {
-    id: 3,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: true,
-    isLike: true,
-    rating: '4.9',
-    ratingCount: '122',
-    isCrown: true,
-    isRecommened: true,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-  {
-    id: 4,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: true,
-    isLike: true,
-    rating: '4.5',
-    ratingCount: '69',
-    isCrown: false,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-  {
-    id: 5,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: true,
-    isLike: true,
-    rating: '4.9',
-    ratingCount: '122',
-    isCrown: true,
-    isRecommened: true,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-]
-
-const DATA_SECOND = [
+const DATA = [
   {
     id: 6,
     fromText: 'ภาคกลาง',
@@ -250,24 +155,24 @@ const Item = (data) => {
   )
 }
 
-export const SearchJobScreen = observer(function SearchJobScreen() {
+export const SearchCarScreen = observer(function SearchCarScreen() {
   const navigation = useNavigation()
   const goBack = () => navigation.goBack()
 
-  const [data, setData] = useState(DATA_FIRST)
+  const [data, setData] = useState(DATA)
 
   const renderItem = ({ item }) => (
     <Item {...item} />
   )
 
   const onScrollList = () => {
-    DATA_SECOND && data.length % 5 === 0 && setData(data.concat(DATA_SECOND))
+    console.log('scroll down')
   }
 
   return (
     <View style={{ flex: 1 }}>
       <Header
-        headerTx="searchJobScreen.searchJob"
+        headerTx="searchCarScreen.searchCar"
         style={HEADER}
         titleStyle={HEADER_TITLE}
         headerText={"หางาน"}

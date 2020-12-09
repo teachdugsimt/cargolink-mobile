@@ -151,9 +151,11 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         titleStyle={HEADER_TITLE}
         headerText={"รายละเอียดงาน"}
         leftIconReal={true}
-        leftIconName={"back"}
+        leftIconName={"chevron-back"}
+        leftIconSize={24}
         rightIconReal={true}
         rightIconName={"md-heart-outline"}
+        rightIconSize={24}
         onLeftPress={goBack}
       />
 
