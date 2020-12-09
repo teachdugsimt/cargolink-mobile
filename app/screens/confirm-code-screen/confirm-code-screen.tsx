@@ -79,22 +79,28 @@ const CONTINUE_BUTTON: ViewStyle = {
   borderRadius: 20
 }
 const CONTINUE_TEXT: TextStyle = {
-  color: '#fff',
+  color: color.textWhite,
   fontSize: 14,
   paddingTop: 5,
   paddingBottom: 5
+}
+const TEXT_EXPIRE: TextStyle = {
+  color: color.error
 }
 
 const CELL_COUNT: number = 4;
 const MINUTE: number = 60;
 
-const ShowCountDown = () => {
+const ShowCountDown = ({ setIsExpired }) => {
   return (
     <CountDown
       until={MINUTE * 1 + 30}
       size={14}
       style={COUNT_DOWN}
-      onFinish={() => console.log('Finished')}
+      onFinish={() => {
+        console.log('Finished')
+        setIsExpired(true)
+      }}
       digitStyle={{}}
       digitTxtStyle={{}}
       timeToShow={['M', 'SS']}
@@ -106,13 +112,14 @@ const ShowCountDown = () => {
 
 export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
   const navigation = useNavigation()
-  const [value, setValue] = useState('');
-  const [buttonColor, setButtonColor] = useState('e5e5e5')
+  const [value, setValue] = useState<string>('');
+  const [buttonColor, setButtonColor] = useState<string>('e5e5e5')
   const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
     value,
     setValue,
   });
+  const [isExpired, setIsExpired] = useState<boolean>(false)
 
   const onChangeText = (val) => {
     setValue(val)
@@ -149,8 +156,13 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
       <View testID="InformationCodeRoot" style={CODE_INFORMATION_ROOT}>
         <View style={CODE_INFORMATION}>
           <Text>รหัสจะหมดอายุใน</Text>
-          <ShowCountDown />
+          <ShowCountDown {...{
+            setIsExpired
+          }} />
           <Text style={CODE_REF}>(Ref: {'ABD1234'})</Text>
+        </View>
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          {isExpired && <Text style={TEXT_EXPIRE}>รหัสหมดอายุแล้ว</Text>}
         </View>
         <View style={RESEND_CODE_ROOT}>
           <Text style={RESEND_CODE_TEXT}>ขอรับรหัส OTP ใหม่</Text>

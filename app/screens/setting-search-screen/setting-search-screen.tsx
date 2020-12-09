@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { TextStyle, View, ViewStyle } from 'react-native'
 import { Button, Checkbox, Header, Text } from '../../components'
@@ -22,7 +22,7 @@ const CONTAINER: ViewStyle = {
 }
 const SEARCH_ITEM_ROOT: ViewStyle = {
   flex: 5,
-  backgroundColor: "lightblue",
+  // backgroundColor: "lightblue",
   borderWidth: 1,
   borderColor: color.disable,
   padding: spacing[3]
@@ -30,18 +30,19 @@ const SEARCH_ITEM_ROOT: ViewStyle = {
 const ITEM: ViewStyle = {
 
 }
-const TOPIC: ViewStyle = {
-
+const TOPIC: TextStyle = {
+  fontSize: 12,
 }
-const CONTENT: ViewStyle = {
-
+const CONTENT: TextStyle = {
+  color: color.dim,
 }
 const ROW: ViewStyle = {
-  justifyContent: "center"
+  alignItems: "center",
+  flexDirection: 'row'
 }
 const BUTTON_ROOT: ViewStyle = {
   flex: 1,
-  backgroundColor: 'lightgreen',
+  // backgroundColor: 'lightgreen',
   justifyContent: "center",
   alignItems: 'center'
 }
@@ -62,9 +63,8 @@ export const SettingSearchScreen = observer(function SettingSearchScreen() {
   const navigation = useNavigation()
   const goBack = () => navigation.goBack()
 
-  const toggle = () => {
-    console.log('Click Me')
-  }
+  const [searchByCategoryCar, setSearchByCategoryCar] = useState(false)
+  const [searchByPrice, setSearchByPrice] = useState(false)
 
   return (
     <View style={CONTAINER}>
@@ -75,28 +75,29 @@ export const SettingSearchScreen = observer(function SettingSearchScreen() {
         headerText={"ตั้งค่าการค้นหา"}
         leftIconReal={true}
         leftIconName={"back"}
+        rightIconText={'ล้าง'}
         onLeftPress={goBack}
       />
       <View style={SEARCH_ITEM_ROOT}>
         <View style={ITEM}>
           <Text
             text={'ค้นหาจากประเภทของรถ'}
-            style={{}}
+            style={TOPIC}
           />
           <View style={ROW}>
-            <Checkbox value={false} onToggle={toggle} />
-            <Text text={'กรุณาเลือกประเภทรถขนส่ง'} />
+            <Checkbox value={searchByCategoryCar} onToggle={() => setSearchByCategoryCar(!searchByCategoryCar)} />
+            <Text text={'กรุณาเลือกประเภทรถขนส่ง'} style={CONTENT} />
           </View>
         </View>
         <View style={ITEM}>
           <Text
             text={'ช่วงราคา'}
-            style={{}}
+            style={TOPIC}
           />
           <View style={ROW}>
-            <Checkbox value={false} onToggle={toggle} />
-            <Text text={'ช่วงราคา'} />
-            <Text text={'ช่วงราคา'} />
+            <Checkbox value={searchByPrice} onToggle={() => setSearchByPrice(!searchByPrice)} />
+            <Text text={'ช่วงราคา'} style={CONTENT} />
+            <Text text={'ช่วงราคา'} style={CONTENT} />
           </View>
         </View>
       </View>

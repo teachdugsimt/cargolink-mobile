@@ -9,7 +9,7 @@ export interface SearchItemProps {
 
   detail?: string
 
-  other?: string
+  packaging?: string
 
   viewDetail?: boolean
 
@@ -40,4 +40,6 @@ export interface SearchItemProps {
   containerStyle?: ViewStyle
 
   onToggle?: (data: object) => void
+
+  onPress?: (data: object) => void
 }

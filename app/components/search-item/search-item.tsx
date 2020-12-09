@@ -4,6 +4,8 @@ import { SearchItemProps } from './search-item.props';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { color, spacing } from '../../theme';
 import { Icon } from '../icon/icon';
+import { Button } from '../button/button';
+import { PostingBy } from '../posting-by/posting-by';
 const truckBackImage = require("./truck-back.png")
 
 const FONT_SIZE = 20
@@ -82,7 +84,7 @@ const CAR_DETAIL_ROOT: TextStyle = {
 const CAR_DETAIL: ViewStyle = {
   flex: 1
 }
-const OTHER: ViewStyle = {
+const PACKAGING: ViewStyle = {
   flex: 1
 }
 const CONTENT_RIGHT: ViewStyle = {
@@ -121,26 +123,16 @@ const ACCOUNT_ROOT: ViewStyle = {
   flexDirection: 'row',
   justifyContent: "flex-end"
 }
-const ACCOUNT_VIEW: ViewStyle = {
-  flexDirection: 'column'
+const BUTTON_VIEW: ViewStyle = {
+  backgroundColor: color.transparent,
+  paddingHorizontal: 0,
+  paddingVertical: 0
 }
-const ACCOUNT_DETAIL: ViewStyle = {
-  flexDirection: 'row',
-  justifyContent: 'flex-end'
-}
-const LOGO_ROOT: ViewStyle = {
-  flexDirection: 'row',
-  ...PADDING_LEFT
-}
-const LOGO: ImageStyle = {
-  width: 40,
-  height: 40,
-  borderRadius: Math.round(Dimensions.get('window').width + Dimensions.get('window').height) / 2,
-}
-const TEXT_RATING: TextStyle = {
-  ...PADDING_RIGHT,
-  color: color.primary,
-  fontSize: 12
+const TEXT_VIEW: TextStyle = {
+  color: color.disable,
+  fontSize: 14,
+  paddingHorizontal: 0,
+  paddingVertical: 0
 }
 
 export function SearchItem(props: SearchItemProps) {
@@ -149,7 +141,7 @@ export function SearchItem(props: SearchItemProps) {
     toText,
     count,
     detail,
-    other,
+    packaging,
     viewDetail,
     viewDetailToRight,
     backgroundImage,
@@ -163,7 +155,8 @@ export function SearchItem(props: SearchItemProps) {
     ratingCount,
     isCrown,
     logo,
-    containerStyle
+    containerStyle,
+    onPress
   } = props
   return (
     <View style={{ ...CONTAINER, ...containerStyle }}>
@@ -184,8 +177,8 @@ export function SearchItem(props: SearchItemProps) {
               <Text style={TEXT}>จำนวนรถบรรทุก : {count}</Text>
               <Text style={TEXT}>{detail}</Text>
             </View>
-            <View style={OTHER}>
-              <Text style={TEXT}>บรรจุภัณฑ์ : {other}</Text>
+            <View style={PACKAGING}>
+              <Text style={TEXT}>บรรจุภัณฑ์ : {packaging}</Text>
             </View>
           </View>
         </View>
@@ -196,25 +189,26 @@ export function SearchItem(props: SearchItemProps) {
       </View>
       <View style={BUTTOM_ROOT}>
         <View style={VIEW_DETAIL_ROOT}>
-          <Text style={{ color: color.disable }}>ดูรายละเอียด</Text>
+          <Button
+            testID="view-detail"
+            style={BUTTON_VIEW}
+            textStyle={TEXT_VIEW}
+            text={'ดูรายละเอียด'}
+            onPress={onPress}
+          />
           <AntDesign name="right" siez={FONT_SIZE_LARGE} color={color.disable} />
         </View>
         <View style={ACCOUNT_ROOT}>
-          <View style={ACCOUNT_VIEW}>
-            <View style={ACCOUNT_DETAIL}>
-              <Text style={{ ...PADDING_RIGHT, ...TEXT_BOLD }}>{postBy}</Text>
-              <Icon icon={isVerified ? "checkActive" : "checkInactive"} style={SMALL_ICON} containerStyle={{ ...PADDING_RIGHT }} />
-              {isCrown && <Icon icon="crown" style={SMALL_ICON} containerStyle={{ ...PADDING_RIGHT }} />}
-            </View>
-            <View style={ACCOUNT_DETAIL}>
-              <Icon icon="star" style={SMALL_ICON} containerStyle={{ ...PADDING_RIGHT }} />
-              <Text style={TEXT_RATING}>{rating || '0.0'}</Text>
-              <Text style={TEXT_RATING}>({ratingCount || '0'})</Text>
-            </View>
-          </View>
-          <View style={LOGO_ROOT}>
-            <Image source={{ uri: logo }} style={LOGO} resizeMode={'contain'} />
-          </View>
+          <PostingBy {
+            ...{
+              postBy,
+              isVerified,
+              isCrown,
+              rating,
+              ratingCount,
+              logo,
+            }
+          } />
         </View>
       </View>
     </View>

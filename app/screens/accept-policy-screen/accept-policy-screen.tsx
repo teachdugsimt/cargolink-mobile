@@ -61,8 +61,8 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
 
 export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
   const navigation = useNavigation()
-  const [buttonColor, setButtonColor] = useState(color.disable)
-  const [disabled, setDisabled] = useState(true)
+  // const [buttonColor, setButtonColor] = useState(color.disable)
+  // const [disabled, setDisabled] = useState(true)
 
   return (
     <View style={ROOT}>
@@ -71,8 +71,8 @@ export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
         onScroll={({ nativeEvent }) => {
           if (isCloseToBottom(nativeEvent)) {
             console.log('End')
-            setButtonColor(color.primary)
-            setDisabled(false)
+            // setButtonColor(color.primary)
+            // setDisabled(false)
           }
         }}
         style={SCROLL_VIEW}
@@ -106,11 +106,11 @@ export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
           testID="continue-with-signin"
           style={{
             ...CONTINUE_BUTTON,
-            backgroundColor: buttonColor
+            backgroundColor: color.primary
           }}
           textStyle={CONTINUE_TEXT}
           text={'ยอมรับเงื่อนไข'}
-          disabled={disabled}
+          // disabled={disabled}
           onPress={() => navigation.navigate("home")}
         />
         <Button

@@ -82,7 +82,6 @@ export function SearchBar(props: SearchBarProps) {
       <View style={LOCATION}>
         <Icon icon="pinDropYellow" style={PIN_ICON} />
         <Text style={{ ...LOCATION_TEXT, ...textStyle }}>จาก : {fromText}</Text>
-        <Icon />
       </View>
       <View style={LINE_ICON_ROOT}>
         <View style={LINE_ICON_CHILD}>

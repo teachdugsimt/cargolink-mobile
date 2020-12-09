@@ -103,7 +103,7 @@ export const HomeScreen = observer((props) => {
         {
             title: "ผู้ให้บริการขนส่ง / Carriers",
             data: [{ id: 1, name: 'จัดการรถ', onPressButton: () => console.log("Press button 1.1"), img: images.truck1 },
-            { id: 2, name: 'หางาน', onPressButton: () => console.log("Press button 1.2"), img: images.pinbox }]
+            { id: 2, name: 'หางาน', onPressButton: () => navigation.navigate("searchJob"), img: images.pinbox }]
         },
         {
             title: "เจ้าของสินค้า / Shippers",
@@ -159,13 +159,6 @@ export const HomeScreen = observer((props) => {
                 }}
             /> */}
             </View>
-            <Button
-                testID="continue-with-signin"
-                //   style={}
-                //   textStyle={}
-                text={'Search Job'}
-                onPress={() => navigation.navigate("searchJob")}
-            />
         </>
     )
 })

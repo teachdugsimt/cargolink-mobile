@@ -54,6 +54,8 @@ const MOBILE_INPUT: TextStyle = {
   padding: 2
 }
 
+const FIRST_MOBILE_NO: string = '0'
+
 export const SigninScreen = observer(function SigninScreen() {
   const navigation = useNavigation()
   // const goBack = () => navigation.goBack()
@@ -74,17 +76,23 @@ export const SigninScreen = observer(function SigninScreen() {
     ...DEFAULT_THEME,
     flagSizeButton: Platform.select({ android: 30, ios: 30 })
   }
-  const onSelect = (country: Country) => {
-    setCountryCode(country.cca2)
-    setCountry(country)
+  const onSelect = (countryData: Country) => {
+    setCountryCode(countryData.cca2)
+    setCountry(countryData)
+  }
+  const validateMobileNumberSuccess = () => {
+    setDisabled(false)
+    setButtonColor(color.primary)
+    Keyboard.dismiss()
   }
   const onChangeText = (text: string) => {
-    console.log('text :>> ', text);
+    // console.log('text :>> ', text);
     setValue(text);
-    if (text.length === 9) {
-      setDisabled(false)
-      setButtonColor(color.primary)
-      text.length === 9 && Keyboard.dismiss()
+    const firstMobileNo = text.substr(0, 1)
+    if (firstMobileNo === FIRST_MOBILE_NO && text.length === 10) {
+      validateMobileNumberSuccess()
+    } else if (firstMobileNo !== FIRST_MOBILE_NO && text.length === 9) {
+      validateMobileNumberSuccess()
     } else {
       setDisabled(true)
       setButtonColor(color.disable)
@@ -110,13 +118,14 @@ export const SigninScreen = observer(function SigninScreen() {
               withCallingCodeButton: true,
               containerButtonStyle: CONTAINER_BUTTON_STYLE,
               onSelect,
+              countryCodes: ['TH']
             }}
             theme={CUSTOM_DEFAULT_THEME}
           />
           <TextInput
             style={MOBILE_INPUT}
             keyboardType={'numeric'}
-            maxLength={9}
+            maxLength={10}
             placeholder={'ใส่ข้อมูลเบอร์โทรศัพท์ของคุณ'}
             onChangeText={text => onChangeText(text)}
             value={value}

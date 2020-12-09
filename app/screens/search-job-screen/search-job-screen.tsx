@@ -43,7 +43,7 @@ const DATA_FIRST = [
     fromText: 'ภาคกลาง',
     toText: 'ภาคกลาง',
     count: '2',
-    other: 'อื่นๆ',
+    packaging: 'อื่นๆ',
     detail: 'รถ 6 ล้อตู้คอก',
     viewDetail: true,
     postBy: 'Cargolink',
@@ -60,7 +60,7 @@ const DATA_FIRST = [
     fromText: 'ภาคกลาง',
     toText: 'ภาคกลาง',
     count: '2',
-    other: 'อื่นๆ',
+    packaging: 'อื่นๆ',
     detail: 'รถ 6 ล้อตู้คอก',
     viewDetail: true,
     postBy: 'Cargolink',
@@ -76,7 +76,7 @@ const DATA_FIRST = [
     fromText: 'ภาคกลาง',
     toText: 'ภาคกลาง',
     count: '2',
-    other: 'อื่นๆ',
+    packaging: 'อื่นๆ',
     detail: 'รถ 6 ล้อตู้คอก',
     viewDetail: true,
     postBy: 'Cargolink',
@@ -93,7 +93,7 @@ const DATA_FIRST = [
     fromText: 'ภาคกลาง',
     toText: 'ภาคกลาง',
     count: '2',
-    other: 'อื่นๆ',
+    packaging: 'อื่นๆ',
     detail: 'รถ 6 ล้อตู้คอก',
     viewDetail: true,
     postBy: 'Cargolink',
@@ -109,7 +109,7 @@ const DATA_FIRST = [
     fromText: 'ภาคกลาง',
     toText: 'ภาคกลาง',
     count: '2',
-    other: 'อื่นๆ',
+    packaging: 'อื่นๆ',
     detail: 'รถ 6 ล้อตู้คอก',
     viewDetail: true,
     postBy: 'Cargolink',
@@ -129,7 +129,7 @@ const DATA_SECOND = [
     fromText: 'ภาคกลาง',
     toText: 'ภาคกลาง',
     count: '2',
-    other: 'อื่นๆ',
+    packaging: 'อื่นๆ',
     detail: 'รถ 6 ล้อตู้คอก',
     viewDetail: true,
     postBy: 'GG Transport Thailand',
@@ -146,7 +146,7 @@ const DATA_SECOND = [
     fromText: 'ภาคกลาง',
     toText: 'ภาคกลาง',
     count: '2',
-    other: 'อื่นๆ',
+    packaging: 'อื่นๆ',
     detail: 'รถ 6 ล้อตู้คอก',
     viewDetail: true,
     postBy: 'Cargolink',
@@ -163,7 +163,7 @@ const DATA_SECOND = [
     fromText: 'ภาคกลาง',
     toText: 'ภาคกลาง',
     count: '2',
-    other: 'อื่นๆ',
+    packaging: 'อื่นๆ',
     detail: 'รถ 6 ล้อตู้คอก',
     viewDetail: true,
     postBy: 'Cargolink',
@@ -180,7 +180,7 @@ const DATA_SECOND = [
     fromText: 'ภาคกลาง',
     toText: 'ภาคกลาง',
     count: '2',
-    other: 'อื่นๆ',
+    packaging: 'อื่นๆ',
     detail: 'รถ 6 ล้อตู้คอก',
     viewDetail: true,
     postBy: 'Cargolink',
@@ -199,7 +199,7 @@ const Item = (data) => {
     fromText,
     toText,
     count,
-    other,
+    packaging,
     detail,
     viewDetail,
     postBy,
@@ -211,6 +211,14 @@ const Item = (data) => {
     isRecommened,
     logo
   } = data
+
+  const navigation = useNavigation()
+
+  const onPress = () => {
+    navigation.navigate('jobDetail', {
+      name: 'Hello world'
+    })
+  }
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
       <SearchItem
@@ -219,7 +227,7 @@ const Item = (data) => {
           fromText,
           toText,
           count,
-          other,
+          packaging,
           detail,
           viewDetail,
           postBy,
@@ -233,7 +241,8 @@ const Item = (data) => {
           containerStyle: {
             paddingTop: spacing[2],
             borderRadius: 6
-          }
+          },
+          onPress
         }
         }
       />
@@ -280,7 +289,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
         <FlatList
           data={data}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.id.toString()}
           onEndReached={() => onScrollList()}
           onEndReachedThreshold={0.5}
         />
