@@ -5,6 +5,12 @@ import { color, spacing } from '../../theme';
 import { Button } from '../button/button';
 import { Icon } from '../icon/icon';
 import { SearchBarProps } from './search.bar.props';
+import { Picker } from '@react-native-picker/picker';
+
+interface LocationProps {
+  label?: string
+  value?: string
+}
 
 const FONT_SIZE_SMALL = 15
 
@@ -37,6 +43,7 @@ const LOCATION_TEXT: TextStyle = {
   fontSize: FONT_SIZE_SMALL,
   paddingLeft: spacing[1],
   ...TEXT_BOLD,
+  width: 250,
 }
 const LINE_ICON_ROOT: ViewStyle = {
   paddingLeft: spacing[5],
@@ -68,6 +75,33 @@ const SEARCH_TEXT: TextStyle = {
   fontSize: 14,
 }
 
+const LOCATIONS: Array<LocationProps> = [
+  {
+    label: 'ภาคเหนือ',
+    value: 'N'
+  },
+  {
+    label: 'ภาคตะวันออกเฉียงเหนือ',
+    value: 'NE'
+  },
+  {
+    label: 'ภาคตะวันตก',
+    value: 'W'
+  },
+  {
+    label: 'ภาคกลาง',
+    value: 'C'
+  },
+  {
+    label: 'ภาคตะวันออก',
+    value: 'E'
+  },
+  {
+    label: 'ภาคใต้',
+    value: 'S'
+  },
+]
+
 export function SearchBar(props: SearchBarProps) {
   const navigation = useNavigation()
   const {
@@ -81,7 +115,16 @@ export function SearchBar(props: SearchBarProps) {
     <View style={{ ...ROOT, ...style }}>
       <View style={LOCATION}>
         <Icon icon="pinDropYellow" style={PIN_ICON} />
-        <Text style={{ ...LOCATION_TEXT, ...textStyle }}>จาก : {fromText}</Text>
+        <Picker
+          selectedValue={LOCATIONS[0].value}
+          style={{ ...LOCATION_TEXT, ...textStyle }}
+          onValueChange={(itemValue, itemIndex) =>
+            console.log('itemValue', itemValue)
+          }>
+          {LOCATIONS.map((location, index) => {
+            return (<Picker.Item key={index + 1} label={location.label} value={location.value} />)
+          })}
+        </Picker>
       </View>
       <View style={LINE_ICON_ROOT}>
         <View style={LINE_ICON_CHILD}>
@@ -91,7 +134,16 @@ export function SearchBar(props: SearchBarProps) {
       </View>
       <View style={LOCATION}>
         <Icon icon="pinDropGreen" style={PIN_ICON} />
-        <Text style={{ ...LOCATION_TEXT, ...textStyle }}>ถึง : {toText}</Text>
+        <Picker
+          selectedValue={LOCATIONS[0].value}
+          style={{ ...LOCATION_TEXT, ...textStyle }}
+          onValueChange={(itemValue, itemIndex) =>
+            console.log('itemValue', itemValue)
+          }>
+          {LOCATIONS.map((location, index) => {
+            return (<Picker.Item key={index + 1} label={location.label} value={location.value} />)
+          })}
+        </Picker>
       </View>
       <View style={SEARCH_BOTTON_ROOT}>
         <Button
