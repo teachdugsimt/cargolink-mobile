@@ -213,7 +213,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
           {isExpired && <Text style={TEXT_EXPIRE}>รหัสหมดอายุแล้ว</Text>}
         </View>
         <View style={RESEND_CODE_ROOT}>
-          <TouchableOpacity onPress={onResendCode}>
+          <TouchableOpacity disabled={!isExpired} onPress={onResendCode}>
             <Text style={RESEND_CODE_TEXT}>ขอรับรหัส OTP ใหม่</Text>
           </TouchableOpacity>
         </View>
