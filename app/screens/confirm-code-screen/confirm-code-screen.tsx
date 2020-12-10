@@ -115,8 +115,6 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
   }
 
   const onChangeText = (val: string) => {
-    console.log('val :>> ', val);
-    console.log('isExpired :>> ', isExpired);
     setValue(val)
     if (val.length === 4) {
       setState(prevState => ({
@@ -157,7 +155,6 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
   }
 
   useEffect(() => {
-    console.log('autoFocus :>> ', autoFocus);
     if (!resendCode && isExpired) {
       setIsShow(false)
     } else {
@@ -197,10 +194,10 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
           <Text>รหัสจะหมดอายุใน</Text>
           {isShow ?
             <CountDown
-              until={MINUTE * 0 + 3}
+              until={MINUTE * 1 + 30}
               size={14}
               style={COUNT_DOWN}
-              onChange={(second) => console.log('second :>> ', second)}
+              // onChange={(second) => console.log('second :>> ', second)}
               onFinish={onFinish}
               digitStyle={{}}
               digitTxtStyle={{}}
