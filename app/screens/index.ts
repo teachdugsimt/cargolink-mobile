@@ -11,3 +11,10 @@ export * from "./profile-screen/profile-screen"
 export * from "./more-screen/more-screen"
 
 export * from "./home-screen/post-job/post-job-screen"
+
+export * from "./accept-policy-screen/accept-policy-screen"
+export * from "./confirm-code-screen/confirm-code-screen"
+export * from "./search-job-screen/search-job-screen"
+export * from "./setting-search-screen/setting-search-screen"
+export * from "./job-detail-screen/job-detail-screen"
+export * from "./search-car-screen/search-car-screen"

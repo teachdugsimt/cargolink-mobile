@@ -7,7 +7,7 @@
 import React from "react"
 
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
-import { WelcomeScreen, DemoScreen, SigninScreen } from "../screens"
+import { ConfirmCodeScreen, AcceptPolicyScreen, SigninScreen } from "../screens"
 import BottomNavigator from './bottom-navigator'
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -22,9 +22,9 @@ import BottomNavigator from './bottom-navigator'
  *   https://reactnavigation.org/docs/typescript#type-checking-the-navigator
  */
 export type PrimaryParamList = {
-  welcome: undefined
-  demo: undefined
   signin: undefined
+  confirmCode: undefined
+  acceptPolicy: undefined
   home: undefined
 }
 
@@ -32,18 +32,18 @@ export type PrimaryParamList = {
 const Stack = createNativeStackNavigator<PrimaryParamList>()
 
 export function PrimaryNavigator() {
-  
+
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
         gestureEnabled: true,
       }}
-      initialRouteName={'welcome'}
+      initialRouteName={'signin'}
     >
-      <Stack.Screen name="welcome" component={WelcomeScreen} />
-      <Stack.Screen name="demo" component={DemoScreen} />
       <Stack.Screen name="signin" component={SigninScreen} />
+      <Stack.Screen name="confirmCode" component={ConfirmCodeScreen} />
+      <Stack.Screen name="acceptPolicy" component={AcceptPolicyScreen} />
       <Stack.Screen name="home" component={BottomNavigator} />
     </Stack.Navigator>
   )

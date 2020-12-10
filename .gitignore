@@ -71,3 +71,6 @@ Podfile.lock
 # Configurations
 app/config/env.*.js
 !env.js
+
+package-lock.json
+yarn.log

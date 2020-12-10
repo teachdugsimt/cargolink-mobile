@@ -1,102 +1,156 @@
-import React from "react"
-import { View, Image, ViewStyle, TextStyle, ImageStyle, SafeAreaView } from "react-native"
-import { useNavigation } from "@react-navigation/native"
+import React, { useState } from 'react'
+import { View, Image, ViewStyle, TextStyle, ImageStyle, Platform, TextInput, Keyboard, Text } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Button, Header, Screen, Text, Wallpaper } from "../../components"
-import { color, spacing, typography } from "../../theme"
-import Ionicons from 'react-native-vector-icons/Ionicons'
-// const bowserLogo = require("./bowser.png")
-// import BookStore from "../../models/book-store"
-const FULL: ViewStyle = { flex: 1 }
-const CONTAINER: ViewStyle = {
-    backgroundColor: color.transparent,
-    paddingHorizontal: spacing[4],
-}
-const TEXT: TextStyle = {
-    color: color.palette.white,
-    fontFamily: typography.primary,
-}
-const BOLD: TextStyle = { fontWeight: "bold" }
+import { Button, Icon } from "../../components"
+import { useNavigation } from '@react-navigation/native'
+import CountryPicker, { Country, CountryCode, DEFAULT_THEME } from 'react-native-country-picker-modal'
+import { color, spacing } from '../../theme'
 
-const HEADER: TextStyle = {
-    paddingTop: spacing[3],
-    paddingBottom: spacing[5] - 1,
-    paddingHorizontal: 0,
-}
-const HEADER_TITLE: TextStyle = {
-    ...BOLD,
-    fontSize: 12,
-    lineHeight: 15,
-    textAlign: "center",
-    letterSpacing: 1.5,
-}
+const logo = require('./logo.png')
 
-
-const CONTINUE: ViewStyle = {
-    paddingVertical: spacing[4],
-    paddingHorizontal: spacing[4],
-    backgroundColor: "#5D2555",
+const CONTENT_CENTER: ViewStyle = {
+  justifyContent: 'center',
+  alignItems: 'center'
+}
+const FULL: ViewStyle = { flex: 1, backgroundColor: color.backgroundWhite }
+const LOGO_PART: ViewStyle = {
+  flex: 2,
+  ...CONTENT_CENTER
+}
+const MOBILE_FORM_PART: ViewStyle = {
+  flex: 3,
+  alignItems: 'center'
+}
+const SIGNIN_PART: ViewStyle = {
+  flex: 1,
+  ...CONTENT_CENTER,
+  paddingLeft: 22,
+  paddingRight: 22
+}
+const LOGO: ImageStyle = {
+  height: '60%'
+}
+const CONTINUE_BUTTON: ViewStyle = {
+  width: '100%',
+  borderRadius: 20
 }
 const CONTINUE_TEXT: TextStyle = {
-    ...TEXT,
-    ...BOLD,
-    fontSize: 13,
-    letterSpacing: 2,
+  color: color.textWhite,
+  fontSize: 14,
+  paddingTop: 5,
+  paddingBottom: 5
 }
-const FOOTER: ViewStyle = { backgroundColor: "#20162D" }
-const FOOTER_CONTENT: ViewStyle = {
-    paddingVertical: spacing[4],
-    paddingHorizontal: spacing[4],
+const CONTAINER_BUTTON_STYLE: ViewStyle = {
+  backgroundColor: color.textWhite,
+}
+const MOBILE_FORM: ViewStyle = {
+  ...CONTENT_CENTER,
+  display: "flex",
+  flexDirection: 'row'
+}
+const MOBILE_INPUT: TextStyle = {
+  borderBottomWidth: 1,
+  borderBottomColor: '#c6c6c6',
+  marginLeft: 25,
+  padding: 2
+}
+const FLAG: ImageStyle = {
+  width: 35,
+  height: 35,
+  borderRadius: 1,
+  marginRight: spacing[2]
 }
 
+const FIRST_MOBILE_NO: string = '0'
 
 export const SigninScreen = observer(function SigninScreen() {
-    const navigation = useNavigation()
-    // const { books } = BookStore
-    const goBack = () => navigation.goBack()
-    console.tron.log('hello rendering world')
+  const navigation = useNavigation()
+  // const goBack = () => navigation.goBack()
+  const [disabled, setDisabled] = useState(true)
+  const [buttonColor, setButtonColor] = useState(color.disable)
+  const [value, setValue] = useState<string>('')
+  const [countryCode, setCountryCode] = useState<CountryCode>('TH')
+  const [country, setCountry] = useState<Country>(null)
+  const [withCountryNameButton, setWithCountryNameButton] = useState<boolean>(
+    false,
+  )
+  const [withFlag, setWithFlag] = useState<boolean>(true)
+  const [withEmoji, setWithEmoji] = useState<boolean>(true)
+  const [withFilter, setWithFilter] = useState<boolean>(true)
+  const [withAlphaFilter, setWithAlphaFilter] = useState<boolean>(false)
+  const [withCallingCode, setWithCallingCode] = useState<boolean>(true)
+  const CUSTOM_DEFAULT_THEME: Partial<typeof DEFAULT_THEME> = {
+    ...DEFAULT_THEME,
+    flagSizeButton: Platform.select({ android: 30, ios: 30 })
+  }
+  const onSelect = (countryData: Country) => {
+    setCountryCode(countryData.cca2)
+    setCountry(countryData)
+  }
+  const validateMobileNumberSuccess = () => {
+    setDisabled(false)
+    setButtonColor(color.primary)
+    Keyboard.dismiss()
+  }
+  const onChangeText = (text: string) => {
+    setValue(text);
+    const firstMobileNo = text.substr(0, 1)
+    if (firstMobileNo === FIRST_MOBILE_NO && text.length === 10) {
+      validateMobileNumberSuccess()
+    } else if (firstMobileNo !== FIRST_MOBILE_NO && text.length === 9) {
+      validateMobileNumberSuccess()
+    } else {
+      setDisabled(true)
+      setButtonColor(color.disable)
+    }
+  }
 
-
-    return (
-        <View testID="SigninScreen" style={FULL}>
-            <Header
-                headerTx="demoScreen.howTo"
-                leftIcon="back"
-                onLeftPress={goBack}
-                style={HEADER}
-                titleStyle={HEADER_TITLE}
-            />
-            <Text style={{ color: 'red' }}>Test View</Text>
-            <Text style={{ color: 'red' }}>Test View</Text>
-            <Text style={{ color: 'red' }}>Test View</Text>
-            <Text style={{ color: 'red' }}>Test View</Text>
-            <Text style={{ color: 'red' }}>Test View</Text>
-
-            <View>
-                <Ionicons name={"arrow-back"} size={30} color={"red"}/>
-            </View>
-            <View style={FOOTER_CONTENT}>
-                <Button
-                    testID="next-screen-button"
-                    style={CONTINUE}
-                    textStyle={CONTINUE_TEXT}
-                    tx="signinScreen.goHome"
-                    onPress={() => {
-                        // BookStore.addBook({
-                        //     title: "book1",
-                        //     author: "tester",
-                        //     read: false
-                        // })
-                        // console.log("BOOKS :: ", books[0])
-                        // console.log("BOOKS :: ", books[0])
-                        // console.log("BOOKS :: ", books[0])
-                        // console.log("BOOKS :: ", books[0])
-                        // console.log("BOOKS :: ", books[0])
-                        // console.log("BOOKS :: ", books[0])
-                        navigation.navigate("home")
-                    }}
-                />
-            </View>
+  return (
+    <View testID="SigninScreen" style={FULL}>
+      <View testID="Logo" style={LOGO_PART}>
+        <Image source={logo} style={LOGO} resizeMode={'contain'} />
+      </View>
+      <View testID="MobileForm" style={MOBILE_FORM_PART}>
+        <View style={MOBILE_FORM}>
+          {/* <CountryPicker
+            {...{
+              countryCode,
+              withFilter,
+              withFlag,
+              withCountryNameButton,
+              withAlphaFilter,
+              withCallingCode,
+              withEmoji,
+              withCallingCodeButton: true,
+              containerButtonStyle: CONTAINER_BUTTON_STYLE,
+              onSelect,
+              countryCodes: ['TH'],
+            }}
+            theme={CUSTOM_DEFAULT_THEME}
+          /> */}
+          <Icon icon="thFlag" style={FLAG} />
+          <Text>+66</Text>
+          <TextInput
+            style={MOBILE_INPUT}
+            keyboardType={'numeric'}
+            maxLength={10}
+            placeholder={'ใส่ข้อมูลเบอร์โทรศัพท์ของคุณ'}
+            onChangeText={text => onChangeText(text)}
+            value={value}
+          />
         </View>
-    )
+      </View>
+      <View testID="ButtonSignin" style={SIGNIN_PART}>
+        <Button
+          testID="continue-with-signin"
+          style={{ ...CONTINUE_BUTTON, backgroundColor: buttonColor }}
+          textStyle={CONTINUE_TEXT}
+          disabled={disabled}
+          // tx="goHome"
+          text={'เข้าสู่ระบบ'}
+          onPress={() => navigation.navigate("confirmCode")}
+        />
+      </View>
+    </View>
+  )
 })
