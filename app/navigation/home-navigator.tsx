@@ -38,14 +38,25 @@ export function HomeNavigator() {
     return (
         <Stack.Navigator
             screenOptions={{
-                headerShown: false,
+                headerShown: true,
                 gestureEnabled: true,
             }}
         >
-            <Stack.Screen name="home" component={HomeScreen} />
+            <Stack.Screen name="home"
+                component={HomeScreen}
+                options={{
+                    headerShown: false
+                }}
+            />
             <Stack.Screen name="detail" component={DetailScreen} />
             <Stack.Screen name="postjob" component={PostJobScreen} />
-            <Stack.Screen name="searchJob" component={SearchJobScreen} />
+            <Stack.Screen name="searchJob"
+                component={SearchJobScreen}
+                options={{
+                    headerTitle: "XXXXX",
+                    headerBackTitle: "Back",
+                    headerBackTitleVisible: false
+                }} />
             <Stack.Screen name="settingSearch" component={SettingSearchScreen} />
             <Stack.Screen name="jobDetail" component={JobDetailScreen} />
             <Stack.Screen name="searchCar" component={SearchCarScreen} />
