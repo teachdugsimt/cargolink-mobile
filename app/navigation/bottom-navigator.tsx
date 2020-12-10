@@ -151,7 +151,7 @@ export default function BottomNavigator() {
         <Tab.Navigator
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ focused, color, size }) => {
-                    console.log("ICON :: ", Icon22)
+
                     let iconName;
                     if (route.name === 'Home') {
                         iconName = focused
