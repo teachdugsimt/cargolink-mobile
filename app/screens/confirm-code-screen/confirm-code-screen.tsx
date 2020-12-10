@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from "mobx-react-lite"
 import {
   CodeField,
@@ -6,7 +6,7 @@ import {
   useBlurOnFulfill,
   useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
-import { Dimensions, SafeAreaView, Text, TextStyle, View, ViewStyle } from 'react-native';
+import { Dimensions, SafeAreaView, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { Button, CountDown } from '../../components';
 import { color } from '../../theme';
 import { useNavigation } from '@react-navigation/native';
@@ -91,40 +91,79 @@ const TEXT_EXPIRE: TextStyle = {
 const CELL_COUNT: number = 4;
 const MINUTE: number = 60;
 
-const ShowCountDown = ({ setIsExpired }) => {
-  return (
-    <CountDown
-      until={MINUTE * 1 + 30}
-      size={14}
-      style={COUNT_DOWN}
-      onFinish={() => {
-        console.log('Finished')
-        setIsExpired(true)
-      }}
-      digitStyle={{}}
-      digitTxtStyle={{}}
-      timeToShow={['M', 'SS']}
-      timeLabels={{ m: '', s: '' }}
-      showSeparator={true}
-    />
-  )
+const initialState = {
+  isExpired: false,
+  disabled: true,
+  buttonColor: color.disable,
+  resendCode: true,
+  autoFocus: true,
 }
 
 export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
   const navigation = useNavigation()
   const [value, setValue] = useState<string>('');
-  const [buttonColor, setButtonColor] = useState<string>('e5e5e5')
   const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
     value,
     setValue,
   });
-  const [isExpired, setIsExpired] = useState<boolean>(false)
+  const [{ isExpired, disabled, buttonColor, resendCode, autoFocus }, setState] = useState(initialState)
+  const [isShow, setIsShow] = useState(true)
 
-  const onChangeText = (val) => {
-    setValue(val)
-    // setButtonColor('e5e5e5')
+  const clearState = () => {
+    setState({ ...initialState })
   }
+
+  const onChangeText = (val: string) => {
+    console.log('val :>> ', val);
+    console.log('isExpired :>> ', isExpired);
+    setValue(val)
+    if (val.length === 4) {
+      setState(prevState => ({
+        ...prevState,
+        disabled: isExpired,
+        buttonColor: isExpired ? color.disable : color.primary,
+        autoFocus: false
+      }))
+    } else {
+      setState(prevState => ({
+        ...prevState,
+        disabled: true,
+        buttonColor: color.disable,
+      }))
+    }
+  }
+
+  const onResendCode = () => {
+    setState({ ...initialState })
+    setValue('')
+  }
+
+  const setButtonColor = (_color: string) => {
+    setState(prevState => ({
+      ...prevState,
+      buttonColor: _color
+    }))
+  }
+
+  const onFinish = () => {
+    setState(prevState => ({
+      ...prevState,
+      resendCode: !prevState.resendCode,
+      isExpired: !prevState.isExpired,
+      disabled: true,
+      buttonColor: color.disable
+    }))
+  }
+
+  useEffect(() => {
+    console.log('autoFocus :>> ', autoFocus);
+    if (!resendCode && isExpired) {
+      setIsShow(false)
+    } else {
+      setIsShow(true)
+    }
+  }, [resendCode, isExpired, autoFocus])
 
   return (
     <SafeAreaView style={ROOT}>
@@ -135,12 +174,12 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
         onChangeText={(val) => onChangeText(val)}
         // onTouchCancel={() => console.log('touch cancel')}
         // onContentSizeChange={() => console.log('size change')}
-        onEndEditing={() => setButtonColor(color.primary)}
+        // onEndEditing={() => setButtonColor(color.primary)}
         onFocus={() => setButtonColor(color.disable)}
         cellCount={CELL_COUNT}
         rootStyle={CODE_FIELD_ROOT}
         keyboardType="number-pad"
-        autoFocus={true}
+        autoFocus={autoFocus}
         textContentType="oneTimeCode"
         renderCell={({ index, symbol, isFocused }) => (
           <View
@@ -156,16 +195,30 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
       <View testID="InformationCodeRoot" style={CODE_INFORMATION_ROOT}>
         <View style={CODE_INFORMATION}>
           <Text>รหัสจะหมดอายุใน</Text>
-          <ShowCountDown {...{
-            setIsExpired
-          }} />
+          {isShow ?
+            <CountDown
+              until={MINUTE * 0 + 3}
+              size={14}
+              style={COUNT_DOWN}
+              onChange={(second) => console.log('second :>> ', second)}
+              onFinish={onFinish}
+              digitStyle={{}}
+              digitTxtStyle={{}}
+              timeToShow={['M', 'SS']}
+              timeLabels={{ m: '', s: '' }}
+              showSeparator={true}
+            /> :
+            <Text style={COUNT_DOWN}>0:00</Text>
+          }
           <Text style={CODE_REF}>(Ref: {'ABD1234'})</Text>
         </View>
         <View style={{ flex: 1, alignItems: 'center' }}>
           {isExpired && <Text style={TEXT_EXPIRE}>รหัสหมดอายุแล้ว</Text>}
         </View>
         <View style={RESEND_CODE_ROOT}>
-          <Text style={RESEND_CODE_TEXT}>ขอรับรหัส OTP ใหม่</Text>
+          <TouchableOpacity onPress={onResendCode}>
+            <Text style={RESEND_CODE_TEXT}>ขอรับรหัส OTP ใหม่</Text>
+          </TouchableOpacity>
         </View>
       </View>
       <View testID="ConfirmCodeRoot" style={CONFIRM_CODE_ROOT}>
@@ -176,8 +229,12 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
             backgroundColor: buttonColor
           }}
           textStyle={CONTINUE_TEXT}
+          disabled={disabled}
           text={'ยืนยันรหัส OTP'}
-          onPress={() => navigation.navigate("acceptPolicy")}
+          onPress={() => {
+            clearState()
+            navigation.navigate("acceptPolicy")
+          }}
         />
       </View>
     </SafeAreaView>

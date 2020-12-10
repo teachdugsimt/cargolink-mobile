@@ -10,6 +10,7 @@ export const icons = {
   pinDropGreen: require("./pin-drop-green.png"),
   pinDropYellow: require("./pin-drop-yellow.png"),
   star: require("./star.png"),
+  thFlag: require("./th-flag.png"),
 }
 
 export type IconTypes = keyof typeof icons

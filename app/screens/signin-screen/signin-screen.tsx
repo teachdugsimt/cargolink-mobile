@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-import { View, Image, ViewStyle, TextStyle, ImageStyle, Platform, TextInput, Keyboard } from "react-native"
+import { View, Image, ViewStyle, TextStyle, ImageStyle, Platform, TextInput, Keyboard, Text } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Button } from "../../components"
+import { Button, Icon } from "../../components"
 import { useNavigation } from '@react-navigation/native'
 import CountryPicker, { Country, CountryCode, DEFAULT_THEME } from 'react-native-country-picker-modal'
-import { color } from '../../theme'
+import { color, spacing } from '../../theme'
+
 const logo = require('./logo.png')
 
 const CONTENT_CENTER: ViewStyle = {
@@ -34,13 +35,13 @@ const CONTINUE_BUTTON: ViewStyle = {
   borderRadius: 20
 }
 const CONTINUE_TEXT: TextStyle = {
-  color: '#fff',
+  color: color.textWhite,
   fontSize: 14,
   paddingTop: 5,
   paddingBottom: 5
 }
 const CONTAINER_BUTTON_STYLE: ViewStyle = {
-  backgroundColor: '#fff'
+  backgroundColor: color.textWhite,
 }
 const MOBILE_FORM: ViewStyle = {
   ...CONTENT_CENTER,
@@ -52,6 +53,12 @@ const MOBILE_INPUT: TextStyle = {
   borderBottomColor: '#c6c6c6',
   marginLeft: 25,
   padding: 2
+}
+const FLAG: ImageStyle = {
+  width: 35,
+  height: 35,
+  borderRadius: 1,
+  marginRight: spacing[2]
 }
 
 const FIRST_MOBILE_NO: string = '0'
@@ -86,7 +93,6 @@ export const SigninScreen = observer(function SigninScreen() {
     Keyboard.dismiss()
   }
   const onChangeText = (text: string) => {
-    // console.log('text :>> ', text);
     setValue(text);
     const firstMobileNo = text.substr(0, 1)
     if (firstMobileNo === FIRST_MOBILE_NO && text.length === 10) {
@@ -106,7 +112,7 @@ export const SigninScreen = observer(function SigninScreen() {
       </View>
       <View testID="MobileForm" style={MOBILE_FORM_PART}>
         <View style={MOBILE_FORM}>
-          <CountryPicker
+          {/* <CountryPicker
             {...{
               countryCode,
               withFilter,
@@ -118,10 +124,12 @@ export const SigninScreen = observer(function SigninScreen() {
               withCallingCodeButton: true,
               containerButtonStyle: CONTAINER_BUTTON_STYLE,
               onSelect,
-              countryCodes: ['TH']
+              countryCodes: ['TH'],
             }}
             theme={CUSTOM_DEFAULT_THEME}
-          />
+          /> */}
+          <Icon icon="thFlag" style={FLAG} />
+          <Text>+66</Text>
           <TextInput
             style={MOBILE_INPUT}
             keyboardType={'numeric'}
