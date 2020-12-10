@@ -125,6 +125,7 @@ export const HomeScreen = observer((props) => {
                 // leftIcon="back"
                 // onLeftPress={logout}
                 style={HEADER}
+                closeShadow={true}
                 // titleStyle={HEADER_TITLE}
                 onRightPress={() => console.log("Press notification right home screen")}
                 rightIconReal={true}

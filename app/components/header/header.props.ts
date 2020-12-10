@@ -1,4 +1,4 @@
-import { ViewStyle, TextStyle } from "react-native"
+import { ViewStyle, TextStyle, ImageStyle } from "react-native"
 import { IconTypes } from "../icon/icons"
 
 export interface HeaderProps {
@@ -56,4 +56,7 @@ export interface HeaderProps {
   leftIconName?: string
   leftIconSize?: number
   leftIconColor?: string
+
+  closeShadow?: boolean
+  iconStyle?: ImageStyle
 }
