@@ -153,9 +153,10 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         leftIconReal={true}
         leftIconName={"chevron-back"}
         leftIconSize={24}
-        rightIconReal={true}
-        rightIconName={"md-heart-outline"}
-        rightIconSize={24}
+        // rightIconReal={true}
+        // rightIconName={"md-heart-outline"}
+        // rightIconSize={24}
+        rightIcon={'heartActive'}
         onLeftPress={goBack}
       />
 

@@ -1,12 +1,24 @@
 import React from "react"
-import { View, ViewStyle, TextStyle } from "react-native"
+import { View, ViewStyle, TextStyle, TouchableOpacity } from "react-native"
 import { observer } from "mobx-react-lite"
 import { Button, Header, Text } from "../../components"
 import { color, spacing } from "../../theme"
 import { useNavigation } from "@react-navigation/native"
 import Icon from "react-native-vector-icons/Ionicons"
 
-const FULL: ViewStyle = { flex: 1 }
+interface SubMenuProps {
+    key?: string
+    label?: string
+    icon?: string
+}
+interface MenuProps {
+    key?: string
+    topic?: string
+    icon?: string
+    subMenu?: Array<SubMenuProps>
+}
+
+const FULL: ViewStyle = { flex: 1, backgroundColor: color.backgroundWhite }
 const TEXT: TextStyle = { color: color.textBlack, }
 const BOLD: TextStyle = { fontWeight: "bold" }
 const HEADER: TextStyle = { backgroundColor: color.primary }
@@ -31,6 +43,7 @@ const COLUMN: ViewStyle = {
 }
 const TOPIC: TextStyle = {
     ...BOLD,
+    paddingBottom: spacing[2],
 }
 const MENU: ViewStyle = {
     flexDirection: 'row',
@@ -49,6 +62,34 @@ const BUTTON_TEXT: TextStyle = {
     color: color.textWhite,
     fontSize: 18
 }
+
+const MENUS: Array<MenuProps> = [
+    {
+        key: 'security',
+        topic: 'ความปลอดภัย',
+        subMenu: [{
+            key: 'set-password',
+            label: 'ตั้งค่ารหัสผ่านของคุณ',
+            icon: 'chevron-forward'
+        }]
+    },
+    {
+        key: 'contact-us',
+        topic: 'ติดต่อเรา',
+        subMenu: [
+            {
+                key: 'line-official-account',
+                label: 'Line Official Account',
+                icon: 'chevron-forward'
+            },
+            {
+                key: 'call-center',
+                label: 'Call Center',
+                icon: 'chevron-forward'
+            },
+        ]
+    },
+]
 
 export const MoreScreen = observer(function MoreScreen() {
     const navigation = useNavigation()
@@ -69,37 +110,27 @@ export const MoreScreen = observer(function MoreScreen() {
             />
 
             <View style={CONTAINER}>
-                <View style={COLUMN}>
-                    <Text
-                        text={'ความปลอดภัย'}
-                        style={TOPIC}
-                    />
-                    <View style={MENU}>
-                        <Text
-                            text={'ตั้งค่ารหัสผ่านของคุณ'}
-                        />
-                        <Icon name={'chevron-forward'} size={24} color={color.disable} />
-                    </View>
-                </View>
 
-                <View style={COLUMN}>
-                    <Text
-                        text={'ติดต่อเรา'}
-                        style={TOPIC}
-                    />
-                    <View style={MENU}>
-                        <Text
-                            text={'Line Official Account'}
-                        />
-                        <Icon name={'chevron-forward'} size={24} color={color.disable} />
-                    </View>
-                    <View style={MENU}>
-                        <Text
-                            text={'Call Center'}
-                        />
-                        <Icon name={'chevron-forward'} size={24} color={color.disable} />
-                    </View>
-                </View>
+                {MENUS.map(menu => {
+                    return (
+                        <View key={menu.key} style={COLUMN}>
+                            <Text
+                                text={menu.topic}
+                                style={TOPIC}
+                            />
+                            {menu.subMenu.map(item => {
+                                return (
+                                    <TouchableOpacity key={item.key} style={MENU} onPress={() => console.log('click me')}>
+                                        <Text
+                                            text={item.label}
+                                        />
+                                        <Icon name={item.icon} size={24} color={color.disable} />
+                                    </TouchableOpacity>
+                                )
+                            })}
+                        </View>
+                    )
+                })}
 
                 <View style={COLUMN}>
                     <Button

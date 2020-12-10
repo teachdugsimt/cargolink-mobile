@@ -148,7 +148,10 @@ export const SigninScreen = observer(function SigninScreen() {
           disabled={disabled}
           // tx="goHome"
           text={'เข้าสู่ระบบ'}
-          onPress={() => navigation.navigate("confirmCode")}
+          onPress={() => {
+            setValue('')
+            navigation.navigate("confirmCode")
+          }}
         />
       </View>
     </View>
