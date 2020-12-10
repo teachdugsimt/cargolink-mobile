@@ -46,11 +46,13 @@ const TEXT_STYLE: TextStyle = {
     color: color.black,
     alignSelf: 'flex-start',
     fontSize: typography.menu,
-    fontWeight: 'bold'
+    // fontWeight: 'bold',
+    fontFamily: "Kanit-ExtraBold"
 }
 
 const IMAGE_ICON: ImageStyle = {
-    width: 60,
+    width: 50,
+    height: 50
 }
 
 const VIEW_TEXT_MENU: ViewStyle = {
@@ -65,7 +67,8 @@ const VIEW_IMG_MENU: ViewStyle = {
 
 const TITLE_STYLE: TextStyle = {
     fontSize: typography.title, color: color.black,
-    fontWeight: 'bold'
+    // fontWeight: 'bold'
+    fontFamily: "Kanit-Bold"
 }
 
 const VIEW_TITLE_TEXT: ViewStyle = {
@@ -90,7 +93,7 @@ export function GridView(props: any) {
                             <Text style={TEXT_STYLE}>{item.name}</Text>
                         </View>
                         <View style={VIEW_IMG_MENU}>
-                            <Image style={IMAGE_ICON} height={50}
+                            <Image style={IMAGE_ICON}
                                 resizeMode='stretch' source={item.img} />
                         </View>
                     </View>

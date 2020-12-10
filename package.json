@@ -2,6 +2,11 @@
   "name": "cargo-link-mobile",
   "version": "0.0.1",
   "private": true,
+  "rnpm": {
+    "assets": [
+      "./assets/Fonts"
+    ]
+  },
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
