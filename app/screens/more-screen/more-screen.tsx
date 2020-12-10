@@ -2,7 +2,7 @@ import React from "react"
 import { View, ViewStyle, TextStyle } from "react-native"
 import { observer } from "mobx-react-lite"
 import { Button, Header, Text } from "../../components"
-import { color } from "../../theme"
+import { color, spacing } from "../../theme"
 import { useNavigation } from "@react-navigation/native"
 import Icon from "react-native-vector-icons/Ionicons"
 
@@ -18,8 +18,36 @@ const HEADER_TITLE: TextStyle = {
     textAlign: "center",
     letterSpacing: 1.5,
 }
+const CONTAINER: ViewStyle = {
+    flex: 1,
+    justifyContent: 'center',
+    // alignItems: 'center',
+    paddingLeft: spacing[4] + spacing[1],
+    paddingRight: spacing[4] + spacing[1]
+}
+const COLUMN: ViewStyle = {
+    flex: 1,
+    justifyContent: 'flex-end'
+}
+const TOPIC: TextStyle = {
+    ...BOLD,
+}
 const MENU: ViewStyle = {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    // backgroundColor: color.error,
+    paddingTop: spacing[2],
+    paddingBottom: spacing[2],
+    borderBottomWidth: 1,
+    borderColor: color.disable,
+}
+const BUTTON: ViewStyle = {
+    backgroundColor: color.disable,
+    marginBottom: spacing[3]
+}
+const BUTTON_TEXT: TextStyle = {
+    color: color.textWhite,
+    fontSize: 18
 }
 
 export const MoreScreen = observer(function MoreScreen() {
@@ -33,53 +61,55 @@ export const MoreScreen = observer(function MoreScreen() {
                 headerTx="searchCarScreen.searchCar"
                 style={HEADER}
                 titleStyle={HEADER_TITLE}
-                headerText={"หางาน"}
+                headerText={"เมนูเพิ่มเติม"}
                 leftIconReal={true}
                 leftIconName={"chevron-back"}
                 leftIconSize={24}
                 onLeftPress={goBack}
             />
 
-            <View>
-                <Text
-                    text={'ความปลอดภัย'}
-                />
-                <View style={MENU}>
+            <View style={CONTAINER}>
+                <View style={COLUMN}>
                     <Text
-                        text={'ตั้งค่ารหัสผ่านของคุณ'}
+                        text={'ความปลอดภัย'}
+                        style={TOPIC}
                     />
-                    <Icon name={'chevron-forward'} size={24} color={color.disable} />
+                    <View style={MENU}>
+                        <Text
+                            text={'ตั้งค่ารหัสผ่านของคุณ'}
+                        />
+                        <Icon name={'chevron-forward'} size={24} color={color.disable} />
+                    </View>
                 </View>
-            </View>
 
-            <View>
-                <Text
-                    text={'ติดต่อเรา'}
-                />
-                <View style={MENU}>
+                <View style={COLUMN}>
                     <Text
-                        text={'Line Official Account'}
+                        text={'ติดต่อเรา'}
+                        style={TOPIC}
                     />
-                    <Icon name={'chevron-forward'} size={24} color={color.disable} />
+                    <View style={MENU}>
+                        <Text
+                            text={'Line Official Account'}
+                        />
+                        <Icon name={'chevron-forward'} size={24} color={color.disable} />
+                    </View>
+                    <View style={MENU}>
+                        <Text
+                            text={'Call Center'}
+                        />
+                        <Icon name={'chevron-forward'} size={24} color={color.disable} />
+                    </View>
                 </View>
-                <View style={MENU}>
-                    <Text
-                        text={'Call Center'}
-                    />
-                    <Icon name={'chevron-forward'} size={24} color={color.disable} />
-                </View>
-            </View>
 
-            <View>
-                <Button
-                    testID="continue-with-signin"
-                    style={{
-                        backgroundColor: color.disable
-                    }}
-                    textStyle={{ color: color.textWhite }}
-                    text={'ออกจากระบบ'}
-                    onPress={() => navigation.navigate("signin")}
-                />
+                <View style={COLUMN}>
+                    <Button
+                        testID="continue-with-signin"
+                        style={BUTTON}
+                        textStyle={BUTTON_TEXT}
+                        text={'ออกจากระบบ'}
+                        onPress={() => navigation.navigate("signin")}
+                    />
+                </View>
             </View>
 
         </View>
