@@ -66,6 +66,7 @@ export const color = {
   textBlack: palette.black,
 
   mainTheme: palette.yellow,
+
   grey: "grey",
   snow: "#FFFFFF",
   black: "#000000",
