@@ -5,9 +5,11 @@
  * You'll likely spend most of your time in this file.
  */
 import React from "react"
-
+import { Text } from 'react-native'
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import { ProfileScreen } from "../screens"
+import { color } from "../theme"
+import { translate } from "../i18n"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
  * as well as what properties (if any) they might take when navigating to them.
@@ -32,11 +34,22 @@ export function ProfileNavigator() {
     return (
         <Stack.Navigator
             screenOptions={{
-                headerShown: false,
+                headerShown: true,
                 gestureEnabled: true,
+                headerStyle: {
+                    backgroundColor: color.mainTheme,
+                },
             }}
         >
-            <Stack.Screen name="profile" component={ProfileScreen} />
+            <Stack.Screen name="profile" component={ProfileScreen}
+                options={{
+                    headerTitle: translate("profileScreen.profile"),
+                    headerTitleStyle: {
+                        fontFamily: 'Kanit-Bold',
+                    },
+                    headerHideShadow: true,
+                }}
+            />
             {/* <Stack.Screen name="detail" component={DetailScreen} /> */}
         </Stack.Navigator>
     )

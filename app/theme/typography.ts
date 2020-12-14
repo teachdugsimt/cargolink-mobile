@@ -30,6 +30,7 @@ export const typography = {
   code: Platform.select({ ios: "Courier", android: "monospace" }),
 
   menu: 20,
+  mainTitle: 18,
   title: 16,
   content: 14,
   
