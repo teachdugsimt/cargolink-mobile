@@ -120,18 +120,19 @@ export const HomeScreen = observer((props) => {
     ]
     return (
         <>
-            <Header
+            {/* <Header
                 // headerTx="homeScreen.logout"
                 // leftIcon="back"
                 // onLeftPress={logout}
                 style={HEADER}
+                closeShadow={true}
                 // titleStyle={HEADER_TITLE}
                 onRightPress={() => console.log("Press notification right home screen")}
                 rightIconReal={true}
                 rightIconName={"notifications-outline"}
                 rightIconSize={24}
                 rightIconColor={color.black}
-            />
+            /> */}
             <View testID="HomeScreen" style={ROOT_HOME}>
 
 

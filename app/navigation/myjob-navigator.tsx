@@ -32,8 +32,13 @@ export function MyJobNavigator() {
     return (
         <Stack.Navigator
             screenOptions={{
-                headerShown: false,
+                headerShown: true,
                 gestureEnabled: true,
+                title: 'Realtime',
+                headerTintColor: 'black',
+                headerStyle: {
+                    backgroundColor: 'red'
+                }
             }}
         >
             <Stack.Screen name="myjob" component={MyJobScreen} />
