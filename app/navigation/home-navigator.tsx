@@ -76,7 +76,13 @@ export function HomeNavigator() {
             />
             <Stack.Screen name="detail" component={DetailScreen} />
             <Stack.Screen name="postjob" component={PostJobScreen} />
-            <Stack.Screen name="searchJob" component={SearchJobScreen} />
+            <Stack.Screen name="searchJob"
+                component={SearchJobScreen}
+                options={{
+                    headerTitle: "XXXXX",
+                    headerBackTitle: "Back",
+                    headerBackTitleVisible: false
+                }} />
             <Stack.Screen name="settingSearch" component={SettingSearchScreen} />
             <Stack.Screen name="jobDetail" component={JobDetailScreen} />
             <Stack.Screen name="searchCar" component={SearchCarScreen} />
