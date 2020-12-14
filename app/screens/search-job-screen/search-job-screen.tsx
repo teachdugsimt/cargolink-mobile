@@ -266,7 +266,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <Header
+      {/* <Header
         headerTx="searchJobScreen.searchJob"
         style={HEADER}
         titleStyle={HEADER_TITLE}
@@ -275,7 +275,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
         leftIconName={"chevron-back"}
         leftIconSize={24}
         onLeftPress={goBack}
-      />
+      /> */}
       <View>
         <SearchBar
           {...{

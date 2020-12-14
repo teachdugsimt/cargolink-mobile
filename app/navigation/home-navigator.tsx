@@ -5,8 +5,11 @@
  * You'll likely spend most of your time in this file.
  */
 import React from "react"
-
+import { ViewStyle, Text } from 'react-native'
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
+import { Icon } from "../components"
+import { color } from '../theme'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import { DetailScreen, HomeScreen, JobDetailScreen, PostJobScreen, SearchCarScreen, SearchJobScreen, SettingSearchScreen } from "../screens"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -33,16 +36,44 @@ export type PrimaryHomeParamList = {
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
 const Stack = createNativeStackNavigator<PrimaryHomeParamList>()
 
+const SHADOW: ViewStyle = {
+    borderBottomRightRadius: 5,
+    borderBottomLeftRadius: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+}
 export function HomeNavigator() {
 
     return (
         <Stack.Navigator
             screenOptions={{
-                headerShown: false,
+                headerShown: true,
                 gestureEnabled: true,
+                headerStyle: {
+                    backgroundColor: color.mainTheme,
+                },
             }}
         >
-            <Stack.Screen name="home" component={HomeScreen} />
+            <Stack.Screen name="home" component={HomeScreen}
+                // options={{title: 'home'}}
+                options={({ route }) => {
+                    return { // title: route.params.name,
+                        title: '',
+                        headerRight: () => (
+                            <Ionicons
+                                onPress={() => console.log("++ Press notofication icon ++")}
+                                name={"notifications-outline"}
+                                color={color.black}
+                                size={24}
+                            />
+                        ),
+                        headerHideShadow: true
+                    }
+                }}
+            />
             <Stack.Screen name="detail" component={DetailScreen} />
             <Stack.Screen name="postjob" component={PostJobScreen} />
             <Stack.Screen name="searchJob" component={SearchJobScreen} />

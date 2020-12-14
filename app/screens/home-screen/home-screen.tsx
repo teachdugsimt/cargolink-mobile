@@ -120,7 +120,7 @@ export const HomeScreen = observer((props) => {
     ]
     return (
         <>
-            <Header
+            {/* <Header
                 // headerTx="homeScreen.logout"
                 // leftIcon="back"
                 // onLeftPress={logout}
@@ -132,7 +132,7 @@ export const HomeScreen = observer((props) => {
                 rightIconName={"notifications-outline"}
                 rightIconSize={24}
                 rightIconColor={color.black}
-            />
+            /> */}
             <View testID="HomeScreen" style={ROOT_HOME}>
 
 

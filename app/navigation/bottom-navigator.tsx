@@ -48,7 +48,7 @@ export default function BottomNavigator() {
                 inactiveTintColor: color.grey,
             }}
         >
-            <Tab.Screen name="Home" component={HomeNavigator} />
+            <Tab.Screen name="Home" component={HomeNavigator}/>
             <Tab.Screen name="My Job" component={MyJobNavigator} />
             <Tab.Screen name="Favorite" component={FavoriteNavigator} />
             <Tab.Screen name="Profile" component={ProfileNavigator} />
