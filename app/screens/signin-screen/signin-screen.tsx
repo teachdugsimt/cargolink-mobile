@@ -5,6 +5,7 @@ import { Button, Icon } from "../../components"
 import { useNavigation } from '@react-navigation/native'
 import CountryPicker, { Country, CountryCode, DEFAULT_THEME } from 'react-native-country-picker-modal'
 import { color, spacing } from '../../theme'
+import { translate } from '../../i18n'
 
 const logo = require('./logo.png')
 
@@ -134,7 +135,7 @@ export const SigninScreen = observer(function SigninScreen() {
             style={MOBILE_INPUT}
             keyboardType={'numeric'}
             maxLength={10}
-            placeholder={'ใส่ข้อมูลเบอร์โทรศัพท์ของคุณ'}
+            placeholder={translate('signinScreen.enterYourPhoneNumber')} // ใส่ข้อมูลเบอร์โทรศัพท์ของคุณ
             onChangeText={text => onChangeText(text)}
             value={value}
           />
@@ -147,7 +148,7 @@ export const SigninScreen = observer(function SigninScreen() {
           textStyle={CONTINUE_TEXT}
           disabled={disabled}
           // tx="goHome"
-          text={'เข้าสู่ระบบ'}
+          text={translate('signinScreen.signin')}
           onPress={() => {
             setValue('')
             navigation.navigate("confirmCode")

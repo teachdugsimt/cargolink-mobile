@@ -1,11 +1,13 @@
 import React from 'react'
-import { Dimensions, Image, ImageBackground, ImageStyle, Text, TextStyle, View, ViewStyle } from 'react-native';
+import { Dimensions, Image, ImageBackground, ImageStyle, TextStyle, View, ViewStyle } from 'react-native';
 import { SearchItemProps } from './search-item.props';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { color, spacing } from '../../theme';
 import { Icon } from '../icon/icon';
 import { Button } from '../button/button';
 import { PostingBy } from '../posting-by/posting-by';
+import { Text } from '../text/text';
+import { translate } from '../../i18n';
 const truckBackImage = require("./truck-back.png")
 
 const FONT_SIZE = 20
@@ -98,10 +100,11 @@ const RECOMMENED: TextStyle = {
   backgroundColor: "#1b4262",
   paddingLeft: spacing[2],
   paddingRight: spacing[2],
-  paddingTop: spacing[1] / 2,
-  paddingBottom: spacing[1] / 2,
+  paddingTop: spacing[1],
+  paddingBottom: spacing[1],
   borderRadius: 5,
   color: color.textWhite,
+  fontSize: 12,
 }
 const BUTTOM_ROOT: ViewStyle = {
   flex: 1,
@@ -165,26 +168,51 @@ export function SearchItem(props: SearchItemProps) {
         <View style={CONTENT}>
           <View style={LOCATION}>
             <Icon icon="pinDropYellow" style={PIN_ICON} />
-            <Text style={LOCATION_TEXT}>จาก : {fromText}</Text>
+            <Text
+              text={`${translate('common.from')} :`} // จาก
+              style={LOCATION_TEXT}
+            />
+            <Text
+              text={fromText}
+              style={LOCATION_TEXT}
+            />
             <Icon />
           </View>
           <View style={LOCATION}>
             <Icon icon="pinDropGreen" style={PIN_ICON} />
-            <Text style={LOCATION_TEXT}>ถึง : {toText}</Text>
+            <Text
+              text={`${translate('common.to')} :`} // ถึง
+              style={LOCATION_TEXT}
+            />
+            <Text
+              text={toText}
+              style={LOCATION_TEXT}
+            />
           </View>
           <View style={CAR_DETAIL_ROOT}>
             <View style={CAR_DETAIL}>
-              <Text style={TEXT}>จำนวนรถบรรทุก : {count}</Text>
-              <Text style={TEXT}>{detail}</Text>
+              <Text
+                style={TEXT}
+                text={`${translate('jobDetailScreen.truckCount')} :`} // จำนวนรถบรรทุก
+              />
+              <Text style={TEXT} text={detail} />
             </View>
             <View style={PACKAGING}>
-              <Text style={TEXT}>บรรจุภัณฑ์ : {packaging}</Text>
+              <Text
+                style={TEXT}
+                text={`${translate('jobDetailScreen.packaging')} :`} // บรรจุภัณฑ์
+              />
+              <Text style={TEXT} text={packaging} />
             </View>
           </View>
         </View>
         <View style={CONTENT_RIGHT}>
           <Icon icon={isLike ? 'heartActive' : 'heartInactive'} style={HEART_ICON} />
-          {isRecommened && <Text style={RECOMMENED}>งานแนะนำ</Text>}
+          {isRecommened &&
+            <Text
+              style={RECOMMENED}
+              text={translate('jobDetailScreen.jobRecommend')} // งานแนะนำ
+            />}
         </View>
       </View>
       <View style={BUTTOM_ROOT}>
@@ -193,10 +221,10 @@ export function SearchItem(props: SearchItemProps) {
             testID="view-detail"
             style={BUTTON_VIEW}
             textStyle={TEXT_VIEW}
-            text={'ดูรายละเอียด'}
+            text={translate('jobDetailScreen.seeDetail')} // ดูรายละเอียด
             onPress={onPress}
           />
-          <AntDesign name="right" siez={FONT_SIZE_LARGE} color={color.disable} />
+          <AntDesign name="right" size={FONT_SIZE_LARGE} color={color.disable} />
         </View>
         <View style={ACCOUNT_ROOT}>
           <PostingBy {

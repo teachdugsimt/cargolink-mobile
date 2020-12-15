@@ -2,7 +2,9 @@
     "common": {
       "ok": "OK!",
       "cancel": "Cancel",
-      "back": "Back"
+      "back": "Back",
+      "from": "จาก",
+      "to": "ถึง"
     },
     "errors": {
       "invalidEmail": "Invalid email address."
@@ -23,7 +25,8 @@
     "signinScreen": {
       "signin": "เข้าสู่ระบบ",
       "otp": "otp",
-      "goHome": "ไปหน้าแรก"
+      "goHome": "ไปหน้าแรก",
+      "enterYourPhoneNumber": "ใส่ข้อมูลเบอร์โทรศัพท์ของคุณ"
     },
     "homeScreen": {
       "logout": "ออกจากระบบ"
@@ -34,6 +37,38 @@
     "storybook": {
       "placeholder": "แทนที่ข้อความ",
       "field": "Field"
+    },
+    "moreScreen": {
+      "security": "ความปลอดภัย",
+      "setYourPassword": "ตั้งค่ารหัสผ่านของคุณ",
+      "contactUs": "ติดต่อเรา",
+      "lineOfficialAccount": "Line Official Account",
+      "callCenter": "Call Center",
+      "moreMenu": "เมนูเพิ่มเติม",
+      "language": "ภาษา"
+    },
+    "searchBarComponent": {
+      "fullSearch": "ค้นหาโดยละเอียด"
+    },
+    "jobDetailScreen": {
+      "truckCount": "จำนวนรถบรรทุก",
+      "packaging": "บรรจุภัณฑ์",
+      "jobRecommend": "งานแนะนำ",
+      "seeDetail": "ดูรายละเอียด",
+      "productDetail": "ข้อมูลสินค้า",
+      "weightTon": "น้ำหนัก (ตัน)",
+      "call": "โทรติดต่อ"
+    },
+    "acceptPolicyScreen": {
+      "termAndCondition": "ข้อกำหนดและเงื่อนไข",
+      "accept": "ยอมรับเงื่อนไข",
+      "cancel": "ไม่ยอมรับเงื่อนไข"
+    },
+    "confirmCodeScreen": {
+      "codeWillExpire": "รหัสจะหมดอายุใน",
+      "codeExpired": "รหัสหมดอายุแล้ว",
+      "requestNewOTP": "ขอรับรหัส OTP ใหม่",
+      "confirmOTP": "ยืนยันรหัส OTP"
     }
   }
   
