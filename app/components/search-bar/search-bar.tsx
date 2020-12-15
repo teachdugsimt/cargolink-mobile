@@ -1,11 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react'
-import { Dimensions, ImageStyle, Text, TextStyle, TouchableHighlight, View, ViewStyle } from 'react-native';
+import { Dimensions, ImageStyle, TextStyle, TouchableHighlight, View, ViewStyle } from 'react-native';
 import { color, spacing } from '../../theme';
 import { Button } from '../button/button';
 import { Icon } from '../icon/icon';
 import { SearchBarProps } from './search.bar.props';
 import { Picker } from '@react-native-picker/picker';
+import { Text } from '../text/text';
+import { translate } from '../../i18n';
 
 interface LocationProps {
   label?: string
@@ -40,8 +42,12 @@ const ARROW_ICON: ImageStyle = {
   borderRadius: Math.round(Dimensions.get('window').width + Dimensions.get('window').height) / 2,
 }
 const LOCATION_TEXT: TextStyle = {
+  paddingLeft: spacing[2],
+  width: 45
+}
+const LOCATION_TEXT_RESULT: TextStyle = {
   paddingLeft: spacing[1],
-  width: '65%',
+  width: '75%',
 }
 const LINE_ICON_ROOT: ViewStyle = {
   paddingLeft: spacing[5],
@@ -123,9 +129,14 @@ export function SearchBar(props: SearchBarProps) {
     <View style={{ ...ROOT, ...style }}>
       <View style={LOCATION}>
         <Icon icon="pinDropYellow" style={PIN_ICON} />
+        <Text
+          text={translate('common.from')} // จาก
+          style={LOCATION_TEXT}
+        />
+        <Text text={' :'} />
         <Picker
           selectedValue={firstLocation}
-          style={{ ...LOCATION_TEXT, ...textStyle }}
+          style={{ ...LOCATION_TEXT_RESULT, ...textStyle }}
           onValueChange={(itemValue, itemIndex) =>
             setFirstLocation(itemValue.toString())
           }>
@@ -151,9 +162,14 @@ export function SearchBar(props: SearchBarProps) {
       </View>
       <View style={LOCATION}>
         <Icon icon="pinDropGreen" style={PIN_ICON} />
+        <Text
+          text={translate('common.to')} // ถึง
+          style={LOCATION_TEXT}
+        />
+        <Text text={' :'} />
         <Picker
           selectedValue={secondLocation}
-          style={{ ...LOCATION_TEXT, ...textStyle }}
+          style={{ ...LOCATION_TEXT_RESULT, ...textStyle }}
           onValueChange={(itemValue, itemIndex) =>
             setSecondLocation(itemValue.toString())
           }>
@@ -167,7 +183,7 @@ export function SearchBar(props: SearchBarProps) {
           testID="search-button"
           style={SEARCH_BOTTON}
           textStyle={SEARCH_TEXT}
-          text={'ค้นหาโดยละเอียด'}
+          text={translate('searchBarComponent.fullSearch')} // ค้นหาโดยละเอียด
           onPress={() => navigation.navigate(navigationTo)}
         />
       </View>

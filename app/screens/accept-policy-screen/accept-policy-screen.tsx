@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { observer } from "mobx-react-lite"
-import { Dimensions, ScrollView, Text, TextStyle, View, ViewStyle } from 'react-native';
-import { Button } from '../../components';
+import { Dimensions, ScrollView, TextStyle, View, ViewStyle } from 'react-native';
+import { Button, Text } from '../../components';
 import { color } from "../../theme"
 import { useNavigation } from '@react-navigation/native';
+import { translate } from '../../i18n';
 
 const ROOT: ViewStyle = {
   flex: 1,
@@ -66,7 +67,7 @@ export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
 
   return (
     <View style={ROOT}>
-      <Text style={TITLE}>Term and condition</Text>
+      <Text style={TITLE} text={translate('acceptPolicyScreen.termAndCondition')} />
       <ScrollView
         onScroll={({ nativeEvent }) => {
           if (isCloseToBottom(nativeEvent)) {
@@ -99,7 +100,7 @@ export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint alias atque soluta laboriosam debitis fugiat illum expedita non ratione labore magnam quod tempora ducimus, vero necessitatibus, odit nihil, quos earum!
           Lorem ipsum dolor sit, amet consectetur adipisicing elit. Explicabo dolor facere eos suscipit laudantium recusandae dignissimos tempora asperiores quis quaerat eligendi, voluptatem placeat eum vero sed inventore, similique necessitatibus iusto.
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Incidunt fuga id debitis cumque modi officiis minima eaque similique adipisci aliquam. Corporis minus accusamus mollitia architecto natus eum ducimus? Totam, aspernatur!
-      </Text>
+        </Text>
       </ScrollView>
       <View style={BUTTON_ROOT}>
         <Button
@@ -109,7 +110,7 @@ export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
             backgroundColor: color.primary
           }}
           textStyle={CONTINUE_TEXT}
-          text={'ยอมรับเงื่อนไข'}
+          text={translate('acceptPolicyScreen.accept')} // 'ยอมรับเงื่อนไข
           // disabled={disabled}
           onPress={() => navigation.navigate("home")}
         />
@@ -117,7 +118,7 @@ export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
           testID="continue-with-signin"
           style={CONTINUE_BUTTON}
           textStyle={CONTINUE_TEXT}
-          text={'ไม่ยอมรับเงื่อนไข'}
+          text={translate('acceptPolicyScreen.cancel')} // ไม่ยอมรับเงื่อนไข
           onPress={() => navigation.navigate("signin")}
         />
       </View>

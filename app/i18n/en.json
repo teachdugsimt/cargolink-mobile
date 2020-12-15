@@ -2,7 +2,9 @@
   "common": {
     "ok": "OK!",
     "cancel": "Cancel",
-    "back": "Back"
+    "back": "Back",
+    "from": "From",
+    "to": "To"
   },
   "errors": {
     "invalidEmail": "Invalid email address."
@@ -23,7 +25,8 @@
   "signinScreen": {
     "signin": "Login",
     "otp": "otp",
-    "goHome": "go home"
+    "goHome": "go home",
+    "enterYourPhoneNumber": "Enter your phone number"
   },
   "homeScreen": {
     "logout": "Log out"
@@ -41,5 +44,38 @@
   "storybook": {
     "placeholder": "Placeholder",
     "field": "Field"
+  },
+  "moreScreen": {
+    "security": "Security",
+    "changeYourPassword": "Change your password",
+    "changeYourPhone": "Change your phone",
+    "contactUs": "Contact Us",
+    "lineOfficialAccount": "Line Official Account",
+    "callCenter": "Call Center",
+    "moreMenu": "More menu",
+    "language": "Language"
+  },
+  "searchBarComponent": {
+    "fullSearch": "Full search"
+  },
+  "jobDetailScreen": {
+    "truckCount": "Truck count",
+    "packaging": "Packaging",
+    "jobRecommend": "Recommend",
+    "seeDetail": "See detail",
+    "productDetail": "Product Detail",
+    "weightTon": "Weight (Ton)",
+    "call": "Call"
+  },
+  "acceptPolicyScreen": {
+    "termAndCondition": "Term and condition",
+    "accept": "Accept",
+    "cancel": "Cancel"
+  },
+  "confirmCodeScreen": {
+    "codeWillExpire": "The code will expire",
+    "codeExpired": "The code has expired",
+    "requestNewOTP": "Request a new OTP",
+    "confirmOTP": "Confirm OTP"
   }
 }

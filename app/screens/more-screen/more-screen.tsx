@@ -1,10 +1,11 @@
 import React from "react"
-import { View, ViewStyle, TextStyle, TouchableOpacity } from "react-native"
+import { View, ViewStyle, TextStyle, TouchableOpacity, ScrollView, Dimensions } from "react-native"
 import { observer } from "mobx-react-lite"
 import { Button, Header, Text } from "../../components"
 import { color, spacing } from "../../theme"
 import { useNavigation } from "@react-navigation/native"
 import Icon from "react-native-vector-icons/Ionicons"
+import { translate } from "../../i18n"
 
 interface SubMenuProps {
     key?: string
@@ -39,7 +40,7 @@ const CONTAINER: ViewStyle = {
 }
 const COLUMN: ViewStyle = {
     flex: 1,
-    justifyContent: 'flex-end'
+    justifyContent: 'center'
 }
 const TOPIC: TextStyle = {
     ...BOLD,
@@ -48,7 +49,6 @@ const TOPIC: TextStyle = {
 const MENU: ViewStyle = {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    // backgroundColor: color.error,
     paddingTop: spacing[2],
     paddingBottom: spacing[2],
     borderBottomWidth: 1,
@@ -66,29 +66,33 @@ const BUTTON_TEXT: TextStyle = {
 const MENUS: Array<MenuProps> = [
     {
         key: 'security',
-        topic: 'ความปลอดภัย',
+        topic: translate('moreScreen.security'), // 'ความปลอดภัย'
         subMenu: [{
             key: 'set-password',
-            label: 'ตั้งค่ารหัสผ่านของคุณ',
+            label: translate('moreScreen.changeYourPhone'), // 'ตั้งค่ารหัสผ่านของคุณ'
             icon: 'chevron-forward'
         }]
     },
     {
         key: 'contact-us',
-        topic: 'ติดต่อเรา',
+        topic: translate('moreScreen.contactUs'), // 'ติดต่อเรา'
         subMenu: [
             {
                 key: 'line-official-account',
-                label: 'Line Official Account',
+                label: translate('moreScreen.lineOfficialAccount'), // 'Line Official Account'
                 icon: 'chevron-forward'
             },
             {
                 key: 'call-center',
-                label: 'Call Center',
+                label: translate('moreScreen.callCenter'), // 'Call Center'
                 icon: 'chevron-forward'
             },
         ]
     },
+    {
+        key: 'language',
+        topic: translate('moreScreen.language'),
+    }
 ]
 
 export const MoreScreen = observer(function MoreScreen() {
@@ -102,13 +106,17 @@ export const MoreScreen = observer(function MoreScreen() {
                 headerTx="searchCarScreen.searchCar"
                 style={HEADER}
                 titleStyle={HEADER_TITLE}
-                headerText={"เมนูเพิ่มเติม"}
+                headerText={translate('moreScreen.moreMenu')} // เมนูเพิ่มเติม
                 leftIconReal={true}
                 leftIconName={"chevron-back"}
                 leftIconSize={24}
                 onLeftPress={goBack}
             />
 
+            {/* <ScrollView
+                    style={{ height: Dimensions.get("window").height, }}
+                    scrollEventThrottle={400}
+                > */}
             <View style={CONTAINER}>
 
                 {MENUS.map(menu => {
@@ -118,7 +126,7 @@ export const MoreScreen = observer(function MoreScreen() {
                                 text={menu.topic}
                                 style={TOPIC}
                             />
-                            {menu.subMenu.map(item => {
+                            {menu.subMenu && menu.subMenu.map(item => {
                                 return (
                                     <TouchableOpacity key={item.key} style={MENU} onPress={() => console.log('click me')}>
                                         <Text
@@ -132,17 +140,20 @@ export const MoreScreen = observer(function MoreScreen() {
                     )
                 })}
 
-                <View style={COLUMN}>
+                <View style={{ ...COLUMN, justifyContent: 'flex-end' }}>
                     <Button
                         testID="continue-with-signin"
                         style={BUTTON}
                         textStyle={BUTTON_TEXT}
-                        text={'ออกจากระบบ'}
-                        onPress={() => navigation.navigate("signin")}
+                        text={translate('homeScreen.logout')} // 'ออกจากระบบ'
+                        onPress={() => {
+                            console.log('Click me')
+                            navigation.navigate("signin")
+                        }}
                     />
                 </View>
             </View>
-
+            {/* </ScrollView> */}
         </View>
     )
 })

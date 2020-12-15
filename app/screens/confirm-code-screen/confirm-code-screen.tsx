@@ -6,10 +6,11 @@ import {
   useBlurOnFulfill,
   useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
-import { Dimensions, SafeAreaView, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
-import { Button, CountDown } from '../../components';
+import { Dimensions, SafeAreaView, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { Button, CountDown, Text } from '../../components';
 import { color } from '../../theme';
 import { useNavigation } from '@react-navigation/native';
+import { translate } from '../../i18n';
 
 const ROOT: ViewStyle = {
   // flex: 1,
@@ -191,7 +192,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
       />
       <View testID="InformationCodeRoot" style={CODE_INFORMATION_ROOT}>
         <View style={CODE_INFORMATION}>
-          <Text>รหัสจะหมดอายุใน</Text>
+          <Text text={translate('confirmCodeScreen.codeWillExpire')} />
           {isShow ?
             <CountDown
               until={MINUTE * 1 + 30}
@@ -210,11 +211,11 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
           <Text style={CODE_REF}>(Ref: {'ABD1234'})</Text>
         </View>
         <View style={{ flex: 1, alignItems: 'center' }}>
-          {isExpired && <Text style={TEXT_EXPIRE}>รหัสหมดอายุแล้ว</Text>}
+          {isExpired && <Text style={TEXT_EXPIRE} text={translate('confirmCodeScreen.codeExpired')} />}
         </View>
         <View style={RESEND_CODE_ROOT}>
           <TouchableOpacity disabled={!isExpired} onPress={onResendCode}>
-            <Text style={RESEND_CODE_TEXT}>ขอรับรหัส OTP ใหม่</Text>
+            <Text style={RESEND_CODE_TEXT} text={translate('confirmCodeScreen.requestNewOTP')} />
           </TouchableOpacity>
         </View>
       </View>
@@ -227,7 +228,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
           }}
           textStyle={CONTINUE_TEXT}
           disabled={disabled}
-          text={'ยืนยันรหัส OTP'}
+          text={translate('confirmCodeScreen.confirmOTP')} // ยืนยันรหัส OTP
           onPress={() => {
             clearState()
             navigation.navigate("acceptPolicy")

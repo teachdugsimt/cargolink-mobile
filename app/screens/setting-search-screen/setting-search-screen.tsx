@@ -74,7 +74,7 @@ export const SettingSearchScreen = observer(function SettingSearchScreen() {
         titleStyle={HEADER_TITLE}
         headerText={"ตั้งค่าการค้นหา"}
         leftIconReal={true}
-        leftIconName={"back"}
+        leftIconName={"chevron-back"}
         rightIconText={'ล้าง'}
         onLeftPress={goBack}
       />

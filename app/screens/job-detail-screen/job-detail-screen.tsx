@@ -4,6 +4,7 @@ import { Image, ImageStyle, ScrollView, TextStyle, View, ViewStyle } from 'react
 import { Button, Header, Icon, PostingBy, Text } from '../../components'
 import { useNavigation } from '@react-navigation/native'
 import { color, spacing } from '../../theme'
+import { translate } from '../../i18n'
 
 const FONT_SIZE_SMALL = 15
 const FONT_SIZE_LARGE = 25
@@ -46,7 +47,7 @@ const IMAGE: ImageStyle = {
 }
 const PRODUCT_ROOT: ViewStyle = {
   display: 'flex',
-  flexDirection: 'row',
+  flexDirection: 'column',
   padding: spacing[4],
   ...BACKGROUND_COLOR,
   ...MARGIN_BOTTOM,
@@ -59,13 +60,19 @@ const ROW: ViewStyle = {
   flexDirection: 'row',
   justifyContent: 'space-between'
 }
+const PRODUCT_ROW: ViewStyle = {
+  flex: 1,
+  flexDirection: "row",
+}
 const TEXT_DETAIL: TextStyle = {
   padding: spacing[2]
 }
 const ONWER_ROOT: ViewStyle = {
   ...BACKGROUND_COLOR,
-  paddingTop: spacing[4],
-  padding: spacing[4] + spacing[2],
+  paddingTop: spacing[3],
+  paddingBottom: spacing[3],
+  paddingLeft: spacing[4] + spacing[2],
+  paddingRight: spacing[4] + spacing[2],
   display: 'flex',
   marginBottom: spacing[6]
 }
@@ -119,6 +126,7 @@ const DATA = {
   ratingCount: '122',
   isCrown: true,
   isRecommened: true,
+  weigh: 20,
   logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
 }
 
@@ -138,6 +146,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     rating,
     ratingCount,
     logo,
+    weigh
   } = DATA
 
   const imageUrl = 'https://www.kindpng.com/picc/m/259-2598503_box-truck-png-faw-trucks-box-truck-png.png'
@@ -173,29 +182,57 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           </View>
           <View style={LOCATION}>
             <Icon icon="pinDropYellow" style={PIN_ICON} />
-            <Text style={LOCATION_TEXT}>จาก : {fromText}</Text>
-            <Icon />
+            <Text
+              text={`${translate('common.from')} :`} // จาก
+              style={LOCATION_TEXT}
+            />
+            <Text
+              text={fromText}
+              style={LOCATION_TEXT}
+            />
           </View>
           <View style={LOCATION}>
             <Icon icon="pinDropGreen" style={PIN_ICON} />
-            <Text style={LOCATION_TEXT}>ถึง : {toText}</Text>
+            <Text
+              text={`${translate('common.to')} :`} // ถึง
+              style={LOCATION_TEXT}
+            />
+            <Text
+              text={toText}
+              style={LOCATION_TEXT}
+            />
           </View>
         </View>
         <View style={PRODUCT_ROOT}>
-          <View style={COLUMN}>
-            <Text style={{ ...TEXT_DETAIL, color: color.primary }}>ข้อมูลสินค้า</Text>
-            <Text style={TEXT_DETAIL}>จำนวนรถบรรทุก : {count}</Text>
-            <Text style={TEXT_DETAIL}>น้ำหนัก (ตัน) : 20</Text>
+          <View style={PRODUCT_ROW}>
+            <Text
+              style={{ ...TEXT_DETAIL, color: color.primary }}
+              text={translate('jobDetailScreen.productDetail')} // ข้อมูลสินค้า
+            />
           </View>
-          <View style={COLUMN}>
-            <Text style={TEXT_DETAIL}>อัตราค่าขนส่ง</Text>
-            <Text style={TEXT_DETAIL}>บรรจุภัณฑ์ : {packaging}</Text>
-            <Text style={TEXT_DETAIL}>{detail}</Text>
+          <View style={PRODUCT_ROW}>
+            <View style={COLUMN}>
+              <Text
+                style={TEXT_DETAIL}
+                text={`${translate('jobDetailScreen.truckCount')} : ${count}`} // จำนวนรถบรรทุก
+              />
+              <Text
+                style={TEXT_DETAIL}
+                text={`${translate('jobDetailScreen.weightTon')} : ${weigh}`} // น้ำหนัก (ตัน)
+              />
+            </View>
+            <View style={COLUMN}>
+              <Text
+                style={TEXT_DETAIL}
+                text={`${translate('jobDetailScreen.packaging')} : ${packaging}`}
+              />
+              <Text style={TEXT_DETAIL} text={detail} />
+            </View>
           </View>
         </View>
         <View style={ONWER_ROOT}>
-          <View style={{ ...ROW, marginBottom: spacing[7] }}>
-            <Text style={{ color: color.disable, fontSize: 12 }}>โพสโดย</Text>
+          <View style={ROW}>
+            <Text style={{ color: color.disable }}>โพสโดย</Text>
             <PostingBy {
               ...{
                 postBy,
@@ -207,11 +244,6 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
               }
             } />
           </View>
-          <View style={ROW}>
-            <Text style={TEXT_REVIEW}>เป็นสมาชิก</Text>
-            <Text style={TEXT_REVIEW}>ปิดดีลสำเร็จ</Text>
-            <Text style={TEXT_REVIEW}>รีวิว 5 ดาว</Text>
-          </View>
         </View>
       </ScrollView>
 
@@ -220,7 +252,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           testID="call-with-owner"
           style={CALL_BUTTON}
           textStyle={CALL_TEXT}
-          text={'โทรติดต่อ'}
+          text={translate('jobDetailScreen.call')} // โทรติดต่อ
           onPress={() => navigation.navigate("acceptPolicy")}
         />
       </View>
