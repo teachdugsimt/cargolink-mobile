@@ -44,7 +44,13 @@
   "uploadVehicleScreen": {
     "addVehicle": "Add Vehicle",
     "selectVehicleType": "Select your vehicle type",
-    "haveDump": "Vehicle have dump ? "
+    "haveDump": "Vehicle have dump ? ",
+    "heightVehicle": "vehicle height (meters)",
+    "detailVehicle": "Vehicle detail",
+    "atLeastOneRegister": "Use at least 1 register vehicle",
+    "carRegistration": "Car registration",
+    "addVehicleRegistration": "Add vehicle registration",
+    "uploadVehicleImage": "Upload vehicle image"
   },
   "profileScreen": {
     "profile": "Profile",

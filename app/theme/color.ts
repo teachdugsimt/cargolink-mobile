@@ -72,4 +72,5 @@ export const color = {
   lightWeightGrey: palette.lightweightGray,
   snow: "#FFFFFF",
   black: "#000000",
+  darkGreen: palette.darkGreen,
 }
