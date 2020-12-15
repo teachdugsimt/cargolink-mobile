@@ -95,6 +95,10 @@ const DATA = [
 export const MyVehicle = observer(function MyVehicle() {
   const navigation = useNavigation()
 
+  const onPress = (value) => {
+    navigation.navigate('vehicleInformation')
+  }
+
   return (
     <View style={CONTAINER}>
 
@@ -106,7 +110,7 @@ export const MyVehicle = observer(function MyVehicle() {
         scrollEventThrottle={400}
       >
         {DATA && DATA.map((item, index) => {
-          return <VehicleItem key={index} {...item} onPress={() => console.log('Click me!!')} />
+          return <VehicleItem key={index} {...item} onPress={onPress} />
         })}
 
       </ScrollView>
@@ -117,7 +121,7 @@ export const MyVehicle = observer(function MyVehicle() {
         textStyle={TEXT_ADD}
         text={translate('myVehicleScreen.addNewCar')} // เพิ่มรถของฉัน
         // disabled={disabled}
-        onPress={() => navigation.navigate("home")}
+        onPress={() => navigation.navigate("uploadVehicle")}
       />
     </View>
   )
