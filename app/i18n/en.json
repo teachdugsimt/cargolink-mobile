@@ -95,5 +95,10 @@
     "codeExpired": "The code has expired",
     "requestNewOTP": "Request a new OTP",
     "confirmOTP": "Confirm OTP"
+  },
+  "myVehicleScreen": {
+    "informationAt": "Information at",
+    "type": "Type",
+    "addNewCar": "Add new car"
   }
 }

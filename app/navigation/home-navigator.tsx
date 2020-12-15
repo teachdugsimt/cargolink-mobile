@@ -11,7 +11,7 @@ import { Icon, Text, HeaderCenter, HeaderLeft, HeaderRight } from "../components
 import { color, images } from '../theme'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import {
-    DetailScreen, HomeScreen, JobDetailScreen, PostJobScreen, SearchCarScreen, SearchJobScreen, SettingSearchScreen,
+    DetailScreen, HomeScreen, JobDetailScreen, MyVehicle, PostJobScreen, SearchCarScreen, SearchJobScreen, SettingSearchScreen,
     UploadVehicleScreen
 } from "../screens"
 import { translate } from "../i18n"
@@ -36,6 +36,7 @@ export type PrimaryHomeParamList = {
     jobDetail: undefined
     searchCar: undefined
     uploadVehicle: undefined
+    myVehicle: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -123,6 +124,8 @@ export function HomeNavigator() {
                     headerCenter: () => <HeaderCenter tx={"uploadVehicleScreen.addVehicle"} />,
                     headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
                 })} />
+
+            <Stack.Screen name="myVehicle" component={MyVehicle} />
         </Stack.Navigator>
     )
 }
