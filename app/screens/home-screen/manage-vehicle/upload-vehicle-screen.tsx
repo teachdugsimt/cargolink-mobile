@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { View, ViewStyle, TextStyle, FlatList, Platform, ScrollView, ViewToken, Switch, StyleSheet, Dimensions } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
-import { Header, Text, TextInputTheme, Button } from "../../../components"
+import { Header, Text, TextInputTheme, Button, UploadVehicle } from "../../../components"
 import { spacing, color, typography } from "../../../theme"
 import { AddJobElement } from '../../../components'
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -140,7 +140,8 @@ export const UploadVehicleScreen = observer(function UploadVehicleScreen() {
                         <View style={WRAPPER_TOP}>
                             <Text tx={"uploadVehicleScreen.uploadVehicleImage"} style={{ ...TITLE_TOPIC, ...MARGIN_TOP_EXTRA }} />
                             <View style={MARGIN_TOP_EXTRA}>
-                                
+                                <UploadVehicle />
+                                <UploadVehicle />
                             </View>
                         </View>
                     </View>

@@ -50,7 +50,8 @@
     "atLeastOneRegister": "Use at least 1 register vehicle",
     "carRegistration": "Car registration",
     "addVehicleRegistration": "Add vehicle registration",
-    "uploadVehicleImage": "Upload vehicle image"
+    "uploadVehicleImage": "Upload vehicle image",
+    "exampleImageFront": "example image frontside"
   },
   "profileScreen": {
     "profile": "Profile",

@@ -1,6 +1,7 @@
 import React from "react"
-import { TouchableOpacity, View, ViewStyle, Image, ImageStyle } from "react-native"
-import { color, spacing, typography } from "../../theme"
+import { TouchableOpacity, View, ViewStyle, Image, ImageStyle, TextStyle } from "react-native"
+import { color, images, spacing, typography } from "../../theme"
+import { Text } from '../text/text'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 /**
  * A component which has a label and an input together.
@@ -35,8 +36,13 @@ const IMAGE_PLACHOLDER: ImageStyle = {
     width: 100,
     height: 100
 }
-export function TextInputTheme(props: any) {
-    const { forwardedRef, inputStyle, actualPlaceholder, ...rest } = props
+const CONTENT_TEXT: TextStyle = {
+    fontFamily: 'Kanit-Medium',
+    color: color.grey,
+    fontSize: typography.title
+}
+export function UploadVehicle(props: any) {
+    const {  } = props
     return (
         <View style={ROOT_STYLE}>
             <TouchableOpacity style={UPLOAD_BUTTON}>
@@ -46,7 +52,8 @@ export function TextInputTheme(props: any) {
                     </View>
 
                     <View style={IMAGE_AND_TEXT}>
-                        {/* <Image source={} style={IMAGE_PLACHOLDER}></Image> */}
+                        <Image source={images.truck1} style={IMAGE_PLACHOLDER}></Image>
+                        <Text tx={"uploadVehicleScreen.exampleImageFront"} style={CONTENT_TEXT} />
                     </View>
                 </View>
             </TouchableOpacity>
