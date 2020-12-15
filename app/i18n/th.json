@@ -72,7 +72,8 @@
     },
     "myVehicleScreen": {
       "informationAt": "ข้อมูล ณ วันที่",
-      "type": "ประเภท"
+      "type": "ประเภท",
+      "addNewCar": "เพิ่มรถของฉัน"
     }
   }
   

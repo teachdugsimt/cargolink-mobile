@@ -32,7 +32,19 @@
     "logout": "Log out"
   },
   "postJobScreen": {
-    "postjob": "post job"
+    "postjob": "post job",
+    "vehicleDetailAndProduct": "car&product detail",
+    "getProductLocation": "get product location",
+    "checkInformation": "check detail",
+    "success": "success"
+  },
+  "searchJobScreen": {
+    "searchJob": "search job"
+  },
+  "uploadVehicleScreen": {
+    "addVehicle": "Add Vehicle",
+    "selectVehicleType": "Select your vehicle type",
+    "haveDump": "Vehicle have dump ? "
   },
   "profileScreen": {
     "profile": "Profile",
@@ -80,6 +92,7 @@
   },
   "myVehicleScreen": {
     "informationAt": "Information at",
-    "type": "Type"
+    "type": "Type",
+    "addNewCar": "Add new car"
   }
 }

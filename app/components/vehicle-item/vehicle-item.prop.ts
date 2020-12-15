@@ -17,6 +17,8 @@ export interface VehicleItemProps {
    * name of image
    */
   image?: string
+
+  isChecked?: boolean
   /**
    * style of container
    */
