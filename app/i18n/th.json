@@ -69,6 +69,10 @@
       "codeExpired": "รหัสหมดอายุแล้ว",
       "requestNewOTP": "ขอรับรหัส OTP ใหม่",
       "confirmOTP": "ยืนยันรหัส OTP"
+    },
+    "myVehicleScreen": {
+      "informationAt": "ข้อมูล ณ วันที่",
+      "type": "ประเภท"
     }
   }
   

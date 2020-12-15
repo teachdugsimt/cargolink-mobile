@@ -18,3 +18,5 @@ export * from "./search-job-screen/search-job-screen"
 export * from "./setting-search-screen/setting-search-screen"
 export * from "./job-detail-screen/job-detail-screen"
 export * from "./search-car-screen/search-car-screen"
+
+export * from "./my-vehicle-screen/my-vehicle-screen"
