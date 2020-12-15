@@ -1,9 +1,10 @@
 import React from "react"
-import { View, ViewStyle, TextStyle, FlatList } from "react-native"
+import { View, ViewStyle, TextStyle, FlatList, Platform } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
 import { Header, Text } from "../../../components"
 import { spacing, color } from "../../../theme"
+import { AddJobElement } from '../../../components'
 // const bowserLogo = require("./bowser.png")
 
 const FULL: ViewStyle = { flex: 1 }
@@ -25,29 +26,34 @@ const HEADER_TITLE: TextStyle = {
     color: color.black
 }
 
-export const PostJobScreen = observer(function PostJobScreen() {
-    const navigation = useNavigation()
-    const goBack = () => navigation.goBack()
+const TOP_VIEW: ViewStyle = {
+    flex: Platform.OS == "ios" ? 1 : 1,
+    backgroundColor: color.mainTheme,
+    justifyContent: 'center',
+}
+const BOTTOM_VIEW: ViewStyle = {
+    flex: 5,
+}
 
+export const PostJobScreen = observer(function PostJobScreen() {
+    // const navigation = useNavigation()
+
+    const data = [
+        { no: 1, id: 1, name: 'postJobScreen.vehicleDetailAndProduct', active: true },
+        { no: 2, id: 2, name: 'postJobScreen.getProductLocation', active: false },
+        { no: 3, id: 3, name: 'postJobScreen.checkInformation', active: false },
+        { no: 4, id: 4, name: 'postJobScreen.success', active: false },
+    ]
     return (
         <View testID="PostJobScreen" style={FULL}>
-            <Header
-                headerTx="postJobScreen.postjob"
-                // leftIcon="back"
-                leftIconReal={true}
-                leftIconName={"chevron-back-outline"}
-                leftIconSize={24}
-                leftIconColor={color.black}
-                onLeftPress={goBack}
-                style={HEADER}
-                titleStyle={HEADER_TITLE}
-            />
-            <Text style={{ color: 'red' }}>POST JOB SSS+ View</Text>
-            <Text style={{ color: 'red' }}>POST JOB SSS+ View</Text>
-            <Text style={{ color: 'red' }}>POST JOB SSS+ View</Text>
-            <Text style={{ color: 'red' }}>POST JOB SSS+ View</Text>
-            <Text style={{ color: 'red' }}>POST JOB SSS+ View</Text>
+            <View style={TOP_VIEW}>
+                <AddJobElement data={data}/>
+            </View>
+            <View style={BOTTOM_VIEW}>
 
+            </View>
         </View>
     )
 })
+
+

@@ -109,7 +109,7 @@ export const HomeScreen = observer((props) => {
     const dataTest: List[] = [
         {
             title: "ผู้ให้บริการขนส่ง / Carriers",
-            data: [{ id: 1, name: 'จัดการรถ', onPressButton: () => console.log("Press button 1.1"), img: images.truck1 },
+            data: [{ id: 1, name: 'จัดการรถ', onPressButton: () => navigation.navigate("uploadVehicle"), img: images.truck1 },
             { id: 2, name: 'หางาน', onPressButton: () => navigation.navigate("searchJob"), img: images.pinbox }]
         },
         {

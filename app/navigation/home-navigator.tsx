@@ -5,12 +5,16 @@
  * You'll likely spend most of your time in this file.
  */
 import React from "react"
-import { ViewStyle, Text } from 'react-native'
+import { ViewStyle, View, Image } from 'react-native'
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
-import { Icon } from "../components"
-import { color } from '../theme'
+import { Icon, Text, HeaderCenter, HeaderLeft, HeaderRight } from "../components"
+import { color, images } from '../theme'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { DetailScreen, HomeScreen, JobDetailScreen, PostJobScreen, SearchCarScreen, SearchJobScreen, SettingSearchScreen } from "../screens"
+import {
+    DetailScreen, HomeScreen, JobDetailScreen, PostJobScreen, SearchCarScreen, SearchJobScreen, SettingSearchScreen,
+    UploadVehicleScreen
+} from "../screens"
+import { translate } from "../i18n"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
  * as well as what properties (if any) they might take when navigating to them.
@@ -31,6 +35,7 @@ export type PrimaryHomeParamList = {
     settingSearch: undefined
     jobDetail: undefined
     searchCar: undefined
+    uploadVehicle: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -45,6 +50,11 @@ const SHADOW: ViewStyle = {
     shadowRadius: 2,
     elevation: 5,
 }
+
+const HEADER_STYLE: ViewStyle = {
+    width: '100%'
+}
+
 export function HomeNavigator() {
 
     return (
@@ -55,13 +65,15 @@ export function HomeNavigator() {
                 headerStyle: {
                     backgroundColor: color.mainTheme,
                 },
+                headerTitleStyle: {
+                    fontFamily: 'Kanit-Medium',
+                    fontSize: 20
+                },
             }}
         >
             <Stack.Screen name="home" component={HomeScreen}
-                // options={{title: 'home'}}
-                options={({ route }) => {
+                options={({ navigation, route }) => {
                     return { // title: route.params.name,
-                        title: '',
                         headerRight: () => (
                             <Ionicons
                                 onPress={() => console.log("++ Press notofication icon ++")}
@@ -70,22 +82,47 @@ export function HomeNavigator() {
                                 size={24}
                             />
                         ),
+                        headerTitle: '',
                         headerHideShadow: true
                     }
                 }}
             />
             <Stack.Screen name="detail" component={DetailScreen} />
-            <Stack.Screen name="postjob" component={PostJobScreen} />
+
+
+
+
+            <Stack.Screen name="postjob" component={PostJobScreen}
+                options={({ navigation, route }) => ({
+                    // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
+                    headerCenter: () => <HeaderCenter tx={"postJobScreen.postjob"} />,
+                    headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+                    headerHideShadow: true
+                })}
+
+            />
+
+
+
+
             <Stack.Screen name="searchJob"
                 component={SearchJobScreen}
-                options={{
-                    headerTitle: "XXXXX",
-                    headerBackTitle: "Back",
-                    headerBackTitleVisible: false
-                }} />
+                options={({ navigation, route }) => ({
+                    // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
+                    headerCenter: () => <HeaderCenter tx={"searchJobScreen.searchJob"} />,
+                    headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+                    headerHideShadow: true
+                })} />
             <Stack.Screen name="settingSearch" component={SettingSearchScreen} />
             <Stack.Screen name="jobDetail" component={JobDetailScreen} />
             <Stack.Screen name="searchCar" component={SearchCarScreen} />
+
+            <Stack.Screen name="uploadVehicle" component={UploadVehicleScreen}
+                options={({ navigation, route }) => ({
+                    // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
+                    headerCenter: () => <HeaderCenter tx={"uploadVehicleScreen.addVehicle"} />,
+                    headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+                })} />
         </Stack.Navigator>
     )
 }

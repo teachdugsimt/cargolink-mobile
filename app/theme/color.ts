@@ -65,9 +65,11 @@ export const color = {
    */
   textBlack: palette.black,
 
+  background: palette.lighterGrey,
   mainTheme: palette.yellow,
 
   grey: "grey",
+  lightWeightGrey: palette.lightweightGray,
   snow: "#FFFFFF",
   black: "#000000",
 }
