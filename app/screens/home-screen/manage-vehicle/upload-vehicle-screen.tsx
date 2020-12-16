@@ -10,9 +10,9 @@ import { spacing, color, typography, images } from "../../../theme"
 import RNPickerSelect from 'react-native-picker-select';
 import { translate } from "../../../i18n"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import FetchStore from '../../../store/fetch-store/fetch-store'
-import { TestApi } from '../../../services/api'
-const apiUsers = new TestApi()
+// import FetchStore from '../../../store/fetch-store/fetch-store'
+// import { TestApi } from '../../../services/api'
+// const apiUsers = new TestApi()
 
 
 const vehicleList = [
@@ -117,7 +117,6 @@ export const UploadVehicleScreen = observer(function UploadVehicleScreen() {
     const [carRegistration, setcarRegistration] = useState('')
     const [province, setprovince] = useState(null)
     const [region, setregion] = useState(null)
-    const [country, setcountry] = useState('')
     
     // useEffect(() => {
     //     // FetchStore.getUserRequest()
