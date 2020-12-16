@@ -4,7 +4,8 @@
     "cancel": "Cancel",
     "back": "Back",
     "from": "From",
-    "to": "To"
+    "to": "To",
+    "confirm": "confirm"
   },
   "errors": {
     "invalidEmail": "Invalid email address."
@@ -51,7 +52,10 @@
     "carRegistration": "Car registration",
     "addVehicleRegistration": "Add vehicle registration",
     "uploadVehicleImage": "Upload vehicle image",
-    "exampleImageFront": "example image frontside"
+    "exampleImageFront": "example image frontside",
+    "workZone": "Work zone",
+    "region": "region",
+    "province": "province"
   },
   "profileScreen": {
     "profile": "Profile",

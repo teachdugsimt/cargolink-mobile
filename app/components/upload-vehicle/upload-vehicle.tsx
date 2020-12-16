@@ -21,7 +21,8 @@ const UPLOAD_VIEW: ViewStyle = {
     borderWidth: 2,
     borderColor: color.grey,
     borderRadius: 10,
-    overflow: 'hidden'
+    overflow: 'hidden',
+    borderStyle: 'dashed'
 }
 const VIEW_ICON: ViewStyle = {
     position: 'absolute',
@@ -31,6 +32,7 @@ const VIEW_ICON: ViewStyle = {
 const IMAGE_AND_TEXT: ViewStyle = {
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 10
 }
 const IMAGE_PLACHOLDER: ImageStyle = {
     width: 100,
@@ -39,20 +41,21 @@ const IMAGE_PLACHOLDER: ImageStyle = {
 const CONTENT_TEXT: TextStyle = {
     fontFamily: 'Kanit-Medium',
     color: color.grey,
-    fontSize: typography.title
+    fontSize: typography.content,
+    paddingTop: 5
 }
 export function UploadVehicle(props: any) {
-    const {  } = props
+    const { uploadStyle, source, imageStyle } = props
     return (
-        <View style={ROOT_STYLE}>
+        <View style={{ ...ROOT_STYLE, ...uploadStyle }}>
             <TouchableOpacity style={UPLOAD_BUTTON}>
                 <View style={UPLOAD_VIEW}>
                     <View style={VIEW_ICON}>
-                        <Ionicons name={"camera"} size={22} color={color.grey} />
+                        <Ionicons name={"camera-outline"} size={22} color={color.grey} />
                     </View>
 
                     <View style={IMAGE_AND_TEXT}>
-                        <Image source={images.truck1} style={IMAGE_PLACHOLDER}></Image>
+                        <Image source={source} style={{ ...IMAGE_PLACHOLDER, ...imageStyle }} resizeMode={'stretch'}></Image>
                         <Text tx={"uploadVehicleScreen.exampleImageFront"} style={CONTENT_TEXT} />
                     </View>
                 </View>
