@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { View, ViewStyle, TextStyle, Image, ImageStyle, Dimensions, Platform } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
@@ -8,6 +8,19 @@ import { spacing } from "../../theme"
 import { useStores } from "../../models/root-store/root-store-context";
 import BookStore from '../../store/test-store/book-store'
 import { GridView } from '../../components/home-element/home-element'
+
+import { createServer } from "miragejs"
+createServer({
+    routes() {
+        this.get("https://jsonplaceholder.typicode.com/todos/", () => [
+            { id: "1", name: "Luke" },
+            { id: "2", name: "Leia" },
+            { id: "3", name: "Anakin" },
+        ])
+    },
+})
+
+
 // const bowserLogo = require("./bowser.png")
 const { width, height } = Dimensions.get('window')
 const FULL: ViewStyle = { flex: 1 }
@@ -66,6 +79,27 @@ export const HomeScreen = observer((props) => {
 
     const navigation = useNavigation()
     const logout = () => navigation.navigate("signin")
+
+
+    const [users, setUsers] = useState([])
+
+    useEffect(() => {
+        fetch("https://jsonplaceholder.typicode.com/todos/")
+            .then((response) => response.json())
+            .then((json) => {
+                console.log("JSON DATA HOME SCREEN :: ", json)
+                console.log("JSON DATA HOME SCREEN :: ", json)
+                console.log("JSON DATA HOME SCREEN :: ", json)
+                setUsers(json)
+            })
+    }, [])
+
+    useEffect(() => {
+        if (users && users.length)
+            console.log("User HERE :: ", users)
+    }, [users])
+
+
 
     useEffect(() => {
         signinStore.addCartItem({

@@ -5,6 +5,7 @@
  * will use once logged in.
  */
 import React from "react"
+import { StatusBar } from 'react-native'
 import { NavigationContainer, NavigationContainerRef } from "@react-navigation/native"
 
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
@@ -77,6 +78,7 @@ export const RootNavigator = React.forwardRef<
 >((props, ref) => {
   return (
     <NavigationContainer {...props} ref={ref}>
+      <StatusBar translucent barStyle="dark-content" animated={true} />
       <RootStack />
     </NavigationContainer>
   )
