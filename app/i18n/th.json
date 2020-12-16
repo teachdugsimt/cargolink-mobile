@@ -1,79 +1,110 @@
 {
-    "common": {
-      "ok": "OK!",
-      "cancel": "Cancel",
-      "back": "Back",
-      "from": "จาก",
-      "to": "ถึง"
-    },
-    "errors": {
-      "invalidEmail": "Invalid email address."
-    },
-    "welcomeScreen": {
-      "poweredBy": "POWERED BY BOWSER",
-      "readyForLaunch": "Ready for launch.",
-      "continue": "CONTINUE"
-    },
-    "demoScreen": {
-      "howTo": "HOW TO",
-      "title": "What’s In This Stack?",
-      "tagLine": "Congratulations, you’ve got a very advanced React Native app template here.  Take advantage of this boilerplate!",
-      "reactotron": "Demo Reactotron",
-      "androidReactotronHint": "If this doesn't work, ensure the Reactotron desktop app is running, run adb reverse tcp:9090 tcp:9090 from your terminal, and reload the app.",
-      "iosReactotronHint": "If this doesn't work, ensure the Reactotron desktop app is running and reload app."
-    },
-    "signinScreen": {
-      "signin": "เข้าสู่ระบบ",
-      "otp": "otp",
-      "goHome": "ไปหน้าแรก",
-      "enterYourPhoneNumber": "ใส่ข้อมูลเบอร์โทรศัพท์ของคุณ"
-    },
-    "homeScreen": {
-      "logout": "ออกจากระบบ"
-    },
-    "postJobScreen": {
-      "postjob": "หางาน"
-    },
-    "storybook": {
-      "placeholder": "แทนที่ข้อความ",
-      "field": "Field"
-    },
-    "moreScreen": {
-      "security": "ความปลอดภัย",
-      "setYourPassword": "ตั้งค่ารหัสผ่านของคุณ",
-      "contactUs": "ติดต่อเรา",
-      "lineOfficialAccount": "Line Official Account",
-      "callCenter": "Call Center",
-      "moreMenu": "เมนูเพิ่มเติม",
-      "language": "ภาษา"
-    },
-    "searchBarComponent": {
-      "fullSearch": "ค้นหาโดยละเอียด"
-    },
-    "jobDetailScreen": {
-      "truckCount": "จำนวนรถบรรทุก",
-      "packaging": "บรรจุภัณฑ์",
-      "jobRecommend": "งานแนะนำ",
-      "seeDetail": "ดูรายละเอียด",
-      "productDetail": "ข้อมูลสินค้า",
-      "weightTon": "น้ำหนัก (ตัน)",
-      "call": "โทรติดต่อ"
-    },
-    "acceptPolicyScreen": {
-      "termAndCondition": "ข้อกำหนดและเงื่อนไข",
-      "accept": "ยอมรับเงื่อนไข",
-      "cancel": "ไม่ยอมรับเงื่อนไข"
-    },
-    "confirmCodeScreen": {
-      "codeWillExpire": "รหัสจะหมดอายุใน",
-      "codeExpired": "รหัสหมดอายุแล้ว",
-      "requestNewOTP": "ขอรับรหัส OTP ใหม่",
-      "confirmOTP": "ยืนยันรหัส OTP"
-    },
-    "myVehicleScreen": {
-      "informationAt": "ข้อมูล ณ วันที่",
-      "type": "ประเภท",
-      "addNewCar": "เพิ่มรถของฉัน"
-    }
+  "common": {
+    "ok": "OK!",
+    "cancel": "Cancel",
+    "back": "Back",
+    "from": "จาก",
+    "to": "ถึง"
+  },
+  "errors": {
+    "invalidEmail": "Invalid email address."
+  },
+  "welcomeScreen": {
+    "poweredBy": "POWERED BY BOWSER",
+    "readyForLaunch": "Ready for launch.",
+    "continue": "CONTINUE"
+  },
+  "demoScreen": {
+    "howTo": "HOW TO",
+    "title": "What’s In This Stack?",
+    "tagLine": "Congratulations, you’ve got a very advanced React Native app template here.  Take advantage of this boilerplate!",
+    "reactotron": "Demo Reactotron",
+    "androidReactotronHint": "If this doesn't work, ensure the Reactotron desktop app is running, run adb reverse tcp:9090 tcp:9090 from your terminal, and reload the app.",
+    "iosReactotronHint": "If this doesn't work, ensure the Reactotron desktop app is running and reload app."
+  },
+  "signinScreen": {
+    "signin": "เข้าสู่ระบบ",
+    "otp": "otp",
+    "goHome": "ไปหน้าแรก",
+    "enterYourPhoneNumber": "ใส่ข้อมูลเบอร์โทรศัพท์ของคุณ"
+  },
+  "homeScreen": {
+    "logout": "ออกจากระบบ",
+    "manageCar": "จัดการรถ",
+    "findJob": "หางาน",
+    "postJob": "โพสงาน",
+    "findCar": "หารถ"
+  },
+  "postJobScreen": {
+    "postjob": "หางาน"
+  },
+  "uploadVehicleScreen": {
+    "addVehicle": "เพิ่มรถ",
+    "selectVehicleType": "เลือกพาหนะของคุณ",
+    "haveDump": "รถมีที่ดั้มหรือไม่",
+    "heightVehicle": "ความสูงของคอกรถ (หน่วยเป็นเมตร)",
+    "detailVehicle": "ข้อมูลรถของคุณ",
+    "atLeastOneRegister": "ทะเบียนรถจำเป็นต้องใช้อย่างน้อย 1 ทะเบียน",
+    "carRegistration": "เลขทะเบียนรถ",
+    "addVehicleRegistration": "เพิ่มทะเบียนรถ",
+    "uploadVehicleImage": "อัพโหลดรูปภาพรถ",
+    "exampleImageFront": "ตัวอย่างรูปภาพด้านหน้า",
+    "exampleImageBack": "ตัวอย่างรูปภาพด้านหลัง",
+    "exampleImageLeft": "ตัวอย่างรูปภาพด้านซ้าย",
+    "exampleImageRight": "ตัวอย่างรูปภาพด้านขวา",
+    "workZone": "โซนที่วิ่งงาน",
+    "region": "ภูมิภาค",
+    "province": "จังหวัด"
+  },
+  "profileScreen": {
+    "profile": "โปรไฟล์",
+    "accountType": "Premium Account",
+    "telNo": "เบอร์โทรศัพท์ : ",
+    "zoneDrive": "โซนที่วิ่งงาน : ",
+    "carInformation": "ข้อมูลรถของคุณ : "
+  },
+  "storybook": {
+    "placeholder": "แทนที่ข้อความ",
+    "field": "Field"
+  },
+  "moreScreen": {
+    "security": "ความปลอดภัย",
+    "setYourPassword": "ตั้งค่ารหัสผ่านของคุณ",
+    "contactUs": "ติดต่อเรา",
+    "lineOfficialAccount": "Line Official Account",
+    "callCenter": "Call Center",
+    "moreMenu": "เมนูเพิ่มเติม",
+    "language": "ภาษา",
+    "english": "อังกฤษ",
+    "thai": "ไทย",
+    "Japan": "ญี่ปุ่น"
+  },
+  "searchBarComponent": {
+    "fullSearch": "ค้นหาโดยละเอียด"
+  },
+  "jobDetailScreen": {
+    "truckCount": "จำนวนรถบรรทุก",
+    "packaging": "บรรจุภัณฑ์",
+    "jobRecommend": "งานแนะนำ",
+    "seeDetail": "ดูรายละเอียด",
+    "productDetail": "ข้อมูลสินค้า",
+    "weightTon": "น้ำหนัก (ตัน)",
+    "call": "โทรติดต่อ"
+  },
+  "acceptPolicyScreen": {
+    "termAndCondition": "ข้อกำหนดและเงื่อนไข",
+    "accept": "ยอมรับเงื่อนไข",
+    "cancel": "ไม่ยอมรับเงื่อนไข"
+  },
+  "confirmCodeScreen": {
+    "codeWillExpire": "รหัสจะหมดอายุใน",
+    "codeExpired": "รหัสหมดอายุแล้ว",
+    "requestNewOTP": "ขอรับรหัส OTP ใหม่",
+    "confirmOTP": "ยืนยันรหัส OTP"
+  },
+  "myVehicleScreen": {
+    "informationAt": "ข้อมูล ณ วันที่",
+    "type": "ประเภท",
+    "addNewCar": "เพิ่มรถของฉัน"
   }
-  
+}

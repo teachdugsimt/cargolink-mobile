@@ -8,6 +8,8 @@ export const images = {
   truck17: require("../images/vehicles/Truck17.png"),
   addTruck1: require("../images/add-truck-icon/S1Truck.png"),
   addTruck2: require("../images/add-truck-icon/S2Truck.png"),
+  addTruck2F: require("../images/add-truck-icon/BTruck.png"),
+  addTruck2B: require("../images/add-truck-icon/FTruck.png"),
   // clearLogo: require('../Images/top_logo.png'),
 }
 

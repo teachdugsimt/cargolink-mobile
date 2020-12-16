@@ -1,8 +1,7 @@
 import { Instance, SnapshotOut, types } from "mobx-state-tree"
 import { HomeStore } from '../../store/home-store/home-store'
 import { SigninStore } from '../../store/signin-store/signin-store'
-
-
+import { VersatileStore } from '../../store/versatile-store/versatile-store'
 /**
  * A RootStore model.
  */
@@ -10,11 +9,10 @@ import { SigninStore } from '../../store/signin-store/signin-store'
 // export const RootStoreModel = types.model("RootStore").props({
 // })
 
-
-
 export const RootStoreModel = types.model({
     homeStore: HomeStore,
-    signinStore: SigninStore
+    signinStore: SigninStore,
+    versatileStore: VersatileStore,
 })
 console.log("Root Store Model :: ", RootStoreModel)
 

@@ -6,7 +6,11 @@ import { useNavigation } from '@react-navigation/native'
 import CountryPicker, { Country, CountryCode, DEFAULT_THEME } from 'react-native-country-picker-modal'
 import { color, spacing } from '../../theme'
 import { translate } from '../../i18n'
+import i18n from 'i18n-js'
 
+i18n.defaultLocale = 'th'
+i18n.locale = 'th'
+i18n.fallbacks = true
 const logo = require('./logo.png')
 
 const CONTENT_CENTER: ViewStyle = {

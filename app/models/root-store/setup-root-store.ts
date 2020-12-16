@@ -24,6 +24,7 @@ export async function createEnvironment() {
 let initialData = {
   homeStore: { count: 0 },
   signinStore: { items: [] },
+  versatileStore: { language: 'th' }
 }
 
 /**

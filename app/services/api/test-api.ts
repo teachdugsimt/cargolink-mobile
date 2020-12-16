@@ -4,6 +4,31 @@ import { ApiConfig, DEFAULT_API_CONFIG } from "./api-config"
 // import * as Types from "./api.types"
 
 import { GeneralApiProblem } from "./api-problem"
+
+import { createServer } from "miragejs"
+createServer({
+    routes() {
+        this.get("https://jsonplaceholder.typicode.com/todos/", () => [
+            { id: "1", name: "Luke" },
+            { id: "2", name: "Leia" },
+            { id: "3", name: "Anakin" },
+        ])
+
+        // Now use this
+        this.get("https://jsonplaceholder.typicode.com/todos/1", () => [
+            { id: "1", name: "Luke" },
+            { id: "2", name: "Leia" },
+            { id: "3", name: "Anakin" },
+        ])
+
+        this.post("https://jsonplaceholder.typicode.com/todos/post", (schema, request) => {
+            let attrs = JSON.parse(request.requestBody)
+            console.log(attrs)
+            // debugger
+            return {id: '4', name: "Fluke"}
+        })
+    },
+})
 interface User {
     id: number
     name: string
@@ -62,30 +87,21 @@ export class TestApi {
 
     async getUsers(): Promise<any> {
         // make the api call
-        const response: ApiResponse<any> = await this.apisauce.get('todos/1')
-        console.log("Real response :: ", response)
-        console.log("Real response :: ", response)
-
-        // the typical ways to die when calling an api
-        if (!response.ok) {
-            const problem = getGeneralApiProblem(response)
-            if (problem) return problem
-        }
-
-        const convertUser = (raw) => {
-            return {
-                id: raw.id,
-                name: raw.name,
-            }
-        }
-        // transform the data into the format we are expecting
         try {
-            const rawUsers = response.data
-            const resultUsers: User[] = rawUsers.map(convertUser)
-            return { kind: "ok", users: resultUsers }
-        } catch {
-            return { kind: "bad-data" }
+            const response: ApiResponse<any> = await this.apisauce.get('todos/1')
+            // the typical ways to die when calling an api
+            console.log("Response call api get user (MOCK) : ", response)
+            if (!response.ok) {
+                const problem = getGeneralApiProblem(response)
+                if (problem) return problem
+            }
+            return response
+            // transform the data into the format we are expecting
+        } catch (error) {
+            console.log("Error call api get user (MOCK): ", error)
+            return error
         }
+
     }
 
 

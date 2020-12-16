@@ -6,7 +6,8 @@ import { color, spacing } from "../../theme"
 import { useNavigation } from "@react-navigation/native"
 import Icon from "react-native-vector-icons/Ionicons"
 import { translate } from "../../i18n"
-
+import i18n from 'i18n-js'
+import { useStores } from "../../models/root-store/root-store-context";
 interface SubMenuProps {
     key?: string
     label?: string
@@ -66,72 +67,79 @@ const BUTTON_TEXT: TextStyle = {
 const MENUS: Array<MenuProps> = [
     {
         key: 'security',
-        topic: translate('moreScreen.security'), // 'ความปลอดภัย'
+        topic: 'moreScreen.security', // 'ความปลอดภัย'
         subMenu: [{
             key: 'set-password',
-            label: translate('moreScreen.changeYourPhone'), // 'ตั้งค่ารหัสผ่านของคุณ'
+            label: 'moreScreen.changeYourPhone', // 'ตั้งค่ารหัสผ่านของคุณ'
             icon: 'chevron-forward'
         }]
     },
     {
         key: 'contact-us',
-        topic: translate('moreScreen.contactUs'), // 'ติดต่อเรา'
+        topic: 'moreScreen.contactUs', // 'ติดต่อเรา'
         subMenu: [
             {
                 key: 'line-official-account',
-                label: translate('moreScreen.lineOfficialAccount'), // 'Line Official Account'
+                label: 'moreScreen.lineOfficialAccount', // 'Line Official Account'
                 icon: 'chevron-forward'
             },
             {
                 key: 'call-center',
-                label: translate('moreScreen.callCenter'), // 'Call Center'
+                label: 'moreScreen.callCenter', // 'Call Center'
                 icon: 'chevron-forward'
             },
         ]
     },
     {
         key: 'language',
-        topic: translate('moreScreen.language'),
+        topic: 'moreScreen.language',
+        subMenu: [
+            {
+                key: 'thai',
+                label: 'moreScreen.thai',
+                icon: 'chevron-forward'
+            },
+            {
+                key: 'english',
+                label: 'moreScreen.english',
+                icon: 'chevron-forward'
+            },
+        ]
     }
 ]
 
 export const MoreScreen = observer(function MoreScreen() {
     const navigation = useNavigation()
-    const goBack = () => navigation.goBack()
+    const { versatileStore } = useStores()
+
+    const _pressMenu = (item) => {
+        console.log("::Press change language::")
+        if (item.key === "thai") {
+            versatileStore.setLanguage('th')
+            console.log("After change :: ", versatileStore.getLanguage)
+        }
+        else {
+            versatileStore.setLanguage('en')
+            console.log("After change :: ", versatileStore.getLanguage)
+        }
+    }
 
     return (
         <View testID="MoreScreen" style={FULL}>
 
-            <Header
-                headerTx="searchCarScreen.searchCar"
-                style={HEADER}
-                titleStyle={HEADER_TITLE}
-                headerText={translate('moreScreen.moreMenu')} // เมนูเพิ่มเติม
-                leftIconReal={true}
-                leftIconName={"chevron-back"}
-                leftIconSize={24}
-                onLeftPress={goBack}
-            />
-
-            {/* <ScrollView
-                    style={{ height: Dimensions.get("window").height, }}
-                    scrollEventThrottle={400}
-                > */}
             <View style={CONTAINER}>
 
                 {MENUS.map(menu => {
                     return (
                         <View key={menu.key} style={COLUMN}>
                             <Text
-                                text={menu.topic}
+                                tx={menu.topic}
                                 style={TOPIC}
                             />
                             {menu.subMenu && menu.subMenu.map(item => {
                                 return (
-                                    <TouchableOpacity key={item.key} style={MENU} onPress={() => console.log('click me')}>
-                                        <Text
-                                            text={item.label}
-                                        />
+                                    <TouchableOpacity key={item.key} style={MENU} onPress={() => _pressMenu(item)}>
+                                        <Text tx={item.label} />
                                         <Icon name={item.icon} size={24} color={color.disable} />
                                     </TouchableOpacity>
                                 )
@@ -153,7 +161,6 @@ export const MoreScreen = observer(function MoreScreen() {
                     />
                 </View>
             </View>
-            {/* </ScrollView> */}
         </View>
     )
 })
