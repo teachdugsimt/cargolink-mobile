@@ -17,6 +17,13 @@ createServer({
             { id: "2", name: "Leia" },
             { id: "3", name: "Anakin" },
         ])
+
+        this.post("https://jsonplaceholder.typicode.com/todos/post", (schema, request) => {
+            let attrs = JSON.parse(request.requestBody)
+            // console.log(attrs)
+            // debugger
+            return { responseData: { data: 555 } }
+        })
     },
 })
 
@@ -80,7 +87,6 @@ export const HomeScreen = observer((props) => {
     const navigation = useNavigation()
     const logout = () => navigation.navigate("signin")
 
-
     const [users, setUsers] = useState([])
 
     useEffect(() => {
@@ -88,10 +94,20 @@ export const HomeScreen = observer((props) => {
             .then((response) => response.json())
             .then((json) => {
                 console.log("JSON DATA HOME SCREEN :: ", json)
-                console.log("JSON DATA HOME SCREEN :: ", json)
-                console.log("JSON DATA HOME SCREEN :: ", json)
                 setUsers(json)
             })
+
+        fetch('https://jsonplaceholder.typicode.com/todos/post', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                schema: 'yourValue',
+                request: 'yourOtherValue',
+            }),
+        }).then(val => console.log("VAL POSTPOSTPSTOSPTOSPOT :: ", val))
     }, [])
 
     useEffect(() => {
