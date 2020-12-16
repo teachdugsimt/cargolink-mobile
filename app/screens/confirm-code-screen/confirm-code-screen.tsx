@@ -8,7 +8,7 @@ import {
 } from 'react-native-confirmation-code-field';
 import { Dimensions, SafeAreaView, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { Button, CountDown, Text } from '../../components';
-import { color } from '../../theme';
+import { color, spacing } from '../../theme';
 import { useNavigation } from '@react-navigation/native';
 import { translate } from '../../i18n';
 
@@ -16,9 +16,7 @@ const ROOT: ViewStyle = {
   // flex: 1,
   height: Dimensions.get("window").height,
   paddingTop: 50,
-  paddingRight: 20,
   paddingBottom: 20,
-  paddingLeft: 20,
   backgroundColor: color.backgroundWhite
 }
 const CODE_FIELD_ROOT: TextStyle = {
@@ -30,8 +28,8 @@ const CODE_FIELD_ROOT: TextStyle = {
 }
 const CODE_INFORMATION_ROOT: ViewStyle = {
   flex: 1,
-  marginLeft: 10,
-  marginRight: 10,
+  marginLeft: spacing[5],
+  marginRight: spacing[5],
   marginTop: -30
 }
 const CELL_ROOT: TextStyle = {
@@ -66,7 +64,8 @@ const RESEND_CODE_TEXT: TextStyle = {
 const CONFIRM_CODE_ROOT: ViewStyle = {
   flex: 3,
   flexDirection: "column-reverse",
-  paddingBottom: 30
+  paddingBottom: 30,
+  marginHorizontal: spacing[5]
 }
 const COUNT_DOWN: TextStyle = {
   paddingLeft: 5

@@ -104,7 +104,8 @@
   "myVehicleScreen": {
     "informationAt": "Information at",
     "type": "Type",
-    "addNewCar": "Add new car"
+    "addNewCar": "Add new car",
+    "myCar": "My Car"
   },
   "vehicleDetailScreen": {
     "vehicleImage": "Vehicle Image",

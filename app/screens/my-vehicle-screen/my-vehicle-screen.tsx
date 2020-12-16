@@ -1,10 +1,10 @@
-import React from 'react'
+import React from "react"
 import { observer } from "mobx-react-lite"
-import { ScrollView, TextStyle, View, ViewStyle } from 'react-native'
-import { Button, Text, VehicleItem } from '../../components/'
-import { color, spacing } from '../../theme'
-import { translate } from '../../i18n'
-import { useNavigation } from '@react-navigation/native'
+import { ScrollView, TextStyle, View, ViewStyle } from "react-native"
+import { Button, Text, VehicleItem } from "../../components/"
+import { color, spacing } from "../../theme"
+import { translate } from "../../i18n"
+import { useNavigation } from "@react-navigation/native"
 
 const CONTAINER: ViewStyle = {
   flex: 1,
@@ -27,67 +27,68 @@ const BUTTON_ADD: ViewStyle = {
 const TEXT_ADD: TextStyle = {
   color: color.textWhite,
   fontSize: 16,
+  fontFamily: "Kanit-Medium",
 }
 
 const DATA = [
   {
-    topic: 'ทะเบียน กข - 11245',
-    subTopic: 'รถบรรทุกคอก',
-    updatedDate: '19/11/63',
-    status: 'รอตรวจสอบ',
-    image: 'truck17',
+    topic: "ทะเบียน กข - 11245",
+    subTopic: "รถบรรทุกคอก",
+    updatedDate: "19/11/63",
+    status: "รอตรวจสอบ",
+    image: "truck17",
   },
   {
-    topic: 'ทะเบียน กข - 11245',
-    subTopic: 'รถบรรทุกคอก',
-    updatedDate: '19/11/63',
-    status: 'ตรวจสอบแล้ว',
-    image: 'truck17',
+    topic: "ทะเบียน กข - 11245",
+    subTopic: "รถบรรทุกคอก",
+    updatedDate: "19/11/63",
+    status: "ตรวจสอบแล้ว",
+    image: "truck17",
     isChecked: true,
   },
   {
-    topic: 'ทะเบียน กข - 11245',
-    subTopic: 'รถบรรทุกคอก',
-    updatedDate: '19/11/63',
-    status: 'รอตรวจสอบ',
-    image: 'truck17',
+    topic: "ทะเบียน กข - 11245",
+    subTopic: "รถบรรทุกคอก",
+    updatedDate: "19/11/63",
+    status: "รอตรวจสอบ",
+    image: "truck17",
   },
   {
-    topic: 'ทะเบียน กข - 11245',
-    subTopic: 'รถบรรทุกคอก',
-    updatedDate: '19/11/63',
-    status: 'ตรวจสอบแล้ว',
-    image: 'truck17',
+    topic: "ทะเบียน กข - 11245",
+    subTopic: "รถบรรทุกคอก",
+    updatedDate: "19/11/63",
+    status: "ตรวจสอบแล้ว",
+    image: "truck17",
     isChecked: true,
   },
   {
-    topic: 'ทะเบียน กข - 11245',
-    subTopic: 'รถบรรทุกคอก',
-    updatedDate: '19/11/63',
-    status: 'รอตรวจสอบ',
-    image: 'truck17',
+    topic: "ทะเบียน กข - 11245",
+    subTopic: "รถบรรทุกคอก",
+    updatedDate: "19/11/63",
+    status: "รอตรวจสอบ",
+    image: "truck17",
   },
   {
-    topic: 'ทะเบียน กข - 11245',
-    subTopic: 'รถบรรทุกคอก',
-    updatedDate: '19/11/63',
-    status: 'ตรวจสอบแล้ว',
-    image: 'truck17',
+    topic: "ทะเบียน กข - 11245",
+    subTopic: "รถบรรทุกคอก",
+    updatedDate: "19/11/63",
+    status: "ตรวจสอบแล้ว",
+    image: "truck17",
     isChecked: true,
   },
   {
-    topic: 'ทะเบียน กข - 11245',
-    subTopic: 'รถบรรทุกคอก',
-    updatedDate: '19/11/63',
-    status: 'รอตรวจสอบ',
-    image: 'truck17',
+    topic: "ทะเบียน กข - 11245",
+    subTopic: "รถบรรทุกคอก",
+    updatedDate: "19/11/63",
+    status: "รอตรวจสอบ",
+    image: "truck17",
   },
   {
-    topic: 'ทะเบียน กข - 11245',
-    subTopic: 'รถบรรทุกคอก',
-    updatedDate: '19/11/63',
-    status: 'ตรวจสอบแล้ว',
-    image: 'truck17',
+    topic: "ทะเบียน กข - 11245",
+    subTopic: "รถบรรทุกคอก",
+    updatedDate: "19/11/63",
+    status: "ตรวจสอบแล้ว",
+    image: "truck17",
     isChecked: true,
   },
 ]
@@ -96,12 +97,11 @@ export const MyVehicle = observer(function MyVehicle() {
   const navigation = useNavigation()
 
   const onPress = (value) => {
-    navigation.navigate('vehicleDetail')
+    navigation.navigate("vehicleDetail")
   }
 
   return (
     <View style={CONTAINER}>
-
       <ScrollView
         onScroll={({ nativeEvent }) => {
           // console.log('nativeEvent', nativeEvent)
@@ -109,10 +109,10 @@ export const MyVehicle = observer(function MyVehicle() {
         style={SCROLL}
         scrollEventThrottle={400}
       >
-        {DATA && DATA.map((item, index) => {
-          return <VehicleItem key={index} {...item} onPress={onPress} />
-        })}
-
+        {DATA &&
+          DATA.map((item, index) => {
+            return <VehicleItem key={index} {...item}  onPress={onPress} />
+          })}
       </ScrollView>
 
       <View>
@@ -120,7 +120,7 @@ export const MyVehicle = observer(function MyVehicle() {
           testID="add-new-vahicle"
           style={BUTTON_ADD}
           textStyle={TEXT_ADD}
-          text={translate('myVehicleScreen.addNewCar')} // เพิ่มรถของฉัน
+          text={translate("myVehicleScreen.addNewCar")} // เพิ่มรถของฉัน
           // disabled={disabled}
           onPress={() => navigation.navigate("uploadVehicle")}
         />
