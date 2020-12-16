@@ -101,5 +101,14 @@
     "informationAt": "Information at",
     "type": "Type",
     "addNewCar": "Add new car"
+  },
+  "vehicleDetailScreen": {
+    "vehicleImage": "Vehicle Image",
+    "vehicleType": "Vehicle Type",
+    "heightOfTheCarStall": "Height of the car stall (In meters)",
+    "carHaveDum": "Does the car have a dum",
+    "myVehicleDetail": "My vehicle detail",
+    "vehicleRegistrationNumber": "Vehicle registration number",
+    "edit": "Edit"
   }
 }

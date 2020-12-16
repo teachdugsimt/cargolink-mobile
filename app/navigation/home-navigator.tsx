@@ -13,7 +13,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import {
     DetailScreen, HomeScreen, JobDetailScreen, MyVehicle, PostJobScreen, SearchCarScreen, SearchJobScreen, SettingSearchScreen,
     UploadVehicleScreen,
-    VehicleInformationScreen
+    VehicleDetailScreen
 } from "../screens"
 import { translate } from "../i18n"
 /**
@@ -38,7 +38,7 @@ export type PrimaryHomeParamList = {
     searchCar: undefined
     uploadVehicle: undefined
     myVehicle: undefined
-    vehicleInformation: undefined
+    vehicleDetail: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -128,7 +128,7 @@ export function HomeNavigator() {
                 })} />
 
             <Stack.Screen name="myVehicle" component={MyVehicle} />
-            <Stack.Screen name="vehicleInformation" component={VehicleInformationScreen} />
+            <Stack.Screen name="vehicleDetail" component={VehicleDetailScreen} />
         </Stack.Navigator>
     )
 }

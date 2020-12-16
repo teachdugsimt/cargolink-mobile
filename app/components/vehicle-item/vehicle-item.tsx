@@ -21,7 +21,6 @@ const CONTAINER: ViewStyle = {
 }
 const ROW: ViewStyle = {
   flexDirection: 'row',
-  flex: 1,
 }
 const TOPIC: TextStyle = {
   ...TEXT_BOLD,
@@ -40,7 +39,7 @@ const STATUS: TextStyle = {
 const SUB_TOPIC: TextStyle = {
   ...TEXT_BOLD,
   fontSize: 13,
-  paddingTop: spacing[2]
+  paddingTop: spacing[1],
 }
 const INFORMATION_DATE: TextStyle = {
   color: color.disable,

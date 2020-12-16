@@ -15,7 +15,7 @@ const SCROLL: ViewStyle = {
   paddingRight: spacing[3],
 }
 const BUTTON_ADD: ViewStyle = {
-  backgroundColor: color.transparent,
+  backgroundColor: color.primary,
   borderRadius: 20,
   borderColor: color.primary,
   borderWidth: 1,
@@ -25,7 +25,7 @@ const BUTTON_ADD: ViewStyle = {
   marginBottom: spacing[2],
 }
 const TEXT_ADD: TextStyle = {
-  color: color.primary,
+  color: color.textWhite,
   fontSize: 16,
 }
 
@@ -96,7 +96,7 @@ export const MyVehicle = observer(function MyVehicle() {
   const navigation = useNavigation()
 
   const onPress = (value) => {
-    navigation.navigate('vehicleInformation')
+    navigation.navigate('vehicleDetail')
   }
 
   return (
@@ -115,14 +115,16 @@ export const MyVehicle = observer(function MyVehicle() {
 
       </ScrollView>
 
-      <Button
-        testID="add-new-vahicle"
-        style={BUTTON_ADD}
-        textStyle={TEXT_ADD}
-        text={translate('myVehicleScreen.addNewCar')} // เพิ่มรถของฉัน
-        // disabled={disabled}
-        onPress={() => navigation.navigate("uploadVehicle")}
-      />
+      <View>
+        <Button
+          testID="add-new-vahicle"
+          style={BUTTON_ADD}
+          textStyle={TEXT_ADD}
+          text={translate('myVehicleScreen.addNewCar')} // เพิ่มรถของฉัน
+          // disabled={disabled}
+          onPress={() => navigation.navigate("uploadVehicle")}
+        />
+      </View>
     </View>
   )
 })

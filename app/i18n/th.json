@@ -74,6 +74,15 @@
       "informationAt": "ข้อมูล ณ วันที่",
       "type": "ประเภท",
       "addNewCar": "เพิ่มรถของฉัน"
+    },
+    "vehicleDetailScreen": {
+      "vehicleImage": "รูปภาพรถ",
+      "vehicleType": "ประเภทรถของคุณ",
+      "heightOfTheCarStall": "ความสูงของคอกรถ (หน่วยเป็นเมตร)",
+      "carHaveDum": "รถมีที่ดั้มหรือไม่",
+      "myVehicleDetail": "ข้่อมูลรถของคุณ",
+      "vehicleRegistrationNumber": "เลขทะเบียนรถ",
+      "edit": "Edit"
     }
   }
   

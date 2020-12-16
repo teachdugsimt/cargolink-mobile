@@ -21,4 +21,4 @@ export * from "./job-detail-screen/job-detail-screen"
 export * from "./search-car-screen/search-car-screen"
 
 export * from "./my-vehicle-screen/my-vehicle-screen"
-export * from "./vehicle-information-screen/vehicle-information-screen"
+export * from "./vehicle-detail-screen/vehicle-detail-screen"
