@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { TouchableOpacity, View, ViewStyle, Image, ImageStyle, TextStyle } from "react-native"
 import { color, images, spacing, typography } from "../../theme"
 import { Text } from '../text/text'
@@ -45,10 +45,11 @@ const CONTENT_TEXT: TextStyle = {
     paddingTop: 5
 }
 export function UploadVehicle(props: any) {
-    const { uploadStyle, source, imageStyle, tx } = props
+    const { uploadStyle, source, imageStyle, tx, onPress } = props
+
     return (
         <View style={{ ...ROOT_STYLE, ...uploadStyle }}>
-            <TouchableOpacity style={UPLOAD_BUTTON}>
+            <TouchableOpacity style={UPLOAD_BUTTON} onPress={onPress}>
                 <View style={UPLOAD_VIEW}>
                     <View style={VIEW_ICON}>
                         <Ionicons name={"camera-outline"} size={22} color={color.grey} />

@@ -68,7 +68,7 @@ export const color = {
   background: palette.lighterGrey,
   mainTheme: palette.yellow,
 
-  grey: palette.lighterGrey,
+  grey: palette.lightGray,
   lightWeightGrey: palette.lightweightGray,
   snow: "#FFFFFF",
   black: "#000000",

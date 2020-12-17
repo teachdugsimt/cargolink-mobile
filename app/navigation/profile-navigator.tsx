@@ -5,11 +5,10 @@
  * You'll likely spend most of your time in this file.
  */
 import React from "react"
-import { Text } from 'react-native'
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import { ProfileScreen } from "../screens"
 import { color } from "../theme"
-import { translate } from "../i18n"
+import { HeaderCenter } from "../components"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
  * as well as what properties (if any) they might take when navigating to them.
@@ -42,13 +41,12 @@ export function ProfileNavigator() {
             }}
         >
             <Stack.Screen name="profile" component={ProfileScreen}
-                options={{
-                    headerTitle: translate("profileScreen.profile"),
-                    headerTitleStyle: {
-                        fontFamily: 'Kanit-Bold',
-                    },
+                options={({ navigation, route }) => ({
+                    // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
+                    headerCenter: () => <HeaderCenter tx={"profileScreen.profile"} />,
                     headerHideShadow: true,
-                }}
+                    // headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+                })}
             />
             {/* <Stack.Screen name="detail" component={DetailScreen} /> */}
         </Stack.Navigator>

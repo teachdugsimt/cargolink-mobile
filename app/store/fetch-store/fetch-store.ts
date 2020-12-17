@@ -19,14 +19,19 @@ const UserStore = types.model({
             // ... yield can be used in async/await style
             const response = yield apiUsers.getUsers()
             console.log("Response call api get user : : ", response)
-            self.data = response.data || []
-            self.loading = false
+            if (response.ok) {
+                self.data = response.data || []
+                self.loading = false
+            } else {
+                self.loading = false
+                self.error = "error fetch api get users"
+            }
         } catch (error) {
             // ... including try/catch error handling
             console.error("Failed to fetch get users api : ", error)
             // self.data = []
             self.loading = false
-            self.error = "error fetch api get users"
+            self.error = "set up state mobx error"
         }
     }),
 })).views(self => ({

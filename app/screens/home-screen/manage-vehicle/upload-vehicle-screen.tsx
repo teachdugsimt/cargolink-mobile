@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import {
     View, ViewStyle, TextStyle,
-    ScrollView, Switch, StyleSheet, Dimensions, Platform
+    ScrollView, Switch, StyleSheet, Dimensions, Platform, Alert
 } from "react-native"
 import { observer } from "mobx-react-lite"
 import { Text, TextInputTheme, Button, UploadVehicle, RoundedButton } from "../../../components"
@@ -11,15 +11,15 @@ import RNPickerSelect from 'react-native-picker-select';
 import { translate } from "../../../i18n"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import FetchStore from '../../../store/fetch-store/fetch-store'
+import FormRegistration from "./form-registration"
+// import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 // import { TestApi } from '../../../services/api'
 // const apiUsers = new TestApi()
+import ImagePicker from 'react-native-image-picker';
+import { vehicleEn, vehicleTh } from './vehicle-type'
+import i18n from 'i18n-js'
 
 
-const vehicleList = [
-    { label: 'Car', value: 'car' },
-    { label: 'Truck', value: 'truck', },
-    { label: 'Taxi', value: 'taxi', },
-]
 
 const regionList = [{ label: "center", value: "center" },
 { label: "north", value: "north" },
@@ -108,11 +108,7 @@ const WRAP_DROPDOWN: ViewStyle = {
 const DROPDOWN_ICON_CONTAINER: ViewStyle = {
     paddingTop: 12.5, paddingRight: 5
 }
-interface objectField {
-    id: number,
-    value: string
-}
-const INIT_FIELD: Array<objectField> = [{ id: 1, value: '' }]
+
 export const UploadVehicleScreen = () => {
     // const navigation = useNavigation()
     const [vehicle, setvehicle] = useState('')
@@ -121,11 +117,10 @@ export const UploadVehicleScreen = () => {
     // const [carRegistration, setcarRegistration] = useState('')
     const [province, setprovince] = useState(null)
     const [region, setregion] = useState(null)
-    const [arrRegistration, setArrRegistration] = useState(INIT_FIELD)
-    const [arrRegistrationOld, setArrRegistrationOld] = useState(null)
-    const [renderNew, setrenderNew] = useState(false)
-    
+
     const [stateData, setstateData] = useState(null)
+
+
     useEffect(() => {
         console.log("Mobx state data : : ", JSON.parse(JSON.stringify(FetchStore.getUserData)))
         console.log("State data :: ", stateData)
@@ -141,35 +136,103 @@ export const UploadVehicleScreen = () => {
         return () => {
             setstateData(null)
         }
-    }, [FetchStore.getUserData])
+    }, [FetchStore.data])
 
 
-    useEffect(() => {
-        if (arrRegistration != arrRegistrationOld) {
-            console.log("Update arr text field ")
-            setArrRegistrationOld(arrRegistration)
-            setrenderNew(!renderNew)
-        }
-        return () => {
-            setArrRegistration(INIT_FIELD)
-        }
-    }, [arrRegistration])
 
-    const _addFieldRegistration = () => {
-        let tmp = arrRegistration
-        tmp.push({
-            id: tmp.length + 1,
-            value: ""
-        })
-        setArrRegistration(tmp)
+    const [textInput, settextInput] = useState([])
+    const [inputData, setinputData] = useState([])
+    const [renderNew, setrenderNew] = useState(false)
+
+    //function to add TextInput dynamically
+    const addTextInput = (index) => {
+        let textInputTmp = textInput;
+        textInputTmp.push(<TextInputTheme key={"text-input-registration-car-" + index} inputStyle={MARGIN_TOP_BIG}
+            onChangeText={(text) => addValues(text, index)} />);
+        settextInput(textInputTmp);
+        setrenderNew(!renderNew)
     }
 
-    const _setRegistrationSlotValue = (text, index) => {
-        let tmp = arrRegistration
-        tmp[index].value = text
-        setArrRegistration(tmp)
+    //function to add text from TextInputs into single array
+    const addValues = (text, index) => {
+        let dataArray = inputData;
+        let checkBool = false;
+        if (dataArray.length !== 0) {
+            dataArray.forEach(element => {
+                if (element.index === index) {
+                    element.text = text;
+                    checkBool = true;
+                }
+            });
+        }
+        if (checkBool) {
+            setinputData(dataArray)
+        }
+        else {
+            dataArray.push({ 'text': text, 'index': index });
+            setinputData(dataArray)
+        }
     }
-    console.log(" Arr Text Field Header :: ", arrRegistration)
+
+
+    const [fileFront, setfileFront] = useState({});
+    const [fileBack, setfileBack] = useState({});
+    const [fileLeft, setfileLeft] = useState({});
+    const [fileRight, setfileRight] = useState({});
+
+    const _chooseFile = (status) => {
+        console.log("Status Image :: ", status)
+        let options = {
+            title: 'Select Image',
+            customButtons: [
+                {
+                    name: 'customOptionKey',
+                    title: 'Choose Photo from Custom Option'
+                },
+            ],
+            storageOptions: {
+                skipBackup: true,
+                path: 'images',
+            },
+        };
+        ImagePicker.showImagePicker(options, (response) => {
+            console.log('Response = ', response);
+
+            console.log('Response = ', response);
+
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            }
+            else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            }
+            else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+            }
+
+            else {
+                let source = { uri: response.uri };
+                if (status == "front") setfileFront(source);
+                else if (status == "back") setfileBack(source);
+                else if (status == "left") setfileLeft(source);
+                else if (status == "right") setfileRight(source);
+                // Alert.alert(
+                //     'Vehicle Image',
+                //     "Upload Success",
+                //     [
+                //         {
+                //             text: "OK", onPress: () => { }
+                //         }
+                //     ]
+                //     , { cancelable: false }
+                // )
+            }
+
+        });
+    };
+
+    console.log("File path :: => ", fileFront)
+    console.log(i18n)
 
     return (
         <View testID="UploadVehicleScreen" style={FULL}>
@@ -177,13 +240,13 @@ export const UploadVehicleScreen = () => {
 
                 <View style={TOP_VIEW}>
                     <View style={WRAPPER_TOP}>
-                       
+
                         <Text tx={"uploadVehicleScreen.selectVehicleType"} style={{ ...TITLE_TOPIC, ...MARGIN_TOP_BIG }} />
                         <View style={WRAP_DROPDOWN}>
                             <RNPickerSelect
                                 value={vehicle}
                                 onValueChange={(value) => setvehicle(value)}
-                                items={vehicleList}
+                                items={i18n.locale == "en" ? vehicleEn : vehicleTh}
                                 placeholder={{
                                     label: translate("uploadVehicleScreen.selectVehicleType"),
                                     color: color.black
@@ -192,6 +255,7 @@ export const UploadVehicleScreen = () => {
                                 style={{
                                     inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
                                     iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
+                                    placeholder: { color: color.black }
                                 }}
                                 Icon={() => {
                                     return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
@@ -220,18 +284,27 @@ export const UploadVehicleScreen = () => {
                         <Text tx={"uploadVehicleScreen.atLeastOneRegister"} style={{ ...CONTENT_TEXT, ...ALIGN_RIGHT }}></Text>
 
                         <Text tx={"uploadVehicleScreen.carRegistration"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_BIG }} />
-                        {renderNew ? arrRegistration.map((e, i) => {
-                            return (<TextInputTheme key={"text-input-registration-car-" + i} inputStyle={MARGIN_TOP_BIG}
-                                value={e.value} onChangeText={(text) => _setRegistrationSlotValue(text, i)} />)
-                        }) : arrRegistration.map((e, i) => {
-                            return (<TextInputTheme key={"text-input-registration-car-2-" + i} inputStyle={MARGIN_TOP_BIG}
-                                value={e.value} onChangeText={(text) => _setRegistrationSlotValue(text, i)} />)
-                        })}
 
-                        <Button onPress={_addFieldRegistration} style={{ ...ADD_VEHICLE_BUTTON, ...MARGIN_TOP_EXTRA }}>
+
+
+
+
+
+
+                        {renderNew && textInput.map(value => { return value })}
+                        {!renderNew && textInput.map(value => { return value })}
+                        <Button onPress={() => addTextInput(textInput.length)} style={{ ...ADD_VEHICLE_BUTTON, ...MARGIN_TOP_EXTRA }}>
                             <Ionicons name={"add-circle-outline"} size={spacing[5]} color={color.grey} />
                             <Text tx={"uploadVehicleScreen.addVehicleRegistration"} style={{ ...CONTENT_TEXT, ...GREY_TEXT, ...PADDING_LEFT5 }} />
                         </Button>
+
+
+
+
+
+
+
+
                     </View>
                 </View>
                 <View style={{ ...TOP_VIEW, ...MARGIN_TOP }}>
@@ -240,19 +313,31 @@ export const UploadVehicleScreen = () => {
                         <View style={{ ...MARGIN_TOP_EXTRA, ...COLUMN_UPLOAD, ...MARGIN_BOTTOM_BIG }}>
                             <View style={ROW_UPLOAD}>
                                 <UploadVehicle
+                                    onPress={() => _chooseFile('front')}
                                     tx={"uploadVehicleScreen.exampleImageFront"}
-                                    uploadStyle={{ padding: 5, minHeight: 120 }} source={images.addTruck2B} imageStyle={{ width: 50, height: 50 }} />
+                                    uploadStyle={{ padding: 5, minHeight: 120 }}
+                                    source={Object.keys(fileFront).length ? fileFront : images.addTruck2B}
+                                    imageStyle={{ width: 50, height: 50 }} />
                                 <UploadVehicle
+                                    onPress={() => _chooseFile('back')}
                                     tx={"uploadVehicleScreen.exampleImageBack"}
-                                    uploadStyle={{ padding: 5, minHeight: 120 }} source={images.addTruck2F} imageStyle={{ width: 50, height: 50 }} />
+                                    uploadStyle={{ padding: 5, minHeight: 120 }}
+                                    source={Object.keys(fileBack).length ? fileBack : images.addTruck2F}
+                                    imageStyle={{ width: 50, height: 50 }} />
                             </View>
                             <View style={ROW_UPLOAD}>
                                 <UploadVehicle
+                                    onPress={() => _chooseFile('left')}
                                     tx={"uploadVehicleScreen.exampleImageLeft"}
-                                    uploadStyle={{ padding: 5, minHeight: 120 }} source={images.addTruck1} imageStyle={{ width: 95, height: 37.5 }} />
+                                    uploadStyle={{ padding: 5, minHeight: 120 }}
+                                    source={Object.keys(fileLeft).length ? fileLeft : images.addTruck1}
+                                    imageStyle={{ width: 95, height: 37.5 }} />
                                 <UploadVehicle
+                                    onPress={() => _chooseFile('right')}
                                     tx={"uploadVehicleScreen.exampleImageRight"}
-                                    uploadStyle={{ padding: 5, minHeight: 120 }} source={images.addTruck2} imageStyle={{ width: 95, height: 37.5 }} />
+                                    uploadStyle={{ padding: 5, minHeight: 120 }}
+                                    source={Object.keys(fileRight).length ? fileRight : images.addTruck2}
+                                    imageStyle={{ width: 95, height: 37.5 }} />
                             </View>
                         </View>
                     </View>
@@ -273,13 +358,14 @@ export const UploadVehicleScreen = () => {
                                     onValueChange={(value) => setregion(value)}
                                     items={regionList}
                                     placeholder={{
-                                        label: translate("uploadVehicleScreen.selectVehicleType"),
+                                        label: translate("uploadVehicleScreen.region"),
                                         color: color.black
                                     }}
                                     useNativeAndroidPickerStyle={false}
                                     style={{
                                         inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
-                                        iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER
+                                        iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
+                                        placeholder: { color: color.black }
                                     }}
                                     Icon={() => {
                                         return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
@@ -293,13 +379,15 @@ export const UploadVehicleScreen = () => {
                                     onValueChange={(value) => setprovince(value)}
                                     items={provinceList}
                                     placeholder={{
-                                        label: translate("uploadVehicleScreen.selectVehicleType"),
+                                        label: translate("uploadVehicleScreen.province"),
                                         color: color.black
+
                                     }}
                                     useNativeAndroidPickerStyle={false}
                                     style={{
                                         inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
-                                        iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER
+                                        iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
+                                        placeholder: { color: color.black }
                                     }}
                                     Icon={() => {
                                         return <Ionicons size={20} color={color.black} name={"chevron-down"} />;

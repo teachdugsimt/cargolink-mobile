@@ -6,7 +6,7 @@ import { ApiConfig, DEFAULT_API_CONFIG } from "./api-config"
 import { GeneralApiProblem } from "./api-problem"
 
 import { createServer } from "miragejs"
-createServer({
+__DEV__ && createServer({
     routes() {
         this.get("https://jsonplaceholder.typicode.com/todos/", () => [
             { id: "1", name: "Luke" },

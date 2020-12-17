@@ -4,6 +4,7 @@ import { presets } from "./text.presets"
 import { TextProps } from "./text.props"
 import { translate } from "../../i18n"
 import { mergeAll, flatten } from "ramda"
+import { color } from '../../theme/'
 
 /**
  * For your text displaying needs.
@@ -11,7 +12,8 @@ import { mergeAll, flatten } from "ramda"
  * This component is a HOC over the built-in React Native one.
  */
 const ROOT_STYLE: TextStyle = {
-  fontFamily: 'Kanit-Bold'
+  fontFamily: 'Kanit-Bold',
+  color: color.black
 }
 export function Text(props: TextProps) {
   // grab the props

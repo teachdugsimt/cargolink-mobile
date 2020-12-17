@@ -7,6 +7,13 @@
     "to": "To",
     "confirm": "confirm"
   },
+  "bottomTab": {
+    "home": "Home",
+    "myJob": "My Job",
+    "favorite": "Favorite",
+    "profile": "Profile",
+    "more": "More"
+  },
   "errors": {
     "invalidEmail": "Invalid email address."
   },
@@ -115,5 +122,47 @@
     "informationAt": "Information at",
     "type": "Type",
     "addNewCar": "Add new car"
+  },
+  "vehicleType": {
+    "Others": "Others",
+    "4 Wheels - High Stall Truck": "4 Wheels - High Stall Truck",
+    "4 Wheels - Low Stall Truck": "4 Wheels - Low Stall Truck",
+    "4 Wheels - Flat Bed": "4 Wheels - Flat Bed",
+    "4 wheels - Cabinet Truck": "4 wheels - Cabinet Truck",
+    "4 wheels - Cabinet Truck + Temperature Controlled": "4 wheels - Cabinet Truck + Temperature Controlled",
+    "4 Wheels - Cap Truck": "4 Wheels - Cap Truck",
+    "4 wheels - Truck": "4 wheels - Truck",
+    "6 wheels - Stall Truck": "6 wheels - Stall Truck",
+    "6 wheels - Liquid Truck": "6 wheels - Liquid Truck",
+    "6 Wheels - Cabinet Truck": "6 Wheels - Cabinet Truck",
+    "6 wheels - Flat Bed": "6 wheels - Flat Bed",
+    "6 wheels - Pickup Truck": "6 wheels - Pickup Truck",
+    "6 Wheels - Cabinet Truck - Temperature Controlled": "6 Wheels - Cabinet Truck - Temperature Controlled",
+    "6 Wheels - Crane": "6 Wheels - Crane",
+    "10 Wheels - Crane": "10 Wheels - Crane",
+    "10 Wheels - Stall + Dump Truck": "10 Wheels - Stall + Dump Truck",
+    "10 Wheels - Chemical Tanker": "10 Wheels - Chemical Tanker",
+    "10 Wheels - Stall Truck": "10 Wheels - Stall Truck",
+    "10 Wheels - Cabinet Truck": "10 Wheels - Cabinet Truck",
+    "10 Wheels - Flat Bed": "10 Wheels - Flat Bed",
+    "10 Wheels - Liquid Tanker": "10 Wheels - Liquid Tanker",
+    "10 Wheels - Cabinet Truck - Temperature Controlled": "10 Wheels - Cabinet Truck - Temperature Controlled",
+    "10 wheels - Fuel Tanker": "10 wheels - Fuel Tanker",
+    "18 Wheels - Flat Bed": "18 Wheels - Flat Bed",
+    "Semi - Trailer Cement Tanker": "Semi - Trailer Cement Tanker",
+    "40” Trailer - Cabinet Truck": "40” Trailer - Cabinet Truck",
+    "40” Trailer - Cabinet Truck - Temperature Controlled": "40” Trailer - Cabinet Truck - Temperature Controlled",
+    "40” Trailer 18 Wheels - Stall Truck": "40” Trailer 18 Wheels - Stall Truck",
+    "20” Trailer 18 Wheels - Stall Truck + Dump": "20” Trailer 18 Wheels - Stall Truck + Dump",
+    "40” Trailer 18 Wheels - Stall Truck + Dump": "40” Trailer 18 Wheels - Stall Truck + Dump",
+    "18 Wheels - Skeleton Semi Trailer": "18 Wheels - Skeleton Semi Trailer",
+    "Tractor Head Truck": "Tractor Head Truck",
+    "Car Carrier Trailer": "Car Carrier Trailer",
+    "Bike Carrier Truck": "Bike Carrier Truck",
+    "20” Trailer, 18 Wheels - Cabinet Truck": "20” Trailer, 18 Wheels - Cabinet Truck",
+    "20” Trailer 18 Wheels - Cabinet truck - Temperature Controlled": "20” Trailer 18 Wheels - Cabinet truck - Temperature Controlled",
+    "20” Trailer 18 Wheels - Stall Truck": "20” Trailer 18 Wheels - Stall Truck",
+    "Trailer 22 wheels Side Curtain": "Trailer 22 wheels Side Curtain",
+    "20 wheels Side Curtain": "20 wheels Side Curtain"
   }
 }

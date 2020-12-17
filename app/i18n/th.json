@@ -4,7 +4,15 @@
     "cancel": "Cancel",
     "back": "Back",
     "from": "จาก",
-    "to": "ถึง"
+    "to": "ถึง",
+    "confirm": "ยืนยัน"
+  },
+  "bottomTab": {
+    "home": "หน้าแรก",
+    "myJob": "งานของฉัน",
+    "favorite": "ถูกใจ",
+    "profile": "โปรไฟล์",
+    "more": "อื่นๆ"
   },
   "errors": {
     "invalidEmail": "Invalid email address."
@@ -106,5 +114,47 @@
     "informationAt": "ข้อมูล ณ วันที่",
     "type": "ประเภท",
     "addNewCar": "เพิ่มรถของฉัน"
+  },
+  "vehicleType": {
+    "Others": "อื่นๆ",
+    "4 Wheels - High Stall Truck": "รถกระบะ 4 ล้อคอกสูง",
+    "4 Wheels - Low Stall Truck": "รถกระบะ 4 ล้อคอกเตี้ย",
+    "4 Wheels - Flat Bed": "รถกระบะ 4 ล้อพื้นเรียบ",
+    "4 wheels - Cabinet Truck": "รถกระบะ 4 ล้อตู้ทึบ",
+    "4 wheels - Cabinet Truck + Temperature Controlled": "รถกระบะห้องเย็น 4 ล้อตู้ทึบ",
+    "4 Wheels - Cap Truck": "รถกระบะ 4 ล้อหลังคาสูงทึบ",
+    "4 wheels - Truck": "รถกระบะ 4 ล้อ",
+    "6 wheels - Stall Truck": "รถ 6 ล้อตู้คอก",
+    "6 wheels - Liquid Truck": "รถบรรทุกของเหลว 6 ล้อ",
+    "6 Wheels - Cabinet Truck": "รถ 6 ล้อ ตู้ทึบ",
+    "6 wheels - Flat Bed": "รถ 6 ล้อพื้นเรียบ",
+    "6 wheels - Pickup Truck": "รถ 6 ล้อ กระบะ",
+    "6 Wheels - Cabinet Truck - Temperature Controlled": "รถห้องเย็น 6 ล้อตู้ทึบ",
+    "6 Wheels - Crane": "รถเครน 6 ล้อ",
+    "10 Wheels - Crane": "รถเครน 10 ล้อ",
+    "10 Wheels - Stall + Dump Truck": "Stall + Dump รถ 10 ล้อคอกดัมพ์",
+    "10 Wheels - Chemical Tanker": "Chemical รถ 10 ล้อ เคมีภัณฑ์",
+    "10 Wheels - Stall Truck": "Stall รถ 10 ล้อคอก",
+    "10 Wheels - Cabinet Truck": "Cabinet รถ 10 ล้อ ตู้ทึบ",
+    "10 Wheels - Flat Bed": "Flat รถ 10 ล้อ พื้นเรียบ",
+    "10 Wheels - Liquid Tanker": "Liquid รถ 10 ล้อบรรทุกของเหลว",
+    "10 Wheels - Cabinet Truck - Temperature Controlled": "รถห้องเย็น 10 ล้อตู้ทึบ",
+    "10 wheels - Fuel Tanker": "รถ 10 ล้อ บรรทุกน้ำมัน",
+    "18 Wheels - Flat Bed": "รถหัวลาก 18 ล้อ พื้นเรียบ",
+    "Semi - Trailer Cement Tanker": "รถบรรทุกปูนซีเมนต์ประเภทผง",
+    "40” Trailer - Cabinet Truck": "รถหัวลาก 18 ล้อ ตู้ทึบ 40 ฟุต",
+    "40” Trailer - Cabinet Truck - Temperature Controlled": "รถเทรเลอร์คอนเทรนเนอร์ ห้องเย็น 40 ฟุต",
+    "40” Trailer 18 Wheels - Stall Truck": "รถพ่วงคอก 40 ฟุต",
+    "20” Trailer 18 Wheels - Stall Truck + Dump": "รถพ่วงคอกดัมพ์",
+    "40” Trailer 18 Wheels - Stall Truck + Dump": "รถพ่วงดัมพ์ 40 ฟุต",
+    "18 Wheels - Skeleton Semi Trailer": "เทรลเลอร์ก้างปลา",
+    "Tractor Head Truck": "รถหัวลาก",
+    "Car Carrier Trailer": "รถบรรทุกรถ",
+    "Bike Carrier Truck": "รถบรรทุกจักรยานยนต์",
+    "20” Trailer, 18 Wheels - Cabinet Truck": "รถพ่วง 18 ล้อตู้ทึบ 20 ฟุต",
+    "20” Trailer 18 Wheels - Cabinet truck - Temperature Controlled": "รถพ่วงตู้ทึบ 20 ฟุต",
+    "20” Trailer 18 Wheels - Stall Truck": "รถพ่วงคอก 20 ฟุต",
+    "Trailer 22 wheels Side Curtain": "รถเทรเลอร์เปิดข้างผ้าม่าน",
+    "20 wheels Side Curtain": "รถพ่วงเปิดข้างผ้าม่า"
   }
 }
