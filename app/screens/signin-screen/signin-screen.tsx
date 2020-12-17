@@ -11,7 +11,7 @@ import {
   Dimensions,
 } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Button, Icon } from "../../components"
+import { Button, Icon, Text } from "../../components"
 import { useNavigation } from '@react-navigation/native'
 import CountryPicker, { Country, CountryCode, DEFAULT_THEME } from 'react-native-country-picker-modal'
 import { color, spacing } from '../../theme'
