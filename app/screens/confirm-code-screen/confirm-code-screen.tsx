@@ -11,6 +11,7 @@ import { Button, CountDown, Text } from '../../components';
 import { color, spacing } from '../../theme';
 import { useNavigation } from '@react-navigation/native';
 import { translate } from '../../i18n';
+import AuthStore from '../../store/auth-store/auth-store'
 
 const ROOT: ViewStyle = {
   // flex: 1,
@@ -161,6 +162,10 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
       setIsShow(true)
     }
   }, [resendCode, isExpired, autoFocus])
+
+  useEffect(() => {
+    console.log('AuthStore.getAuthData :>> ', JSON.parse(JSON.stringify(AuthStore.getAuthData)));
+  }, [AuthStore.getAuthData])
 
   return (
     <SafeAreaView style={ROOT}>

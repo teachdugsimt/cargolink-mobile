@@ -17,6 +17,7 @@ import CountryPicker, { Country, CountryCode, DEFAULT_THEME } from 'react-native
 import { color, spacing } from '../../theme'
 import { translate } from '../../i18n'
 import i18n from 'i18n-js'
+import AuthStore from '../../store/auth-store/auth-store'
 
 i18n.defaultLocale = 'th'
 i18n.locale = 'th'
@@ -90,6 +91,15 @@ const initialState = {
   value: ''
 }
 
+const normalizeMobileNo = (mobileNo: string) => {
+  const firtMobileNo = mobileNo.slice(0, 1);
+  if(firtMobileNo === FIRST_MOBILE_NO) {
+    mobileNo = mobileNo.slice(1)
+  }
+  let result = mobileNo.split(' - ').join('')
+  return `+66${result}`;
+}
+
 export const SigninScreen = observer(function SigninScreen() {
   const navigation = useNavigation()
   // const goBack = () => navigation.goBack()
@@ -156,7 +166,8 @@ export const SigninScreen = observer(function SigninScreen() {
     }))
   }
 
-  const onPress = () => {
+  const onPress = (mobileNo: string) => {
+    AuthStore.signInRequest({ mobileNo: normalizeMobileNo(mobileNo) })
     setState(initialState)
     navigation.navigate("confirmCode")
   }
@@ -205,7 +216,7 @@ export const SigninScreen = observer(function SigninScreen() {
           disabled={disabled}
           // tx="goHome"
           text={translate("signinScreen.signin")}
-          onPress={onPress}
+          onPress={() => onPress(value)}
         />
       </View>
     </View>
