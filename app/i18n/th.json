@@ -155,6 +155,17 @@
     "20” Trailer 18 Wheels - Cabinet truck - Temperature Controlled": "รถพ่วงตู้ทึบ 20 ฟุต",
     "20” Trailer 18 Wheels - Stall Truck": "รถพ่วงคอก 20 ฟุต",
     "Trailer 22 wheels Side Curtain": "รถเทรเลอร์เปิดข้างผ้าม่าน",
-    "20 wheels Side Curtain": "รถพ่วงเปิดข้างผ้าม่า"
+    "20 wheels Side Curtain": "รถพ่วงเปิดข้างผ้าม่า",
+    "addNewCar": "เพิ่มรถของฉัน",
+    "myTruck": "รถของฉัน"
+  },
+  "vehicleDetailScreen": {
+    "vehicleImage": "รูปภาพรถ",
+    "vehicleType": "ประเภทรถของคุณ",
+    "heightOfTheCarStall": "ความสูงของคอกรถ (เมตร)",
+    "carHaveDum": "รถมีที่ดั้มหรือไม่",
+    "myVehicleDetail": "ข้อมูลรถของคุณ",
+    "vehicleRegistrationNumber": "เลขทะเบียนรถ",
+    "edit": "Edit"
   }
 }

@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useEffect } from "react"
 import { observer } from "mobx-react-lite"
-import { ScrollView, TextStyle, View, ViewStyle } from 'react-native'
-import { Button, Text, VehicleItem } from '../../components/'
-import { color, spacing } from '../../theme'
-import { translate } from '../../i18n'
-import { useNavigation } from '@react-navigation/native'
+import { ScrollView, TextStyle, View, ViewStyle } from "react-native"
+import { Button, Text, VehicleItem } from "../../components/"
+import { color, spacing } from "../../theme"
+import { translate } from "../../i18n"
+import { useNavigation } from "@react-navigation/native"
+// import MyVehicleStore from '../../store/my-vehicle-store/my-vehicle-store'
 
 const CONTAINER: ViewStyle = {
   flex: 1,
@@ -15,7 +16,7 @@ const SCROLL: ViewStyle = {
   paddingRight: spacing[3],
 }
 const BUTTON_ADD: ViewStyle = {
-  backgroundColor: color.transparent,
+  backgroundColor: color.primary,
   borderRadius: 20,
   borderColor: color.primary,
   borderWidth: 1,
@@ -25,69 +26,70 @@ const BUTTON_ADD: ViewStyle = {
   marginBottom: spacing[2],
 }
 const TEXT_ADD: TextStyle = {
-  color: color.primary,
+  color: color.textWhite,
   fontSize: 16,
+  fontFamily: "Kanit-Medium",
 }
 
 const DATA = [
   {
-    topic: 'ทะเบียน กข - 11245',
-    subTopic: 'รถบรรทุกคอก',
-    updatedDate: '19/11/63',
-    status: 'รอตรวจสอบ',
-    image: 'truck17',
+    topic: "ทะเบียน กข - 11245",
+    subTopic: "รถบรรทุกคอก",
+    updatedDate: "19/11/63",
+    status: "รอตรวจสอบ",
+    image: "truck17",
   },
   {
-    topic: 'ทะเบียน กข - 11245',
-    subTopic: 'รถบรรทุกคอก',
-    updatedDate: '19/11/63',
-    status: 'ตรวจสอบแล้ว',
-    image: 'truck17',
+    topic: "ทะเบียน กข - 11245",
+    subTopic: "รถบรรทุกคอก",
+    updatedDate: "19/11/63",
+    status: "ตรวจสอบแล้ว",
+    image: "truck17",
     isChecked: true,
   },
   {
-    topic: 'ทะเบียน กข - 11245',
-    subTopic: 'รถบรรทุกคอก',
-    updatedDate: '19/11/63',
-    status: 'รอตรวจสอบ',
-    image: 'truck17',
+    topic: "ทะเบียน กข - 11245",
+    subTopic: "รถบรรทุกคอก",
+    updatedDate: "19/11/63",
+    status: "รอตรวจสอบ",
+    image: "truck17",
   },
   {
-    topic: 'ทะเบียน กข - 11245',
-    subTopic: 'รถบรรทุกคอก',
-    updatedDate: '19/11/63',
-    status: 'ตรวจสอบแล้ว',
-    image: 'truck17',
+    topic: "ทะเบียน กข - 11245",
+    subTopic: "รถบรรทุกคอก",
+    updatedDate: "19/11/63",
+    status: "ตรวจสอบแล้ว",
+    image: "truck17",
     isChecked: true,
   },
   {
-    topic: 'ทะเบียน กข - 11245',
-    subTopic: 'รถบรรทุกคอก',
-    updatedDate: '19/11/63',
-    status: 'รอตรวจสอบ',
-    image: 'truck17',
+    topic: "ทะเบียน กข - 11245",
+    subTopic: "รถบรรทุกคอก",
+    updatedDate: "19/11/63",
+    status: "รอตรวจสอบ",
+    image: "truck17",
   },
   {
-    topic: 'ทะเบียน กข - 11245',
-    subTopic: 'รถบรรทุกคอก',
-    updatedDate: '19/11/63',
-    status: 'ตรวจสอบแล้ว',
-    image: 'truck17',
+    topic: "ทะเบียน กข - 11245",
+    subTopic: "รถบรรทุกคอก",
+    updatedDate: "19/11/63",
+    status: "ตรวจสอบแล้ว",
+    image: "truck17",
     isChecked: true,
   },
   {
-    topic: 'ทะเบียน กข - 11245',
-    subTopic: 'รถบรรทุกคอก',
-    updatedDate: '19/11/63',
-    status: 'รอตรวจสอบ',
-    image: 'truck17',
+    topic: "ทะเบียน กข - 11245",
+    subTopic: "รถบรรทุกคอก",
+    updatedDate: "19/11/63",
+    status: "รอตรวจสอบ",
+    image: "truck17",
   },
   {
-    topic: 'ทะเบียน กข - 11245',
-    subTopic: 'รถบรรทุกคอก',
-    updatedDate: '19/11/63',
-    status: 'ตรวจสอบแล้ว',
-    image: 'truck17',
+    topic: "ทะเบียน กข - 11245",
+    subTopic: "รถบรรทุกคอก",
+    updatedDate: "19/11/63",
+    status: "ตรวจสอบแล้ว",
+    image: "truck17",
     isChecked: true,
   },
 ]
@@ -96,12 +98,17 @@ export const MyVehicle = observer(function MyVehicle() {
   const navigation = useNavigation()
 
   const onPress = (value) => {
-    navigation.navigate('vehicleInformation')
+    navigation.navigate("vehicleDetail")
   }
+
+  // useEffect(() => {
+  //   if (MyVehicleStore.getVehicles) {
+  //     console.log('MyVehicleStore.getVehicles :>> ', JSON.parse(JSON.stringify(MyVehicleStore.getVehicles)));
+  //   }
+  // }, [MyVehicleStore.getVehicles])
 
   return (
     <View style={CONTAINER}>
-
       <ScrollView
         onScroll={({ nativeEvent }) => {
           // console.log('nativeEvent', nativeEvent)
@@ -109,20 +116,22 @@ export const MyVehicle = observer(function MyVehicle() {
         style={SCROLL}
         scrollEventThrottle={400}
       >
-        {DATA && DATA.map((item, index) => {
-          return <VehicleItem key={index} {...item} onPress={onPress} />
-        })}
-
+        {DATA &&
+          DATA.map((item, index) => {
+            return <VehicleItem key={index} {...item}  onPress={onPress} />
+          })}
       </ScrollView>
 
-      <Button
-        testID="add-new-vahicle"
-        style={BUTTON_ADD}
-        textStyle={TEXT_ADD}
-        text={translate('myVehicleScreen.addNewCar')} // เพิ่มรถของฉัน
-        // disabled={disabled}
-        onPress={() => navigation.navigate("uploadVehicle")}
-      />
+      <View>
+        <Button
+          testID="add-new-vahicle"
+          style={BUTTON_ADD}
+          textStyle={TEXT_ADD}
+          text={translate("myVehicleScreen.addNewCar")} // เพิ่มรถของฉัน
+          // disabled={disabled}
+          onPress={() => navigation.navigate("uploadVehicle")}
+        />
+      </View>
     </View>
   )
 })

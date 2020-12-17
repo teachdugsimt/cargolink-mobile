@@ -1,11 +1,19 @@
-import React from 'react'
-import { Dimensions, ImageBackground, ImageStyle, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
-import { VehicleItemProps } from './vehicle-item.prop';
-import { color, images, spacing } from '../../theme'
-import { Text } from '..'
-import { translate } from '../../i18n';
+import React from "react"
+import {
+  Dimensions,
+  ImageBackground,
+  ImageStyle,
+  TextStyle,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native"
+import { VehicleItemProps } from "./vehicle-item.prop"
+import { color, images, spacing } from "../../theme"
+import { Text } from ".."
+import { translate } from "../../i18n"
 
-const TEXT_BOLD: TextStyle = { fontWeight: 'bold' }
+const TEXT_BOLD: TextStyle = { fontWeight: "bold" }
 const BORDER_RADIUS = { borderRadius: 4 }
 const CONTAINER: ViewStyle = {
   flex: 1,
@@ -20,39 +28,44 @@ const CONTAINER: ViewStyle = {
   ...BORDER_RADIUS,
 }
 const ROW: ViewStyle = {
-  flexDirection: 'row',
-  flex: 1,
+  flexDirection: "row",
 }
 const TOPIC: TextStyle = {
   ...TEXT_BOLD,
   fontSize: 16,
+  fontFamily: 'Kanit-Medium',
 }
-const STATUS: TextStyle = {
+const STATUS_VIEW: ViewStyle = {
+  ...BORDER_RADIUS,
+  backgroundColor: color.disable,
+}
+const STATUS_TEXT: TextStyle = {
   color: color.primary,
   paddingTop: spacing[1],
   paddingBottom: spacing[1],
   paddingLeft: spacing[3],
   paddingRight: spacing[3],
   fontSize: 12,
-  backgroundColor: color.disable,
-  ...BORDER_RADIUS,
+  fontFamily: 'Kanit-Medium',
 }
 const SUB_TOPIC: TextStyle = {
   ...TEXT_BOLD,
   fontSize: 13,
-  paddingTop: spacing[2]
+  paddingTop: spacing[1],
 }
 const INFORMATION_DATE: TextStyle = {
   color: color.disable,
   fontSize: 13,
+  fontFamily: 'Kanit-Medium',
 }
 const IMAGE: ImageStyle = {
-  position: 'absolute',
+  position: "absolute",
+  // height: Dimensions.get('window').height / 8,
   height: 85,
   right: spacing[2],
   bottom: spacing[1],
-  resizeMode: 'contain',
-  aspectRatio: 4 / 2
+  resizeMode: "contain",
+  aspectRatio: 4 / 2,
 }
 
 export function VehicleItem(props: VehicleItemProps) {
@@ -68,24 +81,32 @@ export function VehicleItem(props: VehicleItemProps) {
     statusStyle,
     imageStyle,
     isChecked,
-    onPress
+    onPress,
   } = props
 
   const statusColor = isChecked ? color.success : color.primary
-  const deviceHeight = Dimensions.get('window').height
+  const deviceHeight = Dimensions.get("window").height
 
   return (
-    <TouchableOpacity onPress={onPress || null} style={{ height: deviceHeight / 4.5, flex: 1 }}>
+    <TouchableOpacity onPress={onPress || null} style={{ height: 150, flex: 1 }}>
       <View style={{ ...CONTAINER, ...containerStyle }}>
-        <View style={{ ...ROW, justifyContent: 'space-between' }}>
+        <View style={{ ...ROW, justifyContent: "space-between" }}>
           <Text style={{ ...TOPIC, ...topicStyle }} text={topic} />
-          <Text style={{ ...STATUS, color: statusColor, ...statusStyle }} text={status} />
+          {/* <View style={STATUS_VIEW}> */}
+            <Text style={{ ...STATUS_TEXT, color: statusColor, ...statusStyle }} text={status} />
+          {/* </View> */}
         </View>
         <View style={ROW}>
-          <Text style={{ ...SUB_TOPIC, ...subTopicStyle }} text={`${translate('myVehicleScreen.type')} ${subTopic}`} />
+          <Text
+            style={{ ...SUB_TOPIC, ...subTopicStyle }}
+            text={`${translate("myVehicleScreen.type")} ${subTopic}`}
+          />
         </View>
-        <View style={{ ...ROW, flex: 3, alignItems: 'flex-end' }}>
-          <Text style={INFORMATION_DATE} text={`${translate('myVehicleScreen.informationAt')} ${updatedDate}`} />
+        <View style={{ ...ROW, flex: 3, alignItems: "flex-end" }}>
+          <Text
+            style={INFORMATION_DATE}
+            text={`${translate("myVehicleScreen.informationAt")} ${updatedDate}`}
+          />
         </View>
         <ImageBackground source={images[`${image}`]} style={{ ...IMAGE, ...imageStyle }} />
       </View>

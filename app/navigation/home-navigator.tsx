@@ -13,7 +13,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import {
     DetailScreen, HomeScreen, JobDetailScreen, MyVehicle, PostJobScreen, SearchCarScreen, SearchJobScreen, SettingSearchScreen,
     UploadVehicleScreen,
-    VehicleInformationScreen
+    VehicleDetailScreen
 } from "../screens"
 import { translate } from "../i18n"
 /**
@@ -38,7 +38,7 @@ export type PrimaryHomeParamList = {
     searchCar: undefined
     uploadVehicle: undefined
     myVehicle: undefined
-    vehicleInformation: undefined
+    vehicleDetail: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -127,8 +127,24 @@ export function HomeNavigator() {
                     headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
                 })} />
 
-            <Stack.Screen name="myVehicle" component={MyVehicle} />
-            <Stack.Screen name="vehicleInformation" component={VehicleInformationScreen} />
+            <Stack.Screen
+                name="myVehicle"
+                component={MyVehicle}
+                options={({ navigation, route }) => ({
+                    // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
+                    headerCenter: () => <HeaderCenter tx={"myVehicleScreen.myTruck"} />,
+                    headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+                })}
+            />
+            <Stack.Screen
+                name="vehicleDetail"
+                component={VehicleDetailScreen}
+                options={({ navigation, route }) => ({
+                    // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
+                    headerCenter: () => <HeaderCenter tx={"myVehicleScreen.myTruck"} />,
+                    headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+                })}
+            />
         </Stack.Navigator>
     )
 }

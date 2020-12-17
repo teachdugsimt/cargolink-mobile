@@ -163,6 +163,17 @@
     "20” Trailer 18 Wheels - Cabinet truck - Temperature Controlled": "20” Trailer 18 Wheels - Cabinet truck - Temperature Controlled",
     "20” Trailer 18 Wheels - Stall Truck": "20” Trailer 18 Wheels - Stall Truck",
     "Trailer 22 wheels Side Curtain": "Trailer 22 wheels Side Curtain",
-    "20 wheels Side Curtain": "20 wheels Side Curtain"
+    "20 wheels Side Curtain": "20 wheels Side Curtain",
+    "addNewCar": "Add new car",
+    "myTruck": "My Truck"
+  },
+  "vehicleDetailScreen": {
+    "vehicleImage": "Vehicle Image",
+    "vehicleType": "Vehicle Type",
+    "heightOfTheCarStall": "Height of the car stall (meters)",
+    "carHaveDum": "Does the car have a dum",
+    "myVehicleDetail": "My vehicle detail",
+    "vehicleRegistrationNumber": "Vehicle registration number",
+    "edit": "Edit"
   }
 }

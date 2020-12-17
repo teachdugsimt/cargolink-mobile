@@ -8,17 +8,16 @@ import {
 } from 'react-native-confirmation-code-field';
 import { Dimensions, SafeAreaView, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { Button, CountDown, Text } from '../../components';
-import { color } from '../../theme';
+import { color, spacing } from '../../theme';
 import { useNavigation } from '@react-navigation/native';
 import { translate } from '../../i18n';
+import AuthStore from '../../store/auth-store/auth-store'
 
 const ROOT: ViewStyle = {
   // flex: 1,
   height: Dimensions.get("window").height,
   paddingTop: 50,
-  paddingRight: 20,
   paddingBottom: 20,
-  paddingLeft: 20,
   backgroundColor: color.backgroundWhite
 }
 const CODE_FIELD_ROOT: TextStyle = {
@@ -30,8 +29,8 @@ const CODE_FIELD_ROOT: TextStyle = {
 }
 const CODE_INFORMATION_ROOT: ViewStyle = {
   flex: 1,
-  marginLeft: 10,
-  marginRight: 10,
+  marginLeft: spacing[5],
+  marginRight: spacing[5],
   marginTop: -30
 }
 const CELL_ROOT: TextStyle = {
@@ -66,7 +65,8 @@ const RESEND_CODE_TEXT: TextStyle = {
 const CONFIRM_CODE_ROOT: ViewStyle = {
   flex: 3,
   flexDirection: "column-reverse",
-  paddingBottom: 30
+  paddingBottom: 30,
+  marginHorizontal: spacing[5]
 }
 const COUNT_DOWN: TextStyle = {
   paddingLeft: 5
@@ -155,6 +155,15 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
     }))
   }
 
+  const onPress = (value: string) => {
+    AuthStore.otpVerifyRequest({
+      refCode: AuthStore.getAuthData.refCode,
+      otpCode: value
+    })
+    clearState()
+    navigation.navigate("acceptPolicy")
+  }
+
   useEffect(() => {
     if (!resendCode && isExpired) {
       setIsShow(false)
@@ -162,6 +171,12 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
       setIsShow(true)
     }
   }, [resendCode, isExpired, autoFocus])
+
+  useEffect(() => {
+    if (AuthStore.getAuthData && AuthStore.getAuthData.refCode) {
+      console.log('AuthStore.getAuthData :>> ', JSON.parse(JSON.stringify(AuthStore.getAuthData)));
+    }
+  }, [AuthStore.getAuthData])
 
   return (
     <SafeAreaView style={ROOT}>
@@ -208,7 +223,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
             /> :
             <Text style={COUNT_DOWN}>0:00</Text>
           }
-          <Text style={CODE_REF}>(Ref: {'ABD1234'})</Text>
+          <Text style={CODE_REF}>(Ref: {AuthStore.getAuthData.refCode})</Text>
         </View>
         <View style={{ flex: 1, alignItems: 'center' }}>
           {isExpired && <Text style={TEXT_EXPIRE} text={translate('confirmCodeScreen.codeExpired')} />}
@@ -229,10 +244,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
           textStyle={CONTINUE_TEXT}
           disabled={disabled}
           text={translate('confirmCodeScreen.confirmOTP')} // ยืนยันรหัส OTP
-          onPress={() => {
-            clearState()
-            navigation.navigate("acceptPolicy")
-          }}
+          onPress={() => onPress(value)}
         />
       </View>
     </SafeAreaView>
