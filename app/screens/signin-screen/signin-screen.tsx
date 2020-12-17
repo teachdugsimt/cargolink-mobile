@@ -153,7 +153,7 @@ export const SigninScreen = observer(function SigninScreen() {
           <TextInput
             style={MOBILE_INPUT}
             keyboardType={"numeric"}
-            maxLength={10}
+            maxLength={16}
             placeholder={"xx - xxx - xxxx"} // ใส่ข้อมูลเบอร์โทรศัพท์ของคุณ
             onChangeText={(text) => onChangeText(text)}
             value={value}

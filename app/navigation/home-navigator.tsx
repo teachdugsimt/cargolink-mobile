@@ -132,7 +132,7 @@ export function HomeNavigator() {
                 component={MyVehicle}
                 options={({ navigation, route }) => ({
                     // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
-                    headerCenter: () => <HeaderCenter tx={"myVehicleScreen.myCar"} />,
+                    headerCenter: () => <HeaderCenter tx={"myVehicleScreen.myTruck"} />,
                     headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
                 })}
             />
@@ -141,7 +141,7 @@ export function HomeNavigator() {
                 component={VehicleDetailScreen}
                 options={({ navigation, route }) => ({
                     // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
-                    headerCenter: () => <HeaderCenter tx={"myVehicleScreen.myCar"} />,
+                    headerCenter: () => <HeaderCenter tx={"myVehicleScreen.myTruck"} />,
                     headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
                 })}
             />

@@ -26,10 +26,8 @@ const COLUMN: ViewStyle = {
   flex: 1,
   backgroundColor: color.backgroundWhite,
   marginBottom: spacing[1],
-  paddingTop: spacing[4],
-  paddingBottom: spacing[4],
-  paddingLeft: spacing[4],
-  paddingRight: spacing[4],
+  paddingHorizontal: spacing[4],
+  paddingVertical: spacing[4],
 }
 const ROW: ViewStyle = {
   flex: 1,
@@ -53,12 +51,11 @@ const IMAGE: ImageStyle = {
   borderRadius: 4,
 }
 const BUTTON_EDIT: ViewStyle = {
-  backgroundColor: color.disable,
+  backgroundColor: color.primary,
   borderRadius: 20,
   marginLeft: spacing[3],
   marginRight: spacing[3],
-  marginTop: spacing[2],
-  marginBottom: spacing[2],
+  marginHorizontal: spacing[1]
 }
 const TEXT_EDIT: TextStyle = {
   fontSize: 16,
@@ -185,7 +182,7 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
           </View>
         </View>
 
-        <View style={COLUMN}>
+        <View style={{...COLUMN, paddingVertical: spacing[2]}}>
           <Button
             testID="edit-vehicle"
             style={BUTTON_EDIT}

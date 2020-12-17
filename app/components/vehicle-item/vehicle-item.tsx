@@ -60,7 +60,8 @@ const INFORMATION_DATE: TextStyle = {
 }
 const IMAGE: ImageStyle = {
   position: "absolute",
-  height: Dimensions.get('window').height / 8,
+  // height: Dimensions.get('window').height / 8,
+  height: 85,
   right: spacing[2],
   bottom: spacing[1],
   resizeMode: "contain",
@@ -87,13 +88,13 @@ export function VehicleItem(props: VehicleItemProps) {
   const deviceHeight = Dimensions.get("window").height
 
   return (
-    <TouchableOpacity onPress={onPress || null} style={{ height: deviceHeight / 4.5, flex: 1 }}>
+    <TouchableOpacity onPress={onPress || null} style={{ height: 150, flex: 1 }}>
       <View style={{ ...CONTAINER, ...containerStyle }}>
         <View style={{ ...ROW, justifyContent: "space-between" }}>
           <Text style={{ ...TOPIC, ...topicStyle }} text={topic} />
-          <View style={STATUS_VIEW}>
+          {/* <View style={STATUS_VIEW}> */}
             <Text style={{ ...STATUS_TEXT, color: statusColor, ...statusStyle }} text={status} />
-          </View>
+          {/* </View> */}
         </View>
         <View style={ROW}>
           <Text
