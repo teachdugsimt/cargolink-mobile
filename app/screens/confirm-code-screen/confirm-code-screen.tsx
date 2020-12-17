@@ -155,6 +155,15 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
     }))
   }
 
+  const onPress = (value: string) => {
+    AuthStore.otpVerifyRequest({
+      refCode: AuthStore.getAuthData.refCode,
+      otpCode: value
+    })
+    clearState()
+    navigation.navigate("acceptPolicy")
+  }
+
   useEffect(() => {
     if (!resendCode && isExpired) {
       setIsShow(false)
@@ -164,7 +173,9 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
   }, [resendCode, isExpired, autoFocus])
 
   useEffect(() => {
-    console.log('AuthStore.getAuthData :>> ', JSON.parse(JSON.stringify(AuthStore.getAuthData)));
+    if (AuthStore.getAuthData && AuthStore.getAuthData.refCode) {
+      console.log('AuthStore.getAuthData :>> ', JSON.parse(JSON.stringify(AuthStore.getAuthData)));
+    }
   }, [AuthStore.getAuthData])
 
   return (
@@ -212,7 +223,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
             /> :
             <Text style={COUNT_DOWN}>0:00</Text>
           }
-          <Text style={CODE_REF}>(Ref: {'ABD1234'})</Text>
+          <Text style={CODE_REF}>(Ref: {AuthStore.getAuthData.refCode})</Text>
         </View>
         <View style={{ flex: 1, alignItems: 'center' }}>
           {isExpired && <Text style={TEXT_EXPIRE} text={translate('confirmCodeScreen.codeExpired')} />}
@@ -233,10 +244,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
           textStyle={CONTINUE_TEXT}
           disabled={disabled}
           text={translate('confirmCodeScreen.confirmOTP')} // ยืนยันรหัส OTP
-          onPress={() => {
-            clearState()
-            navigation.navigate("acceptPolicy")
-          }}
+          onPress={() => onPress(value)}
         />
       </View>
     </SafeAreaView>

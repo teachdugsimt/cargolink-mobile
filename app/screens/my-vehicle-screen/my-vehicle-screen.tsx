@@ -1,10 +1,11 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { observer } from "mobx-react-lite"
 import { ScrollView, TextStyle, View, ViewStyle } from "react-native"
 import { Button, Text, VehicleItem } from "../../components/"
 import { color, spacing } from "../../theme"
 import { translate } from "../../i18n"
 import { useNavigation } from "@react-navigation/native"
+// import MyVehicleStore from '../../store/my-vehicle-store/my-vehicle-store'
 
 const CONTAINER: ViewStyle = {
   flex: 1,
@@ -99,6 +100,12 @@ export const MyVehicle = observer(function MyVehicle() {
   const onPress = (value) => {
     navigation.navigate("vehicleDetail")
   }
+
+  // useEffect(() => {
+  //   if (MyVehicleStore.getVehicles) {
+  //     console.log('MyVehicleStore.getVehicles :>> ', JSON.parse(JSON.stringify(MyVehicleStore.getVehicles)));
+  //   }
+  // }, [MyVehicleStore.getVehicles])
 
   return (
     <View style={CONTAINER}>

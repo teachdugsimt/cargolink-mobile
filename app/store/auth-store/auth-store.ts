@@ -9,9 +9,32 @@ const SignIn = types.model({
   expireTime: types.maybeNull(types.string),
 })
 
+const OTPVerify = types.model({
+  userProfile: types.maybeNull(
+    types.model({
+      id: types.maybeNull(types.string),
+      companyName: types.maybeNull(types.string),
+    }),
+  ),
+  termOfService: types.maybeNull(
+    types.model({
+      latestVersion: types.maybeNull(types.string),
+      latestVersionAgree: types.maybeNull(types.boolean),
+    }),
+  ),
+  token: types.maybeNull(
+    types.model({
+      idToken: types.maybeNull(types.string),
+      accessToken: types.maybeNull(types.string),
+      refreshToken: types.maybeNull(types.string),
+    }),
+  ),
+})
+
 const AuthStore = types
   .model({
     data: types.maybeNull(SignIn),
+    otpData: types.maybeNull(OTPVerify),
     loading: types.boolean,
     error: types.maybeNull(types.string),
   })
@@ -22,8 +45,25 @@ const AuthStore = types
       self.loading = true
       try {
         const response = yield apiAuth.signIn(data)
-        console.log("Response call api get user : : ", response.data)
+        console.log("Response call api get user : : ", response)
         self.data = response.data || {}
+        self.loading = false
+      } catch (error) {
+        // ... including try/catch error handling
+        console.error("Failed to fetch get users api : ", error)
+        // self.data = []
+        self.loading = false
+        self.error = "error fetch api get users"
+      }
+    }),
+
+    otpVerifyRequest: flow(function* otpVerifyRequest(data: Types.OTPVerifyRequest) {
+      apiAuth.setup()
+      self.loading = true
+      try {
+        const response = yield apiAuth.verifyOTP(data)
+        console.log("Response call api get user : : ", response)
+        self.otpData = response.data || {}
         self.loading = false
       } catch (error) {
         // ... including try/catch error handling
@@ -38,10 +78,14 @@ const AuthStore = types
     get getAuthData() {
       return self.data
     },
+    get getOtpVerifyData() {
+      return self.otpData
+    },
   }))
   .create({
     // IMPORTANT !!
     data: {},
+    otpData: {},
     loading: false,
     error: "",
   })

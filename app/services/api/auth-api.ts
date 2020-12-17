@@ -3,11 +3,20 @@ import { getGeneralApiProblem } from "./api-problem"
 import { ApiConfig, DEFAULT_API_CONFIG } from "./api-config"
 import * as Types from "./api.types"
 
-import { GeneralApiProblem } from "./api-problem"
+// import { GeneralApiProblem } from "./api-problem"
 
 import { createServer } from "miragejs"
 
-const BASE_URL = "https://cargo-link.com"
+const BASE_URL = "https://{{enpoint}}.com"
+
+const makeId = (length: number) => {
+  let result = ""
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length))
+  }
+  return result
+}
 
 createServer({
   routes() {
@@ -16,8 +25,29 @@ createServer({
       console.log(attrs)
       // debugger
       return {
-        refCode: "AB91",
+        refCode: makeId(4),
         expireTime: Math.floor(Date.now() / 1000).toString(),
+      }
+    })
+
+    this.post(`${BASE_URL}/api/v1/users/auth/otp-verify`, (schema, request) => {
+      const attrs = JSON.parse(request.requestBody)
+      console.log(attrs)
+      // debugger
+      return {
+        userProfile: {
+          id: Math.floor(Date.now() / 1000).toString(),
+          companyName: "Onelink space",
+        },
+        termOfService: {
+          latestVersion: "0.0.1",
+          latestVersionAgree: true,
+        },
+        token: {
+          idToken: "string",
+          accessToken: "string",
+          refreshToken: "string",
+        },
       }
     })
   },
@@ -85,6 +115,30 @@ export class AuthAPI {
         expireTime: response.data.expireTime,
       }
       return { kind: "ok", data: resultUser }
+      // transform the data into the format we are expecting
+    } catch (error) {
+      console.log("Error call api get user (MOCK): ", error)
+      return error
+    }
+  }
+
+  /**
+   * Verify OTP
+   */
+  async verifyOTP(data: Types.OTPVerifyRequest): Promise<any> {
+    // make the api call
+    try {
+      const response: ApiResponse<any> = await this.apisauce.post(
+        `${BASE_URL}/api/v1/users/auth/otp-verify`,
+        data,
+      )
+      // the typical ways to die when calling an api
+      console.log("Response call api get user (MOCK) : ", response)
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+      return { kind: "ok", data: response.data }
       // transform the data into the format we are expecting
     } catch (error) {
       console.log("Error call api get user (MOCK): ", error)

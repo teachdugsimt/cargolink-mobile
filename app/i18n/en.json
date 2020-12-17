@@ -120,7 +120,7 @@
   "vehicleDetailScreen": {
     "vehicleImage": "Vehicle Image",
     "vehicleType": "Vehicle Type",
-    "heightOfTheCarStall": "Height of the car stall (In meters)",
+    "heightOfTheCarStall": "Height of the car stall (meters)",
     "carHaveDum": "Does the car have a dum",
     "myVehicleDetail": "My vehicle detail",
     "vehicleRegistrationNumber": "Vehicle registration number",
