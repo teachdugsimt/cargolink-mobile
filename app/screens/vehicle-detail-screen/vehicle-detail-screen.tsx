@@ -4,6 +4,7 @@ import {
   Dimensions,
   Image,
   ImageStyle,
+  Modal,
   ScrollView,
   Switch,
   TextStyle,
@@ -14,6 +15,8 @@ import { Button, Text } from "../../components"
 import { translate } from "../../i18n"
 import { color, images, spacing } from "../../theme"
 import { useNavigation } from "@react-navigation/native"
+import ImageViewer from 'react-native-image-zoom-viewer';
+import { TouchableOpacity } from "react-native-gesture-handler"
 
 const deviceWidht = Dimensions.get("window").width
 const deviceHeight = Dimensions.get("window").height
@@ -94,29 +97,54 @@ const LOGO: ImageStyle = {
 const TYPE_CAR_NAME: TextStyle = {
   paddingLeft: spacing[4],
 }
+const TOUCHABLE: ViewStyle = {
+  flex: 1,
+  flexDirection: 'row'
+}
 
 const initialState = {
   isChecked: false,
+  openViewer: false,
+  indexOfImage: 0,
 }
 
 export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
   const navigation = useNavigation()
-
-  const [state, setState] = useState(initialState)
-
   const data = {
     images: [
-      "https://truck.in.th/images/T03/T030709955_1_1551238177.jpeg",
-      "https://img.kaidee.com/prd/20180706/339715226/b/dafc9446-9a85-439b-ab38-eba1a0a3c164.jpg",
-      "https://imgc1.taladrod.com/c/cidx/008/421/14_1.jpg",
-      "https://truck.in.th/images/P09/P090598458_1_1506054693.jpg",
-    ],
+      {
+        url: "https://truck.in.th/images/T03/T030709955_1_1551238177.jpeg",
+      }, {
+        url: "https://img.kaidee.com/prd/20180706/339715226/b/dafc9446-9a85-439b-ab38-eba1a0a3c164.jpg",
+      }, {
+        url: "https://imgc1.taladrod.com/c/cidx/008/421/14_1.jpg",
+      }, {
+        url: "https://truck.in.th/images/P09/P090598458_1_1506054693.jpg",
+      }
+    ]
   }
+
+  const [{ isChecked, openViewer, indexOfImage }, setState] = useState(initialState)
 
   const onValueChange = () => {
     setState((prevState) => ({
       ...prevState,
       isChecked: !prevState.isChecked,
+    }))
+  }
+  
+  const onViewer = (index: number) => {
+    setState(prevState => ({
+      ...prevState,
+      openViewer: true,
+      indexOfImage: index,
+    }))
+  }
+
+  const onCancel = () => {
+    setState(prevState => ({
+      ...prevState,
+      openViewer: false
     }))
   }
 
@@ -131,8 +159,21 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
             <View style={IMAGES}>
               {data.images &&
                 data.images.map((image, index) => {
-                  return <Image style={IMAGE} source={{ uri: image }} key={index} />
+                  return (
+                    <TouchableOpacity style={TOUCHABLE} key={index} onPress={(attr) => onViewer(index)}>
+                      <Image style={IMAGE} source={{ uri: image.url }} key={index} />
+                    </TouchableOpacity>
+                  )
                 })}
+              <Modal visible={openViewer} transparent={true}>
+                <ImageViewer
+                  imageUrls={data.images}
+                  index={indexOfImage}
+                  onCancel={onCancel}
+                  enableSwipeDown={true}
+                  pageAnimateTime={data.images.length}
+                />
+            </Modal>
             </View>
           </View>
         </View>
@@ -155,7 +196,7 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
           </View>
           <View style={{ ...ROW, justifyContent: "space-between" }}>
             <Text text={translate("vehicleDetailScreen.carHaveDum")} />
-            <Switch value={state.isChecked} onValueChange={onValueChange} />
+            <Switch value={isChecked} onValueChange={onValueChange} />
           </View>
         </View>
 

@@ -84,12 +84,16 @@ const LABEL: TextStyle = {
 
 const FIRST_MOBILE_NO: string = "0"
 
+const initialState = {
+  disabled: true,
+  buttonColor: color.disable,
+  value: ''
+}
+
 export const SigninScreen = observer(function SigninScreen() {
   const navigation = useNavigation()
   // const goBack = () => navigation.goBack()
-  const [disabled, setDisabled] = useState(true)
-  const [buttonColor, setButtonColor] = useState(color.disable)
-  const [value, setValue] = useState<string>("")
+  const [{disabled, buttonColor, value}, setState] = useState(initialState)
   const [countryCode, setCountryCode] = useState<CountryCode>("TH")
   const [country, setCountry] = useState<Country>(null)
   const [withCountryNameButton, setWithCountryNameButton] = useState<boolean>(false)
@@ -107,21 +111,54 @@ export const SigninScreen = observer(function SigninScreen() {
     setCountry(countryData)
   }
   const validateMobileNumberSuccess = () => {
-    setDisabled(false)
-    setButtonColor(color.primary)
+    setState(prevState => ({
+      ...prevState,
+      disabled: false,
+      buttonColor: color.primary,
+    }))
     Keyboard.dismiss()
   }
-  const onChangeText = (text: string) => {
-    setValue(text)
-    const firstMobileNo = text.substr(0, 1)
-    if (firstMobileNo === FIRST_MOBILE_NO && text.length === 10) {
-      validateMobileNumberSuccess()
-    } else if (firstMobileNo !== FIRST_MOBILE_NO && text.length === 9) {
-      validateMobileNumberSuccess()
+
+  const normalizeInput = (value: string, previousValue: string) => {
+    if (!value) return value;
+    const currentValue = value.replace(/[^\d]/g, '');
+    const cvLength = currentValue.length;
+    const firstMobileNo = value.slice(0, 1)
+  
+    if (!previousValue || value.length > previousValue.length) {
+      if (firstMobileNo === FIRST_MOBILE_NO) {
+        if(cvLength === 10) validateMobileNumberSuccess()
+        if (cvLength < 4) return currentValue;
+        if (cvLength < 7) return `${currentValue.slice(0, 3)} - ${currentValue.slice(3)}`;
+        return `${currentValue.slice(0, 3)} - ${currentValue.slice(3, 6)} - ${currentValue.slice(6, 10)}`;
+      } else {
+        if(cvLength === 9) validateMobileNumberSuccess()
+        if (cvLength < 3) return currentValue;
+        if (cvLength < 6) return `${currentValue.slice(0, 2)} - ${currentValue.slice(2)}`;
+        return `${currentValue.slice(0, 2)} - ${currentValue.slice(2, 5)} - ${currentValue.slice(5, 9)}`;
+      }
     } else {
-      setDisabled(true)
-      setButtonColor(color.disable)
+      setState(prevState => ({
+        ...prevState,
+        disabled: true,
+        buttonColor: color.disable,
+      }))
+      if (value.slice(-3).match(' - ')) value = value.slice(0, -3)
+      return value;
     }
+  };
+
+  const onChangeText = (text: string) => {
+    const mobileNo = normalizeInput(text, value)
+    setState(prevState => ({
+      ...prevState,
+      value: mobileNo
+    }))
+  }
+
+  const onPress = () => {
+    setState(initialState)
+    navigation.navigate("confirmCode")
   }
 
   return (
@@ -168,10 +205,7 @@ export const SigninScreen = observer(function SigninScreen() {
           disabled={disabled}
           // tx="goHome"
           text={translate("signinScreen.signin")}
-          onPress={() => {
-            setValue("")
-            navigation.navigate("confirmCode")
-          }}
+          onPress={onPress}
         />
       </View>
     </View>
