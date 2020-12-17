@@ -30,7 +30,11 @@
     "enterYourPhoneNumber": "Enter your phone number"
   },
   "homeScreen": {
-    "logout": "Log out"
+    "logout": "Log out",
+    "manageCar": "Manage Car",
+    "findJob": "Find Job",
+    "postJob": "Post Job",
+    "findCar": "Find Car"
   },
   "postJobScreen": {
     "postjob": "post job",
@@ -53,6 +57,9 @@
     "addVehicleRegistration": "Add vehicle registration",
     "uploadVehicleImage": "Upload vehicle image",
     "exampleImageFront": "example image frontside",
+    "exampleImageBack": "example image backside",
+    "exampleImageLeft": "example image leftside",
+    "exampleImageRight": "example image rightside",
     "workZone": "Work zone",
     "region": "region",
     "province": "province"
@@ -76,7 +83,10 @@
     "lineOfficialAccount": "Line Official Account",
     "callCenter": "Call Center",
     "moreMenu": "More menu",
-    "language": "Language"
+    "language": "Language",
+    "english": "English",
+    "thai": "Thai",
+    "Japan": "Japan"
   },
   "searchBarComponent": {
     "fullSearch": "Full search"

@@ -47,7 +47,7 @@ const TEXT_STYLE: TextStyle = {
     alignSelf: 'flex-start',
     fontSize: typography.menu,
     // fontWeight: 'bold',
-    fontFamily: "Kanit-ExtraBold"
+    fontFamily: "Kanit-Medium"
 }
 
 const IMAGE_ICON: ImageStyle = {
@@ -68,7 +68,7 @@ const VIEW_IMG_MENU: ViewStyle = {
 const TITLE_STYLE: TextStyle = {
     fontSize: typography.title, color: color.black,
     // fontWeight: 'bold'
-    fontFamily: "Kanit-Bold"
+    fontFamily: "Kanit-Medium"
 }
 
 const VIEW_TITLE_TEXT: ViewStyle = {
@@ -90,7 +90,7 @@ export function GridView(props: any) {
                 return <TouchableOpacity onPress={() => item.onPressButton()} style={[VIEW_CARD, { marginLeft: index % 2 == 0 ? 10 : 0 }]}>
                     <View style={SUB_VIEW}>
                         <View style={VIEW_TEXT_MENU}>
-                            <Text style={TEXT_STYLE}>{item.name}</Text>
+                            <Text tx={item.name} style={TEXT_STYLE}></Text>
                         </View>
                         <View style={VIEW_IMG_MENU}>
                             <Image style={IMAGE_ICON}

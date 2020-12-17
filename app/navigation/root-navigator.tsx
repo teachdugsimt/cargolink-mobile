@@ -78,7 +78,7 @@ export const RootNavigator = React.forwardRef<
 >((props, ref) => {
   return (
     <NavigationContainer {...props} ref={ref}>
-      <StatusBar translucent barStyle="dark-content" animated={true} />
+      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" animated={true} />
       <RootStack />
     </NavigationContainer>
   )

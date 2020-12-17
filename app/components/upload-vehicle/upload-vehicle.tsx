@@ -45,7 +45,7 @@ const CONTENT_TEXT: TextStyle = {
     paddingTop: 5
 }
 export function UploadVehicle(props: any) {
-    const { uploadStyle, source, imageStyle } = props
+    const { uploadStyle, source, imageStyle, tx } = props
     return (
         <View style={{ ...ROOT_STYLE, ...uploadStyle }}>
             <TouchableOpacity style={UPLOAD_BUTTON}>
@@ -56,7 +56,7 @@ export function UploadVehicle(props: any) {
 
                     <View style={IMAGE_AND_TEXT}>
                         <Image source={source} style={{ ...IMAGE_PLACHOLDER, ...imageStyle }} resizeMode={'stretch'}></Image>
-                        <Text tx={"uploadVehicleScreen.exampleImageFront"} style={CONTENT_TEXT} />
+                        <Text tx={tx} style={CONTENT_TEXT} />
                     </View>
                 </View>
             </TouchableOpacity>

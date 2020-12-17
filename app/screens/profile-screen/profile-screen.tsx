@@ -91,7 +91,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
                             <Text tx={"profileScreen.carInformation"} style={DETAIL_TOPIC_NO} />
                             <View style={{ flexDirection: 'column' }}>
                                 {data_vehicle && data_vehicle.map((e, i) =>
-                                    <Text style={DETAIL_VEHICLE_TEXT}>{e}</Text>)}
+                                    <Text key={"profile-detail-vehicle-" + i + 1} style={DETAIL_VEHICLE_TEXT}>{e}</Text>)}
                             </View>
                         </View>
 

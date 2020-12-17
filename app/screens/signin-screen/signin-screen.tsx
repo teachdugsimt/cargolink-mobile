@@ -11,17 +11,17 @@ import {
   Dimensions,
 } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Button, Icon, Text } from "../../components"
-import { useNavigation } from "@react-navigation/native"
-import CountryPicker, {
-  Country,
-  CountryCode,
-  DEFAULT_THEME,
-} from "react-native-country-picker-modal"
-import { color, spacing } from "../../theme"
-import { translate } from "../../i18n"
+import { Button, Icon } from "../../components"
+import { useNavigation } from '@react-navigation/native'
+import CountryPicker, { Country, CountryCode, DEFAULT_THEME } from 'react-native-country-picker-modal'
+import { color, spacing } from '../../theme'
+import { translate } from '../../i18n'
+import i18n from 'i18n-js'
 
-const logo = require("./logo.png")
+i18n.defaultLocale = 'th'
+i18n.locale = 'th'
+i18n.fallbacks = true
+const logo = require('./logo.png')
 
 const CONTENT_CENTER: ViewStyle = {
   justifyContent: "center",

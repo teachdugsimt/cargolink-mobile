@@ -10,7 +10,7 @@ import { spacing, color, typography, images } from "../../../theme"
 import RNPickerSelect from 'react-native-picker-select';
 import { translate } from "../../../i18n"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-// import FetchStore from '../../../store/fetch-store/fetch-store'
+import FetchStore from '../../../store/fetch-store/fetch-store'
 // import { TestApi } from '../../../services/api'
 // const apiUsers = new TestApi()
 
@@ -108,32 +108,68 @@ const WRAP_DROPDOWN: ViewStyle = {
 const DROPDOWN_ICON_CONTAINER: ViewStyle = {
     paddingTop: 12.5, paddingRight: 5
 }
-
-export const UploadVehicleScreen = observer(function UploadVehicleScreen() {
+interface objectField {
+    id: number,
+    value: string
+}
+const INIT_FIELD: Array<objectField> = [{ id: 1, value: '' }]
+export const UploadVehicleScreen = () => {
     // const navigation = useNavigation()
     const [vehicle, setvehicle] = useState('')
     const [toggleDump, settoggleDump] = useState(false)
     const [vehicleHeight, setvehicleHeight] = useState('')
-    const [carRegistration, setcarRegistration] = useState('')
+    // const [carRegistration, setcarRegistration] = useState('')
     const [province, setprovince] = useState(null)
     const [region, setregion] = useState(null)
+    const [arrRegistration, setArrRegistration] = useState(INIT_FIELD)
+    const [arrRegistrationOld, setArrRegistrationOld] = useState(null)
+    const [renderNew, setrenderNew] = useState(false)
     
-    // useEffect(() => {
-    //     // FetchStore.getUserRequest()
+    const [stateData, setstateData] = useState(null)
+    useEffect(() => {
+        console.log("Mobx state data : : ", JSON.parse(JSON.stringify(FetchStore.getUserData)))
+        console.log("State data :: ", stateData)
+        FetchStore.getUserRequest()
+    }, [])
 
-    //     // fetch('https://jsonplaceholder.typicode.com/todos/1')
-    //     //     .then(response => response.json())
-    //     //     .then(json => console.log("FETCH JSON :: ", json))
+    useEffect(() => {
+        let tmp = JSON.parse(JSON.stringify(FetchStore.getUserData))
+        if (tmp.length && tmp != stateData) {
+            setstateData(tmp)
+            console.log("Fetstore data : ", JSON.parse(JSON.stringify(tmp)))
+        }
+        return () => {
+            setstateData(null)
+        }
+    }, [FetchStore.getUserData])
 
-    //     // apiUsers.getUsers().then(response => console.log("RESPONSE CALL API UEF :: ", response)).catch(err => console.log("ERROR : ?? : ", err))
-    // }, [])
 
-    // useEffect(() => {
-    //     const data = FetchStore.getUserData
-    //     console.log("Fetstore data : ", JSON.parse(JSON.stringify(data)))
-    //     if (data && Object.keys(data).length != 0) {
-    //     }
-    // }, [FetchStore])
+    useEffect(() => {
+        if (arrRegistration != arrRegistrationOld) {
+            console.log("Update arr text field ")
+            setArrRegistrationOld(arrRegistration)
+            setrenderNew(!renderNew)
+        }
+        return () => {
+            setArrRegistration(INIT_FIELD)
+        }
+    }, [arrRegistration])
+
+    const _addFieldRegistration = () => {
+        let tmp = arrRegistration
+        tmp.push({
+            id: tmp.length + 1,
+            value: ""
+        })
+        setArrRegistration(tmp)
+    }
+
+    const _setRegistrationSlotValue = (text, index) => {
+        let tmp = arrRegistration
+        tmp[index].value = text
+        setArrRegistration(tmp)
+    }
+    console.log(" Arr Text Field Header :: ", arrRegistration)
 
     return (
         <View testID="UploadVehicleScreen" style={FULL}>
@@ -141,6 +177,7 @@ export const UploadVehicleScreen = observer(function UploadVehicleScreen() {
 
                 <View style={TOP_VIEW}>
                     <View style={WRAPPER_TOP}>
+                       
                         <Text tx={"uploadVehicleScreen.selectVehicleType"} style={{ ...TITLE_TOPIC, ...MARGIN_TOP_BIG }} />
                         <View style={WRAP_DROPDOWN}>
                             <RNPickerSelect
@@ -154,7 +191,7 @@ export const UploadVehicleScreen = observer(function UploadVehicleScreen() {
                                 useNativeAndroidPickerStyle={false}
                                 style={{
                                     inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
-                                    iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER
+                                    iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
                                 }}
                                 Icon={() => {
                                     return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
@@ -183,8 +220,15 @@ export const UploadVehicleScreen = observer(function UploadVehicleScreen() {
                         <Text tx={"uploadVehicleScreen.atLeastOneRegister"} style={{ ...CONTENT_TEXT, ...ALIGN_RIGHT }}></Text>
 
                         <Text tx={"uploadVehicleScreen.carRegistration"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_BIG }} />
-                        <TextInputTheme inputStyle={MARGIN_TOP_BIG} value={carRegistration} onChangeText={(text) => setcarRegistration(text)} />
-                        <Button onPress={() => console.log("Add Vehicle Registration ")} style={{ ...ADD_VEHICLE_BUTTON, ...MARGIN_TOP_EXTRA }}>
+                        {renderNew ? arrRegistration.map((e, i) => {
+                            return (<TextInputTheme key={"text-input-registration-car-" + i} inputStyle={MARGIN_TOP_BIG}
+                                value={e.value} onChangeText={(text) => _setRegistrationSlotValue(text, i)} />)
+                        }) : arrRegistration.map((e, i) => {
+                            return (<TextInputTheme key={"text-input-registration-car-2-" + i} inputStyle={MARGIN_TOP_BIG}
+                                value={e.value} onChangeText={(text) => _setRegistrationSlotValue(text, i)} />)
+                        })}
+
+                        <Button onPress={_addFieldRegistration} style={{ ...ADD_VEHICLE_BUTTON, ...MARGIN_TOP_EXTRA }}>
                             <Ionicons name={"add-circle-outline"} size={spacing[5]} color={color.grey} />
                             <Text tx={"uploadVehicleScreen.addVehicleRegistration"} style={{ ...CONTENT_TEXT, ...GREY_TEXT, ...PADDING_LEFT5 }} />
                         </Button>
@@ -195,12 +239,20 @@ export const UploadVehicleScreen = observer(function UploadVehicleScreen() {
                         <Text tx={"uploadVehicleScreen.uploadVehicleImage"} style={{ ...TITLE_TOPIC, ...MARGIN_TOP_EXTRA }} />
                         <View style={{ ...MARGIN_TOP_EXTRA, ...COLUMN_UPLOAD, ...MARGIN_BOTTOM_BIG }}>
                             <View style={ROW_UPLOAD}>
-                                <UploadVehicle uploadStyle={{ padding: 5, minHeight: 120 }} source={images.addTruck1} imageStyle={{ width: 95, height: 37.5 }} />
-                                <UploadVehicle uploadStyle={{ padding: 5, minHeight: 120 }} source={images.addTruck2} imageStyle={{ width: 95, height: 37.5 }} />
+                                <UploadVehicle
+                                    tx={"uploadVehicleScreen.exampleImageFront"}
+                                    uploadStyle={{ padding: 5, minHeight: 120 }} source={images.addTruck2B} imageStyle={{ width: 50, height: 50 }} />
+                                <UploadVehicle
+                                    tx={"uploadVehicleScreen.exampleImageBack"}
+                                    uploadStyle={{ padding: 5, minHeight: 120 }} source={images.addTruck2F} imageStyle={{ width: 50, height: 50 }} />
                             </View>
                             <View style={ROW_UPLOAD}>
-                                <UploadVehicle uploadStyle={{ padding: 5, minHeight: 120 }} source={images.addTruck1} imageStyle={{ width: 95, height: 37.5 }} />
-                                <UploadVehicle uploadStyle={{ padding: 5, minHeight: 120 }} source={images.addTruck2} imageStyle={{ width: 95, height: 37.5 }} />
+                                <UploadVehicle
+                                    tx={"uploadVehicleScreen.exampleImageLeft"}
+                                    uploadStyle={{ padding: 5, minHeight: 120 }} source={images.addTruck1} imageStyle={{ width: 95, height: 37.5 }} />
+                                <UploadVehicle
+                                    tx={"uploadVehicleScreen.exampleImageRight"}
+                                    uploadStyle={{ padding: 5, minHeight: 120 }} source={images.addTruck2} imageStyle={{ width: 95, height: 37.5 }} />
                             </View>
                         </View>
                     </View>
@@ -273,7 +325,7 @@ export const UploadVehicleScreen = observer(function UploadVehicleScreen() {
             </ScrollView>
         </View>
     )
-})
+}
 
 
 const inline_styles = StyleSheet.create({
