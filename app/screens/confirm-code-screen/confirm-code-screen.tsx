@@ -53,7 +53,8 @@ const FOCUS_CELL: TextStyle = {
 const CODE_INFORMATION: ViewStyle = {
   flex: 1,
   flexDirection: 'row',
-  // justifyContent: "center"
+  justifyContent: "center",
+  alignItems: 'center'
 }
 const RESEND_CODE_ROOT: ViewStyle = {
   flex: 1,

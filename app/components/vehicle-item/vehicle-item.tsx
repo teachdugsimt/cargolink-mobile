@@ -64,7 +64,7 @@ const IMAGE: ImageStyle = {
   height: 85,
   right: spacing[2],
   bottom: spacing[1],
-  resizeMode: "contain",
+  // resizeMode: 'stretch',
   aspectRatio: 4 / 2,
 }
 
@@ -80,12 +80,10 @@ export function VehicleItem(props: VehicleItemProps) {
     subTopicStyle,
     statusStyle,
     imageStyle,
-    isChecked,
     onPress,
   } = props
 
-  const statusColor = isChecked ? color.success : color.primary
-  const deviceHeight = Dimensions.get("window").height
+  // const deviceHeight = Dimensions.get("window").height
 
   return (
     <TouchableOpacity onPress={onPress || null} style={{ height: 150, flex: 1 }}>
@@ -93,7 +91,7 @@ export function VehicleItem(props: VehicleItemProps) {
         <View style={{ ...ROW, justifyContent: "space-between" }}>
           <Text style={{ ...TOPIC, ...topicStyle }} text={topic} />
           {/* <View style={STATUS_VIEW}> */}
-            <Text style={{ ...STATUS_TEXT, color: statusColor, ...statusStyle }} text={status} />
+          <Text style={{ ...STATUS_TEXT, ...statusStyle }} text={status} />
           {/* </View> */}
         </View>
         <View style={ROW}>
@@ -108,7 +106,7 @@ export function VehicleItem(props: VehicleItemProps) {
             text={`${translate("myVehicleScreen.informationAt")} ${updatedDate}`}
           />
         </View>
-        <ImageBackground source={images[`${image}`]} style={{ ...IMAGE, ...imageStyle }} />
+        <ImageBackground source={images[`${image}`]} resizeMode={'contain'} style={{ ...IMAGE, ...imageStyle }} />
       </View>
     </TouchableOpacity>
   )

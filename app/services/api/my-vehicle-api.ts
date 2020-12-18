@@ -5,85 +5,6 @@ import * as Types from "./api.types"
 
 import { GeneralApiProblem } from "./api-problem"
 
-import { createServer } from "miragejs"
-
-const BASE_URL = "https://cargo-link.com"
-
-// createServer({
-//   routes() {
-//     this.get(`${BASE_URL}/api/v1/car`, () => [
-//       {
-//         id: 1,
-//         topic: "ทะเบียน กข - 11245",
-//         subTopic: "รถบรรทุกคอก",
-//         updatedDate: "19/11/63",
-//         status: "รอตรวจสอบ",
-//         image: "truck13",
-//       },
-//       {
-//         id: 2,
-//         topic: "ทะเบียน กข - 11245",
-//         subTopic: "รถบรรทุกคอก",
-//         updatedDate: "19/11/63",
-//         status: "ตรวจสอบแล้ว",
-//         image: "truck2",
-//         isChecked: true,
-//       },
-//       {
-//         id: 3,
-//         topic: "ทะเบียน กข - 11245",
-//         subTopic: "รถบรรทุกคอก",
-//         updatedDate: "19/11/63",
-//         status: "รอตรวจสอบ",
-//         image: "truck3",
-//       },
-//       {
-//         id: 4,
-//         topic: "ทะเบียน กข - 11245",
-//         subTopic: "รถบรรทุกคอก",
-//         updatedDate: "19/11/63",
-//         status: "ตรวจสอบแล้ว",
-//         image: "truck4",
-//         isChecked: true,
-//       },
-//       {
-//         id: 5,
-//         topic: "ทะเบียน กข - 11245",
-//         subTopic: "รถบรรทุกคอก",
-//         updatedDate: "19/11/63",
-//         status: "รอตรวจสอบ",
-//         image: "truck5",
-//       },
-//       {
-//         id: 6,
-//         topic: "ทะเบียน กข - 11245",
-//         subTopic: "รถบรรทุกคอก",
-//         updatedDate: "19/11/63",
-//         status: "ตรวจสอบแล้ว",
-//         image: "truck6",
-//         isChecked: true,
-//       },
-//       {
-//         id: 7,
-//         topic: "ทะเบียน กข - 11245",
-//         subTopic: "รถบรรทุกคอก",
-//         updatedDate: "19/11/63",
-//         status: "รอตรวจสอบ",
-//         image: "truck17",
-//       },
-//       {
-//         id: 8,
-//         topic: "ทะเบียน กข - 11245",
-//         subTopic: "รถบรรทุกคอก",
-//         updatedDate: "19/11/63",
-//         status: "ตรวจสอบแล้ว",
-//         image: "truck15",
-//         isChecked: true,
-//       },
-//     ])
-//   },
-// })
-
 /**
  * Manages all requests to the API.
  */
@@ -124,11 +45,28 @@ export class MyVehicleAPI {
   /**
    * Gets a list of users.
    */
-  async find(): Promise<any> {
+  async find(filter?: Types.VehicleFilterRequest | {}): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.get(`${BASE_URL}/api/v1/car`)
+      const response: ApiResponse<any> = await this.apisauce.get('api/v1/car', filter)
       // the typical ways to die when calling an api
+      console.log("Response call api get user (MOCK) : ", response)
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+      return response
+      // transform the data into the format we are expecting
+    } catch (error) {
+      console.log("Error call api get user (MOCK): ", error)
+      return error
+    }
+  }
+
+  async findOne(id: number): Promise<any> {
+    try {
+      const response: ApiResponse<any> = await this.apisauce.get(`api/v1/car/${id}`)
+
       console.log("Response call api get user (MOCK) : ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)

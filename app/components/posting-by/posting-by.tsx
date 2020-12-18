@@ -4,7 +4,6 @@ import { PostingByProps } from './posting-by.props'
 import { color, spacing } from '../../theme';
 import { Icon } from '../icon/icon';
 
-const TEXT_BOLD: TextStyle = { fontWeight: "bold" }
 const PADDING_TOP = { paddingTop: spacing[1] }
 const PADDING_BOTTOM = { paddingBottom: spacing[1] }
 const PADDING_LEFT = { paddingLeft: spacing[1] }
@@ -50,7 +49,7 @@ export function PostingBy(props: PostingByProps) {
     <>
       <View style={ACCOUNT_VIEW}>
         <View style={ACCOUNT_DETAIL}>
-          <Text style={{ ...PADDING_RIGHT, ...TEXT_BOLD }}>{postBy}</Text>
+          <Text style={{ ...PADDING_RIGHT }}>{postBy}</Text>
           <Icon icon={isVerified ? "checkActive" : "checkInactive"} style={SMALL_ICON} containerStyle={{ ...PADDING_RIGHT }} />
           {isCrown && <Icon icon="crown" style={SMALL_ICON} containerStyle={{ ...PADDING_RIGHT }} />}
         </View>

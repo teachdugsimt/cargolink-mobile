@@ -5,54 +5,6 @@ import * as Types from "./api.types"
 
 // import { GeneralApiProblem } from "./api-problem"
 
-import { createServer } from "miragejs"
-
-const BASE_URL = "https://{{enpoint}}.com"
-
-const makeId = (length: number) => {
-  let result = ""
-  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length))
-  }
-  return result
-}
-
-// createServer({
-//   routes() {
-//     this.post(`${BASE_URL}/api/v1/users/auth/otp-request`, (schema, request) => {
-//       const attrs = JSON.parse(request.requestBody)
-//       console.log(attrs)
-//       // debugger
-//       return {
-//         refCode: makeId(4),
-//         expireTime: Math.floor(Date.now() / 1000).toString(),
-//       }
-//     })
-
-//     this.post(`${BASE_URL}/api/v1/users/auth/otp-verify`, (schema, request) => {
-//       const attrs = JSON.parse(request.requestBody)
-//       console.log(attrs)
-//       // debugger
-//       return {
-//         userProfile: {
-//           id: Math.floor(Date.now() / 1000).toString(),
-//           companyName: "Onelink space",
-//         },
-//         termOfService: {
-//           latestVersion: "0.0.1",
-//           latestVersionAgree: true,
-//         },
-//         token: {
-//           idToken: "string",
-//           accessToken: "string",
-//           refreshToken: "string",
-//         },
-//       }
-//     })
-//   },
-// })
-
 /**
  * Manages all requests to the API.
  */
@@ -101,7 +53,7 @@ export class AuthAPI {
     // make the api call
     try {
       const response: ApiResponse<any> = await this.apisauce.post(
-        `${BASE_URL}/api/v1/users/auth/otp-request`,
+        'api/v1/users/auth/otp-request',
         data,
       )
       // the typical ways to die when calling an api
@@ -129,7 +81,7 @@ export class AuthAPI {
     // make the api call
     try {
       const response: ApiResponse<any> = await this.apisauce.post(
-        `${BASE_URL}/api/v1/users/auth/otp-verify`,
+        'api/v1/users/auth/otp-verify',
         data,
       )
       // the typical ways to die when calling an api

@@ -113,7 +113,10 @@
   "myVehicleScreen": {
     "informationAt": "ข้อมูล ณ วันที่",
     "type": "ประเภท",
-    "addNewCar": "เพิ่มรถของฉัน"
+    "addNewCar": "เพิ่มรถของฉัน",
+    "myTruck": "รถของฉัน",
+    "verified": "ตรวจสอบแล้ว",
+    "pending": "รอตรวจสอบ"
   },
   "vehicleType": {
     "Others": "อื่นๆ",

@@ -121,7 +121,10 @@
   "myVehicleScreen": {
     "informationAt": "Information at",
     "type": "Type",
-    "addNewCar": "Add new car"
+    "addNewCar": "Add new car",
+    "myTruck": "My Truck",
+    "verified": "Verified",
+    "pending": "Pending"
   },
   "vehicleType": {
     "Others": "Others",

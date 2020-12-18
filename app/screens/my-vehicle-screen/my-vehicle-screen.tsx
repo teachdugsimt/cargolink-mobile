@@ -5,7 +5,7 @@ import { Button, Text, VehicleItem } from "../../components/"
 import { color, spacing } from "../../theme"
 import { translate } from "../../i18n"
 import { useNavigation } from "@react-navigation/native"
-// import MyVehicleStore from '../../store/my-vehicle-store/my-vehicle-store'
+import MyVehicleStore from '../../store/my-vehicle-store/my-vehicle-store'
 
 const CONTAINER: ViewStyle = {
   flex: 1,
@@ -31,81 +31,27 @@ const TEXT_ADD: TextStyle = {
   fontFamily: "Kanit-Medium",
 }
 
-const DATA = [
-  {
-    topic: "ทะเบียน กข - 11245",
-    subTopic: "รถบรรทุกคอก",
-    updatedDate: "19/11/63",
-    status: "รอตรวจสอบ",
-    image: "truck17",
-  },
-  {
-    topic: "ทะเบียน กข - 11245",
-    subTopic: "รถบรรทุกคอก",
-    updatedDate: "19/11/63",
-    status: "ตรวจสอบแล้ว",
-    image: "truck17",
-    isChecked: true,
-  },
-  {
-    topic: "ทะเบียน กข - 11245",
-    subTopic: "รถบรรทุกคอก",
-    updatedDate: "19/11/63",
-    status: "รอตรวจสอบ",
-    image: "truck17",
-  },
-  {
-    topic: "ทะเบียน กข - 11245",
-    subTopic: "รถบรรทุกคอก",
-    updatedDate: "19/11/63",
-    status: "ตรวจสอบแล้ว",
-    image: "truck17",
-    isChecked: true,
-  },
-  {
-    topic: "ทะเบียน กข - 11245",
-    subTopic: "รถบรรทุกคอก",
-    updatedDate: "19/11/63",
-    status: "รอตรวจสอบ",
-    image: "truck17",
-  },
-  {
-    topic: "ทะเบียน กข - 11245",
-    subTopic: "รถบรรทุกคอก",
-    updatedDate: "19/11/63",
-    status: "ตรวจสอบแล้ว",
-    image: "truck17",
-    isChecked: true,
-  },
-  {
-    topic: "ทะเบียน กข - 11245",
-    subTopic: "รถบรรทุกคอก",
-    updatedDate: "19/11/63",
-    status: "รอตรวจสอบ",
-    image: "truck17",
-  },
-  {
-    topic: "ทะเบียน กข - 11245",
-    subTopic: "รถบรรทุกคอก",
-    updatedDate: "19/11/63",
-    status: "ตรวจสอบแล้ว",
-    image: "truck17",
-    isChecked: true,
-  },
-]
-
 export const MyVehicle = observer(function MyVehicle() {
   const navigation = useNavigation()
 
-  const onPress = (value) => {
+  const onPress = (id: number) => {
+    MyVehicleStore.findOneRequest(id)
     navigation.navigate("vehicleDetail")
   }
 
-  // useEffect(() => {
-  //   if (MyVehicleStore.getVehicles) {
-  //     console.log('MyVehicleStore.getVehicles :>> ', JSON.parse(JSON.stringify(MyVehicleStore.getVehicles)));
-  //   }
-  // }, [MyVehicleStore.getVehicles])
+  useEffect(() => {
+    if (MyVehicleStore.list) {
+      console.log('MyVehicleStore.list :>> ', JSON.parse(JSON.stringify(MyVehicleStore.list)));
+    }
+  }, [MyVehicleStore.list])
+
+  /**
+   * vehicle_no: topic
+   * car_type: subTopic
+   * to: updatedDate
+   * status: status
+   * image_name: image
+   */
 
   return (
     <View style={CONTAINER}>
@@ -116,9 +62,21 @@ export const MyVehicle = observer(function MyVehicle() {
         style={SCROLL}
         scrollEventThrottle={400}
       >
-        {DATA &&
-          DATA.map((item, index) => {
-            return <VehicleItem key={index} {...item}  onPress={onPress} />
+        {MyVehicleStore.list &&
+          MyVehicleStore.list.map((item, index) => {
+            const statusText = item.status === 'APPROVE' ? translate('myVehicleScreen.verified') : translate('myVehicleScreen.pending')
+            const statusColor = item.status === 'APPROVE' ? color.success : color.primary
+            return <VehicleItem
+              key={index}
+              topic={item.vehicle_no}
+              subTopic={item.car_type}
+              updatedDate={item.to}
+              image={item.image_car_type}
+              status={statusText}
+              imageStyle={{ marginBottom: spacing[1] }}
+              statusStyle={{ color: statusColor }}
+              onPress={() => onPress(parseInt(item.id))}
+            />
           })}
       </ScrollView>
 

@@ -4,9 +4,28 @@
 // const API_URL = "https://jsonplaceholder.typicode.com/"
 const { API_URL, API_URL_DEV } = require("../../config/env")
 
-import { createServer } from "miragejs"
+import { createServer, Model } from "miragejs"
+import vehicleData from './mock-data/my-vehicle'
+
+const makeId = (length: number) => {
+  let result = ""
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length))
+  }
+  return result
+}
 
 __DEV__ && createServer({
+  models: {
+    vehicle: Model
+  },
+  fixtures: {
+    vehicles: vehicleData
+  },
+  seeds(server) {
+    server.loadFixtures()
+  },
   routes() {
     // Now use this
     this.get(`${API_URL}todos/1`, () => [
@@ -20,6 +39,48 @@ __DEV__ && createServer({
       { id: "2", name: "Leia" },
       { id: "3", name: "Anakin" },
     ])
+
+    this.post(`${API_URL}/api/v1/users/auth/otp-request`, (schema, request) => {
+      const attrs = JSON.parse(request.requestBody)
+      console.log(attrs)
+      // debugger
+      return {
+        refCode: makeId(4),
+        expireTime: Math.floor(Date.now() / 1000).toString(),
+      }
+    })
+
+    this.post(`${API_URL}/api/v1/users/auth/otp-verify`, (schema, request) => {
+      const attrs = JSON.parse(request.requestBody)
+      console.log(attrs)
+      // debugger
+      return {
+        userProfile: {
+          id: Math.floor(Date.now() / 1000).toString(),
+          companyName: "Onelink space",
+        },
+        termOfService: {
+          latestVersion: "0.0.1",
+          latestVersionAgree: true,
+        },
+        token: {
+          idToken: "string",
+          accessToken: "string",
+          refreshToken: "string",
+        },
+      }
+    })
+
+    this.get(`${API_URL}/api/v1/car`, (schema, request) => {
+      console.log(JSON.parse(JSON.stringify(schema.vehicles.all().models)))
+      return schema.vehicles.all().models
+    })
+
+    this.get(`${API_URL}/api/v1/car/:id`, (schema, request) => {
+      console.log('request.params.id', request.params.id)
+      const id = request.params.id
+      return JSON.parse(JSON.stringify(schema.vehicles.find(id)))
+    })
   },
 })
 /**

@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
 import {
   Dimensions,
@@ -13,15 +13,15 @@ import {
 } from "react-native"
 import { Button, Text } from "../../components"
 import { translate } from "../../i18n"
-import { color, images, spacing } from "../../theme"
+import { color, images as imageComponent, spacing } from "../../theme"
 import { useNavigation } from "@react-navigation/native"
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { TouchableOpacity } from "react-native-gesture-handler"
+import MyVehicleStore from '../../store/my-vehicle-store/my-vehicle-store'
 
 const deviceWidht = Dimensions.get("window").width
 const deviceHeight = Dimensions.get("window").height
 
-const TEXT_BOLD: TextStyle = { fontWeight: "bold" }
 const CONTAINER: ViewStyle = {
   flex: 1,
 }
@@ -37,7 +37,7 @@ const ROW: ViewStyle = {
   flexDirection: "row",
 }
 const TOPIC: TextStyle = {
-  ...TEXT_BOLD,
+  fontFamily: 'Kanit-Bold',
   fontSize: 16,
   marginBottom: spacing[3],
 }
@@ -56,22 +56,22 @@ const IMAGE: ImageStyle = {
 const BUTTON_EDIT: ViewStyle = {
   backgroundColor: color.primary,
   borderRadius: 20,
-  marginLeft: spacing[3],
-  marginRight: spacing[3],
-  marginHorizontal: spacing[1]
+  marginHorizontal: spacing[3],
+  marginVertical: spacing[2],
 }
 const TEXT_EDIT: TextStyle = {
   fontSize: 16,
+  fontFamily: 'Kanit-Medium',
 }
 const SUB_TOPIC: TextStyle = {
-  ...TEXT_BOLD,
+  fontFamily: 'Kanit-Bold',
   paddingBottom: spacing[2],
 }
 const TEXT_OF_VALUE: TextStyle = {
   textAlign: "right",
   borderWidth: 1,
   borderRadius: 4,
-  borderColor: color.disable,
+  borderColor: color.line,
   padding: spacing[3],
 }
 const SUB_TOPIC_ROOT: ViewStyle = {
@@ -125,6 +125,19 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
   }
 
   const [{ isChecked, openViewer, indexOfImage }, setState] = useState(initialState)
+  const {
+    car_type,
+    image_car_type,
+    heigh,
+    isDum,
+    images
+  } = MyVehicleStore.data
+
+  useEffect(() => {
+    if (MyVehicleStore.data) {
+      console.log('MyVehicleStore.data :>> ', JSON.parse(JSON.stringify(MyVehicleStore.data)));
+    }
+  }, [MyVehicleStore.data])
 
   const onValueChange = () => {
     setState((prevState) => ({
@@ -132,7 +145,7 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
       isChecked: !prevState.isChecked,
     }))
   }
-  
+
   const onViewer = (index: number) => {
     setState(prevState => ({
       ...prevState,
@@ -150,15 +163,15 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
 
   return (
     <View style={CONTAINER}>
-      <ScrollView onScroll={({ nativeEvent }) => {}} style={{}} scrollEventThrottle={400}>
+      <ScrollView onScroll={({ nativeEvent }) => { }} style={{}} scrollEventThrottle={400}>
         <View style={COLUMN}>
           <View style={ROW}>
             <Text style={TOPIC} text={translate("vehicleDetailScreen.vehicleImage")} />
           </View>
           <View style={ROW}>
             <View style={IMAGES}>
-              {data.images &&
-                data.images.map((image, index) => {
+              {images &&
+                images.map((image, index) => {
                   return (
                     <TouchableOpacity style={TOUCHABLE} key={index} onPress={(attr) => onViewer(index)}>
                       <Image style={IMAGE} source={{ uri: image.url }} key={index} />
@@ -167,13 +180,13 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
                 })}
               <Modal visible={openViewer} transparent={true}>
                 <ImageViewer
-                  imageUrls={data.images}
+                  imageUrls={images ? images : []}
                   index={indexOfImage}
                   onCancel={onCancel}
                   enableSwipeDown={true}
-                  pageAnimateTime={data.images.length}
+                  pageAnimateTime={images ? images.length : 0}
                 />
-            </Modal>
+              </Modal>
             </View>
           </View>
         </View>
@@ -184,19 +197,19 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
           </View>
           <View style={{ ...ROW, alignItems: "center" }}>
             <View style={OUTER_CIRCLE}>
-              <Image source={images["truck17"]} style={LOGO} />
+              <Image source={imageComponent[image_car_type ? image_car_type : "truck17"]} style={LOGO} />
             </View>
-            <Text style={TYPE_CAR_NAME} text={"รถขนสินค้าแบบกระตู้"} />
+            <Text style={TYPE_CAR_NAME} text={car_type} />
           </View>
           <View style={ROW}>
             <View style={SUB_TOPIC_ROOT}>
               <Text style={SUB_TOPIC} text={translate("vehicleDetailScreen.heightOfTheCarStall")} />
-              <Text style={TEXT_OF_VALUE} text={"Value"} />
+              <Text style={TEXT_OF_VALUE} text={heigh ? heigh.toString() : '0'} />
             </View>
           </View>
           <View style={{ ...ROW, justifyContent: "space-between" }}>
             <Text text={translate("vehicleDetailScreen.carHaveDum")} />
-            <Switch value={isChecked} onValueChange={onValueChange} />
+            <Switch value={isDum || false} disabled={true} onValueChange={onValueChange} />
           </View>
         </View>
 
@@ -218,23 +231,22 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
                 style={SUB_TOPIC}
                 text={translate("vehicleDetailScreen.vehicleRegistrationNumber")}
               />
-              <Text style={TEXT_OF_VALUE} text={"กข - 12345"} />
+              <Text style={TEXT_OF_VALUE} text={MyVehicleStore.data.vehicle_no} />
             </View>
           </View>
         </View>
-
-        <View style={{...COLUMN, paddingVertical: spacing[2]}}>
-          <Button
-            testID="edit-vehicle"
-            style={BUTTON_EDIT}
-            textStyle={TEXT_EDIT}
-            text={translate("vehicleDetailScreen.edit")}
-            onPress={() => {
-              navigation.navigate("uploadVehicle")
-            }}
-          />
-        </View>
       </ScrollView>
+      <View>
+        <Button
+          testID="edit-vehicle"
+          style={BUTTON_EDIT}
+          textStyle={TEXT_EDIT}
+          text={translate("vehicleDetailScreen.edit")}
+          onPress={() => {
+            navigation.navigate("uploadVehicle")
+          }}
+        />
+      </View>
     </View>
   )
 })

@@ -9,6 +9,7 @@ import { useStores } from "../../models/root-store/root-store-context";
 import BookStore from '../../store/test-store/book-store'
 import { GridView } from '../../components/home-element/home-element'
 import i18n from 'i18n-js'
+import MyVehicleStore from "../../store/my-vehicle-store/my-vehicle-store"
 
 
 // import { createServer } from "miragejs"
@@ -19,7 +20,7 @@ import i18n from 'i18n-js'
 //             { id: "2", name: "Leia" },
 //             { id: "3", name: "Anakin" },
 //         ])
-        
+
 //         this.get("https://jsonplaceholder.typicode.com/todos/1", () => [
 //             { id: "1", name: "Luke" },
 //             { id: "2", name: "Leia" },
@@ -106,7 +107,7 @@ export const HomeScreen = observer((props) => {
 
     useEffect(() => {
         const language = JSON.parse(JSON.stringify(versatileStore.getLanguage))
-      
+
         if (language) {
             // i18n.defaultLocale = language
             // i18n.fallbacks = true
@@ -164,7 +165,12 @@ export const HomeScreen = observer((props) => {
     const dataTest: List[] = [
         {
             title: "ผู้ให้บริการขนส่ง / Carriers",
-            data: [{ id: 1, name: "homeScreen.manageCar", onPressButton: () => navigation.navigate("myVehicle"), img: images.truck1 },
+            data: [{
+                id: 1, name: "homeScreen.manageCar", onPressButton: () => {
+                    MyVehicleStore.findRequest({})
+                    navigation.navigate("myVehicle")
+                }, img: images.truck1
+            },
             { id: 2, name: "homeScreen.findJob", onPressButton: () => navigation.navigate("searchJob"), img: images.pinbox }]
         },
         {

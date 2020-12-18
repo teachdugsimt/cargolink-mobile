@@ -70,7 +70,7 @@ const MENUS: Array<MenuProps> = [
         topic: 'moreScreen.security', // 'ความปลอดภัย'
         subMenu: [{
             key: 'set-password',
-            label: 'moreScreen.changeYourPhone', // 'ตั้งค่ารหัสผ่านของคุณ'
+            label: 'moreScreen.setYourPassword', // 'ตั้งค่ารหัสผ่านของคุณ'
             icon: 'chevron-forward'
         }]
     },

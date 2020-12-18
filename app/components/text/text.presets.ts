@@ -6,7 +6,13 @@ import { color, typography } from "../../theme"
  */
 const BASE: TextStyle = {
   fontFamily: typography.primary,
-  color: color.text,
+  color: color.textBlack,
+  fontSize: 15,
+}
+
+const TEST: TextStyle = {
+  fontFamily: 'Kanit-Medium',
+  color: color.textBlack,
   fontSize: 15,
 }
 
@@ -20,6 +26,8 @@ export const presets = {
    * The default text styles.
    */
   default: BASE,
+
+  test: TEST,
 
   /**
    * A bold version of the default text.

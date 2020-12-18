@@ -35,5 +35,17 @@ export interface OTPVerifyResponse {
   }
 }
 
+export interface VehicleFilterRequest {
+  filter?: {
+    where?: {
+      from?: string
+      to?: string
+      start_time?: string
+      end_time?: string
+      car_type?: string
+    } | {}
+  } | {}
+}
+
 export type GetUsersResult = { kind: "ok"; users: User[] } | GeneralApiProblem
 export type GetUserResult = { kind: "ok"; user: User } | GeneralApiProblem
