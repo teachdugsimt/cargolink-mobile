@@ -2,18 +2,6 @@ import { ApisauceInstance, create, ApiResponse } from "apisauce"
 import { getGeneralApiProblem } from "./api-problem"
 import { ApiConfig, DEFAULT_API_CONFIG } from "./api-config"
 // import * as Types from "./api.types"
-import { createServer } from "miragejs"
-
-__DEV__ && createServer({
-    routes() {
-        // Now use this
-        this.get(`${DEFAULT_API_CONFIG.url}todos/1`, () => [
-            { id: "1", name: "Luke" },
-            { id: "2", name: "Leia" },
-            { id: "3", name: "Anakin" },
-        ])
-    },
-})
 
 /**
  * Manages all requests to the API.

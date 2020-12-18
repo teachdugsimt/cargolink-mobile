@@ -17,24 +17,8 @@ import FormRegistration from "./form-registration"
 // import { TestApi } from '../../../services/api'
 // const apiUsers = new TestApi()
 import ImagePicker from 'react-native-image-picker';
-import { vehicleEn, vehicleTh } from './vehicle-type'
+import { vehicleEn, vehicleTh, regionListEn, regionListTh, provinceListEn, provinceListTh } from './datasource'
 import i18n from 'i18n-js'
-
-
-
-const regionList = [{ label: "center", value: "center" },
-{ label: "north", value: "north" },
-{ label: "north-east", value: "north-east" },
-{ label: "south", value: "south" },
-{ label: "west", value: "west", },
-]
-
-const provinceList = [{ label: "center", value: "center" },
-{ label: "nakhonpathom", value: "nakhonpathom" },
-{ label: "bangkok", value: "bangkok" },
-{ label: "nontaburee", value: "nontaburee" },
-{ label: "pathumthani", value: "pathumthani", }
-]
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -122,6 +106,8 @@ const PLACEHOLDER_IMAGE2: ImageStyle = {
 const LAYOUT_REGISTRATION_FIELD: TextStyle = {
     textAlign: 'right', paddingRight: 10,
 }
+
+let initForm = 0
 export const UploadVehicleScreen = () => {
     // const navigation = useNavigation()
     const [vehicle, setvehicle] = useState('')
@@ -231,10 +217,17 @@ export const UploadVehicleScreen = () => {
     }
 
     useEffect(() => {
-        addTextInput(textInput.length)
+        if (initForm == 0) {
+            initForm = 1
+            addTextInput(textInput.length)
+        }
         console.log("Mobx state data : : ", JSON.parse(JSON.stringify(FetchStore.getUserData)))
         console.log("State data :: ", stateData)
         FetchStore.getUserRequest()
+        return ()=> {
+            settextInput([])
+            setrenderNew(false)
+        }
     }, [])
 
     useEffect(() => {
@@ -247,7 +240,7 @@ export const UploadVehicleScreen = () => {
         return () => {
             setstateData(null)
         }
-    // }, [FetchStore.data])
+        // }, [FetchStore.data])
     }, [FetchStore.data])
 
     console.log("File path :: => ", fileFront)
@@ -310,38 +303,7 @@ export const UploadVehicleScreen = () => {
 
                         <View>
                             {textInput.map(e => { return e })}
-                            {/* <Controller
-                                control={control}
-                                render={({ onChange, onBlur, value }) => (
-                                    <TextInputTheme
-                                        onBlur={onBlur}
-                                        onChangeText={value => onChange(value)}
-                                        value={value}
-                                    />
-                                )}
-                                name="firstName"
-                                defaultValue=""
-                            />
-
-                            <Controller
-                                control={control}
-                                render={({ onChange, onBlur, value }) => (
-                                    <TextInputTheme
-                                        onBlur={onBlur}
-                                        onChangeText={value => onChange(value)}
-                                        value={value}
-                                    />
-                                )}
-                                name="lastName"
-                                defaultValue=""
-                            /> */}
-
-                            {/* <Button onPress={handleSubmit(onSubmit)} ><Text>Submit</Text></Button> */}
                         </View>
-
-
-                        {/* {renderNew && textInput.map(value => { return value })}
-                        {!renderNew && textInput.map(value => { return value })} */}
                         <Button onPress={() => addTextInput(textInput.length)} style={{ ...ADD_VEHICLE_BUTTON, ...MARGIN_TOP_EXTRA }}>
                             <Ionicons name={"add-circle-outline"} size={spacing[5]} color={color.grey} />
                             <Text tx={"uploadVehicleScreen.addVehicleRegistration"} style={{ ...CONTENT_TEXT, ...GREY_TEXT, ...PADDING_LEFT5 }} />
@@ -421,7 +383,7 @@ export const UploadVehicleScreen = () => {
                                 <RNPickerSelect
                                     value={region}
                                     onValueChange={(value) => setregion(value)}
-                                    items={regionList}
+                                    items={i18n.locale == "en" ? regionListEn : regionListTh}
                                     placeholder={{
                                         label: translate("uploadVehicleScreen.region"),
                                         color: color.black
@@ -442,7 +404,7 @@ export const UploadVehicleScreen = () => {
                                 <RNPickerSelect
                                     value={province}
                                     onValueChange={(value) => setprovince(value)}
-                                    items={provinceList}
+                                    items={i18n.locale == "en" ? provinceListEn : provinceListTh}
                                     placeholder={{
                                         label: translate("uploadVehicleScreen.province"),
                                         color: color.black

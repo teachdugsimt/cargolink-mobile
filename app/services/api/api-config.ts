@@ -4,6 +4,24 @@
 // const API_URL = "https://jsonplaceholder.typicode.com/"
 const { API_URL, API_URL_DEV } = require("../../config/env")
 
+import { createServer } from "miragejs"
+
+__DEV__ && createServer({
+  routes() {
+    // Now use this
+    this.get(`${API_URL}todos/1`, () => [
+      { id: "1", name: "Luke" },
+      { id: "2", name: "Leia" },
+      { id: "3", name: "Anakin" },
+    ])
+
+    this.get(`https://test.callapi.com/listUser`, () => [
+      { id: "1", name: "Luke" },
+      { id: "2", name: "Leia" },
+      { id: "3", name: "Anakin" },
+    ])
+  },
+})
 /**
  * The options used to configure the API.
  */
