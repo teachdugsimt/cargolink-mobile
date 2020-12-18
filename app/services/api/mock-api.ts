@@ -7,7 +7,7 @@ import { createServer } from "miragejs"
 __DEV__ && createServer({
     routes() {
         // Now use this
-        this.get("https://jsonplaceholder.typicode.com/todos/1", () => [
+        this.get(`${DEFAULT_API_CONFIG.url}todos/1`, () => [
             { id: "1", name: "Luke" },
             { id: "2", name: "Leia" },
             { id: "3", name: "Anakin" },
