@@ -1,7 +1,7 @@
-import React from "react"
+import React, { useState } from "react"
 import { View, ViewStyle, TextStyle, TouchableOpacity, ScrollView, Dimensions } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Button, Header, Text } from "../../components"
+import { Button, RadioButton, Text } from "../../components"
 import { color, spacing } from "../../theme"
 import { useNavigation } from "@react-navigation/native"
 import Icon from "react-native-vector-icons/Ionicons"
@@ -108,20 +108,41 @@ const MENUS: Array<MenuProps> = [
     }
 ]
 
+
 export const MoreScreen = observer(function MoreScreen() {
     const navigation = useNavigation()
     const { versatileStore } = useStores()
+    const [list, setlist] = useState([
+        { label: 'moreScreen.Thai', value: 'th', active: i18n.locale == "th" ? true : false },
+        { label: 'moreScreen.English', value: 'en', active: i18n.locale == "en" ? true : false },
+    ])
+    const [renderNew, setrenderNew] = useState(false)
 
     const _pressMenu = (item) => {
-        console.log("::Press change language::")
+        console.log("::Press change language:: ", item)
         if (item.key === "thai") {
             versatileStore.setLanguage('th')
             console.log("After change :: ", versatileStore.getLanguage)
         }
-        else {
+        else if (item.key == "english") {
             versatileStore.setLanguage('en')
             console.log("After change :: ", versatileStore.getLanguage)
         }
+    }
+
+    const _pressChangeLanguage = (item: any, index: any) => {
+        versatileStore.setLanguage(item.value)
+        i18n.locale = item.value
+
+        let tmp = list
+        tmp[index].active = true
+        tmp.forEach((e, i) => {
+            if (i != index)
+                tmp[i].active = false
+        })
+        console.log(tmp)
+        setlist(tmp)
+        setrenderNew(!renderNew)
     }
 
     return (
@@ -136,7 +157,7 @@ export const MoreScreen = observer(function MoreScreen() {
                                 tx={menu.topic}
                                 style={TOPIC}
                             />
-                            {menu.subMenu && menu.subMenu.map(item => {
+                            {menu.key && menu.key != "language" && menu.subMenu && menu.subMenu.map(item => {
                                 return (
                                     <TouchableOpacity key={item.key} style={MENU} onPress={() => _pressMenu(item)}>
                                         <Text tx={item.label} />
@@ -144,6 +165,15 @@ export const MoreScreen = observer(function MoreScreen() {
                                     </TouchableOpacity>
                                 )
                             })}
+                            {menu.key && menu.key == "language" && renderNew && <RadioButton
+                                data={list}
+                                onPress={(item: any, index: any) => _pressChangeLanguage(item, index)}
+                            />}
+                            {menu.key && menu.key == "language" && !renderNew && <RadioButton
+                                data={list}
+                                onPress={(item: any, index: any) => _pressChangeLanguage(item, index)}
+                            />}
+
                         </View>
                     )
                 })}

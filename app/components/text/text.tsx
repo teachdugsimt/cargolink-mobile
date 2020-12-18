@@ -11,10 +11,7 @@ import { color } from '../../theme/'
  *
  * This component is a HOC over the built-in React Native one.
  */
-const ROOT_STYLE: TextStyle = {
-  fontFamily: 'Kanit-Bold',
-  color: color.black
-}
+
 export function Text(props: TextProps) {
   // grab the props
   const { preset = "default", tx, txOptions, text, children, style: styleOverride, ...rest } = props
@@ -26,7 +23,7 @@ export function Text(props: TextProps) {
   const style = mergeAll(flatten([presets[preset] || presets.default, styleOverride]))
 
   return (
-    <ReactNativeText {...rest} style={{ ...ROOT_STYLE, ...style }}>
+    <ReactNativeText {...rest} style={style}>
       {content}
     </ReactNativeText>
   )

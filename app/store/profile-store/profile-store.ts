@@ -1,26 +1,39 @@
 import { types, flow } from "mobx-state-tree"
-import { MockApi } from '../../services/api'
-const apiUsers = new MockApi()
+import { ProfileApi } from '../../services/api'
+const apiUsers = new ProfileApi()
 
-const Profile = types.model({
-    id: types.maybeNull(types.string),
-    name: types.maybeNull(types.string)
+
+const Vehicle = types.model({
+    id: types.number,
+    type: types.string,
+    status: types.string,
+    number: types.number
 })
 
-const FetchStore = types.model({
-    data: types.maybeNull(types.array(Profile)),
+const Profile = types.model({
+    first_name: types.string,
+    last_name: types.string,
+    age: types.number,
+    account_type: types.string,
+    tel_no: types.string,
+    work_zone: types.array(types.string),
+    vehicle_details: types.maybeNull(types.array(Vehicle))
+})
+
+const ProfileStore = types.model({
+    data: types.maybeNull(Profile),
     loading: types.boolean,
     error: types.maybeNull(types.string)
 }).actions(self => ({
-    getUserRequest: flow(function* getUserRequest() { // <- note the star, this a generator function!
+    getProfileRequest: flow(function* getProfileRequest(params) { // <- note the star, this a generator function!
         apiUsers.setup()
         self.loading = true
         try {
             // ... yield can be used in async/await style
-            const response = yield apiUsers.getUsers()
+            const response = yield apiUsers.getProfile({ token: params })
             console.log("Response call api get user : : ", response)
             if (response.ok) {
-                self.data = response.data || []
+                self.data = response.data || {}
                 self.loading = false
             } else {
                 self.loading = false
@@ -28,24 +41,24 @@ const FetchStore = types.model({
             }
         } catch (error) {
             // ... including try/catch error handling
-            console.error("Failed to fetch get users api : ", error)
+            console.error("Failed to store value get profile : ", error)
             // self.data = []
             self.loading = false
             self.error = "set up state mobx error"
         }
     }),
 })).views(self => ({
-    get getUserData() {
+    get getProfileFunction() {
         return self.data
     }
 }))
     .create({
         // IMPORTANT !!
-        data: [],
+        data: null,
         loading: false,
         error: ''
     })
 
 
-export default FetchStore
+export default ProfileStore
 // Type 2 : not persist store

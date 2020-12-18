@@ -91,8 +91,8 @@
     "callCenter": "Call Center",
     "moreMenu": "More menu",
     "language": "Language",
-    "english": "English",
-    "thai": "Thai",
+    "English": "English",
+    "Thai": "Thai",
     "Japan": "Japan"
   },
   "searchBarComponent": {
@@ -124,7 +124,8 @@
     "addNewCar": "Add new car",
     "myTruck": "My Truck",
     "verified": "Verified",
-    "pending": "Pending"
+    "pending": "Pending",
+    "myTruckHeader": "My Truck"
   },
   "vehicleType": {
     "Others": "Others",

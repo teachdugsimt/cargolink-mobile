@@ -81,6 +81,30 @@ __DEV__ && createServer({
       const id = request.params.id
       return JSON.parse(JSON.stringify(schema.vehicles.find(id)))
     })
+
+    this.get(`${API_URL}profile/v1`, (params) => {
+      console.log("API CONFIG PARAMS :: ", params)
+      return {
+        first_name: 'John',
+        last_name: 'Wick',
+        age: 49,
+        account_type: 'Premium Account',
+        tel_no: '0929818252',
+        work_zone: ['Suphanburee', 'Nakhonpathom'],
+        vehicle_details: [{ id: 1, type: '6 truck dump', status: 'ACTIVE', number: 3 },
+        { id: 2, type: '4 car dump crop cap', status: 'ACTIVE', number: 7 }]
+      }
+    })
+
+    let newId = 3
+    this.post(`${API_URL}api/v1/car`, (schema, request) => {
+      console.log("Schema mock :: ", schema)
+      console.log("Request mock :: ", request)
+      let attrs = JSON.parse(request.requestBody)
+      attrs.id = newId++
+
+      return { reminder: attrs }
+    })
   },
 })
 /**

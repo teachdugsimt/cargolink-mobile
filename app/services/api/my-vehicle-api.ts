@@ -79,4 +79,22 @@ export class MyVehicleAPI {
       return error
     }
   }
+
+  async createVehicleProfile(params: any): Promise<any> {
+    // make the api call
+    try {
+      const response: ApiResponse<any> = await this.apisauce.post(`api/v1/car`, params)
+      // the typical ways to die when calling an api
+      console.log("Response call api create upload vehicle profile (MOCK) : ", response)
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+      return response
+      // transform the data into the format we are expecting
+    } catch (error) {
+      console.log("Error call api create upload vehicle profile (MOCK): ", error)
+      return error
+    }
+  }
 }

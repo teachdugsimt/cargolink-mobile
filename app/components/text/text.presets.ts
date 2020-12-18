@@ -7,13 +7,17 @@ import { color, typography } from "../../theme"
 const BASE: TextStyle = {
   fontFamily: typography.primary,
   color: color.textBlack,
-  fontSize: 15,
+  fontSize: typography.content,
 }
-
-const TEST: TextStyle = {
-  fontFamily: 'Kanit-Medium',
+const TOPIC_BASE: TextStyle = {
+  fontFamily: typography.primary,
   color: color.textBlack,
-  fontSize: 15,
+  fontSize: typography.title,
+}
+const TOPIC_EXTRA_BASE: TextStyle = {
+  fontFamily: typography.primary,
+  color: color.textBlack,
+  fontSize: typography.mainTitle,
 }
 
 /**
@@ -26,8 +30,8 @@ export const presets = {
    * The default text styles.
    */
   default: BASE,
-
-  test: TEST,
+  topic: TOPIC_BASE,
+  topicExtra: TOPIC_EXTRA_BASE,
 
   /**
    * A bold version of the default text.

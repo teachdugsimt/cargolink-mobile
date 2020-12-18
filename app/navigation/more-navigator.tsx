@@ -7,7 +7,9 @@
 import React from "react"
 
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
+import { Icon, Text, HeaderCenter, HeaderLeft, HeaderRight } from "../components"
 import { MoreScreen } from "../screens"
+import { color } from '../theme'
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
  * as well as what properties (if any) they might take when navigating to them.
@@ -32,11 +34,22 @@ export function MoreNavigator() {
     return (
         <Stack.Navigator
             screenOptions={{
-                headerShown: false,
+                headerShown: true,
                 gestureEnabled: true,
+                headerStyle: {
+                    backgroundColor: color.mainTheme,
+                },
+                headerTitleStyle: {
+                    fontFamily: 'Kanit-Medium',
+                    fontSize: 20
+                },
             }}
         >
-            <Stack.Screen name="more" component={MoreScreen} />
+            <Stack.Screen name="more" component={MoreScreen}
+                options={({ navigation, route }) => ({
+                    headerCenter: () => <HeaderCenter tx={"moreScreen.moreMenu"} />,
+                })}
+            />
             {/* <Stack.Screen name="detail" component={DetailScreen} /> */}
         </Stack.Navigator>
     )

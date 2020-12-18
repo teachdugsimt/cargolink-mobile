@@ -1,9 +1,10 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { View, ViewStyle, TextStyle, TouchableOpacity, Image, ImageStyle, Dimensions, Platform } from "react-native"
 import { observer } from "mobx-react-lite"
 import { Text, Icon } from "../../components"
 import { useNavigation } from "@react-navigation/native"
 import { color, images, typography } from "../../theme"
+import ProfileStore from '../../store/profile-store/profile-store'
 // const bowserLogo = require("./bowser.png")
 
 const { width, height } = Dimensions.get('window')
@@ -55,6 +56,9 @@ const SIGNOUT_TEXT: TextStyle = {
     alignSelf: 'center',
     paddingVertical: 20
 }
+const ROW_LAYOUT: ViewStyle = {
+    flexDirection: 'row'
+}
 export const ProfileScreen = observer(function ProfileScreen() {
     console.tron.log('hello rendering world')
     const navigation = useNavigation()
@@ -63,6 +67,18 @@ export const ProfileScreen = observer(function ProfileScreen() {
     const logoutFunction = () => {
         navigation.navigate('signin')
     }
+
+    useEffect(() => {
+        ProfileStore.getProfileRequest('tokenaksdfjlaisejofiasjefilasjkldfmasdfljak')
+    }, [])
+
+    useEffect(() => {
+        let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
+        if (tmp_profile && Object.keys(tmp_profile).length) {
+            console.log("Profile screen => Profile data :: => ", tmp_profile)
+            console.log("Profile screen => Profile data :: => ", tmp_profile)
+        }
+    }, [ProfileStore.data])
 
     return (
         <View testID="ProfileScreen" style={FULL}>
@@ -77,21 +93,35 @@ export const ProfileScreen = observer(function ProfileScreen() {
                 </View>
 
                 <View style={CONTENT_PROFILE_VIEW}>
-                    <Text style={NAME_TEXT}>พูนเพชร ล้วนเจริญ</Text>
+                    <Text style={NAME_TEXT}>
+                        {ProfileStore.data && ProfileStore.data.first_name && `${ProfileStore.data.first_name} ${ProfileStore.data.last_name ? ProfileStore.data.last_name : ''}`}
+                    </Text>
                     <View style={VIEW_ICON_CROWN}>
-                        <Text style={ACCOUNT_TYPE_TEXT} tx={"profileScreen.accountType"} />
-                        <Icon icon={'crown'} style={CROWN_ICON} />
+                        <Text style={ACCOUNT_TYPE_TEXT} >{ProfileStore.data && ProfileStore.data.account_type && ProfileStore.data.account_type}</Text>
+                        {ProfileStore.data && ProfileStore.data.account_type && <Icon icon={'crown'} style={CROWN_ICON} />}
                     </View>
 
                     <View style={DETAIL_PROFILE}>
-                        <Text tx={"profileScreen.telNo"} style={DETAIL_TOPIC_NO} />
-                        <Text tx={"profileScreen.zoneDrive"} style={DETAIL_TOPIC_NO} />
+                        <View style={ROW_LAYOUT}>
+                            <Text tx={"profileScreen.telNo"} style={DETAIL_TOPIC_NO} />
+                            <Text style={DETAIL_TOPIC_NO} >{ProfileStore.data && ProfileStore.data.tel_no && ProfileStore.data.tel_no}</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row' }}>
+                            <Text tx={"profileScreen.zoneDrive"} style={DETAIL_TOPIC_NO} />
+                            <View style={{ flexDirection: 'column' }}>
+                                {ProfileStore.data && ProfileStore.data.work_zone.length && ProfileStore.data.work_zone.map((e, i) =>
+                                    <Text key={"profile-detail-vehicle-" + (i + 1)} style={DETAIL_VEHICLE_TEXT}>{e}</Text>
+                                )}
+                            </View>
+                        </View>
+
+
 
                         <View style={{ flexDirection: 'row' }}>
                             <Text tx={"profileScreen.carInformation"} style={DETAIL_TOPIC_NO} />
                             <View style={{ flexDirection: 'column' }}>
-                                {data_vehicle && data_vehicle.map((e, i) =>
-                                    <Text key={"profile-detail-vehicle-" + i + 1} style={DETAIL_VEHICLE_TEXT}>{e}</Text>)}
+                                {ProfileStore.data && ProfileStore.data.vehicle_details.length && ProfileStore.data.vehicle_details.map((e, i) =>
+                                    <Text key={"profile-detail-vehicle-" + (i + 1)} style={DETAIL_VEHICLE_TEXT}>{e.type}</Text>)}
                             </View>
                         </View>
 

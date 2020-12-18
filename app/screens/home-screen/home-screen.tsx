@@ -74,56 +74,9 @@ export const HomeScreen = observer((props) => {
     const { signinStore, versatileStore } = useStores()
 
     const navigation = useNavigation()
-    const logout = () => navigation.navigate("signin")
-
-    // const [users, setUsers] = useState([])
-    const [languageState, setlanguageState] = useState(null)
-
-    // useEffect(() => {
-    //     fetch("https://jsonplaceholder.typicode.com/todos/")
-    //         .then((response) => response.json())
-    //         .then((json) => {
-    //             console.log("JSON DATA HOME SCREEN :: ", json)
-    //             setUsers(json)
-    //         })
-
-    //     fetch('https://jsonplaceholder.typicode.com/todos/post', {
-    //         method: 'POST',
-    //         headers: {
-    //             Accept: 'application/json',
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify({
-    //             schema: 'yourValue',
-    //             request: 'yourOtherValue',
-    //         }),
-    //     }).then(val => console.log("VAL POSTPOSTPSTOSPTOSPOT :: ", val))
-    // }, [])
-
-    // useEffect(() => {
-    //     if (users && users.length)
-    //         console.log("User HERE :: ", users)
-    // }, [users])
 
     useEffect(() => {
-        const language = JSON.parse(JSON.stringify(versatileStore.getLanguage))
 
-        if (language) {
-            // i18n.defaultLocale = language
-            // i18n.fallbacks = true
-            i18n.locale = language
-        }
-    }, [versatileStore.getLanguage])
-
-    useEffect(() => {
-        console.log("Use Effect language :: ", versatileStore.getLanguage)
-        if (languageState != versatileStore.getLanguage) {
-            // setlanguageState(versatileStore.getLanguage)
-            setlanguageState(versatileStore.getLanguage)
-        }
-    }, [languageState])
-
-    useEffect(() => {
         signinStore.addCartItem({
             name: "test 1",
             price: 60
@@ -193,8 +146,7 @@ export const HomeScreen = observer((props) => {
                 </View>
                 <View style={BOTTOM_VIEW}>
                     <View style={VIEW_GRID_BOX}>
-                        {languageState && languageState != versatileStore.getLanguage ? <GridView data={dataTest} /> :
-                            <GridView data={dataTest} />}
+                        <GridView data={dataTest} />
                     </View>
                 </View>
             </View>

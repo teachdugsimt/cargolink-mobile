@@ -79,12 +79,14 @@
     "security": "ความปลอดภัย",
     "setYourPassword": "ตั้งค่ารหัสผ่านของคุณ",
     "contactUs": "ติดต่อเรา",
+    "changeYourPassword": "เปลี่ยนรหัสผ่าน",
+    "changeYourPhone": "เปลี่ยนหมายเลขโทรศัพท์",
     "lineOfficialAccount": "Line Official Account",
     "callCenter": "Call Center",
     "moreMenu": "เมนูเพิ่มเติม",
     "language": "ภาษา",
-    "english": "อังกฤษ",
-    "thai": "ไทย",
+    "English": "อังกฤษ",
+    "Thai": "ไทย",
     "Japan": "ญี่ปุ่น"
   },
   "searchBarComponent": {
@@ -116,7 +118,8 @@
     "addNewCar": "เพิ่มรถของฉัน",
     "myTruck": "รถของฉัน",
     "verified": "ตรวจสอบแล้ว",
-    "pending": "รอตรวจสอบ"
+    "pending": "รอตรวจสอบ",
+    "myTruckHeader": "รถของฉัน"
   },
   "vehicleType": {
     "Others": "อื่นๆ",
