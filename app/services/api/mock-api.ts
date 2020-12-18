@@ -6,27 +6,12 @@ import { createServer } from "miragejs"
 
 __DEV__ && createServer({
     routes() {
-        // this.namespace = "api"
-        // this.passthrough("http://localhost:8081/debugger-ui/")
-        this.get("https://jsonplaceholder.typicode.com/todos/", () => [
-            { id: "1", name: "Luke" },
-            { id: "2", name: "Leia" },
-            { id: "3", name: "Anakin" },
-        ])
-
         // Now use this
         this.get("https://jsonplaceholder.typicode.com/todos/1", () => [
             { id: "1", name: "Luke" },
             { id: "2", name: "Leia" },
             { id: "3", name: "Anakin" },
         ])
-
-        this.post("https://jsonplaceholder.typicode.com/todos/post", (schema, request) => {
-            let attrs = JSON.parse(request.requestBody)
-            console.log(attrs)
-            // debugger
-            return { id: '4', name: "Fluke" }
-        })
     },
 })
 
