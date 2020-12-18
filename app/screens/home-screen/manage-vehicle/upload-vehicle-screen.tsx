@@ -12,11 +12,9 @@ import RNPickerSelect from 'react-native-picker-select';
 import { translate } from "../../../i18n"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import FetchStore from '../../../store/fetch-store/fetch-store'
-import FormRegistration from "./form-registration"
-// import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-// import { TestApi } from '../../../services/api'
-// const apiUsers = new TestApi()
+import CreateVehicleStore from '../../../store/my-vehicle-store/create-vehicle-store'
 import ImagePicker from 'react-native-image-picker';
+import ImageResizer from 'react-native-image-resizer';
 import { vehicleEn, vehicleTh, regionListEn, regionListTh, provinceListEn, provinceListTh } from './datasource'
 import i18n from 'i18n-js'
 
@@ -166,16 +164,33 @@ export const UploadVehicleScreen = () => {
                 else if (status == "back") setfileBack(source);
                 else if (status == "left") setfileLeft(source);
                 else if (status == "right") setfileRight(source);
-                // Alert.alert(
-                //     'Vehicle Image',
-                //     "Upload Success",
-                //     [
-                //         {
-                //             text: "OK", onPress: () => { }
+
+
+                // ImageResizer.createResizedImage(response.uri, 1024, 1024, 'JPEG', 100, 0, null)
+                //     .then((response) => {
+                //         // response.uri is the URI of the new image that can now be displayed, uploaded...
+                //         // response.path is the path of the new image
+                //         // response.name is the name of the new image with the extension
+                //         // response.size is the size of the new image
+
+                //         // ****** Send this to API ******
+                //         const newImageResize = {
+                //             uri: response.uri,
+                //             type: 'image/jpeg',
+                //             name: response.name,
+                //             size: response.size,
+                //             tmp_name: response.path
                 //         }
-                //     ]
-                //     , { cancelable: false }
-                // )
+                //         // ****** Send this to API ******
+
+                //         // console.log(response)
+                //     }).catch((err) => {
+                //         // Oops, something went wrong. Check that the filename is correct and
+                //         // inspect err to get more details.
+                //         console.log(err)
+                //     });
+
+
             }
 
         });
@@ -187,6 +202,21 @@ export const UploadVehicleScreen = () => {
     const onSubmit = data => {
         setinputRegistration(data)
         console.log(data)
+
+        const data_mock_call = {
+            car_type: '4 cars',
+            have_dump: true,
+            vehicle_height: '1.2',
+            registration_vehicle: ['123-vh', '456-ss'],
+            images: [],
+            work_zone: [{ region: 'north', province: 'Chiangmai' }],
+        }
+        if (fileFront && Object.keys(fileFront).length) data_mock_call.images.push(fileFront)
+        if (fileBack && Object.keys(fileBack).length) data_mock_call.images.push(fileBack)
+        if (fileLeft && Object.keys(fileLeft).length) data_mock_call.images.push(fileLeft)
+        if (fileRight && Object.keys(fileRight).length) data_mock_call.images.push(fileRight)
+
+        CreateVehicleStore.createVehicleProfile(data_mock_call)
     }
 
 
@@ -224,7 +254,8 @@ export const UploadVehicleScreen = () => {
         console.log("Mobx state data : : ", JSON.parse(JSON.stringify(FetchStore.getUserData)))
         console.log("State data :: ", stateData)
         FetchStore.getUserRequest()
-        return ()=> {
+        return () => {
+            initForm = 0
             settextInput([])
             setrenderNew(false)
         }

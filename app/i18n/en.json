@@ -91,8 +91,8 @@
     "callCenter": "Call Center",
     "moreMenu": "More menu",
     "language": "Language",
-    "english": "English",
-    "thai": "Thai",
+    "English": "English",
+    "Thai": "Thai",
     "Japan": "Japan"
   },
   "searchBarComponent": {
@@ -121,7 +121,8 @@
   "myVehicleScreen": {
     "informationAt": "Information at",
     "type": "Type",
-    "addNewCar": "Add new car"
+    "addNewCar": "Add new car",
+    "myTruckHeader": "My Truck"
   },
   "vehicleType": {
     "Others": "Others",

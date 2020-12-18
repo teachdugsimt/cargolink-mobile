@@ -15,11 +15,29 @@ __DEV__ && createServer({
       { id: "3", name: "Anakin" },
     ])
 
-    this.get(`https://test.callapi.com/listUser`, () => [
-      { id: "1", name: "Luke" },
-      { id: "2", name: "Leia" },
-      { id: "3", name: "Anakin" },
-    ])
+    this.get(`${API_URL}profile/v1`, (params) => {
+      console.log("API CONFIG PARAMS :: ", params)
+      return {
+        first_name: 'John',
+        last_name: 'Wick',
+        age: 49,
+        account_type: 'Premium Account',
+        tel_no: '0929818252',
+        work_zone: ['Suphanburee', 'Nakhonpathom'],
+        vehicle_details: [{ id: 1, type: '6 truck dump', status: 'ACTIVE', number: 3 },
+        { id: 2, type: '4 car dump crop cap', status: 'ACTIVE', number: 7 }]
+      }
+    })
+
+    let newId = 3
+    this.post(`${API_URL}api/v1/car`, (schema, request) => {
+      console.log("Schema mock :: ", schema)
+      console.log("Request mock :: ", request)
+      let attrs = JSON.parse(request.requestBody)
+      attrs.id = newId++
+
+      return { reminder: attrs }
+    })
   },
 })
 /**
