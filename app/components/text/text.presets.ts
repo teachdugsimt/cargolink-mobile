@@ -15,7 +15,7 @@ const TOPIC_BASE: TextStyle = {
   fontSize: typography.title,
 }
 const TOPIC_EXTRA_BASE: TextStyle = {
-  fontFamily: typography.primary,
+  fontFamily: typography.secondary,
   color: color.textBlack,
   fontSize: typography.mainTitle,
 }
