@@ -25,7 +25,7 @@ __DEV__ && createServer({
             let attrs = JSON.parse(request.requestBody)
             console.log(attrs)
             // debugger
-            return {id: '4', name: "Fluke"}
+            return { id: '4', name: "Fluke" }
         })
     },
 })

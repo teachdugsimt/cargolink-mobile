@@ -106,10 +106,7 @@ export const HomeScreen = observer((props) => {
 
     useEffect(() => {
         const language = JSON.parse(JSON.stringify(versatileStore.getLanguage))
-        console.log("Language HERE :: ", language)
-        console.log("Language HERE :: ", language)
-        console.log("Language HERE :: ", language)
-        console.log("Language HERE :: ", language)
+      
         if (language) {
             // i18n.defaultLocale = language
             // i18n.fallbacks = true

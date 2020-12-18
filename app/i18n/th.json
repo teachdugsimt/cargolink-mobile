@@ -50,7 +50,7 @@
     "addVehicle": "เพิ่มรถ",
     "selectVehicleType": "เลือกพาหนะของคุณ",
     "haveDump": "รถมีที่ดั้มหรือไม่",
-    "heightVehicle": "ความสูงของคอกรถ (หน่วยเป็นเมตร)",
+    "heightVehicle": "ความสูงของคอกรถ (เมตร)",
     "detailVehicle": "ข้อมูลรถของคุณ",
     "atLeastOneRegister": "ทะเบียนรถจำเป็นต้องใช้อย่างน้อย 1 ทะเบียน",
     "carRegistration": "เลขทะเบียนรถ",

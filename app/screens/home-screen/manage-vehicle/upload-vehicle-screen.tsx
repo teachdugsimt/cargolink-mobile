@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react"
 import {
     View, ViewStyle, TextStyle,
-    ScrollView, Switch, StyleSheet, Dimensions, Platform, Alert
+    ScrollView, Switch, StyleSheet, Dimensions, Platform, Alert, ImageStyle
 } from "react-native"
+import { useForm, Controller } from "react-hook-form";
 import { observer } from "mobx-react-lite"
 import { Text, TextInputTheme, Button, UploadVehicle, RoundedButton } from "../../../components"
 import { spacing, color, typography, images } from "../../../theme"
@@ -42,6 +43,9 @@ const GREY_TEXT: TextStyle = { color: color.grey }
 const PADDING_LEFT5: TextStyle = {
     paddingLeft: 5
 }
+const MARGIN_MEDIUM: ViewStyle = {
+    marginVertical: 10
+}
 const TOP_VIEW: ViewStyle = {
     flex: 1,
     backgroundColor: color.textWhite,
@@ -55,6 +59,7 @@ const ALIGN_RIGHT: TextStyle = {
     color: color.grey
 }
 const MARGIN_TOP_BIG: ViewStyle = { marginTop: 10 }
+const MARGIN_TOP_MEDIUM: ViewStyle = { marginTop: 15 }
 const MARGIN_TOP_EXTRA: ViewStyle = { marginTop: 20 }
 const MARGIN_TOP: ViewStyle = { marginTop: 5 }
 const MARGIN_BOTTOM_BIG: ViewStyle = { marginBottom: 10 }
@@ -108,7 +113,15 @@ const WRAP_DROPDOWN: ViewStyle = {
 const DROPDOWN_ICON_CONTAINER: ViewStyle = {
     paddingTop: 12.5, paddingRight: 5
 }
-
+const PLACEHOLDER_IMAGE: ImageStyle = {
+    width: 50, height: 75
+}
+const PLACEHOLDER_IMAGE2: ImageStyle = {
+    width: 95, height: 37.5
+}
+const LAYOUT_REGISTRATION_FIELD: TextStyle = {
+    textAlign: 'right', paddingRight: 10,
+}
 export const UploadVehicleScreen = () => {
     // const navigation = useNavigation()
     const [vehicle, setvehicle] = useState('')
@@ -121,58 +134,9 @@ export const UploadVehicleScreen = () => {
     const [stateData, setstateData] = useState(null)
 
 
-    useEffect(() => {
-        console.log("Mobx state data : : ", JSON.parse(JSON.stringify(FetchStore.getUserData)))
-        console.log("State data :: ", stateData)
-        FetchStore.getUserRequest()
-    }, [])
-
-    useEffect(() => {
-        let tmp = JSON.parse(JSON.stringify(FetchStore.getUserData))
-        if (tmp.length && tmp != stateData) {
-            setstateData(tmp)
-            console.log("Fetstore data : ", JSON.parse(JSON.stringify(tmp)))
-        }
-        return () => {
-            setstateData(null)
-        }
-    }, [FetchStore.data])
 
 
 
-    const [textInput, settextInput] = useState([])
-    const [inputData, setinputData] = useState([])
-    const [renderNew, setrenderNew] = useState(false)
-
-    //function to add TextInput dynamically
-    const addTextInput = (index) => {
-        let textInputTmp = textInput;
-        textInputTmp.push(<TextInputTheme key={"text-input-registration-car-" + index} inputStyle={MARGIN_TOP_BIG}
-            onChangeText={(text) => addValues(text, index)} />);
-        settextInput(textInputTmp);
-        setrenderNew(!renderNew)
-    }
-
-    //function to add text from TextInputs into single array
-    const addValues = (text, index) => {
-        let dataArray = inputData;
-        let checkBool = false;
-        if (dataArray.length !== 0) {
-            dataArray.forEach(element => {
-                if (element.index === index) {
-                    element.text = text;
-                    checkBool = true;
-                }
-            });
-        }
-        if (checkBool) {
-            setinputData(dataArray)
-        }
-        else {
-            dataArray.push({ 'text': text, 'index': index });
-            setinputData(dataArray)
-        }
-    }
 
 
     const [fileFront, setfileFront] = useState({});
@@ -231,8 +195,61 @@ export const UploadVehicleScreen = () => {
         });
     };
 
+    const [inputRegistration, setinputRegistration] = useState({})
+
+    const { control, handleSubmit, errors } = useForm();
+    const onSubmit = data => {
+        setinputRegistration(data)
+        console.log(data)
+    }
+
+
+
+    const [textInput, settextInput] = useState([])
+    // const [inputData, setinputData] = useState([])
+    const [renderNew, setrenderNew] = useState(false)
+
+    //function to add TextInput dynamically
+    const addTextInput = (index) => {
+        let textInputTmp = textInput;
+        textInputTmp.push(<Controller
+            control={control}
+            render={({ onChange, onBlur, value }) => (
+                <TextInputTheme
+                    inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
+                    onBlur={onBlur}
+                    onChangeText={value => onChange(value)}
+                    value={value}
+                />
+            )}
+            key={"registration-key-" + index}
+            name={"registration-" + index}
+            defaultValue=""
+        />);
+        settextInput(textInputTmp);
+        setrenderNew(!renderNew)
+    }
+
+    useEffect(() => {
+        addTextInput(textInput.length)
+        console.log("Mobx state data : : ", JSON.parse(JSON.stringify(FetchStore.getUserData)))
+        console.log("State data :: ", stateData)
+        FetchStore.getUserRequest()
+    }, [])
+
+    useEffect(() => {
+        let tmp = JSON.parse(JSON.stringify(FetchStore.getUserData))
+        if (tmp.length && tmp != stateData) {
+            setstateData(tmp)
+            console.log("Fetstore data : ", JSON.parse(JSON.stringify(tmp)))
+        }
+        return () => {
+            setstateData(null)
+        }
+    // }, [FetchStore.data])
+    }, [FetchStore.getUserData])
+
     console.log("File path :: => ", fileFront)
-    console.log(i18n)
 
     return (
         <View testID="UploadVehicleScreen" style={FULL}>
@@ -290,9 +307,40 @@ export const UploadVehicleScreen = () => {
 
 
 
+                        <View>
+                            {textInput.map(e => { return e })}
+                            {/* <Controller
+                                control={control}
+                                render={({ onChange, onBlur, value }) => (
+                                    <TextInputTheme
+                                        onBlur={onBlur}
+                                        onChangeText={value => onChange(value)}
+                                        value={value}
+                                    />
+                                )}
+                                name="firstName"
+                                defaultValue=""
+                            />
 
-                        {renderNew && textInput.map(value => { return value })}
-                        {!renderNew && textInput.map(value => { return value })}
+                            <Controller
+                                control={control}
+                                render={({ onChange, onBlur, value }) => (
+                                    <TextInputTheme
+                                        onBlur={onBlur}
+                                        onChangeText={value => onChange(value)}
+                                        value={value}
+                                    />
+                                )}
+                                name="lastName"
+                                defaultValue=""
+                            /> */}
+
+                            {/* <Button onPress={handleSubmit(onSubmit)} ><Text>Submit</Text></Button> */}
+                        </View>
+
+
+                        {/* {renderNew && textInput.map(value => { return value })}
+                        {!renderNew && textInput.map(value => { return value })} */}
                         <Button onPress={() => addTextInput(textInput.length)} style={{ ...ADD_VEHICLE_BUTTON, ...MARGIN_TOP_EXTRA }}>
                             <Ionicons name={"add-circle-outline"} size={spacing[5]} color={color.grey} />
                             <Text tx={"uploadVehicleScreen.addVehicleRegistration"} style={{ ...CONTENT_TEXT, ...GREY_TEXT, ...PADDING_LEFT5 }} />
@@ -313,31 +361,47 @@ export const UploadVehicleScreen = () => {
                         <View style={{ ...MARGIN_TOP_EXTRA, ...COLUMN_UPLOAD, ...MARGIN_BOTTOM_BIG }}>
                             <View style={ROW_UPLOAD}>
                                 <UploadVehicle
+                                    haveImage={Object.keys(fileFront).length ? true : false}
+                                    deleteImage={() => setfileFront({})}
                                     onPress={() => _chooseFile('front')}
-                                    tx={"uploadVehicleScreen.exampleImageFront"}
+                                    viewImageStyle={Object.keys(fileFront).length ? MARGIN_TOP_EXTRA : MARGIN_TOP_MEDIUM}
+                                    tx={Object.keys(fileFront).length ? '' : "uploadVehicleScreen.exampleImageFront"}
+                                    txStyle={Object.keys(fileFront).length ? {} : { paddingTop: 5 }}
                                     uploadStyle={{ padding: 5, minHeight: 120 }}
                                     source={Object.keys(fileFront).length ? fileFront : images.addTruck2B}
-                                    imageStyle={{ width: 50, height: 50 }} />
+                                    imageStyle={Object.keys(fileFront).length ? {} : PLACEHOLDER_IMAGE} />
                                 <UploadVehicle
+                                    haveImage={Object.keys(fileBack).length ? true : false}
+                                    deleteImage={() => setfileBack({})}
                                     onPress={() => _chooseFile('back')}
-                                    tx={"uploadVehicleScreen.exampleImageBack"}
+                                    viewImageStyle={Object.keys(fileBack).length ? MARGIN_TOP_EXTRA : MARGIN_TOP_MEDIUM}
+                                    tx={Object.keys(fileBack).length ? '' : "uploadVehicleScreen.exampleImageBack"}
+                                    txStyle={Object.keys(fileBack).length ? {} : { paddingTop: 5 }}
                                     uploadStyle={{ padding: 5, minHeight: 120 }}
                                     source={Object.keys(fileBack).length ? fileBack : images.addTruck2F}
-                                    imageStyle={{ width: 50, height: 50 }} />
+                                    imageStyle={Object.keys(fileBack).length ? {} : PLACEHOLDER_IMAGE} />
                             </View>
                             <View style={ROW_UPLOAD}>
                                 <UploadVehicle
+                                    haveImage={Object.keys(fileLeft).length ? true : false}
+                                    deleteImage={() => setfileLeft({})}
                                     onPress={() => _chooseFile('left')}
-                                    tx={"uploadVehicleScreen.exampleImageLeft"}
+                                    tx={Object.keys(fileLeft).length ? '' : "uploadVehicleScreen.exampleImageLeft"}
+                                    viewImageStyle={Object.keys(fileLeft).length ? MARGIN_TOP_EXTRA : {}}
+                                    txStyle={Object.keys(fileLeft).length ? {} : { paddingTop: 5 }}
                                     uploadStyle={{ padding: 5, minHeight: 120 }}
                                     source={Object.keys(fileLeft).length ? fileLeft : images.addTruck1}
-                                    imageStyle={{ width: 95, height: 37.5 }} />
+                                    imageStyle={Object.keys(fileLeft).length ? {} : PLACEHOLDER_IMAGE2} />
                                 <UploadVehicle
+                                    haveImage={Object.keys(fileRight).length ? true : false}
+                                    deleteImage={() => setfileRight({})}
                                     onPress={() => _chooseFile('right')}
-                                    tx={"uploadVehicleScreen.exampleImageRight"}
+                                    tx={Object.keys(fileRight).length ? '' : "uploadVehicleScreen.exampleImageRight"}
+                                    viewImageStyle={Object.keys(fileRight).length ? MARGIN_TOP_EXTRA : {}}
+                                    txStyle={Object.keys(fileRight).length ? {} : { paddingTop: 5 }}
                                     uploadStyle={{ padding: 5, minHeight: 120 }}
                                     source={Object.keys(fileRight).length ? fileRight : images.addTruck2}
-                                    imageStyle={{ width: 95, height: 37.5 }} />
+                                    imageStyle={Object.keys(fileRight).length ? {} : PLACEHOLDER_IMAGE2} />
                             </View>
                         </View>
                     </View>
@@ -407,23 +471,10 @@ export const UploadVehicleScreen = () => {
 
                 <View style={{ ...TOP_VIEW, ...MARGIN_TOP_EXTRA }}>
                     <View style={WRAPPER_TOP}>
-                        <RoundedButton text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
+                        <RoundedButton onPress={handleSubmit(onSubmit)} text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
                     </View>
                 </View>
             </ScrollView>
         </View>
     )
 }
-
-
-const inline_styles = StyleSheet.create({
-    switchEnableBorder: {
-        borderColor: '#6fa6d3',
-        borderWidth: 1
-    },
-
-    switchDisableBorder: {
-        borderColor: '#f2f2f2',
-        borderWidth: 1,
-    },
-});
