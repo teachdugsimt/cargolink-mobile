@@ -1,6 +1,6 @@
 import { types, flow } from "mobx-state-tree"
-import { TestApi } from '../../services/api'
-const apiUsers = new TestApi()
+import { MockApi } from '../../services/api'
+const apiUsers = new MockApi()
 
 const Profile = types.model({
     id: types.maybeNull(types.string),

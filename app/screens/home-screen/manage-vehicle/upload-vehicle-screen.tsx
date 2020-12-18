@@ -239,6 +239,7 @@ export const UploadVehicleScreen = () => {
 
     useEffect(() => {
         let tmp = JSON.parse(JSON.stringify(FetchStore.getUserData))
+        console.log("Fetch Store :: ", JSON.parse(JSON.stringify(FetchStore.data)))
         if (tmp.length && tmp != stateData) {
             setstateData(tmp)
             console.log("Fetstore data : ", JSON.parse(JSON.stringify(tmp)))
@@ -247,7 +248,7 @@ export const UploadVehicleScreen = () => {
             setstateData(null)
         }
     // }, [FetchStore.data])
-    }, [FetchStore.getUserData])
+    }, [FetchStore.data])
 
     console.log("File path :: => ", fileFront)
 

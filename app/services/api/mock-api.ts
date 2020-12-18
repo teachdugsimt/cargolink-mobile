@@ -2,12 +2,12 @@ import { ApisauceInstance, create, ApiResponse } from "apisauce"
 import { getGeneralApiProblem } from "./api-problem"
 import { ApiConfig, DEFAULT_API_CONFIG } from "./api-config"
 // import * as Types from "./api.types"
-
-import { GeneralApiProblem } from "./api-problem"
-
 import { createServer } from "miragejs"
+
 __DEV__ && createServer({
     routes() {
+        // this.namespace = "api"
+        // this.passthrough("http://localhost:8081/debugger-ui/")
         this.get("https://jsonplaceholder.typicode.com/todos/", () => [
             { id: "1", name: "Luke" },
             { id: "2", name: "Leia" },
@@ -29,20 +29,11 @@ __DEV__ && createServer({
         })
     },
 })
-interface User {
-    id: number
-    name: string
-}
-export type GetUsersResult = { kind: "ok"; users: User[] } | GeneralApiProblem
-export type GetUserResult = { kind: "ok"; user: User } | GeneralApiProblem
-
-
-
 
 /**
  * Manages all requests to the API.
  */
-export class TestApi {
+export class MockApi {
     /**
      * The underlying apisauce instance which performs the requests.
      */
@@ -80,11 +71,6 @@ export class TestApi {
         })
     }
 
-
-    /**
-     * Gets a list of users.
-     */
-
     async getUsers(): Promise<any> {
         // make the api call
         try {
@@ -103,6 +89,5 @@ export class TestApi {
         }
 
     }
-
 
 }

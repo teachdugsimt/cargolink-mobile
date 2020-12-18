@@ -18,40 +18,40 @@ const makeId = (length: number) => {
   return result
 }
 
-createServer({
-  routes() {
-    this.post(`${BASE_URL}/api/v1/users/auth/otp-request`, (schema, request) => {
-      const attrs = JSON.parse(request.requestBody)
-      console.log(attrs)
-      // debugger
-      return {
-        refCode: makeId(4),
-        expireTime: Math.floor(Date.now() / 1000).toString(),
-      }
-    })
+// createServer({
+//   routes() {
+//     this.post(`${BASE_URL}/api/v1/users/auth/otp-request`, (schema, request) => {
+//       const attrs = JSON.parse(request.requestBody)
+//       console.log(attrs)
+//       // debugger
+//       return {
+//         refCode: makeId(4),
+//         expireTime: Math.floor(Date.now() / 1000).toString(),
+//       }
+//     })
 
-    this.post(`${BASE_URL}/api/v1/users/auth/otp-verify`, (schema, request) => {
-      const attrs = JSON.parse(request.requestBody)
-      console.log(attrs)
-      // debugger
-      return {
-        userProfile: {
-          id: Math.floor(Date.now() / 1000).toString(),
-          companyName: "Onelink space",
-        },
-        termOfService: {
-          latestVersion: "0.0.1",
-          latestVersionAgree: true,
-        },
-        token: {
-          idToken: "string",
-          accessToken: "string",
-          refreshToken: "string",
-        },
-      }
-    })
-  },
-})
+//     this.post(`${BASE_URL}/api/v1/users/auth/otp-verify`, (schema, request) => {
+//       const attrs = JSON.parse(request.requestBody)
+//       console.log(attrs)
+//       // debugger
+//       return {
+//         userProfile: {
+//           id: Math.floor(Date.now() / 1000).toString(),
+//           companyName: "Onelink space",
+//         },
+//         termOfService: {
+//           latestVersion: "0.0.1",
+//           latestVersionAgree: true,
+//         },
+//         token: {
+//           idToken: "string",
+//           accessToken: "string",
+//           refreshToken: "string",
+//         },
+//       }
+//     })
+//   },
+// })
 
 /**
  * Manages all requests to the API.
