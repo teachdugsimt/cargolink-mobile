@@ -15,16 +15,14 @@ const FULL: ViewStyle = {
 }
 
 const ROOT_STYLE: ViewStyle = {
-    ...FULL,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    backgroundColor: 'red'
+    flexDirection: 'row', justifyContent: 'flex-end'
 }
 
 const CONTENT_TEXT: TextStyle = {
     fontFamily: 'Kanit-Medium',
     fontSize: typography.title,
-    color: color.black
+    color: color.black,
+    paddingHorizontal: 10,
 }
 
 const RADIO_BUTTON: ViewStyle = {
@@ -37,9 +35,11 @@ export function RadioButton(props: any) {
     if (!data || data.length == 0) return (<View />)
 
     return (
-        <View style={{ ROOT_STYLE, ...containerStyle }}>
+        <View style={{ ...ROOT_STYLE, ...containerStyle }}>
             {data.map((item, index) => {
-                return <Button key={'radio-button-' + index} onPress={() => onPress(item, index)} style={{ ...RADIO_BUTTON, ...buttonStyle, backgroundColor: item.active ? color.primary : color.line }}>
+                return <Button key={'radio-button-' + index} onPress={() => onPress(item, index)}
+                    style={{ ...RADIO_BUTTON, ...buttonStyle, backgroundColor: item.active ? color.primary : color.line }}
+                >
                     <Text tx={item.label} style={CONTENT_TEXT} />
                 </Button>
             })

@@ -17,6 +17,7 @@ import ImagePicker from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
 import { vehicleEn, vehicleTh, regionListEn, regionListTh, provinceListEn, provinceListTh } from './datasource'
 import i18n from 'i18n-js'
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -89,8 +90,8 @@ const ROUND_BUTTON_TEXT: TextStyle = {
     color: color.textWhite
 }
 const WRAP_DROPDOWN: ViewStyle = {
-    flex: 1, borderColor: color.grey, borderWidth: 1, padding: Platform.OS == "ios" ? 12 : 0,
-    borderRadius: 2.5, marginTop: 20
+    flex: 1, borderColor: color.grey, borderWidth: 1, padding: Platform.OS == "ios" ? 7.5 : 0,
+    borderRadius: 2.5
 }
 const DROPDOWN_ICON_CONTAINER: ViewStyle = {
     paddingTop: 12.5, paddingRight: 5
@@ -103,6 +104,17 @@ const PLACEHOLDER_IMAGE2: ImageStyle = {
 }
 const LAYOUT_REGISTRATION_FIELD: TextStyle = {
     textAlign: 'right', paddingRight: 10,
+}
+
+const ADD_DROPDOWN_REGION: ViewStyle = {
+    alignSelf: 'flex-end',
+    paddingLeft: 10,
+    paddingTop: Platform.OS == "ios" ? 8 : 12
+}
+
+const WRAPPER_REGION_DROPDOWN: ViewStyle = {
+    ...MARGIN_BOTTOM_BIG,
+    ...ROW_UPLOAD,
 }
 
 let initForm = 0
@@ -222,6 +234,7 @@ export const UploadVehicleScreen = () => {
 
 
     const [textInput, settextInput] = useState([])
+    const [dropdownRegion, setdropdownRegion] = useState([])
     // const [inputData, setinputData] = useState([])
     const [renderNew, setrenderNew] = useState(false)
 
@@ -246,10 +259,78 @@ export const UploadVehicleScreen = () => {
         setrenderNew(!renderNew)
     }
 
+    const addDropdown = (index) => {
+        let dropdownRegionTmp = dropdownRegion
+        dropdownRegionTmp.push(<>
+
+            <View style={{ ...WRAP_DROPDOWN, marginRight: 5, justifyContent: 'center' }} key={'view-dropdown-region-' + index}>
+                <Controller
+                    control={control}
+                    render={({ onChange, onBlur, value }) => (
+                        <RNPickerSelect
+                            value={value}
+                            onValueChange={(value) => onChange(value)}
+                            items={i18n.locale == "en" ? regionListEn : regionListTh}
+                            placeholder={{
+                                label: translate("uploadVehicleScreen.region"),
+                                color: color.black
+                            }}
+                            useNativeAndroidPickerStyle={false}
+                            style={{
+                                inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
+                                iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
+                                placeholder: { color: color.black }
+                            }}
+                            Icon={() => {
+                                return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
+                            }}
+                        />
+                    )}
+                    key={'controller-dropdown-region-' + index}
+                    name={"controller-region-" + index}
+                    defaultValue=""
+                />
+
+            </View>
+            <View style={{ ...WRAP_DROPDOWN, marginLeft: 5 }} key={'view-dropdown-province-' + index}>
+                <Controller
+                    control={control}
+                    render={({ onChange, onBlur, value }) => (
+                        <RNPickerSelect
+                            value={value}
+                            onValueChange={(value) => onChange(value)}
+                            items={i18n.locale == "en" ? provinceListEn : provinceListTh}
+                            placeholder={{
+                                label: translate("uploadVehicleScreen.province"),
+                                color: color.black
+
+                            }}
+                            useNativeAndroidPickerStyle={false}
+                            style={{
+                                inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
+                                iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
+                                placeholder: { color: color.black }
+                            }}
+                            Icon={() => {
+                                return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
+                            }}
+                        />
+                    )}
+                    key={'controller-dropdown-province-' + index}
+                    name={"controller-province-" + index}
+                    defaultValue=""
+                />
+            </View>
+        </>)
+        setdropdownRegion(dropdownRegionTmp);
+        setrenderNew(!renderNew)
+    }
+
     useEffect(() => {
         if (initForm == 0) {
             initForm = 1
             addTextInput(textInput.length)
+            addDropdown(dropdownRegion.length)
         }
         console.log("Mobx state data : : ", JSON.parse(JSON.stringify(FetchStore.getUserData)))
         console.log("State data :: ", stateData)
@@ -274,7 +355,7 @@ export const UploadVehicleScreen = () => {
         // }, [FetchStore.data])
     }, [FetchStore.data])
 
-    console.log("File path :: => ", fileFront)
+    console.log("Dropdown region :: => ", dropdownRegion)
 
     return (
         <View testID="UploadVehicleScreen" style={FULL}>
@@ -406,55 +487,20 @@ export const UploadVehicleScreen = () => {
                     <View style={WRAPPER_TOP}>
                         <Text tx={"uploadVehicleScreen.workZone"} style={TITLE_TOPIC}>Upload Vehicle 15151515</Text>
 
-                        <View style={{ ...ROW_UPLOAD, ...MARGIN_BOTTOM_BIG }}>
 
 
+                        {dropdownRegion.map((e, i) => {
+                            if (i == dropdownRegion.length - 1) {
+                                return (<View key={'view-dropdown-region-' + i} style={WRAPPER_REGION_DROPDOWN}>
+                                    {e}
+                                    <TouchableOpacity key={'icon-add-circle-' + i} style={ADD_DROPDOWN_REGION} onPress={() => addDropdown(dropdownRegion.length)}>
+                                        <Ionicons size={22} color={color.darkGreen} name={"add-circle-outline"} />
+                                    </TouchableOpacity>
+                                </View>)
+                            }
+                            else return (<View style={WRAPPER_REGION_DROPDOWN}>{e}</View>)
+                        })}
 
-                            <View style={{ ...WRAP_DROPDOWN, marginRight: 5 }}>
-                                <RNPickerSelect
-                                    value={region}
-                                    onValueChange={(value) => setregion(value)}
-                                    items={i18n.locale == "en" ? regionListEn : regionListTh}
-                                    placeholder={{
-                                        label: translate("uploadVehicleScreen.region"),
-                                        color: color.black
-                                    }}
-                                    useNativeAndroidPickerStyle={false}
-                                    style={{
-                                        inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
-                                        iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
-                                        placeholder: { color: color.black }
-                                    }}
-                                    Icon={() => {
-                                        return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
-                                    }}
-                                />
-                            </View>
-
-                            <View style={{ ...WRAP_DROPDOWN, marginLeft: 5 }}>
-                                <RNPickerSelect
-                                    value={province}
-                                    onValueChange={(value) => setprovince(value)}
-                                    items={i18n.locale == "en" ? provinceListEn : provinceListTh}
-                                    placeholder={{
-                                        label: translate("uploadVehicleScreen.province"),
-                                        color: color.black
-
-                                    }}
-                                    useNativeAndroidPickerStyle={false}
-                                    style={{
-                                        inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
-                                        iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
-                                        placeholder: { color: color.black }
-                                    }}
-                                    Icon={() => {
-                                        return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
-                                    }}
-                                />
-                            </View>
-
-
-                        </View>
 
 
                     </View>

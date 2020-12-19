@@ -98,11 +98,8 @@ __DEV__ && createServer({
 
     let newId = 3
     this.post(`${API_URL}api/v1/car`, (schema, request) => {
-      console.log("Schema mock :: ", schema)
-      console.log("Request mock :: ", request)
       let attrs = JSON.parse(request.requestBody)
       attrs.id = newId++
-
       return { reminder: attrs }
     })
   },

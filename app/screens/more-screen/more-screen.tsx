@@ -1,13 +1,14 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { View, ViewStyle, TextStyle, TouchableOpacity, ScrollView, Dimensions } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Button, RadioButton, Text } from "../../components"
+import { Button, RadioButton, Text, RoundedButton, HeaderCenter } from "../../components"
 import { color, spacing } from "../../theme"
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation, NavigationProp, NavigationContainerProps } from "@react-navigation/native"
 import Icon from "react-native-vector-icons/Ionicons"
 import { translate } from "../../i18n"
 import i18n from 'i18n-js'
 import { useStores } from "../../models/root-store/root-store-context";
+
 interface SubMenuProps {
     key?: string
     label?: string
@@ -63,7 +64,12 @@ const BUTTON_TEXT: TextStyle = {
     color: color.textWhite,
     fontSize: 18
 }
-
+const ROUND_BUTTON_CONTAINER: ViewStyle = {
+    backgroundColor: color.primary, borderColor: color.transparent
+}
+const ROUND_BUTTON_TEXT: TextStyle = {
+    color: color.textWhite
+}
 const MENUS: Array<MenuProps> = [
     {
         key: 'security',
@@ -108,6 +114,10 @@ const MENUS: Array<MenuProps> = [
     }
 ]
 
+const RADIO_VIEW: ViewStyle = {
+    flexDirection: 'row',
+    justifyContent: 'flex-end'
+}
 
 export const MoreScreen = observer(function MoreScreen() {
     const navigation = useNavigation()
@@ -117,6 +127,14 @@ export const MoreScreen = observer(function MoreScreen() {
         { label: 'moreScreen.English', value: 'en', active: i18n.locale == "en" ? true : false },
     ])
     const [renderNew, setrenderNew] = useState(false)
+
+    useEffect(() => {
+        navigation.setOptions({
+            headerCenter : () => (
+             <HeaderCenter tx={"moreScreen.moreMenu"}/>
+            ),
+          });
+    }, [renderNew])
 
     const _pressMenu = (item) => {
         console.log("::Press change language:: ", item)
@@ -165,32 +183,31 @@ export const MoreScreen = observer(function MoreScreen() {
                                     </TouchableOpacity>
                                 )
                             })}
-                            {menu.key && menu.key == "language" && renderNew && <RadioButton
-                                data={list}
-                                onPress={(item: any, index: any) => _pressChangeLanguage(item, index)}
-                            />}
-                            {menu.key && menu.key == "language" && !renderNew && <RadioButton
-                                data={list}
-                                onPress={(item: any, index: any) => _pressChangeLanguage(item, index)}
-                            />}
+
+                            <View style={RADIO_VIEW}>
+                                {menu.key && menu.key == "language" && renderNew && <RadioButton
+                                    data={list}
+                                    onPress={(item: any, index: any) => _pressChangeLanguage(item, index)}
+                                />}
+                                {menu.key && menu.key == "language" && !renderNew && <RadioButton
+                                    data={list}
+                                    onPress={(item: any, index: any) => _pressChangeLanguage(item, index)}
+                                />}
+                            </View>
 
                         </View>
                     )
                 })}
 
-                <View style={{ ...COLUMN, justifyContent: 'flex-end' }}>
-                    <Button
-                        testID="continue-with-signin"
-                        style={BUTTON}
-                        textStyle={BUTTON_TEXT}
-                        text={translate('homeScreen.logout')} // 'ออกจากระบบ'
-                        onPress={() => {
-                            console.log('Click me')
-                            navigation.navigate("signin")
-                        }}
+                <View style={{ ...COLUMN, justifyContent: 'flex-end', paddingVertical: 10 }}>
+                    <RoundedButton onPress={() => navigation.navigate("signin")}
+                        text={"common.confirm"}
+                        containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT}
                     />
                 </View>
             </View>
         </View>
     )
+
+
 })
