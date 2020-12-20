@@ -3,7 +3,7 @@ import { View, ViewStyle, TextStyle, TouchableOpacity, ScrollView, Dimensions } 
 import { observer } from "mobx-react-lite"
 import { Button, RadioButton, Text, RoundedButton, HeaderCenter } from "../../components"
 import { color, spacing } from "../../theme"
-import { useNavigation, NavigationProp, NavigationContainerProps } from "@react-navigation/native"
+import { useNavigation } from "@react-navigation/native"
 import Icon from "react-native-vector-icons/Ionicons"
 import { translate } from "../../i18n"
 import i18n from 'i18n-js'

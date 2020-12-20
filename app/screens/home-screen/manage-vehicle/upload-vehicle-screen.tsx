@@ -487,21 +487,15 @@ export const UploadVehicleScreen = () => {
                     <View style={WRAPPER_TOP}>
                         <Text tx={"uploadVehicleScreen.workZone"} style={TITLE_TOPIC}>Upload Vehicle 15151515</Text>
 
-
-
                         {dropdownRegion.map((e, i) => {
-                            if (i == dropdownRegion.length - 1) {
-                                return (<View key={'view-dropdown-region-' + i} style={WRAPPER_REGION_DROPDOWN}>
-                                    {e}
-                                    <TouchableOpacity key={'icon-add-circle-' + i} style={ADD_DROPDOWN_REGION} onPress={() => addDropdown(dropdownRegion.length)}>
-                                        <Ionicons size={22} color={color.darkGreen} name={"add-circle-outline"} />
-                                    </TouchableOpacity>
-                                </View>)
-                            }
-                            else return (<View style={WRAPPER_REGION_DROPDOWN}>{e}</View>)
+
+                            return (<View key={'view-dropdown-region-' + i} style={WRAPPER_REGION_DROPDOWN}>
+                                {e}
+                                {i == dropdownRegion.length - 1 && <TouchableOpacity key={'icon-add-circle-' + i} style={ADD_DROPDOWN_REGION} onPress={() => addDropdown(dropdownRegion.length)}>
+                                    <Ionicons size={22} color={color.darkGreen} name={"add-circle-outline"} />
+                                </TouchableOpacity>}
+                            </View>)
                         })}
-
-
 
                     </View>
                 </View>

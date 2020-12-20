@@ -1,6 +1,6 @@
 {
   "common": {
-    "ok": "OK!",
+    "ok": "ตกลง",
     "cancel": "Cancel",
     "back": "Back",
     "from": "จาก",
@@ -119,7 +119,10 @@
     "myTruck": "รถของฉัน",
     "verified": "ตรวจสอบแล้ว",
     "pending": "รอตรวจสอบ",
-    "myTruckHeader": "รถของฉัน"
+    "myTruckHeader": "รถของฉัน",
+    "addVehicleSuccess": "เพิ่มรถสำเร็จ",
+    "pendingVehicleDetail": "เรากำลังตรวจสอบข้อมูล อีกไม่นานรถของ",
+    "pendingVehicleDetail2": "คุณก็จะสามารถรับงานได้แล้ว"
   },
   "vehicleType": {
     "Others": "อื่นๆ",

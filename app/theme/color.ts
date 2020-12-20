@@ -73,4 +73,5 @@ export const color = {
   snow: palette.pureSnow,
   black: palette.pureBlack,
   darkGreen: palette.darkGreen,
+  darkGrey: palette.darkGrey,
 }

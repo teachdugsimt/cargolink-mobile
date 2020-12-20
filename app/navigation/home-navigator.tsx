@@ -12,7 +12,7 @@ import { color, images } from '../theme'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import {
     DetailScreen, HomeScreen, JobDetailScreen, MyVehicle, PostJobScreen, SearchCarScreen, SearchJobScreen, SettingSearchScreen,
-    UploadVehicleScreen,
+    UploadVehicleScreen, SuccessUpload,
     VehicleDetailScreen
 } from "../screens"
 import { translate } from "../i18n"
@@ -39,6 +39,7 @@ export type PrimaryHomeParamList = {
     uploadVehicle: undefined
     myVehicle: undefined
     vehicleDetail: undefined
+    uploadSuccess: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -142,6 +143,14 @@ export function HomeNavigator() {
                 options={({ navigation, route }) => ({
                     // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
                     headerCenter: () => <HeaderCenter tx={"myVehicleScreen.myTruckHeader"} />,
+                    headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+                })}
+            />
+            <Stack.Screen
+                name="uploadSuccess"
+                component={SuccessUpload}
+                options={({ navigation, route }) => ({
+                    headerCenter: () => <HeaderCenter tx={"myVehicleScreen.addNewCar"} />,
                     headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
                 })}
             />

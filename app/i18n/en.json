@@ -125,7 +125,10 @@
     "myTruck": "My Truck",
     "verified": "Verified",
     "pending": "Pending",
-    "myTruckHeader": "My Truck"
+    "myTruckHeader": "My Truck",
+    "addVehicleSuccess": "Add vehicle success",
+    "pendingVehicleDetail": "We are reviewing the information. Soon ",
+    "pendingVehicleDetail2": "your car will be able to accept the job."
   },
   "vehicleType": {
     "Others": "Others",

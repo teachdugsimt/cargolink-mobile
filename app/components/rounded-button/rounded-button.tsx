@@ -23,8 +23,8 @@ const ADD_VEHICLE_BUTTON: ViewStyle = {
     alignItems: 'center',
     width: width - 20,
     alignSelf: 'center',
-    height: 40,
-    borderRadius: 20,
+    height: 50,
+    borderRadius: 25,
     borderWidth: 1,
     borderColor: color.line,
     backgroundColor: color.textWhite

@@ -1,18 +1,19 @@
 import { types, destroy } from "mobx-state-tree"
+import { TextPropTypes } from "react-native"
 
 const Book = types.model('Book', {
-    title: types.string,
-    author: types.string,
-    read: false
+  title: types.string,
+  author: types.string,
+  read: false
 }).actions(self => ({
-    toggleRead() {
-        self.read = !self.read
-    }
+  toggleRead() {
+    self.read = !self.read
+  }
 }))
 
 const BookStore = types.model({
-    books: types.array(Book)
-  })
+  books: types.array(Book),
+})
   .views(self => ({
     get readBooks() {
       return self.books.filter(book => book.read)
@@ -20,7 +21,7 @@ const BookStore = types.model({
     booksByAuthor(author) {
       return self.books.filter(book => book.author === author)
     },
-    get allBooks(){
+    get allBooks() {
       return self.books
     }
   })
@@ -32,7 +33,7 @@ const BookStore = types.model({
     },
     remove(book) {
       destroy(book)
-    }
+    },
   }))
   .create({
     books: []
