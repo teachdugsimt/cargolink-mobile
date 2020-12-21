@@ -8,7 +8,7 @@ export default [
         image_car_type: "truck13",
         owner: {},
         vehicle_height: 2.5,
-        have_dump: false,
+        have_dump: true,
         images: [
             {
                 url: "https://truck.in.th/images/T03/T030709955_1_1551238177.jpeg",
@@ -23,8 +23,12 @@ export default [
         work_zone: [
             {
                 region: 'north',
-                province: 'Chaing Mai',
-            }
+                province: 'Chiang Mai',
+            },
+            {
+                region: 'center',
+                province: 'Bangkok',
+            },
         ]
     },
     {

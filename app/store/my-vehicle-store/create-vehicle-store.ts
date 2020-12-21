@@ -1,10 +1,11 @@
 import { types, flow } from "mobx-state-tree"
 import { MyVehicleAPI } from '../../services/api'
-const apiUsers = new MyVehicleAPI()
+import * as Types from "../../services/api/api.types"
+const apiMyVehicle = new MyVehicleAPI()
 
 const Region = types.model({
-    region: types.string,
-    province: types.string
+    region: types.maybeNull(types.string),
+    province: types.maybeNull(types.string)
 })
 
 const ImageVehicle = types.model({
@@ -22,20 +23,39 @@ const VehicleNew = types.model({
     registration_vehicle: types.array(types.string),
     images: types.maybeNull(types.array(ImageVehicle)),
     work_zone: types.array(Region)
+})
 
+const VehiclePatch = types.model({
+    car_type: types.string,
+    have_dump: types.boolean,
+    vehicle_height: types.string,
+    registration_vehicle: types.array(types.string),
+    images: types.maybeNull(types.array(types.model({
+        uri: types.string,
+        type: types.maybeNull(types.string),
+        name: types.maybeNull(types.string),
+        size: types.maybeNull(types.number),
+        tmp_name: types.maybeNull(types.string)
+    }))),
+    work_zone: types.array(Region)
 })
 
 const CreateVehicleStore = types.model({
     data: types.maybeNull(VehicleNew),
     loading: types.boolean,
-    error: types.maybeNull(types.string)
+    error: types.maybeNull(types.string),
+
+    patchMyVehicle: types.maybeNull(VehiclePatch),
+    loadingPatchMyVehicle: types.boolean,
+    errorPatchMyVehicle: types.maybeNull(types.string)
+
 }).actions(self => ({
     createVehicleProfile: flow(function* createVehicleProfile(params) { // <- note the star, this a generator function!
-        apiUsers.setup()
+        apiMyVehicle.setup()
         self.loading = true
         try {
             // ... yield can be used in async/await style
-            const response = yield apiUsers.createVehicleProfile(params)
+            const response = yield apiMyVehicle.createVehicleProfile(params)
             console.log("Response call create upload vehicle : : ", response)
             if (response.ok) {
                 self.data = response.data.reminder || {}
@@ -52,6 +72,24 @@ const CreateVehicleStore = types.model({
             self.error = "set up state mobx error"
         }
     }),
+    patchVehicleDetailsRequest: flow(function* findRequest(params: Types.PatchDataRequest) {
+        // <- note the star, this a generator function!
+        apiMyVehicle.setup()
+        self.loadingPatchMyVehicle = true
+        try {
+            const response = yield apiMyVehicle.patchMyVehicle(params)
+            console.log("Response call api patch my vehicle : : ", response)
+            self.patchMyVehicle  = response.data.reminder || []
+            self.loadingPatchMyVehicle = false
+        } catch (error) {
+            // ... including try/catch error handling
+            console.error("Failed to fetch patch my vehicle api : ", error)
+            // self.data = []
+            self.loadingPatchMyVehicle = false
+            self.errorPatchMyVehicle = "error fetch api patch my vehicles"
+        }
+    }),
+
 })).views(self => ({
     get getProfileFunction() {
         return self.data
@@ -61,7 +99,10 @@ const CreateVehicleStore = types.model({
         // IMPORTANT !!
         data: null,
         loading: false,
-        error: ''
+        error: '',
+        patchMyVehicle: null,
+        loadingPatchMyVehicle: false,
+        errorPatchMyVehicle: null
     })
 
 

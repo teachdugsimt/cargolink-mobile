@@ -39,7 +39,6 @@ const MyVehicleStore = types
     .model({
         list: types.maybeNull(types.array(Vehicle)),
         data: types.maybeNull(VehicleDetail),
-        // status: types.string,
         loading: types.boolean,
         error: types.maybeNull(types.string),
     })
@@ -99,10 +98,6 @@ const MyVehicleStore = types
                 ]
             }
         }),
-
-        // setStatusScreen(statusScreen: string) {
-        //     self.status = statusScreen
-        // }
     }))
     .views((self) => ({
         get getVehicles() {
@@ -130,6 +125,8 @@ const MyVehicleStore = types
                     })
                 }
 
+                console.log("dataInite in MOBX :: ", dataInit)
+                console.log("dataInite in MOBX :: ", dataInit)
                 // dataInit["images"] = self.data.images
                 // dataInit["have_dump"] = self.data.have_dump
                 return dataInit;

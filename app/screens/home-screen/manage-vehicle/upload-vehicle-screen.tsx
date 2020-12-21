@@ -14,14 +14,13 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import FetchStore from '../../../store/fetch-store/fetch-store'
 import CreateVehicleStore from '../../../store/my-vehicle-store/create-vehicle-store'
 import ImagePicker from 'react-native-image-picker';
-// import ImageResizer from 'react-native-image-resizer';
+import ImageResizer from 'react-native-image-resizer';
 import { vehicleEn, vehicleTh, regionListEn, regionListTh, provinceListEn, provinceListTh } from './datasource'
 import i18n from 'i18n-js'
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native"
 import MyVehicleStore from '../../../store/my-vehicle-store/my-vehicle-store'
 import StatusStore from '../../../store/my-vehicle-store/status-vehicle-store'
-import { init } from "ramda";
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -173,36 +172,32 @@ export const UploadVehicleScreen = observer((props) => {
             }
 
             else {
-                let source = { uri: response.uri };
-                if (status == "front") setfileFront(source);
-                else if (status == "back") setfileBack(source);
-                else if (status == "left") setfileLeft(source);
-                else if (status == "right") setfileRight(source);
+                // let source = { uri: response.uri };
+                // if (status == "front") setfileFront(source);
+                // else if (status == "back") setfileBack(source);
+                // else if (status == "left") setfileLeft(source);
+                // else if (status == "right") setfileRight(source);
 
 
-                // ImageResizer.createResizedImage(response.uri, 1024, 1024, 'JPEG', 100, 0, null)
-                //     .then((response) => {
-                //         // response.uri is the URI of the new image that can now be displayed, uploaded...
-                //         // response.path is the path of the new image
-                //         // response.name is the name of the new image with the extension
-                //         // response.size is the size of the new image
+                ImageResizer.createResizedImage(response.uri, 1024, 1024, 'JPEG', 100, 0, null)
+                    .then((response) => {
+                        // ****** Send this to API ******
+                        const newImageResize = {
+                            uri: response.uri,
+                            type: 'image/jpeg',
+                            name: response.name,
+                            size: response.size,
+                            tmp_name: response.path
+                        }
+                        if (status == "front") setfileFront(newImageResize);
+                        else if (status == "back") setfileBack(newImageResize);
+                        else if (status == "left") setfileLeft(newImageResize);
+                        else if (status == "right") setfileRight(newImageResize);
+                        // ****** Send this to API ******
 
-                //         // ****** Send this to API ******
-                //         const newImageResize = {
-                //             uri: response.uri,
-                //             type: 'image/jpeg',
-                //             name: response.name,
-                //             size: response.size,
-                //             tmp_name: response.path
-                //         }
-                //         // ****** Send this to API ******
-
-                //         // console.log(response)
-                //     }).catch((err) => {
-                //         // Oops, something went wrong. Check that the filename is correct and
-                //         // inspect err to get more details.
-                //         console.log(err)
-                //     });
+                    }).catch((err) => {
+                        console.log("Image Resize Error :: => ", err)
+                    });
 
 
             }
@@ -241,7 +236,7 @@ export const UploadVehicleScreen = observer((props) => {
 
     const onSubmit = data => {
         setinputRegistration(data)
-        console.log(data)
+        console.log("Form data :: => ", data)
 
         if (!data['vehicle-type']) {
             _alert(translate('common.vehicleTypeField'))
@@ -259,26 +254,48 @@ export const UploadVehicleScreen = observer((props) => {
             _alert(translate('common.regionField'))
             return;
         }
-        else if (!data['controller-province-0']) {
-            _alert(translate('common.provinceField'))
-            return;
-        }
 
 
         const data_mock_call = {
-            car_type: '4 cars',
-            have_dump: true,
-            vehicle_height: '1.2',
-            registration_vehicle: ['123-vh', '456-ss'],
+            car_type: data['vehicle-type'],
+            have_dump: toggleDump,
+            vehicle_height: data['vehicle-height'],
+            registration_vehicle: [],
             images: [],
-            work_zone: [{ region: 'north', province: 'Chiangmai' }],
+            work_zone: [],
         }
+
+        if (data['registration-0']) data_mock_call.registration_vehicle.push(data['registration-0'])
+
         if (fileFront && Object.keys(fileFront).length) data_mock_call.images.push(fileFront)
         if (fileBack && Object.keys(fileBack).length) data_mock_call.images.push(fileBack)
         if (fileLeft && Object.keys(fileLeft).length) data_mock_call.images.push(fileLeft)
         if (fileRight && Object.keys(fileRight).length) data_mock_call.images.push(fileRight)
 
-        CreateVehicleStore.createVehicleProfile(data_mock_call)
+        let tmp_region = []
+        let tmp_province = []
+        Object.keys(data).map(function (key) {
+            if (key.includes("region"))
+                tmp_region.push(data[key])
+            if (key.includes("province"))
+                tmp_province.push(data[key])
+        })
+        tmp_region.map((reg, ir) => {
+            data_mock_call['work_zone'].push({
+                province: reg,
+                region: tmp_province[ir] ? tmp_province[ir] : ""
+            })
+        })
+        console.log("Finish FINAL submit data :: ", data_mock_call)
+
+        let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
+
+        if (editStatus && editStatus == "add") {
+            CreateVehicleStore.createVehicleProfile(data_mock_call)
+        }
+        else {
+            CreateVehicleStore.patchVehicleDetailsRequest(data_mock_call)
+        }
         navigation.navigate('uploadSuccess')
     }
 
@@ -311,6 +328,7 @@ export const UploadVehicleScreen = observer((props) => {
     }
 
     useEffect(() => {
+
         let initData = JSON.parse(JSON.stringify(MyVehicleStore.data))
         let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
         if (editStatus && editStatus == "edit") {
@@ -323,16 +341,42 @@ export const UploadVehicleScreen = observer((props) => {
                 if (initData.images[2]) setfileLeft({ uri: initData.images[2].url })
                 if (initData.images[3]) setfileRight({ uri: initData.images[3].url })
             }
+
+            if (initData.work_zone && initData.work_zone.length) {
+                let tmpDropdownRegion = ddRegion
+                let tmpDropdownProvince = ddProvince
+
+                let valRegionTmp = valRegion
+                initData.work_zone.forEach((e, index) => {
+                    tmpDropdownRegion.push({
+                        id: index + 1,
+                        index: index,
+                        type: 'region'
+                    })
+                    tmpDropdownProvince.splice(index, 1, {
+                        id: index + 1,
+                        index: index,
+                        type: 'province'
+                    })
+
+                    valRegionTmp[index] = e.region
+                })
+                // setddRegion(tmpDropdownRegion)
+                setddProvince(tmpDropdownProvince)
+                setrenderProvince(!renderProvince)
+                // setrenderNewRegion(!renderNewRegion)
+            }
             console.log("INITIAL DATA UPLOAD SCREEN :: ", initData)
             console.log("INITIAL DATA UPLOAD SCREEN :: ", initData)
         }
-
 
         if (initForm == 0) {
             initForm = 1
             addTextInput(textInput.length)
             // addDropdown(dropdownRegion.length)
-            _addRowDropdown()
+            if (editStatus && editStatus != "edit") {
+                _addRowDropdown()
+            }
         }
         console.log("Mobx state data : : ", JSON.parse(JSON.stringify(FetchStore.getUserData)))
         console.log("State data :: ", stateData)
