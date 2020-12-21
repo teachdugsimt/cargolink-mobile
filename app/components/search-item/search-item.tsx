@@ -14,7 +14,6 @@ const FONT_SIZE = 20
 const FONT_SIZE_SMALL = 15
 const FONT_SIZE_LARGE = 25
 
-const TEXT_BOLD: TextStyle = { fontWeight: "bold" }
 const PADDING_TOP = { paddingTop: spacing[1] }
 const PADDING_BOTTOM = { paddingBottom: spacing[1] }
 const PADDING_LEFT = { paddingLeft: spacing[1] }
@@ -71,7 +70,6 @@ const HEART_ICON: ImageStyle = {
 }
 const LOCATION_TEXT: TextStyle = {
   fontSize: FONT_SIZE_SMALL,
-  ...TEXT_BOLD,
   ...PADDING_LEFT
 }
 const TEXT: TextStyle = {

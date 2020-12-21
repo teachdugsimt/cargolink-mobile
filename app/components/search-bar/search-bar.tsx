@@ -14,9 +14,6 @@ interface LocationProps {
   value?: string
 }
 
-const FONT_SIZE_SMALL = 15
-
-const TEXT_BOLD: TextStyle = { fontWeight: "bold" }
 const ROOT: ViewStyle = {
   backgroundColor: color.backgroundWhite,
   shadowColor: '#000',

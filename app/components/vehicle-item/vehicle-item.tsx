@@ -13,7 +13,6 @@ import { color, images, spacing } from "../../theme"
 import { Text } from ".."
 import { translate } from "../../i18n"
 
-const TEXT_BOLD: TextStyle = { fontWeight: "bold" }
 const BORDER_RADIUS = { borderRadius: 4 }
 const CONTAINER: ViewStyle = {
   flex: 1,
@@ -30,11 +29,10 @@ const CONTAINER: ViewStyle = {
 const ROW: ViewStyle = {
   flexDirection: "row",
 }
-const TOPIC: TextStyle = {
-  ...TEXT_BOLD,
-  fontSize: 16,
-  fontFamily: 'Kanit-Medium',
-}
+// const TOPIC: TextStyle = {
+//   fontSize: 16,
+//   fontFamily: 'Kanit-Bold',
+// }
 const STATUS_VIEW: ViewStyle = {
   ...BORDER_RADIUS,
   backgroundColor: color.disable,
@@ -49,8 +47,6 @@ const STATUS_TEXT: TextStyle = {
   fontFamily: 'Kanit-Medium',
 }
 const SUB_TOPIC: TextStyle = {
-  ...TEXT_BOLD,
-  fontSize: 13,
   paddingTop: spacing[1],
 }
 const INFORMATION_DATE: TextStyle = {
@@ -89,7 +85,7 @@ export function VehicleItem(props: VehicleItemProps) {
     <TouchableOpacity onPress={onPress || null} style={{ height: 150, flex: 1 }}>
       <View style={{ ...CONTAINER, ...containerStyle }}>
         <View style={{ ...ROW, justifyContent: "space-between" }}>
-          <Text style={{ ...TOPIC, ...topicStyle }} text={topic} />
+          <Text style={{ ...topicStyle }} text={topic} preset={'topicExtra'} />
           {/* <View style={STATUS_VIEW}> */}
           <Text style={{ ...STATUS_TEXT, ...statusStyle }} text={status} />
           {/* </View> */}

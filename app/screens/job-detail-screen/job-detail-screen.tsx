@@ -12,7 +12,6 @@ const FONT_SIZE_LARGE = 25
 const TEXT: TextStyle = { color: color.textBlack }
 const BOLD: TextStyle = { fontWeight: "bold" }
 const HEADER: TextStyle = { backgroundColor: color.primary }
-const TEXT_BOLD: TextStyle = { fontWeight: "bold" }
 const PADDING_TOP = { paddingTop: spacing[1] }
 const PADDING_BOTTOM = { paddingBottom: spacing[1] }
 const PADDING_LEFT = { paddingLeft: spacing[1] }
@@ -89,7 +88,6 @@ const PIN_ICON: ImageStyle = {
 }
 const LOCATION_TEXT: TextStyle = {
   fontSize: FONT_SIZE_SMALL,
-  ...TEXT_BOLD,
   ...PADDING_LEFT
 }
 const TEXT_REVIEW: TextStyle = {
@@ -108,7 +106,6 @@ const CALL_BUTTON: ViewStyle = {
 const CALL_TEXT: TextStyle = {
   color: color.textWhite,
   fontSize: 18,
-  ...TEXT_BOLD,
 }
 
 const DATA = {

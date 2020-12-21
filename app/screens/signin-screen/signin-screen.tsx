@@ -55,7 +55,6 @@ const CONTINUE_TEXT: TextStyle = {
   fontSize: 14,
   paddingTop: 5,
   paddingBottom: 5,
-  fontWeight: "bold",
 }
 const MOBILE_FORM: ViewStyle = {
   display: "flex",
@@ -79,7 +78,6 @@ const FLAG: ImageStyle = {
   marginRight: spacing[2],
 }
 const LABEL: TextStyle = {
-  fontWeight: "bold",
   paddingBottom: spacing[2],
 }
 
@@ -93,7 +91,7 @@ const initialState = {
 
 const normalizeMobileNo = (mobileNo: string) => {
   const firtMobileNo = mobileNo.slice(0, 1);
-  if(firtMobileNo === FIRST_MOBILE_NO) {
+  if (firtMobileNo === FIRST_MOBILE_NO) {
     mobileNo = mobileNo.slice(1)
   }
   let result = mobileNo.split(' - ').join('')
@@ -103,7 +101,7 @@ const normalizeMobileNo = (mobileNo: string) => {
 export const SigninScreen = observer(function SigninScreen() {
   const navigation = useNavigation()
   // const goBack = () => navigation.goBack()
-  const [{disabled, buttonColor, value}, setState] = useState(initialState)
+  const [{ disabled, buttonColor, value }, setState] = useState(initialState)
   const [countryCode, setCountryCode] = useState<CountryCode>("TH")
   const [country, setCountry] = useState<Country>(null)
   const [withCountryNameButton, setWithCountryNameButton] = useState<boolean>(false)
@@ -134,15 +132,15 @@ export const SigninScreen = observer(function SigninScreen() {
     const currentValue = value.replace(/[^\d]/g, '');
     const cvLength = currentValue.length;
     const firstMobileNo = value.slice(0, 1)
-  
+
     if (!previousValue || value.length > previousValue.length) {
       if (firstMobileNo === FIRST_MOBILE_NO) {
-        if(cvLength === 10) validateMobileNumberSuccess()
+        if (cvLength === 10) validateMobileNumberSuccess()
         if (cvLength < 4) return currentValue;
         if (cvLength < 7) return `${currentValue.slice(0, 3)} - ${currentValue.slice(3)}`;
         return `${currentValue.slice(0, 3)} - ${currentValue.slice(3, 6)} - ${currentValue.slice(6, 10)}`;
       } else {
-        if(cvLength === 9) validateMobileNumberSuccess()
+        if (cvLength === 9) validateMobileNumberSuccess()
         if (cvLength < 3) return currentValue;
         if (cvLength < 6) return `${currentValue.slice(0, 2)} - ${currentValue.slice(2)}`;
         return `${currentValue.slice(0, 2)} - ${currentValue.slice(2, 5)} - ${currentValue.slice(5, 9)}`;

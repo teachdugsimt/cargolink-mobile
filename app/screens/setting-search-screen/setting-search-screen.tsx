@@ -54,7 +54,6 @@ const BUTTON_CONFIRM: ViewStyle = {
 const BUTTON_CONFIRM_TEXT: TextStyle = {
   color: color.textWhite,
   fontSize: 18,
-  fontWeight: 'bold',
   paddingTop: 5,
   paddingBottom: 5
 }

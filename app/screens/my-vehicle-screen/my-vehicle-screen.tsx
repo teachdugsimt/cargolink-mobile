@@ -1,6 +1,6 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { ScrollView, TextStyle, View, ViewStyle } from "react-native"
+import { ScrollView, TextStyle, View, ViewStyle, FlatList } from "react-native"
 import { Button, Text, VehicleItem } from "../../components/"
 import { color, spacing } from "../../theme"
 import { translate } from "../../i18n"
@@ -28,11 +28,16 @@ const BUTTON_ADD: ViewStyle = {
 const TEXT_ADD: TextStyle = {
   color: color.textWhite,
   fontSize: 16,
-  fontFamily: "Kanit-Medium",
+}
+
+const initialState = {
+  isRequest: false,
+  isReload: true,
 }
 
 export const MyVehicle = observer(function MyVehicle() {
   const navigation = useNavigation()
+  const [state, setState] = useState(initialState)
 
   const onPress = (id: number) => {
     MyVehicleStore.findOneRequest(id)
@@ -40,10 +45,40 @@ export const MyVehicle = observer(function MyVehicle() {
   }
 
   useEffect(() => {
-    if (MyVehicleStore.list) {
+    if (MyVehicleStore.list && MyVehicleStore.list.length) {
       console.log('MyVehicleStore.list :>> ', JSON.parse(JSON.stringify(MyVehicleStore.list)));
     }
   }, [MyVehicleStore.list])
+
+  const onScrollList = () => {
+    // console.log('scroll down')
+  }
+
+  const onRefresh = () => {
+    console.log('On refresh')
+    setState(prevState => ({
+      ...prevState,
+      isRequest: true
+    }))
+  }
+
+  const renderItem = ({ item }) => {
+    const statusText = item.status === 'APPROVE' ? translate('myVehicleScreen.verified') : translate('myVehicleScreen.pending')
+    const statusColor = item.status === 'APPROVE' ? color.success : color.primary
+    return (
+      <VehicleItem
+        key={item.id}
+        topic={item.vehicle_no}
+        subTopic={item.car_type}
+        updatedDate={item.to}
+        image={item.image_car_type}
+        status={statusText}
+        imageStyle={{ marginBottom: spacing[1] }}
+        statusStyle={{ color: statusColor }}
+        onPress={() => onPress(parseInt(item.id))}
+      />
+    )
+  }
 
   /**
    * vehicle_no: topic
@@ -55,30 +90,17 @@ export const MyVehicle = observer(function MyVehicle() {
 
   return (
     <View style={CONTAINER}>
-      <ScrollView
-        onScroll={({ nativeEvent }) => {
-          // console.log('nativeEvent', nativeEvent)
-        }}
+
+      <FlatList
         style={SCROLL}
-        scrollEventThrottle={400}
-      >
-        {MyVehicleStore.list &&
-          MyVehicleStore.list.map((item, index) => {
-            const statusText = item.status === 'APPROVE' ? translate('myVehicleScreen.verified') : translate('myVehicleScreen.pending')
-            const statusColor = item.status === 'APPROVE' ? color.success : color.primary
-            return <VehicleItem
-              key={index}
-              topic={item.vehicle_no}
-              subTopic={item.car_type}
-              updatedDate={item.to}
-              image={item.image_car_type}
-              status={statusText}
-              imageStyle={{ marginBottom: spacing[1] }}
-              statusStyle={{ color: statusColor }}
-              onPress={() => onPress(parseInt(item.id))}
-            />
-          })}
-      </ScrollView>
+        data={MyVehicleStore.list ? MyVehicleStore.list : []}
+        renderItem={renderItem}
+        keyExtractor={item => item.id.toString()}
+        onEndReached={() => onScrollList()}
+        onEndReachedThreshold={0.5}
+        onRefresh={onRefresh}
+        refreshing={state.isRequest}
+      />
 
       <View>
         <Button
