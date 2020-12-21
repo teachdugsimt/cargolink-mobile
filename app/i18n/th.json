@@ -5,7 +5,13 @@
     "back": "Back",
     "from": "จาก",
     "to": "ถึง",
-    "confirm": "ยืนยัน"
+    "confirm": "ยืนยัน",
+    "pleaseInputCorrect": "กรุณาตรวจสอบข้อมูล",
+    "regionField": "ภูมิภาค",
+    "provinceField": "จังหวัด",
+    "vehicleTypeField": "ประเภทรถ",
+    "vehicleHeightField": "ความสูงรถ",
+    "registrationVehicleField": "ทะเบียนรถ"
   },
   "bottomTab": {
     "home": "หน้าแรก",

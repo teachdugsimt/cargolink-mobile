@@ -5,7 +5,13 @@
     "back": "Back",
     "from": "From",
     "to": "To",
-    "confirm": "confirm"
+    "confirm": "confirm",
+    "pleaseInputCorrect": "Please input correct data",
+    "regionField": "region",
+    "provinceField": "province",
+    "vehicleTypeField": "vehicle type",
+    "vehicleHeightField": "vehicle height",
+    "registrationVehicleField": "registration vehicle"
   },
   "bottomTab": {
     "home": "Home",

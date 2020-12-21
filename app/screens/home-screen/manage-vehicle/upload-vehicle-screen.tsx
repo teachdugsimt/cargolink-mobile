@@ -18,6 +18,7 @@ import ImageResizer from 'react-native-image-resizer';
 import { vehicleEn, vehicleTh, regionListEn, regionListTh, provinceListEn, provinceListTh } from './datasource'
 import i18n from 'i18n-js'
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { useNavigation } from "@react-navigation/native"
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -119,10 +120,8 @@ const WRAPPER_REGION_DROPDOWN: ViewStyle = {
 
 let initForm = 0
 export const UploadVehicleScreen = () => {
-    // const navigation = useNavigation()
-    const [vehicle, setvehicle] = useState('')
+    const navigation = useNavigation()
     const [toggleDump, settoggleDump] = useState(false)
-    const [vehicleHeight, setvehicleHeight] = useState('')
     // const [carRegistration, setcarRegistration] = useState('')
     const [province, setprovince] = useState(null)
     const [region, setregion] = useState(null)
@@ -210,10 +209,53 @@ export const UploadVehicleScreen = () => {
 
     const [inputRegistration, setinputRegistration] = useState({})
 
-    const { control, handleSubmit, errors } = useForm();
+    const { control, handleSubmit, errors } = useForm({
+        defaultValues: {
+            // ** Initial value
+            // "vehicle-height": '3',
+            // "vehicle-type": "4 Wheels - High Stall Truck"
+        }
+    });
+
+    const _alert = (field) => {
+        Alert.alert(
+            translate('common.pleaseInputCorrect'),
+            i18n.locale == "en" ? `Field ${field} was null` : `กรุณาใส่ ${field} ให้ถูกต้อง`,
+            [
+                {
+                    text: translate('common.ok'), onPress: () => { }
+                }
+            ]
+            , { cancelable: false }
+        )
+        return;
+    }
+
     const onSubmit = data => {
         setinputRegistration(data)
         console.log(data)
+
+        if (!data['vehicle-type']) {
+            _alert(translate('common.vehicleTypeField'))
+            return;
+        }
+        else if (!data['vehicle-height']) {
+            _alert(translate('common.vehicleHeightField'))
+            return;
+        }
+        else if (!data['registration-0']) {
+            _alert(translate('common.registrationVehicleField'))
+            return;
+        }
+        else if (!data['controller-region-0']) {
+            _alert(translate('common.regionField'))
+            return;
+        }
+        else if (!data['controller-province-0']) {
+            _alert(translate('common.provinceField'))
+            return;
+        }
+
 
         const data_mock_call = {
             car_type: '4 cars',
@@ -229,6 +271,7 @@ export const UploadVehicleScreen = () => {
         if (fileRight && Object.keys(fileRight).length) data_mock_call.images.push(fileRight)
 
         CreateVehicleStore.createVehicleProfile(data_mock_call)
+        navigation.navigate('uploadSuccess')
     }
 
 
@@ -366,23 +409,31 @@ export const UploadVehicleScreen = () => {
 
                         <Text tx={"uploadVehicleScreen.selectVehicleType"} style={{ ...TITLE_TOPIC, ...MARGIN_TOP_BIG }} />
                         <View style={WRAP_DROPDOWN}>
-                            <RNPickerSelect
-                                value={vehicle}
-                                onValueChange={(value) => setvehicle(value)}
-                                items={i18n.locale == "en" ? vehicleEn : vehicleTh}
-                                placeholder={{
-                                    label: translate("uploadVehicleScreen.selectVehicleType"),
-                                    color: color.black
-                                }}
-                                useNativeAndroidPickerStyle={false}
-                                style={{
-                                    inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
-                                    iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
-                                    placeholder: { color: color.black }
-                                }}
-                                Icon={() => {
-                                    return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
-                                }}
+                            <Controller
+                                control={control}
+                                render={({ onChange, onBlur, value }) => (
+                                    <RNPickerSelect
+                                        value={value}
+                                        onValueChange={(value) => onChange(value)}
+                                        items={i18n.locale == "en" ? vehicleEn : vehicleTh}
+                                        placeholder={{
+                                            label: translate("uploadVehicleScreen.selectVehicleType"),
+                                            color: color.black
+                                        }}
+                                        useNativeAndroidPickerStyle={false}
+                                        style={{
+                                            inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
+                                            iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
+                                            placeholder: { color: color.black }
+                                        }}
+                                        Icon={() => {
+                                            return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
+                                        }}
+                                    />
+                                )}
+                                key={'controller-dropdown-vehicle-type'}
+                                name={"vehicle-type"}
+                                defaultValue=""
                             />
                         </View>
                         <View style={HAVE_DUMP_VIEW}>
@@ -396,8 +447,15 @@ export const UploadVehicleScreen = () => {
                             />
                         </View>
                         <Text tx={"uploadVehicleScreen.heightVehicle"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
-                        <TextInputTheme inputStyle={MARGIN_TOP_BIG} value={vehicleHeight} onChangeText={(text) => setvehicleHeight(text)} />
-
+                        <Controller
+                            control={control}
+                            render={({ onChange, onBlur, value }) => (
+                                <TextInputTheme inputStyle={MARGIN_TOP_BIG} value={value} onChangeText={(text) => onChange(text)} />
+                            )}
+                            key={'text-input-vehicle-height'}
+                            name={"vehicle-height"}
+                            defaultValue=""
+                        />
                     </View>
                 </View>
 
@@ -483,12 +541,12 @@ export const UploadVehicleScreen = () => {
                 </View>
 
 
+
                 <View style={{ ...TOP_VIEW, ...MARGIN_TOP }}>
                     <View style={WRAPPER_TOP}>
                         <Text tx={"uploadVehicleScreen.workZone"} style={TITLE_TOPIC}>Upload Vehicle 15151515</Text>
 
                         {dropdownRegion.map((e, i) => {
-
                             return (<View key={'view-dropdown-region-' + i} style={WRAPPER_REGION_DROPDOWN}>
                                 {e}
                                 {i == dropdownRegion.length - 1 && <TouchableOpacity key={'icon-add-circle-' + i} style={ADD_DROPDOWN_REGION} onPress={() => addDropdown(dropdownRegion.length)}>
@@ -499,7 +557,6 @@ export const UploadVehicleScreen = () => {
 
                     </View>
                 </View>
-
 
 
 
