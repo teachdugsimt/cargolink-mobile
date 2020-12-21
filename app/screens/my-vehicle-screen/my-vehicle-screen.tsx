@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { ScrollView, TextStyle, View, ViewStyle, FlatList } from "react-native"
-import { Button, Text, VehicleItem } from "../../components/"
+import { TextStyle, View, ViewStyle, FlatList, RefreshControl } from "react-native"
+import { Button, VehicleItem } from "../../components/"
 import { color, spacing } from "../../theme"
 import { translate } from "../../i18n"
 import { useNavigation } from "@react-navigation/native"
@@ -30,14 +30,8 @@ const TEXT_ADD: TextStyle = {
   fontSize: 16,
 }
 
-const initialState = {
-  isRequest: false,
-  isReload: true,
-}
-
 export const MyVehicle = observer(function MyVehicle() {
   const navigation = useNavigation()
-  const [state, setState] = useState(initialState)
 
   const onPress = (id: number) => {
     MyVehicleStore.findOneRequest(id)
@@ -56,10 +50,7 @@ export const MyVehicle = observer(function MyVehicle() {
 
   const onRefresh = () => {
     console.log('On refresh')
-    setState(prevState => ({
-      ...prevState,
-      isRequest: true
-    }))
+    MyVehicleStore.findRequest()
   }
 
   const renderItem = ({ item }) => {
@@ -68,7 +59,7 @@ export const MyVehicle = observer(function MyVehicle() {
     return (
       <VehicleItem
         key={item.id}
-        topic={item.vehicle_no}
+        topic={item.registration_vehicle}
         subTopic={item.car_type}
         updatedDate={item.to}
         image={item.image_car_type}
@@ -81,7 +72,7 @@ export const MyVehicle = observer(function MyVehicle() {
   }
 
   /**
-   * vehicle_no: topic
+   * registration_vehicle: topic
    * car_type: subTopic
    * to: updatedDate
    * status: status
@@ -93,13 +84,19 @@ export const MyVehicle = observer(function MyVehicle() {
 
       <FlatList
         style={SCROLL}
-        data={MyVehicleStore.list ? MyVehicleStore.list : []}
+        data={MyVehicleStore.list ? JSON.parse(JSON.stringify(MyVehicleStore.list)) : []}
         renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
         onEndReached={() => onScrollList()}
         onEndReachedThreshold={0.5}
-        onRefresh={onRefresh}
-        refreshing={state.isRequest}
+        // onRefresh={onRefresh}
+        // refreshing={state.isRequest}
+        refreshControl={
+          <RefreshControl
+            refreshing={MyVehicleStore.loading}
+            onRefresh={onRefresh}
+          />
+        }
       />
 
       <View>

@@ -52,6 +52,7 @@ const IMAGE: ImageStyle = {
   aspectRatio: 4 / 2,
   margin: spacing[1],
   borderRadius: 4,
+  backgroundColor: color.disable,
 }
 const BUTTON_EDIT: ViewStyle = {
   backgroundColor: color.primary,
@@ -103,48 +104,21 @@ const TOUCHABLE: ViewStyle = {
 }
 
 const initialState = {
-  isChecked: false,
   openViewer: false,
   indexOfImage: 0,
 }
 
 export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
   const navigation = useNavigation()
-  const data = {
-    images: [
-      {
-        url: "https://truck.in.th/images/T03/T030709955_1_1551238177.jpeg",
-      }, {
-        url: "https://img.kaidee.com/prd/20180706/339715226/b/dafc9446-9a85-439b-ab38-eba1a0a3c164.jpg",
-      }, {
-        url: "https://imgc1.taladrod.com/c/cidx/008/421/14_1.jpg",
-      }, {
-        url: "https://truck.in.th/images/P09/P090598458_1_1506054693.jpg",
-      }
-    ]
-  }
 
-  const [{ isChecked, openViewer, indexOfImage }, setState] = useState(initialState)
+  const [{ openViewer, indexOfImage }, setState] = useState(initialState)
   const {
     car_type,
     image_car_type,
-    heigh,
-    isDum,
+    vehicle_height,
+    have_dump,
     images
   } = MyVehicleStore.data
-
-  useEffect(() => {
-    if (MyVehicleStore.data) {
-      console.log('MyVehicleStore.data :>> ', JSON.parse(JSON.stringify(MyVehicleStore.data)));
-    }
-  }, [MyVehicleStore.data])
-
-  const onValueChange = () => {
-    setState((prevState) => ({
-      ...prevState,
-      isChecked: !prevState.isChecked,
-    }))
-  }
 
   const onViewer = (index: number) => {
     setState(prevState => ({
@@ -161,6 +135,18 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
     }))
   }
 
+  useEffect(() => {
+    return () => {
+      MyVehicleStore.setDefaultOfData()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (MyVehicleStore.data) {
+      console.log('MyVehicleStore.data :>> ', JSON.parse(JSON.stringify(MyVehicleStore.data)));
+    }
+  }, [MyVehicleStore.data])
+
   return (
     <View style={CONTAINER}>
       <ScrollView onScroll={({ nativeEvent }) => { }} style={{}} scrollEventThrottle={400}>
@@ -174,7 +160,7 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
                 images.map((image, index) => {
                   return (
                     <TouchableOpacity style={TOUCHABLE} key={index} onPress={(attr) => onViewer(index)}>
-                      <Image style={IMAGE} source={{ uri: image.url }} key={index} />
+                      <Image style={IMAGE} source={MyVehicleStore.data.id ? { uri: image.url } : imageComponent[image.url]} key={index} />
                     </TouchableOpacity>
                   )
                 })}
@@ -203,13 +189,13 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
           </View>
           <View style={ROW}>
             <View style={SUB_TOPIC_ROOT}>
-              <Text style={SUB_TOPIC} text={translate("vehicleDetailScreen.heightOfTheCarStall")} />
-              <Text style={TEXT_OF_VALUE} text={heigh ? heigh.toString() : '0'} />
+              <Text style={SUB_TOPIC} text={translate("vehicleDetailScreen.heighttOfTheCarStall")} />
+              <Text style={TEXT_OF_VALUE} text={vehicle_height ? vehicle_height.toString() : '0'} />
             </View>
           </View>
           <View style={{ ...ROW, justifyContent: "space-between" }}>
             <Text text={translate("vehicleDetailScreen.carHaveDum")} />
-            <Switch value={isDum || false} disabled={true} onValueChange={onValueChange} />
+            <Switch value={have_dump || false} disabled={true} />
           </View>
         </View>
 
@@ -231,7 +217,7 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
                 style={SUB_TOPIC}
                 text={translate("vehicleDetailScreen.vehicleRegistrationNumber")}
               />
-              <Text style={TEXT_OF_VALUE} text={MyVehicleStore.data.vehicle_no} />
+              <Text style={TEXT_OF_VALUE} text={MyVehicleStore.data.registration_vehicle} />
             </View>
           </View>
         </View>
