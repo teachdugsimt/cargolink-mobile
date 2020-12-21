@@ -6,6 +6,7 @@ import { color, spacing } from "../../theme"
 import { translate } from "../../i18n"
 import { useNavigation } from "@react-navigation/native"
 import MyVehicleStore from '../../store/my-vehicle-store/my-vehicle-store'
+import StatusStore from '../../store/my-vehicle-store/status-vehicle-store'
 
 const CONTAINER: ViewStyle = {
   flex: 1,
@@ -106,7 +107,11 @@ export const MyVehicle = observer(function MyVehicle() {
           textStyle={TEXT_ADD}
           text={translate("myVehicleScreen.addNewCar")} // เพิ่มรถของฉัน
           // disabled={disabled}
-          onPress={() => navigation.navigate("uploadVehicle")}
+          onPress={() => {
+            navigation.navigate("uploadVehicle")
+            StatusStore.setStatusScreen('add')
+            // MyVehicleStore.setStatusScreen('add')
+          }}
         />
       </View>
     </View>

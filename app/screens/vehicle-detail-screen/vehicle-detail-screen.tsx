@@ -18,6 +18,7 @@ import { useNavigation } from "@react-navigation/native"
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { TouchableOpacity } from "react-native-gesture-handler"
 import MyVehicleStore from '../../store/my-vehicle-store/my-vehicle-store'
+import StatusStore from '../../store/my-vehicle-store/status-vehicle-store'
 
 const deviceWidht = Dimensions.get("window").width
 const deviceHeight = Dimensions.get("window").height
@@ -230,6 +231,8 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
           text={translate("vehicleDetailScreen.edit")}
           onPress={() => {
             navigation.navigate("uploadVehicle")
+            StatusStore.setStatusScreen('edit')
+            // MyVehicleStore.setStatusScreen("edit")
           }}
         />
       </View>

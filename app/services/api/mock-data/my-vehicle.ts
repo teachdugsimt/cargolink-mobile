@@ -23,7 +23,7 @@ export default [
         work_zone: [
             {
                 region: 'north',
-                provice: 'Chaing Mai',
+                province: 'Chaing Mai',
             }
         ]
     },
@@ -51,7 +51,7 @@ export default [
         work_zone: [
             {
                 region: 'south',
-                provice: 'Phuket',
+                province: 'Phuket',
             }
         ]
     },
@@ -79,7 +79,7 @@ export default [
         work_zone: [
             {
                 region: 'east',
-                provice: 'Samut Prakarn',
+                province: 'Samut Prakarn',
             }
         ]
     },
@@ -107,7 +107,7 @@ export default [
         work_zone: [
             {
                 region: 'west',
-                provice: 'Phetchaburi',
+                province: 'Phetchaburi',
             }
         ]
     },
@@ -135,7 +135,7 @@ export default [
         work_zone: [
             {
                 region: 'nort-east',
-                provice: 'Nakhon Ratchasima',
+                province: 'Nakhon Ratchasima',
             }
         ]
     },
@@ -163,7 +163,7 @@ export default [
         work_zone: [
             {
                 region: 'north',
-                provice: 'Phayao',
+                province: 'Phayao',
             }
         ]
     },
@@ -191,7 +191,7 @@ export default [
         work_zone: [
             {
                 region: 'west',
-                provice: 'Prachuap Khiri Khan',
+                province: 'Prachuap Khiri Khan',
             }
         ]
     },
@@ -219,7 +219,7 @@ export default [
         work_zone: [
             {
                 region: 'center',
-                provice: 'Nakhon Pathom',
+                province: 'Nakhon Pathom',
             }
         ]
     }

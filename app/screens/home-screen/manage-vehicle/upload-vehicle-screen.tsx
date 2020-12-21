@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import {
     View, ViewStyle, TextStyle,
-    ScrollView, Switch, StyleSheet, Dimensions, Platform, Alert, ImageStyle
+    ScrollView, Switch, Dimensions, Platform, Alert, ImageStyle
 } from "react-native"
 import { useForm, Controller } from "react-hook-form";
 import { observer } from "mobx-react-lite"
@@ -14,11 +14,14 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import FetchStore from '../../../store/fetch-store/fetch-store'
 import CreateVehicleStore from '../../../store/my-vehicle-store/create-vehicle-store'
 import ImagePicker from 'react-native-image-picker';
-import ImageResizer from 'react-native-image-resizer';
+// import ImageResizer from 'react-native-image-resizer';
 import { vehicleEn, vehicleTh, regionListEn, regionListTh, provinceListEn, provinceListTh } from './datasource'
 import i18n from 'i18n-js'
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native"
+import MyVehicleStore from '../../../store/my-vehicle-store/my-vehicle-store'
+import StatusStore from '../../../store/my-vehicle-store/status-vehicle-store'
+import { init } from "ramda";
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -208,16 +211,18 @@ export const UploadVehicleScreen = observer((props) => {
     };
 
     const [inputRegistration, setinputRegistration] = useState({})
-
+    console.log("Mapping data Here :: => ", MyVehicleStore.MappingData)
     const { control, handleSubmit, errors } = useForm({
-        defaultValues: {
-            // ** Initial value
-            // "vehicle-type": "4 Wheels - High Stall Truck"
-            // "vehicle-height": '3',
-            // "registration-0": "1234-xx",
-            // "controller-region-0" : "north",
-            // "controller-province-0": "Chaing Mai",
-        }
+        defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : MyVehicleStore.MappingData
+        //     {
+        //     // ** Initial value
+        //     "vehicle-type": "4 Wheels - High Stall Truck",  // must be use English value Only
+        //     "vehicle-height": '3',
+        //     "registration-0": "1234-xx",
+        //     "controller-region-0" : "north",
+        //     "controller-province-0": "Chaing Mai",
+        // }
+
     });
 
     const _alert = (field) => {
@@ -306,6 +311,23 @@ export const UploadVehicleScreen = observer((props) => {
     }
 
     useEffect(() => {
+        let initData = JSON.parse(JSON.stringify(MyVehicleStore.data))
+        let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
+        if (editStatus && editStatus == "edit") {
+
+            settoggleDump(initData.have_dump)
+            if (initData.images && initData.images.length) {
+
+                if (initData.images[0]) setfileFront({ uri: initData.images[0].url })
+                if (initData.images[1]) setfileBack({ uri: initData.images[1].url })
+                if (initData.images[2]) setfileLeft({ uri: initData.images[2].url })
+                if (initData.images[3]) setfileRight({ uri: initData.images[3].url })
+            }
+            console.log("INITIAL DATA UPLOAD SCREEN :: ", initData)
+            console.log("INITIAL DATA UPLOAD SCREEN :: ", initData)
+        }
+
+
         if (initForm == 0) {
             initForm = 1
             addTextInput(textInput.length)
@@ -355,14 +377,12 @@ export const UploadVehicleScreen = observer((props) => {
     // console.log("Dropdown region :: => ", dropdownRegion)
     console.log("Dropdown Province DD  :: ", ddProvince)
     console.log("Dropdown Regions VALUE :: ", valRegion)
-
     return (
         <View testID="UploadVehicleScreen" style={FULL}>
             <ScrollView style={FULL}>
 
                 <View style={TOP_VIEW}>
                     <View style={WRAPPER_TOP}>
-
                         <Text tx={"uploadVehicleScreen.selectVehicleType"} style={{ ...TITLE_TOPIC, ...MARGIN_TOP_BIG }} />
                         <View style={WRAP_DROPDOWN}>
                             <Controller

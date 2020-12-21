@@ -1,7 +1,7 @@
 import { types, flow } from "mobx-state-tree"
 import { MyVehicleAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
-
+import { vehicleEn, vehicleTh } from '../../screens/home-screen/manage-vehicle/datasource'
 const apiMyVehicle = new MyVehicleAPI()
 
 const Region = types.model({
@@ -39,6 +39,7 @@ const MyVehicleStore = types
     .model({
         list: types.maybeNull(types.array(Vehicle)),
         data: types.maybeNull(VehicleDetail),
+        // status: types.string,
         loading: types.boolean,
         error: types.maybeNull(types.string),
     })
@@ -98,11 +99,46 @@ const MyVehicleStore = types
                 ]
             }
         }),
+
+        // setStatusScreen(statusScreen: string) {
+        //     self.status = statusScreen
+        // }
     }))
     .views((self) => ({
         get getVehicles() {
             return self.list
         },
+        get MappingData() {
+            console.log("Data MOBXXXXXXXXXXXXXXXX :: ", self.data)
+            if (self.data && self.data.car_type) {
+
+                let dataInit = {
+                    // "vehicle-type": self.data.car_type ? self.data.car_type : '',
+                    "vehicle-height": self.data.vehicle_height ? self.data.vehicle_height.toString() : '',
+                    "registration-0": self.data.registration_vehicle ? self.data.registration_vehicle : '',
+                }
+                const th_type = vehicleTh.find(e => e.label == self.data.car_type)
+                const en_type = vehicleEn.find(e => e.label == self.data.car_type)
+                let type_car = th_type.value || en_type.value
+                dataInit["vehicle-type"] = type_car
+
+
+                if (self.data.work_zone && self.data.work_zone.length) {
+                    self.data.work_zone.forEach((item, index) => {
+                        dataInit['controller-region-' + index] = item.region
+                        dataInit['controller-province-' + index] = item.province
+                    })
+                }
+
+                // dataInit["images"] = self.data.images
+                // dataInit["have_dump"] = self.data.have_dump
+                return dataInit;
+            }
+
+            else return {};
+
+
+        }
     }))
     .create({
         // IMPORTANT !!
