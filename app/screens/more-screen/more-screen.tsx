@@ -201,7 +201,7 @@ export const MoreScreen = observer(function MoreScreen() {
 
                 <View style={{ ...COLUMN, justifyContent: 'flex-end', paddingVertical: 10 }}>
                     <RoundedButton onPress={() => navigation.navigate("signin")}
-                        text={"common.confirm"}
+                        text={"homeScreen.logout"}
                         containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT}
                     />
                 </View>

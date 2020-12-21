@@ -119,12 +119,12 @@ const WRAPPER_REGION_DROPDOWN: ViewStyle = {
 }
 
 let initForm = 0
-export const UploadVehicleScreen = () => {
+export const UploadVehicleScreen = observer((props) => {
     const navigation = useNavigation()
     const [toggleDump, settoggleDump] = useState(false)
     // const [carRegistration, setcarRegistration] = useState('')
-    const [province, setprovince] = useState(null)
-    const [region, setregion] = useState(null)
+    // const [province, setprovince] = useState([])
+    // const [region, setregion] = useState([])
 
     const [stateData, setstateData] = useState(null)
 
@@ -212,8 +212,11 @@ export const UploadVehicleScreen = () => {
     const { control, handleSubmit, errors } = useForm({
         defaultValues: {
             // ** Initial value
-            // "vehicle-height": '3',
             // "vehicle-type": "4 Wheels - High Stall Truck"
+            // "vehicle-height": '3',
+            // "registration-0": "1234-xx",
+            // "controller-region-0" : "north",
+            // "controller-province-0": "Chaing Mai",
         }
     });
 
@@ -277,8 +280,8 @@ export const UploadVehicleScreen = () => {
 
 
     const [textInput, settextInput] = useState([])
-    const [dropdownRegion, setdropdownRegion] = useState([])
-    // const [inputData, setinputData] = useState([])
+    // const [dropdownRegion, setdropdownRegion] = useState([])
+
     const [renderNew, setrenderNew] = useState(false)
 
     //function to add TextInput dynamically
@@ -302,78 +305,12 @@ export const UploadVehicleScreen = () => {
         setrenderNew(!renderNew)
     }
 
-    const addDropdown = (index) => {
-        let dropdownRegionTmp = dropdownRegion
-        dropdownRegionTmp.push(<>
-
-            <View style={{ ...WRAP_DROPDOWN, marginRight: 5, justifyContent: 'center' }} key={'view-dropdown-region-' + index}>
-                <Controller
-                    control={control}
-                    render={({ onChange, onBlur, value }) => (
-                        <RNPickerSelect
-                            value={value}
-                            onValueChange={(value) => onChange(value)}
-                            items={i18n.locale == "en" ? regionListEn : regionListTh}
-                            placeholder={{
-                                label: translate("uploadVehicleScreen.region"),
-                                color: color.black
-                            }}
-                            useNativeAndroidPickerStyle={false}
-                            style={{
-                                inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
-                                iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
-                                placeholder: { color: color.black }
-                            }}
-                            Icon={() => {
-                                return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
-                            }}
-                        />
-                    )}
-                    key={'controller-dropdown-region-' + index}
-                    name={"controller-region-" + index}
-                    defaultValue=""
-                />
-
-            </View>
-            <View style={{ ...WRAP_DROPDOWN, marginLeft: 5 }} key={'view-dropdown-province-' + index}>
-                <Controller
-                    control={control}
-                    render={({ onChange, onBlur, value }) => (
-                        <RNPickerSelect
-                            value={value}
-                            onValueChange={(value) => onChange(value)}
-                            items={i18n.locale == "en" ? provinceListEn : provinceListTh}
-                            placeholder={{
-                                label: translate("uploadVehicleScreen.province"),
-                                color: color.black
-
-                            }}
-                            useNativeAndroidPickerStyle={false}
-                            style={{
-                                inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
-                                iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
-                                placeholder: { color: color.black }
-                            }}
-                            Icon={() => {
-                                return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
-                            }}
-                        />
-                    )}
-                    key={'controller-dropdown-province-' + index}
-                    name={"controller-province-" + index}
-                    defaultValue=""
-                />
-            </View>
-        </>)
-        setdropdownRegion(dropdownRegionTmp);
-        setrenderNew(!renderNew)
-    }
-
     useEffect(() => {
         if (initForm == 0) {
             initForm = 1
             addTextInput(textInput.length)
-            addDropdown(dropdownRegion.length)
+            // addDropdown(dropdownRegion.length)
+            _addRowDropdown()
         }
         console.log("Mobx state data : : ", JSON.parse(JSON.stringify(FetchStore.getUserData)))
         console.log("State data :: ", stateData)
@@ -398,7 +335,26 @@ export const UploadVehicleScreen = () => {
         // }, [FetchStore.data])
     }, [FetchStore.data])
 
-    console.log("Dropdown region :: => ", dropdownRegion)
+    const [valRegion, setvalRegion] = useState([])
+    const [ddRegion, setddRegion] = useState([])
+
+    const [ddProvince, setddProvince] = useState([])
+
+    const [renderNewRegion, setrenderNewRegion] = useState(false)
+    const [renderProvince, setrenderProvince] = useState(true)
+    const _addRowDropdown = () => {
+        let tmpDropdownRegion = ddRegion
+        tmpDropdownRegion.push({
+            id: ddRegion.length + 1,
+            index: ddRegion.length,
+            type: 'region'
+        })
+        setddRegion(tmpDropdownRegion)
+        setrenderNewRegion(!renderNewRegion)
+    }
+    // console.log("Dropdown region :: => ", dropdownRegion)
+    console.log("Dropdown Province DD  :: ", ddProvince)
+    console.log("Dropdown Regions VALUE :: ", valRegion)
 
     return (
         <View testID="UploadVehicleScreen" style={FULL}>
@@ -539,21 +495,129 @@ export const UploadVehicleScreen = () => {
                         </View>
                     </View>
                 </View>
-
+                {}
 
 
                 <View style={{ ...TOP_VIEW, ...MARGIN_TOP }}>
                     <View style={WRAPPER_TOP}>
                         <Text tx={"uploadVehicleScreen.workZone"} style={TITLE_TOPIC}>Upload Vehicle 15151515</Text>
 
-                        {dropdownRegion.map((e, i) => {
-                            return (<View key={'view-dropdown-region-' + i} style={WRAPPER_REGION_DROPDOWN}>
-                                {e}
-                                {i == dropdownRegion.length - 1 && <TouchableOpacity key={'icon-add-circle-' + i} style={ADD_DROPDOWN_REGION} onPress={() => addDropdown(dropdownRegion.length)}>
+
+
+
+
+
+
+
+
+
+
+                        {/* ********************** DROPDOWN ZONE ********************** */}
+                        {ddRegion.length ? ddRegion.map((e, index) => {
+                            return <View key={'view-dropdown-region-' + index} style={WRAPPER_REGION_DROPDOWN}>
+                                <View style={{ ...WRAP_DROPDOWN, marginLeft: 5 }} key={'view-dropdown-province-' + index}>
+                                    <Controller
+                                        control={control}
+                                        render={({ onChange, onBlur, value }) => {
+                                            return (
+                                                <RNPickerSelect
+                                                    value={value}
+                                                    onValueChange={(value) => {
+                                                        onChange(value)
+
+                                                        console.log("Select Value Drpodown Regions : ", value)
+
+                                                        let valRegionTmp = valRegion
+                                                        valRegionTmp.splice(index, 1, value)
+                                                        setvalRegion(valRegionTmp)
+
+                                                        let tmpDropdownProvince = ddProvince
+                                                        tmpDropdownProvince.splice(index, 1, {
+                                                            id: index + 1,
+                                                            index: index,
+                                                            type: 'province'
+                                                        })
+                                                        setddProvince(tmpDropdownProvince)
+
+                                                        setrenderProvince(!renderProvince)
+
+                                                    }}
+                                                    items={i18n.locale == "en" ? regionListEn : regionListTh}
+                                                    placeholder={{
+                                                        label: translate("uploadVehicleScreen.region"),
+                                                        color: color.black
+                                                    }}
+                                                    useNativeAndroidPickerStyle={false}
+                                                    style={{
+                                                        inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
+                                                        iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
+                                                        placeholder: { color: color.black }
+                                                    }}
+                                                    Icon={() => {
+                                                        return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
+                                                    }}
+                                                />
+                                            )
+                                        }}
+                                        key={'controller-dropdown-region-' + index}
+                                        name={"controller-region-" + index}
+                                        defaultValue=""
+                                    /></View>
+
+                                {ddProvince.length ? ddProvince.map((pro, indexPro) => {
+                                    console.log("All Val region :: ", valRegion)
+                                    console.log("Render Dropdown Province :: ", valRegion[index])
+                                    if (indexPro == index)
+                                        return (<View style={{ ...WRAP_DROPDOWN, marginLeft: 5 }} key={'view-dropdown-province-' + index}><Controller
+                                            control={control}
+                                            render={({ onChange, onBlur, value }) => {
+                                                return (
+                                                    <RNPickerSelect
+                                                        value={value}
+                                                        onValueChange={(value) => onChange(value)}
+                                                        items={i18n.locale == "en" ?
+                                                            (valRegion[index] ? provinceListEn.filter(e => e.region == valRegion[index]) : provinceListEn) :
+                                                            (valRegion[index] ? provinceListTh.filter(e => e.region == valRegion[index]) : provinceListTh)}
+                                                        placeholder={{
+                                                            label: translate("uploadVehicleScreen.province"),
+                                                            color: color.black
+                                                        }}
+                                                        useNativeAndroidPickerStyle={false}
+                                                        style={{
+                                                            inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
+                                                            iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
+                                                            placeholder: { color: color.black }
+                                                        }}
+                                                        Icon={() => {
+                                                            return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
+                                                        }}
+                                                    />
+                                                )
+                                            }}
+                                            key={'controller-dropdown-province-' + index}
+                                            name={"controller-province-" + index}
+                                            defaultValue=""
+                                        /></View>)
+                                }) : <></>}
+                                {index == ddRegion.length - 1 && <TouchableOpacity key={'icon-add-circle-' + index} style={ADD_DROPDOWN_REGION} onPress={() => _addRowDropdown()}>
                                     <Ionicons size={22} color={color.darkGreen} name={"add-circle-outline"} />
                                 </TouchableOpacity>}
-                            </View>)
-                        })}
+                            </View>
+
+                        }) : <></>}
+                        {/* ********************** DROPDOWN ZONE ********************** */}
+
+
+
+
+
+
+
+
+
+
+
+
 
                     </View>
                 </View>
@@ -568,4 +632,17 @@ export const UploadVehicleScreen = () => {
             </ScrollView>
         </View>
     )
-}
+})
+
+
+
+
+
+
+
+
+
+
+
+
+

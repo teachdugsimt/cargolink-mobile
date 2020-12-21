@@ -97,9 +97,9 @@
     "callCenter": "Call Center",
     "moreMenu": "More menu",
     "language": "Language",
-    "English": "English",
-    "Thai": "Thai",
-    "Japan": "Japan"
+    "English": "EN",
+    "Thai": "TH",
+    "Japan": "JA"
   },
   "searchBarComponent": {
     "fullSearch": "Full search"
