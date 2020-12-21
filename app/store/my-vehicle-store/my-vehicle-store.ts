@@ -4,13 +4,18 @@ import * as Types from "../../services/api/api.types"
 
 const apiMyVehicle = new MyVehicleAPI()
 
+const Region = types.model({
+    region: types.string,
+    province: types.string
+})
+
 const VehicleImage = types.model({
     url: types.maybeNull(types.string)
 })
 
 const vehicleModel = {
     id: types.maybeNull(types.string), // [PENDING] types.number
-    vehicle_no: types.maybeNull(types.string),
+    registration_vehicle: types.maybeNull(types.string),
     car_type: types.maybeNull(types.string),
     from: types.maybeNull(types.string),
     to: types.maybeNull(types.string),
@@ -21,9 +26,10 @@ const vehicleModel = {
 
 const fullVehicleModel = {
     ...vehicleModel,
-    heigh: types.maybeNull(types.number),
-    isDum: types.maybeNull(types.boolean),
+    vehicle_height: types.maybeNull(types.number),
+    have_dump: types.maybeNull(types.boolean),
     images: types.maybeNull(types.array(VehicleImage)),
+    work_zone: types.array(Region),
 }
 
 const Vehicle = types.model(vehicleModel)
@@ -70,7 +76,28 @@ const MyVehicleStore = types
                 self.loading = false
                 self.error = "error fetch api get users"
             }
-        })
+        }),
+
+        setDefaultOfData: flow(function* setDefaultOfData() {
+            self.data = {
+                id: '',
+                registration_vehicle: '',
+                car_type: '',
+                from: '',
+                to: '',
+                status: '',
+                image_car_type: '',
+                owner: {},
+                vehicle_height: 0,
+                have_dump: false,
+                images: [
+                    { url: 'defaultImage' },
+                    { url: 'defaultImage' },
+                    { url: 'defaultImage' },
+                    { url: 'defaultImage' }
+                ]
+            }
+        }),
     }))
     .views((self) => ({
         get getVehicles() {

@@ -177,7 +177,7 @@
   "vehicleDetailScreen": {
     "vehicleImage": "รูปภาพรถ",
     "vehicleType": "ประเภทรถของคุณ",
-    "heightOfTheCarStall": "ความสูงของคอกรถ (เมตร)",
+    "heighttOfTheCarStall": "ความสูงของคอกรถ (เมตร)",
     "carHaveDum": "รถมีที่ดั้มหรือไม่",
     "myVehicleDetail": "ข้อมูลรถของคุณ",
     "vehicleRegistrationNumber": "เลขทะเบียนรถ",
