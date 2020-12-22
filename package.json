@@ -30,7 +30,8 @@
     "postinstall": "node ./bin/postInstall",
     "prepare": "npm-run-all patch hack:*",
     "storybook": "start-storybook -p 9001 -c ./storybook",
-    "adb": "adb reverse tcp:9090 tcp:9090 && adb reverse tcp:3000 tcp:3000 && adb reverse tcp:9001 tcp:9001 && adb reverse tcp:8081 tcp:8081"
+    "adb": "adb reverse tcp:9090 tcp:9090 && adb reverse tcp:3000 tcp:3000 && adb reverse tcp:9001 tcp:9001 && adb reverse tcp:8081 tcp:8081",
+    "test:CI": "set CI=true && react-scripts test --env=jsdom --testResultsProcessor=./node_modules/jest-html-reporter"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.11.0",
@@ -106,6 +107,7 @@
     "ignite-bowser": "^5.4.1",
     "ignite-elements": "^0.3.0",
     "jest": "25.5.4",
+    "jest-html-reporter": "^3.3.0",
     "jetifier": "^1.6.2",
     "metro-react-native-babel-preset": "^0.64.0",
     "miragejs": "^0.1.41",

@@ -75,3 +75,4 @@ app/config/env.*.js
 package-lock.json
 yarn.log
 coverage/
+ut-report/
