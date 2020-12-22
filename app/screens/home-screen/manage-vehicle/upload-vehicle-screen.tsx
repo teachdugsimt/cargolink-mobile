@@ -13,8 +13,8 @@ import { translate } from "../../../i18n"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import FetchStore from '../../../store/fetch-store/fetch-store'
 import CreateVehicleStore from '../../../store/my-vehicle-store/create-vehicle-store'
-import ImagePicker from 'react-native-image-picker';
-import ImageResizer from 'react-native-image-resizer';
+// import ImagePicker from 'react-native-image-picker';
+// import ImageResizer from 'react-native-image-resizer';
 import { vehicleEn, vehicleTh, regionListEn, regionListTh, provinceListEn, provinceListTh } from './datasource'
 import i18n from 'i18n-js'
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -156,53 +156,53 @@ export const UploadVehicleScreen = observer((props) => {
                 path: 'images',
             },
         };
-        ImagePicker.showImagePicker(options, (response) => {
-            console.log('Response = ', response);
+        // ImagePicker.showImagePicker(options, (response) => {
+        //     console.log('Response = ', response);
 
-            console.log('Response = ', response);
+        //     console.log('Response = ', response);
 
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            }
-            else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            }
-            else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
-            }
+        //     if (response.didCancel) {
+        //         console.log('User cancelled image picker');
+        //     }
+        //     else if (response.error) {
+        //         console.log('ImagePicker Error: ', response.error);
+        //     }
+        //     else if (response.customButton) {
+        //         console.log('User tapped custom button: ', response.customButton);
+        //     }
 
-            else {
-                // let source = { uri: response.uri };
-                // if (status == "front") setfileFront(source);
-                // else if (status == "back") setfileBack(source);
-                // else if (status == "left") setfileLeft(source);
-                // else if (status == "right") setfileRight(source);
-
-
-                ImageResizer.createResizedImage(response.uri, 1024, 1024, 'JPEG', 100, 0, null)
-                    .then((response) => {
-                        // ****** Send this to API ******
-                        const newImageResize = {
-                            uri: response.uri,
-                            type: 'image/jpeg',
-                            name: response.name,
-                            size: response.size,
-                            tmp_name: response.path
-                        }
-                        if (status == "front") setfileFront(newImageResize);
-                        else if (status == "back") setfileBack(newImageResize);
-                        else if (status == "left") setfileLeft(newImageResize);
-                        else if (status == "right") setfileRight(newImageResize);
-                        // ****** Send this to API ******
-
-                    }).catch((err) => {
-                        console.log("Image Resize Error :: => ", err)
-                    });
+        //     else {
+        //         // let source = { uri: response.uri };
+        //         // if (status == "front") setfileFront(source);
+        //         // else if (status == "back") setfileBack(source);
+        //         // else if (status == "left") setfileLeft(source);
+        //         // else if (status == "right") setfileRight(source);
 
 
-            }
+        //         ImageResizer.createResizedImage(response.uri, 1024, 1024, 'JPEG', 100, 0, null)
+        //             .then((response) => {
+        //                 // ****** Send this to API ******
+        //                 const newImageResize = {
+        //                     uri: response.uri,
+        //                     type: 'image/jpeg',
+        //                     name: response.name,
+        //                     size: response.size,
+        //                     tmp_name: response.path
+        //                 }
+        //                 if (status == "front") setfileFront(newImageResize);
+        //                 else if (status == "back") setfileBack(newImageResize);
+        //                 else if (status == "left") setfileLeft(newImageResize);
+        //                 else if (status == "right") setfileRight(newImageResize);
+        //                 // ****** Send this to API ******
 
-        });
+        //             }).catch((err) => {
+        //                 console.log("Image Resize Error :: => ", err)
+        //             });
+
+
+        //     }
+
+        // });
     };
 
     const [inputRegistration, setinputRegistration] = useState({})

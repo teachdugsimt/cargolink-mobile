@@ -197,6 +197,7 @@ export const SigninScreen = observer(function SigninScreen() {
           <Icon icon="thFlag" style={FLAG} />
           <Text>+66</Text>
           <TextInput
+            testID={'phone-number-signin'}
             style={MOBILE_INPUT}
             keyboardType={"numeric"}
             maxLength={16}

@@ -20,6 +20,8 @@ describe("Example", () => {
     console.log("Come to first test case :: => ")
     console.log("Come to first test case :: => ")
     await expect(element(by.id("SigninScreen"))).toBeVisible()
+    await element(by.id('phone-number-signin')).typeText('929818252');
+    await element(by.id('continue-with-signin')).tap();
 
     // await expect(Element(by.id("SigninScreen"))).toBeVisible()
   })
