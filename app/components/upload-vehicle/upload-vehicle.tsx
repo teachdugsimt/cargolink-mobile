@@ -39,7 +39,7 @@ const IMAGE_AND_TEXT: ViewStyle = {
 }
 const IMAGE_PLACHOLDER: ImageStyle = {
     width: 100,
-    height: 100
+    height: 100,
 }
 const CONTENT_TEXT: TextStyle = {
     fontFamily: 'Kanit-Medium',

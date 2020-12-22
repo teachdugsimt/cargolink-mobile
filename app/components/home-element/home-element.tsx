@@ -87,7 +87,7 @@ export function GridView(props: any) {
             // data={dataTest}
             sections={props.data}
             renderItem={({ item, index }) => {
-                return <TouchableOpacity onPress={() => item.onPressButton()} style={[VIEW_CARD, { marginLeft: index % 2 == 0 ? 10 : 0 }]}>
+                return <TouchableOpacity testID={'touch-home-' + index} onPress={() => item.onPressButton()} style={[VIEW_CARD, { marginLeft: index % 2 == 0 ? 10 : 0 }]}>
                     <View style={SUB_VIEW}>
                         <View style={VIEW_TEXT_MENU}>
                             <Text tx={item.name} style={TEXT_STYLE}></Text>

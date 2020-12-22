@@ -17,6 +17,18 @@
     "build:e2e": "detox build -c ios.sim.debug",
     "ci:test:e2e": "detox test -c ios.sim.release -l verbose --cleanup",
     "ci:build:e2e": "detox build -c ios.sim.release",
+    "build:ios-debug": "detox build -c ios.sim.debug",
+    "build:ios-release": "detox build -c ios.sim.release",
+    "build:android-debug": "detox build -c android.emu.debug",
+    "build:android-release": "detox build -c android.emu.release",
+    "test:ios-debug": "detox test -c ios.sim.debug -l verbose",
+    "test:ios-release": "detox test -c ios.sim.release -l verbose",
+    "test:android-debug": "detox test -c android.emu.debug -l verbose",
+    "test:android-release": "detox test -c android.emu.release -l verbose",
+    "e2e:ios-debug": "npm run build:ios-debug && npm run test:ios-debug",
+    "e2e:ios-release": "npm run build:ios-release && npm run test:ios-release",
+    "e2e:android-debug": "npm run build:android-debug && npm run test:android-debug",
+    "e2e:android-release": "npm run build:android-release && npm run test:android-release",
     "compile": "tsc --noEmit -p . --pretty",
     "format": "npm-run-all format:*",
     "format:js": "prettier --write '**/*.js'",
@@ -90,7 +102,7 @@
     "@typescript-eslint/eslint-plugin": "^2.27.0",
     "@typescript-eslint/parser": "^2.27.0",
     "babel-jest": "^26.6.3",
-    "detox": "^16.0.0",
+    "detox": "^17.3.2",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-config-standard": "^14.1.0",
@@ -129,7 +141,7 @@
       "/e2e"
     ],
     "transformIgnorePatterns": [
-      "node_modules/(?!(jest-)?react-native|react-native|@react-navigation|@storybook|@react-native-community)"
+      "node_modules/(?!(jest-)?react-native|react-native|@react-navigation|@storybook|@react-native-community|@react-native-picker)"
     ]
   },
   "prettier": {
@@ -140,18 +152,39 @@
   },
   "detox": {
     "test-runner": "jest",
+    "runner-config": "e2e/config.json",
     "configurations": {
+      "android.emu.debug": {
+        "binaryPath": "android/app/build/outputs/apk/debug/app-debug.apk",
+        "build": "cd android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug && cd ..",
+        "type": "android.emulator",
+        "device": {
+          "avdName": "Nexus_5X_API_28"
+        }
+      },
+      "android.emu.release": {
+        "binaryPath": "android/app/build/outputs/apk/release/app-release.apk",
+        "build": "cd android && ./gradlew assembleRelease assembleAndroidTest -DtestBuildType=release && cd ..",
+        "type": "android.emulator",
+        "device": {
+          "avdName": "Nexus_5X_API_28"
+        }
+      },
       "ios.sim.debug": {
         "binaryPath": "ios/build/Build/Products/Debug-iphonesimulator/CargoLinkMobile.app",
-        "build": "xcodebuild -workspace ios/CargoLinkMobile.xcworkspace -scheme CargoLinkMobile -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build -UseModernBuildSystem=NO",
+        "build": "xcodebuild -workspace ios/CargoLinkMobile.xcworkspace ios/CargoLinkMobile.xcodeproj -scheme CargoLinkMobile -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build",
         "type": "ios.simulator",
-        "name": "iPhone 8"
+        "device": {
+          "type": "iPhone 11"
+        }
       },
       "ios.sim.release": {
         "binaryPath": "ios/build/Build/Products/Release-iphonesimulator/CargoLinkMobile.app",
-        "build": "xcodebuild -workspace ios/CargoLinkMobile.xcworkspace -scheme CargoLinkMobile -configuration Release -sdk iphonesimulator -derivedDataPath ios/build -UseModernBuildSystem=NO",
+        "build": "xcodebuild -workspace ios/CargoLinkMobile.xcworkspace ios/CargoLinkMobile.xcodeproj -scheme CargoLinkMobile -configuration Release -sdk iphonesimulator -derivedDataPath ios/build",
         "type": "ios.simulator",
-        "name": "iPhone 8"
+        "device": {
+          "type": "iPhone 11"
+        }
       }
     }
   },
