@@ -1,11 +1,12 @@
 import { Server, Model } from "miragejs"
 import vehicleData from './mock-data/my-vehicle'
+import policy from './mock-data/policy'
 
 const { API_URL, API_URL_DEV } = require("../../config/env")
 
 const makeId = (length: number) => {
     let result = ""
-    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
     for (let i = 0; i < length; i++) {
         result += characters.charAt(Math.floor(Math.random() * characters.length))
     }
@@ -17,10 +18,12 @@ export function makeServer({ environment = 'development' } = {}) {
         environment,
         models: {
             auth: Model,
-            vehicle: Model
+            vehicle: Model,
+            policy: Model,
         },
         fixtures: {
-            vehicles: vehicleData
+            vehicles: vehicleData,
+            policies: policy,
         },
         seeds(server) {
             server.loadFixtures()
@@ -45,17 +48,19 @@ export function makeServer({ environment = 'development' } = {}) {
                 // debugger
                 return {
                     refCode: makeId(4),
-                    expireTime: Math.floor(Date.now() / 1000).toString(),
+                    token: makeId(20)
                 }
             })
 
             this.post(`${API_URL}/api/v1/users/auth/otp-verify`, (schema, request) => {
                 const attrs = JSON.parse(request.requestBody)
-                console.log(attrs)
-                // debugger
+                const timestampNow = Math.floor(Date.now() / 1000)
+                const id = parseInt(attrs.otpCode.slice(-1)) % 2 === 0
+                    ? timestampNow % 2 === 0 ? timestampNow : timestampNow + 1
+                    : timestampNow % 2 === 0 ? timestampNow + 1 : timestampNow
                 return {
                     userProfile: {
-                        id: Math.floor(Date.now() / 1000).toString(),
+                        id: id,
                         companyName: "Onelink space",
                     },
                     termOfService: {
@@ -101,6 +106,24 @@ export function makeServer({ environment = 'development' } = {}) {
                 let attrs = JSON.parse(request.requestBody)
                 attrs.id = newId++
                 return { reminder: attrs }
+            })
+
+            this.get(`${API_URL}/api/v1/users/:id/term-of-service`, (schema, request) => {
+                const id = request.params.id
+                const accepted = parseInt(id) % 2 === 0 ? true : false;
+                console.log('server.db.policies :>> ', server.db.policies.findBy({ accepted }));
+                return JSON.parse(JSON.stringify(server.db.policies.findBy({ accepted })))
+            })
+
+            this.patch(`${API_URL}/api/v1/users/:id/term-of-service`, (schema, request) => {
+                const id = request.params.id
+                const accepted = parseInt(id) % 2 === 0 ? true : false;
+
+                // const policy = server.db.policies.findBy({ accepted })
+
+                // const policy = schema.policies.findBy({ accepted })
+                // policy.update({ accepted: true, acceptedAt: new Date().toISOString() })
+                return {}
             })
         },
     })

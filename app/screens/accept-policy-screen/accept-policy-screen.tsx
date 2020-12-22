@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from "mobx-react-lite"
 import { Dimensions, ScrollView, TextStyle, View, ViewStyle } from 'react-native';
-import { Button, Text } from '../../components';
+import { Button, ModalLoading, Text } from '../../components';
 import { color } from "../../theme"
 import { useNavigation } from '@react-navigation/native';
 import { translate } from '../../i18n';
+import AuthStore from '../../store/auth-store/auth-store'
 
 const ROOT: ViewStyle = {
   flex: 1,
@@ -60,13 +61,43 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
     contentSize.height - paddingToBottom;
 };
 
+const initialState = {
+  isLoading: false,
+}
+
 export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
   const navigation = useNavigation()
   // const [buttonColor, setButtonColor] = useState(color.disable)
   // const [disabled, setDisabled] = useState(true)
+  const [{ isLoading }, setState] = useState(initialState)
+
+  useEffect(() => {
+    if (AuthStore.policyData && Object.keys(AuthStore.policyData).length) {
+      console.log('AuthStore.policyData :>> ', JSON.parse(JSON.stringify(AuthStore.policyData)));
+    }
+  }, [AuthStore.policyData])
+
+  const clearState = () => {
+    setState({ ...initialState })
+  }
+
+  const onContinue = () => {
+    setState({
+      isLoading: true,
+    })
+    AuthStore.updatePolicyStatusRequest(AuthStore.profile.userProfile.id, {
+      accept: true
+    }).then(() => {
+      clearState()
+      navigation.navigate("home")
+    })
+  }
+
+  console.log('AuthStore.policyData.data :>> ', AuthStore.policyData.data);
 
   return (
     <View style={ROOT}>
+      {isLoading && <ModalLoading size={'large'} color={color.primary} visible={isLoading} />}
       <Text style={TITLE} text={translate('acceptPolicyScreen.termAndCondition')} />
       <ScrollView
         onScroll={({ nativeEvent }) => {
@@ -80,26 +111,7 @@ export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
         scrollEventThrottle={400}
       >
         <Text style={CONTENT}>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eaque libero, repudiandae ullam tempora nemo voluptates ipsum, voluptas laborum non in perferendis voluptate reiciendis vitae qui, molestias quam odit corrupti explicabo. lor
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum architecto quasi delectus maiores, laudantium, quos dolorem voluptates maxime ex, ea praesentium! Quibusdam sit possimus doloribus error odit quae deserunt blanditiis.
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint alias atque soluta laboriosam debitis fugiat illum expedita non ratione labore magnam quod tempora ducimus, vero necessitatibus, odit nihil, quos earum!
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Explicabo dolor facere eos suscipit laudantium recusandae dignissimos tempora asperiores quis quaerat eligendi, voluptatem placeat eum vero sed inventore, similique necessitatibus iusto.
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Incidunt fuga id debitis cumque modi officiis minima eaque similique adipisci aliquam. Corporis minus accusamus mollitia architecto natus eum ducimus? Totam, aspernatur!
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto dolor beatae repellat blanditiis, maxime doloribus at suscipit sequi aspernatur ut enim dolores laborum sapiente consectetur nobis deserunt sed aliquam similique?
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum architecto quasi delectus maiores, laudantium, quos dolorem voluptates maxime ex, ea praesentium! Quibusdam sit possimus doloribus error odit quae deserunt blanditiis.
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint alias atque soluta laboriosam debitis fugiat illum expedita non ratione labore magnam quod tempora ducimus, vero necessitatibus, odit nihil, quos earum!
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Explicabo dolor facere eos suscipit laudantium recusandae dignissimos tempora asperiores quis quaerat eligendi, voluptatem placeat eum vero sed inventore, similique necessitatibus iusto.
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Incidunt fuga id debitis cumque modi officiis minima eaque similique adipisci aliquam. Corporis minus accusamus mollitia architecto natus eum ducimus? Totam, aspernatur!
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto dolor beatae repellat blanditiis, maxime doloribus at suscipit sequi aspernatur ut enim dolores laborum sapiente consectetur nobis deserunt sed aliquam similique?
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum architecto quasi delectus maiores, laudantium, quos dolorem voluptates maxime ex, ea praesentium! Quibusdam sit possimus doloribus error odit quae deserunt blanditiis.
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint alias atque soluta laboriosam debitis fugiat illum expedita non ratione labore magnam quod tempora ducimus, vero necessitatibus, odit nihil, quos earum!
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Explicabo dolor facere eos suscipit laudantium recusandae dignissimos tempora asperiores quis quaerat eligendi, voluptatem placeat eum vero sed inventore, similique necessitatibus iusto.
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Incidunt fuga id debitis cumque modi officiis minima eaque similique adipisci aliquam. Corporis minus accusamus mollitia architecto natus eum ducimus? Totam, aspernatur!
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto dolor beatae repellat blanditiis, maxime doloribus at suscipit sequi aspernatur ut enim dolores laborum sapiente consectetur nobis deserunt sed aliquam similique?
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum architecto quasi delectus maiores, laudantium, quos dolorem voluptates maxime ex, ea praesentium! Quibusdam sit possimus doloribus error odit quae deserunt blanditiis.
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint alias atque soluta laboriosam debitis fugiat illum expedita non ratione labore magnam quod tempora ducimus, vero necessitatibus, odit nihil, quos earum!
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Explicabo dolor facere eos suscipit laudantium recusandae dignissimos tempora asperiores quis quaerat eligendi, voluptatem placeat eum vero sed inventore, similique necessitatibus iusto.
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Incidunt fuga id debitis cumque modi officiis minima eaque similique adipisci aliquam. Corporis minus accusamus mollitia architecto natus eum ducimus? Totam, aspernatur!
+          {AuthStore.policyData && AuthStore.policyData.data ? AuthStore.policyData.data : ''}
         </Text>
       </ScrollView>
       <View style={BUTTON_ROOT}>
@@ -112,7 +124,7 @@ export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
           textStyle={CONTINUE_TEXT}
           text={translate('acceptPolicyScreen.accept')} // 'ยอมรับเงื่อนไข
           // disabled={disabled}
-          onPress={() => navigation.navigate("home")}
+          onPress={onContinue}
         />
         <Button
           testID="continue-with-signin"

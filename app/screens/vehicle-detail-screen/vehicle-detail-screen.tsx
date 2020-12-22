@@ -11,13 +11,14 @@ import {
   View,
   ViewStyle,
 } from "react-native"
-import { Button, Text } from "../../components"
+import { Button, ModalLoading, Text } from "../../components"
 import { translate } from "../../i18n"
 import { color, images as imageComponent, spacing } from "../../theme"
 import { useNavigation } from "@react-navigation/native"
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { TouchableOpacity } from "react-native-gesture-handler"
 import MyVehicleStore from '../../store/my-vehicle-store/my-vehicle-store'
+import AuthStore from "../../store/auth-store/auth-store"
 
 const deviceWidht = Dimensions.get("window").width
 const deviceHeight = Dimensions.get("window").height
@@ -149,6 +150,7 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
 
   return (
     <View style={CONTAINER}>
+      {MyVehicleStore.loading && <ModalLoading size={'large'} color={color.primary} visible={MyVehicleStore.loading} />}
       <ScrollView onScroll={({ nativeEvent }) => { }} style={{}} scrollEventThrottle={400}>
         <View style={COLUMN}>
           <View style={ROW}>
