@@ -23,7 +23,7 @@ export default [
         work_zone: [
             {
                 region: 'north',
-                province: 'Chaing Mai',
+                province: 'Chiang Mai',
             }
         ]
     },

@@ -47,5 +47,32 @@ export interface VehicleFilterRequest {
   } | {}
 }
 
+export interface TermAndService {
+  accept: boolean
+}
+
+export interface VehicleRequest {
+  registration_vehicle?: string
+  car_type?: string
+  from?: string
+  to?: string
+  status?: string
+  image_car_type?: string
+  owner?: object
+  vehicle_height?: number
+  have_dump?: boolean
+  images?: {
+    uri?: string,
+    type?: string,
+    name?: string,
+    size?: number,
+    tmp_name?: string
+  }[]
+  work_zone?: {
+    region?: string,
+    province?: string,
+  }[]
+}
+
 export type GetUsersResult = { kind: "ok"; users: User[] } | GeneralApiProblem
 export type GetUserResult = { kind: "ok"; user: User } | GeneralApiProblem
