@@ -125,6 +125,13 @@ export function makeServer({ environment = 'development' } = {}) {
                 // policy.update({ accepted: true, acceptedAt: new Date().toISOString() })
                 return {}
             })
+
+            let my_vehicle_id = 1
+            this.patch(`${API_URL}api/v1/my-vehicle`, (schema, request) => {
+                let attrs = JSON.parse(request.requestBody)
+                attrs.id = my_vehicle_id++
+                return { reminder: attrs }
+            })
         },
     })
 

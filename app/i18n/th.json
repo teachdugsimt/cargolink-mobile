@@ -91,9 +91,9 @@
     "callCenter": "Call Center",
     "moreMenu": "เมนูเพิ่มเติม",
     "language": "ภาษา",
-    "English": "อังกฤษ",
-    "Thai": "ไทย",
-    "Japan": "ญี่ปุ่น"
+    "English": "EN",
+    "Thai": "TH",
+    "Japan": "JA"
   },
   "searchBarComponent": {
     "fullSearch": "ค้นหาโดยละเอียด"

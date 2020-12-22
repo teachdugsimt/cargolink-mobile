@@ -73,6 +73,14 @@ export interface VehicleRequest {
     province?: string,
   }[]
 }
+export interface PatchDataRequest {
+  car_type: string
+  have_dump: boolean
+  vehicle_height: string
+  registration_vehicle: Array<string>
+  images: Array<Object>
+  work_zone: Array<Object>
+}
 
 export type GetUsersResult = { kind: "ok"; users: User[] } | GeneralApiProblem
 export type GetUserResult = { kind: "ok"; user: User } | GeneralApiProblem
