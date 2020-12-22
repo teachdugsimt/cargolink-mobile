@@ -6,16 +6,16 @@ export interface User {
 }
 
 export interface AuthReponse {
-  refCode: string
-  expireTime: string
+  token: string
 }
 
 export interface AuthRequest {
   mobileNo: string
+  userType: number
 }
 
 export interface OTPVerifyRequest {
-  refCode: string
+  token: string
   otpCode: string
 }
 
@@ -47,6 +47,32 @@ export interface VehicleFilterRequest {
   } | {}
 }
 
+export interface TermAndService {
+  accept: boolean
+}
+
+export interface VehicleRequest {
+  registration_vehicle?: string
+  car_type?: string
+  from?: string
+  to?: string
+  status?: string
+  image_car_type?: string
+  owner?: object
+  vehicle_height?: number
+  have_dump?: boolean
+  images?: {
+    uri?: string,
+    type?: string,
+    name?: string,
+    size?: number,
+    tmp_name?: string
+  }[]
+  work_zone?: {
+    region?: string,
+    province?: string,
+  }[]
+}
 export interface PatchDataRequest {
   car_type: string
   have_dump: boolean

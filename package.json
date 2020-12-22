@@ -11,7 +11,7 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
-    "test": "jest",
+    "test": "jest --coverage",
     "lint": "eslint index.js app storybook test --fix --ext .js,.ts,.tsx",
     "test:e2e": "detox test -c ios.sim.debug",
     "build:e2e": "detox build -c ios.sim.debug",
@@ -42,7 +42,8 @@
     "postinstall": "node ./bin/postInstall",
     "prepare": "npm-run-all patch hack:*",
     "storybook": "start-storybook -p 9001 -c ./storybook",
-    "adb": "adb reverse tcp:9090 tcp:9090 && adb reverse tcp:3000 tcp:3000 && adb reverse tcp:9001 tcp:9001 && adb reverse tcp:8081 tcp:8081"
+    "adb": "adb reverse tcp:9090 tcp:9090 && adb reverse tcp:3000 tcp:3000 && adb reverse tcp:9001 tcp:9001 && adb reverse tcp:8081 tcp:8081",
+    "test:CI": "set CI=true && react-scripts test --env=jsdom --testResultsProcessor=./node_modules/jest-html-reporter"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.11.0",
@@ -93,6 +94,7 @@
     "@storybook/addon-storyshots": "5.3.19",
     "@storybook/react-native": "5.3.19",
     "@storybook/react-native-server": "5.3.19",
+    "@testing-library/react-native": "^7.1.0",
     "@types/i18n-js": "^3.0.3",
     "@types/jest": "^25.2.3",
     "@types/ramda": "0.26.44",
@@ -101,6 +103,7 @@
     "@types/react-test-renderer": "^16.9.2",
     "@typescript-eslint/eslint-plugin": "^2.27.0",
     "@typescript-eslint/parser": "^2.27.0",
+    "axios-mock-adapter": "^1.19.0",
     "babel-jest": "^26.6.3",
     "detox": "^17.3.2",
     "eslint": "^6.8.0",
@@ -113,9 +116,11 @@
     "eslint-plugin-react-hooks": "^4.1.0",
     "eslint-plugin-react-native": "^3.6.0",
     "eslint-plugin-standard": "^4.0.0",
+    "frisby": "^2.1.3",
     "ignite-bowser": "^5.4.1",
     "ignite-elements": "^0.3.0",
     "jest": "25.5.4",
+    "jest-html-reporter": "^3.3.0",
     "jetifier": "^1.6.2",
     "metro-react-native-babel-preset": "^0.64.0",
     "miragejs": "^0.1.41",
@@ -134,7 +139,8 @@
     "preset": "react-native",
     "setupFiles": [
       "<rootDir>/node_modules/react-native/jest/setup.js",
-      "<rootDir>/test/setup.ts"
+      "<rootDir>/test/setup.ts",
+      "./node_modules/react-native-gesture-handler/jestSetup.js"
     ],
     "testPathIgnorePatterns": [
       "/node_modules/",

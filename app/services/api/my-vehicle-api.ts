@@ -55,7 +55,7 @@ export class MyVehicleAPI {
         const problem = getGeneralApiProblem(response)
         if (problem) return problem
       }
-      return response
+      return { kind: "ok", data: response.data }
       // transform the data into the format we are expecting
     } catch (error) {
       console.log("Error call api get user (MOCK): ", error)
@@ -72,7 +72,7 @@ export class MyVehicleAPI {
         const problem = getGeneralApiProblem(response)
         if (problem) return problem
       }
-      return response
+      return { kind: "ok", data: response.data }
       // transform the data into the format we are expecting
     } catch (error) {
       console.log("Error call api get user (MOCK): ", error)
@@ -94,6 +94,40 @@ export class MyVehicleAPI {
       // transform the data into the format we are expecting
     } catch (error) {
       console.log("Error call api create upload vehicle profile (MOCK): ", error)
+      return error
+    }
+  }
+
+  async update(id: number, data?: Types.VehicleRequest): Promise<any> {
+    try {
+      const response: ApiResponse<any> = await this.apisauce.patch(`api/v1/car/${id}`, data)
+
+      console.log("Response call api get user (MOCK) : ", response)
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+      return { kind: "ok", data: response.data }
+      // transform the data into the format we are expecting
+    } catch (error) {
+      console.log("Error call api get user (MOCK): ", error)
+      return error
+    }
+  }
+
+  async delete(id: number): Promise<any> {
+    try {
+      const response: ApiResponse<any> = await this.apisauce.delete(`api/v1/car/${id}`)
+
+      console.log("Response call api get user (MOCK) : ", response)
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+      return { kind: "ok", data: response.data }
+      // transform the data into the format we are expecting
+    } catch (error) {
+      console.log("Error call api get user (MOCK): ", error)
       return error
     }
   }

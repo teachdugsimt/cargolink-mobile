@@ -7,7 +7,7 @@ import {
   useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
 import { Dimensions, SafeAreaView, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
-import { Button, CountDown, Text } from '../../components';
+import { Button, CountDown, ModalLoading, Text } from '../../components';
 import { color, spacing } from '../../theme';
 import { useNavigation } from '@react-navigation/native';
 import { translate } from '../../i18n';
@@ -99,6 +99,7 @@ const initialState = {
   buttonColor: color.disable,
   resendCode: true,
   autoFocus: true,
+  isLoading: false,
 }
 
 export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
@@ -109,7 +110,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
     value,
     setValue,
   });
-  const [{ isExpired, disabled, buttonColor, resendCode, autoFocus }, setState] = useState(initialState)
+  const [{ isExpired, disabled, buttonColor, resendCode, autoFocus, isLoading }, setState] = useState(initialState)
   const [isShow, setIsShow] = useState(true)
 
   const clearState = () => {
@@ -157,12 +158,26 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
   }
 
   const onPress = (value: string) => {
+    setState(prevState => ({
+      ...prevState,
+      isLoading: true,
+    }))
     AuthStore.otpVerifyRequest({
-      refCode: AuthStore.getAuthData.refCode,
+      token: AuthStore.getAuthData.token,
       otpCode: value
     })
-    clearState()
-    navigation.navigate("acceptPolicy")
+      .then(() => {
+        AuthStore.getPolicyRequest(AuthStore.profile.userProfile.id)
+          .then(() => {
+            if (AuthStore.policyData.accepted) {
+              return 'home'
+            }
+            return 'acceptPolicy'
+          }).then((screen) => {
+            clearState()
+            navigation.navigate(screen)
+          })
+      })
   }
 
   useEffect(() => {
@@ -174,13 +189,14 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
   }, [resendCode, isExpired, autoFocus])
 
   useEffect(() => {
-    if (AuthStore.getAuthData && AuthStore.getAuthData.refCode) {
+    if (AuthStore.getAuthData && AuthStore.getAuthData.token) {
       console.log('AuthStore.getAuthData :>> ', JSON.parse(JSON.stringify(AuthStore.getAuthData)));
     }
   }, [AuthStore.getAuthData])
 
   return (
     <SafeAreaView style={ROOT}>
+      {isLoading && <ModalLoading size={'large'} color={color.primary} visible={isLoading} />}
       <CodeField
         ref={ref}
         {...props}
@@ -224,7 +240,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
             /> :
             <Text style={COUNT_DOWN}>0:00</Text>
           }
-          <Text style={CODE_REF}>(Ref: {AuthStore.getAuthData.refCode})</Text>
+          <Text style={CODE_REF}>(Ref: {'ABCD'})</Text>
         </View>
         <View style={{ flex: 1, alignItems: 'center' }}>
           {isExpired && <Text style={TEXT_EXPIRE} text={translate('confirmCodeScreen.codeExpired')} />}

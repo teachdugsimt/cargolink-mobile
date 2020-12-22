@@ -63,8 +63,7 @@ export class AuthAPI {
         if (problem) return problem
       }
       const resultUser: Types.AuthReponse = {
-        refCode: response.data.refCode,
-        expireTime: response.data.expireTime,
+        token: response.data.token,
       }
       return { kind: "ok", data: resultUser }
       // transform the data into the format we are expecting
@@ -84,6 +83,50 @@ export class AuthAPI {
         'api/v1/users/auth/otp-verify',
         data,
       )
+      // the typical ways to die when calling an api
+      console.log("Response call api get user (MOCK) : ", response)
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+      return { kind: "ok", data: response.data }
+      // transform the data into the format we are expecting
+    } catch (error) {
+      console.log("Error call api get user (MOCK): ", error)
+      return error
+    }
+  }
+
+  /**
+   * Get term and service
+   */
+  async getPolicy(id: number): Promise<any> {
+    // make the api call
+    try {
+      const response: ApiResponse<any> = await this.apisauce.get(
+        `api/v1/users/${id}/term-of-service`)
+      // the typical ways to die when calling an api
+      console.log("Response call api get user (MOCK) : ", response)
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+      return { kind: "ok", data: response.data }
+      // transform the data into the format we are expecting
+    } catch (error) {
+      console.log("Error call api get user (MOCK): ", error)
+      return error
+    }
+  }
+
+  /**
+   * Update status term and service of user
+   */
+  async updatePolicy(id: number, data: Types.TermAndService): Promise<any> {
+    // make the api call
+    try {
+      const response: ApiResponse<any> = await this.apisauce.patch(
+        `api/v1/users/${id}/term-of-service`, data)
       // the typical ways to die when calling an api
       console.log("Response call api get user (MOCK) : ", response)
       if (!response.ok) {

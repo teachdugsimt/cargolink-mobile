@@ -5,15 +5,18 @@ import * as Types from "../../services/api/api.types"
 const apiAuth = new AuthAPI()
 
 const SignIn = types.model({
-  refCode: types.maybeNull(types.string),
-  expireTime: types.maybeNull(types.string),
+  token: types.maybeNull(types.string),
 })
 
 const OTPVerify = types.model({
   userProfile: types.maybeNull(
     types.model({
-      id: types.maybeNull(types.string),
+      id: types.maybeNull(types.number),
       companyName: types.maybeNull(types.string),
+      fullname: types.maybeNull(types.string),
+      mobileNo: types.maybeNull(types.string),
+      email: types.maybeNull(types.string),
+      language: types.maybeNull(types.string),
     }),
   ),
   termOfService: types.maybeNull(
@@ -31,10 +34,18 @@ const OTPVerify = types.model({
   ),
 })
 
+const Policy = types.model({
+  version: types.maybeNull(types.string),
+  accepted: types.maybeNull(types.boolean),
+  acceptedAt: types.maybeNull(types.string),
+  data: types.maybeNull(types.string),
+})
+
 const AuthStore = types
   .model({
     data: types.maybeNull(SignIn),
-    otpData: types.maybeNull(OTPVerify),
+    profile: types.maybeNull(OTPVerify),
+    policyData: types.maybeNull(Policy),
     loading: types.boolean,
     error: types.maybeNull(types.string),
   })
@@ -45,15 +56,15 @@ const AuthStore = types
       self.loading = true
       try {
         const response = yield apiAuth.signIn(data)
-        console.log("Response call api get user : : ", response)
+        console.log("response signInRequest :>> ", response)
         self.data = response.data || {}
         self.loading = false
       } catch (error) {
         // ... including try/catch error handling
-        console.error("Failed to fetch get users api : ", error)
+        console.log('error signInRequest :>> ', error);
         // self.data = []
         self.loading = false
-        self.error = "error fetch api get users"
+        self.error = "error fetch api sign in"
       }
     }),
 
@@ -62,30 +73,65 @@ const AuthStore = types
       self.loading = true
       try {
         const response = yield apiAuth.verifyOTP(data)
-        console.log("Response call api get user : : ", response)
-        self.otpData = response.data || {}
+        console.log("response otpVerifyRequest :>> ", response)
+        self.profile = response.data || {}
         self.loading = false
       } catch (error) {
         // ... including try/catch error handling
-        console.error("Failed to fetch get users api : ", error)
+        console.log('error otpVerifyRequest :>> ', error);
         // self.data = []
         self.loading = false
-        self.error = "error fetch api get users"
+        self.error = "error fetch api otp verify"
       }
     }),
+
+    getPolicyRequest: flow(function* getPolicyRequest(id: number) {
+      apiAuth.setup()
+      self.loading = true
+      try {
+        const response = yield apiAuth.getPolicy(id)
+        console.log('response getPolicyRequest :>> ', response);
+        self.policyData = response.data || {}
+        self.loading = false
+      } catch (error) {
+        console.log('error getPolicyRequest :>> ', error);
+        // self.data = []
+        self.loading = false
+        self.error = "error fetch api get policy"
+      }
+    }),
+
+    updatePolicyStatusRequest: flow(function* updatePolicyStatusRequest(id: number, data: Types.TermAndService) {
+      apiAuth.setup()
+      self.loading = true
+      try {
+        const response = yield apiAuth.updatePolicy(id, data)
+        console.log('response updatePolicyStatusRequest :>> ', response);
+        self.policyData = {
+          ...self.policyData,
+          accepted: true
+        }
+        self.loading = false
+      } catch (error) {
+        console.log('error updatePolicyStatusRequest :>> ', error);
+        self.loading = false
+        self.error = "error fetch api update policy status"
+      }
+    })
   }))
   .views((self) => ({
     get getAuthData() {
       return self.data
     },
     get getOtpVerifyData() {
-      return self.otpData
+      return self.profile
     },
   }))
   .create({
     // IMPORTANT !!
     data: {},
-    otpData: {},
+    profile: {},
+    policyData: {},
     loading: false,
     error: "",
   })
