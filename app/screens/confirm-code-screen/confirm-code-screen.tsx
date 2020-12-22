@@ -158,7 +158,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
 
   const onPress = (value: string) => {
     AuthStore.otpVerifyRequest({
-      refCode: AuthStore.getAuthData.refCode,
+      token: AuthStore.getAuthData.token,
       otpCode: value
     })
     clearState()
@@ -174,7 +174,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
   }, [resendCode, isExpired, autoFocus])
 
   useEffect(() => {
-    if (AuthStore.getAuthData && AuthStore.getAuthData.refCode) {
+    if (AuthStore.getAuthData && AuthStore.getAuthData.token) {
       console.log('AuthStore.getAuthData :>> ', JSON.parse(JSON.stringify(AuthStore.getAuthData)));
     }
   }, [AuthStore.getAuthData])
@@ -224,7 +224,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
             /> :
             <Text style={COUNT_DOWN}>0:00</Text>
           }
-          <Text style={CODE_REF}>(Ref: {AuthStore.getAuthData.refCode})</Text>
+          <Text style={CODE_REF}>(Ref: {'ABCD'})</Text>
         </View>
         <View style={{ flex: 1, alignItems: 'center' }}>
           {isExpired && <Text style={TEXT_EXPIRE} text={translate('confirmCodeScreen.codeExpired')} />}

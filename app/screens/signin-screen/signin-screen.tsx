@@ -165,7 +165,7 @@ export const SigninScreen = observer(function SigninScreen() {
   }
 
   const onPress = (mobileNo: string) => {
-    AuthStore.signInRequest({ mobileNo: normalizeMobileNo(mobileNo) })
+    AuthStore.signInRequest({ mobileNo: normalizeMobileNo(mobileNo), userType: 4 })
     setState(initialState)
     navigation.navigate("confirmCode")
   }

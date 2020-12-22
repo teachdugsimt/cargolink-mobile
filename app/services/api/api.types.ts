@@ -6,16 +6,16 @@ export interface User {
 }
 
 export interface AuthReponse {
-  refCode: string
-  expireTime: string
+  token: string
 }
 
 export interface AuthRequest {
   mobileNo: string
+  userType: number
 }
 
 export interface OTPVerifyRequest {
-  refCode: string
+  token: string
   otpCode: string
 }
 

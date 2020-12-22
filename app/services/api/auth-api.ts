@@ -63,8 +63,7 @@ export class AuthAPI {
         if (problem) return problem
       }
       const resultUser: Types.AuthReponse = {
-        refCode: response.data.refCode,
-        expireTime: response.data.expireTime,
+        token: response.data.token,
       }
       return { kind: "ok", data: resultUser }
       // transform the data into the format we are expecting

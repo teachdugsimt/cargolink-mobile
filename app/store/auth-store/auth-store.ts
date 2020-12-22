@@ -5,8 +5,7 @@ import * as Types from "../../services/api/api.types"
 const apiAuth = new AuthAPI()
 
 const SignIn = types.model({
-  refCode: types.maybeNull(types.string),
-  expireTime: types.maybeNull(types.string),
+  token: types.maybeNull(types.string),
 })
 
 const OTPVerify = types.model({
