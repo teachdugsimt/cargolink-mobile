@@ -11,7 +11,7 @@ import {
   Dimensions,
 } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Button, Icon, Text } from "../../components"
+import { Button, Icon, ModalAlert, Text } from "../../components"
 import { useNavigation } from '@react-navigation/native'
 import CountryPicker, { Country, CountryCode, DEFAULT_THEME } from 'react-native-country-picker-modal'
 import { color, spacing } from '../../theme'
@@ -86,7 +86,9 @@ const FIRST_MOBILE_NO: string = "0"
 const initialState = {
   disabled: true,
   buttonColor: color.disable,
-  value: ''
+  value: '',
+  isError: false,
+  visibleModal: true,
 }
 
 const normalizeMobileNo = (mobileNo: string) => {
@@ -101,7 +103,7 @@ const normalizeMobileNo = (mobileNo: string) => {
 export const SigninScreen = observer(function SigninScreen() {
   const navigation = useNavigation()
   // const goBack = () => navigation.goBack()
-  const [{ disabled, buttonColor, value }, setState] = useState(initialState)
+  const [{ disabled, buttonColor, value, isError, visibleModal }, setState] = useState(initialState)
   const [countryCode, setCountryCode] = useState<CountryCode>("TH")
   const [country, setCountry] = useState<Country>(null)
   const [withCountryNameButton, setWithCountryNameButton] = useState<boolean>(false)
@@ -170,6 +172,21 @@ export const SigninScreen = observer(function SigninScreen() {
     navigation.navigate("confirmCode")
   }
 
+  const onCloseModal = () => {
+    setState(prevState => ({
+      ...prevState,
+      visibleModal: !prevState.visibleModal
+    }))
+  }
+
+  const RenderButtonAlert = () => (<Button
+    testID="ok"
+    style={{ ...CONTINUE_BUTTON, backgroundColor: buttonColor }}
+    textStyle={CONTINUE_TEXT}
+    text={translate("common.ok")}
+    onPress={() => onCloseModal()}
+  />)
+
   return (
     <View testID="SigninScreen" style={FULL}>
       <View testID="Logo" style={LOGO_PART}>
@@ -216,8 +233,32 @@ export const SigninScreen = observer(function SigninScreen() {
           // tx="goHome"
           text={translate("signinScreen.signin")}
           onPress={() => onPress(value)}
+        // onPress={() => {
+        //   setState(prevState => ({
+        //     ...prevState,
+        //     isError: true,
+        //     visibleModal: true,
+        //   }))
+        // }}
         />
       </View>
+
+      {!!AuthStore.error && <ModalAlert // !!isError
+        containerStyle={{ paddingVertical: spacing[3] }}
+        iconName={'bell-alert-outline'}
+        iconStyle={{
+          color: color.disable,
+          size: 100
+        }}
+        header={'ไม่สามารถเข้าสู่ระบบได้'}
+        headerStyle={{ paddingVertical: spacing[3], color: color.primary }}
+        content={'เนื่องจากมีการปิดปรับปรุงระบบในช่วงเวลา 12.00 - 20.00 น. คุณสามารถเข้าสู่ระบบหลังช่วงเวลาดังกล่าว'}
+        contentStyle={{ paddingTop: spacing[3], paddingBottom: spacing[5], paddingHorizontal: spacing[7], color: color.disable }}
+        buttonContainerStyle={{ width: '90%' }}
+        buttonComponent={RenderButtonAlert}
+        visible={visibleModal}
+      />}
+
     </View>
   )
 })
