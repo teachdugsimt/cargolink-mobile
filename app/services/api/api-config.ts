@@ -6,7 +6,11 @@ const { API_URL, API_URL_DEV } = require("../../config/env")
 
 import { makeServer } from './server'
 
-makeServer({ environment: 'development' })
+console.log('process.env.NODE_ENV :>> ', process.env.NODE_ENV);
+
+if (process.env.NODE_ENV === 'development') {
+  makeServer({ environment: 'development' })
+}
 
 /**
  * The options used to configure the API.

@@ -164,7 +164,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
     }))
     AuthStore.otpVerifyRequest({
       token: AuthStore.getAuthData.token,
-      otpCode: value
+      otp: value
     })
       .then(() => {
         AuthStore.getPolicyRequest(AuthStore.profile.userProfile.id)

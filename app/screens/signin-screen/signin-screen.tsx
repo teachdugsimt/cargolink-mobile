@@ -95,7 +95,7 @@ const normalizeMobileNo = (mobileNo: string) => {
     mobileNo = mobileNo.slice(1)
   }
   let result = mobileNo.split(' - ').join('')
-  return `+66${result}`;
+  return `0${result}`;
 }
 
 export const SigninScreen = observer(function SigninScreen() {
@@ -165,7 +165,7 @@ export const SigninScreen = observer(function SigninScreen() {
   }
 
   const onPress = (mobileNo: string) => {
-    AuthStore.signInRequest({ mobileNo: normalizeMobileNo(mobileNo), userType: 4 })
+    AuthStore.signInRequest({ phoneNumber: normalizeMobileNo(mobileNo), userType: 4 })
     setState(initialState)
     navigation.navigate("confirmCode")
   }

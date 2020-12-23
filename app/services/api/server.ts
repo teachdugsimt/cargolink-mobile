@@ -48,14 +48,16 @@ export function makeServer({ environment = 'development' } = {}) {
                 // debugger
                 return {
                     refCode: makeId(4),
-                    token: makeId(20)
+                    token: makeId(100),
+                    status: true,
+                    tokenCheckPhone: makeId(20)
                 }
             })
 
             this.post(`${API_URL}/api/v1/users/auth/otp-verify`, (schema, request) => {
                 const attrs = JSON.parse(request.requestBody)
                 const timestampNow = Math.floor(Date.now() / 1000)
-                const id = parseInt(attrs.otpCode.slice(-1)) % 2 === 0
+                const id = parseInt(attrs.otp.slice(-1)) % 2 === 0
                     ? timestampNow % 2 === 0 ? timestampNow : timestampNow + 1
                     : timestampNow % 2 === 0 ? timestampNow + 1 : timestampNow
                 return {

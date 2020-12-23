@@ -5,6 +5,8 @@ import * as Types from "../../services/api/api.types"
 const apiAuth = new AuthAPI()
 
 const SignIn = types.model({
+  status: types.maybeNull(types.boolean),
+  tokenCheckPhone: types.maybeNull(types.string),
   token: types.maybeNull(types.string),
 })
 
