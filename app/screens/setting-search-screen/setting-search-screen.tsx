@@ -102,7 +102,7 @@ export const SettingSearchScreen = observer(function SettingSearchScreen() {
       </View>
       <View style={BUTTON_ROOT}>
         <Button
-          testID="continue-with-signin"
+          testID="setting-search-confirm"
           style={BUTTON_CONFIRM}
           textStyle={BUTTON_CONFIRM_TEXT}
           text={'ยืนยัน'}

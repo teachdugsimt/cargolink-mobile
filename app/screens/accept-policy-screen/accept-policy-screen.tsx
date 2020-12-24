@@ -96,7 +96,7 @@ export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
   console.log('AuthStore.policyData.data :>> ', AuthStore.policyData.data);
 
   return (
-    <View style={ROOT}>
+    <View style={ROOT} testID={"accept-policy-element"}>
       {isLoading && <ModalLoading size={'large'} color={color.primary} visible={isLoading} />}
       <Text style={TITLE} text={translate('acceptPolicyScreen.termAndCondition')} />
       <ScrollView
@@ -116,7 +116,7 @@ export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
       </ScrollView>
       <View style={BUTTON_ROOT}>
         <Button
-          testID="continue-with-signin"
+          testID="accept-policy"
           style={{
             ...CONTINUE_BUTTON,
             backgroundColor: color.primary
@@ -127,7 +127,7 @@ export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
           onPress={onContinue}
         />
         <Button
-          testID="continue-with-signin"
+          testID="cancel-policy"
           style={CONTINUE_BUTTON}
           textStyle={CONTINUE_TEXT}
           text={translate('acceptPolicyScreen.cancel')} // ไม่ยอมรับเงื่อนไข

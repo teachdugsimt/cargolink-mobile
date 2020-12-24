@@ -76,3 +76,4 @@ package-lock.json
 yarn.log
 coverage/
 ut-report/
+artifacts/

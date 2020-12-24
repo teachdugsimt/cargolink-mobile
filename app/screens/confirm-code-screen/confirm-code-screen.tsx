@@ -198,6 +198,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
     <SafeAreaView style={ROOT}>
       {isLoading && <ModalLoading size={'large'} color={color.primary} visible={isLoading} />}
       <CodeField
+        testID={"countdown-otp"}
         ref={ref}
         {...props}
         value={value}
@@ -253,7 +254,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
       </View>
       <View testID="ConfirmCodeRoot" style={CONFIRM_CODE_ROOT}>
         <Button
-          testID="continue-with-signin"
+          testID="continue-with-otp"
           style={{
             ...CONTINUE_BUTTON,
             backgroundColor: buttonColor

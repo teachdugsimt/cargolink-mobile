@@ -236,7 +236,7 @@ PODS:
     - React-cxxreact (= 0.63.2)
     - React-jsi (= 0.63.2)
   - React-jsinspector (0.63.2)
-  - react-native-image-picker (0.14.3):
+  - react-native-image-picker (3.1.2):
     - React
   - react-native-image-resizer (1.4.1):
     - React-Core
@@ -505,7 +505,7 @@ SPEC CHECKSUMS:
   React-jsi: 54245e1d5f4b690dec614a73a3795964eeef13a8
   React-jsiexecutor: 8ca588cc921e70590820ce72b8789b02c67cce38
   React-jsinspector: b14e62ebe7a66e9231e9581279909f2fc3db6606
-  react-native-image-picker: 3693786b3d5958c8f71deed66ec068b323565e0d
+  react-native-image-picker: 8b4ccafb47395aabe98d3af89f089e020cacd6d1
   react-native-image-resizer: af7fa48fe7913b7b96fa079d16dd97ada31d6833
   react-native-safe-area-context: 8260e5157617df4b72865f44006797f895b2ada7
   react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865

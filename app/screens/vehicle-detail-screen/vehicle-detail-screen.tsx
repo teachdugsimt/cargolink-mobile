@@ -226,7 +226,7 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
       </ScrollView>
       <View>
         <Button
-          testID="edit-vehicle"
+          testID="edit-vehicle-detail"
           style={BUTTON_EDIT}
           textStyle={TEXT_EDIT}
           text={translate("vehicleDetailScreen.edit")}

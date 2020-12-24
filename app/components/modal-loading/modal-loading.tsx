@@ -26,8 +26,8 @@ export function ModalLoading(props: ModalLoadingProps) {
     }
 
     return (
-        <Modal presentationStyle={presentationStyle} transparent={transparent} visible={visible} >
-            <View style={style}>
+        <Modal testID={"spinner-modal"} presentationStyle={presentationStyle} transparent={transparent} visible={visible}>
+            <View style={style} >
                 <ActivityIndicator size={size} color={color} />
             </View>
         </Modal>

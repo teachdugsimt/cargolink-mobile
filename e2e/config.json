@@ -1,6 +1,18 @@
 {
-  "setupFilesAfterEnv": ["./init.js"],
+  "setupFilesAfterEnv": [
+    "./init.js"
+  ],
   "testEnvironment": "node",
   "bail": true,
-  "verbose": true
+  "verbose": true,
+  
+  "reporters": [
+    "detox/runners/jest/streamlineReporter"
+  ],
+  "moduleNameMapper": {
+    "^react-native": "react-native-web"
+  },
+  "globals": {
+    "__DEV__": true
+  }
 }
