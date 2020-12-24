@@ -559,7 +559,7 @@ export const UploadVehicleScreen = observer((props) => {
                         </View>
                     </View>
                 </View>
-                {}
+                { }
 
 
                 <View style={{ ...TOP_VIEW, ...MARGIN_TOP }}>
