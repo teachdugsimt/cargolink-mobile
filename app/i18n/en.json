@@ -11,7 +11,8 @@
     "provinceField": "province",
     "vehicleTypeField": "vehicle type",
     "vehicleHeightField": "vehicle height",
-    "registrationVehicleField": "registration vehicle"
+    "registrationVehicleField": "registration vehicle",
+    "edit": "edit"
   },
   "bottomTab": {
     "home": "Home",
@@ -133,6 +134,7 @@
     "pending": "Pending",
     "myTruckHeader": "My Truck",
     "addVehicleSuccess": "Add vehicle success",
+    "editVehicleSuccess": "Edit vehicle success",
     "pendingVehicleDetail": "We are reviewing the information. Soon ",
     "pendingVehicleDetail2": "your car will be able to accept the job."
   },

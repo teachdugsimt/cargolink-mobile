@@ -5,7 +5,7 @@ import {
 } from "react-native"
 import { useForm, Controller } from "react-hook-form";
 import { observer } from "mobx-react-lite"
-import { Text, TextInputTheme, Button, UploadVehicle, RoundedButton } from "../../../components"
+import { Text, TextInputTheme, Button, UploadVehicle, RoundedButton, HeaderCenter } from "../../../components"
 import { spacing, color, typography, images } from "../../../theme"
 
 import RNPickerSelect from 'react-native-picker-select';
@@ -132,7 +132,16 @@ export const UploadVehicleScreen = observer((props) => {
   const [stateData, setstateData] = useState(null)
 
 
-
+  useEffect(() => {
+    let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
+    if (editStatus && editStatus == "edit") {
+      navigation.setOptions({
+        headerCenter: () => (
+          <HeaderCenter tx={"common.edit"} />
+        ),
+      });
+    }
+  }, [])
 
 
 
@@ -443,12 +452,12 @@ export const UploadVehicleScreen = observer((props) => {
     setrenderNew(!renderNew)
   }
 
+
   useEffect(() => {
 
     let initData = JSON.parse(JSON.stringify(MyVehicleStore.data))
     let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
     if (editStatus && editStatus == "edit") {
-
       settoggleDump(initData.have_dump)
       if (initData.images && initData.images.length) {
 

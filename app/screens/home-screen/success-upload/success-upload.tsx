@@ -1,9 +1,10 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { View, ViewStyle, TextStyle, FlatList } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
-import { Text, RoundedButton } from "../../../components"
+import { Text, RoundedButton, HeaderCenter } from "../../../components"
 import { color, spacing } from "../../../theme"
+import StatusStore from '../../../store/my-vehicle-store/status-vehicle-store'
 // const bowserLogo = require("./bowser.png")
 import i18n from 'i18n-js'
 const FULL: ViewStyle = {
@@ -29,17 +30,30 @@ const VIEW_BUTTON: ViewStyle = {
 const BUTTON_CONTAINER: ViewStyle = {
     backgroundColor: color.darkGrey
 }
+
 const TEXT_TOPIC: TextStyle = { color: color.primary }
 const TEXT_SUB_TITLE: TextStyle = { color: color.line }
 const TEXT_BUTTTON_STYLE: TextStyle = { color: color.textWhite }
 export const SuccessUpload = observer(function SuccessUpload() {
     const navigation = useNavigation()
 
+    useEffect(() => {
+        let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
+        if (editStatus && editStatus == "edit") {
+            navigation.setOptions({
+                headerCenter: () => (
+                    <HeaderCenter tx={"common.edit"} />
+                ),
+            });
+        }
+    }, [])
+
+    let status = JSON.parse(JSON.stringify(StatusStore.status))
     return (
         <View testID="SuccessUpload" style={FULL}>
 
             <View style={TEXT_VIEW}>
-                <Text tx={"myVehicleScreen.addVehicleSuccess"} preset={'topic'} style={TEXT_TOPIC} />
+                <Text tx={status == "edit" ? "myVehicleScreen.editVehicleSuccess" : "myVehicleScreen.addVehicleSuccess"} preset={'topic'} style={TEXT_TOPIC} />
                 <Text tx={"myVehicleScreen.pendingVehicleDetail"} preset={'default'} style={TEXT_SUB_TITLE} />
                 <Text tx={"myVehicleScreen.pendingVehicleDetail2"} preset={'default'} style={TEXT_SUB_TITLE} />
             </View>
