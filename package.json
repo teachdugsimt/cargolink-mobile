@@ -23,7 +23,7 @@
     "build:android-release": "detox build -c android.emu.release",
     "test:ios-debug": "detox test -c ios.sim.debug -l verbose",
     "test:ios-release": "detox test -c ios.sim.release -l verbose",
-    "test:android-debug": "detox test -c android.emu.debug -l verbose --debug-synchronization --record-timeline all",
+    "test:android-debug": "detox test -c android.emu.debug -l verbose --debug-synchronization --record-videos all --record-timeline all",
     "test:android-release": "detox test -c android.emu.release -l verbose",
     "e2e:ios-debug": "npm run build:ios-debug && npm run test:ios-debug",
     "e2e:ios-release": "npm run build:ios-release && npm run test:ios-release",
