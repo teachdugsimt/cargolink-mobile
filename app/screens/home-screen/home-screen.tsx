@@ -149,6 +149,7 @@ export const HomeScreen = observer((props) => {
                         <GridView data={dataTest} />
                     </View>
                 </View>
+
             </View>
         </>
     )

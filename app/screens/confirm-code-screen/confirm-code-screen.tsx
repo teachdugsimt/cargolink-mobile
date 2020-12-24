@@ -207,6 +207,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
 
       <View style={CODE_FIELD_ROOT}>
         <OTPInputView
+          testID={"countdown-otp"}
           style={{ width: '100%', height: 120 }}
           pinCount={CELL_COUNT}
           code={value} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
@@ -278,7 +279,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
       </View>
       <View testID="ConfirmCodeRoot" style={CONFIRM_CODE_ROOT}>
         <Button
-          testID="continue-with-signin"
+          testID="continue-with-otp"
           style={{
             ...CONTINUE_BUTTON,
             backgroundColor: buttonColor

@@ -31,9 +31,9 @@ const ADD_VEHICLE_BUTTON: ViewStyle = {
 }
 
 export function RoundedButton(props: any) {
-    const { containerStyle, textStyle, text, leftIconName, rightIconName, rightIconcolor, leftIconColor, onPress } = props
+    const { containerStyle, textStyle, text, leftIconName, rightIconName, rightIconcolor, leftIconColor, onPress, ...rest } = props
     return (
-        <Button onPress={onPress} style={{ ...ADD_VEHICLE_BUTTON, ...containerStyle }}>
+        <Button onPress={onPress} style={{ ...ADD_VEHICLE_BUTTON, ...containerStyle }} {...rest}>
             {leftIconName && <Ionicons name={leftIconName} size={spacing[5]} color={leftIconColor} />}
             <Text tx={text} style={{ ...CONTENT_TEXT, ...textStyle }} />
             {rightIconName && <Ionicons name={rightIconName} size={spacing[5]} color={rightIconcolor} />}

@@ -11,7 +11,8 @@
     "provinceField": "จังหวัด",
     "vehicleTypeField": "ประเภทรถ",
     "vehicleHeightField": "ความสูงรถ",
-    "registrationVehicleField": "ทะเบียนรถ"
+    "registrationVehicleField": "ทะเบียนรถ",
+    "edit": "แก้ไข"
   },
   "bottomTab": {
     "home": "หน้าแรก",
@@ -127,6 +128,7 @@
     "pending": "รอตรวจสอบ",
     "myTruckHeader": "รถของฉัน",
     "addVehicleSuccess": "เพิ่มรถสำเร็จ",
+    "editVehicleSuccess": "แก้ไขข้อมูลรถสำเร็จ",
     "pendingVehicleDetail": "เรากำลังตรวจสอบข้อมูล อีกไม่นานรถของ",
     "pendingVehicleDetail2": "คุณก็จะสามารถรับงานได้แล้ว"
   },

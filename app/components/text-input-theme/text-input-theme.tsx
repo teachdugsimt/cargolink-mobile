@@ -17,6 +17,7 @@ export function TextInputTheme(props: any) {
     const { forwardedRef, inputStyle, actualPlaceholder, ...rest } = props
     return (
         <TextInput
+            testId={"vehicle-upload-input"}
             placeholder={actualPlaceholder}
             placeholderTextColor={color.palette.lighterGrey}
             underlineColorAndroid={color.transparent}

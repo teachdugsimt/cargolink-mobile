@@ -77,12 +77,13 @@ export function VehicleItem(props: VehicleItemProps) {
     statusStyle,
     imageStyle,
     onPress,
+    ...rest
   } = props
 
   // const deviceHeight = Dimensions.get("window").height
 
   return (
-    <TouchableOpacity onPress={onPress || null} style={{ height: 150, flex: 1 }}>
+    <TouchableOpacity testID={"list-vehicle"} {...rest} onPress={onPress || null} style={{ height: 150, flex: 1 }}>
       <View style={{ ...CONTAINER, ...containerStyle }}>
         <View style={{ ...ROW, justifyContent: "space-between" }}>
           <Text style={{ ...topicStyle }} text={topic} preset={'topicExtra'} />
