@@ -12,16 +12,14 @@ import { color, spacing } from '../../theme';
 import { useNavigation } from '@react-navigation/native';
 import { translate } from '../../i18n';
 import AuthStore from '../../store/auth-store/auth-store'
+import OTPInputView from '@twotalltotems/react-native-otp-input'
 
 const ROOT: ViewStyle = {
-  // flex: 1,
   height: Dimensions.get("window").height,
   paddingTop: 50,
-  paddingBottom: 20,
   backgroundColor: color.backgroundWhite
 }
 const CODE_FIELD_ROOT: TextStyle = {
-  flex: 1,
   width: 280,
   marginTop: 20,
   marginLeft: 'auto',
@@ -31,7 +29,6 @@ const CODE_INFORMATION_ROOT: ViewStyle = {
   flex: 1,
   marginLeft: spacing[5],
   marginRight: spacing[5],
-  marginTop: -30
 }
 const CELL_ROOT: TextStyle = {
   width: 60,
@@ -51,22 +48,20 @@ const FOCUS_CELL: TextStyle = {
   borderBottomWidth: 2,
 }
 const CODE_INFORMATION: ViewStyle = {
-  flex: 1,
   flexDirection: 'row',
   justifyContent: "center",
   alignItems: 'center'
 }
 const RESEND_CODE_ROOT: ViewStyle = {
-  flex: 1,
+  marginVertical: spacing[3],
   alignItems: "center",
 }
 const RESEND_CODE_TEXT: TextStyle = {
   color: color.disable
 }
 const CONFIRM_CODE_ROOT: ViewStyle = {
-  flex: 3,
   flexDirection: "column-reverse",
-  paddingBottom: 30,
+  paddingBottom: spacing[5],
   marginHorizontal: spacing[5]
 }
 const COUNT_DOWN: TextStyle = {
@@ -83,11 +78,23 @@ const CONTINUE_BUTTON: ViewStyle = {
 const CONTINUE_TEXT: TextStyle = {
   color: color.textWhite,
   fontSize: 14,
-  paddingTop: 5,
-  paddingBottom: 5
+  paddingTop: spacing[1],
+  paddingBottom: spacing[1]
 }
 const TEXT_EXPIRE: TextStyle = {
   color: color.error
+}
+const CODE_INPUT_FILED_STYLE: TextStyle = {
+  borderColor: color.transparent,
+  borderBottomWidth: 2,
+  borderBottomColor: color.line,
+  fontSize: 25,
+  color: color.dim,
+}
+const CODE_INPUT_HIGHTLIGHT_STYLE: ViewStyle = {
+  borderColor: color.transparent,
+  borderBottomWidth: 2,
+  borderBottomColor: color.primary
 }
 
 const CELL_COUNT: number = 4;
@@ -117,9 +124,9 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
     setState({ ...initialState })
   }
 
-  const onChangeText = (val: string) => {
-    setValue(val)
-    if (val.length === 4) {
+  const onChangeText = (code: string) => {
+    setValue(code)
+    if (code.length === 4) {
       setState(prevState => ({
         ...prevState,
         disabled: isExpired,
@@ -164,7 +171,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
     }))
     AuthStore.otpVerifyRequest({
       token: AuthStore.getAuthData.token,
-      otpCode: value
+      otp: value
     })
       .then(() => {
         AuthStore.getPolicyRequest(AuthStore.profile.userProfile.id)
@@ -197,8 +204,26 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
   return (
     <SafeAreaView style={ROOT}>
       {isLoading && <ModalLoading size={'large'} color={color.primary} visible={isLoading} />}
-      <CodeField
-        testID={"countdown-otp"}
+
+      <View style={CODE_FIELD_ROOT}>
+        <OTPInputView
+          testID={"countdown-otp"}
+          style={{ width: '100%', height: 120 }}
+          pinCount={CELL_COUNT}
+          code={value} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
+          onCodeChanged={(code) => onChangeText(code)}
+          keyboardType="number-pad"
+          autoFocusOnLoad
+          codeInputFieldStyle={CODE_INPUT_FILED_STYLE}
+          codeInputHighlightStyle={CODE_INPUT_HIGHTLIGHT_STYLE}
+          onCodeFilled={(code) => {
+            setValue(code)
+            console.log(`Code is ${code}, you are good to go!`)
+          }}
+        />
+      </View>
+
+      {/* <CodeField
         ref={ref}
         {...props}
         value={value}
@@ -222,7 +247,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
             </Text>
           </View>
         )}
-      />
+      /> */}
       <View testID="InformationCodeRoot" style={CODE_INFORMATION_ROOT}>
         <View style={CODE_INFORMATION}>
           <Text text={translate('confirmCodeScreen.codeWillExpire')} />
@@ -243,7 +268,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
           }
           <Text style={CODE_REF}>(Ref: {'ABCD'})</Text>
         </View>
-        <View style={{ flex: 1, alignItems: 'center' }}>
+        <View style={RESEND_CODE_ROOT}>
           {isExpired && <Text style={TEXT_EXPIRE} text={translate('confirmCodeScreen.codeExpired')} />}
         </View>
         <View style={RESEND_CODE_ROOT}>

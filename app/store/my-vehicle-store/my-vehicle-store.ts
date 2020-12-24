@@ -86,7 +86,7 @@ const MyVehicleStore = types
                 from: '',
                 to: '',
                 status: '',
-                image_car_type: '',
+                image_car_type: 'defaultImage',
                 owner: {},
                 vehicle_height: 0,
                 have_dump: false,

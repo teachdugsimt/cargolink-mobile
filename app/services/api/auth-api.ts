@@ -63,6 +63,8 @@ export class AuthAPI {
         if (problem) return problem
       }
       const resultUser: Types.AuthReponse = {
+        status: response.data.status,
+        tokenCheckPhone: response.data.tokenCheckPhone,
         token: response.data.token,
       }
       return { kind: "ok", data: resultUser }

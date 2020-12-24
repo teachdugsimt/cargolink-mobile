@@ -6,17 +6,19 @@ export interface User {
 }
 
 export interface AuthReponse {
+  status: boolean
+  tokenCheckPhone: string
   token: string
 }
 
 export interface AuthRequest {
-  mobileNo: string
+  phoneNumber: string
   userType: number
 }
 
 export interface OTPVerifyRequest {
   token: string
-  otpCode: string
+  otp: string
 }
 
 export interface OTPVerifyResponse {
