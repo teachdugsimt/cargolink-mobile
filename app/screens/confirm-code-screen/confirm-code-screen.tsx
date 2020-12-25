@@ -205,9 +205,10 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
     <SafeAreaView style={ROOT}>
       {isLoading && <ModalLoading size={'large'} color={color.primary} visible={isLoading} />}
 
-      <View style={CODE_FIELD_ROOT}>
+      <View style={CODE_FIELD_ROOT} accessible={true}
+        accessibilityLabel="otp-input-new" >
         <OTPInputView
-          testID={"countdown-otp"}
+          // testID={"countdown-otp"}
           style={{ width: '100%', height: 120 }}
           pinCount={CELL_COUNT}
           code={value} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
