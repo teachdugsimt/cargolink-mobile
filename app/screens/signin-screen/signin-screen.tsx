@@ -13,7 +13,7 @@ import {
 import { observer } from "mobx-react-lite"
 import { Button, Icon, ModalAlert, Text } from "../../components"
 import { useNavigation } from '@react-navigation/native'
-import CountryPicker, { Country, CountryCode, DEFAULT_THEME } from 'react-native-country-picker-modal'
+// import CountryPicker, { Country, CountryCode, DEFAULT_THEME } from 'react-native-country-picker-modal'
 import { color, spacing } from '../../theme'
 import { translate } from '../../i18n'
 import i18n from 'i18n-js'
@@ -104,22 +104,22 @@ export const SigninScreen = observer(function SigninScreen() {
   const navigation = useNavigation()
   // const goBack = () => navigation.goBack()
   const [{ disabled, buttonColor, value, isError, visibleModal }, setState] = useState(initialState)
-  const [countryCode, setCountryCode] = useState<CountryCode>("TH")
-  const [country, setCountry] = useState<Country>(null)
+  const [countryCode, setCountryCode] = useState("TH")
+  // const [country, setCountry] = useState<Country>(null)
   const [withCountryNameButton, setWithCountryNameButton] = useState<boolean>(false)
   const [withFlag, setWithFlag] = useState<boolean>(true)
   const [withEmoji, setWithEmoji] = useState<boolean>(true)
   const [withFilter, setWithFilter] = useState<boolean>(true)
   const [withAlphaFilter, setWithAlphaFilter] = useState<boolean>(false)
   const [withCallingCode, setWithCallingCode] = useState<boolean>(true)
-  const CUSTOM_DEFAULT_THEME: Partial<typeof DEFAULT_THEME> = {
-    ...DEFAULT_THEME,
-    flagSizeButton: Platform.select({ android: 30, ios: 30 }),
-  }
-  const onSelect = (countryData: Country) => {
-    setCountryCode(countryData.cca2)
-    setCountry(countryData)
-  }
+  // const CUSTOM_DEFAULT_THEME: Partial<typeof DEFAULT_THEME> = {
+  //   ...DEFAULT_THEME,
+  //   flagSizeButton: Platform.select({ android: 30, ios: 30 }),
+  // }
+  // const onSelect = (countryData: Country) => {
+  //   setCountryCode(countryData.cca2)
+  //   setCountry(countryData)
+  // }
   const validateMobileNumberSuccess = () => {
     setState(prevState => ({
       ...prevState,

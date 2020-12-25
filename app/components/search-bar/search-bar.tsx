@@ -5,7 +5,7 @@ import { color, spacing } from '../../theme';
 import { Button } from '../button/button';
 import { Icon } from '../icon/icon';
 import { SearchBarProps } from './search.bar.props';
-import { Picker } from '@react-native-picker/picker';
+// import { Picker } from '@react-native-picker/picker';
 import { Text } from '../text/text';
 import { translate } from '../../i18n';
 
@@ -131,7 +131,7 @@ export function SearchBar(props: SearchBarProps) {
           style={LOCATION_TEXT}
         />
         <Text text={' :'} />
-        <Picker
+        {/* <Picker
           selectedValue={firstLocation}
           style={{ ...LOCATION_TEXT_RESULT, ...textStyle }}
           onValueChange={(itemValue, itemIndex) =>
@@ -140,7 +140,7 @@ export function SearchBar(props: SearchBarProps) {
           {LOCATIONS.map((location, index) => {
             return (<Picker.Item key={index + 1} label={location.label} value={location.value} />)
           })}
-        </Picker>
+        </Picker> */}
       </View>
       <View style={LINE_ICON_ROOT}>
         <View style={LINE_ICON_CHILD}>
@@ -164,7 +164,7 @@ export function SearchBar(props: SearchBarProps) {
           style={LOCATION_TEXT}
         />
         <Text text={' :'} />
-        <Picker
+        {/* <Picker
           selectedValue={secondLocation}
           style={{ ...LOCATION_TEXT_RESULT, ...textStyle }}
           onValueChange={(itemValue, itemIndex) =>
@@ -173,7 +173,7 @@ export function SearchBar(props: SearchBarProps) {
           {LOCATIONS.map((location, index) => {
             return (<Picker.Item key={index + 1} label={location.label} value={location.value} />)
           })}
-        </Picker>
+        </Picker> */}
       </View>
       <View style={SEARCH_BOTTON_ROOT}>
         <Button
