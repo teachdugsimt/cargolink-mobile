@@ -1,21 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, ReactElement } from 'react'
 import { observer } from 'mobx-react-lite'
-import { TextStyle, View, ViewStyle } from 'react-native'
-import { Button, Checkbox, Header, Text } from '../../components'
+import { Dimensions, TextStyle, View, ViewStyle } from 'react-native'
+import { Button, Checkbox, Text } from '../../components'
 import { color, spacing } from '../../theme'
 import { useNavigation } from '@react-navigation/native'
 
-const TEXT: TextStyle = { color: color.textBlack }
-const BOLD: TextStyle = { fontWeight: "bold" }
-const HEADER: TextStyle = { backgroundColor: color.primary }
-const HEADER_TITLE: TextStyle = {
-  ...TEXT,
-  ...BOLD,
-  fontSize: 12,
-  lineHeight: 15,
-  textAlign: "center",
-  letterSpacing: 1.5,
+interface MENU {
+  topic?: string
+  subMenu?: {
+    label?: string
+  }[]
 }
+
 const CONTAINER: ViewStyle = {
   flex: 1,
   backgroundColor: color.backgroundWhite
@@ -38,7 +34,9 @@ const CONTENT: TextStyle = {
 }
 const ROW: ViewStyle = {
   alignItems: "center",
-  flexDirection: 'row'
+  flexDirection: 'row',
+  borderBottomColor: color.line,
+  borderBottomWidth: 1,
 }
 const BUTTON_ROOT: ViewStyle = {
   flex: 1,
@@ -49,7 +47,7 @@ const BUTTON_ROOT: ViewStyle = {
 const BUTTON_CONFIRM: ViewStyle = {
   backgroundColor: color.primary,
   width: '90%',
-  borderRadius: 8,
+  borderRadius: Dimensions.get('screen').width / 2,
 }
 const BUTTON_CONFIRM_TEXT: TextStyle = {
   color: color.textWhite,
@@ -58,6 +56,71 @@ const BUTTON_CONFIRM_TEXT: TextStyle = {
   paddingBottom: 5
 }
 
+const MENUS: Array<MENU> = [
+  {
+    topic: 'ประเภทรถ',
+    subMenu: [
+      {
+        label: 'รถ 4 ล้อ'
+      },
+      {
+        label: 'รถ 6 ล้อ'
+      },
+      {
+        label: 'รถ 10 ล้อ'
+      },
+    ]
+  },
+  {
+    topic: 'จำนวนรถ',
+    subMenu: [
+      {
+        label: '1-2 คัน'
+      },
+      {
+        label: '3-4 คัน'
+      },
+      {
+        label: 'มากกว่า 4 คัน'
+      },
+    ]
+  },
+  {
+    topic: 'ประเภทสินค้า',
+    subMenu: [
+      {
+        label: 'สินค้าเกษตร'
+      },
+      {
+        label: 'สินค้าเกษตร'
+      },
+      {
+        label: 'สินค้าเกษตร'
+      },
+      {
+        label: 'สินค้าเกษตร'
+      },
+      {
+        label: 'สินค้าเกษตร'
+      },
+      {
+        label: 'สินค้าเกษตร'
+      },
+    ]
+  },
+  {
+    topic: 'น้ำหนัก',
+    subMenu: [
+      {
+        label: '1-5 ตัน'
+      },
+      {
+        label: '5-10 ตัน'
+      },
+    ]
+  },
+]
+
 export const SettingSearchScreen = observer(function SettingSearchScreen() {
   const navigation = useNavigation()
   const goBack = () => navigation.goBack()
@@ -65,40 +128,59 @@ export const SettingSearchScreen = observer(function SettingSearchScreen() {
   const [searchByCategoryCar, setSearchByCategoryCar] = useState(false)
   const [searchByPrice, setSearchByPrice] = useState(false)
 
+  const SubMenu = ({ label, mainIndex, subIndex }): ReactElement => (
+    <Button
+      key={`${mainIndex}${subIndex}`}
+      text={label}
+      style={{
+        backgroundColor: color.transparent,
+        borderWidth: 1,
+        borderColor: color.primary,
+        borderRadius: Dimensions.get('screen').width / 2,
+      }}
+      textStyle={{
+        color: color.textBlack,
+      }}
+    />
+  )
+
   return (
     <View style={CONTAINER}>
-      <Header
-        headerTx="searchJobScreen.searchJob"
-        style={HEADER}
-        titleStyle={HEADER_TITLE}
-        headerText={"ตั้งค่าการค้นหา"}
-        leftIconReal={true}
-        leftIconName={"chevron-back"}
-        rightIconText={'ล้าง'}
-        onLeftPress={goBack}
-      />
       <View style={SEARCH_ITEM_ROOT}>
-        <View style={ITEM}>
-          <Text
-            text={'ค้นหาจากประเภทของรถ'}
-            style={TOPIC}
-          />
+
+        {
+          MENUS.map((menu, index) => {
+            return (
+              <View style={ITEM} key={index} >
+                <View style={ROW}>
+                  <Checkbox value={searchByCategoryCar} onToggle={() => setSearchByCategoryCar(!searchByCategoryCar)} />
+                  <Text text={menu.topic} style={CONTENT} />
+                </View>
+                <View style={{ flexDirection: 'row' }}>
+                  {
+                    menu.subMenu && menu.subMenu.map((subMenu, i) => {
+                      return (<SubMenu key={`${index}${i}`} label={subMenu.label} mainIndex={index} subIndex={i} />)
+                    })
+                  }
+                </View>
+              </View>
+            )
+          })
+        }
+
+        {/* <View style={ITEM}>
           <View style={ROW}>
             <Checkbox value={searchByCategoryCar} onToggle={() => setSearchByCategoryCar(!searchByCategoryCar)} />
             <Text text={'กรุณาเลือกประเภทรถขนส่ง'} style={CONTENT} />
           </View>
         </View>
         <View style={ITEM}>
-          <Text
-            text={'ช่วงราคา'}
-            style={TOPIC}
-          />
           <View style={ROW}>
             <Checkbox value={searchByPrice} onToggle={() => setSearchByPrice(!searchByPrice)} />
             <Text text={'ช่วงราคา'} style={CONTENT} />
             <Text text={'ช่วงราคา'} style={CONTENT} />
           </View>
-        </View>
+        </View> */}
       </View>
       <View style={BUTTON_ROOT}>
         <Button
@@ -106,7 +188,7 @@ export const SettingSearchScreen = observer(function SettingSearchScreen() {
           style={BUTTON_CONFIRM}
           textStyle={BUTTON_CONFIRM_TEXT}
           text={'ยืนยัน'}
-          onPress={() => navigation.navigate("signin")}
+          onPress={() => navigation.navigate("searchJob")}
         />
       </View>
     </View>
