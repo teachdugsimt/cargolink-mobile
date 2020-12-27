@@ -21,6 +21,12 @@ export async function createEnvironment() {
   return env
 }
 
+let initialData = {
+  homeStore: { count: 0 },
+  signinStore: { items: [] },
+  versatileStore: { language: 'th' }
+}
+
 /**
  * Setup the root state.
  */
@@ -30,14 +36,20 @@ export async function setupRootStore() {
 
   // prepare the environment that will be associated with the RootStore.
   const env = await createEnvironment()
+  console.log("Environment asscosiate :: ", env)
   try {
     // load data from storage
     data = (await storage.load(ROOT_STATE_STORAGE_KEY)) || {}
     rootStore = RootStoreModel.create(data, env)
+    console.log("Root Store after create 1 :: ", rootStore)
+    // rootStore = RootStoreModel
   } catch (e) {
     // if there's any problems loading, then let's at least fallback to an empty state
     // instead of crashing.
-    rootStore = RootStoreModel.create({}, env)
+    // rootStore = RootStoreModel.create({}, env)
+    rootStore = RootStoreModel.create(initialData, env)
+    console.log("Root Store after create 2 (NULL) :: ", rootStore)
+    // rootStore = RootStoreModel
 
     // but please inform us what happened
     __DEV__ && console.tron.error(e.message, null)
@@ -53,3 +65,8 @@ export async function setupRootStore() {
 
   return rootStore
 }
+
+
+
+
+

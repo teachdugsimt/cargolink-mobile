@@ -2,7 +2,24 @@
   "common": {
     "ok": "OK!",
     "cancel": "Cancel",
-    "back": "Back"
+    "back": "Back",
+    "from": "From",
+    "to": "To",
+    "confirm": "confirm",
+    "pleaseInputCorrect": "Please input correct data",
+    "regionField": "region",
+    "provinceField": "province",
+    "vehicleTypeField": "vehicle type",
+    "vehicleHeightField": "vehicle height",
+    "registrationVehicleField": "registration vehicle",
+    "edit": "edit"
+  },
+  "bottomTab": {
+    "home": "Home",
+    "myJob": "My Job",
+    "favorite": "Favorite",
+    "profile": "Profile",
+    "more": "More"
   },
   "errors": {
     "invalidEmail": "Invalid email address."
@@ -20,8 +37,158 @@
     "androidReactotronHint": "If this doesn't work, ensure the Reactotron desktop app is running, run adb reverse tcp:9090 tcp:9090 from your terminal, and reload the app.",
     "iosReactotronHint": "If this doesn't work, ensure the Reactotron desktop app is running and reload app."
   },
+  "signinScreen": {
+    "signin": "Login",
+    "otp": "otp",
+    "goHome": "go home",
+    "enterYourPhoneNumber": "Enter your phone number"
+  },
+  "homeScreen": {
+    "logout": "Log out",
+    "manageCar": "Manage Car",
+    "findJob": "Find Job",
+    "postJob": "Post Job",
+    "findCar": "Find Car"
+  },
+  "postJobScreen": {
+    "postjob": "post job",
+    "vehicleDetailAndProduct": "car&product detail",
+    "getProductLocation": "get product location",
+    "checkInformation": "check detail",
+    "success": "success"
+  },
+  "searchJobScreen": {
+    "searchJob": "search job"
+  },
+  "uploadVehicleScreen": {
+    "addVehicle": "Add Vehicle",
+    "selectVehicleType": "Select your vehicle type",
+    "haveDump": "Vehicle have dump ? ",
+    "heightVehicle": "vehicle height (meters)",
+    "detailVehicle": "Vehicle detail",
+    "atLeastOneRegister": "Use at least 1 register vehicle",
+    "carRegistration": "Car registration",
+    "addVehicleRegistration": "Add vehicle registration",
+    "uploadVehicleImage": "Upload vehicle image",
+    "exampleImageFront": "example image frontside",
+    "exampleImageBack": "example image backside",
+    "exampleImageLeft": "example image leftside",
+    "exampleImageRight": "example image rightside",
+    "workZone": "Work zone",
+    "region": "region",
+    "province": "province"
+  },
+  "profileScreen": {
+    "profile": "Profile",
+    "accountType": "Premium Account",
+    "telNo": "Tel No. : ",
+    "zoneDrive": "Zone Driving : ",
+    "carInformation": "Vehicle Detail : "
+  },
   "storybook": {
     "placeholder": "Placeholder",
     "field": "Field"
+  },
+  "moreScreen": {
+    "security": "Security",
+    "changeYourPassword": "Change your password",
+    "changeYourPhone": "Change your phone",
+    "contactUs": "Contact Us",
+    "lineOfficialAccount": "Line Official Account",
+    "callCenter": "Call Center",
+    "moreMenu": "More menu",
+    "language": "Language",
+    "English": "EN",
+    "Thai": "TH",
+    "Japan": "JA"
+  },
+  "searchBarComponent": {
+    "fullSearch": "Full search"
+  },
+  "jobDetailScreen": {
+    "truckCount": "Truck count",
+    "packaging": "Packaging",
+    "jobRecommend": "Recommend",
+    "seeDetail": "See detail",
+    "productDetail": "Product Detail",
+    "weightTon": "Weight (Ton)",
+    "call": "Call"
+  },
+  "acceptPolicyScreen": {
+    "termAndCondition": "Term and condition",
+    "accept": "Accept",
+    "cancel": "Cancel"
+  },
+  "confirmCodeScreen": {
+    "codeWillExpire": "The code will expire",
+    "codeExpired": "The code has expired",
+    "requestNewOTP": "Request a new OTP",
+    "confirmOTP": "Confirm OTP"
+  },
+  "myVehicleScreen": {
+    "informationAt": "Information at",
+    "type": "Type",
+    "addNewCar": "Add new car",
+    "myTruck": "My Truck",
+    "verified": "Verified",
+    "pending": "Pending",
+    "myTruckHeader": "My Truck",
+    "addVehicleSuccess": "Add vehicle success",
+    "editVehicleSuccess": "Edit vehicle success",
+    "pendingVehicleDetail": "We are reviewing the information. Soon ",
+    "pendingVehicleDetail2": "your car will be able to accept the job."
+  },
+  "vehicleType": {
+    "Others": "Others",
+    "4 Wheels - High Stall Truck": "4 Wheels - High Stall Truck",
+    "4 Wheels - Low Stall Truck": "4 Wheels - Low Stall Truck",
+    "4 Wheels - Flat Bed": "4 Wheels - Flat Bed",
+    "4 wheels - Cabinet Truck": "4 wheels - Cabinet Truck",
+    "4 wheels - Cabinet Truck + Temperature Controlled": "4 wheels - Cabinet Truck + Temperature Controlled",
+    "4 Wheels - Cap Truck": "4 Wheels - Cap Truck",
+    "4 wheels - Truck": "4 wheels - Truck",
+    "6 wheels - Stall Truck": "6 wheels - Stall Truck",
+    "6 wheels - Liquid Truck": "6 wheels - Liquid Truck",
+    "6 Wheels - Cabinet Truck": "6 Wheels - Cabinet Truck",
+    "6 wheels - Flat Bed": "6 wheels - Flat Bed",
+    "6 wheels - Pickup Truck": "6 wheels - Pickup Truck",
+    "6 Wheels - Cabinet Truck - Temperature Controlled": "6 Wheels - Cabinet Truck - Temperature Controlled",
+    "6 Wheels - Crane": "6 Wheels - Crane",
+    "10 Wheels - Crane": "10 Wheels - Crane",
+    "10 Wheels - Stall + Dump Truck": "10 Wheels - Stall + Dump Truck",
+    "10 Wheels - Chemical Tanker": "10 Wheels - Chemical Tanker",
+    "10 Wheels - Stall Truck": "10 Wheels - Stall Truck",
+    "10 Wheels - Cabinet Truck": "10 Wheels - Cabinet Truck",
+    "10 Wheels - Flat Bed": "10 Wheels - Flat Bed",
+    "10 Wheels - Liquid Tanker": "10 Wheels - Liquid Tanker",
+    "10 Wheels - Cabinet Truck - Temperature Controlled": "10 Wheels - Cabinet Truck - Temperature Controlled",
+    "10 wheels - Fuel Tanker": "10 wheels - Fuel Tanker",
+    "18 Wheels - Flat Bed": "18 Wheels - Flat Bed",
+    "Semi - Trailer Cement Tanker": "Semi - Trailer Cement Tanker",
+    "40” Trailer - Cabinet Truck": "40” Trailer - Cabinet Truck",
+    "40” Trailer - Cabinet Truck - Temperature Controlled": "40” Trailer - Cabinet Truck - Temperature Controlled",
+    "40” Trailer 18 Wheels - Stall Truck": "40” Trailer 18 Wheels - Stall Truck",
+    "20” Trailer 18 Wheels - Stall Truck + Dump": "20” Trailer 18 Wheels - Stall Truck + Dump",
+    "40” Trailer 18 Wheels - Stall Truck + Dump": "40” Trailer 18 Wheels - Stall Truck + Dump",
+    "18 Wheels - Skeleton Semi Trailer": "18 Wheels - Skeleton Semi Trailer",
+    "Tractor Head Truck": "Tractor Head Truck",
+    "Car Carrier Trailer": "Car Carrier Trailer",
+    "Bike Carrier Truck": "Bike Carrier Truck",
+    "20” Trailer, 18 Wheels - Cabinet Truck": "20” Trailer, 18 Wheels - Cabinet Truck",
+    "20” Trailer 18 Wheels - Cabinet truck - Temperature Controlled": "20” Trailer 18 Wheels - Cabinet truck - Temperature Controlled",
+    "20” Trailer 18 Wheels - Stall Truck": "20” Trailer 18 Wheels - Stall Truck",
+    "Trailer 22 wheels Side Curtain": "Trailer 22 wheels Side Curtain",
+    "20 wheels Side Curtain": "20 wheels Side Curtain",
+    "addNewCar": "Add new car",
+    "myTruck": "My Truck"
+  },
+  "vehicleDetailScreen": {
+    "vehicleImage": "Vehicle Image",
+    "vehicleType": "Vehicle Type",
+    "heighttOfTheCarStall": "Height of the car stall (meters)",
+    "carHaveDum": "Does the car have a dum",
+    "myVehicleDetail": "My vehicle detail",
+    "vehicleRegistrationNumber": "Vehicle registration number",
+    "edit": "Edit"
   }
 }

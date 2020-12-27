@@ -23,42 +23,55 @@ export const color = {
   /**
    * The screen background.
    */
-  background: palette.white,
+  backgroundPrimary: palette.lightGray,
+  /**
+   * The screen background.
+   */
+  backgroundWhite: palette.white,
   /**
    * The main tinting color.
    */
-  primary: palette.orange,
+  primary: palette.yellow,
   /**
-   * The main tinting color, but darker.
+   * Success message and background color.
    */
-  primaryDarker: palette.orangeDarker,
+  success: palette.green,
   /**
    * A subtle color used for borders and lines.
    */
-  line: palette.offWhite,
+  line: palette.lightGray,
   /**
-   * The default color of text in many components.
+   * Warning message and background color.
    */
-  text: palette.white,
+  warning: palette.yellow,
   /**
    * Secondary information.
    */
-  dim: palette.lightGrey,
+  dim: palette.darkGray,
   /**
-   * Error messages and icons.
+   * Error messages and background and icons color.
    */
-  error: palette.angry,
+  error: palette.red,
+  /**
+   * The disable button.
+   */
+  disable: palette.gray,
+  /**
+   * Color text of dark theme.
+   */
+  textWhite: palette.white,
+  /**
+   * Default color text
+   */
+  textBlack: palette.black,
 
-  /**
-   * Storybook background for Text stories, or any stories where
-   * the text color is color.text, which is white by default, and does not show
-   * in Stories against the default white background
-   */
-  storybookDarkBg: palette.black,
+  background: palette.lighterGrey,
+  mainTheme: palette.yellow,
 
-  /**
-   * Storybook text color for stories that display Text components against the
-   * white background
-   */
-  storybookTextColor: palette.black,
+  grey: palette.lightGray,
+  lightWeightGrey: palette.lightweightGray,
+  snow: palette.pureSnow,
+  black: palette.pureBlack,
+  darkGreen: palette.darkGreen,
+  darkGrey: palette.darkGrey,
 }

@@ -5,40 +5,41 @@ import { SwitchProps } from "./switch.props"
 import { mergeAll, flatten } from "ramda"
 
 // dimensions
-const THUMB_SIZE = 30
-const WIDTH = 56
+const THUMB_SIZE = 20
+const WIDTH = 40
 const MARGIN = 2
-const OFF_POSITION = -0.5
+const OFF_POSITION = 1
 const ON_POSITION = WIDTH - THUMB_SIZE - MARGIN
 const BORDER_RADIUS = (THUMB_SIZE * 3) / 4
 
 // colors
-const ON_COLOR = color.primary
+const ON_COLOR = color.darkGreen
 const OFF_COLOR = color.palette.offWhite
 const BORDER_ON_COLOR = ON_COLOR
 const BORDER_OFF_COLOR = "rgba(0, 0, 0, 0.1)"
 
 // animation
-const DURATION = 250
+const DURATION = 200
 
 // the track always has these props
 const TRACK = {
-  height: THUMB_SIZE + MARGIN,
-  width: WIDTH,
+  height: THUMB_SIZE + MARGIN - 7.5,
+  width: WIDTH + 7.5,
   borderRadius: BORDER_RADIUS,
   borderWidth: MARGIN / 2,
-  backgroundColor: color.background,
+  backgroundColor: color.success,
 }
 
 // the thumb always has these props
 const THUMB: ViewStyle = {
   position: "absolute",
-  width: THUMB_SIZE,
-  height: THUMB_SIZE,
+  top: -7, bottom: 0,
+  width: THUMB_SIZE + 7.5,
+  height: THUMB_SIZE + 7.5,
   borderColor: BORDER_OFF_COLOR,
-  borderRadius: THUMB_SIZE / 2,
+  borderRadius: THUMB_SIZE + 7.5 / 2,
   borderWidth: MARGIN / 2,
-  backgroundColor: color.background,
+  backgroundColor: color.success,
   shadowColor: BORDER_OFF_COLOR,
   shadowOffset: { width: 1, height: 2 },
   shadowOpacity: 1,

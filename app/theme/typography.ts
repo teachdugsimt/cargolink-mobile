@@ -17,15 +17,21 @@ export const typography = {
   /**
    * The primary font.  Used in most places.
    */
-  primary: Platform.select({ ios: "Helvetica", android: "normal" }),
+  primary: Platform.select({ ios: "Kanit-Medium", android: "Kanit-Medium" }),
 
   /**
    * An alternate font used for perhaps titles and stuff.
    */
-  secondary: Platform.select({ ios: "Arial", android: "sans-serif" }),
+  secondary: Platform.select({ ios: "Kanit-Bold", android: "Kanit-Bold" }),
 
   /**
    * Lets get fancy with a monospace font!
    */
-  code: Platform.select({ ios: "Courier", android: "monospace" }),
+  code: Platform.select({ ios: "Kanit-Bold", android: "Kanit-Bold" }),
+
+  menu: 20,
+  mainTitle: 18,
+  title: 16,
+  content: 14,
+  
 }
