@@ -17,7 +17,7 @@ platform :ios do
   private_lane :build do
     certificates
     increment_build_number(xcodeproj: './ios/CargoLinkMobile.xcodeproj')
-    build_app(workspace: "CargoLinkMobile.xcworkspace", scheme: "CargoLinkMobile")
+    build_app(workspace: "./ios/CargoLinkMobile.xcworkspace", scheme: "CargoLinkMobile")
     # gym(scheme: 'CargoLinkMobile', project: './ios/CargoLinkMobile.xcodeproj')
   end
 
