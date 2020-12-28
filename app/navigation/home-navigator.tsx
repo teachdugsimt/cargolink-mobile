@@ -119,8 +119,8 @@ export function HomeNavigator() {
                 })} />
             <Stack.Screen name="settingSearch" component={SettingSearchScreen}
                 options={({ navigation, route }) => ({
-                    headerRight: () => <Text tx={"settingSearchScreen.clear"} onPress={() => console.log('Clear all!!')} />,
-                    headerCenter: () => <HeaderCenter tx={"settingSearchScreen.settingSearch"} />,
+                    headerRight: () => <Text tx={"searchJobScreen.clear"} onPress={() => console.log('Clear all!!')} />,
+                    headerCenter: () => <HeaderCenter tx={"searchJobScreen.settingSearch"} />,
                     headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
                 })} />
             <Stack.Screen name="jobDetail" component={JobDetailScreen} />

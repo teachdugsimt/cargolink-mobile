@@ -1,30 +1,11 @@
 import React, { useState } from 'react'
 import { observer } from 'mobx-react-lite';
 import { FlatList, SafeAreaView, TextStyle, View, ViewStyle } from 'react-native';
-import { Header, SearchBar } from '../../components';
+import { SearchBar } from '../../components';
 import { color, spacing } from '../../theme';
 import { SearchItem } from '../../components/search-item/search-item';
 import { useNavigation } from '@react-navigation/native';
 
-const TEXT: TextStyle = {
-  color: color.textBlack,
-  // fontFamily: typography.primary,
-}
-const BOLD: TextStyle = { fontWeight: "bold" }
-const HEADER: TextStyle = {
-  // paddingTop: spacing[5],
-  // paddingBottom: spacing[4] + spacing[1],
-  // paddingHorizontal: 0,
-  backgroundColor: color.primary
-}
-const HEADER_TITLE: TextStyle = {
-  ...TEXT,
-  ...BOLD,
-  fontSize: 12,
-  lineHeight: 15,
-  textAlign: "center",
-  letterSpacing: 1.5,
-}
 const SEARCH_BAR: ViewStyle = {
   paddingTop: spacing[4],
   paddingBottom: spacing[4],

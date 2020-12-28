@@ -8,10 +8,18 @@ import { SearchBarProps } from './search.bar.props';
 // import { Picker } from '@react-native-picker/picker';
 import { Text } from '../text/text';
 import { translate } from '../../i18n';
+import RNPickerSelect from 'react-native-picker-select';
+import i18n from 'i18n-js'
+import { provinceListEn, provinceListTh } from '../../screens/home-screen/manage-vehicle/datasource'
 
 interface LocationProps {
   label?: string
   value?: string
+}
+
+interface Input {
+  firstLocation: string
+  secondLocation: string
 }
 
 const ROOT: ViewStyle = {
@@ -23,7 +31,6 @@ const ROOT: ViewStyle = {
   elevation: 6
 }
 const LOCATION: ViewStyle = {
-  display: "flex",
   flexDirection: "row",
   alignItems: "center",
 }
@@ -64,49 +71,25 @@ const SEARCH_BOTTON_ROOT: ViewStyle = {
   paddingTop: spacing[3],
 }
 const SEARCH_BOTTON: ViewStyle = {
-  backgroundColor: color.backgroundWhite,
-  borderColor: color.primary,
-  borderWidth: 1,
-  width: '40%',
+  backgroundColor: color.primary,
+  width: '30%',
   paddingVertical: spacing[1],
   paddingHorizontal: spacing[1],
+  borderRadius: Dimensions.get('window').width / 2
 }
 const SEARCH_TEXT: TextStyle = {
   color: color.textBlack,
   fontSize: 14,
 }
 
-const LOCATIONS: Array<LocationProps> = [
-  {
-    label: 'ภาคเหนือ',
-    value: 'N'
-  },
-  {
-    label: 'ภาคตะวันออกเฉียงเหนือ',
-    value: 'NE'
-  },
-  {
-    label: 'ภาคตะวันตก',
-    value: 'W'
-  },
-  {
-    label: 'ภาคกลาง',
-    value: 'C'
-  },
-  {
-    label: 'ภาคตะวันออก',
-    value: 'E'
-  },
-  {
-    label: 'ภาคใต้',
-    value: 'S'
-  },
-]
+const initialState = {
+  firstLocation: '',
+  secondLocation: '',
+}
 
 export function SearchBar(props: SearchBarProps) {
   const navigation = useNavigation()
-  const [firstLocation, setFirstLocation] = useState<string>('C')
-  const [secondLocation, setSecondLocation] = useState<string>('C')
+  const [{ firstLocation, secondLocation }, setState] = useState<Input>(initialState)
 
   const {
     fromText,
@@ -118,8 +101,17 @@ export function SearchBar(props: SearchBarProps) {
 
   const switching = () => {
     console.log('Click')
-    setFirstLocation(secondLocation)
-    setSecondLocation(firstLocation)
+    setState({
+      firstLocation: secondLocation,
+      secondLocation: firstLocation,
+    })
+  }
+
+  const onChangeValue = (value: object) => {
+    setState(prevState => ({
+      ...prevState,
+      ...value
+    }))
   }
 
   return (
@@ -131,16 +123,33 @@ export function SearchBar(props: SearchBarProps) {
           style={LOCATION_TEXT}
         />
         <Text text={' :'} />
-        {/* <Picker
-          selectedValue={firstLocation}
-          style={{ ...LOCATION_TEXT_RESULT, ...textStyle }}
-          onValueChange={(itemValue, itemIndex) =>
-            setFirstLocation(itemValue.toString())
-          }>
-          {LOCATIONS.map((location, index) => {
-            return (<Picker.Item key={index + 1} label={location.label} value={location.value} />)
-          })}
-        </Picker> */}
+        <RNPickerSelect
+          // testID={"picker_vehicle_type"}
+          value={firstLocation}
+          onValueChange={(value) => onChangeValue({ firstLocation: value })}
+          items={i18n.locale == "en" ? provinceListEn : provinceListTh}
+          placeholder={{
+            label: translate("uploadVehicleScreen.province"),
+            color: color.black
+          }}
+          useNativeAndroidPickerStyle={false}
+          style={{
+            inputAndroidContainer: {
+              marginTop: 1,
+            },
+            inputAndroid: {
+              color: color.textBlack,
+              marginLeft: spacing[2],
+            },
+            inputIOSContainer: {
+              marginTop: 2
+            },
+            inputIOS: {
+              color: color.textBlack,
+              marginLeft: spacing[3],
+            }
+          }}
+        />
       </View>
       <View style={LINE_ICON_ROOT}>
         <View style={LINE_ICON_CHILD}>
@@ -148,13 +157,6 @@ export function SearchBar(props: SearchBarProps) {
           <TouchableHighlight onPress={switching}>
             <Icon icon="arrowUpDown" style={ARROW_ICON} containerStyle={{ width: 26, height: 26 }} />
           </TouchableHighlight>
-          {/* <Button
-          testID="continue-with-signin"
-          style={{ backgroundColor: color.transparent}}
-          textStyle={{}}
-          text={'ยืนยันรหัส OTP'}
-          onPress={() => navigation.navigate("acceptPolicy")}
-        /> */}
         </View>
       </View>
       <View style={LOCATION}>
@@ -164,23 +166,41 @@ export function SearchBar(props: SearchBarProps) {
           style={LOCATION_TEXT}
         />
         <Text text={' :'} />
-        {/* <Picker
-          selectedValue={secondLocation}
-          style={{ ...LOCATION_TEXT_RESULT, ...textStyle }}
-          onValueChange={(itemValue, itemIndex) =>
-            setSecondLocation(itemValue.toString())
-          }>
-          {LOCATIONS.map((location, index) => {
-            return (<Picker.Item key={index + 1} label={location.label} value={location.value} />)
-          })}
-        </Picker> */}
+        <RNPickerSelect
+          // testID={"picker_vehicle_type"}
+          value={secondLocation}
+          onValueChange={(value) => onChangeValue({ secondLocation: value })}
+          onDonePress={() => console.log('Done')}
+          items={i18n.locale == "en" ? provinceListEn : provinceListTh}
+          placeholder={{
+            label: translate("uploadVehicleScreen.province"),
+            color: color.black
+          }}
+          useNativeAndroidPickerStyle={false}
+          style={{
+            inputAndroidContainer: {
+              marginTop: 1,
+            },
+            inputAndroid: {
+              color: color.textBlack,
+              marginLeft: spacing[2],
+            },
+            inputIOSContainer: {
+              marginTop: 2
+            },
+            inputIOS: {
+              color: color.textBlack,
+              marginLeft: spacing[3],
+            }
+          }}
+        />
       </View>
       <View style={SEARCH_BOTTON_ROOT}>
         <Button
           testID="search-button"
           style={SEARCH_BOTTON}
           textStyle={SEARCH_TEXT}
-          text={translate('searchBarComponent.fullSearch')} // ค้นหาโดยละเอียด
+          text={translate('searchJobScreen.search')} // ค้นหาโดยละเอียด
           onPress={() => navigation.navigate(navigationTo)}
         />
       </View>
