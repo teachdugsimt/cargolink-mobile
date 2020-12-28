@@ -43,7 +43,9 @@
     "prepare": "npm-run-all patch hack:*",
     "storybook": "start-storybook -p 9001 -c ./storybook",
     "adb": "adb reverse tcp:9090 tcp:9090 && adb reverse tcp:3000 tcp:3000 && adb reverse tcp:9001 tcp:9001 && adb reverse tcp:8081 tcp:8081",
-    "test:CI": "set CI=true && react-scripts test --env=jsdom --testResultsProcessor=./node_modules/jest-html-reporter"
+    "test:CI": "set CI=true && react-scripts test --env=jsdom --testResultsProcessor=./node_modules/jest-html-reporter",
+    "ios:beta": "fastlane ios beta",
+    "android:beta": "fastlane android beta"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.11.0",
@@ -167,7 +169,7 @@
         "build": "cd android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug && cd ..",
         "type": "android.emulator",
         "device": {
-          "avdName": "Nexus_5X_API_28"
+          "avdName": "Pixel_XL_API_29"
         }
       },
       "android.emu.release": {
@@ -175,7 +177,7 @@
         "build": "cd android && ./gradlew assembleRelease assembleAndroidTest -DtestBuildType=release && cd ..",
         "type": "android.emulator",
         "device": {
-          "avdName": "Nexus_5X_API_28"
+          "avdName": "Pixel_XL_API_29"
         }
       },
       "ios.sim.debug": {

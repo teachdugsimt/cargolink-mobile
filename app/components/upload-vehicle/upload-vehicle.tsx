@@ -56,7 +56,7 @@ export function UploadVehicle(props: any) {
 
     return (
         <View style={{ ...ROOT_STYLE, ...uploadStyle }}>
-            <TouchableOpacity style={UPLOAD_BUTTON} onPress={onPress}>
+            <TouchableOpacity style={UPLOAD_BUTTON} onPress={onPress} testID={"select-image"}>
                 <View style={UPLOAD_VIEW}>
                     <View style={VIEW_ICON}>
                         <Ionicons name={"camera-outline"} size={22} color={color.grey} />

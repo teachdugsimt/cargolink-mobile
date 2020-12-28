@@ -318,6 +318,7 @@ export const UploadVehicleScreen = observer((props) => {
   const _chooseFile = (status) => {
     console.log("Status Image :: ", status)
     chooseFile('photo', status)
+    // captureImage('photo', status)
   };
 
 
@@ -460,7 +461,6 @@ export const UploadVehicleScreen = observer((props) => {
     if (editStatus && editStatus == "edit") {
       settoggleDump(initData.have_dump)
       if (initData.images && initData.images.length) {
-
         if (initData.images[0]) setfileFront({ uri: initData.images[0].url })
         if (initData.images[1]) setfileBack({ uri: initData.images[1].url })
         if (initData.images[2]) setfileLeft({ uri: initData.images[2].url })
@@ -548,7 +548,7 @@ export const UploadVehicleScreen = observer((props) => {
   console.log("Dropdown Regions VALUE :: ", valRegion)
   return (
     <View testID="UploadVehicleScreen" style={FULL}>
-      <ScrollView testID={"scrollView"} style={FULL}>
+      <ScrollView testID={"scrollViewUpload"} style={FULL}>
 
         <View style={TOP_VIEW}>
           <View style={WRAPPER_TOP}>
@@ -579,7 +579,7 @@ export const UploadVehicleScreen = observer((props) => {
                 )}
                 key={'controller-dropdown-vehicle-type'}
                 name={"vehicle-type"}
-                defaultValue="4 Wheels - High Stall Truck"
+                defaultValue=""
               />
             </View>
             <View style={HAVE_DUMP_VIEW}>
