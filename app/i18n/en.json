@@ -190,5 +190,9 @@
     "myVehicleDetail": "My vehicle detail",
     "vehicleRegistrationNumber": "Vehicle registration number",
     "edit": "Edit"
+  },
+  "settingSearchScreen": {
+    "settingSearch": "Setting Search",
+    "clear": "Clear"
   }
 }
