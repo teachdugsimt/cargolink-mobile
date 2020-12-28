@@ -17,7 +17,7 @@ const Profile = types.model({
     account_type: types.string,
     tel_no: types.string,
     work_zone: types.array(types.string),
-    vehicle_details: types.maybeNull(types.array(Vehicle))
+    vehicle_details: types.maybeNull(types.array(Vehicle)),
 })
 
 const ProfileStore = types.model({

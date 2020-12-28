@@ -12,7 +12,19 @@
     "vehicleTypeField": "ประเภทรถ",
     "vehicleHeightField": "ความสูงรถ",
     "registrationVehicleField": "ทะเบียนรถ",
-    "edit": "แก้ไข"
+    "edit": "แก้ไข",
+    "north": "ภาคเหนือ",
+    "north-east": "ภาคตะวันออกเฉียงเหนือ",
+    "south": "ภาคใต้",
+    "west": "ภาคตะวันตก",
+    "center": "ภาคกลาง",
+    "east": "ภาคตะวันออก",
+    "ภาคเหนือ": "ภาคเหนือ",
+    "ภาคตะวันออกเฉียงเหนือ": "ภาคตะวันออกเฉียงเหนือ",
+    "ภาคใต้": "ภาคใต้",
+    "ภาคตะวันตก": "ภาคตะวันตก",
+    "ภาคกลาง": "ภาคกลาง",
+    "ภาคตะวันออก": "ภาคตะวันออก"
   },
   "bottomTab": {
     "home": "หน้าแรก",
@@ -76,7 +88,15 @@
     "accountType": "Premium Account",
     "telNo": "เบอร์โทรศัพท์ : ",
     "zoneDrive": "โซนที่วิ่งงาน : ",
-    "carInformation": "ข้อมูลรถของคุณ : "
+    "carInformation": "ข้อมูลรถของคุณ : ",
+    "allPostjob": "งานที่โพสทั้งหมด",
+    "workDonePassApp": "จบงานผ่านแอพ",
+    "useWorkPassApp": "ใช้งานผ่านแอพ",
+    "allYourVehicle": "รถทั้งหมดของคุณ",
+    "workZone": "โซนที่วิ่งงาน",
+    "allVehicle": "จำนวนรถทั้งหมด",
+    "unit": "คัน",
+    "allProvinceSouth": "จังหวัดทั้งหมดในภาคใต้"
   },
   "storybook": {
     "placeholder": "แทนที่ข้อความ",

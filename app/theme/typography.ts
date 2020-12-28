@@ -29,6 +29,9 @@ export const typography = {
    */
   code: Platform.select({ ios: "Kanit-Bold", android: "Kanit-Bold" }),
 
+  mediumIcon: 20,
+
+
   menu: 20,
   mainTitle: 18,
   title: 16,
