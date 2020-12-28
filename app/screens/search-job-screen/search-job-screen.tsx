@@ -1,10 +1,17 @@
 import React, { useState } from 'react'
 import { observer } from 'mobx-react-lite';
-import { FlatList, SafeAreaView, TextStyle, View, ViewStyle } from 'react-native';
-import { SearchBar } from '../../components';
+import { Dimensions, FlatList, TextStyle, View, ViewStyle } from 'react-native';
+import { Button, SearchBar } from '../../components';
 import { color, spacing } from '../../theme';
 import { SearchItem } from '../../components/search-item/search-item';
 import { useNavigation } from '@react-navigation/native';
+import { translate } from '../../i18n';
+
+interface SubButtonSearch {
+  id?: number
+  label?: string
+  isChecked?: boolean
+}
 
 const SEARCH_BAR: ViewStyle = {
   paddingTop: spacing[4],
@@ -14,8 +21,34 @@ const SEARCH_BAR: ViewStyle = {
   marginBottom: 10,
 }
 const RESULT_CONTAINER: ViewStyle = {
-  flex: 1,
+  // flex: 1,
   // marginTop: StatusBar.currentHeight || 0,
+}
+const BUTTON_CONTAINER: ViewStyle = {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginVertical: spacing[2],
+  justifyContent: 'center',
+}
+const SUB_BUTTON_CONTAINER: ViewStyle = {
+  marginLeft: spacing[2],
+  paddingLeft: spacing[2],
+  flexDirection: 'row',
+  borderLeftWidth: 1,
+  borderLeftColor: color.disable,
+}
+const FULL_SEARCH_BOTTON: ViewStyle = {
+  backgroundColor: color.transparent,
+  borderRadius: Dimensions.get('window').width / 2,
+  borderWidth: 1,
+  borderColor: color.primary,
+  marginHorizontal: spacing[1],
+  paddingHorizontal: spacing[0],
+  paddingVertical: spacing[0],
+}
+const FULL_SEARCH_TEXT: TextStyle = {
+  fontSize: 16,
+  color: color.textBlack,
 }
 
 const DATA_FIRST = [
@@ -231,11 +264,28 @@ const Item = (data) => {
   )
 }
 
+const SUB_BUTTON: Array<SubButtonSearch> = [
+  {
+    id: 1,
+    label: 'สินค้าเกษตร',
+    isChecked: false,
+  },
+  {
+    id: 2,
+    label: 'อุสาหกรรม',
+    isChecked: false,
+  },
+]
+
+const initialState = {
+  subButtons: SUB_BUTTON
+}
+
 export const SearchJobScreen = observer(function SearchJobScreen() {
   const navigation = useNavigation()
-  const goBack = () => navigation.goBack()
 
   const [data, setData] = useState(DATA_FIRST)
+  const [{ subButtons }, setState] = useState(initialState)
 
   const renderItem = ({ item }) => (
     <Item {...item} />
@@ -245,18 +295,20 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
     DATA_SECOND && data.length % 5 === 0 && setData(data.concat(DATA_SECOND))
   }
 
+  const onPress = (id: number) => {
+    const newButtonSearch = subButtons.map(button => {
+      if (button.id !== id) return button
+      return { ...button, isChecked: !button.isChecked }
+    })
+
+    setState(prevState => ({
+      ...prevState,
+      subButtons: newButtonSearch,
+    }))
+  }
+
   return (
     <View style={{ flex: 1 }}>
-      {/* <Header
-        headerTx="searchJobScreen.searchJob"
-        style={HEADER}
-        titleStyle={HEADER_TITLE}
-        headerText={"หางาน"}
-        leftIconReal={true}
-        leftIconName={"chevron-back"}
-        leftIconSize={24}
-        onLeftPress={goBack}
-      /> */}
       <View>
         <SearchBar
           {...{
@@ -267,7 +319,29 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
           }}
         />
       </View>
-      <SafeAreaView style={RESULT_CONTAINER}>
+      <View style={BUTTON_CONTAINER}>
+        <Button
+          testID="full-search-button"
+          style={FULL_SEARCH_BOTTON}
+          textStyle={FULL_SEARCH_TEXT}
+          text={translate('searchJobScreen.fullSearch')} // ค้นหาโดยละเอียด
+          onPress={() => navigation.navigate('settingSearch')}
+        />
+        <View style={SUB_BUTTON_CONTAINER}>
+          {subButtons.length && subButtons.map(button => {
+            const borderColor = button.isChecked ? color.primary : color.disable
+            return <Button
+              key={button.id}
+              testID={`button-search-${button.id}`}
+              style={{ ...FULL_SEARCH_BOTTON, borderColor }}
+              textStyle={FULL_SEARCH_TEXT}
+              text={button.label}
+              onPress={() => onPress(button.id)}
+            />
+          })}
+        </View>
+      </View>
+      <View style={RESULT_CONTAINER}>
         <FlatList
           data={data}
           renderItem={renderItem}
@@ -275,7 +349,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
           onEndReached={() => onScrollList()}
           onEndReachedThreshold={0.5}
         />
-      </SafeAreaView>
+      </View>
     </View>
   )
 });
