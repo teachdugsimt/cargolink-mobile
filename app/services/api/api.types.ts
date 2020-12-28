@@ -54,15 +54,17 @@ export interface TermAndService {
 }
 
 export interface VehicleRequest {
-  registration_vehicle?: string
+  registrationNumber?: string[] | string
   car_type?: string
-  from?: string
-  to?: string
-  status?: string
+  createdAt?: string
+  updatedAt?: string
+  approveStatus?: string
   image_car_type?: string
   owner?: object
-  vehicle_height?: number
-  have_dump?: boolean
+  stallHeight?: number
+  tipper?: boolean
+  loadingWeight?: number
+  truckType?: number
   images?: {
     uri?: string,
     type?: string,
@@ -70,18 +72,18 @@ export interface VehicleRequest {
     size?: number,
     tmp_name?: string
   }[]
-  work_zone?: {
+  workingZones?: {
     region?: string,
     province?: string,
   }[]
 }
 export interface PatchDataRequest {
   car_type: string
-  have_dump: boolean
-  vehicle_height: string
-  registration_vehicle: Array<string>
+  tipper: boolean
+  stallHeight: string
+  registrationNumber: Array<string>
   images: Array<Object>
-  work_zone: Array<Object>
+  workingZones: Array<Object>
 }
 
 export interface PolicyReponse {

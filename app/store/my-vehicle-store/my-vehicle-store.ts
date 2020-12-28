@@ -1,4 +1,4 @@
-import { types, flow } from "mobx-state-tree"
+import { types, flow, cast } from "mobx-state-tree"
 import { MyVehicleAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
 import { vehicleEn, vehicleTh } from '../../screens/home-screen/manage-vehicle/datasource'
@@ -10,26 +10,36 @@ const Region = types.model({
 })
 
 const VehicleImage = types.model({
+    back: types.maybeNull(types.string),
+    front: types.maybeNull(types.string),
+    left: types.maybeNull(types.string),
+    right: types.maybeNull(types.string),
+})
+
+const TransformVehicleImage = types.model({
     url: types.maybeNull(types.string)
 })
 
 const vehicleModel = {
     id: types.maybeNull(types.string), // [PENDING] types.number
-    registration_vehicle: types.maybeNull(types.string),
+    registrationNumber: types.maybeNull(types.array(types.string)),
     car_type: types.maybeNull(types.string),
-    from: types.maybeNull(types.string),
-    to: types.maybeNull(types.string),
-    status: types.maybeNull(types.string),
+    createdAt: types.maybeNull(types.string),
+    updatedAt: types.maybeNull(types.string),
+    approveStatus: types.maybeNull(types.string),
     image_car_type: types.maybeNull(types.string),
     owner: types.maybeNull(types.model({})),
 }
 
 const fullVehicleModel = {
     ...vehicleModel,
-    vehicle_height: types.maybeNull(types.number),
-    have_dump: types.maybeNull(types.boolean),
-    images: types.maybeNull(types.array(VehicleImage)),
-    work_zone: types.array(Region),
+    stallHeight: types.maybeNull(types.number),
+    tipper: types.maybeNull(types.boolean),
+    truckPhotos: types.maybeNull(VehicleImage),
+    workingZones: types.array(Region),
+    loadingWeight: types.maybeNull(types.number),
+    truckType: types.maybeNull(types.number),
+    // imageTransform: types.maybeNull(types.array(TransformVehicleImage))
 }
 
 const Vehicle = types.model(vehicleModel)
@@ -67,7 +77,20 @@ const MyVehicleStore = types
             try {
                 const response = yield apiMyVehicle.findOne(id)
                 console.log("Response call api get user : : ", response)
-                self.data = response.data || {}
+                if (response.kind === 'ok') {
+                    // const images = response.data.truckPhotos &&
+                    //     Object.keys(response.data.truckPhotos).length ?
+                    //     Object.entries(response.data.truckPhotos).map(img => {
+                    //         return { url: img[1] }
+                    //     }) : []
+                    const data = {
+                        ...response.data,
+                        // imageTransform: images
+                    }
+                    self.data = data || {}
+                } else {
+                    self.error = response.data.message
+                }
                 self.loading = false
             } catch (error) {
                 // ... including try/catch error handling
@@ -79,24 +102,30 @@ const MyVehicleStore = types
         }),
 
         setDefaultOfData: flow(function* setDefaultOfData() {
-            self.data = {
+            self.data = cast({
                 id: '',
-                registration_vehicle: '',
+                registrationNumber: [''],
                 car_type: '',
-                from: '',
-                to: '',
-                status: '',
+                createdAt: '',
+                updatedAt: '',
+                approveStatus: '',
                 image_car_type: 'defaultImage',
                 owner: {},
-                vehicle_height: 0,
-                have_dump: false,
-                images: [
-                    { url: 'defaultImage' },
-                    { url: 'defaultImage' },
-                    { url: 'defaultImage' },
-                    { url: 'defaultImage' }
-                ]
-            }
+                stallHeight: 0,
+                tipper: false,
+                truckPhotos: {
+                    back: 'defaultImage',
+                    front: 'defaultImage',
+                    left: 'defaultImage',
+                    right: 'defaultImage',
+                },
+                // imageTransform: [
+                //     { url: 'defaultImage' },
+                //     { url: 'defaultImage' },
+                //     { url: 'defaultImage' },
+                //     { url: 'defaultImage' }
+                // ]
+            })
         }),
     }))
     .views((self) => ({
@@ -109,8 +138,8 @@ const MyVehicleStore = types
 
                 let dataInit = {
                     // "vehicle-type": self.data.car_type ? self.data.car_type : '',
-                    "vehicle-height": self.data.vehicle_height ? self.data.vehicle_height.toString() : '',
-                    "registration-0": self.data.registration_vehicle ? self.data.registration_vehicle : '',
+                    "vehicle-height": self.data.stallHeight ? self.data.stallHeight.toString() : '',
+                    "registration-0": self.data.registrationNumber ? self.data.registrationNumber : '',
                 }
                 const th_type = vehicleTh.find(e => e.label == self.data.car_type)
                 const en_type = vehicleEn.find(e => e.label == self.data.car_type)
@@ -118,8 +147,8 @@ const MyVehicleStore = types
                 dataInit["vehicle-type"] = type_car
 
 
-                if (self.data.work_zone && self.data.work_zone.length) {
-                    self.data.work_zone.forEach((item, index) => {
+                if (self.data.workingZones && self.data.workingZones.length) {
+                    self.data.workingZones.forEach((item, index) => {
                         dataInit['controller-region-' + index] = item.region
                         dataInit['controller-province-' + index] = item.province
                     })

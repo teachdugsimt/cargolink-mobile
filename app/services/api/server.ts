@@ -84,13 +84,13 @@ export function makeServer({ environment = 'development' } = {}) {
                 }
             })
 
-            this.get(`${API_URL}/api/v1/car`, (schema, request) => {
+            this.get(`${API_URL}/api/v1/mobile/carriers/truck`, (schema, request) => {
                 // console.log(JSON.parse(JSON.stringify(schema.vehicles.all().models)))
                 console.log(JSON.parse(JSON.stringify(server.db.vehicles)))
                 return server.db.vehicles
             })
 
-            this.get(`${API_URL}/api/v1/car/:id`, (schema, request) => {
+            this.get(`${API_URL}/api/v1/mobile/carriers/truck/:id`, (schema, request) => {
                 console.log('request.params.id', request.params.id)
                 const id = request.params.id
                 return JSON.parse(JSON.stringify(server.db.vehicles.find(id)))

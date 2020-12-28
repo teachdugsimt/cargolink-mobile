@@ -55,14 +55,14 @@ export const MyVehicle = observer(function MyVehicle() {
   }
 
   const renderItem = ({ item }) => {
-    const statusText = item.status === 'APPROVE' ? translate('myVehicleScreen.verified') : translate('myVehicleScreen.pending')
-    const statusColor = item.status === 'APPROVE' ? color.success : color.primary
+    const statusText = item.approveStatus === 'APPROVE' ? translate('myVehicleScreen.verified') : translate('myVehicleScreen.pending')
+    const statusColor = item.approveStatus === 'APPROVE' ? color.success : color.primary
     return (
       <VehicleItem
         key={item.id}
-        topic={item.registration_vehicle}
+        topic={item.registrationNumber}
         subTopic={item.car_type}
-        updatedDate={item.to}
+        updatedDate={item.updatedAt}
         image={item.image_car_type}
         status={statusText}
         imageStyle={{ marginBottom: spacing[1] }}
@@ -73,7 +73,7 @@ export const MyVehicle = observer(function MyVehicle() {
   }
 
   /**
-   * registration_vehicle: topic
+   * registrationNumber: topic
    * car_type: subTopic
    * to: updatedDate
    * status: status

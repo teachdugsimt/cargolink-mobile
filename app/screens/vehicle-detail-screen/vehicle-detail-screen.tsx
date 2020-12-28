@@ -115,9 +115,10 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
   const {
     car_type,
     image_car_type,
-    vehicle_height,
-    have_dump,
-    images
+    stallHeight,
+    tipper,
+    // imageTransform,
+    truckPhotos,
   } = MyVehicleStore.data
 
   const onViewer = (index: number) => {
@@ -147,6 +148,12 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
     }
   }, [MyVehicleStore.data])
 
+  const transformImage = truckPhotos &&
+    Object.keys(truckPhotos).length ?
+    Object.entries(truckPhotos).map(img => {
+      return { url: img[1] }
+    }) : []
+
   return (
     <View style={CONTAINER}>
       {MyVehicleStore.loading && <ModalLoading size={'large'} color={color.primary} visible={MyVehicleStore.loading} />}
@@ -157,8 +164,8 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
           </View>
           <View style={ROW}>
             <View style={IMAGES}>
-              {images &&
-                images.map((image, index) => {
+              {!!transformImage &&
+                transformImage.map((image, index) => {
                   return (
                     <TouchableOpacity style={TOUCHABLE} key={index} onPress={(attr) => onViewer(index)}>
                       <Image style={IMAGE} source={MyVehicleStore.data.id ? { uri: image.url } : imageComponent[image.url]} key={index} />
@@ -167,11 +174,11 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
                 })}
               <Modal visible={openViewer} transparent={true}>
                 <ImageViewer
-                  imageUrls={images ? images : []}
+                  imageUrls={transformImage}
                   index={indexOfImage}
                   onCancel={onCancel}
                   enableSwipeDown={true}
-                  pageAnimateTime={images ? images.length : 0}
+                  pageAnimateTime={transformImage ? transformImage.length : 0}
                 />
               </Modal>
             </View>
@@ -191,12 +198,12 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
           <View style={ROW}>
             <View style={SUB_TOPIC_ROOT}>
               <Text style={SUB_TOPIC} text={translate("vehicleDetailScreen.heighttOfTheCarStall")} />
-              <Text style={TEXT_OF_VALUE} text={vehicle_height ? vehicle_height.toString() : '0'} />
+              <Text style={TEXT_OF_VALUE} text={stallHeight ? stallHeight.toString() : '0'} />
             </View>
           </View>
           <View style={{ ...ROW, justifyContent: "space-between" }}>
             <Text text={translate("vehicleDetailScreen.carHaveDum")} />
-            <Switch value={have_dump || false} disabled={true} />
+            <Switch value={tipper || false} disabled={true} />
           </View>
         </View>
 
@@ -218,7 +225,11 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
                 style={SUB_TOPIC}
                 text={translate("vehicleDetailScreen.vehicleRegistrationNumber")}
               />
-              <Text style={TEXT_OF_VALUE} text={MyVehicleStore.data.registration_vehicle} />
+              {MyVehicleStore.data &&
+                MyVehicleStore.data.registrationNumber &&
+                MyVehicleStore.data.registrationNumber.length &&
+                MyVehicleStore.data.registrationNumber.map((regNo, index) => <Text key={index} style={TEXT_OF_VALUE} text={regNo} />)
+              }
             </View>
           </View>
         </View>

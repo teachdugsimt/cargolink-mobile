@@ -18,18 +18,18 @@ const ImageVehicle = types.model({
 
 const VehicleNew = types.model({
     car_type: types.string,
-    have_dump: types.boolean,
-    vehicle_height: types.string,
-    registration_vehicle: types.array(types.string),
+    tipper: types.boolean,
+    stallHeight: types.string,
+    registrationNumber: types.array(types.string),
     images: types.maybeNull(types.array(ImageVehicle)),
-    work_zone: types.array(Region)
+    workingZones: types.array(Region)
 })
 
 const VehiclePatch = types.model({
     car_type: types.string,
-    have_dump: types.boolean,
-    vehicle_height: types.string,
-    registration_vehicle: types.array(types.string),
+    tipper: types.boolean,
+    stallHeight: types.string,
+    registrationNumber: types.array(types.string),
     images: types.maybeNull(types.array(types.model({
         uri: types.string,
         type: types.maybeNull(types.string),
@@ -37,7 +37,7 @@ const VehiclePatch = types.model({
         size: types.maybeNull(types.number),
         tmp_name: types.maybeNull(types.string)
     }))),
-    work_zone: types.array(Region)
+    workingZones: types.array(Region)
 })
 
 const CreateVehicleStore = types.model({
@@ -79,7 +79,7 @@ const CreateVehicleStore = types.model({
         try {
             const response = yield apiMyVehicle.patchMyVehicle(params)
             console.log("Response call api patch my vehicle : : ", response)
-            self.patchMyVehicle  = response.data.reminder || []
+            self.patchMyVehicle = response.data.reminder || []
             self.loadingPatchMyVehicle = false
         } catch (error) {
             // ... including try/catch error handling
