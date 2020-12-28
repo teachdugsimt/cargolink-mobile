@@ -385,12 +385,12 @@ export const UploadVehicleScreen = observer((props) => {
       car_type: data['vehicle-type'],
       have_dump: toggleDump,
       vehicle_height: data['vehicle-height'],
-      registration_vehicle: [],
+      registrationNumber: [],
       images: [],
-      work_zone: [],
+      workingZones: [],
     }
 
-    if (data['registration-0']) data_mock_call.registration_vehicle.push(data['registration-0'])
+    if (data['registration-0']) data_mock_call.registrationNumber.push(data['registration-0'])
 
     if (fileFront && Object.keys(fileFront).length) data_mock_call.images.push(fileFront)
     if (fileBack && Object.keys(fileBack).length) data_mock_call.images.push(fileBack)
@@ -406,7 +406,7 @@ export const UploadVehicleScreen = observer((props) => {
         tmp_province.push(data[key])
     })
     tmp_region.map((reg, ir) => {
-      data_mock_call['work_zone'].push({
+      data_mock_call['workingZones'].push({
         province: reg,
         region: tmp_province[ir] ? tmp_province[ir] : ""
       })
@@ -467,12 +467,12 @@ export const UploadVehicleScreen = observer((props) => {
         if (initData.images[3]) setfileRight({ uri: initData.images[3].url })
       }
 
-      if (initData.work_zone && initData.work_zone.length) {
+      if (initData.workingZones && initData.workingZones.length) {
         let tmpDropdownRegion = ddRegion
         let tmpDropdownProvince = ddProvince
 
         let valRegionTmp = valRegion
-        initData.work_zone.forEach((e, index) => {
+        initData.workingZones.forEach((e, index) => {
           tmpDropdownRegion.push({
             id: index + 1,
             index: index,
@@ -687,7 +687,7 @@ export const UploadVehicleScreen = observer((props) => {
             </View>
           </View>
         </View>
-        {}
+        { }
 
 
         <View style={{ ...TOP_VIEW, ...MARGIN_TOP }}>

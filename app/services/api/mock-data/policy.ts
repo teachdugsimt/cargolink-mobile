@@ -1,8 +1,8 @@
 export default [
     {
-        version: '1.0.1',
+        version: "0.0.1",
         accepted: false,
-        acceptedAt: '',
+        acceptedAt: null,
         data: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eaque libero, repudiandae ullam tempora nemo voluptates ipsum, voluptas laborum non in perferendis voluptate reiciendis vitae qui, molestias quam odit corrupti explicabo. lor
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum architecto quasi delectus maiores, laudantium, quos dolorem voluptates maxime ex, ea praesentium! Quibusdam sit possimus doloribus error odit quae deserunt blanditiis.
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint alias atque soluta laboriosam debitis fugiat illum expedita non ratione labore magnam quod tempora ducimus, vero necessitatibus, odit nihil, quos earum!
