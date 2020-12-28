@@ -107,6 +107,7 @@ const initialState = {
   resendCode: true,
   autoFocus: true,
   isLoading: false,
+  showMessageError: false,
 }
 
 export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
@@ -117,7 +118,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
     value,
     setValue,
   });
-  const [{ isExpired, disabled, buttonColor, resendCode, autoFocus, isLoading }, setState] = useState(initialState)
+  const [{ isExpired, disabled, buttonColor, resendCode, autoFocus, isLoading, showMessageError }, setState] = useState(initialState)
   const [isShow, setIsShow] = useState(true)
 
   const clearState = () => {
@@ -174,16 +175,20 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
       otp: value
     })
       .then(() => {
-        AuthStore.getPolicyRequest(AuthStore.profile.userProfile.id)
-          .then(() => {
-            if (AuthStore.policyData.accepted) {
-              return 'home'
-            }
-            return 'acceptPolicy'
-          }).then((screen) => {
-            clearState()
-            navigation.navigate(screen)
-          })
+        if (AuthStore.profile && AuthStore.profile.termOfService) {
+          let screen = 'acceptPolicy'
+          if (AuthStore.profile.termOfService.accepted) {
+            screen = 'home'
+          }
+          clearState()
+          navigation.navigate(screen)
+          return;
+        }
+        setState(prevState => ({
+          ...prevState,
+          showMessageError: true,
+          isLoading: false,
+        }))
       })
   }
 
@@ -211,7 +216,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
           // testID={"countdown-otp"}
           style={{ width: '100%', height: 120 }}
           pinCount={CELL_COUNT}
-          code={value} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
+          code={value}
           onCodeChanged={(code) => onChangeText(code)}
           keyboardType="number-pad"
           autoFocusOnLoad
@@ -219,36 +224,10 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
           codeInputHighlightStyle={CODE_INPUT_HIGHTLIGHT_STYLE}
           onCodeFilled={(code) => {
             setValue(code)
-            console.log(`Code is ${code}, you are good to go!`)
+            onPress(code)
           }}
         />
       </View>
-
-      {/* <CodeField
-        ref={ref}
-        {...props}
-        value={value}
-        onChangeText={(val) => onChangeText(val)}
-        // onTouchCancel={() => console.log('touch cancel')}
-        // onContentSizeChange={() => console.log('size change')}
-        // onEndEditing={() => setButtonColor(color.primary)}
-        onFocus={() => setButtonColor(color.disable)}
-        cellCount={CELL_COUNT}
-        rootStyle={CODE_FIELD_ROOT}
-        keyboardType="number-pad"
-        autoFocus={autoFocus}
-        textContentType="oneTimeCode"
-        renderCell={({ index, symbol, isFocused }) => (
-          <View
-            onLayout={getCellOnLayoutHandler(index)}
-            key={index}
-            style={[CELL_ROOT, isFocused && FOCUS_CELL]}>
-            <Text style={CELL_TEXT}>
-              {symbol || (isFocused ? <Cursor /> : null)}
-            </Text>
-          </View>
-        )}
-      /> */}
       <View testID="InformationCodeRoot" style={CODE_INFORMATION_ROOT}>
         <View style={CODE_INFORMATION}>
           <Text text={translate('confirmCodeScreen.codeWillExpire')} />
@@ -270,6 +249,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
           <Text style={CODE_REF}>(Ref: {'ABCD'})</Text>
         </View>
         <View style={RESEND_CODE_ROOT}>
+          {showMessageError && <Text style={TEXT_EXPIRE} text={AuthStore.error} />}
           {isExpired && <Text style={TEXT_EXPIRE} text={translate('confirmCodeScreen.codeExpired')} />}
         </View>
         <View style={RESEND_CODE_ROOT}>

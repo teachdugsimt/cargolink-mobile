@@ -82,7 +82,7 @@ const SUB_TOPIC_ROOT: ViewStyle = {
   paddingRight: 0,
 }
 const OUTER_CIRCLE: ViewStyle = {
-  borderRadius: 40,
+  borderRadius: Math.round(deviceWidht + deviceHeight) / 2,
   width: 58,
   height: 58,
   backgroundColor: color.primary,
@@ -92,8 +92,7 @@ const OUTER_CIRCLE: ViewStyle = {
 const LOGO: ImageStyle = {
   width: 55,
   height: 55,
-  // borderRadius: Math.round(deviceWidht + deviceHeight) / 2,
-  borderRadius: 35,
+  borderRadius: Math.round(deviceWidht + deviceHeight) / 2,
   backgroundColor: color.disable,
 }
 const TYPE_CAR_NAME: TextStyle = {

@@ -84,5 +84,12 @@ export interface PatchDataRequest {
   work_zone: Array<Object>
 }
 
+export interface PolicyReponse {
+  version: string
+  accepted: boolean
+  acceptedAt: string
+  data: string
+}
+
 export type GetUsersResult = { kind: "ok"; users: User[] } | GeneralApiProblem
 export type GetUserResult = { kind: "ok"; user: User } | GeneralApiProblem

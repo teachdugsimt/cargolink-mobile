@@ -56,24 +56,31 @@ export function makeServer({ environment = 'development' } = {}) {
 
             this.post(`${API_URL}/api/v1/users/auth/otp-verify`, (schema, request) => {
                 const attrs = JSON.parse(request.requestBody)
-                const timestampNow = Math.floor(Date.now() / 1000)
-                const id = parseInt(attrs.otp.slice(-1)) % 2 === 0
-                    ? timestampNow % 2 === 0 ? timestampNow : timestampNow + 1
-                    : timestampNow % 2 === 0 ? timestampNow + 1 : timestampNow
+                if (parseInt(attrs.otp.slice(-1)) % 9 === 0) {
+                    return {
+                        message: "OTP is not correct",
+                        responseCode: 0,
+                        userProfile: null,
+                        token: null,
+                        termOfService: null,
+                    }
+                }
                 return {
+                    message: "",
+                    responseCode: 1,
                     userProfile: {
-                        id: id,
-                        companyName: "Onelink space",
-                    },
-                    termOfService: {
-                        latestVersion: "0.0.1",
-                        latestVersionAgree: true,
+                        id: 611,
+                        companyName: null,
+                        fullName: null,
+                        mobileNo: "0926270468",
+                        email: null
                     },
                     token: {
-                        idToken: "string",
-                        accessToken: "string",
-                        refreshToken: "string",
+                        accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2MTEiLCJBVVRIIjpbeyJhdXRob3JpdHkiOiJSRVNFVF9QV0QifSx7ImF1dGhvcml0eSI6IlZJRVdfVkVISUNMRSJ9LHsiYXV0aG9yaXR5IjoiQUREX09SREVSIn0seyJhdXRob3JpdHkiOiJMSVNUX1RSSVAifSx7ImF1dGhvcml0eSI6IlJFR19BQ0MifSx7ImF1dGhvcml0eSI6Ik1PRElGWV9EUklWRVIifSx7ImF1dGhvcml0eSI6IlJPTEVfU0hJUFBFUiJ9LHsiYXV0aG9yaXR5IjoiTU9ESUZZX1JPVVRFIn0seyJhdXRob3JpdHkiOiJTT0ZUX0RFTEVURV9WRUhJQ0xFIn0seyJhdXRob3JpdHkiOiJTT0ZUX0RFTEVURV9ST1VURSJ9LHsiYXV0aG9yaXR5IjoiUk9MRV9DQVJSSUVSIn0seyJhdXRob3JpdHkiOiJDT05GSVJNX09SREVSIn0seyJhdXRob3JpdHkiOiJNT0RJRllfSU5GTyJ9LHsiYXV0aG9yaXR5IjoiU09GVF9ERUxFVEVfT1JERVIifSx7ImF1dGhvcml0eSI6IlNJR05PVVQifSx7ImF1dGhvcml0eSI6IlJFUExZX09SREVSIn0seyJhdXRob3JpdHkiOiJSRVBPUlRfVFJBTlMifSx7ImF1dGhvcml0eSI6IlZFUklGWV9DT05UQUNUIn0seyJhdXRob3JpdHkiOiJBRERfVFJJUCJ9LHsiYXV0aG9yaXR5IjoiTElTVF9WRUhJQ0xFIn0seyJhdXRob3JpdHkiOiJVUERBVEVfUFJPRklMRSJ9LHsiYXV0aG9yaXR5IjoiTElTVF9EUklWRVIifSx7ImF1dGhvcml0eSI6IkFERF9EUklWRVIifSx7ImF1dGhvcml0eSI6IkNIQU5HRV9QV0QifSx7ImF1dGhvcml0eSI6IkRFVEFJTF9UUkFOUyJ9LHsiYXV0aG9yaXR5IjoiTU9ESUZZX09SREVSIn0seyJhdXRob3JpdHkiOiJTSUdOSU4ifSx7ImF1dGhvcml0eSI6IlNPRlRfREVMRVRFX0RSSVZFUiJ9LHsiYXV0aG9yaXR5IjoiTU9ESUZZX1ZFSElDTEUifSx7ImF1dGhvcml0eSI6IlVQTE9BRF9ET0NTIn0seyJhdXRob3JpdHkiOiJBRERfVFJBTlMifSx7ImF1dGhvcml0eSI6IkFERF9WRUhJQ0xFIn0seyJhdXRob3JpdHkiOiJBU1NJR05fVkVISUNMRV9EUklWRVIifSx7ImF1dGhvcml0eSI6IkxJU1RfT1JERVIifSx7ImF1dGhvcml0eSI6IkFERF9ST1VURSJ9XSwiZXhwIjoxNjA5MTc5MDcyfQ.GfDTja_mCrqzVTXFYKLOTC5rY2IDFwl69XeGjzj39xPq56pmmNdx2z86bAcTspbQ57Qk9jUtXcnKiDaznEBpuw",
+                        idToken: "",
+                        refreshToken: ""
                     },
+                    termOfService: policy[0]
                 }
             })
 
