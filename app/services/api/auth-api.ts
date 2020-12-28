@@ -91,7 +91,10 @@ export class AuthAPI {
         const problem = getGeneralApiProblem(response)
         if (problem) return problem
       }
-      return { kind: "ok", data: response.data }
+      if (response.data.responseCode === 1) {
+        return { kind: "ok", data: response.data }
+      }
+      return { kind: response.data.responseCode, data: response.data }
       // transform the data into the format we are expecting
     } catch (error) {
       console.log("Error call api get user (MOCK): ", error)

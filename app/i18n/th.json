@@ -116,9 +116,6 @@
     "Thai": "TH",
     "Japan": "JA"
   },
-  "searchBarComponent": {
-    "fullSearch": "ค้นหาโดยละเอียด"
-  },
   "jobDetailScreen": {
     "truckCount": "จำนวนรถบรรทุก",
     "packaging": "บรรจุภัณฑ์",
@@ -204,5 +201,11 @@
     "myVehicleDetail": "ข้อมูลรถของคุณ",
     "vehicleRegistrationNumber": "เลขทะเบียนรถ",
     "edit": "Edit"
+  },
+  "searchJobScreen": {
+    "settingSearch": "ตั้งค่าการค้นหา",
+    "clear": "ล้าง",
+    "fullSearch": "ค้นหาโดยละเอียด",
+    "search": "ค้นหา"
   }
 }

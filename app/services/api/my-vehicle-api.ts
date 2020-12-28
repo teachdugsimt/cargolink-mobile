@@ -2,6 +2,7 @@ import { ApisauceInstance, create, ApiResponse } from "apisauce"
 import { getGeneralApiProblem } from "./api-problem"
 import { ApiConfig, DEFAULT_API_CONFIG } from "./api-config"
 import * as Types from "./api.types"
+import AuthStore from "../../store/auth-store/auth-store"
 
 import { GeneralApiProblem } from "./api-problem"
 
@@ -39,6 +40,7 @@ export class MyVehicleAPI {
       timeout: this.config.timeout,
       headers: {
         Accept: "application/json",
+        // Authorization: AuthStore.profile.token.accessToken
       },
     })
   }
@@ -48,7 +50,7 @@ export class MyVehicleAPI {
   async find(filter?: Types.VehicleFilterRequest | {}): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.get('api/v1/car', filter)
+      const response: ApiResponse<any> = await this.apisauce.get('api/v1/mobile/carriers/truck', filter)
       // the typical ways to die when calling an api
       console.log("Response call api get user (MOCK) : ", response)
       if (!response.ok) {
@@ -65,7 +67,7 @@ export class MyVehicleAPI {
 
   async findOne(id: number): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.get(`api/v1/car/${id}`)
+      const response: ApiResponse<any> = await this.apisauce.get(`api/v1/mobile/carriers/truck/${id}`)
 
       console.log("Response call api get user (MOCK) : ", response)
       if (!response.ok) {

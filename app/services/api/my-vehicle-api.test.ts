@@ -186,7 +186,7 @@ describe('Test Find One Vehicle API', () => {
                     url: "https://truck.in.th/images/P09/P090598458_1_1506054693.jpg",
                 }
             ],
-            work_zone: [
+            workingZones: [
                 {
                     region: 'north',
                     province: 'Chiang Mai',
@@ -325,7 +325,7 @@ describe('Test Create Vehicle API', () => {
                 tmp_name: 'image4'
             }
         ],
-        work_zone: [
+        workingZones: [
             {
                 region: 'north',
                 province: 'Chiang Mai',

@@ -69,9 +69,6 @@
     "checkInformation": "check detail",
     "success": "success"
   },
-  "searchJobScreen": {
-    "searchJob": "search job"
-  },
   "uploadVehicleScreen": {
     "addVehicle": "Add Vehicle",
     "selectVehicleType": "Select your vehicle type",
@@ -121,9 +118,6 @@
     "English": "EN",
     "Thai": "TH",
     "Japan": "JA"
-  },
-  "searchBarComponent": {
-    "fullSearch": "Full search"
   },
   "jobDetailScreen": {
     "truckCount": "Truck count",
@@ -210,5 +204,11 @@
     "myVehicleDetail": "My vehicle detail",
     "vehicleRegistrationNumber": "Vehicle registration number",
     "edit": "Edit"
+  },
+  "searchJobScreen": {
+    "settingSearch": "Setting Search",
+    "clear": "Clear",
+    "fullSearch": "Full search",
+    "search": "Search"
   }
 }
