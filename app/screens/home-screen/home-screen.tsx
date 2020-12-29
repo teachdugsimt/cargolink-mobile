@@ -110,7 +110,7 @@ export const HomeScreen = observer((props) => {
         console.log('booksByErnestCline: ', BookStore.booksByAuthor('Author john'))
     }, [])
 
-    console.tron.log('hello rendering world')
+    __DEV__ && console.tron.log('hello rendering world')
     interface List {
         title: string;
         data: any
