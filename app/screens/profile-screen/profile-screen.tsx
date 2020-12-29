@@ -60,7 +60,7 @@ const ROW_LAYOUT: ViewStyle = {
     flexDirection: 'row'
 }
 export const ProfileScreen = observer(function ProfileScreen() {
-    console.tron.log('hello rendering world')
+    __DEV__ && console.tron.log('hello rendering world')
     const navigation = useNavigation()
     const data_vehicle = ['สิบล้อ 6 คัน', 'บรรทุก 6 คัน']
 

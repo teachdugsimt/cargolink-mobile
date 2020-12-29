@@ -1,4 +1,5 @@
-package com.cargolinkmobile;
+// package com.cargolinkmobile;
+package th.co.cargolink.mobile;
 
 import android.app.Application;
 import android.content.Context;
@@ -65,7 +66,8 @@ public class MainApplication extends Application implements ReactApplication {
          We use reflection here to pick up the class that initializes Flipper,
         since Flipper library is not available in release mode
         */
-        Class<?> aClass = Class.forName("com.cargolinkmobile.ReactNativeFlipper");
+        // Class<?> aClass = Class.forName("com.cargolinkmobile.ReactNativeFlipper");
+        Class<?> aClass = Class.forName("th.co.cargolink.mobile.ReactNativeFlipper");
         aClass
             .getMethod("initializeFlipper", Context.class, ReactInstanceManager.class)
             .invoke(null, context, reactInstanceManager);
