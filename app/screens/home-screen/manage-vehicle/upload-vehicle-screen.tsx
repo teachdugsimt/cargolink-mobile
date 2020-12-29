@@ -397,8 +397,8 @@ export const UploadVehicleScreen = observer((props) => {
     if (fileLeft && Object.keys(fileLeft).length) data_mock_call.images.push(fileLeft)
     if (fileRight && Object.keys(fileRight).length) data_mock_call.images.push(fileRight)
 
-    let tmp_region = ['north']
-    let tmp_province = ['Chiang Mai']
+    let tmp_region = []
+    let tmp_province = []
     Object.keys(data).map(function (key) {
       if (key.includes("region"))
         tmp_region.push(data[key])
