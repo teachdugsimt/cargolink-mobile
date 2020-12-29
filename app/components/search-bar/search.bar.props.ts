@@ -9,5 +9,7 @@ export interface SearchBarProps {
 
   navigationTo?: string
 
+  buttonText?: string
+
   textStyle?: TextStyle
 }

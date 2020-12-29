@@ -9,7 +9,7 @@ const FULL: ViewStyle = { flex: 1 }
 
 
 export const FavoriteScreen = observer(function FavoriteScreen() {
-    console.tron.log('hello rendering world')
+    __DEV__ && console.tron.log('hello rendering world')
     return (
         <View testID="FavoriteScreen" style={FULL}>
 

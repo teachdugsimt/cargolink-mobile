@@ -134,7 +134,8 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.cargolinkmobile"
+        // applicationId "com.cargolinkmobile"
+        applicationId "th.co.cargolink.mobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

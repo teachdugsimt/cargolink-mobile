@@ -1,4 +1,5 @@
-package com.cargolinkmobile;
+// package com.cargolinkmobile;
+package th.co.cargolink.mobile;
 
 import com.facebook.react.ReactActivity;
 
