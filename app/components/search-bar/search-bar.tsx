@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react'
-import { Dimensions, ImageStyle, TextStyle, TouchableHighlight, View, ViewStyle } from 'react-native';
+import { Dimensions, ImageStyle, Platform, TextStyle, TouchableHighlight, View, ViewStyle } from 'react-native';
 import { color, spacing } from '../../theme';
 import { Button } from '../button/button';
 import { Icon } from '../icon/icon';
@@ -28,15 +28,26 @@ const ROOT: ViewStyle = {
   shadowOffset: { width: 0, height: 1 },
   shadowOpacity: 0.8,
   shadowRadius: 5,
-  elevation: 6
+  elevation: 6,
+  flexDirection: 'row',
+  justifyContent: 'center',
+  flexWrap: 'wrap',
 }
 const LOCATION: ViewStyle = {
-  flexDirection: "row",
-  alignItems: "center",
+  flexDirection: 'row',
+  flexBasis: '45%',
+  alignItems: 'center',
+  paddingHorizontal: spacing[2]
+}
+const SWITCHING: ViewStyle = {
+  flexDirection: 'row',
+  flexBasis: '10%',
+  alignItems: 'center',
+  paddingHorizontal: spacing[2]
 }
 const PIN_ICON: ImageStyle = {
-  width: 22,
-  height: 22,
+  width: 25,
+  height: 25,
 }
 const ARROW_ICON: ImageStyle = {
   width: 26,
@@ -46,28 +57,12 @@ const ARROW_ICON: ImageStyle = {
   borderRadius: Math.round(Dimensions.get('window').width + Dimensions.get('window').height) / 2,
 }
 const LOCATION_TEXT: TextStyle = {
-  paddingLeft: spacing[2],
-  width: 45
-}
-const LOCATION_TEXT_RESULT: TextStyle = {
   paddingLeft: spacing[1],
-  width: '75%',
-}
-const LINE_ICON_ROOT: ViewStyle = {
-  paddingLeft: spacing[5],
-  paddingRight: spacing[5]
-}
-const LINE_ICON_CHILD: ViewStyle = {
-  flexDirection: 'row',
-  alignItems: 'center'
-}
-const LINE: ViewStyle = {
-  flex: 1,
-  height: 1,
-  backgroundColor: color.disable
+  // width: 35
 }
 const SEARCH_BOTTON_ROOT: ViewStyle = {
   alignItems: 'center',
+  flexBasis: '100%',
   paddingTop: spacing[3],
 }
 const SEARCH_BOTTON: ViewStyle = {
@@ -116,13 +111,13 @@ export function SearchBar(props: SearchBarProps) {
 
   return (
     <View style={{ ...ROOT, ...style }}>
+
       <View style={LOCATION}>
         <Icon icon="pinDropYellow" style={PIN_ICON} />
         <Text
-          text={translate('common.from')} // จาก
+          text={`${translate('common.from')}  :`} // จาก
           style={LOCATION_TEXT}
         />
-        <Text text={' :'} />
         <RNPickerSelect
           // testID={"picker_vehicle_type"}
           value={firstLocation}
@@ -135,37 +130,35 @@ export function SearchBar(props: SearchBarProps) {
           useNativeAndroidPickerStyle={false}
           style={{
             inputAndroidContainer: {
-              marginTop: 1,
+              // marginTop: 1,
             },
             inputAndroid: {
               color: color.textBlack,
-              marginLeft: spacing[2],
             },
             inputIOSContainer: {
-              marginTop: 2
+              marginTop: 1,
+              paddingVertical: spacing[2]
             },
             inputIOS: {
               color: color.textBlack,
-              marginLeft: spacing[3],
-            }
+              marginLeft: spacing[1],
+            },
           }}
         />
       </View>
-      <View style={LINE_ICON_ROOT}>
-        <View style={LINE_ICON_CHILD}>
-          <View style={LINE} />
-          <TouchableHighlight onPress={switching}>
-            <Icon icon="arrowUpDown" style={ARROW_ICON} containerStyle={{ width: 26, height: 26 }} />
-          </TouchableHighlight>
-        </View>
+
+      <View style={SWITCHING}>
+        <TouchableHighlight onPress={switching}>
+          <Icon icon="arrowUpDown" style={ARROW_ICON} containerStyle={{ width: 26, height: 26, transform: [{ rotate: '90deg' }] }} />
+        </TouchableHighlight>
       </View>
+
       <View style={LOCATION}>
         <Icon icon="pinDropGreen" style={PIN_ICON} />
         <Text
-          text={translate('common.to')} // ถึง
+          text={`${translate('common.to')}  :`} // ถึง
           style={LOCATION_TEXT}
         />
-        <Text text={' :'} />
         <RNPickerSelect
           // testID={"picker_vehicle_type"}
           value={secondLocation}
@@ -179,23 +172,25 @@ export function SearchBar(props: SearchBarProps) {
           useNativeAndroidPickerStyle={false}
           style={{
             inputAndroidContainer: {
-              marginTop: 1,
+              // marginTop: 1,
             },
             inputAndroid: {
               color: color.textBlack,
-              marginLeft: spacing[2],
+              // marginLeft: spacing[0],
             },
             inputIOSContainer: {
-              marginTop: 2
+              marginTop: 1,
+              paddingVertical: spacing[2]
             },
             inputIOS: {
               color: color.textBlack,
-              marginLeft: spacing[3],
-            }
+              marginLeft: spacing[1],
+            },
           }}
         />
       </View>
-      <View style={SEARCH_BOTTON_ROOT}>
+
+      <View style={[SEARCH_BOTTON_ROOT,]}>
         <Button
           testID="search-button"
           style={SEARCH_BOTTON}

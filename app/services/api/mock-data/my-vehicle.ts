@@ -1,6 +1,6 @@
 export default [
     {
-        registrationNumber: ["ทะเบียน กข - 11245", "ทะเบียน ดค - 90190"], // registration_vehicle
+        registrationNumber: ["กข - 11245", "ดค - 90190"], // registration_vehicle
         car_type: "รถบรรทุกของเหลว 6 ล้อ",
         createdAt: "01/01/62", // from
         updatedAt: "01/01/63", // to
@@ -29,7 +29,7 @@ export default [
         ]
     },
     {
-        registrationNumber: ["ทะเบียน จก - 44324"],
+        registrationNumber: ["จก - 44324"],
         car_type: "รถกระบะ 4 ล้อคอกสูง",
         createdAt: "19/05/62",
         updatedAt: "19/05/63",
@@ -54,7 +54,7 @@ export default [
         ]
     },
     {
-        registrationNumber: ["ทะเบียน ภจ - 23455"],
+        registrationNumber: ["ภจ - 23455"],
         car_type: "รถกระบะห้องเย็น 4 ล้อตู้ทึบ",
         createdAt: "17/04/62",
         updatedAt: "17/04/63",
@@ -79,7 +79,7 @@ export default [
         ]
     },
     {
-        registrationNumber: ["ทะเบียน กง - 66631"],
+        registrationNumber: ["กง - 66631"],
         car_type: "รถพ่วงคอก 40 ฟุต",
         createdAt: "05/05/62",
         updatedAt: "05/05/63",
@@ -104,7 +104,7 @@ export default [
         ]
     },
     {
-        registrationNumber: ["ทะเบียน ปข - 14145"],
+        registrationNumber: ["ปข - 14145"],
         car_type: "รถกระบะ 4 ล้อหลังคาสูงทึบ",
         createdAt: "29/10/62",
         updatedAt: "29/10/63",
@@ -129,7 +129,7 @@ export default [
         ]
     },
     {
-        registrationNumber: ["ทะเบียน ดค - 33531"],
+        registrationNumber: ["ดค - 33531"],
         car_type: "รถกระบะ 4 ล้อพื้นเรียบ",
         createdAt: "10/03/62",
         updatedAt: "10/03/63",
@@ -154,7 +154,7 @@ export default [
         ]
     },
     {
-        registrationNumber: ["ทะเบียน ตห - 90087"],
+        registrationNumber: ["ตห - 90087"],
         car_type: "รถ 6 ล้อตู้คอก",
         createdAt: "03/07/62",
         updatedAt: "03/07/63",
@@ -179,7 +179,7 @@ export default [
         ]
     },
     {
-        registrationNumber: ["ทะเบียน หม - 44778"],
+        registrationNumber: ["หม - 44778"],
         car_type: "รถ 6 ล้อ ตู้ทึบ",
         createdAt: "31/10/62",
         updatedAt: "31/10/63",

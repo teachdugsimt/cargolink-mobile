@@ -14,15 +14,11 @@ interface SubButtonSearch {
 }
 
 const SEARCH_BAR: ViewStyle = {
-  paddingTop: spacing[4],
-  paddingBottom: spacing[4],
-  paddingLeft: 10 + spacing[2],
-  paddingRight: 10,
-  marginBottom: 10,
+  marginBottom: spacing[1],
+  paddingVertical: spacing[3],
 }
 const RESULT_CONTAINER: ViewStyle = {
-  // flex: 1,
-  // marginTop: StatusBar.currentHeight || 0,
+  flex: 1,
 }
 const BUTTON_CONTAINER: ViewStyle = {
   flexDirection: 'row',

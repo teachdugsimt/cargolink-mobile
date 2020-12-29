@@ -57,10 +57,12 @@ export const MyVehicle = observer(function MyVehicle() {
   const renderItem = ({ item }) => {
     const statusText = item.approveStatus === 'APPROVE' ? translate('myVehicleScreen.verified') : translate('myVehicleScreen.pending')
     const statusColor = item.approveStatus === 'APPROVE' ? color.success : color.primary
+    const registrationNumber = item.registrationNumber.map((n: string) => `ทะเบียน ${n}`)
+
     return (
       <VehicleItem
         key={item.id}
-        topic={item.registrationNumber}
+        topic={registrationNumber}
         subTopic={item.car_type}
         updatedDate={item.updatedAt}
         image={item.image_car_type}

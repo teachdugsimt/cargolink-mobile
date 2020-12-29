@@ -1,7 +1,7 @@
-import React, { useState, ReactElement } from 'react'
+import React, { useState, ReactElement, useLayoutEffect, useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
 import { Dimensions, TextStyle, View, ViewStyle } from 'react-native'
-import { Button, Checkbox, Text } from '../../components'
+import { Button, Checkbox, HeaderCenter, Text } from '../../components'
 import { color, spacing } from '../../theme'
 import { useNavigation } from '@react-navigation/native'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -189,6 +189,12 @@ export const SettingSearchScreen = observer(function SettingSearchScreen() {
   const navigation = useNavigation()
 
   const [{ settings }, setState] = useState(initialState)
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => <Text tx={"searchJobScreen.clear"} onPress={() => setState(initialState)} />,
+    })
+  }, [navigation]);
 
   const onClick = (id: number, isChecked: boolean) => {
     const newMenu = settings.map(menu => {
