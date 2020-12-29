@@ -34,7 +34,7 @@ platform :ios do
     pilot
   end
 
-  after_all do
+  after_all do |lane|
     clean_build_artifacts
     commit_version_bump(message: 'Bump build', xcodeproj: './ios/CargoLinkMobile.xcodeproj')
     tag_string = lane + "/" + version + "(" + build_number + ")"
