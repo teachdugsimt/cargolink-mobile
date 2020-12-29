@@ -106,7 +106,7 @@ export function makeServer({ environment = 'development' } = {}) {
                     tel_no: '0929818252',
                     work_zone: ['Suphanburee', 'Nakhonpathom'],
                     vehicle_details: [{ id: 1, type: '6 truck dump', status: 'ACTIVE', number: 3 },
-                    { id: 2, type: '4 car dump crop cap', status: 'ACTIVE', number: 7 }]
+                    { id: 2, type: '4 car dump crop cap', status: 'ACTIVE', number: 7 }],
                 }
             })
 
