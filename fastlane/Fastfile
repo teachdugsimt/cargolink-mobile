@@ -7,6 +7,9 @@ before_all do
 end
 
 platform :ios do
+  version = nil
+  build_number = nil
+
   desc 'Fetch certificates and provisioning profiles'
   lane :certificates do
     match(app_identifier: 'th.co.cargolink.mobile', type: 'development', readonly: true)
@@ -17,6 +20,10 @@ platform :ios do
   private_lane :build do
     certificates
     increment_build_number(xcodeproj: './ios/CargoLinkMobile.xcodeproj')
+    
+    version = get_version_number(xcodeproj: "./ios/CargoLinkMobile.xcodeproj")
+    build_number = get_build_number(xcodeproj: "./ios/CargoLinkMobile.xcodeproj")
+
     build_app(workspace: "./ios/CargoLinkMobile.xcworkspace", scheme: "CargoLinkMobile")
     # gym(scheme: 'CargoLinkMobile', project: './ios/CargoLinkMobile.xcodeproj')
   end
@@ -25,7 +32,13 @@ platform :ios do
   lane :beta do
     build
     pilot
+  end
+
+  after_all do
+    clean_build_artifacts
     commit_version_bump(message: 'Bump build', xcodeproj: './ios/CargoLinkMobile.xcodeproj')
+    tag_string = lane + "/" + version + "(" + build_number + ")"
+    add_git_tag(tag: tag_string)
     push_to_git_remote
   end
 end
@@ -33,3 +46,4 @@ end
 platform :android do
   # Android Lanes
 end
+
