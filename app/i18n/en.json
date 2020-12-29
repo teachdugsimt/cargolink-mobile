@@ -12,7 +12,19 @@
     "vehicleTypeField": "vehicle type",
     "vehicleHeightField": "vehicle height",
     "registrationVehicleField": "registration vehicle",
-    "edit": "edit"
+    "edit": "edit",
+    "north": "north",
+    "north-east": "north-east",
+    "south": "south",
+    "west": "west",
+    "center": "center",
+    "east": "east",
+    "ภาคเหนือ": "north",
+    "ภาคตะวันออกเฉียงเหนือ": "north-east",
+    "ภาคใต้": "south",
+    "ภาคตะวันตก": "west",
+    "ภาคกลาง": "center",
+    "ภาคตะวันออก": "east"
   },
   "bottomTab": {
     "home": "Home",
@@ -57,9 +69,6 @@
     "checkInformation": "check detail",
     "success": "success"
   },
-  "searchJobScreen": {
-    "searchJob": "search job"
-  },
   "uploadVehicleScreen": {
     "addVehicle": "Add Vehicle",
     "selectVehicleType": "Select your vehicle type",
@@ -83,7 +92,15 @@
     "accountType": "Premium Account",
     "telNo": "Tel No. : ",
     "zoneDrive": "Zone Driving : ",
-    "carInformation": "Vehicle Detail : "
+    "carInformation": "Vehicle Detail : ",
+    "allPostjob": "ƒpost job",
+    "workDonePassApp": "work done",
+    "useWorkPassApp": "pass app",
+    "allYourVehicle": "all your vehicle",
+    "workZone": "work zone",
+    "allVehicle": " all vehicle",
+    "unit": "คัน",
+    "allProvinceSouth": "all south province"
   },
   "storybook": {
     "placeholder": "Placeholder",
@@ -101,9 +118,6 @@
     "English": "EN",
     "Thai": "TH",
     "Japan": "JA"
-  },
-  "searchBarComponent": {
-    "fullSearch": "Full search"
   },
   "jobDetailScreen": {
     "truckCount": "Truck count",
@@ -190,5 +204,11 @@
     "myVehicleDetail": "My vehicle detail",
     "vehicleRegistrationNumber": "Vehicle registration number",
     "edit": "Edit"
+  },
+  "searchJobScreen": {
+    "settingSearch": "Setting Search",
+    "clear": "Clear",
+    "fullSearch": "Full search",
+    "search": "Search"
   }
 }

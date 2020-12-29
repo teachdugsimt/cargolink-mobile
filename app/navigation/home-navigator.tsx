@@ -113,11 +113,16 @@ export function HomeNavigator() {
                 component={SearchJobScreen}
                 options={({ navigation, route }) => ({
                     // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
-                    headerCenter: () => <HeaderCenter tx={"searchJobScreen.searchJob"} />,
+                    headerCenter: () => <HeaderCenter tx={"postJobScreen.postjob"} />,
                     headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
                     headerHideShadow: true
                 })} />
-            <Stack.Screen name="settingSearch" component={SettingSearchScreen} />
+            <Stack.Screen name="settingSearch" component={SettingSearchScreen}
+                options={({ navigation, route }) => ({
+                    headerRight: () => <Text tx={"searchJobScreen.clear"} onPress={() => console.log('Clear all!!')} />,
+                    headerCenter: () => <HeaderCenter tx={"searchJobScreen.settingSearch"} />,
+                    headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+                })} />
             <Stack.Screen name="jobDetail" component={JobDetailScreen} />
             <Stack.Screen name="searchCar" component={SearchCarScreen} />
 

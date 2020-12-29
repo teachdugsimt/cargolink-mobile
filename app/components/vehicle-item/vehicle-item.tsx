@@ -12,6 +12,7 @@ import { VehicleItemProps } from "./vehicle-item.prop"
 import { color, images, spacing } from "../../theme"
 import { Text } from ".."
 import { translate } from "../../i18n"
+import { isArray } from "validate.js"
 
 const BORDER_RADIUS = { borderRadius: 4 }
 const CONTAINER: ViewStyle = {
@@ -81,12 +82,13 @@ export function VehicleItem(props: VehicleItemProps) {
   } = props
 
   // const deviceHeight = Dimensions.get("window").height
+  const displayTopic = isArray(topic) && topic.length > 1 ? `${topic[0]}, ...` : topic
 
   return (
     <TouchableOpacity testID={"list-vehicle"} {...rest} onPress={onPress || null} style={{ height: 150, flex: 1 }}>
       <View style={{ ...CONTAINER, ...containerStyle }}>
         <View style={{ ...ROW, justifyContent: "space-between" }}>
-          <Text style={{ ...topicStyle }} text={topic} preset={'topicExtra'} />
+          <Text style={{ ...topicStyle }} text={displayTopic} preset={'topicExtra'} />
           {/* <View style={STATUS_VIEW}> */}
           <Text style={{ ...STATUS_TEXT, ...statusStyle }} text={status} />
           {/* </View> */}
