@@ -57,7 +57,7 @@ export function PostingBy(props: PostingByProps) {
   const onPress = onToggle ? () => onToggle && onToggle() : null
 
   return (
-    <TouchableOpacity onPress={onPress} style={FILL}>
+    <TouchableOpacity onPress={onPress} activeOpacity={1} style={FILL}>
       <View style={ACCOUNT_VIEW}>
         <View style={ACCOUNT_DETAIL}>
           <Text style={{ ...PADDING_RIGHT }}>{postBy}</Text>

@@ -13,7 +13,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import {
     DetailScreen, HomeScreen, JobDetailScreen, MyVehicle, PostJobScreen, SearchCarScreen, SearchJobScreen, SettingSearchScreen,
     UploadVehicleScreen, SuccessUpload,
-    VehicleDetailScreen
+    VehicleDetailScreen,
+    ShipperProfileScreen
 } from "../screens"
 import { translate } from "../i18n"
 /**
@@ -40,6 +41,7 @@ export type PrimaryHomeParamList = {
     myVehicle: undefined
     vehicleDetail: undefined
     uploadSuccess: undefined
+    shipperProfile: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -160,6 +162,14 @@ export function HomeNavigator() {
                 component={SuccessUpload}
                 options={({ navigation, route }) => ({
                     headerCenter: () => <HeaderCenter tx={"myVehicleScreen.addNewCar"} />,
+                    headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+                })}
+            />
+            <Stack.Screen
+                name="shipperProfile"
+                component={ShipperProfileScreen}
+                options={({ navigation, route }) => ({
+                    headerCenter: () => <HeaderCenter tx={"profileScreen.profile"} />,
                     headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
                 })}
             />

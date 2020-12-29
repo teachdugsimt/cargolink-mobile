@@ -216,5 +216,9 @@
     "clear": "Clear",
     "fullSearch": "Full search",
     "search": "Search"
+  },
+  "shipperProfileScreen": {
+    "verified": "Verified",
+    "notVerified": "Not Verified"
   }
 }

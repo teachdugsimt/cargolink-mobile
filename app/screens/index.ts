@@ -23,3 +23,5 @@ export * from "./search-car-screen/search-car-screen"
 export * from "./my-vehicle-screen/my-vehicle-screen"
 export * from "./vehicle-detail-screen/vehicle-detail-screen"
 export * from "./home-screen/success-upload/success-upload"
+
+export * from "./shipper-profile-screen/shipper-profile-screen"

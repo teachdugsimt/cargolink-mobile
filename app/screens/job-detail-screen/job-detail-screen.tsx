@@ -143,7 +143,7 @@ const DATA = {
 }
 
 export const JobDetailScreen = observer(function JobDetailScreen() {
-    // const navigation = useNavigation()
+    const navigation = useNavigation()
     // const goBack = () => navigation.goBack()
 
     const {
@@ -166,7 +166,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     } = DATA
 
     const onPress = () => {
-        console.log('Open profile')
+        navigation.navigate('shipperProfile')
     }
 
     return (
@@ -252,17 +252,6 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                     <View style={ONWER_ROOT}>
                         <View style={ROW}>
                             <Text style={{ color: color.disable }}>{translate('jobDetailScreen.postBy')}</Text>
-                            {/* <PostingBy {
-                                ...{
-                                    postBy,
-                                    isVerified,
-                                    isCrown,
-                                    rating,
-                                    ratingCount,
-                                    logo,
-                                    onPress: () => onPress
-                                }
-                            } /> */}
                             <PostingBy {...DATA} onToggle={() => onPress()} />
                         </View>
                     </View>

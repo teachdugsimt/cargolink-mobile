@@ -213,5 +213,9 @@
     "clear": "ล้าง",
     "fullSearch": "ค้นหาโดยละเอียด",
     "search": "ค้นหา"
+  },
+  "shipperProfileScreen": {
+    "verified": "ผู้ใช้ผ่านการตรวจสอบ",
+    "notVerified": "ยังไม่ผ่านการตรวจสอบ"
   }
 }
