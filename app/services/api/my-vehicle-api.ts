@@ -82,24 +82,6 @@ export class MyVehicleAPI {
     }
   }
 
-  async createVehicleProfile(params: any): Promise<any> {
-    // make the api call
-    try {
-      const response: ApiResponse<any> = await this.apisauce.post(`api/v1/car`, params)
-      // the typical ways to die when calling an api
-      console.log("Response call api create upload vehicle profile (MOCK) : ", response)
-      if (!response.ok) {
-        const problem = getGeneralApiProblem(response)
-        if (problem) return problem
-      }
-      return response
-      // transform the data into the format we are expecting
-    } catch (error) {
-      console.log("Error call api create upload vehicle profile (MOCK): ", error)
-      return error
-    }
-  }
-
   async update(id: number, data?: Types.VehicleRequest): Promise<any> {
     try {
       const response: ApiResponse<any> = await this.apisauce.patch(`api/v1/car/${id}`, data)
@@ -134,10 +116,28 @@ export class MyVehicleAPI {
     }
   }
 
+  async createVehicleProfile(params: any): Promise<any> {
+    // make the api call
+    try {
+      const response: ApiResponse<any> = await this.apisauce.post(`api/v1/mobile/carriers/truck`, params)
+      // the typical ways to die when calling an api
+      console.log("Response call api create upload vehicle profile (MOCK) : ", response)
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+      return response
+      // transform the data into the format we are expecting
+    } catch (error) {
+      console.log("Error call api create upload vehicle profile (MOCK): ", error)
+      return error
+    }
+  }
+
   async patchMyVehicle(params: any): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.patch(`api/v1/my-vehicle`, params)
+      const response: ApiResponse<any> = await this.apisauce.put(`api/v1/mobile/carriers/truck/edit/${params.id}`, params)
       // the typical ways to die when calling an api
       console.log("Response call api patch upload vehicle profile (MOCK) : ", response)
       if (!response.ok) {

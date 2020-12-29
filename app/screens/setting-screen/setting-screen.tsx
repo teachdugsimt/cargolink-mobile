@@ -9,7 +9,7 @@ const FULL: ViewStyle = { flex: 1 }
 
 
 export const SettingScreen = observer(function SettingScreen() {
-    console.tron.log('hello rendering world')
+    __DEV__ && console.tron.log('hello rendering world')
     return (
         <View testID="SettingScreen" style={FULL}>
 

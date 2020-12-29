@@ -53,7 +53,7 @@ export const SigninScreen = observer(function SigninScreen() {
     const navigation = useNavigation()
     // const { books } = BookStore
     const goBack = () => navigation.goBack()
-    console.tron.log('hello rendering world')
+    __DEV__ && console.tron.log('hello rendering world')
 
 
     return (

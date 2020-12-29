@@ -8,7 +8,7 @@ const FULL: ViewStyle = { flex: 1 }
 
 
 export const MyJobScreen = observer(function MyJobScreen() {
-    console.tron.log('hello rendering world')
+    __DEV__ && console.tron.log('hello rendering world')
     return (
         <View testID="MyJobScreen" style={FULL}>
 
