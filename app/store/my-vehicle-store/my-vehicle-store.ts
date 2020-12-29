@@ -133,19 +133,22 @@ const MyVehicleStore = types
             return self.list
         },
         get MappingData() {
-            console.log("Data MOBXXXXXXXXXXXXXXXX :: ", self.data)
-            if (self.data && self.data.car_type) {
+            if (self.data && self.data) {
 
                 let dataInit = {
-                    // "vehicle-type": self.data.car_type ? self.data.car_type : '',
                     "vehicle-height": self.data.stallHeight ? self.data.stallHeight.toString() : '',
-                    "registration-0": self.data.registrationNumber ? self.data.registrationNumber : '',
                 }
-                const th_type = vehicleTh.find(e => e.label == self.data.car_type)
-                const en_type = vehicleEn.find(e => e.label == self.data.car_type)
-                let type_car = th_type.value || en_type.value
-                dataInit["vehicle-type"] = type_car
 
+                if (self.data.registrationNumber && self.data.registrationNumber.length) {
+                    self.data.registrationNumber.forEach((e, i) => {
+                        dataInit[`registration-${i}`] = e
+                    })
+                }
+
+                // const th_type = vehicleTh.find(e => e.value == self.data.truckType)
+                // const en_type = vehicleEn.find(e => e.value == self.data.truckType)
+                // let type_car = th_type.value || en_type.value
+                // dataInit["vehicle-type"] = type_car
 
                 if (self.data.workingZones && self.data.workingZones.length) {
                     self.data.workingZones.forEach((item, index) => {
@@ -155,9 +158,6 @@ const MyVehicleStore = types
                 }
 
                 console.log("dataInite in MOBX :: ", dataInit)
-                console.log("dataInite in MOBX :: ", dataInit)
-                // dataInit["images"] = self.data.images
-                // dataInit["have_dump"] = self.data.have_dump
                 return dataInit;
             }
 

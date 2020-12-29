@@ -11,7 +11,6 @@ import { spacing, color, typography, images } from "../../../theme"
 import RNPickerSelect from 'react-native-picker-select';
 import { translate } from "../../../i18n"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import FetchStore from '../../../store/fetch-store/fetch-store'
 import CreateVehicleStore from '../../../store/my-vehicle-store/create-vehicle-store'
 // import ImagePicker from 'react-native-image-picker';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
@@ -22,6 +21,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native"
 import MyVehicleStore from '../../../store/my-vehicle-store/my-vehicle-store'
 import StatusStore from '../../../store/my-vehicle-store/status-vehicle-store'
+import UploadFileStore from '../../../store/my-vehicle-store/upload-file-store'
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -246,11 +246,15 @@ export const UploadVehicleScreen = observer((props) => {
     }
   };
 
+
+  const _uploadFile = (file, position) => {
+    UploadFileStore.uploadImage(file, position)
+  }
   const chooseFile = (type, status: string) => {
     let options = {
       mediaType: type,
-      maxWidth: 300,
-      maxHeight: 550,
+      maxWidth: 1024,
+      maxHeight: 1024,
       quality: 1,
     };
     launchImageLibrary(options, (response) => {
@@ -278,19 +282,40 @@ export const UploadVehicleScreen = observer((props) => {
       console.log('fileName -> ', response.fileName);
 
       ImageResizer.createResizedImage(response.uri, 1024, 1024, 'JPEG', 100, 0, null)
-        .then((response) => {
+        .then((response2) => {
+          console.log("Image resize response2 :: ", response2)
           // ****** Send this to API ******
-          const newImageResize = {
-            uri: response.uri,
+          let newImageResize = {
+            uri: response2.uri,
             type: 'image/jpeg',
-            name: response.name,
-            size: response.size,
-            tmp_name: response.path
+            name: response2.name,
+            size: response2.size,
+            tmp_name: response2.path,
+            paths: response2.path,
+            path: response2.path,
+            url: response2.uri,
+            id: null
           }
-          if (status == "front") setfileFront(newImageResize);
-          else if (status == "back") setfileBack(newImageResize);
-          else if (status == "left") setfileLeft(newImageResize);
-          else if (status == "right") setfileRight(newImageResize);
+          if (status == "front") {
+            newImageResize.id = 0
+            _uploadFile(newImageResize, 'front')
+            setfileFront(newImageResize);
+          }
+          else if (status == "back") {
+            newImageResize.id = 1
+            _uploadFile(newImageResize, 'back')
+            setfileBack(newImageResize);
+          }
+          else if (status == "left") {
+            newImageResize.id = 2
+            _uploadFile(newImageResize, 'left')
+            setfileLeft(newImageResize);
+          }
+          else if (status == "right") {
+            newImageResize.id = 3
+            _uploadFile(newImageResize, 'right')
+            setfileRight(newImageResize);
+          }
           // ****** Send this to API ******
 
         }).catch((err) => {
@@ -329,7 +354,6 @@ export const UploadVehicleScreen = observer((props) => {
 
 
 
-
   const [inputRegistration, setinputRegistration] = useState({})
   console.log("Mapping data Here :: => ", MyVehicleStore.MappingData)
   const { control, handleSubmit, errors } = useForm({
@@ -342,7 +366,6 @@ export const UploadVehicleScreen = observer((props) => {
     //     "controller-region-0" : "north",
     //     "controller-province-0": "Chaing Mai",
     // }
-
   });
 
   const _alert = (field) => {
@@ -375,36 +398,135 @@ export const UploadVehicleScreen = observer((props) => {
       _alert(translate('common.registrationVehicleField'))
       return;
     }
-    // else if (!data['controller-region-0']) {
-    //   _alert(translate('common.regionField'))
-    //   return;
-    // }
-
 
     const data_mock_call = {
-      car_type: data['vehicle-type'],
-      have_dump: toggleDump,
-      vehicle_height: data['vehicle-height'],
-      registrationNumber: [],
-      images: [],
+      id: 1,
+      carrierId: 1,
+      truckType: data['vehicle-type'] ? 1 : 1,    // ** EDIT 1
+      loadingWeight: 0,
+      stallHeight: Number(data['vehicle-height']),
+      tipper: toggleDump,
+      registeationNumber: [],
+      truckPhotos: {
+        front: null,
+        back: null,
+        left: null,
+        right: null
+      },
       workingZones: [],
     }
 
-    if (data['registration-0']) data_mock_call.registrationNumber.push(data['registration-0'])
+    let uploadData = JSON.parse(JSON.stringify(UploadFileStore.data))
+    // ** EDIT 2
+    const statusAction = JSON.parse(JSON.stringify(StatusStore.status))
+    if (statusAction && statusAction == "edit") {
 
-    if (fileFront && Object.keys(fileFront).length) data_mock_call.images.push(fileFront)
-    if (fileBack && Object.keys(fileBack).length) data_mock_call.images.push(fileBack)
-    if (fileLeft && Object.keys(fileLeft).length) data_mock_call.images.push(fileLeft)
-    if (fileRight && Object.keys(fileRight).length) data_mock_call.images.push(fileRight)
+      // DELETE ZONE - NEW ZONE
+      let initData = JSON.parse(JSON.stringify(MyVehicleStore.data))
+      let objectTmpImage = {
+        front: fileFront.uri ? fileFront.uri : null,
+        back: fileBack.uri ? fileBack.uri : null,
+        left: fileLeft.uri ? fileLeft.uri : null,
+        right: fileRight.uri ? fileRight.uri : null
+      }
 
+      if (initData.truckPhotos.front && !objectTmpImage.front) {
+        data_mock_call.truckPhotos.front = { url: null, action: 'DELETE' }
+      } else if (initData.truckPhotos.front && objectTmpImage.front && initData.truckPhotos.front == objectTmpImage.front) {
+        data_mock_call.truckPhotos.front = { url: objectTmpImage.front, action: null }
+      }
+
+      if (initData.truckPhotos.back && !objectTmpImage.back) {
+        data_mock_call.truckPhotos.back = { url: null, action: 'DELETE' }
+      } else if (initData.truckPhotos.back && objectTmpImage.back && initData.truckPhotos.back == objectTmpImage.back) {
+        data_mock_call.truckPhotos.back = { url: objectTmpImage.back, action: null }
+      }
+
+      if (initData.truckPhotos.left && !objectTmpImage.left) {
+        data_mock_call.truckPhotos.left = { url: null, action: 'DELETE' }
+      } else if (initData.truckPhotos.left && objectTmpImage.left && initData.truckPhotos.left == objectTmpImage.left) {
+        data_mock_call.truckPhotos.left = { url: objectTmpImage.left, action: null }
+      }
+
+      if (initData.truckPhotos.right && !objectTmpImage.right) {
+        data_mock_call.truckPhotos.right = { url: null, action: 'DELETE' }
+      } else if (initData.truckPhotos.right && objectTmpImage.right && initData.truckPhotos.right == objectTmpImage.right) {
+        data_mock_call.truckPhotos.right = { url: objectTmpImage.right, action: null }
+      }
+
+      // REPLACE ZONE - NEW ZONE
+      if (uploadData.length) {
+        uploadData.map((e, i) => {
+          if (e.position == "front") {
+
+            if (!initData.truckPhotos.front && objectTmpImage.front) {
+              data_mock_call.truckPhotos.front = { url: objectTmpImage.front, action: 'NEW' }
+            } else if (initData.truckPhotos.front && objectTmpImage.front) {
+              data_mock_call.truckPhotos.front = { url: e.url, action: 'REPLACE' }
+            }
+
+          } else if (e.position == "back") {
+
+            if (!initData.truckPhotos.back && objectTmpImage.back) {
+              data_mock_call.truckPhotos.back = { url: objectTmpImage.back, action: 'NEW' }
+            } else if (initData.truckPhotos.back && objectTmpImage.back) {
+              data_mock_call.truckPhotos.back = { url: e.url, action: 'REPLACE' }
+            }
+
+          } else if (e.position == "left") {
+
+            if (!initData.truckPhotos.left && objectTmpImage.left) {
+              data_mock_call.truckPhotos.left = { url: objectTmpImage.left, action: 'NEW' }
+            } else if (initData.truckPhotos.left && objectTmpImage.left) {
+              data_mock_call.truckPhotos.left = { url: e.url, action: 'REPLACE' }
+            }
+
+          } else if (e.position == "right") {
+
+            if (!initData.truckPhotos.right && objectTmpImage.right) {
+              data_mock_call.truckPhotos.right = { url: objectTmpImage.right, action: 'NEW' }
+            } else if (initData.truckPhotos.right && objectTmpImage.right) {
+              data_mock_call.truckPhotos.right = { url: e.url, action: 'REPLACE' }
+            }
+
+          }
+        })
+      }
+
+
+    } else {
+      if (fileFront && Object.keys(fileFront).length) {
+        let fileFrontTmp = uploadData.find(e => e.position == "front")
+        if (fileFrontTmp) data_mock_call.truckPhotos.front = fileFrontTmp.url
+      }
+      if (fileBack && Object.keys(fileBack).length) {
+        let fileBackTmp = uploadData.find(e => e.position == "back")
+        if (fileBackTmp) data_mock_call.truckPhotos.back = fileBackTmp.url
+      }
+      if (fileLeft && Object.keys(fileLeft).length) {
+        let fileLeftTmp = uploadData.find(e => e.position == "left")
+        if (fileLeftTmp) data_mock_call.truckPhotos.left = fileLeftTmp.url
+      }
+      if (fileRight && Object.keys(fileRight).length) {
+        let fileRightTmp = uploadData.find(e => e.position == "right")
+        if (fileRightTmp) data_mock_call.truckPhotos.right = fileRightTmp.url
+      }
+    }
     let tmp_region = []
     let tmp_province = []
+    let tmp_registration = []
     Object.keys(data).map(function (key) {
       if (key.includes("region"))
         tmp_region.push(data[key])
       if (key.includes("province"))
         tmp_province.push(data[key])
+      if (key.includes('registration'))
+        tmp_registration.push(data[key])
     })
+
+    data_mock_call.registeationNumber = tmp_registration
+
+
     tmp_region.map((reg, ir) => {
       data_mock_call['workingZones'].push({
         province: reg,
@@ -416,12 +538,13 @@ export const UploadVehicleScreen = observer((props) => {
     let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
 
     if (editStatus && editStatus == "add") {
+      data_mock_call.id = 1
       CreateVehicleStore.createVehicleProfile(data_mock_call)
     }
     else {
       CreateVehicleStore.patchVehicleDetailsRequest(data_mock_call)
     }
-    navigation.navigate('uploadSuccess')
+    // navigation.navigate('uploadSuccess')
   }
 
 
@@ -459,12 +582,12 @@ export const UploadVehicleScreen = observer((props) => {
     let initData = JSON.parse(JSON.stringify(MyVehicleStore.data))
     let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
     if (editStatus && editStatus == "edit") {
-      settoggleDump(initData.have_dump)
-      if (initData.images && initData.images.length) {
-        if (initData.images[0]) setfileFront({ uri: initData.images[0].url })
-        if (initData.images[1]) setfileBack({ uri: initData.images[1].url })
-        if (initData.images[2]) setfileLeft({ uri: initData.images[2].url })
-        if (initData.images[3]) setfileRight({ uri: initData.images[3].url })
+      settoggleDump(initData.tipper)
+      if (initData.truckPhotos) {
+        if (initData.truckPhotos.front) setfileFront({ uri: initData.truckPhotos.front })
+        if (initData.truckPhotos.back) setfileBack({ uri: initData.truckPhotos.back })
+        if (initData.truckPhotos.left) setfileLeft({ uri: initData.truckPhotos.left })
+        if (initData.truckPhotos.right) setfileRight({ uri: initData.truckPhotos.right })
       }
 
       if (initData.workingZones && initData.workingZones.length) {
@@ -497,34 +620,28 @@ export const UploadVehicleScreen = observer((props) => {
 
     if (initForm == 0) {
       initForm = 1
-      addTextInput(textInput.length)
+      if (editStatus && editStatus == "edit") {
+        if (initData && initData.registrationNumber.length) {
+          initData.registrationNumber.map((e, i) => {
+            addTextInput(i)
+          })
+        }
+      } else
+        addTextInput(textInput.length)
       // addDropdown(dropdownRegion.length)
       if (editStatus && editStatus != "edit") {
         _addRowDropdown()
       }
     }
-    console.log("Mobx state data : : ", JSON.parse(JSON.stringify(FetchStore.getUserData)))
-    console.log("State data :: ", stateData)
-    FetchStore.getUserRequest()
+
     return () => {
+      UploadFileStore.deleteUploadData() // data = []
       initForm = 0
       settextInput([])
       setrenderNew(false)
     }
   }, [])
 
-  useEffect(() => {
-    let tmp = JSON.parse(JSON.stringify(FetchStore.getUserData))
-    console.log("Fetch Store :: ", JSON.parse(JSON.stringify(FetchStore.data)))
-    if (tmp.length && tmp != stateData) {
-      setstateData(tmp)
-      console.log("Fetstore data : ", JSON.parse(JSON.stringify(tmp)))
-    }
-    return () => {
-      setstateData(null)
-    }
-    // }, [FetchStore.data])
-  }, [FetchStore.data])
 
   const [valRegion, setvalRegion] = useState([])
   const [ddRegion, setddRegion] = useState([])
@@ -558,7 +675,6 @@ export const UploadVehicleScreen = observer((props) => {
                 control={control}
                 render={({ onChange, onBlur, value }) => (
                   <RNPickerSelect
-                    testID={"picker_vehicle_type"}
                     value={value}
                     onValueChange={(value) => onChange(value)}
                     items={i18n.locale == "en" ? vehicleEn : vehicleTh}

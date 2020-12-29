@@ -4,39 +4,38 @@ import * as Types from "../../services/api/api.types"
 const apiMyVehicle = new MyVehicleAPI()
 
 const Region = types.model({
-    region: types.maybeNull(types.string),
+    region: types.string,
     province: types.maybeNull(types.string)
 })
 
-const ImageVehicle = types.model({
-    uri: types.string,
-    type: types.string,
-    name: types.string,
-    size: types.number,
-    tmp_name: types.string
+const ImageType = types.model({
+    back: types.maybeNull(types.string),
+    front: types.maybeNull(types.string),
+    left: types.maybeNull(types.string),
+    right: types.maybeNull(types.string)
 })
 
 const VehicleNew = types.model({
-    car_type: types.string,
-    tipper: types.boolean,
-    stallHeight: types.string,
+    carrierId: types.number,
+    loadingWeight: types.maybeNull(types.number),
     registrationNumber: types.array(types.string),
-    images: types.maybeNull(types.array(ImageVehicle)),
+    stallHeight: types.number,
+    tipper: types.boolean,
+    truckPhotos: types.maybeNull(ImageType),
+    truckType: types.number,
     workingZones: types.array(Region)
 })
 
 const VehiclePatch = types.model({
-    car_type: types.string,
+    truckType: types.number,
+    loadingWeight: types.maybeNull(types.number),
+    stallHeight: types.number,
     tipper: types.boolean,
-    stallHeight: types.string,
     registrationNumber: types.array(types.string),
-    images: types.maybeNull(types.array(types.model({
-        uri: types.string,
-        type: types.maybeNull(types.string),
-        name: types.maybeNull(types.string),
-        size: types.maybeNull(types.number),
-        tmp_name: types.maybeNull(types.string)
-    }))),
+    truckPhotos: types.maybeNull(types.model({
+        url: types.maybeNull(types.string),
+        action: types.maybeNull(types.string)
+    })),
     workingZones: types.array(Region)
 })
 

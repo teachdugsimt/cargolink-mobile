@@ -84,11 +84,6 @@ export function makeServer({ environment = 'development' } = {}) {
                 }
             })
 
-            this.get(`${API_URL}/api/v1/mobile/carriers/truck`, (schema, request) => {
-                // console.log(JSON.parse(JSON.stringify(schema.vehicles.all().models)))
-                console.log(JSON.parse(JSON.stringify(server.db.vehicles)))
-                return server.db.vehicles
-            })
 
             this.get(`${API_URL}/api/v1/mobile/carriers/truck/:id`, (schema, request) => {
                 console.log('request.params.id', request.params.id)
@@ -110,12 +105,7 @@ export function makeServer({ environment = 'development' } = {}) {
                 }
             })
 
-            let newId = 3
-            this.post(`${API_URL}api/v1/car`, (schema, request) => {
-                let attrs = JSON.parse(request.requestBody)
-                attrs.id = newId++
-                return { reminder: attrs }
-            })
+
 
             this.get(`${API_URL}/api/v1/users/:id/term-of-service`, (schema, request) => {
                 const id = request.params.id
@@ -135,10 +125,29 @@ export function makeServer({ environment = 'development' } = {}) {
                 return {}
             })
 
+            this.get(`${API_URL}/api/v1/mobile/carriers/truck`, (schema, request) => {
+                // console.log(JSON.parse(JSON.stringify(schema.vehicles.all().models)))
+                console.log(JSON.parse(JSON.stringify(server.db.vehicles)))
+                return server.db.vehicles
+            })
+
             let my_vehicle_id = 1
-            this.patch(`${API_URL}api/v1/my-vehicle`, (schema, request) => {
+            this.post(`${API_URL}api/v1/mobile/carriers/truck`, (schema, request) => {
                 let attrs = JSON.parse(request.requestBody)
                 attrs.id = my_vehicle_id++
+                // server.db.vehicles.firstOrCreate(JSON.parse(request.requestBody))
+                return { reminder: attrs }
+            })
+
+            this.put(`${API_URL}api/v1/mobile/carriers/truck/edit/1`, (schema, request) => {
+                let attrs = JSON.parse(request.requestBody)
+                attrs.id = my_vehicle_id++
+                return { reminder: attrs }
+            })
+
+            this.post(`${API_URL}api/v1/media/upload/image`, (schema, request) => {
+                let attrs = JSON.parse(request.requestBody)
+                // server.db.vehicles.firstOrCreate(JSON.parse(request.requestBody))
                 return { reminder: attrs }
             })
         },
