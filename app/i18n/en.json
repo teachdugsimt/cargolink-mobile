@@ -24,7 +24,8 @@
     "ภาคใต้": "south",
     "ภาคตะวันตก": "west",
     "ภาคกลาง": "center",
-    "ภาคตะวันออก": "east"
+    "ภาคตะวันออก": "east",
+    "count": "Count"
   },
   "bottomTab": {
     "home": "Home",
@@ -126,7 +127,12 @@
     "seeDetail": "See detail",
     "productDetail": "Product Detail",
     "weightTon": "Weight (Ton)",
-    "call": "Call"
+    "call": "Call",
+    "jobDetail": "Job Detail",
+    "postBy": "Post by",
+    "productType": "Product Type",
+    "productName": "Product Name",
+    "pickUpPoint": "Pick up point"
   },
   "acceptPolicyScreen": {
     "termAndCondition": "Term and condition",

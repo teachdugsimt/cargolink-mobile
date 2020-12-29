@@ -123,7 +123,11 @@ export function HomeNavigator() {
                     headerCenter: () => <HeaderCenter tx={"searchJobScreen.settingSearch"} />,
                     headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
                 })} />
-            <Stack.Screen name="jobDetail" component={JobDetailScreen} />
+            <Stack.Screen name="jobDetail" component={JobDetailScreen}
+                options={({ navigation, route }) => ({
+                    headerCenter: () => <HeaderCenter tx={"jobDetailScreen.jobDetail"} />,
+                    headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+                })} />
             <Stack.Screen name="searchCar" component={SearchCarScreen} />
 
             <Stack.Screen name="uploadVehicle" component={UploadVehicleScreen}
