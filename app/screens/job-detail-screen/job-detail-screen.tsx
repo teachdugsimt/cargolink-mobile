@@ -95,12 +95,11 @@ const PIN_ICON: ImageStyle = {
     height: 22,
 }
 const LOCATION_TEXT: TextStyle = {
-    fontSize: FONT_SIZE_SMALL,
     paddingVertical: spacing[1],
     ...PADDING_LEFT
 }
 const TEXT_SMALL: TextStyle = {
-    fontSize: 12
+    fontSize: 11
 }
 const BOTTOM_ROOT: ViewStyle = {
     backgroundColor: color.backgroundWhite,
@@ -166,6 +165,10 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         period,
     } = DATA
 
+    const onPress = () => {
+        console.log('Open profile')
+    }
+
     return (
         <View style={CONTAINER}>
             <View style={MAP_CONTAINER}>
@@ -201,7 +204,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                             </View>
                         </View>
                         <View style={DISTANCE_BOX}>
-                            <Text style={{ paddingVertical: spacing[1] }} >{`${distance} `}<Text text={'KM'} style={{ fontSize: 10 }} /></Text>
+                            <Text style={{ paddingVertical: spacing[1] }} >{`${distance} `}<Text text={'KM'} style={TEXT_SMALL} /></Text>
                             <Text text={`${period}`} style={{ ...TEXT_SMALL, paddingVertical: spacing[1], }} />
                         </View>
                     </View>
@@ -249,7 +252,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                     <View style={ONWER_ROOT}>
                         <View style={ROW}>
                             <Text style={{ color: color.disable }}>{translate('jobDetailScreen.postBy')}</Text>
-                            <PostingBy {
+                            {/* <PostingBy {
                                 ...{
                                     postBy,
                                     isVerified,
@@ -257,8 +260,10 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                                     rating,
                                     ratingCount,
                                     logo,
+                                    onPress: () => onPress
                                 }
-                            } />
+                            } /> */}
+                            <PostingBy {...DATA} onToggle={() => onPress()} />
                         </View>
                     </View>
                 </ScrollView>
