@@ -308,9 +308,10 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
       <View>
         <SearchBar
           {...{
-            fromText: 'ภาคกลาง',
-            toText: 'ภาคกลาง',
+            fromText: translate('common.from'),
+            toText: translate('common.to'),
             navigationTo: 'settingSearch',
+            buttonText: translate('searchJobScreen.search'),
             style: SEARCH_BAR
           }}
         />

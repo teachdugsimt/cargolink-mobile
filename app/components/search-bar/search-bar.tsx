@@ -91,11 +91,11 @@ export function SearchBar(props: SearchBarProps) {
     toText,
     style,
     navigationTo,
-    textStyle
+    textStyle,
+    buttonText
   } = props
 
   const switching = () => {
-    console.log('Click')
     setState({
       firstLocation: secondLocation,
       secondLocation: firstLocation,
@@ -109,14 +109,16 @@ export function SearchBar(props: SearchBarProps) {
     }))
   }
 
+  const textStyleContainer = { ...LOCATION_TEXT, ...textStyle }
+
   return (
     <View style={{ ...ROOT, ...style }}>
 
       <View style={LOCATION}>
         <Icon icon="pinDropYellow" style={PIN_ICON} />
         <Text
-          text={`${translate('common.from')}  :`} // จาก
-          style={LOCATION_TEXT}
+          text={`${fromText}  :`} // จาก
+          style={textStyleContainer}
         />
         <RNPickerSelect
           // testID={"picker_vehicle_type"}
@@ -149,15 +151,17 @@ export function SearchBar(props: SearchBarProps) {
 
       <View style={SWITCHING}>
         <TouchableHighlight onPress={switching}>
-          <Icon icon="arrowUpDown" style={ARROW_ICON} containerStyle={{ width: 26, height: 26, transform: [{ rotate: '90deg' }] }} />
+          <View>
+            <Icon icon="arrowUpDown" style={ARROW_ICON} containerStyle={{ width: 26, height: 26, transform: [{ rotate: '90deg' }] }} />
+          </View>
         </TouchableHighlight>
       </View>
 
       <View style={LOCATION}>
         <Icon icon="pinDropGreen" style={PIN_ICON} />
         <Text
-          text={`${translate('common.to')}  :`} // ถึง
-          style={LOCATION_TEXT}
+          text={`${toText}  :`} // ถึง
+          style={textStyleContainer}
         />
         <RNPickerSelect
           // testID={"picker_vehicle_type"}
@@ -195,7 +199,7 @@ export function SearchBar(props: SearchBarProps) {
           testID="search-button"
           style={SEARCH_BOTTON}
           textStyle={SEARCH_TEXT}
-          text={translate('searchJobScreen.search')} // ค้นหาโดยละเอียด
+          text={buttonText} // ค้นหาโดยละเอียด
           onPress={() => navigation.navigate(navigationTo)}
         />
       </View>
