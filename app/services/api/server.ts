@@ -1,6 +1,8 @@
 import { Server, Model } from "miragejs"
 import vehicleData from './mock-data/my-vehicle'
 import policy from './mock-data/policy'
+import truckTypeTh from './mock-data/truck-type-th'
+import truckTypeEn from './mock-data/truck-type-en'
 
 const { API_URL, API_URL_DEV } = require("../../config/env")
 
@@ -24,6 +26,8 @@ export function makeServer({ environment = 'development' } = {}) {
         fixtures: {
             vehicles: vehicleData,
             policies: policy,
+            truckTypeTh: truckTypeTh,
+            truckTypeEn: truckTypeEn
         },
         seeds(server) {
             server.loadFixtures()
@@ -125,7 +129,7 @@ export function makeServer({ environment = 'development' } = {}) {
                 return {}
             })
 
-            this.get(`${API_URL}/api/v1/mobile/carriers/truck`, (schema, request) => {
+            this.get(`${API_URL}api/v1/mobile/carriers/truck`, (schema, request) => {
                 // console.log(JSON.parse(JSON.stringify(schema.vehicles.all().models)))
                 console.log(JSON.parse(JSON.stringify(server.db.vehicles)))
                 return server.db.vehicles
@@ -149,6 +153,15 @@ export function makeServer({ environment = 'development' } = {}) {
                 let attrs = JSON.parse(request.requestBody)
                 // server.db.vehicles.firstOrCreate(JSON.parse(request.requestBody))
                 return { reminder: attrs }
+            })
+
+            this.get(`${API_URL}api/v1/mobile/carriers/truck/truck-type`, (params, request) => {
+                console.log("Params call truck type API :: ", params)
+                console.log("Request truck type api :: ", request)
+                // if (request.queryParams && request.queryParams[0] && request.queryParams[0] == "en")
+                //     return truckTypeEn
+                // else return truckTypeTh
+                return truckTypeTh
             })
         },
     })
