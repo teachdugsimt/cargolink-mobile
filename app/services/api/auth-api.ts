@@ -105,6 +105,7 @@ export class AuthAPI {
   /**
    * Get term and service
    */
+  /*
   async getPolicy(id: number): Promise<any> {
     // make the api call
     try {
@@ -123,6 +124,7 @@ export class AuthAPI {
       return error
     }
   }
+  /*
 
   /**
    * Update status term and service of user

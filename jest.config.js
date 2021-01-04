@@ -16,4 +16,5 @@ module.exports = {
   globals: {
     __DEV__: true,
   },
+  testEnvironment: "node",
 }
