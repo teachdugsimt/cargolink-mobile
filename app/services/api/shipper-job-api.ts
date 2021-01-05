@@ -58,7 +58,7 @@ export class ShipperJobAPI {
             return { kind: "ok", data: response.data }
             // transform the data into the format we are expecting
         } catch (error) {
-            console.log("Error call api get user (MOCK): ", error)
+            console.log("Error call api find all shipper job : ", error)
             return error
         }
     }
@@ -75,12 +75,12 @@ export class ShipperJobAPI {
             return { kind: "ok", data: response.data }
             // transform the data into the format we are expecting
         } catch (error) {
-            console.log("Error call api get user (MOCK): ", error)
+            console.log("Error call api find one shipper job : ", error)
             return error
         }
     }
 
-    async update(id: string, data?: Types.VehicleRequest): Promise<any> {
+    async update(id: string, data?: Types.ShipperJobCreate): Promise<any> {
         try {
             const response: ApiResponse<any> = await this.apisauce.put(`api/v1/mobile/shippers/jobs/${id}`, data)
 
@@ -92,12 +92,12 @@ export class ShipperJobAPI {
             return { kind: "ok", data: response.data }
             // transform the data into the format we are expecting
         } catch (error) {
-            console.log("Error call api get user (MOCK): ", error)
+            console.log("Error call api update shipper job : ", error)
             return error
         }
     }
 
-    async create(params: any): Promise<any> {
+    async create(params: Types.ShipperJobCreate): Promise<any> {
         // make the api call
         try {
             const response: ApiResponse<any> = await this.apisauce.post(`api/v1/mobile/shippers/jobs`, params)
@@ -110,7 +110,7 @@ export class ShipperJobAPI {
             return { kind: "ok", data: response.data }
             // transform the data into the format we are expecting
         } catch (error) {
-            console.log("Error call api create upload vehicle profile (MOCK): ", error)
+            console.log("Error call api create shipper job : ", error)
             return error
         }
     }

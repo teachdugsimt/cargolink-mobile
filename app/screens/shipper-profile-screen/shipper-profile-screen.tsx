@@ -51,6 +51,35 @@ const OUTER_CIRCLE: ViewStyle = {
     justifyContent: "center",
     alignItems: "center",
 }
+const RATING_CONTAINER: ViewStyle = {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: spacing[1]
+}
+const START_CONTAINER: ViewStyle = {
+    flex: 2,
+    flexDirection: 'row'
+}
+const RATING_BAR_CONTAINER: ViewStyle = {
+    flex: 4,
+    backgroundColor: color.disable,
+    height: 8,
+    borderRadius: 3
+}
+const COUNT_CONTAINER: ViewStyle = {
+    flex: 1,
+    alignItems: 'center'
+}
+const TOPIC: ViewStyle = {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingBottom: spacing[2]
+}
+const SECTION: ViewStyle = {
+    padding: spacing[4],
+    backgroundColor: color.backgroundWhite,
+    ...SPACE_BOTTOM
+}
 
 const PROFILE_DATA = {
     name: 'Cargolink',
@@ -83,6 +112,29 @@ const PROFILE_DATA = {
     ]
 }
 
+const STAR = [
+    {
+        show: 5,
+        count: 34
+    },
+    {
+        show: 4,
+        count: 7
+    },
+    {
+        show: 3,
+        count: 2
+    },
+    {
+        show: 2,
+        count: 1
+    },
+    {
+        show: 1,
+        count: 0
+    },
+]
+
 export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
 
     const profileImage = 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg'
@@ -98,27 +150,38 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
         )
     }
 
-    const Truck = ({ id, vehicleType, vehicleCount, imageType }) => {
-
-        return (
-            <View style={{ ...ROW, paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.line }}>
-                <View style={{ flex: 2 }}>
-                    <View style={OUTER_CIRCLE}>
-                        <Image source={imageComponent[imageType ? imageType : "truck17"]} style={TRUCK_IMAGE} />
-                    </View>
-                </View>
-                <View style={{ flex: 5 }}>
-                    <Text text={vehicleType} />
-                </View>
-                <View style={{ flex: 1 }}>
-                    <Text text={vehicleCount} />
-                </View>
-                <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                    <Text text={'คัน'} />
+    const Truck = ({ id, vehicleType, vehicleCount, imageType }) => (
+        <View style={{ ...ROW, paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.line }}>
+            <View style={{ flex: 2 }}>
+                <View style={OUTER_CIRCLE}>
+                    <Image source={imageComponent[imageType ? imageType : "truck17"]} style={TRUCK_IMAGE} />
                 </View>
             </View>
-        )
-    }
+            <View style={{ flex: 5 }}>
+                <Text text={vehicleType} />
+            </View>
+            <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                <Text text={vehicleCount} />
+            </View>
+            <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                <Text text={'คัน'} />
+            </View>
+        </View>
+    )
+
+    const Star = ({ show, count }) => (
+        <View style={RATING_CONTAINER}>
+            <View style={START_CONTAINER}>
+                {Array(5).fill(show).map((_, index) => <MaterialCommunityIcons name={'star'} size={16} color={index < show ? color.primary : color.disable} style={{ paddingHorizontal: 2 }} />)}
+            </View>
+            <View style={RATING_BAR_CONTAINER}>
+                <View style={{ flex: 1, width: '50%', backgroundColor: color.primary, borderRadius: 3 }} />
+            </View>
+            <View style={COUNT_CONTAINER}>
+                <Text text={`(${count})`} style={{ color: count ? color.textBlack : color.disable }} />
+            </View>
+        </View>
+    )
 
     const vehicleCount = PROFILE_DATA.vehicles.reduce((prev, curr) => { return prev + curr.vehicleCount }, 0)
 
@@ -139,8 +202,8 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
                 style={{}}
                 scrollEventThrottle={400}
             >
-                <View style={[{ padding: spacing[4], backgroundColor: color.backgroundWhite, ...SPACE_BOTTOM }]}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <View style={SECTION}>
+                    <View style={TOPIC}>
                         <Text text={translate('profileScreen.allVehicle')} />
                         <Text text={`${vehicleCount.toString()}  คัน`} />
                     </View>
@@ -149,11 +212,13 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
                     })}
                 </View>
 
-                <View style={[{ padding: spacing[4], backgroundColor: color.backgroundWhite, ...SPACE_BOTTOM }]}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <View style={SECTION}>
+                    <View style={TOPIC}>
                         <Text text={'คะแนนความพึงพอใจ'} />
                     </View>
-                    <MaterialCommunityIcons name={'star'} size={14} color={color.primary} />
+                    <View>
+                        {STAR.map(val => <Star {...val} />)}
+                    </View>
                 </View>
             </ScrollView>
         </View>

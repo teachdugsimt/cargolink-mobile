@@ -107,5 +107,31 @@ export interface ShipperJobRequest {
   weight?: number
 }
 
+export interface ShipperJobCreate {
+  expiredTime: string
+  from: {
+    contactMobileNo: string
+    contactName: string
+    datetime: string
+    lat: string
+    lng: string
+    name: string
+  }
+  note: string
+  productName: string
+  productTypeId: number
+  to: {
+    contactMobileNo: string
+    contactName: string
+    datetime: string
+    lat: string
+    lng: string
+    name: string
+  }[]
+  truckAmount: number
+  truckType: string
+  weight: number
+}
+
 export type GetUsersResult = { kind: "ok"; users: User[] } | GeneralApiProblem
 export type GetUserResult = { kind: "ok"; user: User } | GeneralApiProblem
