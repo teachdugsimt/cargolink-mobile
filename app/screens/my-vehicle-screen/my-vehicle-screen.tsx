@@ -34,7 +34,7 @@ const TEXT_ADD: TextStyle = {
 export const MyVehicle = observer(function MyVehicle() {
   const navigation = useNavigation()
 
-  const onPress = (id: number) => {
+  const onPress = (id: string) => {
     MyVehicleStore.findOneRequest(id)
     navigation.navigate("vehicleDetail")
   }
@@ -69,7 +69,7 @@ export const MyVehicle = observer(function MyVehicle() {
         status={statusText}
         imageStyle={{ marginBottom: spacing[1] }}
         statusStyle={{ color: statusColor }}
-        onPress={() => onPress(parseInt(item.id))}
+        onPress={() => onPress(item.id)}
       />
     )
   }

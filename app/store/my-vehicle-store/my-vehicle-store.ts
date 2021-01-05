@@ -71,7 +71,7 @@ const MyVehicleStore = types
             }
         }),
 
-        findOneRequest: flow(function* findOneRequest(id: number) {
+        findOneRequest: flow(function* findOneRequest(id: string) {
             apiMyVehicle.setup()
             self.loading = true
             try {

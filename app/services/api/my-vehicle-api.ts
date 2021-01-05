@@ -65,7 +65,7 @@ export class MyVehicleAPI {
     }
   }
 
-  async findOne(id: number): Promise<any> {
+  async findOne(id: string): Promise<any> {
     try {
       const response: ApiResponse<any> = await this.apisauce.get(`api/v1/mobile/carriers/truck/${id}`)
 
@@ -81,41 +81,41 @@ export class MyVehicleAPI {
       return error
     }
   }
-
-  async update(id: number, data?: Types.VehicleRequest): Promise<any> {
-    try {
-      const response: ApiResponse<any> = await this.apisauce.patch(`api/v1/car/${id}`, data)
-
-      console.log("Response call api get user (MOCK) : ", response)
-      if (!response.ok) {
-        const problem = getGeneralApiProblem(response)
-        if (problem) return problem
+  /*
+    async update(id: string, data?: Types.VehicleRequest): Promise<any> {
+      try {
+        const response: ApiResponse<any> = await this.apisauce.put(`api/v1/mobile/carriers/truck/edit/${id}`, data)
+  
+        console.log("Response call api get user (MOCK) : ", response)
+        if (!response.ok) {
+          const problem = getGeneralApiProblem(response)
+          if (problem) return problem
+        }
+        return { kind: "ok", data: response.data }
+        // transform the data into the format we are expecting
+      } catch (error) {
+        console.log("Error call api get user (MOCK): ", error)
+        return error
       }
-      return { kind: "ok", data: response.data }
-      // transform the data into the format we are expecting
-    } catch (error) {
-      console.log("Error call api get user (MOCK): ", error)
-      return error
     }
-  }
-
-  async delete(id: number): Promise<any> {
-    try {
-      const response: ApiResponse<any> = await this.apisauce.delete(`api/v1/car/${id}`)
-
-      console.log("Response call api get user (MOCK) : ", response)
-      if (!response.ok) {
-        const problem = getGeneralApiProblem(response)
-        if (problem) return problem
+  
+    async delete(id: number): Promise<any> {
+      try {
+        const response: ApiResponse<any> = await this.apisauce.delete(`api/v1/mobile/carriers/truck/${id}`)
+  
+        console.log("Response call api get user (MOCK) : ", response)
+        if (!response.ok) {
+          const problem = getGeneralApiProblem(response)
+          if (problem) return problem
+        }
+        return { kind: "ok", data: response.data }
+        // transform the data into the format we are expecting
+      } catch (error) {
+        console.log("Error call api get user (MOCK): ", error)
+        return error
       }
-      return { kind: "ok", data: response.data }
-      // transform the data into the format we are expecting
-    } catch (error) {
-      console.log("Error call api get user (MOCK): ", error)
-      return error
     }
-  }
-
+  */
   async createVehicleProfile(params: any): Promise<any> {
     // make the api call
     try {
