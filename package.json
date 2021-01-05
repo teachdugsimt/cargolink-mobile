@@ -11,7 +11,7 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
-    "test": "jest --coverage --silent",
+    "test": "jest --coverage",
     "lint": "eslint index.js app storybook test --fix --ext .js,.ts,.tsx",
     "test:e2e": "detox test -c ios.sim.debug",
     "build:e2e": "detox build -c ios.sim.debug",

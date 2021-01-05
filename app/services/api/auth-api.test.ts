@@ -5,6 +5,44 @@ import { addMsg } from 'jest-html-reporters/helper'
 
 const { API_URL } = require("../../config/env")
 
+jest.mock('./api-problem', () => {
+    return {
+        getGeneralApiProblem: (response) => {
+            if (response.status === 503) {
+                throw {
+                    errorMessage: "ERROR_EXCEPTION"
+                }
+            }
+            switch (response.problem) {
+                case "CONNECTION_ERROR":
+                    return { kind: "cannot-connect", temporary: true }
+                case "NETWORK_ERROR":
+                    return { kind: "cannot-connect", temporary: true }
+                case "TIMEOUT_ERROR":
+                    return { kind: "timeout", temporary: true }
+                case "SERVER_ERROR":
+                    return { kind: "server" }
+                case "UNKNOWN_ERROR":
+                    return { kind: "unknown", temporary: true }
+                case "CLIENT_ERROR":
+                    switch (response.status) {
+                        case 401:
+                            return { kind: "unauthorized" }
+                        case 403:
+                            return { kind: "forbidden" }
+                        case 404:
+                            return { kind: "not-found" }
+                        default:
+                            return { kind: "rejected" }
+                    }
+                case "CANCEL_ERROR":
+                    return null
+            }
+            return null
+        }
+    }
+})
+
 const authAPI = new AuthAPI()
 authAPI.setup();
 
@@ -170,9 +208,28 @@ describe('Test Auth API', () => {
         // Test Functional
         const response = await authAPI.signIn(data);
 
-
         // Expected Result
         expect(response.kind).toEqual('server')
+    })
+
+    it('Should be return error when api throw error', async () => {
+        // Input
+        const data = {
+            phoneNumber: '0888888888',
+            userType: 4
+        }
+        await addMsg(JSON.stringify(data, null, 2))
+        // Expected Value
+
+        // Mocking Function
+        const mock = new MockAdapter(authAPI.apisauce.axiosInstance);
+        mock.onPost(`${API_URL}/api/v1/users/auth/otp-request`, data).replyOnce(503)
+
+        // Test Functional
+        const response = await authAPI.signIn(data);
+
+        // Expected Result
+        expect(response.errorMessage).toBeTruthy()
     })
 
 })
@@ -221,6 +278,28 @@ describe('Test Verify OTP API', () => {
         // Expected Result
         expect(response.kind).toEqual('ok')
         expect(response.data).toEqual(expectedValue);
+    })
+
+    it('Should be return message error when response code is not 1', async () => {
+        // Input
+        const data = initialData
+        await addMsg(JSON.stringify(data, null, 2))
+        // Expected Value
+        const expectedValue = {
+            message: 'OTP verify failured',
+            responseCode: 0,
+        }
+
+        // Mocking Function
+        const mock = new MockAdapter(authAPI.apisauce.axiosInstance);
+        mock.onPost(`${API_URL}/api/v1/users/auth/otp-verify`, data).reply(201, expectedValue);
+
+        // Test Functional
+        const response = await authAPI.verifyOTP(data);
+
+        // Expected Result
+        expect(response.kind).toEqual(0)
+        expect(response.data).toMatchObject(expectedValue);
     })
 
     it('Should be return NETWORK_ERROR and status 403 when auth failured', async () => {
@@ -315,6 +394,27 @@ describe('Test Verify OTP API', () => {
 
         // Expected Result
         expect(response.kind).toEqual('server')
+    })
+
+    it('Should be return error when api throw error', async () => {
+        // Input
+        const data = {
+            ...initialData,
+            otp: '4903'
+        }
+        await addMsg(JSON.stringify(data, null, 2))
+        // Expected Value
+
+        // Mocking Function
+        const mock = new MockAdapter(authAPI.apisauce.axiosInstance);
+        mock.onPost(`${API_URL}/api/v1/users/auth/otp-verify`, data).replyOnce(503)
+
+        // Test Functional
+        const response = await authAPI.verifyOTP(data);
+
+
+        // Expected Result
+        expect(response.errorMessage).toBeTruthy()
     })
 
 })
@@ -435,9 +535,28 @@ describe('Test Update Term of Service', () => {
         // Test Functional
         const response = await authAPI.updatePolicy(initialId, initialData);
 
-
         // Expected Result
         expect(response.kind).toEqual('server')
+    })
+
+    it('Should be return error when api throw error', async () => {
+        await addMsg(JSON.stringify({
+            id: initialId,
+            data: initialData,
+        }))
+        // Input
+
+        // Expected Value
+
+        // Mocking Function
+        const mock = new MockAdapter(authAPI.apisauce.axiosInstance);
+        mock.onPatch(`api/v1/users/${initialId}/term-of-service`).replyOnce(503)
+
+        // Test Functional
+        const response = await authAPI.updatePolicy(initialId, initialData);
+
+        // Expected Result
+        expect(response.errorMessage).toBeTruthy()
     })
 
 })

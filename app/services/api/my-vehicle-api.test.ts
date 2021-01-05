@@ -4,6 +4,44 @@ import MockAdapter from 'axios-mock-adapter'
 import { addMsg } from 'jest-html-reporters/helper'
 const { API_URL } = require("../../config/env")
 
+jest.mock('./api-problem', () => {
+    return {
+        getGeneralApiProblem: (response) => {
+            if (response.status === 503) {
+                throw {
+                    errorMessage: "ERROR_EXCEPTION"
+                }
+            }
+            switch (response.problem) {
+                case "CONNECTION_ERROR":
+                    return { kind: "cannot-connect", temporary: true }
+                case "NETWORK_ERROR":
+                    return { kind: "cannot-connect", temporary: true }
+                case "TIMEOUT_ERROR":
+                    return { kind: "timeout", temporary: true }
+                case "SERVER_ERROR":
+                    return { kind: "server" }
+                case "UNKNOWN_ERROR":
+                    return { kind: "unknown", temporary: true }
+                case "CLIENT_ERROR":
+                    switch (response.status) {
+                        case 401:
+                            return { kind: "unauthorized" }
+                        case 403:
+                            return { kind: "forbidden" }
+                        case 404:
+                            return { kind: "not-found" }
+                        default:
+                            return { kind: "rejected" }
+                    }
+                case "CANCEL_ERROR":
+                    return null
+            }
+            return null
+        }
+    }
+})
+
 const myVehicleAPI = new MyVehicleAPI()
 myVehicleAPI.setup();
 myVehicleAPI.apisauce.headers.Authorization = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2MTEiLCJBVVRIIjpbeyJhdXRob3JpdHkiOiJSRVNFVF9QV0QifSx7ImF1dGhvcml0eSI6IlZJRVdfVkVISUNMRSJ9LHsiYXV0aG9yaXR5IjoiQUREX09SREVSIn0seyJhdXRob3JpdHkiOiJMSVNUX1RSSVAifSx7ImF1dGhvcml0eSI6IlJFR19BQ0MifSx7ImF1dGhvcml0eSI6Ik1PRElGWV9EUklWRVIifSx7ImF1dGhvcml0eSI6IlJPTEVfU0hJUFBFUiJ9LHsiYXV0aG9yaXR5IjoiTU9ESUZZX1JPVVRFIn0seyJhdXRob3JpdHkiOiJTT0ZUX0RFTEVURV9WRUhJQ0xFIn0seyJhdXRob3JpdHkiOiJTT0ZUX0RFTEVURV9ST1VURSJ9LHsiYXV0aG9yaXR5IjoiUk9MRV9DQVJSSUVSIn0seyJhdXRob3JpdHkiOiJDT05GSVJNX09SREVSIn0seyJhdXRob3JpdHkiOiJNT0RJRllfSU5GTyJ9LHsiYXV0aG9yaXR5IjoiU09GVF9ERUxFVEVfT1JERVIifSx7ImF1dGhvcml0eSI6IlNJR05PVVQifSx7ImF1dGhvcml0eSI6IlJFUExZX09SREVSIn0seyJhdXRob3JpdHkiOiJSRVBPUlRfVFJBTlMifSx7ImF1dGhvcml0eSI6IlZFUklGWV9DT05UQUNUIn0seyJhdXRob3JpdHkiOiJBRERfVFJJUCJ9LHsiYXV0aG9yaXR5IjoiTElTVF9WRUhJQ0xFIn0seyJhdXRob3JpdHkiOiJVUERBVEVfUFJPRklMRSJ9LHsiYXV0aG9yaXR5IjoiTElTVF9EUklWRVIifSx7ImF1dGhvcml0eSI6IkFERF9EUklWRVIifSx7ImF1dGhvcml0eSI6IkNIQU5HRV9QV0QifSx7ImF1dGhvcml0eSI6IkRFVEFJTF9UUkFOUyJ9LHsiYXV0aG9yaXR5IjoiTU9ESUZZX09SREVSIn0seyJhdXRob3JpdHkiOiJTSUdOSU4ifSx7ImF1dGhvcml0eSI6IlNPRlRfREVMRVRFX0RSSVZFUiJ9LHsiYXV0aG9yaXR5IjoiTU9ESUZZX1ZFSElDTEUifSx7ImF1dGhvcml0eSI6IlVQTE9BRF9ET0NTIn0seyJhdXRob3JpdHkiOiJBRERfVFJBTlMifSx7ImF1dGhvcml0eSI6IkFERF9WRUhJQ0xFIn0seyJhdXRob3JpdHkiOiJBU1NJR05fVkVISUNMRV9EUklWRVIifSx7ImF1dGhvcml0eSI6IkxJU1RfT1JERVIifSx7ImF1dGhvcml0eSI6IkFERF9ST1VURSJ9XSwiZXhwIjoxNjA5ODU5Nzg2fQ.BN1DOtl8nSKEIUYQZNjccxpGk3Fr595b9UxVT9F8GuImm2nG9wvTfeIscEF44wfD3N3upu335rbT8wR1xZ9HVg'
@@ -351,6 +389,23 @@ describe('Test API Failured', () => {
             mock.resetHistory();
         })
 
+        it('Should be return error when api throw error', async () => {
+            await addMsg(JSON.stringify(initialData, null, 2))
+            // Expected Value
+
+            // Mocking Function
+            const mock = new MockAdapter(myVehicleAPI.apisauce.axiosInstance);
+            mock.onPost(`${API_URL}/api/v1/mobile/carriers/truck`, initialData).replyOnce(503)
+
+            // Test Functional
+            const response = await myVehicleAPI.createVehicleProfile(initialData);
+
+
+            // Expected Result
+            expect(response.errorMessage).toBeTruthy()
+            mock.resetHistory();
+        })
+
     })
 
     describe('Test Find All Vehicle API', () => {
@@ -443,6 +498,25 @@ describe('Test API Failured', () => {
             mock.resetHistory();
         })
 
+        it('Should be return error when api throw error', async () => {
+            // Input
+            const filter = initialFilter
+            await addMsg(JSON.stringify(filter, null, 2))
+            // Expected Value
+
+            // Mocking Function
+            const mock = new MockAdapter(myVehicleAPI.apisauce.axiosInstance);
+            mock.onGet(`${API_URL}/api/v1/mobile/carriers/truck`, filter).replyOnce(503)
+
+            // Test Functional
+            const response = await myVehicleAPI.find(filter);
+
+
+            // Expected Result
+            expect(response.errorMessage).toBeTruthy()
+            mock.resetHistory();
+        })
+
     })
 
     describe('Test Find One Vehicle API', () => {
@@ -528,6 +602,24 @@ describe('Test API Failured', () => {
 
             // Expected Result
             expect(response.kind).toEqual('server')
+            mock.resetHistory();
+        })
+
+        it('Should be return error when api throw error', async () => {
+            // Input
+            await addMsg(JSON.stringify({ id: initialId }, null, 2))
+            // Expected Value
+
+            // Mocking Function
+            const mock = new MockAdapter(myVehicleAPI.apisauce.axiosInstance);
+            mock.onGet(`${API_URL}/api/v1/mobile/carriers/truck/${initialId}`).replyOnce(503)
+
+            // Test Functional
+            const response = await myVehicleAPI.findOne(initialId);
+
+
+            // Expected Result
+            expect(response.errorMessage).toBeTruthy()
             mock.resetHistory();
         })
 
@@ -618,6 +710,22 @@ describe('Test API Failured', () => {
 
             // Expected Result
             expect(response.kind).toEqual('server')
+            mock.resetHistory();
+        })
+
+        it('Should be return error when api throw error', async () => {
+            await addMsg(JSON.stringify(data, null, 2))
+            // Expected Value
+
+            // Mocking Function
+            const mock = new MockAdapter(myVehicleAPI.apisauce.axiosInstance);
+            mock.onPut(`${API_URL}/api/v1/mobile/carriers/truck/edit/${initialId}`, data).replyOnce(503)
+
+            // Test Functional
+            const response = await myVehicleAPI.patchMyVehicle(data);
+
+            // Expected Result
+            expect(response.errorMessage).toBeTruthy()
             mock.resetHistory();
         })
 
