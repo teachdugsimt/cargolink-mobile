@@ -247,16 +247,33 @@ export const ProfileScreen = observer(function ProfileScreen() {
                         <Pie
                             radius={80}
                             innerRadius={60}
-                            sections={chart_work_zone}
+                            sections={[
+                                {
+                                    percentage: 10,
+                                    color: '#C70039',
+                                },
+                                {
+                                    percentage: 20,
+                                    color: '#44CD40',
+                                },
+                                {
+                                    percentage: 30,
+                                    color: '#404FCD',
+                                },
+                                {
+                                    percentage: 40,
+                                    color: '#EBD22F',
+                                },
+                            ]}
                             dividerSize={6}
                             strokeCap={'butt'}
                         />
                         <View style={MARGIN_TOP20}>
                             {chart_work_zone.map((e, i) => {
-                                return <View style={VIEW_LABEL_PURE}>
-                                    <View style={{ ...VIEW_LABEL_COLOR, backgroundColor: e.color }} >
+                                return <View key={'work-zone-view-' + i} style={VIEW_LABEL_PURE}>
+                                    <View key={'work-zone-view2-' + i} style={{ ...VIEW_LABEL_COLOR, backgroundColor: e.color }} >
                                     </View>
-                                    <Text tx={`common.${e.name}`}></Text>
+                                    <Text key={'work-zone-text-' + i} tx={`common.${e.name}`}></Text>
                                 </View>
                             })}
                         </View>
@@ -279,7 +296,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
                             {province_mock.map((e, i) => {
                                 return (
-                                    <View style={{ borderBottomColor: color.line, borderBottomWidth: 1, padding: 5 }}>
+                                    <View key={"view-map-province-" + i} style={{ borderBottomColor: color.line, borderBottomWidth: 1, padding: 5 }}>
                                         <Text>{(i + 1) + ". " + e}</Text>
                                     </View>
                                 )

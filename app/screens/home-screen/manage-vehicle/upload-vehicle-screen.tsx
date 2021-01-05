@@ -22,6 +22,7 @@ import { useNavigation } from "@react-navigation/native"
 import MyVehicleStore from '../../../store/my-vehicle-store/my-vehicle-store'
 import StatusStore from '../../../store/my-vehicle-store/status-vehicle-store'
 import UploadFileStore from '../../../store/my-vehicle-store/upload-file-store'
+import TruckTypeStore from '../../../store/my-vehicle-store/truck-type-store'
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -133,6 +134,10 @@ export const UploadVehicleScreen = observer((props) => {
 
 
   useEffect(() => {
+
+    TruckTypeStore.getTruckTypeDropdown('th')
+
+
     let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
     if (editStatus && editStatus == "edit") {
       navigation.setOptions({
@@ -142,6 +147,13 @@ export const UploadVehicleScreen = observer((props) => {
       });
     }
   }, [])
+
+  // useEffect(() => {
+  //   let data = JSON.parse(JSON.stringify(TruckTypeStore.data))
+  //   if (data && data.length) {
+  //     console.log("data get truck type :: => ", data)
+  //   }
+  // }, [TruckTypeStore.data])
 
 
 
