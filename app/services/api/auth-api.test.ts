@@ -1,6 +1,8 @@
 import { AuthAPI } from '.'
 // import { makeServer } from './server';
 import MockAdapter from 'axios-mock-adapter'
+import { addMsg } from 'jest-html-reporters/helper'
+
 const { API_URL } = require("../../config/env")
 
 const authAPI = new AuthAPI()
@@ -33,7 +35,7 @@ describe('Test Auth API', () => {
             phoneNumber: '0888888888',
             userType: 7
         }
-
+        await addMsg(JSON.stringify(data, null, 2))
         // Test Functional
         const response = await authAPI.signIn(data);
 
@@ -55,7 +57,7 @@ describe('Test Auth API', () => {
             phoneNumber: '0888888888',
             userType: 0
         }
-
+        await addMsg(JSON.stringify(data, null, 2))
         // Test Functional
         const response = await authAPI.signIn(data);
         console.log('response', JSON.stringify(response))
@@ -70,7 +72,7 @@ describe('Test Auth API', () => {
             phoneNumber: '088888888',
             userType: 7
         }
-
+        await addMsg(JSON.stringify(data, null, 2))
         // Test Functional
         const response = await authAPI.signIn(data);
         console.log('response', JSON.stringify(response))
@@ -85,7 +87,7 @@ describe('Test Auth API', () => {
             phoneNumber: '0888888888',
             userType: 4
         }
-
+        await addMsg(JSON.stringify(data, null, 2))
         // Expected Value
 
         // Mocking Function
@@ -116,7 +118,7 @@ describe('Test Auth API', () => {
             phoneNumber: '0888888888',
             userType: 4
         }
-
+        await addMsg(JSON.stringify(data, null, 2))
         // Expected Value
 
         // Mocking Function
@@ -136,7 +138,7 @@ describe('Test Auth API', () => {
             phoneNumber: '0888888888',
             userType: 4
         }
-
+        await addMsg(JSON.stringify(data, null, 2))
         // Expected Value
 
         // Mocking Function
@@ -156,7 +158,7 @@ describe('Test Auth API', () => {
             phoneNumber: '0888888888',
             userType: 4
         }
-
+        await addMsg(JSON.stringify(data, null, 2))
         // Expected Value
 
         // Mocking Function
@@ -184,7 +186,7 @@ describe('Test Verify OTP API', () => {
     it('Should be return user profile and token when verify otp success', async () => {
         // Input
         const data = initialData
-
+        await addMsg(JSON.stringify(data, null, 2))
         // Expected Value
         const expectedValue = {
             message: '',
@@ -227,7 +229,7 @@ describe('Test Verify OTP API', () => {
             ...initialData,
             otp: '4569'
         }
-
+        await addMsg(JSON.stringify(data, null, 2))
         // Expected Value
 
         // Mocking Function
@@ -258,7 +260,7 @@ describe('Test Verify OTP API', () => {
             ...initialData,
             otp: '3378'
         }
-
+        await addMsg(JSON.stringify(data, null, 2))
         // Expected Value
 
         // Mocking Function
@@ -278,7 +280,7 @@ describe('Test Verify OTP API', () => {
             ...initialData,
             otp: '0876'
         }
-
+        await addMsg(JSON.stringify(data, null, 2))
         // Expected Value
 
         // Mocking Function
@@ -298,7 +300,7 @@ describe('Test Verify OTP API', () => {
             ...initialData,
             otp: '4903'
         }
-
+        await addMsg(JSON.stringify(data, null, 2))
         // Expected Value
 
         // Mocking Function
@@ -325,7 +327,10 @@ describe('Test Update Term of Service', () => {
 
     it('Should be return update success when update policy of user success', async () => {
         // Input
-
+        await addMsg(JSON.stringify({
+            id: initialId,
+            data: initialData,
+        }))
         // Expected Value
         const expectedValue = {}
 
@@ -342,6 +347,10 @@ describe('Test Update Term of Service', () => {
     })
 
     it('Should be return NETWORK_ERROR and status 403 when auth failured', async () => {
+        await addMsg(JSON.stringify({
+            id: initialId,
+            data: initialData,
+        }))
         // Input
 
         // Expected Value
@@ -369,6 +378,10 @@ describe('Test Update Term of Service', () => {
     })
 
     it('Should be return TIMEOUT_ERROR when auth failured', async () => {
+        await addMsg(JSON.stringify({
+            id: initialId,
+            data: initialData,
+        }))
         // Input
 
         // Expected Value
@@ -385,6 +398,10 @@ describe('Test Update Term of Service', () => {
     })
 
     it('Should be return NETWORK_ERROR and kind = cannot-connect when auth failured', async () => {
+        await addMsg(JSON.stringify({
+            id: initialId,
+            data: initialData,
+        }))
         // Input
 
         // Expected Value
@@ -401,6 +418,10 @@ describe('Test Update Term of Service', () => {
     })
 
     it('Should be return SERVER_ERROR when api reject', async () => {
+        await addMsg(JSON.stringify({
+            id: initialId,
+            data: initialData,
+        }))
         // Input
 
         // Expected Value

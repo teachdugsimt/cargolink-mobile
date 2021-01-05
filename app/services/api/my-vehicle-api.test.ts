@@ -1,11 +1,12 @@
 import { MyVehicleAPI } from '.'
 import { makeServer } from './server';
 import MockAdapter from 'axios-mock-adapter'
+import { addMsg } from 'jest-html-reporters/helper'
 const { API_URL } = require("../../config/env")
 
 const myVehicleAPI = new MyVehicleAPI()
 myVehicleAPI.setup();
-myVehicleAPI.apisauce.headers.Authorization = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2MTEiLCJBVVRIIjpbeyJhdXRob3JpdHkiOiJSRVNFVF9QV0QifSx7ImF1dGhvcml0eSI6IlZJRVdfVkVISUNMRSJ9LHsiYXV0aG9yaXR5IjoiQUREX09SREVSIn0seyJhdXRob3JpdHkiOiJMSVNUX1RSSVAifSx7ImF1dGhvcml0eSI6IlJFR19BQ0MifSx7ImF1dGhvcml0eSI6Ik1PRElGWV9EUklWRVIifSx7ImF1dGhvcml0eSI6IlJPTEVfU0hJUFBFUiJ9LHsiYXV0aG9yaXR5IjoiTU9ESUZZX1JPVVRFIn0seyJhdXRob3JpdHkiOiJTT0ZUX0RFTEVURV9WRUhJQ0xFIn0seyJhdXRob3JpdHkiOiJTT0ZUX0RFTEVURV9ST1VURSJ9LHsiYXV0aG9yaXR5IjoiUk9MRV9DQVJSSUVSIn0seyJhdXRob3JpdHkiOiJDT05GSVJNX09SREVSIn0seyJhdXRob3JpdHkiOiJNT0RJRllfSU5GTyJ9LHsiYXV0aG9yaXR5IjoiU09GVF9ERUxFVEVfT1JERVIifSx7ImF1dGhvcml0eSI6IlNJR05PVVQifSx7ImF1dGhvcml0eSI6IlJFUExZX09SREVSIn0seyJhdXRob3JpdHkiOiJSRVBPUlRfVFJBTlMifSx7ImF1dGhvcml0eSI6IlZFUklGWV9DT05UQUNUIn0seyJhdXRob3JpdHkiOiJBRERfVFJJUCJ9LHsiYXV0aG9yaXR5IjoiTElTVF9WRUhJQ0xFIn0seyJhdXRob3JpdHkiOiJVUERBVEVfUFJPRklMRSJ9LHsiYXV0aG9yaXR5IjoiTElTVF9EUklWRVIifSx7ImF1dGhvcml0eSI6IkFERF9EUklWRVIifSx7ImF1dGhvcml0eSI6IkNIQU5HRV9QV0QifSx7ImF1dGhvcml0eSI6IkRFVEFJTF9UUkFOUyJ9LHsiYXV0aG9yaXR5IjoiTU9ESUZZX09SREVSIn0seyJhdXRob3JpdHkiOiJTSUdOSU4ifSx7ImF1dGhvcml0eSI6IlNPRlRfREVMRVRFX0RSSVZFUiJ9LHsiYXV0aG9yaXR5IjoiTU9ESUZZX1ZFSElDTEUifSx7ImF1dGhvcml0eSI6IlVQTE9BRF9ET0NTIn0seyJhdXRob3JpdHkiOiJBRERfVFJBTlMifSx7ImF1dGhvcml0eSI6IkFERF9WRUhJQ0xFIn0seyJhdXRob3JpdHkiOiJBU1NJR05fVkVISUNMRV9EUklWRVIifSx7ImF1dGhvcml0eSI6IkxJU1RfT1JERVIifSx7ImF1dGhvcml0eSI6IkFERF9ST1VURSJ9XSwiZXhwIjoxNjA5Nzc4NTYxfQ.XYumdCdHysJq8hWnxYllveKCJbw1hjfvu5RJKozsbW3sBk9IzRIVml4PpvymbTNN9h7EHyLGWbJr8WP83OqXug'
+myVehicleAPI.apisauce.headers.Authorization = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2MTEiLCJBVVRIIjpbeyJhdXRob3JpdHkiOiJSRVNFVF9QV0QifSx7ImF1dGhvcml0eSI6IlZJRVdfVkVISUNMRSJ9LHsiYXV0aG9yaXR5IjoiQUREX09SREVSIn0seyJhdXRob3JpdHkiOiJMSVNUX1RSSVAifSx7ImF1dGhvcml0eSI6IlJFR19BQ0MifSx7ImF1dGhvcml0eSI6Ik1PRElGWV9EUklWRVIifSx7ImF1dGhvcml0eSI6IlJPTEVfU0hJUFBFUiJ9LHsiYXV0aG9yaXR5IjoiTU9ESUZZX1JPVVRFIn0seyJhdXRob3JpdHkiOiJTT0ZUX0RFTEVURV9WRUhJQ0xFIn0seyJhdXRob3JpdHkiOiJTT0ZUX0RFTEVURV9ST1VURSJ9LHsiYXV0aG9yaXR5IjoiUk9MRV9DQVJSSUVSIn0seyJhdXRob3JpdHkiOiJDT05GSVJNX09SREVSIn0seyJhdXRob3JpdHkiOiJNT0RJRllfSU5GTyJ9LHsiYXV0aG9yaXR5IjoiU09GVF9ERUxFVEVfT1JERVIifSx7ImF1dGhvcml0eSI6IlNJR05PVVQifSx7ImF1dGhvcml0eSI6IlJFUExZX09SREVSIn0seyJhdXRob3JpdHkiOiJSRVBPUlRfVFJBTlMifSx7ImF1dGhvcml0eSI6IlZFUklGWV9DT05UQUNUIn0seyJhdXRob3JpdHkiOiJBRERfVFJJUCJ9LHsiYXV0aG9yaXR5IjoiTElTVF9WRUhJQ0xFIn0seyJhdXRob3JpdHkiOiJVUERBVEVfUFJPRklMRSJ9LHsiYXV0aG9yaXR5IjoiTElTVF9EUklWRVIifSx7ImF1dGhvcml0eSI6IkFERF9EUklWRVIifSx7ImF1dGhvcml0eSI6IkNIQU5HRV9QV0QifSx7ImF1dGhvcml0eSI6IkRFVEFJTF9UUkFOUyJ9LHsiYXV0aG9yaXR5IjoiTU9ESUZZX09SREVSIn0seyJhdXRob3JpdHkiOiJTSUdOSU4ifSx7ImF1dGhvcml0eSI6IlNPRlRfREVMRVRFX0RSSVZFUiJ9LHsiYXV0aG9yaXR5IjoiTU9ESUZZX1ZFSElDTEUifSx7ImF1dGhvcml0eSI6IlVQTE9BRF9ET0NTIn0seyJhdXRob3JpdHkiOiJBRERfVFJBTlMifSx7ImF1dGhvcml0eSI6IkFERF9WRUhJQ0xFIn0seyJhdXRob3JpdHkiOiJBU1NJR05fVkVISUNMRV9EUklWRVIifSx7ImF1dGhvcml0eSI6IkxJU1RfT1JERVIifSx7ImF1dGhvcml0eSI6IkFERF9ST1VURSJ9XSwiZXhwIjoxNjA5ODU5Nzg2fQ.BN1DOtl8nSKEIUYQZNjccxpGk3Fr595b9UxVT9F8GuImm2nG9wvTfeIscEF44wfD3N3upu335rbT8wR1xZ9HVg'
 /*
 let server;
 
@@ -49,7 +50,7 @@ beforeAll(async () => {
 })
 
 describe('Test API Success', () => {
-    it('Should be return all my vehicle when find all data success', async (done) => {
+    it('Should be return data of truck when create data success', async (done) => {
         const data = {
             carrierId: Math.floor(Math.random() * 10000),
             loadingWeight: 20,
@@ -73,6 +74,7 @@ describe('Test API Success', () => {
                 }
             ]
         }
+        await addMsg(JSON.stringify(data, null, 2))
 
         // Test Functional
         const response = await myVehicleAPI.createVehicleProfile(data);
@@ -132,14 +134,8 @@ describe('Test API Success', () => {
 
     it('Should be return all my vehicle when find all data success', async (done) => {
         // Input
-        const filter = {
-            filter: {
-                where: {
-                    from: 'south',
-                    to: 'east'
-                }
-            }
-        }
+        const filter = {}
+        await addMsg(JSON.stringify(filter, null, 2))
 
         // Test Functional
         const response = await myVehicleAPI.find(filter);
@@ -154,7 +150,7 @@ describe('Test API Success', () => {
 
     it(`Should be return data of truck when find one success`, async (done) => {
         // Input
-
+        await addMsg(JSON.stringify({ id: truckId }, null, 2))
         // Expected Value
         const expectedValue = {
             id: truckId,
@@ -222,6 +218,7 @@ describe('Test API Success', () => {
             stallHeight: initialData.stallHeight,
             loadingWeight: 3.2,
         }
+        await addMsg(JSON.stringify(data, null, 2))
         // Expected Value
 
         // Test Functional
@@ -243,6 +240,7 @@ describe('Test API Failured', () => {
             // Test Functional
             const data = JSON.parse(JSON.stringify(initialData))
             delete data.stallHeight
+            await addMsg(JSON.stringify(data, null, 2))
 
             const response = await myVehicleAPI.createVehicleProfile(data);
 
@@ -254,6 +252,7 @@ describe('Test API Failured', () => {
             // Test Functional
             const data = JSON.parse(JSON.stringify(initialData))
             delete data.loadingWeight
+            await addMsg(JSON.stringify(data, null, 2))
 
             const response = await myVehicleAPI.createVehicleProfile(data);
 
@@ -265,6 +264,7 @@ describe('Test API Failured', () => {
             // Test Functional
             const data = JSON.parse(JSON.stringify(initialData))
             delete data.truckType
+            await addMsg(JSON.stringify(data, null, 2))
 
             const response = await myVehicleAPI.createVehicleProfile(data);
 
@@ -273,7 +273,7 @@ describe('Test API Failured', () => {
         })
 
         it('Should be return NETWORK_ERROR and status 403 when auth failured', async () => {
-
+            await addMsg(JSON.stringify(initialData, null, 2))
             // Expected Value
 
             // Mocking Function
@@ -301,7 +301,7 @@ describe('Test API Failured', () => {
         })
 
         it('Should be return TIMEOUT_ERROR when auth failured', async () => {
-
+            await addMsg(JSON.stringify(initialData, null, 2))
             // Expected Value
 
             // Mocking Function
@@ -317,7 +317,7 @@ describe('Test API Failured', () => {
         })
 
         it('Should be return NETWORK_ERROR and kind = cannot-connect when auth failured', async () => {
-
+            await addMsg(JSON.stringify(initialData, null, 2))
             // Expected Value
 
             // Mocking Function
@@ -333,7 +333,7 @@ describe('Test API Failured', () => {
         })
 
         it('Should be return SERVER_ERROR when api reject', async () => {
-
+            await addMsg(JSON.stringify(initialData, null, 2))
             // Expected Value
 
             // Mocking Function
@@ -354,19 +354,12 @@ describe('Test API Failured', () => {
     })
 
     describe('Test Find All Vehicle API', () => {
-        const initialFilter = {
-            filter: {
-                where: {
-                    from: 'south',
-                    to: 'east'
-                }
-            }
-        }
+        const initialFilter = {}
 
         it('Should be return NETWORK_ERROR and status 403 when auth failured', async () => {
             // Input
             const filter = initialFilter
-
+            await addMsg(JSON.stringify(filter, null, 2))
             // Expected Value
 
             // Mocking Function
@@ -396,7 +389,7 @@ describe('Test API Failured', () => {
         it('Should be return TIMEOUT_ERROR when auth failured', async () => {
             // Input
             const filter = initialFilter
-
+            await addMsg(JSON.stringify(filter, null, 2))
             // Expected Value
 
             // Mocking Function
@@ -414,7 +407,7 @@ describe('Test API Failured', () => {
         it('Should be return NETWORK_ERROR and kind = cannot-connect when auth failured', async () => {
             // Input
             const filter = initialFilter
-
+            await addMsg(JSON.stringify(filter, null, 2))
             // Expected Value
 
             // Mocking Function
@@ -432,7 +425,7 @@ describe('Test API Failured', () => {
         it('Should be return SERVER_ERROR when api reject', async () => {
             // Input
             const filter = initialFilter
-
+            await addMsg(JSON.stringify(filter, null, 2))
             // Expected Value
 
             // Mocking Function
@@ -457,7 +450,7 @@ describe('Test API Failured', () => {
 
         it('Should be return NETWORK_ERROR and status 403 when auth failured', async () => {
             // Input
-
+            await addMsg(JSON.stringify({ id: initialId }, null, 2))
             // Expected Value
 
             // Mocking Function
@@ -486,7 +479,7 @@ describe('Test API Failured', () => {
 
         it('Should be return TIMEOUT_ERROR when auth failured', async () => {
             // Input
-
+            await addMsg(JSON.stringify({ id: initialId }, null, 2))
             // Expected Value
 
             // Mocking Function
@@ -503,7 +496,7 @@ describe('Test API Failured', () => {
 
         it('Should be return NETWORK_ERROR and kind = cannot-connect when auth failured', async () => {
             // Input
-
+            await addMsg(JSON.stringify({ id: initialId }, null, 2))
             // Expected Value
 
             // Mocking Function
@@ -520,7 +513,7 @@ describe('Test API Failured', () => {
 
         it('Should be return SERVER_ERROR when api reject', async () => {
             // Input
-
+            await addMsg(JSON.stringify({ id: initialId }, null, 2))
             // Expected Value
 
             // Mocking Function
@@ -552,7 +545,7 @@ describe('Test API Failured', () => {
 
 
         it('Should be return NETWORK_ERROR and status 403 when auth failured', async () => {
-
+            await addMsg(JSON.stringify(data, null, 2))
             // Expected Value
 
             // Mocking Function
@@ -580,7 +573,7 @@ describe('Test API Failured', () => {
         })
 
         it('Should be return TIMEOUT_ERROR when auth failured', async () => {
-
+            await addMsg(JSON.stringify(data, null, 2))
             // Expected Value
 
             // Mocking Function
@@ -595,7 +588,7 @@ describe('Test API Failured', () => {
         })
 
         it('Should be return NETWORK_ERROR and kind = cannot-connect when auth failured', async () => {
-
+            await addMsg(JSON.stringify(data, null, 2))
             // Expected Value
 
             // Mocking Function
@@ -611,7 +604,7 @@ describe('Test API Failured', () => {
         })
 
         it('Should be return SERVER_ERROR when api reject', async () => {
-
+            await addMsg(JSON.stringify(data, null, 2))
             // Expected Value
 
             // Mocking Function
