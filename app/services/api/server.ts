@@ -158,10 +158,11 @@ export function makeServer({ environment = 'development' } = {}) {
             this.get(`${API_URL}api/v1/mobile/carriers/truck/truck-type`, (params, request) => {
                 console.log("Params call truck type API :: ", params)
                 console.log("Request truck type api :: ", request)
-                // if (request.queryParams && request.queryParams[0] && request.queryParams[0] == "en")
-                //     return truckTypeEn
-                // else return truckTypeTh
-                return truckTypeTh
+                console.log("Request truck type api 22 :: ", request.queryParams[0])
+                if (request.queryParams && request.queryParams[0] && request.queryParams[0] == "en")
+                    return truckTypeEn
+                else return truckTypeTh
+                // return truckTypeTh
             })
         },
     })

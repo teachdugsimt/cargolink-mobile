@@ -1,7 +1,7 @@
 export default [
     {
         registrationNumber: ["กข - 11245", "ดค - 90190"], // registration_vehicle
-        car_type: "รถบรรทุกของเหลว 6 ล้อ",
+        car_type: 13,
         createdAt: "01/01/62", // from
         updatedAt: "01/01/63", // to
         approveStatus: "APPROVE", // status
@@ -30,7 +30,7 @@ export default [
     },
     {
         registrationNumber: ["จก - 44324"],
-        car_type: "รถกระบะ 4 ล้อคอกสูง",
+        car_type: 17,
         createdAt: "19/05/62",
         updatedAt: "19/05/63",
         approveStatus: "APPROVE",
@@ -55,7 +55,7 @@ export default [
     },
     {
         registrationNumber: ["ภจ - 23455"],
-        car_type: "รถกระบะห้องเย็น 4 ล้อตู้ทึบ",
+        car_type: 21,
         createdAt: "17/04/62",
         updatedAt: "17/04/63",
         approveStatus: "PEDING",
@@ -80,7 +80,7 @@ export default [
     },
     {
         registrationNumber: ["กง - 66631"],
-        car_type: "รถพ่วงคอก 40 ฟุต",
+        car_type: 13,
         createdAt: "05/05/62",
         updatedAt: "05/05/63",
         approveStatus: "APPROVE",
@@ -105,7 +105,7 @@ export default [
     },
     {
         registrationNumber: ["ปข - 14145"],
-        car_type: "รถกระบะ 4 ล้อหลังคาสูงทึบ",
+        car_type: 17,
         createdAt: "29/10/62",
         updatedAt: "29/10/63",
         approveStatus: "PEDING",
@@ -130,7 +130,7 @@ export default [
     },
     {
         registrationNumber: ["ดค - 33531"],
-        car_type: "รถกระบะ 4 ล้อพื้นเรียบ",
+        car_type: 21,
         createdAt: "10/03/62",
         updatedAt: "10/03/63",
         approveStatus: "PENDING",
@@ -155,7 +155,7 @@ export default [
     },
     {
         registrationNumber: ["ตห - 90087"],
-        car_type: "รถ 6 ล้อตู้คอก",
+        car_type: 21,
         createdAt: "03/07/62",
         updatedAt: "03/07/63",
         approveStatus: "PEDING",
@@ -180,7 +180,7 @@ export default [
     },
     {
         registrationNumber: ["หม - 44778"],
-        car_type: "รถ 6 ล้อ ตู้ทึบ",
+        car_type: 21,
         createdAt: "31/10/62",
         updatedAt: "31/10/63",
         approveStatus: "APPROVE",

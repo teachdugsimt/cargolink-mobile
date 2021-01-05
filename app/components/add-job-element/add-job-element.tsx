@@ -5,9 +5,10 @@ import { Text } from '../text/text'
 
 const { width, height } = Dimensions.get('window')
 const ROOT_TEXT_STYLE: TextStyle = {
-    fontFamily: 'Kanit-SemiBold',
-    fontSize: typography.content,
-    alignSelf: 'center',
+    paddingTop: 5,
+    // fontSize: 10,
+    // overflow: 'hidden'
+    // flexWrap: 'wrap'
 }
 
 const ROOT_VIEW: ViewStyle = {
@@ -16,7 +17,7 @@ const ROOT_VIEW: ViewStyle = {
     justifyContent: 'center',
 }
 
-const SLOT_STYLE: ViewStyle = { flexDirection: 'row' }
+const SLOT_STYLE: ViewStyle = { flexDirection: 'row', height: 51 }
 const DETAIL_VIEW: ViewStyle = { justifyContent: 'center' }
 const SEQUENCE_TEXT: TextStyle = { fontFamily: 'Kanit-Regular', fontSize: typography.mainTitle, color: color.textWhite }
 const CIRCLE_STYLE: ViewStyle = {
@@ -36,40 +37,204 @@ const CIRCLE_GREEN_STYLE: ViewStyle = {
 }
 const WRAP_LINE: ViewStyle = {
     justifyContent: 'center',
+    // width: (width / 4) - 40,
+    width: 60
+
+    // position: 'absolute',
 }
 const LINE_STYLE: ViewStyle = {
-    width: (width / 4) - 60,
+    // width: (width / 4) - 60,
+    width: 40,
     height: 2,
     borderTopColor: color.lightWeightGrey,
     backgroundColor: color.lightWeightGrey,
     borderTopWidth: 2,
     marginHorizontal: 10,
-    marginTop: -15
+    marginTop: 0
 }
+
+const VIEW_TEXT_STATUS: ViewStyle = {
+    width: width / 4
+}
+
+// export const AddJobElement = (props: any) => {
+
+//     const { tx, data } = props
+
+//     return (
+//         <View style={ROOT_VIEW}>
+//             {data.map((e, i) => {
+//                 return (
+//                     <View style={{ paddingTop: 10 }}>
+//                         <View style={SLOT_STYLE}>
+//                             <View style={DETAIL_VIEW}>
+//                                 <View style={e.active ? CIRCLE_GREEN_STYLE : CIRCLE_STYLE}>
+//                                     <Text style={SEQUENCE_TEXT}>{e.no}</Text>
+//                                 </View>
+//                                 {/* <Text tx={e.name} style={[ROOT_TEXT_STYLE, { color: e.active ? color.success : color.textWhite }]} /> */}
+
+//                             </View>
+
+//                             {i != data.length - 1 && <View style={WRAP_LINE}><View style={LINE_STYLE}></View>
+//                             </View>}
+//                         </View>
+
+//                         <Text style={[ROOT_TEXT_STYLE, { color: e.active ? color.success : color.textWhite }]} tx={e.name} />
+//                     </View>
+//                 )
+//             })}
+//         </View>
+//     )
+// }
+
+
+
+
+
+
+
+
+
+
 
 export const AddJobElement = (props: any) => {
 
     const { tx, data } = props
+    const _renderCircle = (no, active) => {
+        return <View style={active ? CIRCLE_GREEN_STYLE : CIRCLE_STYLE}>
+            <Text style={SEQUENCE_TEXT}>{no}</Text>
+        </View>
+    }
 
     return (
-        <View style={ROOT_VIEW}>
-            {data.map((e, i) => {
-                return (
-                    <View style={SLOT_STYLE}>
-                        <View style={DETAIL_VIEW}>
-                            <View style={e.active ? CIRCLE_GREEN_STYLE : CIRCLE_STYLE}>
-                                <Text style={SEQUENCE_TEXT}>{e.no}</Text>
+        <View style={{ flex: 1, marginHorizontal: 10 }}>
+            <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'center' }}>
+                {data.map((e, i) => {
+                    return (
+                        <>
+                            <View style={{ }}>
+                                <View style={{
+                                    flexDirection: 'row', justifyContent: 'center', 
+                                 }}>
+                                    <View style={{ height: 51, width: 51, }}>
+                                        {_renderCircle(e.no, e.active)}
+                                    </View>
+                                    {i != data.length - 1 && <View style={WRAP_LINE}><View style={LINE_STYLE}></View>
+                                    </View>}
+                                </View>
+
+                                <View style={{ overflow: 'visible' }}>
+                                    <Text tx={e.name} style={[ROOT_TEXT_STYLE, {
+                                        color: e.active ? color.success : color.textWhite,
+                                        // flexWrap: 'wrap', width: (width / 4)
+                                    }]} />
+                                </View>
                             </View>
-                            {/* <Text tx={e.name} style={[ROOT_TEXT_STYLE, { color: e.active ? color.success : color.textWhite }]} /> */}
-                            <Text style={[ROOT_TEXT_STYLE, { color: e.active ? color.success : color.textWhite }]} >
-                                {`tier ${i + 1}`}</Text>
-                        </View>
-                        {i != data.length - 1 && <View style={WRAP_LINE}><View style={LINE_STYLE}></View>
-                        </View>}
-                    </View>
-                )
-            })}
+
+
+                            {/* {i != data.length - 1 && <View style={WRAP_LINE}><View style={LINE_STYLE}></View>
+                            </View>} */}
+                        </>
+                    )
+                })}
+            </View>
         </View>
     )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const WRAP_LINE2: ViewStyle = {
+//     justifyContent: 'center',
+//     // width: (width / 4) - 40,
+//     width: 60,
+
+//     // position: 'absolute',
+// }
+// const LINE_STYLE2: ViewStyle = {
+//     // width: (width / 4) - 60,
+//     width: 40,
+//     height: 2,
+//     borderTopColor: color.lightWeightGrey,
+//     backgroundColor: color.lightWeightGrey,
+//     borderTopWidth: 2,
+//     marginHorizontal: 5,
+//     marginTop: 0
+// }
+// export const AddJobElement = (props: any) => {
+
+//     const { tx, data } = props
+//     const _renderCircle = (no, active) => {
+//         return <View style={active ? CIRCLE_GREEN_STYLE : CIRCLE_STYLE}>
+//             <Text style={SEQUENCE_TEXT}>{no}</Text>
+//         </View>
+//     }
+
+//     return (
+//         <View style={{ flex: 1, marginHorizontal: 10 }}>
+//             <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'center' }}>
+//                 {data.map((e, i) => {
+//                     return (
+//                         <View style={{ flex: 1, backgroundColor: 'grey', width: '100%', alignItems: 'center' }}>
+
+//                             {/* ** Circle - Line */}
+//                             <View style={{
+//                                 // width: i != data.length - 1 ? (width / 4) - 5 : (width / 4) - 50
+//                                 width: (width / 4) - 5 
+//                                 , backgroundColor: 'green',
+//                                 // height: 51,
+//                                 flexDirection: 'row', alignItems: 'center', justifyContent: 'center'
+//                             }}>
+
+//                                 {/* ** Box of Circle */}
+//                                 <View style={{ width: 51, height: 51, backgroundColor: 'pink', marginLeft: 5 }}>
+//                                     {_renderCircle(e.no, e.active)}
+//                                 </View>
+
+//                                 {i != data.length - 1 && <View style={WRAP_LINE2}><View style={LINE_STYLE2}></View>
+//                                 </View>}
+
+//                             </View>
+
+
+//                             {/* ** Text Only */}
+//                             <View>
+//                                 <Text tx={e.name} style={[ROOT_TEXT_STYLE, {
+//                                     color: e.active ? color.success : color.textWhite,
+//                                     flexWrap: 'wrap', width: (width / 4)
+//                                 }]}
+//                                 />
+//                             </View>
+
+//                         </View>
+//                     )
+//                 })}
+//             </View>
+//         </View>
+//     )
+// }
+
+
+
+
+
+
+
+
+
+
+
+
 

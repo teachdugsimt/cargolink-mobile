@@ -23,7 +23,7 @@ const TransformVehicleImage = types.model({
 const vehicleModel = {
     id: types.maybeNull(types.string), // [PENDING] types.number
     registrationNumber: types.maybeNull(types.array(types.string)),
-    car_type: types.maybeNull(types.string),
+    car_type: types.maybeNull(types.number),
     createdAt: types.maybeNull(types.string),
     updatedAt: types.maybeNull(types.string),
     approveStatus: types.maybeNull(types.string),
@@ -105,7 +105,7 @@ const MyVehicleStore = types
             self.data = cast({
                 id: '',
                 registrationNumber: [''],
-                car_type: '',
+                car_type: 0,
                 createdAt: '',
                 updatedAt: '',
                 approveStatus: '',
@@ -134,9 +134,10 @@ const MyVehicleStore = types
         },
         get MappingData() {
             if (self.data && self.data) {
-
+                console.log("Self data mapping to EDIT :: ", self.data)
                 let dataInit = {
                     "vehicle-height": self.data.stallHeight ? self.data.stallHeight.toString() : '',
+                    "vehicle-type": self.data.car_type
                 }
 
                 if (self.data.registrationNumber && self.data.registrationNumber.length) {

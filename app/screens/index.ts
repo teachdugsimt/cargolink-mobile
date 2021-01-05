@@ -11,6 +11,7 @@ export * from "./profile-screen/profile-screen"
 export * from "./more-screen/more-screen"
 
 export * from "./home-screen/post-job/post-job-screen"
+export * from "./home-screen/post-job/receive-point-screen"
 export * from "./home-screen/manage-vehicle/upload-vehicle-screen"
 
 export * from "./accept-policy-screen/accept-policy-screen"

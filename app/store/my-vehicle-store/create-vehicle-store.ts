@@ -89,10 +89,18 @@ const CreateVehicleStore = types.model({
         }
     }),
 
+    clearDataCreate() {
+        self.data = null
+    },
+    clearDataPatchVehicle() {
+        self.patchMyVehicle = null
+    }
+
 })).views(self => ({
     get getProfileFunction() {
         return self.data
     }
+
 }))
     .create({
         // IMPORTANT !!

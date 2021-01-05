@@ -29,13 +29,14 @@ export class TruckTypeApi {
      *
      * Be as quick as possible in here.
      */
-    setup() {
+    setup(params) {
         // construct the apisauce instance
         this.apisauce = create({
             baseURL: this.config.url,
             timeout: this.config.timeout,
             headers: {
                 Accept: "application/json",
+                "Accept-Language": params
                 // Authorization: AuthStore.profile.token.accessToken
             },
         })
@@ -53,7 +54,19 @@ export class TruckTypeApi {
                 const problem = getGeneralApiProblem(response)
                 if (problem) return problem
             }
+
+            // let tmp = JSON.parse(JSON.stringify(response.data))
+            // if (response.data && response.data.length) {
+            //     tmp.map(e => {
+            //         e.label = e.name
+            //         e.value = e.id
+            //         e.ID = e.id
+            //     })
+            //     return tmp
+            // } else return []
+
             return response
+
             // transform the data into the format we are expecting
         } catch (error) {
             console.log("Error call api getTruckTypeDropdown (MOCK): ", error)

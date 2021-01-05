@@ -86,8 +86,8 @@ const RED_DOT: TextStyle = {
     color: color.red,
     paddingTop: 10, paddingLeft: 7.5
 }
-export const PostJobScreen = observer(function PostJobScreen() {
-    const navigation = useNavigation()
+export const ReceivePointScreen = observer(function ReceivePointScreen() {
+    // const navigation = useNavigation()
 
     const { control, handleSubmit, errors } = useForm({
         // defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : MyVehicleStore.MappingData
@@ -99,18 +99,16 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
     const onSubmit = (data) => {
         console.log("Data Form Post job : ", data)
-        // navigation.navigate("receivePoint")
-       
     }
 
     const list_status = [
-        { key: 1, no: 1, id: 1, name: 'postJobScreen.vehicleDetailAndProduct', active: true },
-        { key: 2, no: 2, id: 2, name: 'postJobScreen.getProductLocation', active: false },
-        { key: 3, no: 3, id: 3, name: 'postJobScreen.checkInformation', active: false },
-        { key: 4, no: 4, id: 4, name: 'postJobScreen.success', active: false },
+        { key: 1,no: 1, id: 1, name: 'postJobScreen.vehicleDetailAndProduct', active: false },
+        { key: 2,no: 2, id: 2, name: 'postJobScreen.getProductLocation', active: true },
+        { key: 3,no: 3, id: 3, name: 'postJobScreen.checkInformation', active: false },
+        { key: 4,no: 4, id: 4, name: 'postJobScreen.success', active: false },
     ]
     return (
-        <View testID="PostJobScreen" style={FULL}>
+        <View testID="ReceivePointScreen" style={FULL}>
             <View style={TOP_VIEW}>
                 <AddJobElement data={list_status} />
             </View>

@@ -65,10 +65,17 @@
   },
   "postJobScreen": {
     "postjob": "post job",
-    "vehicleDetailAndProduct": "car&product detail",
-    "getProductLocation": "get product location",
+    "vehicleDetailAndProduct": "product detail",
+    "getProductLocation": "receive point",
     "checkInformation": "check detail",
-    "success": "success"
+    "success": "success",
+    "selectVehicleType": "Select vehicle ttype",
+    "pleaseSelectVehicleType": "please select vehicle type",
+    "vehicleNum": "How many cars",
+    "itemDetail": "Product detail",
+    "selectItemType": "please select your product type",
+    "inputYourItem": "Product name",
+    "weightNumber": "Weight (T)"
   },
   "uploadVehicleScreen": {
     "addVehicle": "Add Vehicle",
