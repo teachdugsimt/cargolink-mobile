@@ -1,5 +1,5 @@
-import React, { useEffect } from "react"
-import { View, ViewStyle, TextStyle, FlatList, Platform } from "react-native"
+import React, { useEffect, useState } from "react"
+import { View, ViewStyle, TextStyle, Dimensions, Platform } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { useForm, Controller } from "react-hook-form";
 import RNPickerSelect from 'react-native-picker-select';
@@ -7,13 +7,17 @@ import { observer } from "mobx-react-lite"
 import { Text } from "../../../components"
 import { translate } from "../../../i18n"
 import { AddJobElement, TextInputTheme, RoundedButton } from '../../../components'
-import { ScrollView } from "react-native-gesture-handler"
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import i18n from 'i18n-js'
 import TruckTypeStore from '../../../store/my-vehicle-store/truck-type-store'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { spacing, color, typography, images } from "../../../theme"
-// const bowserLogo = require("./bowser.png")
+import { Modal, ModalContent } from 'react-native-modals';
+import MultiSelect from 'react-native-multiple-select';
+import { SafeAreaView } from "react-native-safe-area-context";
+const items = [{ id: '92iijs7yta', name: 'Ondo' }, { id: 'a0s0a8ssbsd', name: 'Ogun' }, { id: '16hbajsabsd', name: 'Calabar' }, { id: 'nahs75a5sg', name: 'Lagos' }, { id: '667atsas', name: 'Maiduguri' }, { id: 'hsyasajs', name: 'Anambra' }, { id: 'djsjudksjd', name: 'Benue' }, { id: 'sdhyaysdj', name: 'Kaduna' }, { id: 'suudydjsjd', name: 'Abuja' }];
 
+const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
 
 const BOLD: TextStyle = { fontWeight: "bold" }
@@ -34,7 +38,7 @@ const HEADER_TITLE: TextStyle = {
 }
 
 const TOP_VIEW: ViewStyle = {
-    flex: Platform.OS == "ios" ? 1.25 : 1.25,
+    flex: Platform.OS == "ios" ? 1 : 1.25,
     backgroundColor: color.mainTheme,
     justifyContent: 'center',
 }
@@ -100,15 +104,20 @@ export const PostJobScreen = observer(function PostJobScreen() {
     const onSubmit = (data) => {
         console.log("Data Form Post job : ", data)
         // navigation.navigate("receivePoint")
-       
-    }
 
+    }
+    const [visible, setvisible] = useState(false)
+    const [selectValue, setselectValue] = useState([])
+    const changeDropdown = (val) => setselectValue(val)
     const list_status = [
         { key: 1, no: 1, id: 1, name: 'postJobScreen.vehicleDetailAndProduct', active: true },
         { key: 2, no: 2, id: 2, name: 'postJobScreen.getProductLocation', active: false },
         { key: 3, no: 3, id: 3, name: 'postJobScreen.checkInformation', active: false },
         { key: 4, no: 4, id: 4, name: 'postJobScreen.success', active: false },
     ]
+    let multi_select
+    console.log("Multi select Item :: ", multi_select)
+    console.log("Multi select Item :: ", multi_select)
     return (
         <View testID="PostJobScreen" style={FULL}>
             <View style={TOP_VIEW}>
@@ -216,7 +225,85 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
                             <View style={WRAP_DROPDOWN}>
 
-                                {TruckTypeStore.data && TruckTypeStore.data.length ? <Controller
+                                <TouchableOpacity onPress={() => setvisible(true)}>
+                                    <Text style={{ padding: 10, backgroundColor: 'blue' }}>dropdown</Text>
+                                </TouchableOpacity>
+
+
+                                <Modal
+                                    visible={visible}
+                                    onTouchOutside={() => setvisible(false)}
+                                    onSwipeOut={() => setvisible(false)}
+                                    swipeDirection={['up', 'down']} // can be string or an array
+                                    swipeThreshold={200} // default 100
+                                // modalTitle={
+                                //     <SafeAreaView style={{ flex: 1 }}>
+                                //         <View style={{
+                                //             flexDirection: 'row', height: 60,
+                                //             // marginTop: (width / 2.5),
+                                //             justifyContent: 'center', alignItems: 'center'
+                                //         }}>
+                                //             <Text preset="topic"> Title Select </Text>
+                                //         </View>
+                                //     </SafeAreaView>}
+                                >
+                                    <ModalContent >
+                                        <View style={{ width: (width / 1.1), height: '100%', justifyContent: 'flex-start' }}>
+                                            <SafeAreaView style={{ flex: 1 }}>
+                                                <View style={{ height: 60 }}><Text>Test Title</Text></View>
+                                                <Controller
+                                                    control={control}
+                                                    render={({ onChange, onBlur, value }) => (
+                                                        <>
+                                                            <MultiSelect
+                                                                hideTags
+                                                                items={items}
+                                                                uniqueKey="id"
+                                                                ref={(component) => { multi_select = component }}
+                                                                onSelectedItemsChange={(val) => onChange(val[0])}
+                                                                selectedItems={[value]}
+                                                                selectText="Pick Items"
+                                                                searchIcon={<Ionicons name="search-outline" size={20} color={color.primary} />}
+                                                                hideSubmitButton={true}
+                                                                single={true}
+                                                                searchInputPlaceholderText="Search Items..."
+                                                                onChangeInput={(text) => console.log(text)}
+                                                                altFontFamily="Kanit-Medium"
+                                                                tagRemoveIconColor="#CCC"
+                                                                tagBorderColor="#CCC"
+                                                                tagTextColor="#CCC"
+                                                                selectedItemTextColor="#CCC"
+                                                                selectedItemIconColor="#CCC"
+                                                                itemTextColor="#000"
+                                                                displayKey="name"
+                                                                searchInputStyle={{ color: '#CCC' }}
+                                                            // submitButtonColor="#CCC"
+                                                            // submitButtonText="Submit"
+                                                            />
+
+                                                        </>
+                                                    )}
+                                                    key={'controller-dropdown-item-type'}
+                                                    name={"item-type"}
+                                                    defaultValue=""
+                                                />
+                                            </SafeAreaView>
+
+                                        </View>
+                                    </ModalContent>
+                                </Modal>
+
+
+
+
+
+
+
+
+
+
+
+                                {/* {TruckTypeStore.data && TruckTypeStore.data.length ? <Controller
                                     control={control}
                                     render={({ onChange, onBlur, value }) => (<RNPickerSelect
                                         value={value}
@@ -267,7 +354,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                         key={'controller-dropdown-item-type-null'}
                                         name={"item-type-null"}
                                         defaultValue=""
-                                    />}
+                                    />} */}
                             </View>
 
                             <Text tx={"postJobScreen.inputYourItem"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />

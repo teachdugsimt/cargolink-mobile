@@ -112,7 +112,7 @@ export const AddJobElement = (props: any) => {
                 {data.map((e, i) => {
                     return (
                         <>
-                            <View style={{ }}>
+                            <View style={{ marginTop: 10 }}>
                                 <View style={{
                                     flexDirection: 'row', justifyContent: 'center', 
                                  }}>
