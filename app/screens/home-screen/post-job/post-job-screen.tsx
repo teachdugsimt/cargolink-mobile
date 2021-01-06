@@ -6,7 +6,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import { observer } from "mobx-react-lite"
 import { Text } from "../../../components"
 import { translate } from "../../../i18n"
-import { AddJobElement, TextInputTheme, RoundedButton } from '../../../components'
+import { AddJobElement, TextInputTheme, RoundedButton, MultiSelector } from '../../../components'
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import i18n from 'i18n-js'
 import TruckTypeStore from '../../../store/my-vehicle-store/truck-type-store'
@@ -131,12 +131,14 @@ export const PostJobScreen = observer(function PostJobScreen() {
         console.log("Data Form Post job : ", data)
         // navigation.navigate("receivePoint")
     }
-
-    const _renderSectionModal = (item: any, index: any, onChange: any) => {
+    // 4 ล้อ
+    // 6 ล้อ
+    const _renderSectionModal = (item: any, index: any, onChange: any, section: any) => {
         return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name + index} style={ROOT_FLAT_LIST} onPress={() => {
             console.log("ITEM FUCK YEAH :: ", item)
+            if (section == 1) setvisible0(false)
+            else if (section == 2) setvisible(false)
             onChange(item.id)
-            setvisible0(false)
         }}>
             <View style={BORDER_BOTTOM}>
                 <View style={VIEW_LIST_IMAGE}>
@@ -174,13 +176,21 @@ export const PostJobScreen = observer(function PostJobScreen() {
             ]
         }
     ]
+    const list_product_type = [
+        {
+            title: 'postJobScreen.popular',
+            data: [{ id: 13, name: 'สินค้าการเกษตร', image: 'truck2' },
+            { id: 17, name: 'สินค้าการประมง', image: 'truck2' },
+            { id: 21, name: 'เครื่องดื่ม', image: 'truck2' }]
+        }
+    ]
 
-    let multi_select
-    console.log("Multi select Item :: ", multi_select)
-    let dropdown_truck_type
+    let multi_select: object, multi_select2: object
+    console.log("Multi select Item :: ", multi_select, multi_select2)
+    let dropdown_item_type
     let dropdown_vehicle_type
     if (control.fieldsRef.current['item-type'] && control.fieldsRef.current['item-type'].ref.value) {
-        dropdown_truck_type = control.fieldsRef.current['item-type'].ref.value
+        dropdown_item_type = control.fieldsRef.current['item-type'].ref.value
     }
     if (control.fieldsRef.current['vehicle-type'] && control.fieldsRef.current['vehicle-type'].ref.value) {
         dropdown_vehicle_type = control.fieldsRef.current['vehicle-type'].ref.value
@@ -237,43 +247,16 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                                         </View>
 
                                                         <View style={PADDING_TOP}>
-                                                            {list_vehicle && list_vehicle.length && <MultiSelect
-                                                                key={"list-vehicle-01"}
-                                                                hideTags
+                                                            {list_vehicle && list_vehicle.length && <MultiSelector
+                                                                key="dd-01-type"
                                                                 items={list_vehicle}
-                                                                uniqueKey="id"
-                                                                ref={(component) => { multi_select = component }}
-                                                                onSelectedItemsChange={(val) => {
+                                                                keyer={"list-vehicle-type-01"}
+                                                                selectedItems={[value]}
+                                                                selectText={translate("postJobScreen.pleaseSelectVehicleType")}
+                                                                onSelectedItemsChange={(val: any) => {
                                                                     onChange(val[0])
                                                                     setvisible0(false)
                                                                 }}
-                                                                selectedItems={[value]}
-                                                                selectText={translate("postJobScreen.pleaseSelectVehicleType")}
-                                                                searchIcon={<Ionicons name="search-outline" size={20} color={color.primary} />}
-                                                                hideSubmitButton={true}
-                                                                single={true}
-                                                                searchInputPlaceholderText={translate("common.search")}
-                                                                onChangeInput={(text) => console.log(text)}
-
-                                                                styleListContainer={{ maxHeight: height - width / 2 }}
-
-                                                                styleTextDropdown={{ fontFamily: 'Kanit-Medium' }}
-                                                                styleTextDropdownSelected={{ fontFamily: 'Kanit-Medium' }}
-                                                                altFontFamily="Kanit-Medium"
-                                                                fontFamily="Kanit-Medium"
-                                                                selectedItemFontFamily="Kanit-Medium"
-                                                                itemFontFamily="Kanit-Medium"
-
-                                                                tagRemoveIconColor="#CCC"
-                                                                tagBorderColor="#CCC"
-                                                                tagTextColor="#CCC"
-                                                                selectedItemTextColor="#CCC"
-                                                                selectedItemIconColor="#CCC"
-                                                                itemTextColor="#000"
-                                                                displayKey="name"
-                                                                searchInputStyle={{ color: '#CCC' }}
-                                                            // submitButtonColor="#CCC"
-                                                            // submitButtonText="Submit"
                                                             />}
                                                         </View>
 
@@ -281,7 +264,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                                             <SectionList
                                                                 sections={list_vehicle_popular}
                                                                 keyExtractor={(item, index) => 'section-list-' + item.name + index}
-                                                                renderItem={({ item, index }) => _renderSectionModal(item, index, onChange)}
+                                                                renderItem={({ item, index }) => _renderSectionModal(item, index, onChange, 1)}
                                                                 renderSectionHeader={({ section: { title } }) => (
                                                                     <Text tx={title} style={PADDING_TOP} />
                                                                 )}
@@ -346,8 +329,8 @@ export const PostJobScreen = observer(function PostJobScreen() {
                             <View style={[WRAP_DROPDOWN, PADDING_TOP]}>
 
                                 <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible(true)}>
-                                    {!dropdown_truck_type && <Text style={{ padding: 10 }} tx={"postJobScreen.selectItemType"} />}
-                                    {dropdown_truck_type && <Text style={{ padding: 10 }}>{items.find(e => e.id == dropdown_truck_type).name}</Text>}
+                                    {!dropdown_item_type && <Text style={{ padding: 10 }} tx={"postJobScreen.selectItemType"} />}
+                                    {dropdown_item_type && <Text style={{ padding: 10 }}>{list_product_type[0].data.find(e => e.id == dropdown_item_type).name}</Text>}
                                     <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} />
                                 </TouchableOpacity>
 
@@ -364,41 +347,34 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                             <ModalContent >
                                                 <View style={{ width: (width / 1.1), height: '100%', justifyContent: 'flex-start' }}>
                                                     <SafeAreaView style={{ flex: 1 }}>
-                                                        <View style={{ height: 60 }}><Text>Test Title</Text></View>
+                                                        <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
+                                                            <Text style={{ color: color.primary }} preset={"topic"} tx={"postJobScreen.selectVehicleType"} />
+                                                        </View>
 
-                                                        <View>
-                                                            <MultiSelect
-                                                                hideTags
-                                                                items={items}
-                                                                uniqueKey="id"
-                                                                ref={(component) => { multi_select = component }}
-                                                                onSelectedItemsChange={(val) => onChange(val[0])}
+                                                        <View style={[PADDING_TOP]}>
+
+                                                            <MultiSelector
+                                                                items={list_product_type[0].data}
+                                                                keyer={"list-item-type-01"}
                                                                 selectedItems={[value]}
-                                                                selectText={translate("postJobScreen.selectItemType")}
-                                                                searchIcon={<Ionicons name="search-outline" size={20} color={color.primary} />}
-                                                                hideSubmitButton={true}
-                                                                single={true}
-                                                                searchInputPlaceholderText={translate("common.search")}
-                                                                onChangeInput={(text) => console.log(text)}
-                                                                styleTextDropdown={{ fontFamily: 'Kanit-Medium' }}
-                                                                styleTextDropdownSelected={{ fontFamily: 'Kanit-Medium' }}
-                                                                altFontFamily="Kanit-Medium"
-                                                                fontFamily="Kanit-Medium"
-                                                                selectedItemFontFamily="Kanit-Medium"
-                                                                itemFontFamily="Kanit-Medium"
-                                                                tagRemoveIconColor="#CCC"
-                                                                tagBorderColor="#CCC"
-                                                                tagTextColor="#CCC"
-                                                                selectedItemTextColor="#CCC"
-                                                                selectedItemIconColor="#CCC"
-                                                                itemTextColor="#000"
-                                                                displayKey="name"
-                                                                searchInputStyle={{ color: '#CCC' }}
-                                                            // submitButtonColor="#CCC"
-                                                            // submitButtonText="Submit"
+                                                                selectText={translate("postJobScreen.pleaseSelectVehicleType")}
+                                                                onSelectedItemsChange={(val: any) => {
+                                                                    onChange(val[0])
+                                                                    setvisible(false)
+                                                                }}
                                                             />
                                                         </View>
 
+                                                        <View>
+                                                            <SectionList
+                                                                sections={list_product_type}
+                                                                keyExtractor={(item, index) => 'section-list-' + item.name + index}
+                                                                renderItem={({ item, index }) => _renderSectionModal(item, index, onChange, 2)}
+                                                                renderSectionHeader={({ section: { title } }) => (
+                                                                    <Text tx={title} style={PADDING_TOP} />
+                                                                )}
+                                                            />
+                                                        </View>
                                                     </SafeAreaView>
 
                                                 </View>

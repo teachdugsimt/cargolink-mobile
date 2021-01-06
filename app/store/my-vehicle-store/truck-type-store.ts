@@ -8,11 +8,11 @@ const truckTypeModel = types.model({
 
     // image: types.string,
 
-    // label: types.string,
-    // value: types.number,
+    label: types.string,
+    value: types.number,
 
 
-    
+
     ID: types.maybeNull(types.number),
     key: types.maybeNull(types.number)
 })
@@ -37,8 +37,9 @@ const TruckTypeStore = types.model({
                 let res = []
                 tmp.forEach((e: any, i: any) => {
                     res.push({
-                        // label: e.name,
-                        // value: e.id
+                        label: e.name,
+                        value: e.id,
+
                         id: e.id,
                         name: e.name
                     })

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react"
 import {
   View, ViewStyle, TextStyle,
-  ScrollView, Switch, Dimensions, Platform, Alert, ImageStyle, PermissionsAndroid
+  ScrollView, Switch, Dimensions, Platform, Alert, ImageStyle, PermissionsAndroid,
+  SafeAreaView, SectionList, Image
 } from "react-native"
 import { useForm, Controller } from "react-hook-form";
 import { observer } from "mobx-react-lite"
-import { Text, TextInputTheme, Button, UploadVehicle, RoundedButton, HeaderCenter } from "../../../components"
+import { Text, TextInputTheme, Button, UploadVehicle, RoundedButton, HeaderCenter, MultiSelector } from "../../../components"
 import { spacing, color, typography, images } from "../../../theme"
 
 import RNPickerSelect from 'react-native-picker-select';
@@ -23,8 +24,9 @@ import MyVehicleStore from '../../../store/my-vehicle-store/my-vehicle-store'
 import StatusStore from '../../../store/my-vehicle-store/status-vehicle-store'
 import UploadFileStore from '../../../store/my-vehicle-store/upload-file-store'
 import TruckTypeStore from '../../../store/my-vehicle-store/truck-type-store'
+import { Modal, ModalContent } from 'react-native-modals';
 
-const { width } = Dimensions.get("window")
+const { width, height } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
 const GREY_TEXT: TextStyle = { color: color.grey }
 
@@ -121,6 +123,33 @@ const WRAPPER_REGION_DROPDOWN: ViewStyle = {
   ...MARGIN_BOTTOM_BIG,
   ...ROW_UPLOAD,
 }
+const ROW_TEXT: ViewStyle = {
+  flexDirection: 'row',
+}
+const JUSTIFY_BETWEEN: ViewStyle = {
+  justifyContent: 'space-between'
+}
+const PADDING_TOP: ViewStyle = { marginTop: 10 }
+const PADDING_CHEVRON: ViewStyle = { paddingTop: 7.5, paddingRight: 5 }
+const ROOT_FLAT_LIST: ViewStyle = {
+  width: '100%',
+  height: 100,
+  flexDirection: 'row',
+  alignItems: 'center',
+  zIndex: 5,
+}
+const VIEW_LIST_IMAGE: ViewStyle = { alignSelf: 'flex-start', justifyContent: 'center', height: '100%' }
+const BORDER_BOTTOM: ViewStyle = { ...ROOT_FLAT_LIST, borderBottomWidth: 1, borderBottomColor: color.line, marginHorizontal: 10, }
+const IMAGE_LIST: ImageStyle = {
+  // width: 50, height: 50,
+  backgroundColor: color.grey, padding: 10,
+  resizeMode: "cover",
+  aspectRatio: 2 / 2,
+  borderRadius: 30,
+  borderColor: color.primary, borderWidth: 2,
+}
+
+
 
 let initForm = 0
 export const UploadVehicleScreen = observer((props) => {
@@ -346,6 +375,8 @@ export const UploadVehicleScreen = observer((props) => {
 
 
 
+  const [visible, setvisible] = useState(false)
+  const [visible0, setvisible0] = useState(false)
 
   const [fileFront, setfileFront] = useState({});
   const [fileBack, setfileBack] = useState({});
@@ -686,11 +717,52 @@ export const UploadVehicleScreen = observer((props) => {
     setddRegion(tmpDropdownRegion)
     setrenderNewRegion(!renderNewRegion)
   }
+
+
+  const _renderSectionModal = (item: any, index: any, onChange: any) => {
+    return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name + index} style={ROOT_FLAT_LIST} onPress={() => {
+      onChange(item.id)
+      setvisible0(false)
+    }}>
+      <View style={BORDER_BOTTOM}>
+        <View style={VIEW_LIST_IMAGE}>
+          {Platform.OS == "ios" ? <Image source={images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
+            <Image source={images[item.image]} style={IMAGE_LIST} height={60} width={60} />}
+        </View>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+          <Text style={{ width: '50%', paddingLeft: 20 }}>{item.name}</Text>
+          <Ionicons name="chevron-forward" size={24} style={{ marginRight: 5 }} />
+        </View>
+      </View>
+    </TouchableOpacity>
+  }
+
   // console.log("Dropdown region :: => ", dropdownRegion)
   console.log("Dropdown Province DD  :: ", ddProvince)
   console.log("Dropdown Regions VALUE :: ", valRegion)
   console.log("List Truc type :: ", JSON.parse(JSON.stringify(TruckTypeStore.data)))
 
+
+  const list_vehicle_popular = [
+    {
+      title: 'postJobScreen.popular',
+      data: [{ id: 13, name: 'รถบรรทุกของเหลว 6 ล้อ', image: 'truck2' },
+      { id: 17, name: 'รถกระบะ 4 ล้อตู้ทึบ', image: 'truck3' },
+      { id: 21, name: 'รถ 6 ล้อ ตู้ทึบ', image: 'truck4' }]
+    },
+    {
+      title: 'postJobScreen.4maxType',
+      data: [
+        { id: 24, name: 'รถ 6 ล้อ กระบะ', image: 'truck5' },
+      ]
+    }
+  ]
+  let multi_select
+  let dropdown_vehicle_type
+  if (control.fieldsRef.current['vehicle-type'] && control.fieldsRef.current['vehicle-type'].ref.value) {
+    dropdown_vehicle_type = control.fieldsRef.current['vehicle-type'].ref.value
+  }
+  let list_vehicle = JSON.parse(JSON.stringify(TruckTypeStore.data))
 
   return (
     <View testID="UploadVehicleScreen" style={FULL}>
@@ -703,60 +775,67 @@ export const UploadVehicleScreen = observer((props) => {
 
 
 
+              
+              <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible0(true)}>
+                {!dropdown_vehicle_type && <Text style={{ padding: 10 }} tx={"postJobScreen.pleaseSelectVehicleType"} />}
+                {dropdown_vehicle_type && <Text style={{ padding: 10 }}>{JSON.parse(JSON.stringify(TruckTypeStore.data)).find(e => e.id == dropdown_vehicle_type).name}</Text>}
+                <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} />
+              </TouchableOpacity>
 
-              {TruckTypeStore.data && TruckTypeStore.data.length ? <Controller
+              <Controller
                 control={control}
-                render={({ onChange, onBlur, value }) => (<RNPickerSelect
-                  value={value}
-                  onValueChange={(value) => onChange(value)}
-                  // items={i18n.locale == "en" ? vehicleEn : vehicleTh}
-                  items={JSON.parse(JSON.stringify(TruckTypeStore.data))}
-                  placeholder={{
-                    label: translate("uploadVehicleScreen.selectVehicleType"),
-                    color: color.black
-                  }}
-                  useNativeAndroidPickerStyle={false}
-                  style={{
-                    inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
-                    iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
-                    placeholder: { color: color.black }
-                  }}
-                  Icon={() => {
-                    return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
-                  }}
-                />
+                render={({ onChange, onBlur, value }) => (
+                  <Modal
+                    visible={visible0}
+                    onTouchOutside={() => setvisible0(false)}
+                    onSwipeOut={() => setvisible0(false)}
+                    swipeDirection={['up', 'down']} // can be string or an array
+                    swipeThreshold={200} // default 100
+                  >
+                    <ModalContent >
+                      <View style={{ width: (width / 1.1), height: '100%', justifyContent: 'flex-start' }}>
+                        <SafeAreaView style={{ flex: 1 }}>
+                          <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
+                            <Text style={{ color: color.primary }} preset={"topic"} tx={"postJobScreen.selectVehicleType"} />
+                          </View>
+
+                          <View style={PADDING_TOP}>
+                            {list_vehicle && list_vehicle.length && <MultiSelector
+                                                                key="dd-01-type"
+                                                                items={list_vehicle}
+                                                                keyer={"list-vehicle-type-01"}
+                                                                selectedItems={[value]}
+                                                                selectText={translate("postJobScreen.pleaseSelectVehicleType")}
+                                                                onSelectedItemsChange={(val: any) => {
+                                                                    onChange(val[0])
+                                                                    setvisible0(false)
+                                                                }}
+                                                            />}
+                          </View>
+
+                          <View>
+                            <SectionList
+                              sections={list_vehicle_popular ? list_vehicle_popular : []}
+                              keyExtractor={(item, index) => 'section-list-' + item.name + index}
+                              renderItem={({ item, index }) => _renderSectionModal(item, index, onChange)}
+                              renderSectionHeader={({ section: { title } }) => (
+                                <Text tx={title} style={PADDING_TOP} />
+                              )}
+                            />
+                          </View>
+                        </SafeAreaView>
+
+                      </View>
+                    </ModalContent>
+                  </Modal>
+
+
                 )}
                 key={'controller-dropdown-vehicle-type'}
                 name={"vehicle-type"}
                 defaultValue=""
-              /> :
-                <Controller
-                  control={control}
-                  render={({ onChange, onBlur, value }) => {
-                    return <RNPickerSelect
-                      value={value}
-                      onValueChange={(value) => onChange(value)}
-                      // items={i18n.locale == "en" ? vehicleEn : vehicleTh}
-                      items={[]}
-                      placeholder={{
-                        label: translate("uploadVehicleScreen.selectVehicleType"),
-                        color: color.black
-                      }}
-                      useNativeAndroidPickerStyle={false}
-                      style={{
-                        inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
-                        iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
-                        placeholder: { color: color.black }
-                      }}
-                      Icon={() => {
-                        return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
-                      }}
-                    />
-                  }}
-                  key={'controller-dropdown-vehicle-type'}
-                  name={"vehicle-type"}
-                  defaultValue=""
-                />}
+              />
+
 
 
 
