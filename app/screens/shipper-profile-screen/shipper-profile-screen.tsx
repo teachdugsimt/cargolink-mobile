@@ -5,6 +5,7 @@ import { Icon, Text } from '../../components'
 import { translate } from '../../i18n'
 import { spacing, images as imageComponent, color } from '../../theme'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { TabBarNavigation } from './tab-bar-navigation'
 
 const deviceWidht = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('window').height
@@ -135,6 +136,92 @@ const STAR = [
     },
 ]
 
+const DATA_JOB = [
+    {
+        id: 1,
+        fromText: 'ภาคกลาง',
+        toText: 'ภาคกลาง',
+        count: '2',
+        packaging: 'อื่นๆ',
+        detail: 'รถ 6 ล้อตู้คอก',
+        viewDetail: true,
+        postBy: 'Cargolink',
+        isVerified: true,
+        isLike: true,
+        rating: '4.9',
+        ratingCount: '122',
+        isCrown: true,
+        isRecommened: true,
+        logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
+    },
+    {
+        id: 2,
+        fromText: 'ภาคกลาง',
+        toText: 'ภาคกลาง',
+        count: '2',
+        packaging: 'อื่นๆ',
+        detail: 'รถ 6 ล้อตู้คอก',
+        viewDetail: true,
+        postBy: 'Cargolink',
+        isVerified: false,
+        isLike: false,
+        rating: '1.9',
+        ratingCount: '3',
+        isCrown: false,
+        logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
+    },
+    {
+        id: 3,
+        fromText: 'ภาคกลาง',
+        toText: 'ภาคกลาง',
+        count: '2',
+        packaging: 'อื่นๆ',
+        detail: 'รถ 6 ล้อตู้คอก',
+        viewDetail: true,
+        postBy: 'Cargolink',
+        isVerified: true,
+        isLike: true,
+        rating: '4.9',
+        ratingCount: '122',
+        isCrown: true,
+        isRecommened: true,
+        logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
+    },
+    {
+        id: 4,
+        fromText: 'ภาคกลาง',
+        toText: 'ภาคกลาง',
+        count: '2',
+        packaging: 'อื่นๆ',
+        detail: 'รถ 6 ล้อตู้คอก',
+        viewDetail: true,
+        postBy: 'Cargolink',
+        isVerified: true,
+        isLike: true,
+        rating: '4.5',
+        ratingCount: '69',
+        isCrown: false,
+        logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
+    },
+    {
+        id: 5,
+        fromText: 'ภาคกลาง',
+        toText: 'ภาคกลาง',
+        count: '2',
+        packaging: 'อื่นๆ',
+        detail: 'รถ 6 ล้อตู้คอก',
+        viewDetail: true,
+        postBy: 'Cargolink',
+        isVerified: true,
+        isLike: true,
+        rating: '4.9',
+        ratingCount: '122',
+        isCrown: true,
+        isRecommened: true,
+        logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
+    },
+]
+
 export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
 
     const profileImage = 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg'
@@ -172,7 +259,7 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
     const Star = ({ show, count }) => (
         <View style={RATING_CONTAINER}>
             <View style={START_CONTAINER}>
-                {Array(5).fill(show).map((_, index) => <MaterialCommunityIcons name={'star'} size={16} color={index < show ? color.primary : color.disable} style={{ paddingHorizontal: 2 }} />)}
+                {Array(5).fill(show).map((_, index) => <MaterialCommunityIcons key={index} name={'star'} size={16} color={index < show ? color.primary : color.disable} style={{ paddingHorizontal: 2 }} />)}
             </View>
             <View style={RATING_BAR_CONTAINER}>
                 <View style={{ flex: 1, width: '50%', backgroundColor: color.primary, borderRadius: 3 }} />
@@ -217,8 +304,12 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
                         <Text text={'คะแนนความพึงพอใจ'} />
                     </View>
                     <View>
-                        {STAR.map(val => <Star {...val} />)}
+                        {STAR.map(val => <Star key={val.show} {...val} />)}
                     </View>
+                </View>
+
+                <View style={{}}>
+                    <TabBarNavigation data={DATA_JOB} />
                 </View>
             </ScrollView>
         </View>

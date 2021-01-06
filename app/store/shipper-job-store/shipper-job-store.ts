@@ -111,23 +111,15 @@ const ShipperJobStore = types
                 const response = yield apiShipperJob.update(id, data)
                 console.log("Response call api get user : : ", response)
                 if (response.kind === 'ok') {
-                    const newData = JSON.parse(JSON.stringify(data))
-                    delete data.expiredTime
-                    delete data.truckAmount
-                    delete data.note
-                    delete data.from.datetime
-                    delete data.to
-
-                    // const to = data.to.map(val => )
-
                     self.data = {
                         ...self.data,
-                        // ...data,
-                        // from: {
-                        //     ...data.from,
-                        //     dateTime: newData.from.datetime
-                        // },
-                        // requiredTruckAmount: newData.truckAmount
+                        from: data.from,
+                        productName: data.productName,
+                        productTypeId: data.productTypeId,
+                        requiredTruckAmount: data.truckAmount,
+                        truckType: data.truckType,
+                        weight: data.weight,
+                        // to: cast(data.to)
                     }
                 } else {
                     self.error = response.data.message

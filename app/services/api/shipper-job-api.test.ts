@@ -56,8 +56,8 @@ const initialData = {
     from: {
         contactMobileNo: '0998999988',
         contactName: 'Onelink Space',
-        datetime: date.format(new Date(Math.floor(Date.now()) + (60 * 1000)), 'DD-MM-YYYY HH:ss'),
-        // datetime: '05-01-2021 14:27',
+        dateTime: date.format(new Date(Math.floor(Date.now()) + (60 * 1000)), 'DD-MM-YYYY HH:ss'),
+        // dateTime: '05-01-2021 14:27',
         lat: '14.028891',
         lng: '99.570953',
         name: 'Onelink'
@@ -69,7 +69,7 @@ const initialData = {
         {
             contactMobileNo: '0899388403',
             contactName: 'Linda Eye Clinic',
-            datetime: date.format(new Date(Math.floor(Date.now()) + (24 * 60 * 60 * 1000)), 'DD-MM-YYYY HH:ss'),
+            dateTime: date.format(new Date(Math.floor(Date.now()) + (24 * 60 * 60 * 1000)), 'DD-MM-YYYY HH:ss'),
             lat: '18.779385738847306',
             lng: '98.97699335637284',
             name: 'Linda Eye Clinic'
@@ -77,7 +77,7 @@ const initialData = {
         {
             contactMobileNo: '0990999811',
             contactName: 'Master',
-            datetime: date.format(new Date(Math.floor(Date.now()) + (32 * 60 * 60 * 1000)), 'DD-MM-YYYY HH:ss'),
+            dateTime: date.format(new Date(Math.floor(Date.now()) + (32 * 60 * 60 * 1000)), 'DD-MM-YYYY HH:ss'),
             lat: '9.138682091131729',
             lng: '99.27335713028324',
             name: 'Suratthani Rajabhat University'

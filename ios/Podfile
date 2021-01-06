@@ -17,6 +17,10 @@ target 'CargoLinkMobile' do
   pod 'RNCPicker', :path => '../node_modules/@react-native-picker/picker'
 
 
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+
+  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
+
   target 'CargoLinkMobileTests' do
     inherit! :complete
     # Pods for testing

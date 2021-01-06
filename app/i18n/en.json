@@ -219,6 +219,8 @@
   },
   "shipperProfileScreen": {
     "verified": "Verified",
-    "notVerified": "Not Verified"
+    "notVerified": "Not Verified",
+    "workInProgress": "Work in progress",
+    "pastWork": "Past work"
   }
 }

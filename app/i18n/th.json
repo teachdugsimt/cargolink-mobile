@@ -216,6 +216,8 @@
   },
   "shipperProfileScreen": {
     "verified": "ผู้ใช้ผ่านการตรวจสอบ",
-    "notVerified": "ยังไม่ผ่านการตรวจสอบ"
+    "notVerified": "ยังไม่ผ่านการตรวจสอบ",
+    "workInProgress": "งานที่กำลังดำเนินการ",
+    "pastWork": "งานที่ผ่านมา"
   }
 }

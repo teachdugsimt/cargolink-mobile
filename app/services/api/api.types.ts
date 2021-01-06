@@ -112,7 +112,7 @@ export interface ShipperJobCreate {
   from: {
     contactMobileNo: string
     contactName: string
-    datetime: string
+    dateTime: string
     lat: string
     lng: string
     name: string
@@ -123,7 +123,7 @@ export interface ShipperJobCreate {
   to: {
     contactMobileNo: string
     contactName: string
-    datetime: string
+    dateTime: string
     lat: string
     lng: string
     name: string
