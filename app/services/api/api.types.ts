@@ -51,6 +51,7 @@ export interface VehicleFilterRequest {
 
 export interface TermAndService {
   accept: boolean
+  version: string
 }
 
 export interface VehicleRequest {

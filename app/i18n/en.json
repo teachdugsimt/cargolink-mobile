@@ -232,5 +232,15 @@
     "notVerified": "Not Verified",
     "workInProgress": "Work in progress",
     "pastWork": "Past work"
+  },
+  "feedbackScreen": {
+    "yourOpinion": "Your opinion",
+    "canYouAgreeJob": "Can you agree the work through this app?",
+    "rightFromApp": "Right from app",
+    "notFromApp": "Not from app",
+    "canYouHowMuch": "Can you tell us about how much you fall in price?",
+    "countRating": "Help me rate your satisfaction with this one on a scale of 1 - 5 stars.",
+    "moreAdvice": "More advice",
+    "price": "Price"
   }
 }

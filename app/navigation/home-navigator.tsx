@@ -14,7 +14,7 @@ import {
     DetailScreen, HomeScreen, JobDetailScreen, MyVehicle, PostJobScreen, SearchCarScreen, SearchJobScreen, SettingSearchScreen,
     UploadVehicleScreen, SuccessUpload,
     VehicleDetailScreen,
-    ShipperProfileScreen, ReceivePointScreen
+    ShipperProfileScreen, ReceivePointScreen, FeedbackScreen
 } from "../screens"
 import { translate } from "../i18n"
 /**
@@ -43,6 +43,7 @@ export type PrimaryHomeParamList = {
     uploadSuccess: undefined
     shipperProfile: undefined
     receivePoint: undefined
+    feedback: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -178,6 +179,14 @@ export function HomeNavigator() {
                 component={ShipperProfileScreen}
                 options={({ navigation, route }) => ({
                     headerCenter: () => <HeaderCenter tx={"profileScreen.profile"} />,
+                    headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+                })}
+            />
+            <Stack.Screen
+                name="feedback"
+                component={FeedbackScreen}
+                options={({ navigation, route }) => ({
+                    headerCenter: () => <HeaderCenter tx={"feedbackScreen.yourOpinion"} />,
                     headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
                 })}
             />

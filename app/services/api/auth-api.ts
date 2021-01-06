@@ -132,7 +132,7 @@ export class AuthAPI {
   async updatePolicy(id: number, data: Types.TermAndService): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.patch(
+      const response: ApiResponse<any> = await this.apisauce.post(
         `api/v1/users/${id}/term-of-service`, data)
       // the typical ways to die when calling an api
       console.log("Response call api get user (MOCK) : ", response)

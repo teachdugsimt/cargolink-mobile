@@ -86,7 +86,8 @@ export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
       isLoading: true,
     })
     AuthStore.updatePolicyStatusRequest(AuthStore.profile.userProfile.id, {
-      accept: true
+      accept: true,
+      version: AuthStore.profile.termOfService.version
     }).then(() => {
       clearState()
       navigation.navigate("home")

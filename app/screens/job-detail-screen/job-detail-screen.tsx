@@ -264,7 +264,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                     style={CALL_BUTTON}
                     textStyle={CALL_TEXT}
                     text={translate('jobDetailScreen.call')}
-                    onPress={() => console.log('Call')}
+                    onPress={() => navigation.navigate('feedback')}
                 />
             </View>
         </View>
