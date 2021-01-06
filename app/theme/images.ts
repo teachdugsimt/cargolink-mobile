@@ -5,6 +5,7 @@ export const images = {
   pinbox: require("../images/iconfindwork.png"),
   sheet1: require("../images/iconpostwork.png"),
   word1: require("../images/iconfindtruck.png"),
+  truck: require("../images/vehicles/Truck1.png"),
   truck2: require("../images/vehicles/Truck2.png"),
   truck3: require("../images/vehicles/Truck3.png"),
   truck4: require("../images/vehicles/Truck4.png"),

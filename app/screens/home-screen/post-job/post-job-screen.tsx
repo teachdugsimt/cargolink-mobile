@@ -10,10 +10,13 @@ import { AddJobElement, TextInputTheme, RoundedButton, MultiSelector } from '../
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import i18n from 'i18n-js'
 import TruckTypeStore from '../../../store/my-vehicle-store/truck-type-store'
+import PostJobStore from '../../../store/post-job-store/post-job-store'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { spacing, color, typography, images } from "../../../theme"
 import { Modal, ModalContent } from 'react-native-modals';
-import MultiSelect from 'react-native-multiple-select';
+import { MapTruckImageName } from '../../../utils/map-truck-image-name'
+import { AlertForm } from '../../../utils/alert-form'
+
 import { SafeAreaView } from "react-native-safe-area-context";
 const items = [{ id: '92iijs7yta', name: 'Ondo', value: 'dd' }, { id: 'a0s0a8ssbsd', name: 'Ogun' }, { id: '16hbajsabsd', name: 'Calabar' }, { id: 'nahs75a5sg', name: 'Lagos' }, { id: '667atsas', name: 'Maiduguri' }, { id: 'hsyasajs', name: 'Anambra' }, { id: 'djsjudksjd', name: 'Benue' }, { id: 'sdhyaysdj', name: 'Kaduna' }, { id: 'suudydjsjd', name: 'Abuja' }];
 
@@ -128,6 +131,9 @@ export const PostJobScreen = observer(function PostJobScreen() {
     }, [])
 
     const onSubmit = (data) => {
+
+        if (!data['item-type'] || !data['vehicle-type']) AlertForm('common.requireField')
+
         console.log("Data Form Post job : ", data)
         // navigation.navigate("receivePoint")
     }
@@ -148,6 +154,27 @@ export const PostJobScreen = observer(function PostJobScreen() {
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
                     <Text style={{ width: '50%', paddingLeft: 20 }}>{item.name}</Text>
                     <Ionicons name="chevron-forward" size={24} style={{ marginRight: 5 }} />
+                </View>
+            </View>
+        </TouchableOpacity>
+    }
+
+    const _renderSelectedList = (item, section) => {
+        return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name} style={ROOT_FLAT_LIST} onPress={() => {
+            if (section == 1) setvisible0(true)
+            else if (section == 2) setvisible(true)
+        }}>
+            <View style={BORDER_BOTTOM}>
+                <View style={VIEW_LIST_IMAGE}>
+                    {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
+                        <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} />}
+                </View>
+                <View style={{ flexDirection: 'row', flex: 1, width: '100%', justifyContent: 'space-between' }}>
+                    <View style={{ width: '80%', alignItems: 'center' }}>
+                        <Text style={{ marginLeft: 20 }}>{item.name}</Text>
+                    </View>
+
+                    <Ionicons name="chevron-forward" size={24} style={{ marginRight: Platform.OS == "ios" ? 25 : 40 }} />
                 </View>
             </View>
         </TouchableOpacity>
@@ -179,9 +206,9 @@ export const PostJobScreen = observer(function PostJobScreen() {
     const list_product_type = [
         {
             title: 'postJobScreen.popular',
-            data: [{ id: 13, name: 'สินค้าการเกษตร', image: 'truck2' },
-            { id: 17, name: 'สินค้าการประมง', image: 'truck2' },
-            { id: 21, name: 'เครื่องดื่ม', image: 'truck2' }]
+            data: [{ id: 13, name: 'สินค้าการเกษตร', image: 'bell' },
+            { id: 17, name: 'สินค้าการประมง', image: 'bell' },
+            { id: 21, name: 'เครื่องดื่ม', image: 'bell' }]
         }
     ]
 
@@ -225,7 +252,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
                                 <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible0(true)}>
                                     {!dropdown_vehicle_type && <Text style={{ padding: 10 }} tx={"postJobScreen.pleaseSelectVehicleType"} />}
-                                    {dropdown_vehicle_type && <Text style={{ padding: 10 }}>{JSON.parse(JSON.stringify(TruckTypeStore.data)).find(e => e.id == dropdown_vehicle_type).name}</Text>}
+                                    {dropdown_vehicle_type && _renderSelectedList(JSON.parse(JSON.stringify(TruckTypeStore.data)).find(e => e.id == dropdown_vehicle_type), 1)}
                                     <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} />
                                 </TouchableOpacity>
 
@@ -330,7 +357,8 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
                                 <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible(true)}>
                                     {!dropdown_item_type && <Text style={{ padding: 10 }} tx={"postJobScreen.selectItemType"} />}
-                                    {dropdown_item_type && <Text style={{ padding: 10 }}>{list_product_type[0].data.find(e => e.id == dropdown_item_type).name}</Text>}
+                                    {/* {dropdown_item_type && <Text style={{ padding: 10 }}>{list_product_type[0].data.find(e => e.id == dropdown_item_type).name}</Text>} */}
+                                    {dropdown_item_type && _renderSelectedList(list_product_type[0].data.find(e => e.id == dropdown_item_type), 2)}
                                     <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} />
                                 </TouchableOpacity>
 
