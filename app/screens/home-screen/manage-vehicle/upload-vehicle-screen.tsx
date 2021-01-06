@@ -135,7 +135,7 @@ export const UploadVehicleScreen = observer((props) => {
 
   useEffect(() => {
 
-    TruckTypeStore.getTruckTypeDropdown('th')
+    TruckTypeStore.getTruckTypeDropdown(i18n.locale)
 
 
     let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
@@ -146,14 +146,14 @@ export const UploadVehicleScreen = observer((props) => {
         ),
       });
     }
+
+    return () => {
+      CreateVehicleStore.clearDataCreate()
+      CreateVehicleStore.clearDataPatchVehicle()
+      setsubmitReady(false)
+    }
   }, [])
 
-  // useEffect(() => {
-  //   let data = JSON.parse(JSON.stringify(TruckTypeStore.data))
-  //   if (data && data.length) {
-  //     console.log("data get truck type :: => ", data)
-  //   }
-  // }, [TruckTypeStore.data])
 
 
 
@@ -370,14 +370,6 @@ export const UploadVehicleScreen = observer((props) => {
   console.log("Mapping data Here :: => ", MyVehicleStore.MappingData)
   const { control, handleSubmit, errors } = useForm({
     defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : MyVehicleStore.MappingData
-    //     {
-    //     // ** Initial value
-    //     "vehicle-type": "4 Wheels - High Stall Truck",  // must be use English value Only
-    //     "vehicle-height": '3',
-    //     "registration-0": "1234-xx",
-    //     "controller-region-0" : "north",
-    //     "controller-province-0": "Chaing Mai",
-    // }
   });
 
   const _alert = (field) => {
@@ -393,6 +385,8 @@ export const UploadVehicleScreen = observer((props) => {
     )
     return;
   }
+
+  const [submitReady, setsubmitReady] = useState(false)
 
   const onSubmit = data => {
     setinputRegistration(data)
@@ -414,7 +408,7 @@ export const UploadVehicleScreen = observer((props) => {
     const data_mock_call = {
       id: 1,
       carrierId: 1,
-      truckType: data['vehicle-type'] ? 1 : 1,    // ** EDIT 1
+      truckType: data['vehicle-type'],    // ** EDIT 1
       loadingWeight: 0,
       stallHeight: Number(data['vehicle-height']),
       tipper: toggleDump,
@@ -552,13 +546,33 @@ export const UploadVehicleScreen = observer((props) => {
     if (editStatus && editStatus == "add") {
       data_mock_call.id = 1
       CreateVehicleStore.createVehicleProfile(data_mock_call)
+      setsubmitReady(true)
     }
     else {
       CreateVehicleStore.patchVehicleDetailsRequest(data_mock_call)
+      setsubmitReady(true)
     }
     // navigation.navigate('uploadSuccess')
   }
 
+
+  useEffect(() => {
+    let data_create = JSON.parse(JSON.stringify(CreateVehicleStore.data))
+
+    if (data_create && data_create != null && submitReady) {
+      navigation.navigate('uploadSuccess')
+    }
+
+  }, [CreateVehicleStore.data])
+
+  useEffect(() => {
+    let data_patch = JSON.parse(JSON.stringify(CreateVehicleStore.patchMyVehicle))
+
+    if (data_patch && data_patch != null && submitReady) {
+      navigation.navigate('uploadSuccess')
+    }
+
+  }, [CreateVehicleStore.patchMyVehicle])
 
 
   const [textInput, settextInput] = useState([])
@@ -675,6 +689,9 @@ export const UploadVehicleScreen = observer((props) => {
   // console.log("Dropdown region :: => ", dropdownRegion)
   console.log("Dropdown Province DD  :: ", ddProvince)
   console.log("Dropdown Regions VALUE :: ", valRegion)
+  console.log("List Truc type :: ", JSON.parse(JSON.stringify(TruckTypeStore.data)))
+
+
   return (
     <View testID="UploadVehicleScreen" style={FULL}>
       <ScrollView testID={"scrollViewUpload"} style={FULL}>
@@ -683,32 +700,72 @@ export const UploadVehicleScreen = observer((props) => {
           <View style={WRAPPER_TOP}>
             <Text tx={"uploadVehicleScreen.selectVehicleType"} style={{ ...TITLE_TOPIC, ...MARGIN_TOP_BIG }} />
             <View style={WRAP_DROPDOWN}>
-              <Controller
+
+
+
+
+              {TruckTypeStore.data && TruckTypeStore.data.length ? <Controller
                 control={control}
-                render={({ onChange, onBlur, value }) => (
-                  <RNPickerSelect
-                    value={value}
-                    onValueChange={(value) => onChange(value)}
-                    items={i18n.locale == "en" ? vehicleEn : vehicleTh}
-                    placeholder={{
-                      label: translate("uploadVehicleScreen.selectVehicleType"),
-                      color: color.black
-                    }}
-                    useNativeAndroidPickerStyle={false}
-                    style={{
-                      inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
-                      iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
-                      placeholder: { color: color.black }
-                    }}
-                    Icon={() => {
-                      return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
-                    }}
-                  />
+                render={({ onChange, onBlur, value }) => (<RNPickerSelect
+                  value={value}
+                  onValueChange={(value) => onChange(value)}
+                  // items={i18n.locale == "en" ? vehicleEn : vehicleTh}
+                  items={JSON.parse(JSON.stringify(TruckTypeStore.data))}
+                  placeholder={{
+                    label: translate("uploadVehicleScreen.selectVehicleType"),
+                    color: color.black
+                  }}
+                  useNativeAndroidPickerStyle={false}
+                  style={{
+                    inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
+                    iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
+                    placeholder: { color: color.black }
+                  }}
+                  Icon={() => {
+                    return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
+                  }}
+                />
                 )}
                 key={'controller-dropdown-vehicle-type'}
                 name={"vehicle-type"}
                 defaultValue=""
-              />
+              /> :
+                <Controller
+                  control={control}
+                  render={({ onChange, onBlur, value }) => {
+                    return <RNPickerSelect
+                      value={value}
+                      onValueChange={(value) => onChange(value)}
+                      // items={i18n.locale == "en" ? vehicleEn : vehicleTh}
+                      items={[]}
+                      placeholder={{
+                        label: translate("uploadVehicleScreen.selectVehicleType"),
+                        color: color.black
+                      }}
+                      useNativeAndroidPickerStyle={false}
+                      style={{
+                        inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
+                        iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
+                        placeholder: { color: color.black }
+                      }}
+                      Icon={() => {
+                        return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
+                      }}
+                    />
+                  }}
+                  key={'controller-dropdown-vehicle-type'}
+                  name={"vehicle-type"}
+                  defaultValue=""
+                />}
+
+
+
+
+
+
+
+
+
             </View>
             <View style={HAVE_DUMP_VIEW}>
               <Text tx={"uploadVehicleScreen.haveDump"} style={CONTENT_TEXT} />

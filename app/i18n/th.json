@@ -25,7 +25,8 @@
     "ภาคตะวันตก": "ภาคตะวันตก",
     "ภาคกลาง": "ภาคกลาง",
     "ภาคตะวันออก": "ภาคตะวันออก",
-    "count": "จำนวน"
+    "count": "จำนวน",
+    "search": "ค้นหา ..."
   },
   "bottomTab": {
     "home": "หน้าแรก",
@@ -64,7 +65,20 @@
     "findCar": "หารถ"
   },
   "postJobScreen": {
-    "postjob": "หางาน"
+    "postjob": "หางาน",
+    "vehicleDetailAndProduct": "ข้อมูลรถและสินค้า",
+    "getProductLocation": "จุดรับส่งสินค้า",
+    "checkInformation": "ตรวจสอบข้อมูล",
+    "success": "สำเร็จ",
+    "selectVehicleType": "เลือกประเภทของรถที่คุณต้องการ",
+    "pleaseSelectVehicleType": "กรุณาเลือกประเภทรถ",
+    "vehicleNum": "จำนวนคันรถที่ต้องการ",
+    "itemDetail": "ข้อมูลสินค้าที่ต้องการส่ง",
+    "selectItemType": "กรุณาเลือกประเภทสินค้า",
+    "inputYourItem": "ระบุชื่อสินค้าของคุณ",
+    "weightNumber": "จำนวนน้ำหนัก (ตัน)",
+    "popular": "ยอดนิยม",
+    "4maxType": "ประเภท 4 ล้อ"
   },
   "uploadVehicleScreen": {
     "addVehicle": "เพิ่มรถ",

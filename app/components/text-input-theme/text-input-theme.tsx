@@ -1,6 +1,7 @@
 import React from "react"
 import { TextInput, ViewStyle } from "react-native"
-import { color, spacing, typography } from "../../theme"
+import { color, spacing } from "../../theme"
+// import { Text } from '../text/text'
 /**
  * A component which has a label and an input together.
  */
@@ -16,14 +17,14 @@ const ROOT_STYLE: ViewStyle = {
 export function TextInputTheme(props: any) {
     const { forwardedRef, inputStyle, actualPlaceholder, ...rest } = props
     return (
-        <TextInput
-            testId={"vehicle-upload-input"}
-            placeholder={actualPlaceholder}
-            placeholderTextColor={color.palette.lighterGrey}
-            underlineColorAndroid={color.transparent}
-            {...rest}
-            style={{ ...ROOT_STYLE, ...inputStyle }}
-            ref={forwardedRef}
-        />
+            <TextInput
+                testId={"vehicle-upload-input"}
+                placeholder={actualPlaceholder}
+                placeholderTextColor={color.palette.lighterGrey}
+                underlineColorAndroid={color.transparent}
+                {...rest}
+                style={{ ...ROOT_STYLE, ...inputStyle }}
+                ref={forwardedRef}
+            />
     )
 }

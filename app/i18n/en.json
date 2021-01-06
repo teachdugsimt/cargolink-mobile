@@ -25,7 +25,8 @@
     "ภาคตะวันตก": "west",
     "ภาคกลาง": "center",
     "ภาคตะวันออก": "east",
-    "count": "Count"
+    "count": "Count",
+    "search": "Search ..."
   },
   "bottomTab": {
     "home": "Home",
@@ -65,10 +66,19 @@
   },
   "postJobScreen": {
     "postjob": "post job",
-    "vehicleDetailAndProduct": "car&product detail",
-    "getProductLocation": "get product location",
+    "vehicleDetailAndProduct": "product detail",
+    "getProductLocation": "receive point",
     "checkInformation": "check detail",
-    "success": "success"
+    "success": "success",
+    "selectVehicleType": "Select vehicle ttype",
+    "pleaseSelectVehicleType": "please select vehicle type",
+    "vehicleNum": "How many cars",
+    "itemDetail": "Product detail",
+    "selectItemType": "please select your product type",
+    "inputYourItem": "Product name",
+    "weightNumber": "Weight (T)",
+    "popular": "popular",
+    "4maxType": "ประเภท 4 ล้อ"
   },
   "uploadVehicleScreen": {
     "addVehicle": "Add Vehicle",

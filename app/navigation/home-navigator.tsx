@@ -14,7 +14,7 @@ import {
     DetailScreen, HomeScreen, JobDetailScreen, MyVehicle, PostJobScreen, SearchCarScreen, SearchJobScreen, SettingSearchScreen,
     UploadVehicleScreen, SuccessUpload,
     VehicleDetailScreen,
-    ShipperProfileScreen
+    ShipperProfileScreen, ReceivePointScreen
 } from "../screens"
 import { translate } from "../i18n"
 /**
@@ -42,6 +42,7 @@ export type PrimaryHomeParamList = {
     vehicleDetail: undefined
     uploadSuccess: undefined
     shipperProfile: undefined
+    receivePoint: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -105,7 +106,14 @@ export function HomeNavigator() {
                     headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
                     headerHideShadow: true
                 })}
-
+            />
+            <Stack.Screen name="receivePoint" component={ReceivePointScreen}
+                options={({ navigation, route }) => ({
+                    // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
+                    headerCenter: () => <HeaderCenter tx={"postJobScreen.postjob"} />,
+                    headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+                    headerHideShadow: true
+                })}
             />
 
 
