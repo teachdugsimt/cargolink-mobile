@@ -143,7 +143,6 @@ export const ProfileScreen = observer(function ProfileScreen() {
     }
 
     const _renderVehice = (item, index) => {
-        console.log("ITEM : ", item, index)
         return <TouchableOpacity key={"view-list-" + index} style={ROOT_FLAT_LIST} onPress={() => console.log("Press index : ", index)}>
             <View style={index == ProfileStore.data.vehicle_details.length - 1 ? NORMAL_WRAPPER_LIST : BORDER_BOTTOM}>
                 <View style={VIEW_LIST_IMAGE}>

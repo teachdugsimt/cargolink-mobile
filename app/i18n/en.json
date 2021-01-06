@@ -25,7 +25,8 @@
     "ภาคตะวันตก": "west",
     "ภาคกลาง": "center",
     "ภาคตะวันออก": "east",
-    "count": "Count"
+    "count": "Count",
+    "search": "Search ..."
   },
   "bottomTab": {
     "home": "Home",
@@ -75,7 +76,9 @@
     "itemDetail": "Product detail",
     "selectItemType": "please select your product type",
     "inputYourItem": "Product name",
-    "weightNumber": "Weight (T)"
+    "weightNumber": "Weight (T)",
+    "popular": "popular",
+    "4maxType": "ประเภท 4 ล้อ"
   },
   "uploadVehicleScreen": {
     "addVehicle": "Add Vehicle",

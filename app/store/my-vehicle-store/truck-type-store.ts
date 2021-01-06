@@ -3,11 +3,16 @@ import { TruckTypeApi } from '../../services/api'
 const apiTruckType = new TruckTypeApi()
 
 const truckTypeModel = types.model({
-    // id: types.number,
-    // name: types.string,
+    id: types.number,
+    name: types.string,
+
     // image: types.string,
-    label: types.string,
-    value: types.number,
+
+    // label: types.string,
+    // value: types.number,
+
+
+    
     ID: types.maybeNull(types.number),
     key: types.maybeNull(types.number)
 })
@@ -32,8 +37,10 @@ const TruckTypeStore = types.model({
                 let res = []
                 tmp.forEach((e: any, i: any) => {
                     res.push({
-                        label: e.name,
-                        value: e.id
+                        // label: e.name,
+                        // value: e.id
+                        id: e.id,
+                        name: e.name
                     })
                 })
                 self.data = res

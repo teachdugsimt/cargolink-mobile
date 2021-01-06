@@ -101,40 +101,34 @@ export const AddJobElement = (props: any) => {
 
     const { tx, data } = props
     const _renderCircle = (no, active) => {
-        return <View style={active ? CIRCLE_GREEN_STYLE : CIRCLE_STYLE}>
-            <Text style={SEQUENCE_TEXT}>{no}</Text>
+        return <View key={`${no}-text-sequence-${no}`} style={active ? CIRCLE_GREEN_STYLE : CIRCLE_STYLE}>
+            <Text key={`${no}-text-sequence-2-${no}`} style={SEQUENCE_TEXT}>{no}</Text>
         </View>
     }
 
     return (
-        <View style={{ flex: 1, marginHorizontal: 10 }}>
-            <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'center' }}>
+        <View key="Root-view-column" style={{ flex: 1, marginHorizontal: 10 }}>
+            <View key="root-view-column-2" style={{ flexDirection: 'row', flex: 1, justifyContent: 'center' }}>
                 {data.map((e, i) => {
                     return (
-                        <>
-                            <View style={{ marginTop: 10 }}>
+                            <View key={'view-column-' + i} style={{ marginTop: 10 }}>
                                 <View style={{
-                                    flexDirection: 'row', justifyContent: 'center', 
-                                 }}>
-                                    <View style={{ height: 51, width: 51, }}>
+                                    flexDirection: 'row', justifyContent: 'center',
+                                }} key={'view-column-circle-' + i}>
+                                    <View key={'view-circle-' + i} style={{ height: 51, width: 51, }}>
                                         {_renderCircle(e.no, e.active)}
                                     </View>
-                                    {i != data.length - 1 && <View style={WRAP_LINE}><View style={LINE_STYLE}></View>
+                                    {i != data.length - 1 && <View key={'view-line-' + i} style={WRAP_LINE}>
+                                        <View key={'view-line-2-' + i} style={LINE_STYLE}></View>
                                     </View>}
                                 </View>
 
-                                <View style={{ overflow: 'visible' }}>
-                                    <Text tx={e.name} style={[ROOT_TEXT_STYLE, {
+                                <View key={'view-text-status-' + i} style={{ overflow: 'visible' }}>
+                                    <Text key={'view-text-status-2-' + i} tx={e.name} style={[ROOT_TEXT_STYLE, {
                                         color: e.active ? color.success : color.textWhite,
-                                        // flexWrap: 'wrap', width: (width / 4)
                                     }]} />
                                 </View>
                             </View>
-
-
-                            {/* {i != data.length - 1 && <View style={WRAP_LINE}><View style={LINE_STYLE}></View>
-                            </View>} */}
-                        </>
                     )
                 })}
             </View>
