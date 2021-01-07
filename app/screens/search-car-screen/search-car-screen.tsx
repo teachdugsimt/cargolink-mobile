@@ -186,7 +186,7 @@ export const SearchCarScreen = observer(function SearchCarScreen() {
           {...{
             fromText: 'ภาคกลาง',
             toText: 'ภาคกลาง',
-            navigationTo: 'settingSearch',
+            navigationTo: 'advanceSearch',
             style: SEARCH_BAR
           }}
         />

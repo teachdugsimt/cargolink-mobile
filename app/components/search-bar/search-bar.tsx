@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Dimensions, ImageStyle, Platform, TextStyle, TouchableHighlight, View, ViewStyle } from 'react-native';
 import { color, spacing } from '../../theme';
 import { Button } from '../button/button';
@@ -92,7 +92,9 @@ export function SearchBar(props: SearchBarProps) {
     style,
     navigationTo,
     textStyle,
-    buttonText
+    buttonText,
+    onToggle,
+    onSearch
   } = props
 
   const switching = () => {
@@ -103,11 +105,18 @@ export function SearchBar(props: SearchBarProps) {
   }
 
   const onChangeValue = (value: object) => {
+    console.log('value', value)
     setState(prevState => ({
       ...prevState,
       ...value
     }))
   }
+
+  useEffect(() => {
+    if (firstLocation || secondLocation) {
+      onToggle(firstLocation, secondLocation)
+    }
+  }, [firstLocation, secondLocation])
 
   const textStyleContainer = { ...LOCATION_TEXT, ...textStyle }
 
@@ -200,7 +209,7 @@ export function SearchBar(props: SearchBarProps) {
           style={SEARCH_BOTTON}
           textStyle={SEARCH_TEXT}
           text={buttonText} // ค้นหาโดยละเอียด
-          onPress={() => navigation.navigate(navigationTo)}
+          onPress={onSearch}
         />
       </View>
     </View>

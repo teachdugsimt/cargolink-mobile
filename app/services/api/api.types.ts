@@ -134,5 +134,19 @@ export interface ShipperJobCreate {
   weight: number
 }
 
+export interface ShipperJobAdvanceSearch {
+  descending?: boolean,
+  from?: string,
+  page?: number,
+  productType?: number,
+  rowsPerPage?: number,
+  sortBy?: string,
+  to?: string,
+  truckAmountMax?: number,
+  truckAmountMin?: number,
+  truckType?: number,
+  weight?: number,
+}
+
 export type GetUsersResult = { kind: "ok"; users: User[] } | GeneralApiProblem
 export type GetUserResult = { kind: "ok"; user: User } | GeneralApiProblem

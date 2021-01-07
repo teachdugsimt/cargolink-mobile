@@ -172,7 +172,7 @@ export const FeedbackScreen = observer(function FeedbackScreen() {
                             style={CALL_BUTTON}
                             textStyle={CALL_TEXT}
                             text={translate('common.confirm')}
-                            onPress={() => navigation.navigate('jobDetaili')}
+                            onPress={() => navigation.navigate('jobDetail')}
                         />
                     </View>
 

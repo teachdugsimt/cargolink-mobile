@@ -185,7 +185,7 @@ const initialState = {
   settings: MENUS
 }
 
-export const SettingSearchScreen = observer(function SettingSearchScreen() {
+export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
   const navigation = useNavigation()
 
   const [{ settings }, setState] = useState(initialState)

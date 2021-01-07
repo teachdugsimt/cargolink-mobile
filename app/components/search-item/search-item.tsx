@@ -82,7 +82,8 @@ const CAR_DETAIL_ROOT: TextStyle = {
   ...PADDING_LEFT,
 }
 const CAR_DETAIL: ViewStyle = {
-  flex: 1
+  flex: 1,
+  flexDirection: "row",
 }
 const PACKAGING: ViewStyle = {
   flex: 1
@@ -94,13 +95,15 @@ const CONTENT_RIGHT: ViewStyle = {
   ...PADDING_TOP,
   ...PADDING_BOTTOM,
 }
-const RECOMMENED: TextStyle = {
+const RECOMMENED_ROOT: ViewStyle = {
   backgroundColor: "#1b4262",
+  borderRadius: 5,
+}
+const RECOMMENED: TextStyle = {
   paddingLeft: spacing[2],
   paddingRight: spacing[2],
   paddingTop: spacing[1],
   paddingBottom: spacing[1],
-  borderRadius: 5,
   color: color.textWhite,
   fontSize: 12,
 }
@@ -142,6 +145,8 @@ export function SearchItem(props: SearchItemProps) {
     toText,
     count,
     detail,
+    productName,
+    truckType,
     packaging,
     viewDetail,
     viewDetailToRight,
@@ -167,9 +172,10 @@ export function SearchItem(props: SearchItemProps) {
           <View style={LOCATION}>
             <Icon icon="pinDropYellow" style={PIN_ICON} />
             <Text
-              text={`${translate('common.from')} :`} // จาก
-              style={LOCATION_TEXT}
+              text={`${translate('common.from')}`} // จาก
+              style={[LOCATION_TEXT, { width: 40 }]}
             />
+            <Text style={{ paddingRight: spacing[2] }} text={':'} />
             <Text
               text={fromText}
               style={LOCATION_TEXT}
@@ -179,38 +185,47 @@ export function SearchItem(props: SearchItemProps) {
           <View style={LOCATION}>
             <Icon icon="pinDropGreen" style={PIN_ICON} />
             <Text
-              text={`${translate('common.to')} :`} // ถึง
-              style={LOCATION_TEXT}
+              text={`${translate('common.to')}`} // ถึง
+              style={[LOCATION_TEXT, { width: 40 }]}
             />
+            <Text style={{ paddingRight: spacing[2] }} text={':'} />
             <Text
               text={toText}
               style={LOCATION_TEXT}
+              numberOfLines={1}
             />
           </View>
           <View style={CAR_DETAIL_ROOT}>
             <View style={CAR_DETAIL}>
               <Text
                 style={TEXT}
-                text={`${translate('jobDetailScreen.truckCount')} :`} // จำนวนรถบรรทุก
+                text={`${translate('jobDetailScreen.product')} : `} // จำนวนรถบรรทุก
               />
-              <Text style={TEXT} text={detail} />
+              <Text style={TEXT} text={productName} />
             </View>
-            <View style={PACKAGING}>
+          </View>
+          <View style={CAR_DETAIL_ROOT}>
+            <View style={CAR_DETAIL}>
+              <Text style={TEXT} text={truckType} />
+            </View>
+            <View style={CAR_DETAIL}>
               <Text
                 style={TEXT}
-                text={`${translate('jobDetailScreen.packaging')} :`} // บรรจุภัณฑ์
+                text={`${translate('common.count')} : `} // บรรจุภัณฑ์
               />
-              <Text style={TEXT} text={packaging} />
+              <Text style={TEXT} text={count.toString()} />
             </View>
           </View>
         </View>
         <View style={CONTENT_RIGHT}>
           <Icon icon={isLike ? 'heartActive' : 'heartInactive'} style={HEART_ICON} />
           {isRecommened &&
-            <Text
-              style={RECOMMENED}
-              text={translate('jobDetailScreen.jobRecommend')} // งานแนะนำ
-            />}
+            <View style={RECOMMENED_ROOT}>
+              <Text
+                style={RECOMMENED}
+                text={translate('jobDetailScreen.jobRecommend')} // งานแนะนำ
+              />
+            </View>}
         </View>
       </View>
       <View style={BUTTOM_ROOT}>

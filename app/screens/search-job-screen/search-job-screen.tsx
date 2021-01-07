@@ -1,11 +1,16 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite';
 import { Dimensions, FlatList, TextStyle, View, ViewStyle } from 'react-native';
-import { Button, SearchBar } from '../../components';
+import { Button, ModalLoading, SearchBar } from '../../components';
 import { color, spacing } from '../../theme';
 import { SearchItem } from '../../components/search-item/search-item';
 import { useNavigation } from '@react-navigation/native';
 import { translate } from '../../i18n';
+import ShipperJobStore from "../../store/shipper-job-store/shipper-job-store";
+import { GetTruckType } from '../../utils/get-truck-type'
+import i18n from 'i18n-js'
+import AdvanceSearchStore from "../../store/shipper-job-store/advance-search-store";
+import { provinceListEn, provinceListTh } from '../../screens/home-screen/manage-vehicle/datasource'
 
 interface SubButtonSearch {
   id?: number
@@ -206,20 +211,15 @@ const DATA_SECOND = [
 
 const Item = (data) => {
   const {
-    fromText,
-    toText,
-    count,
-    packaging,
-    detail,
-    viewDetail,
-    postBy,
-    isVerified,
-    isLike,
-    rating,
-    ratingCount,
-    isCrown,
-    isRecommened,
-    logo
+    id,
+    productTypeId,
+    productName,
+    truckType,
+    weight,
+    requiredTruckAmount,
+    from,
+    to,
+    owner,
   } = data
 
   const navigation = useNavigation()
@@ -229,25 +229,30 @@ const Item = (data) => {
       name: 'Hello world'
     })
   }
+
+  const typeOfTruck = GetTruckType(+truckType, i18n.locale).name
+
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
       <SearchItem
         {
         ...{
-          fromText,
-          toText,
-          count,
-          packaging,
-          detail,
-          viewDetail,
-          postBy,
-          isVerified,
-          isLike,
-          rating,
-          ratingCount,
-          isCrown,
-          logo,
-          isRecommened,
+          fromText: from.name,
+          toText: to.map(location => location.name).join(', '),
+          count: requiredTruckAmount,
+          productName: productName,
+          truckType: typeOfTruck,
+          // packaging: productName,
+          // detail,
+          viewDetail: true,
+          postBy: owner.companyName,
+          isVerified: true,
+          // isLike,
+          // rating,
+          // ratingCount,
+          // isCrown,
+          logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
+          isRecommened: true,
           containerStyle: {
             paddingTop: spacing[2],
             borderRadius: 6
@@ -283,6 +288,19 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
   const [data, setData] = useState(DATA_FIRST)
   const [{ subButtons }, setState] = useState(initialState)
 
+  useEffect(() => {
+    ShipperJobStore.find()
+  }, [])
+
+  useEffect(() => {
+    if (ShipperJobStore.list && ShipperJobStore.list.length) {
+      console.log('ShipperJobStore.list', JSON.parse(JSON.stringify(ShipperJobStore.list)))
+    }
+    return () => {
+      // initialState
+    }
+  }, [ShipperJobStore.list])
+
   const renderItem = ({ item }) => (
     <Item {...item} />
   )
@@ -303,16 +321,48 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
     }))
   }
 
+  const onSelectDropdown = (fLocale, sLocale) => {
+    fLocale = fLocale ? (
+      i18n.locale === 'th' ?
+        provinceListTh.filter(n => n.value === fLocale)[0].label :
+        provinceListEn.filter(n => n.value === fLocale)[0].label
+    ) : undefined
+    sLocale = sLocale ? (
+      i18n.locale === 'th' ?
+        provinceListTh.filter(n => n.value === sLocale)[0].label :
+        provinceListEn.filter(n => n.value === sLocale)[0].label
+    ) : undefined
+
+    console.log('fLocale', fLocale)
+    console.log('sLocale', sLocale)
+
+    AdvanceSearchStore.setFilter({
+      descending: true,
+      from: fLocale,
+      to: sLocale
+    })
+  }
+
+  const onSearch = () => {
+    const filter = AdvanceSearchStore.filter
+    ShipperJobStore.find(filter)
+  }
+
+  console.log('AdvanceSearchStore.filter', JSON.parse(JSON.stringify(AdvanceSearchStore.filter)))
+
   return (
     <View style={{ flex: 1 }}>
+      {ShipperJobStore.loading && <ModalLoading size={'large'} color={color.primary} visible={ShipperJobStore.loading} />}
       <View>
         <SearchBar
           {...{
             fromText: translate('common.from'),
             toText: translate('common.to'),
-            navigationTo: 'settingSearch',
+            navigationTo: 'advanceSearch',
             buttonText: translate('searchJobScreen.search'),
-            style: SEARCH_BAR
+            style: SEARCH_BAR,
+            onToggle: (firstLocale, secondLocale) => onSelectDropdown(firstLocale, secondLocale),
+            onSearch: onSearch
           }}
         />
       </View>
@@ -322,7 +372,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
           style={FULL_SEARCH_BOTTON}
           textStyle={FULL_SEARCH_TEXT}
           text={translate('searchJobScreen.fullSearch')} // ค้นหาโดยละเอียด
-          onPress={() => navigation.navigate('settingSearch')}
+          onPress={() => navigation.navigate('advanceSearch')}
         />
         <View style={SUB_BUTTON_CONTAINER}>
           {subButtons.length && subButtons.map(button => {
@@ -339,13 +389,15 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
         </View>
       </View>
       <View style={RESULT_CONTAINER}>
-        <FlatList
-          data={data}
-          renderItem={renderItem}
-          keyExtractor={item => item.id.toString()}
-          onEndReached={() => onScrollList()}
-          onEndReachedThreshold={0.5}
-        />
+        {
+          !!ShipperJobStore.list.length && <FlatList
+            data={ShipperJobStore.list}
+            renderItem={renderItem}
+            keyExtractor={item => item.id}
+            onEndReached={() => onScrollList()}
+            onEndReachedThreshold={0.5}
+          />
+        }
       </View>
     </View>
   )

@@ -11,7 +11,7 @@ import { Icon, Text, HeaderCenter, HeaderLeft, HeaderRight } from "../components
 import { color, images } from '../theme'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import {
-    DetailScreen, HomeScreen, JobDetailScreen, MyVehicle, PostJobScreen, SearchCarScreen, SearchJobScreen, SettingSearchScreen,
+    DetailScreen, HomeScreen, JobDetailScreen, MyVehicle, PostJobScreen, SearchCarScreen, SearchJobScreen, AdvanceSearchScreen,
     UploadVehicleScreen, SuccessUpload,
     VehicleDetailScreen,
     ShipperProfileScreen, ReceivePointScreen, FeedbackScreen
@@ -34,7 +34,7 @@ export type PrimaryHomeParamList = {
     home: undefined
     postjob: undefined
     searchJob: undefined
-    settingSearch: undefined
+    advanceSearch: undefined
     jobDetail: undefined
     searchCar: undefined
     uploadVehicle: undefined
@@ -128,7 +128,7 @@ export function HomeNavigator() {
                     headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
                     headerHideShadow: true
                 })} />
-            <Stack.Screen name="settingSearch" component={SettingSearchScreen}
+            <Stack.Screen name="advanceSearch" component={AdvanceSearchScreen}
                 options={({ navigation, route }) => ({
                     headerRight: () => <Text tx={"searchJobScreen.clear"} onPress={() => console.log('Clear all!!')} />,
                     headerCenter: () => <HeaderCenter tx={"searchJobScreen.settingSearch"} />,

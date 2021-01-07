@@ -5,9 +5,13 @@ export interface SearchItemProps {
 
   toText?: string
 
-  count?: string
+  count?: string | number
 
   detail?: string
+
+  productName?: string
+
+  truckType?: string
 
   packaging?: string
 

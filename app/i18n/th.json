@@ -144,7 +144,8 @@
     "postBy": "โพสโดย",
     "productType": "ประเภทสินค้า",
     "productName": "ชื่อสินค้า",
-    "pickUpPoint": "จุดรับส่งสินค้า"
+    "pickUpPoint": "จุดรับส่งสินค้า",
+    "product": "สินค้า"
   },
   "acceptPolicyScreen": {
     "termAndCondition": "ข้อกำหนดและเงื่อนไข",
