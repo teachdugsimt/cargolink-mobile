@@ -26,7 +26,8 @@
     "ภาคกลาง": "center",
     "ภาคตะวันออก": "east",
     "count": "Count",
-    "search": "Search ..."
+    "search": "Search ...",
+    "requireField": "require field"
   },
   "bottomTab": {
     "home": "Home",
