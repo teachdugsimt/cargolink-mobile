@@ -121,7 +121,7 @@ const RADIO_VIEW: ViewStyle = {
 
 export const MoreScreen = observer(function MoreScreen() {
     const navigation = useNavigation()
-    const { versatileStore } = useStores()
+    const { versatileStore, tokenStore } = useStores()
     const [list, setlist] = useState([
         { label: 'moreScreen.Thai', value: 'th', active: i18n.locale == "th" ? true : false },
         { label: 'moreScreen.English', value: 'en', active: i18n.locale == "en" ? true : false },
@@ -200,7 +200,11 @@ export const MoreScreen = observer(function MoreScreen() {
                 })}
 
                 <View style={{ ...COLUMN, justifyContent: 'flex-end', paddingVertical: 10 }}>
-                    <RoundedButton onPress={() => navigation.navigate("signin")}
+                    <RoundedButton onPress={() => {
+                        tokenStore.clearToken()
+                        navigation.navigate("signin")
+                        console.log("Token after logout :: ", tokenStore.token)
+                    }}
                         text={"homeScreen.logout"}
                         containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT}
                     />

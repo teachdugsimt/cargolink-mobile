@@ -13,6 +13,8 @@ import { useNavigation } from '@react-navigation/native';
 import { translate } from '../../i18n';
 import AuthStore from '../../store/auth-store/auth-store'
 import OTPInputView from '@twotalltotems/react-native-otp-input'
+import { useStores } from "../../models/root-store/root-store-context";
+
 
 const ROOT: ViewStyle = {
   height: Dimensions.get("window").height,
@@ -112,6 +114,8 @@ const initialState = {
 
 export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
   const navigation = useNavigation()
+  const { tokenStore } = useStores()
+
   const [value, setValue] = useState<string>('');
   const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -175,9 +179,12 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
       otp: value
     })
       .then(() => {
-        if (AuthStore.profile && AuthStore.profile.termOfService) {
+        let profile = JSON.parse(JSON.stringify(AuthStore.profile))
+        tokenStore.setToken(profile.token || null)
+        tokenStore.setProfile(profile.userProfile || null)
+        if (profile && profile.termOfService) {
           let screen = 'acceptPolicy'
-          if (AuthStore.profile.termOfService.accepted) {
+          if (profile.termOfService.accepted) {
             screen = 'home'
           }
           clearState()

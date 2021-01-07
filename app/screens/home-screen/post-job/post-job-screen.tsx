@@ -131,11 +131,11 @@ export const PostJobScreen = observer(function PostJobScreen() {
     }, [])
 
     const onSubmit = (data) => {
-
         if (!data['item-type'] || !data['vehicle-type']) AlertForm('common.requireField')
-
-        console.log("Data Form Post job : ", data)
-        // navigation.navigate("receivePoint")
+        else {
+            console.log("Data Form Post job : ", data)
+            navigation.navigate("receivePoint")
+        }
     }
     // 4 ล้อ
     // 6 ล้อ

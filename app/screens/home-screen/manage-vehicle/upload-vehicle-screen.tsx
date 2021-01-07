@@ -25,6 +25,7 @@ import StatusStore from '../../../store/my-vehicle-store/status-vehicle-store'
 import UploadFileStore from '../../../store/my-vehicle-store/upload-file-store'
 import TruckTypeStore from '../../../store/my-vehicle-store/truck-type-store'
 import { Modal, ModalContent } from 'react-native-modals';
+import { useStores } from "../../../models/root-store/root-store-context";
 
 const { width, height } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -155,9 +156,8 @@ let initForm = 0
 export const UploadVehicleScreen = observer((props) => {
   const navigation = useNavigation()
   const [toggleDump, settoggleDump] = useState(false)
-  // const [carRegistration, setcarRegistration] = useState('')
-  // const [province, setprovince] = useState([])
-  // const [region, setregion] = useState([])
+  const { tokenStore } = useStores()
+
 
   const [stateData, setstateData] = useState(null)
 
@@ -335,7 +335,7 @@ export const UploadVehicleScreen = observer((props) => {
             paths: response2.path,
             path: response2.path,
             url: response2.uri,
-            id: null
+            id: tokenStore.profile.id
           }
           if (status == "front") {
             newImageResize.id = 0
@@ -437,11 +437,16 @@ export const UploadVehicleScreen = observer((props) => {
     }
 
     const data_mock_call = {
-      id: 1,
-      carrierId: 1,
+      id: tokenStore.profile.id,
       truckType: data['vehicle-type'],    // ** EDIT 1
-      loadingWeight: 0,
+      // carrierId: 1,
+      loadingWeight: 2,
       stallHeight: Number(data['vehicle-height']),
+
+      // "createdAt": "2020-12-25T07:14:23.687Z",
+      // "updatedAt": "2020-12-25T07:14:23.687Z",
+      // "approveStatus": "Pending",
+
       tipper: toggleDump,
       registeationNumber: [],
       truckPhotos: {
@@ -570,12 +575,13 @@ export const UploadVehicleScreen = observer((props) => {
         region: tmp_province[ir] ? tmp_province[ir] : ""
       })
     })
+    data_mock_call['workingZones'] = [{ region: 1, province: 2 }]
     console.log("Finish FINAL submit data :: ", data_mock_call)
 
     let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
 
     if (editStatus && editStatus == "add") {
-      data_mock_call.id = 1
+      // data_mock_call.id = "7EZQ35Z1"
       CreateVehicleStore.createVehicleProfile(data_mock_call)
       setsubmitReady(true)
     }
@@ -775,7 +781,7 @@ export const UploadVehicleScreen = observer((props) => {
 
 
 
-              
+
               <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible0(true)}>
                 {!dropdown_vehicle_type && <Text style={{ padding: 10 }} tx={"postJobScreen.pleaseSelectVehicleType"} />}
                 {dropdown_vehicle_type && <Text style={{ padding: 10 }}>{JSON.parse(JSON.stringify(TruckTypeStore.data)).find(e => e.id == dropdown_vehicle_type).name}</Text>}
@@ -801,16 +807,16 @@ export const UploadVehicleScreen = observer((props) => {
 
                           <View style={PADDING_TOP}>
                             {list_vehicle && list_vehicle.length && <MultiSelector
-                                                                key="dd-01-type"
-                                                                items={list_vehicle}
-                                                                keyer={"list-vehicle-type-01"}
-                                                                selectedItems={[value]}
-                                                                selectText={translate("postJobScreen.pleaseSelectVehicleType")}
-                                                                onSelectedItemsChange={(val: any) => {
-                                                                    onChange(val[0])
-                                                                    setvisible0(false)
-                                                                }}
-                                                            />}
+                              key="dd-01-type"
+                              items={list_vehicle}
+                              keyer={"list-vehicle-type-01"}
+                              selectedItems={[value]}
+                              selectText={translate("postJobScreen.pleaseSelectVehicleType")}
+                              onSelectedItemsChange={(val: any) => {
+                                onChange(val[0])
+                                setvisible0(false)
+                              }}
+                            />}
                           </View>
 
                           <View>

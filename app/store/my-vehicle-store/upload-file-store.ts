@@ -19,7 +19,7 @@ const UploadFileStore = types
         //     self.file = file;
         // },
         uploadImage: flow(function* (file, position) {
-            fileUploadApi.setup()
+            yield fileUploadApi.setup()
             self.loading = true
             try {
                 console.log('File upload comming :: ', file)

@@ -25,7 +25,7 @@ const TruckTypeStore = types.model({
 
 }).actions(self => ({
     getTruckTypeDropdown: flow(function* getTruckTypeDropdown(params) { // <- note the star, this a generator function!
-        apiTruckType.setup(params)
+        yield apiTruckType.setup(params)
         self.loading = true
         try {
             console.log("Come to this api TRUCK TYPE ;: ", params)

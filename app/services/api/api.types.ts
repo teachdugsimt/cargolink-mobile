@@ -77,6 +77,16 @@ export interface VehicleRequest {
     province?: string,
   }[]
 }
+
+// export interface CreateDataRequest {
+//   car_type: string
+//   tipper: boolean
+//   stallHeight: string
+//   registrationNumber: Array<string>
+//   images: Array<Object>
+//   workingZones: Array<Object>
+// }
+
 export interface PatchDataRequest {
   car_type: string
   tipper: boolean
