@@ -11,7 +11,6 @@ import { GridView } from '../../components/home-element/home-element'
 import i18n from 'i18n-js'
 import MyVehicleStore from "../../store/my-vehicle-store/my-vehicle-store"
 
-
 // import { createServer } from "miragejs"
 // createServer({
 //     routes() {
@@ -71,7 +70,7 @@ const ROOT_HOME: ViewStyle = {
 
 export const HomeScreen = observer((props) => {
     const { books } = BookStore
-    const { signinStore, versatileStore } = useStores()
+    const { signinStore, tokenStore } = useStores()
 
     const navigation = useNavigation()
 
@@ -86,6 +85,7 @@ export const HomeScreen = observer((props) => {
             author: "Author john",
             read: false
         })
+        console.log("TOKEN STORE :: => ", JSON.parse(JSON.stringify(tokenStore.token)))
         console.log("Props useeffect :: ", props)
         console.log("Store signin store :: ", signinStore)
         console.log("All books 111 : ", JSON.parse(JSON.stringify(BookStore.allBooks)))

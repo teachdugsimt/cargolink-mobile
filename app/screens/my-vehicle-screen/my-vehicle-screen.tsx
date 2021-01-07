@@ -33,7 +33,6 @@ const TEXT_ADD: TextStyle = {
 
 export const MyVehicle = observer(function MyVehicle() {
   const navigation = useNavigation()
-
   const onPress = (id: string) => {
     MyVehicleStore.findOneRequest(id)
     navigation.navigate("vehicleDetail")

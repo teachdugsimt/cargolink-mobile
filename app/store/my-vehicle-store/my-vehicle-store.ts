@@ -53,9 +53,9 @@ const MyVehicleStore = types
         error: types.maybeNull(types.string),
     })
     .actions((self) => ({
-        findRequest: flow(function* findRequest(filter?: Types.VehicleFilterRequest | null) {
+        findRequest: flow(function* findRequest( filter?: Types.VehicleFilterRequest | null) {
             // <- note the star, this a generator function!
-            apiMyVehicle.setup()
+            yield apiMyVehicle.setup()
             self.loading = true
             try {
                 const response = yield apiMyVehicle.find(filter)
@@ -71,8 +71,8 @@ const MyVehicleStore = types
             }
         }),
 
-        findOneRequest: flow(function* findOneRequest(id: string) {
-            apiMyVehicle.setup()
+        findOneRequest: flow(function* findOneRequest(id: string ) {
+            yield apiMyVehicle.setup()
             self.loading = true
             try {
                 const response = yield apiMyVehicle.findOne(id)

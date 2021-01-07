@@ -1,7 +1,6 @@
 import { types, flow } from "mobx-state-tree"
 import { AuthAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
-
 const apiAuth = new AuthAPI()
 
 const SignIn = types.model({

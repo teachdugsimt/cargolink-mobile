@@ -50,7 +50,7 @@ const CreateVehicleStore = types.model({
 
 }).actions(self => ({
     createVehicleProfile: flow(function* createVehicleProfile(params) { // <- note the star, this a generator function!
-        apiMyVehicle.setup()
+        yield apiMyVehicle.setup()
         self.loading = true
         try {
             // ... yield can be used in async/await style
@@ -73,7 +73,7 @@ const CreateVehicleStore = types.model({
     }),
     patchVehicleDetailsRequest: flow(function* findRequest(params: Types.PatchDataRequest) {
         // <- note the star, this a generator function!
-        apiMyVehicle.setup()
+        yield apiMyVehicle.setup()
         self.loadingPatchMyVehicle = true
         try {
             const response = yield apiMyVehicle.patchMyVehicle(params)
