@@ -19,6 +19,8 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 import { TouchableOpacity } from "react-native-gesture-handler"
 import MyVehicleStore from '../../store/my-vehicle-store/my-vehicle-store'
 import StatusStore from '../../store/my-vehicle-store/status-vehicle-store'
+import { GetTruckType } from "../../utils/get-truck-type";
+import i18n from 'i18n-js';
 
 const deviceWidht = Dimensions.get("window").width
 const deviceHeight = Dimensions.get("window").height
@@ -113,8 +115,7 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
 
   const [{ openViewer, indexOfImage }, setState] = useState(initialState)
   const {
-    car_type,
-    image_car_type,
+    truckType,
     stallHeight,
     tipper,
     // imageTransform,
@@ -154,6 +155,8 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
       return { url: img[1] }
     }) : []
 
+  const txtTruckType = GetTruckType(truckType, i18n.locale)
+
   return (
     <View style={CONTAINER}>
       {MyVehicleStore.loading && <ModalLoading size={'large'} color={color.primary} visible={MyVehicleStore.loading} />}
@@ -191,9 +194,9 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
           </View>
           <View style={{ ...ROW, alignItems: "center" }}>
             <View style={OUTER_CIRCLE}>
-              <Image source={imageComponent[image_car_type ? image_car_type : "truck17"]} style={LOGO} />
+              <Image source={imageComponent[truckType ? `truck${truckType}` : "truck17"]} style={LOGO} />
             </View>
-            <Text style={TYPE_CAR_NAME} text={car_type} />
+            <Text style={TYPE_CAR_NAME} text={txtTruckType && txtTruckType.name ? txtTruckType.name : ''} />
           </View>
           <View style={ROW}>
             <View style={SUB_TOPIC_ROOT}>
