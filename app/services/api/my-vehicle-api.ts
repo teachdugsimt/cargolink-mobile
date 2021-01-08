@@ -40,7 +40,6 @@ export class MyVehicleAPI {
   async setup() {
     let to = await this.getToken()
     .then(val => {
-        console.log("Val then token :: ", val)
         return val.tokenStore.token.accessToken || ''
     })
     // console.log("Setup header token my-vehicle-api :: ", token)

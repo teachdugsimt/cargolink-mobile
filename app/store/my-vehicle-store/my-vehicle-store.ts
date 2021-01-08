@@ -5,8 +5,8 @@ import { vehicleEn, vehicleTh } from '../../screens/home-screen/manage-vehicle/d
 const apiMyVehicle = new MyVehicleAPI()
 
 const Region = types.model({
-    region: types.string,
-    province: types.string
+    region: types.maybeNull(types.number),
+    province: types.maybeNull(types.number)
 })
 
 const VehicleImage = types.model({
@@ -21,12 +21,13 @@ const TransformVehicleImage = types.model({
 })
 
 const vehicleModel = {
+    approveStatus: types.maybeNull(types.string),
+    createdAt: types.maybeNull(types.string),
     id: types.maybeNull(types.string), // [PENDING] types.number
+
+    updatedAt: types.maybeNull(types.string),
     registrationNumber: types.maybeNull(types.array(types.string)),
     car_type: types.maybeNull(types.number),
-    createdAt: types.maybeNull(types.string),
-    updatedAt: types.maybeNull(types.string),
-    approveStatus: types.maybeNull(types.string),
     image_car_type: types.maybeNull(types.string),
     owner: types.maybeNull(types.model({})),
 }
@@ -59,15 +60,15 @@ const MyVehicleStore = types
             self.loading = true
             try {
                 const response = yield apiMyVehicle.find(filter)
-                console.log("Response call api get user : : ", response)
+                console.log("Response call api findRequest ::  ", response)
                 self.list = response.data || []
                 self.loading = false
             } catch (error) {
                 // ... including try/catch error handling
-                console.error("Failed to fetch get users api : ", error)
+                console.error("Failed to fetch findRequest api : ", error)
                 // self.data = []
                 self.loading = false
-                self.error = "error fetch api get users"
+                self.error = "error fetch api findRequest"
             }
         }),
 
@@ -76,7 +77,7 @@ const MyVehicleStore = types
             self.loading = true
             try {
                 const response = yield apiMyVehicle.findOne(id)
-                console.log("Response call api get user : : ", response)
+                console.log("Response call api findOneRequest : : ", response)
                 if (response.kind === 'ok') {
                     // const images = response.data.truckPhotos &&
                     //     Object.keys(response.data.truckPhotos).length ?
@@ -94,10 +95,10 @@ const MyVehicleStore = types
                 self.loading = false
             } catch (error) {
                 // ... including try/catch error handling
-                console.error("Failed to fetch get users api : ", error)
+                console.error("Failed to fetch findOneRequest api : ", error)
                 // self.data = []
                 self.loading = false
-                self.error = "error fetch api get users"
+                self.error = "error fetch api findOneRequest"
             }
         }),
 

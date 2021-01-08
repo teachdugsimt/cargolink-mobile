@@ -24,6 +24,7 @@ import MyVehicleStore from '../../../store/my-vehicle-store/my-vehicle-store'
 import StatusStore from '../../../store/my-vehicle-store/status-vehicle-store'
 import UploadFileStore from '../../../store/my-vehicle-store/upload-file-store'
 import TruckTypeStore from '../../../store/my-vehicle-store/truck-type-store'
+import AddressStore from '../../../store/my-vehicle-store/address-store'
 import { Modal, ModalContent } from 'react-native-modals';
 import { useStores } from "../../../models/root-store/root-store-context";
 
@@ -164,6 +165,8 @@ export const UploadVehicleScreen = observer((props) => {
 
   useEffect(() => {
 
+    AddressStore.getRegion(i18n.locale)
+    AddressStore.getProvince(i18n.locale)
     TruckTypeStore.getTruckTypeDropdown(i18n.locale)
 
 
@@ -339,22 +342,26 @@ export const UploadVehicleScreen = observer((props) => {
           }
           if (status == "front") {
             newImageResize.id = 0
-            _uploadFile(newImageResize, 'front')
+            _uploadFile(response2, 'front')
+            // _uploadFile(newImageResize, 'front')
             setfileFront(newImageResize);
           }
           else if (status == "back") {
             newImageResize.id = 1
-            _uploadFile(newImageResize, 'back')
+            _uploadFile(response2, 'back')
+            // _uploadFile(newImageResize, 'back')
             setfileBack(newImageResize);
           }
           else if (status == "left") {
             newImageResize.id = 2
-            _uploadFile(newImageResize, 'left')
+            _uploadFile(response2, 'left')
+            // _uploadFile(newImageResize, 'left')
             setfileLeft(newImageResize);
           }
           else if (status == "right") {
             newImageResize.id = 3
-            _uploadFile(newImageResize, 'right')
+            _uploadFile(response2, 'right')
+            // _uploadFile(newImageResize, 'right')
             setfileRight(newImageResize);
           }
           // ****** Send this to API ******
@@ -437,18 +444,20 @@ export const UploadVehicleScreen = observer((props) => {
     }
 
     const data_mock_call = {
-      id: tokenStore.profile.id,
+      // id: tokenStore.profile.id,
+      carrierId: tokenStore.profile.id,
       truckType: data['vehicle-type'],    // ** EDIT 1
-      // carrierId: 1,
+
       loadingWeight: 2,
       stallHeight: Number(data['vehicle-height']),
 
+      tipper: toggleDump,
+      registrationNumber: [],
       // "createdAt": "2020-12-25T07:14:23.687Z",
       // "updatedAt": "2020-12-25T07:14:23.687Z",
       // "approveStatus": "Pending",
 
-      tipper: toggleDump,
-      registeationNumber: [],
+     
       truckPhotos: {
         front: null,
         back: null,
@@ -566,7 +575,7 @@ export const UploadVehicleScreen = observer((props) => {
         tmp_registration.push(data[key])
     })
 
-    data_mock_call.registeationNumber = tmp_registration
+    data_mock_call.registrationNumber = tmp_registration
 
 
     tmp_region.map((reg, ir) => {
@@ -581,7 +590,7 @@ export const UploadVehicleScreen = observer((props) => {
     let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
 
     if (editStatus && editStatus == "add") {
-      // data_mock_call.id = "7EZQ35Z1"
+      data_mock_call.truckPhotos = null
       CreateVehicleStore.createVehicleProfile(data_mock_call)
       setsubmitReady(true)
     }
@@ -684,6 +693,7 @@ export const UploadVehicleScreen = observer((props) => {
     if (initForm == 0) {
       initForm = 1
       if (editStatus && editStatus == "edit") {
+        console.log("Initt data :: => ", initData)
         if (initData && initData.registrationNumber.length) {
           initData.registrationNumber.map((e, i) => {
             addTextInput(i)

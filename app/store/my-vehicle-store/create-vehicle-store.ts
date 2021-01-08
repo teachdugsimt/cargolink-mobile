@@ -4,8 +4,8 @@ import * as Types from "../../services/api/api.types"
 const apiMyVehicle = new MyVehicleAPI()
 
 const Region = types.model({
-    region: types.string,
-    province: types.maybeNull(types.string)
+    region: types.maybeNull(types.number),
+    province: types.maybeNull(types.number)
 })
 
 const ImageType = types.model({
@@ -16,14 +16,29 @@ const ImageType = types.model({
 })
 
 const VehicleNew = types.model({
-    carrierId: types.number,
+    approveStatus: types.maybeNull(types.string),
+    createdAt: types.maybeNull(types.string),
+    id: types.maybeNull(types.string),
+
     loadingWeight: types.maybeNull(types.number),
-    registrationNumber: types.array(types.string),
+    registrationNumber: types.maybeNull(types.array(types.string)),
     stallHeight: types.number,
-    tipper: types.boolean,
+    tipper: types.maybeNull(types.boolean),
     truckPhotos: types.maybeNull(ImageType),
-    truckType: types.number,
+    truckType: types.maybeNull(types.number),
+    updatedAt: types.maybeNull(types.string),
     workingZones: types.array(Region)
+    // carrierId: types.number,
+
+
+    // carrierId: types.number,
+    // loadingWeight: types.maybeNull(types.number),
+    // registrationNumber: types.array(types.string),
+    // stallHeight: types.number,
+    // tipper: types.boolean,
+    // truckPhotos: types.maybeNull(ImageType),
+    // truckType: types.number,
+    // workingZones: types.array(Region)
 })
 
 const VehiclePatch = types.model({
@@ -57,7 +72,7 @@ const CreateVehicleStore = types.model({
             const response = yield apiMyVehicle.createVehicleProfile(params)
             console.log("Response call create upload vehicle : : ", response)
             if (response.ok) {
-                self.data = response.data.reminder || {}
+                self.data = response.data || {}
                 self.loading = false
             } else {
                 self.loading = false
