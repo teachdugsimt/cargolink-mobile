@@ -24,6 +24,8 @@ const UploadFileStore = types
             try {
                 console.log('File upload comming :: ', file)
                 // let formData = new FormData();
+                // formData.append("file", file)
+
                 // formData.append('file', file);
                 // formData.append('fullPath', file.paths)
                 // formData.append('fullPathWithoutFile', file.paths.slice(0, file.paths.lastIndexOf('/')))

@@ -41,7 +41,6 @@ export class FileUploadApi {
     // construct the apisauce instance
     let to = await this.getToken()
       .then(val => {
-        console.log("Val then token :: ", val)
         return val.tokenStore.token.accessToken || ''
       })
 

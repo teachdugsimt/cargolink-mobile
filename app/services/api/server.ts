@@ -143,7 +143,7 @@ export function makeServer({ environment = 'development' } = {}) {
                 let attrs = JSON.parse(request.requestBody)
                 attrs.id = my_vehicle_id++
                 // server.db.vehicles.firstOrCreate(JSON.parse(request.requestBody))
-                return { reminder: attrs }
+                return { ...attrs }
             })
 
             this.put(`${API_URL}api/v1/mobile/carriers/truck/edit/1`, (schema, request) => {
