@@ -27,7 +27,8 @@
     "ภาคตะวันออก": "east",
     "count": "Count",
     "search": "Search ...",
-    "requireField": "require field"
+    "requireField": "require field",
+    "licensePlate": "License plate"
   },
   "bottomTab": {
     "home": "Home",

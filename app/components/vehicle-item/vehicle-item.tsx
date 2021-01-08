@@ -1,6 +1,5 @@
 import React from "react"
 import {
-  Dimensions,
   ImageBackground,
   ImageStyle,
   TextStyle,
@@ -11,8 +10,6 @@ import {
 import { VehicleItemProps } from "./vehicle-item.prop"
 import { color, images, spacing } from "../../theme"
 import { Text } from ".."
-import { translate } from "../../i18n"
-import { isArray } from "validate.js"
 
 const BORDER_RADIUS = { borderRadius: 4 }
 const CONTAINER: ViewStyle = {
@@ -29,14 +26,6 @@ const CONTAINER: ViewStyle = {
 }
 const ROW: ViewStyle = {
   flexDirection: "row",
-}
-// const TOPIC: TextStyle = {
-//   fontSize: 16,
-//   fontFamily: 'Kanit-Bold',
-// }
-const STATUS_VIEW: ViewStyle = {
-  ...BORDER_RADIUS,
-  backgroundColor: color.disable,
 }
 const STATUS_TEXT: TextStyle = {
   color: color.primary,
@@ -57,11 +46,9 @@ const INFORMATION_DATE: TextStyle = {
 }
 const IMAGE: ImageStyle = {
   position: "absolute",
-  // height: Dimensions.get('window').height / 8,
   height: 85,
   right: spacing[2],
   bottom: spacing[1],
-  // resizeMode: 'stretch',
   aspectRatio: 4 / 2,
 }
 
@@ -81,31 +68,26 @@ export function VehicleItem(props: VehicleItemProps) {
     ...rest
   } = props
 
-  // const deviceHeight = Dimensions.get("window").height
-  const displayTopic = isArray(topic) && topic.length > 1 ? `${topic[0]}, ...` : topic
-
   return (
     <TouchableOpacity testID={"list-vehicle"} {...rest} onPress={onPress || null} style={{ height: 150, flex: 1 }}>
       <View style={{ ...CONTAINER, ...containerStyle }}>
         <View style={{ ...ROW, justifyContent: "space-between" }}>
-          <Text style={{ ...topicStyle }} text={displayTopic} preset={'topicExtra'} />
-          {/* <View style={STATUS_VIEW}> */}
+          <Text style={{ ...topicStyle }} text={topic} preset={'topicExtra'} numberOfLines={1} />
           <Text style={{ ...STATUS_TEXT, ...statusStyle }} text={status} />
-          {/* </View> */}
         </View>
         <View style={ROW}>
           <Text
             style={{ ...SUB_TOPIC, ...subTopicStyle }}
-            text={`${translate("myVehicleScreen.type")} ${subTopic}`}
+            text={subTopic}
           />
         </View>
         <View style={{ ...ROW, flex: 3, alignItems: "flex-end" }}>
           <Text
             style={INFORMATION_DATE}
-            text={`${translate("myVehicleScreen.informationAt")} ${updatedDate}`}
+            text={updatedDate}
           />
         </View>
-        <ImageBackground source={images[`${image}`]} resizeMode={'contain'} style={{ ...IMAGE, ...imageStyle }} />
+        <ImageBackground source={images[`truck${image}`]} resizeMode={'contain'} style={{ ...IMAGE, ...imageStyle }} />
       </View>
     </TouchableOpacity>
   )

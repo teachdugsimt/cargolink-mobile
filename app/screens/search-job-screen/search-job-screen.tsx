@@ -281,6 +281,7 @@ const SUB_BUTTON: Array<SubButtonSearch> = [
 const initialState = {
   subButtons: SUB_BUTTON,
   page: 1,
+
 }
 
 export const SearchJobScreen = observer(function SearchJobScreen() {

@@ -16,31 +16,22 @@ const VehicleImage = types.model({
     right: types.maybeNull(types.string),
 })
 
-const TransformVehicleImage = types.model({
-    url: types.maybeNull(types.string)
-})
-
 const vehicleModel = {
     approveStatus: types.maybeNull(types.string),
     createdAt: types.maybeNull(types.string),
     id: types.maybeNull(types.string), // [PENDING] types.number
-
     updatedAt: types.maybeNull(types.string),
     registrationNumber: types.maybeNull(types.array(types.string)),
-    car_type: types.maybeNull(types.number),
-    image_car_type: types.maybeNull(types.string),
-    owner: types.maybeNull(types.model({})),
+    truckType: types.maybeNull(types.number),
+    stallHeight: types.maybeNull(types.number),
+    tipper: types.maybeNull(types.boolean),
+    loadingWeight: types.maybeNull(types.number),
 }
 
 const fullVehicleModel = {
     ...vehicleModel,
-    stallHeight: types.maybeNull(types.number),
-    tipper: types.maybeNull(types.boolean),
     truckPhotos: types.maybeNull(VehicleImage),
-    workingZones: types.array(Region),
-    loadingWeight: types.maybeNull(types.number),
-    truckType: types.maybeNull(types.number),
-    // imageTransform: types.maybeNull(types.array(TransformVehicleImage))
+    workingZones: types.maybeNull(types.array(Region))
 }
 
 const Vehicle = types.model(vehicleModel)
@@ -54,7 +45,7 @@ const MyVehicleStore = types
         error: types.maybeNull(types.string),
     })
     .actions((self) => ({
-        findRequest: flow(function* findRequest( filter?: Types.VehicleFilterRequest | null) {
+        findRequest: flow(function* findRequest(filter?: Types.VehicleFilterRequest | null) {
             // <- note the star, this a generator function!
             yield apiMyVehicle.setup()
             self.loading = true
@@ -72,7 +63,7 @@ const MyVehicleStore = types
             }
         }),
 
-        findOneRequest: flow(function* findOneRequest(id: string ) {
+        findOneRequest: flow(function* findOneRequest(id: string) {
             yield apiMyVehicle.setup()
             self.loading = true
             try {
@@ -103,15 +94,14 @@ const MyVehicleStore = types
         }),
 
         setDefaultOfData: flow(function* setDefaultOfData() {
-            self.data = cast({
+            self.data = {
                 id: '',
-                registrationNumber: [''],
-                car_type: 0,
+                registrationNumber: cast(['']),
+                truckType: null,
+                loadingWeight: 0,
                 createdAt: '',
                 updatedAt: '',
                 approveStatus: '',
-                image_car_type: 'defaultImage',
-                owner: {},
                 stallHeight: 0,
                 tipper: false,
                 truckPhotos: {
@@ -120,13 +110,11 @@ const MyVehicleStore = types
                     left: 'defaultImage',
                     right: 'defaultImage',
                 },
-                // imageTransform: [
-                //     { url: 'defaultImage' },
-                //     { url: 'defaultImage' },
-                //     { url: 'defaultImage' },
-                //     { url: 'defaultImage' }
-                // ]
-            })
+                workingZones: cast([{
+                    region: 1,
+                    province: 1
+                }])
+            }
         }),
     }))
     .views((self) => ({
@@ -138,7 +126,7 @@ const MyVehicleStore = types
                 console.log("Self data mapping to EDIT :: ", self.data)
                 let dataInit = {
                     "vehicle-height": self.data.stallHeight ? self.data.stallHeight.toString() : '',
-                    "vehicle-type": self.data.car_type
+                    "vehicle-type": self.data.truckType
                 }
 
                 if (self.data.registrationNumber && self.data.registrationNumber.length) {
