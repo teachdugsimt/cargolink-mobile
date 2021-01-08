@@ -6,6 +6,8 @@ import { addMsg } from 'jest-html-reporters/helper'
 
 const { API_URL } = require("../../config/env")
 
+const shipperJob = new ShipperJobAPI()
+
 jest.mock('./api-problem', () => {
     return {
         getGeneralApiProblem: (response) => {
@@ -44,23 +46,33 @@ jest.mock('./api-problem', () => {
     }
 })
 
-const shipperJob = new ShipperJobAPI()
-shipperJob.setup();
-shipperJob.apisauce.headers.Authorization = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2MTEiLCJBVVRIIjpbeyJhdXRob3JpdHkiOiJSRVNFVF9QV0QifSx7ImF1dGhvcml0eSI6IlZJRVdfVkVISUNMRSJ9LHsiYXV0aG9yaXR5IjoiQUREX09SREVSIn0seyJhdXRob3JpdHkiOiJMSVNUX1RSSVAifSx7ImF1dGhvcml0eSI6IlJFR19BQ0MifSx7ImF1dGhvcml0eSI6Ik1PRElGWV9EUklWRVIifSx7ImF1dGhvcml0eSI6IlJPTEVfU0hJUFBFUiJ9LHsiYXV0aG9yaXR5IjoiTU9ESUZZX1JPVVRFIn0seyJhdXRob3JpdHkiOiJTT0ZUX0RFTEVURV9WRUhJQ0xFIn0seyJhdXRob3JpdHkiOiJTT0ZUX0RFTEVURV9ST1VURSJ9LHsiYXV0aG9yaXR5IjoiUk9MRV9DQVJSSUVSIn0seyJhdXRob3JpdHkiOiJDT05GSVJNX09SREVSIn0seyJhdXRob3JpdHkiOiJNT0RJRllfSU5GTyJ9LHsiYXV0aG9yaXR5IjoiU09GVF9ERUxFVEVfT1JERVIifSx7ImF1dGhvcml0eSI6IlNJR05PVVQifSx7ImF1dGhvcml0eSI6IlJFUExZX09SREVSIn0seyJhdXRob3JpdHkiOiJSRVBPUlRfVFJBTlMifSx7ImF1dGhvcml0eSI6IlZFUklGWV9DT05UQUNUIn0seyJhdXRob3JpdHkiOiJBRERfVFJJUCJ9LHsiYXV0aG9yaXR5IjoiTElTVF9WRUhJQ0xFIn0seyJhdXRob3JpdHkiOiJVUERBVEVfUFJPRklMRSJ9LHsiYXV0aG9yaXR5IjoiTElTVF9EUklWRVIifSx7ImF1dGhvcml0eSI6IkFERF9EUklWRVIifSx7ImF1dGhvcml0eSI6IkNIQU5HRV9QV0QifSx7ImF1dGhvcml0eSI6IkRFVEFJTF9UUkFOUyJ9LHsiYXV0aG9yaXR5IjoiTU9ESUZZX09SREVSIn0seyJhdXRob3JpdHkiOiJTSUdOSU4ifSx7ImF1dGhvcml0eSI6IlNPRlRfREVMRVRFX0RSSVZFUiJ9LHsiYXV0aG9yaXR5IjoiTU9ESUZZX1ZFSElDTEUifSx7ImF1dGhvcml0eSI6IlVQTE9BRF9ET0NTIn0seyJhdXRob3JpdHkiOiJBRERfVFJBTlMifSx7ImF1dGhvcml0eSI6IkFERF9WRUhJQ0xFIn0seyJhdXRob3JpdHkiOiJBU1NJR05fVkVISUNMRV9EUklWRVIifSx7ImF1dGhvcml0eSI6IkxJU1RfT1JERVIifSx7ImF1dGhvcml0eSI6IkFERF9ST1VURSJ9XSwiZXhwIjoxNjA5ODU5Nzg2fQ.BN1DOtl8nSKEIUYQZNjccxpGk3Fr595b9UxVT9F8GuImm2nG9wvTfeIscEF44wfD3N3upu335rbT8wR1xZ9HVg'
+jest.mock('../../utils/storage', () => {
+    return {
+        load: (val) => {
+            return {
+                tokenStore: {
+                    token: {
+                        accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2MTEiLCJBVVRIIjpbeyJhdXRob3JpdHkiOiJSRVNFVF9QV0QifSx7ImF1dGhvcml0eSI6IlZJRVdfVkVISUNMRSJ9LHsiYXV0aG9yaXR5IjoiQUREX09SREVSIn0seyJhdXRob3JpdHkiOiJMSVNUX1RSSVAifSx7ImF1dGhvcml0eSI6IlJFR19BQ0MifSx7ImF1dGhvcml0eSI6Ik1PRElGWV9EUklWRVIifSx7ImF1dGhvcml0eSI6IlJPTEVfU0hJUFBFUiJ9LHsiYXV0aG9yaXR5IjoiTU9ESUZZX1JPVVRFIn0seyJhdXRob3JpdHkiOiJTT0ZUX0RFTEVURV9WRUhJQ0xFIn0seyJhdXRob3JpdHkiOiJTT0ZUX0RFTEVURV9ST1VURSJ9LHsiYXV0aG9yaXR5IjoiUk9MRV9DQVJSSUVSIn0seyJhdXRob3JpdHkiOiJDT05GSVJNX09SREVSIn0seyJhdXRob3JpdHkiOiJNT0RJRllfSU5GTyJ9LHsiYXV0aG9yaXR5IjoiU09GVF9ERUxFVEVfT1JERVIifSx7ImF1dGhvcml0eSI6IlNJR05PVVQifSx7ImF1dGhvcml0eSI6IlJFUExZX09SREVSIn0seyJhdXRob3JpdHkiOiJSRVBPUlRfVFJBTlMifSx7ImF1dGhvcml0eSI6IlZFUklGWV9DT05UQUNUIn0seyJhdXRob3JpdHkiOiJBRERfVFJJUCJ9LHsiYXV0aG9yaXR5IjoiTElTVF9WRUhJQ0xFIn0seyJhdXRob3JpdHkiOiJVUERBVEVfUFJPRklMRSJ9LHsiYXV0aG9yaXR5IjoiTElTVF9EUklWRVIifSx7ImF1dGhvcml0eSI6IkFERF9EUklWRVIifSx7ImF1dGhvcml0eSI6IkNIQU5HRV9QV0QifSx7ImF1dGhvcml0eSI6IkRFVEFJTF9UUkFOUyJ9LHsiYXV0aG9yaXR5IjoiTU9ESUZZX09SREVSIn0seyJhdXRob3JpdHkiOiJTSUdOSU4ifSx7ImF1dGhvcml0eSI6IlNPRlRfREVMRVRFX0RSSVZFUiJ9LHsiYXV0aG9yaXR5IjoiTU9ESUZZX1ZFSElDTEUifSx7ImF1dGhvcml0eSI6IlVQTE9BRF9ET0NTIn0seyJhdXRob3JpdHkiOiJBRERfVFJBTlMifSx7ImF1dGhvcml0eSI6IkFERF9WRUhJQ0xFIn0seyJhdXRob3JpdHkiOiJBU1NJR05fVkVISUNMRV9EUklWRVIifSx7ImF1dGhvcml0eSI6IkxJU1RfT1JERVIifSx7ImF1dGhvcml0eSI6IkFERF9ST1VURSJ9XSwiZXhwIjoxNjEwMTIzODkwfQ.VEshqNw4fNdyszYSgJvpRsj1opbXNTVkh_fkNvtJhpTMNk5RdW2lNc5Dbw4GYsqKRBA30q2QhX8cLJoWgEll3g"
+                    }
+                }
+            }
+        }
+    }
+})
 
 let jobId = ''
 const weight = Math.floor(Math.random() * (999 - 100 + 1) + 100)
 
 const initialData = {
-    expiredTime: date.format(new Date(Math.floor(Date.now()) + (48 * 60 * 60 * 1000)), 'DD-MM-YYYY HH:ss'),
+    expiredTime: date.format(new Date(Math.floor(Date.now()) + (48 * 60 * 60 * 1000)), 'DD-MM-YYYY HH:mm'),
     from: {
         contactMobileNo: '0998999988',
         contactName: 'Onelink Space',
-        dateTime: date.format(new Date(Math.floor(Date.now()) + (60 * 1000)), 'DD-MM-YYYY HH:ss'),
+        dateTime: date.format(new Date(Math.floor(Date.now()) + (60 * 1000)), 'DD-MM-YYYY HH:mm'),
         // dateTime: '05-01-2021 14:27',
         lat: '14.028891',
         lng: '99.570953',
-        name: 'Onelink'
+        name: 'นครปฐม'
     },
     note: 'Etc.',
     productName: 'อุปกรณ์การเกษตร',
@@ -68,19 +80,19 @@ const initialData = {
     to: [
         {
             contactMobileNo: '0899388403',
-            contactName: 'Linda Eye Clinic',
-            dateTime: date.format(new Date(Math.floor(Date.now()) + (24 * 60 * 60 * 1000)), 'DD-MM-YYYY HH:ss'),
+            contactName: 'Dark Zone',
+            dateTime: date.format(new Date(Math.floor(Date.now()) + (24 * 60 * 60 * 1000)), 'DD-MM-YYYY HH:mm'),
             lat: '18.779385738847306',
             lng: '98.97699335637284',
-            name: 'Linda Eye Clinic'
+            name: 'ราชบุรี'
         },
         {
             contactMobileNo: '0990999811',
-            contactName: 'Master',
-            dateTime: date.format(new Date(Math.floor(Date.now()) + (32 * 60 * 60 * 1000)), 'DD-MM-YYYY HH:ss'),
+            contactName: 'Master X',
+            dateTime: date.format(new Date(Math.floor(Date.now()) + (32 * 60 * 60 * 1000)), 'DD-MM-YYYY HH:mm'),
             lat: '9.138682091131729',
             lng: '99.27335713028324',
-            name: 'Suratthani Rajabhat University'
+            name: 'กาญจนบุรี'
         }
     ],
     truckAmount: 2,
@@ -89,6 +101,8 @@ const initialData = {
 }
 
 beforeAll(async () => {
+    await shipperJob.setup();
+
     const result = await shipperJob.create(initialData);
     const list = await shipperJob.find()
     const data = list.data.filter(d => d.weight === weight)
@@ -186,7 +200,7 @@ describe('Test API Success', () => {
     it('Should be return all jobs of filter when find all success and body.productType have value', async (done) => {
         // Input
         const filter = {
-            productType: initialData.productTypeId
+            productType: [initialData.productTypeId]
         }
         await addMsg(JSON.stringify(filter, null, 2))
 
@@ -203,7 +217,7 @@ describe('Test API Success', () => {
     it('Should be return all jobs of filter when find all success and body.truckType have value', async (done) => {
         // Input
         const filter = {
-            truckType: "7"
+            truckType: ["7"]
         }
         await addMsg(JSON.stringify(filter, null, 2))
 
@@ -469,7 +483,7 @@ describe('Test API Failured', () => {
         it('Should be return NETWORK_ERROR and status 403 when auth failured', async () => {
             const filter = initialFilter
             const mock = new MockAdapter(shipperJob.apisauce.axiosInstance);
-            mock.onGet(`${API_URL}/api/v1/mobile/shippers/jobs`, filter).reply(403, {
+            mock.onPost(`${API_URL}/api/v1/mobile/shippers/jobs/list`, filter).reply(403, {
                 error: {
                     statusCode: '403',
                     name: 'NETWORK_ERROR',
@@ -494,7 +508,7 @@ describe('Test API Failured', () => {
         it('Should be return TIMEOUT_ERROR when auth failured', async () => {
             const filter = initialFilter
             const mock = new MockAdapter(shipperJob.apisauce.axiosInstance);
-            mock.onGet(`${API_URL}/api/v1/mobile/shippers/jobs`, filter).timeoutOnce()
+            mock.onPost(`${API_URL}/api/v1/mobile/shippers/jobs/list`, filter).timeoutOnce()
 
             await addMsg(JSON.stringify(filter, null, 2))
 
@@ -507,7 +521,7 @@ describe('Test API Failured', () => {
         it('Should be return NETWORK_ERROR and kind = cannot-connect when auth failured', async () => {
             const filter = initialFilter
             const mock = new MockAdapter(shipperJob.apisauce.axiosInstance);
-            mock.onGet(`${API_URL}/api/v1/mobile/shippers/jobs`, filter).networkErrorOnce()
+            mock.onPost(`${API_URL}/api/v1/mobile/shippers/jobs/list`, filter).networkErrorOnce()
 
             await addMsg(JSON.stringify(filter, null, 2))
 
@@ -520,7 +534,7 @@ describe('Test API Failured', () => {
         it('Should be return SERVER_ERROR when api reject', async () => {
             const filter = initialFilter
             const mock = new MockAdapter(shipperJob.apisauce.axiosInstance);
-            mock.onGet(`${API_URL}/api/v1/mobile/shippers/jobs`, filter).replyOnce(500, () => {
+            mock.onPost(`${API_URL}/api/v1/mobile/shippers/jobs/list`, filter).replyOnce(500, () => {
                 throw { message: 'CONNECTION_ERROR' }
             })
 
@@ -536,7 +550,7 @@ describe('Test API Failured', () => {
         it('Should be return error when api throw error', async () => {
             const filter = initialFilter
             const mock = new MockAdapter(shipperJob.apisauce.axiosInstance);
-            mock.onGet(`${API_URL}/api/v1/mobile/shippers/jobs`, filter).replyOnce(503)
+            mock.onPost(`${API_URL}/api/v1/mobile/shippers/jobs/list`, filter).replyOnce(503)
 
             await addMsg(JSON.stringify(filter, null, 2))
 

@@ -46,7 +46,7 @@ const ShipperJobStore = types
     })
     .actions((self) => ({
         find: flow(function* find(filter: Types.ShipperJobRequest = {}) {
-            apiShipperJob.setup()
+            yield apiShipperJob.setup()
             self.loading = true
             try {
                 const response = yield apiShipperJob.find(filter)
@@ -63,7 +63,7 @@ const ShipperJobStore = types
         }),
 
         findOne: flow(function* findOne(id: string) {
-            apiShipperJob.setup()
+            yield apiShipperJob.setup()
             self.loading = true
             try {
                 const response = yield apiShipperJob.findOne(id)
@@ -84,7 +84,7 @@ const ShipperJobStore = types
         }),
 
         create: flow(function* create(data: Types.ShipperJobCreate) {
-            apiShipperJob.setup()
+            yield apiShipperJob.setup()
             self.loading = true
             try {
                 const response = yield apiShipperJob.create(data)
@@ -105,7 +105,7 @@ const ShipperJobStore = types
         }),
 
         update: flow(function* update(id: string, data: Types.ShipperJobCreate) {
-            apiShipperJob.setup()
+            yield apiShipperJob.setup()
             self.loading = true
             try {
                 const response = yield apiShipperJob.update(id, data)

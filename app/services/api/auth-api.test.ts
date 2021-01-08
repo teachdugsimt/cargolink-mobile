@@ -130,17 +130,8 @@ describe('Test Auth API', () => {
 
         // Mocking Function
         const mock = new MockAdapter(authAPI.apisauce.axiosInstance);
-        mock.onPost(`${API_URL}/api/v1/users/auth/otp-request`, data).reply(403, {
-            error: {
-                statusCode: '403',
-                name: 'NETWORK_ERROR',
-                language: 'EN',
-                message: {
-                    user: 'NETWORK_ERROR',
-                    developer: 'NETWORK_ERROR'
-                },
-                detail: [{}]
-            }
+        mock.onPost(`${API_URL}/api/v1/users/auth/otp-request`, data).replyOnce(403, () => {
+            console.log('Hello world')
         });
 
         // Test Functional
@@ -437,7 +428,7 @@ describe('Test Update Term of Service', () => {
 
         // Mocking Function
         const mock = new MockAdapter(authAPI.apisauce.axiosInstance);
-        mock.onPost(`api/v1/users/${initialId}/term-of-service`).reply(201, expectedValue);
+        mock.onPost(`/api/v1/users/${initialId}/term-of-service`).reply(201, expectedValue);
 
         // Test Functional
         const response = await authAPI.updatePolicy(initialId, initialData);
@@ -458,7 +449,7 @@ describe('Test Update Term of Service', () => {
 
         // Mocking Function
         const mock = new MockAdapter(authAPI.apisauce.axiosInstance);
-        mock.onPost(`api/v1/users/${initialId}/term-of-service`).reply(403, {
+        mock.onPost(`/api/v1/users/${initialId}/term-of-service`).reply(403, {
             error: {
                 statusCode: '403',
                 name: 'NETWORK_ERROR',
@@ -489,7 +480,7 @@ describe('Test Update Term of Service', () => {
 
         // Mocking Function
         const mock = new MockAdapter(authAPI.apisauce.axiosInstance);
-        mock.onPost(`api/v1/users/${initialId}/term-of-service`).timeoutOnce()
+        mock.onPost(`/api/v1/users/${initialId}/term-of-service`).timeoutOnce()
 
         // Test Functional
         const response = await authAPI.updatePolicy(initialId, initialData);
@@ -509,7 +500,7 @@ describe('Test Update Term of Service', () => {
 
         // Mocking Function
         const mock = new MockAdapter(authAPI.apisauce.axiosInstance);
-        mock.onPost(`api/v1/users/${initialId}/term-of-service`).networkErrorOnce()
+        mock.onPost(`/api/v1/users/${initialId}/term-of-service`).networkErrorOnce()
 
         // Test Functional
         const response = await authAPI.updatePolicy(initialId, initialData);
@@ -529,7 +520,7 @@ describe('Test Update Term of Service', () => {
 
         // Mocking Function
         const mock = new MockAdapter(authAPI.apisauce.axiosInstance);
-        mock.onPost(`api/v1/users/${initialId}/term-of-service`).replyOnce(500, () => {
+        mock.onPost(`/api/v1/users/${initialId}/term-of-service`).replyOnce(500, () => {
             throw { message: 'CONNECTION_ERROR' }
         })
 
@@ -551,7 +542,7 @@ describe('Test Update Term of Service', () => {
 
         // Mocking Function
         const mock = new MockAdapter(authAPI.apisauce.axiosInstance);
-        mock.onPost(`api/v1/users/${initialId}/term-of-service`).replyOnce(503)
+        mock.onPost(`/api/v1/users/${initialId}/term-of-service`).replyOnce(503)
 
         // Test Functional
         const response = await authAPI.updatePolicy(initialId, initialData);

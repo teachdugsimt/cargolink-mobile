@@ -279,14 +279,15 @@ const SUB_BUTTON: Array<SubButtonSearch> = [
 ]
 
 const initialState = {
-  subButtons: SUB_BUTTON
+  subButtons: SUB_BUTTON,
+  page: 1,
 }
 
 export const SearchJobScreen = observer(function SearchJobScreen() {
   const navigation = useNavigation()
 
   const [data, setData] = useState(DATA_FIRST)
-  const [{ subButtons }, setState] = useState(initialState)
+  const [{ subButtons, page }, setState] = useState(initialState)
 
   useEffect(() => {
     ShipperJobStore.find()
@@ -294,19 +295,27 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
 
   useEffect(() => {
     if (ShipperJobStore.list && ShipperJobStore.list.length) {
-      console.log('ShipperJobStore.list', JSON.parse(JSON.stringify(ShipperJobStore.list)))
+      // console.log('ShipperJobStore.list', JSON.parse(JSON.stringify(ShipperJobStore.list)))
     }
     return () => {
       // initialState
     }
   }, [ShipperJobStore.list])
 
+  useEffect(() => {
+    ShipperJobStore.find({ ...AdvanceSearchStore.filter, page: page })
+  }, [page])
+
   const renderItem = ({ item }) => (
     <Item {...item} />
   )
 
   const onScrollList = () => {
-    DATA_SECOND && data.length % 5 === 0 && setData(data.concat(DATA_SECOND))
+    // DATA_SECOND && data.length % 5 === 0 && setData(data.concat(DATA_SECOND))
+    setState(prevState => ({
+      ...prevState,
+      page: prevState.page + 1
+    }))
   }
 
   const onPress = (id: number) => {
@@ -333,13 +342,15 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
         provinceListEn.filter(n => n.value === sLocale)[0].label
     ) : undefined
 
-    console.log('fLocale', fLocale)
-    console.log('sLocale', sLocale)
+    // console.log('fLocale', fLocale)
+    // console.log('sLocale', sLocale)
 
     AdvanceSearchStore.setFilter({
       descending: true,
       from: fLocale,
-      to: sLocale
+      to: sLocale,
+      page: 1,
+      rowsPerPage: 6,
     })
   }
 
@@ -349,6 +360,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
   }
 
   console.log('AdvanceSearchStore.filter', JSON.parse(JSON.stringify(AdvanceSearchStore.filter)))
+  console.log('page', page)
 
   return (
     <View style={{ flex: 1 }}>
@@ -390,12 +402,13 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
       </View>
       <View style={RESULT_CONTAINER}>
         {
-          !!ShipperJobStore.list.length && <FlatList
+          !!JSON.parse(JSON.stringify(ShipperJobStore.list)).length && <FlatList
             data={ShipperJobStore.list}
             renderItem={renderItem}
             keyExtractor={item => item.id}
             onEndReached={() => onScrollList()}
             onEndReachedThreshold={0.5}
+          // onMomentumScrollEnd={() => console.log('onMomentumScrollEnd')}
           />
         }
       </View>

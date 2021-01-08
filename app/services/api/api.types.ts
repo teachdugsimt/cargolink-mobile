@@ -108,13 +108,13 @@ export interface ShipperJobRequest {
   descending?: boolean
   from?: string
   page?: number
-  productType?: number
+  productType?: number[]
   rowsPerPage?: number
   sortBy?: string
   to?: string
   truckAmountMax?: number
   truckAmountMin?: number
-  truckType?: number
+  truckType?: number[]
   weight?: number
 }
 
@@ -142,20 +142,6 @@ export interface ShipperJobCreate {
   truckAmount: number
   truckType: string
   weight: number
-}
-
-export interface ShipperJobAdvanceSearch {
-  descending?: boolean,
-  from?: string,
-  page?: number,
-  productType?: number,
-  rowsPerPage?: number,
-  sortBy?: string,
-  to?: string,
-  truckAmountMax?: number,
-  truckAmountMin?: number,
-  truckType?: number,
-  weight?: number,
 }
 
 export type GetUsersResult = { kind: "ok"; users: User[] } | GeneralApiProblem

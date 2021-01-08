@@ -105,7 +105,7 @@ export function SearchBar(props: SearchBarProps) {
   }
 
   const onChangeValue = (value: object) => {
-    console.log('value', value)
+    console.log('onChangeValue province', value)
     setState(prevState => ({
       ...prevState,
       ...value
@@ -114,6 +114,8 @@ export function SearchBar(props: SearchBarProps) {
 
   useEffect(() => {
     if (firstLocation || secondLocation) {
+      console.log('firstLocation', firstLocation)
+      console.log('secondLocation', secondLocation)
       onToggle(firstLocation, secondLocation)
     }
   }, [firstLocation, secondLocation])

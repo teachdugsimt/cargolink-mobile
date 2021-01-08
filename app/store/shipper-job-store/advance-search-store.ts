@@ -5,13 +5,13 @@ const Filter = types.model({
     descending: types.maybeNull(types.boolean),
     from: types.maybeNull(types.string),
     page: types.maybeNull(types.number),
-    productType: types.maybeNull(types.number),
-    rowsPerPage: types.maybeNull(types.number),
+    productType: types.maybeNull(types.array(types.number)),
+    rowsPerPage: types.maybe(types.number),
     sortBy: types.maybeNull(types.string),
     to: types.maybeNull(types.string),
     truckAmountMax: types.maybeNull(types.number),
     truckAmountMin: types.maybeNull(types.number),
-    truckType: types.maybeNull(types.number),
+    truckType: types.maybeNull(types.array(types.number)),
     weight: types.maybeNull(types.number),
 })
 
@@ -20,7 +20,7 @@ const AdvanceSearchStore = types
         filter: Filter
     })
     .actions((self) => ({
-        setFilter: function setFilter(filter: Types.ShipperJobAdvanceSearch = {}) {
+        setFilter: function setFilter(filter: Types.ShipperJobRequest = {}) {
             self.filter = cast(filter)
         },
     }))
