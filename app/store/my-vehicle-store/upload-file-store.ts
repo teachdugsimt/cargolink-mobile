@@ -20,11 +20,13 @@ const UploadFileStore = types
         // },
         uploadImage: flow(function* (file, position) {
             yield fileUploadApi.setup()
+            console.log("Config Header here :: => " ,fileUploadApi.apisauce)
             self.loading = true
             try {
                 console.log('File upload comming :: ', file)
-                // let formData = new FormData();
-                // formData.append("file", file)
+                let formData = new FormData();
+                formData.append("file", file)
+
 
                 // formData.append('file', file);
                 // formData.append('fullPath', file.paths)
@@ -36,7 +38,7 @@ const UploadFileStore = types
                 // formData.append('url', file.uri)
                 // console.log("Form data after BUILD :: => ", formData)
 
-                const response = yield fileUploadApi.uploadVehiclePicture(file)
+                const response = yield fileUploadApi.uploadVehiclePicture(formData)
                 console.log("🚀 ~ file: upload-file-store.ts ~ line 39 ~ uploadImage:flow ~ response : ", response)
                 if (response.ok) {
 
@@ -68,7 +70,7 @@ const UploadFileStore = types
             }
         }),
 
-        deleteUploadData(){
+        deleteUploadData() {
             destroy(self.data)
         }
     }))
