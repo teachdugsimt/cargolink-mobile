@@ -166,7 +166,7 @@ export const UploadVehicleScreen = observer((props) => {
   useEffect(() => {
 
     AddressStore.getRegion(i18n.locale)
-    AddressStore.getProvince(i18n.locale)
+    // AddressStore.getProvince(i18n.locale)
     TruckTypeStore.getTruckTypeDropdown(i18n.locale)
 
 
@@ -427,6 +427,7 @@ export const UploadVehicleScreen = observer((props) => {
   const [submitReady, setsubmitReady] = useState(false)
 
   const onSubmit = data => {
+    let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
     setinputRegistration(data)
     console.log("Form data :: => ", data)
 
@@ -445,7 +446,7 @@ export const UploadVehicleScreen = observer((props) => {
 
     const data_mock_call = {
       // id: tokenStore.profile.id,
-      carrierId: tokenStore.profile.id,
+      carrierId: editStatus == "add" ? tokenStore.profile.id : MyVehicleStore.data.id,
       truckType: data['vehicle-type'],    // ** EDIT 1
 
       loadingWeight: 2,
@@ -457,7 +458,7 @@ export const UploadVehicleScreen = observer((props) => {
       // "updatedAt": "2020-12-25T07:14:23.687Z",
       // "approveStatus": "Pending",
 
-     
+
       truckPhotos: {
         front: null,
         back: null,
@@ -580,14 +581,14 @@ export const UploadVehicleScreen = observer((props) => {
 
     tmp_region.map((reg, ir) => {
       data_mock_call['workingZones'].push({
-        province: reg,
+        province: reg || "",
         region: tmp_province[ir] ? tmp_province[ir] : ""
       })
     })
     data_mock_call['workingZones'] = [{ region: 1, province: 2 }]
     console.log("Finish FINAL submit data :: ", data_mock_call)
 
-    let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
+    // let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
 
     if (editStatus && editStatus == "add") {
       data_mock_call.truckPhotos = null
@@ -778,6 +779,10 @@ export const UploadVehicleScreen = observer((props) => {
   if (control.fieldsRef.current['vehicle-type'] && control.fieldsRef.current['vehicle-type'].ref.value) {
     dropdown_vehicle_type = control.fieldsRef.current['vehicle-type'].ref.value
   }
+  console.log("🚀 ~ file: upload-vehicle-screen.tsx ~ line 781 ~ UploadVehicleScreen ~ dropdown_vehicle_type", dropdown_vehicle_type)
+  console.log("🚀 ~ file: upload-vehicle-screen.tsx ~ line 781 ~ UploadVehicleScreen ~ dropdown_vehicle_type", dropdown_vehicle_type)
+  console.log("🚀 ~ file: upload-vehicle-screen.tsx ~ line 781 ~ UploadVehicleScreen ~ dropdown_vehicle_type", dropdown_vehicle_type)
+  console.log("🚀 ~ file: upload-vehicle-screen.tsx ~ line 781 ~ UploadVehicleScreen ~ dropdown_vehicle_type", dropdown_vehicle_type)
   let list_vehicle = JSON.parse(JSON.stringify(TruckTypeStore.data))
 
   return (
@@ -985,7 +990,7 @@ export const UploadVehicleScreen = observer((props) => {
 
 
             {/* ********************** DROPDOWN ZONE ********************** */}
-            {ddRegion.length ? ddRegion.map((e, index) => {
+            {ddRegion.length && AddressStore.region && AddressStore.region.length ? ddRegion.map((e, index) => {
               return <View key={'view-dropdown-region-' + index} style={WRAPPER_REGION_DROPDOWN}>
                 <View style={{ ...WRAP_DROPDOWN, marginLeft: 5 }} key={'view-dropdown-province-' + index}>
                   <Controller
@@ -1014,7 +1019,8 @@ export const UploadVehicleScreen = observer((props) => {
                             setrenderProvince(!renderProvince)
 
                           }}
-                          items={i18n.locale == "en" ? regionListEn : regionListTh}
+                          // items={i18n.locale == "en" ? regionListEn : regionListTh}
+                          items={JSON.parse(JSON.stringify(AddressStore.region))}
                           placeholder={{
                             label: translate("uploadVehicleScreen.region"),
                             color: color.black
@@ -1037,9 +1043,17 @@ export const UploadVehicleScreen = observer((props) => {
                   /></View>
 
                 {ddProvince.length ? ddProvince.map((pro, indexPro) => {
-                  console.log("All Val region :: ", valRegion)
-                  console.log("Render Dropdown Province :: ", valRegion[index])
-                  if (indexPro == index)
+
+
+
+
+
+
+
+                  // console.log("All Val region :: ", valRegion)
+                  // console.tron.log(valRegion[index])
+                  // console.tron.log(valRegion)
+                  if (indexPro == index && valRegion[index] != 7)
                     return (<View style={{ ...WRAP_DROPDOWN, marginLeft: 5 }} key={'view-dropdown-province-' + index}><Controller
                       control={control}
                       render={({ onChange, onBlur, value }) => {
@@ -1070,7 +1084,20 @@ export const UploadVehicleScreen = observer((props) => {
                       name={"controller-province-" + index}
                       defaultValue=""
                     /></View>)
-                }) : <></>}
+                }) : <></>
+                
+                
+
+
+                
+
+
+
+
+
+
+                
+                }
                 {index == ddRegion.length - 1 && <TouchableOpacity key={'icon-add-circle-' + index} style={ADD_DROPDOWN_REGION} onPress={() => _addRowDropdown()}>
                   <Ionicons size={22} color={color.darkGreen} name={"add-circle-outline"} />
                 </TouchableOpacity>}

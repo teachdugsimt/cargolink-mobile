@@ -20,7 +20,6 @@ const UploadFileStore = types
         // },
         uploadImage: flow(function* (file, position) {
             yield fileUploadApi.setup()
-            console.log("Config Header here :: => " ,fileUploadApi.apisauce)
             self.loading = true
             try {
                 console.log('File upload comming :: ', file)

@@ -3,14 +3,20 @@ import { AddressApi } from '../../services/api'
 const apiAddress = new AddressApi()
 
 const regionModel = types.model({
-    id: types.maybeNull(types.number),
-    name: types.maybeNull(types.string),
-    image: types.maybeNull(types.string),
+    // id: types.maybeNull(types.number),
+    // name: types.maybeNull(types.string),
+    // image: types.maybeNull(types.string),
+
+    label: types.maybeNull(types.string),
+    value: types.maybeNull(types.number)
 })
 
 const provinceModel = types.model({
-    id: types.maybeNull(types.number),
-    name: types.maybeNull(types.string),
+    // id: types.maybeNull(types.number),
+    // name: types.maybeNull(types.string),
+
+    label: types.maybeNull(types.string),
+    value: types.maybeNull(types.number)
 })
 
 const AddressStore = types.model({
@@ -22,15 +28,23 @@ const AddressStore = types.model({
     loadingProvince: types.boolean,
     errorProvince: types.maybeNull(types.string)
 }).actions(self => ({
-    
-    getRegion: flow(function* getRegion(params) { 
+
+    getRegion: flow(function* getRegion(params) {
         yield apiAddress.setup(params)
         self.loading = true
         try {
             const response = yield apiAddress.getRegion(params)
             console.log("Response call get region Mobx : : ", response)
             if (response.ok) {
-                self.region = response.data || null
+                let tmp = JSON.parse(JSON.stringify(response.data)) || null
+                let res = []
+                tmp.forEach((e, i) => {
+                    res.push({
+                        label: e.name,
+                        value: e.id
+                    })
+                })
+                self.region = res
                 self.loading = false
             } else {
                 self.loading = false
@@ -44,14 +58,22 @@ const AddressStore = types.model({
         }
     }),
 
-    getProvince: flow(function* getProvince(params) { 
+    getProvince: flow(function* getProvince(params) {
         yield apiAddress.setup(params)
         self.loadingProvince = true
         try {
             const response = yield apiAddress.getProvince(params)
             console.log("Response call get province Mobx : : ", response)
             if (response.ok) {
-                self.province = response.data || null
+                let tmp = JSON.parse(JSON.stringify(response.data)) || null
+                let res = []
+                tmp.forEach((e, i) => {
+                    res.push({
+                        label: e.name,
+                        value: e.id
+                    })
+                })
+                self.province = res
                 self.loadingProvince = false
             } else {
                 self.loadingProvince = false

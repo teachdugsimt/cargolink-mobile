@@ -42,16 +42,18 @@ const VehicleNew = types.model({
 })
 
 const VehiclePatch = types.model({
-    truckType: types.number,
+    carrierId: types.maybeNull(types.number),
+    truckType: types.maybeNull(types.number),
+    stallHeight: types.maybeNull(types.number),
+
     loadingWeight: types.maybeNull(types.number),
-    stallHeight: types.number,
-    tipper: types.boolean,
-    registrationNumber: types.array(types.string),
+    tipper: types.maybeNull(types.boolean),
+    registrationNumber: types.maybeNull(types.array(types.string)),
     truckPhotos: types.maybeNull(types.model({
         url: types.maybeNull(types.string),
         action: types.maybeNull(types.string)
     })),
-    workingZones: types.array(Region)
+    workingZones: types.maybeNull(types.array(Region))
 })
 
 const CreateVehicleStore = types.model({
@@ -59,7 +61,7 @@ const CreateVehicleStore = types.model({
     loading: types.boolean,
     error: types.maybeNull(types.string),
 
-    patchMyVehicle: types.maybeNull(VehiclePatch),
+    patchMyVehicle: types.maybeNull(types.model()),
     loadingPatchMyVehicle: types.boolean,
     errorPatchMyVehicle: types.maybeNull(types.string)
 
@@ -88,12 +90,13 @@ const CreateVehicleStore = types.model({
     }),
     patchVehicleDetailsRequest: flow(function* findRequest(params: Types.PatchDataRequest) {
         // <- note the star, this a generator function!
+        console.tron.logImportant(params)
         yield apiMyVehicle.setup()
         self.loadingPatchMyVehicle = true
         try {
             const response = yield apiMyVehicle.patchMyVehicle(params)
             console.log("Response call api patch my vehicle : : ", response)
-            self.patchMyVehicle = response.data.reminder || []
+            self.patchMyVehicle = response.data || {}
             self.loadingPatchMyVehicle = false
         } catch (error) {
             // ... including try/catch error handling
