@@ -12,11 +12,11 @@ const regionModel = types.model({
 })
 
 const provinceModel = types.model({
-    // id: types.maybeNull(types.number),
-    // name: types.maybeNull(types.string),
+    id: types.maybeNull(types.number),
+    name: types.maybeNull(types.string),
 
-    label: types.maybeNull(types.string),
-    value: types.maybeNull(types.number)
+    // label: types.maybeNull(types.string),
+    // value: types.maybeNull(types.number)
 })
 
 const AddressStore = types.model({
@@ -58,22 +58,23 @@ const AddressStore = types.model({
         }
     }),
 
-    getProvince: flow(function* getProvince(params) {
-        yield apiAddress.setup(params)
+    getProvince: flow(function* getProvince(params, lang) {
+        yield apiAddress.setup(lang)
         self.loadingProvince = true
         try {
             const response = yield apiAddress.getProvince(params)
             console.log("Response call get province Mobx : : ", response)
             if (response.ok) {
-                let tmp = JSON.parse(JSON.stringify(response.data)) || null
-                let res = []
-                tmp.forEach((e, i) => {
-                    res.push({
-                        label: e.name,
-                        value: e.id
-                    })
-                })
-                self.province = res
+                // let tmp = JSON.parse(JSON.stringify(response.data)) || null
+                // let res = []
+                // tmp.forEach((e, i) => {
+                //     res.push({
+                //         label: e.name,
+                //         value: e.id
+                //     })
+                // })
+                // self.province = res
+                self.province = response.data || null
                 self.loadingProvince = false
             } else {
                 self.loadingProvince = false

@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react"
 import {
   View, ViewStyle, TextStyle,
   ScrollView, Switch, Dimensions, Platform, Alert, ImageStyle, PermissionsAndroid,
-  SafeAreaView, SectionList, Image
+  SafeAreaView, SectionList, Image, ActivityIndicator
 } from "react-native"
 import { useForm, Controller } from "react-hook-form";
 import { observer } from "mobx-react-lite"
-import { Text, TextInputTheme, Button, UploadVehicle, RoundedButton, HeaderCenter, MultiSelector } from "../../../components"
+import { Text, TextInputTheme, Button, UploadVehicle, RoundedButton, HeaderCenter, MultiSelector, ModalLoading } from "../../../components"
 import { spacing, color, typography, images } from "../../../theme"
 
 import RNPickerSelect from 'react-native-picker-select';
@@ -129,13 +129,20 @@ const ROW_TEXT: ViewStyle = {
   flexDirection: 'row',
 }
 const JUSTIFY_BETWEEN: ViewStyle = {
-  justifyContent: 'space-between'
+  justifyContent: 'space-between',
 }
 const PADDING_TOP: ViewStyle = { marginTop: 10 }
-const PADDING_CHEVRON: ViewStyle = { paddingTop: 7.5, paddingRight: 5 }
+const PADDING_CHEVRON: ViewStyle = { paddingRight: 5 }
 const ROOT_FLAT_LIST: ViewStyle = {
   width: '100%',
   height: 100,
+  flexDirection: 'row',
+  alignItems: 'center',
+  zIndex: 5,
+}
+const ROOT_FLAT_LIST2: ViewStyle = {
+  width: '100%',
+  height: 60,
   flexDirection: 'row',
   alignItems: 'center',
   zIndex: 5,
@@ -754,11 +761,35 @@ export const UploadVehicleScreen = observer((props) => {
     </TouchableOpacity>
   }
 
+  const _renderSectionModalProvince = (item: any, index: any, onChange: any) => {
+    return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name + index} style={{ ...ROOT_FLAT_LIST2 }} onPress={() => {
+      onChange(item.id)
+      setvisible(false)
+    }}>
+      <View style={{ borderBottomWidth: 1, borderBottomColor: color.line, flex: 1 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1, marginVertical: 20 }}>
+          <Text style={{ width: '50%'}}>{item.name}</Text>
+          <Ionicons name="chevron-forward" size={24} color={color.line} style={{ marginRight: 5 }} />
+        </View>
+      </View>
+    </TouchableOpacity>
+  }
+
+
   // console.log("Dropdown region :: => ", dropdownRegion)
   console.log("Dropdown Province DD  :: ", ddProvince)
   console.log("Dropdown Regions VALUE :: ", valRegion)
   console.log("List Truc type :: ", JSON.parse(JSON.stringify(TruckTypeStore.data)))
 
+
+  const list_province_popular = [
+    {
+      title: 'postJobScreen.popular',
+      data: [{ id: 1, name: 'กรุงเทพมหานคร' },
+      { id: 10, name: 'เชียงใหม่' },
+      { id: 48, name: 'ภูเก็ต' }]
+    },
+  ]
 
   const list_vehicle_popular = [
     {
@@ -775,19 +806,22 @@ export const UploadVehicleScreen = observer((props) => {
     }
   ]
   let multi_select
+  let formControllerValue = control.getValues()
   let dropdown_vehicle_type
-  if (control.fieldsRef.current['vehicle-type'] && control.fieldsRef.current['vehicle-type'].ref.value) {
-    dropdown_vehicle_type = control.fieldsRef.current['vehicle-type'].ref.value
+  if (formControllerValue['vehicle-type'] && formControllerValue['vehicle-type']) {
+    dropdown_vehicle_type = formControllerValue['vehicle-type']
   }
-  console.log("🚀 ~ file: upload-vehicle-screen.tsx ~ line 781 ~ UploadVehicleScreen ~ dropdown_vehicle_type", dropdown_vehicle_type)
-  console.log("🚀 ~ file: upload-vehicle-screen.tsx ~ line 781 ~ UploadVehicleScreen ~ dropdown_vehicle_type", dropdown_vehicle_type)
-  console.log("🚀 ~ file: upload-vehicle-screen.tsx ~ line 781 ~ UploadVehicleScreen ~ dropdown_vehicle_type", dropdown_vehicle_type)
-  console.log("🚀 ~ file: upload-vehicle-screen.tsx ~ line 781 ~ UploadVehicleScreen ~ dropdown_vehicle_type", dropdown_vehicle_type)
+
+  console.tron.logImportant("Form in render :: ", formControllerValue)
+  // console.tron.logImportant("Controller pure : ", control.setValue())
+
   let list_vehicle = JSON.parse(JSON.stringify(TruckTypeStore.data))
 
   return (
     <View testID="UploadVehicleScreen" style={FULL}>
       <ScrollView testID={"scrollViewUpload"} style={FULL}>
+
+        {/* {JSON.parse(JSON.stringify(TruckTypeStore.loading)) || JSON.parse(JSON.stringify(AddressStore.loading)) && <ModalLoading size={'large'} color={color.primary} visible={JSON.parse(JSON.stringify(TruckTypeStore.loading)) || JSON.parse(JSON.stringify(AddressStore.loading))} />} */}
 
         <View style={TOP_VIEW}>
           <View style={WRAPPER_TOP}>
@@ -1028,7 +1062,7 @@ export const UploadVehicleScreen = observer((props) => {
                           useNativeAndroidPickerStyle={false}
                           style={{
                             inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
-                            iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
+                            iconContainer: Platform.OS == "ios" ? {} : { ...DROPDOWN_ICON_CONTAINER },
                             placeholder: { color: color.black }
                           }}
                           Icon={() => {
@@ -1050,53 +1084,143 @@ export const UploadVehicleScreen = observer((props) => {
 
 
 
-                  // console.log("All Val region :: ", valRegion)
-                  // console.tron.log(valRegion[index])
-                  // console.tron.log(valRegion)
-                  if (indexPro == index && valRegion[index] != 7)
-                    return (<View style={{ ...WRAP_DROPDOWN, marginLeft: 5 }} key={'view-dropdown-province-' + index}><Controller
-                      control={control}
-                      render={({ onChange, onBlur, value }) => {
-                        return (
-                          <RNPickerSelect
-                            value={value}
-                            onValueChange={(value) => onChange(value)}
-                            items={i18n.locale == "en" ?
-                              (valRegion[index] ? provinceListEn.filter(e => e.region == valRegion[index]) : provinceListEn) :
-                              (valRegion[index] ? provinceListTh.filter(e => e.region == valRegion[index]) : provinceListTh)}
-                            placeholder={{
-                              label: translate("uploadVehicleScreen.province"),
-                              color: color.black
-                            }}
-                            useNativeAndroidPickerStyle={false}
-                            style={{
-                              inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
-                              iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
-                              placeholder: { color: color.black }
-                            }}
-                            Icon={() => {
-                              return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
-                            }}
-                          />
-                        )
-                      }}
-                      key={'controller-dropdown-province-' + index}
-                      name={"controller-province-" + index}
-                      defaultValue=""
-                    /></View>)
+
+
+
+
+
+                  if (indexPro == index && valRegion[index] != 7) {
+
+                    // console.tron.log("PROVINCE :: ", formControllerValue["controller-province-" + index])
+                    return (<View style={{ ...WRAP_DROPDOWN, marginLeft: 5 }} key={'view-dropdown-province-' + index}>
+
+
+
+                      <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN,]} onPress={async () => {
+                        console.tron.log("REGION :: ", index)
+                        await AddressStore.getProvince({ regionId: valRegion[index] }, i18n.locale)
+                        setvisible(true)
+                      }}>
+                        {!formControllerValue["controller-province-" + index] && <Text style={{}} tx={"postJobScreen.pleaseSelectVehicleType"} />}
+
+                        {!!formControllerValue["controller-province-" + index] && <Text style={{}}>{
+                          i18n.locale == 'th' ?
+                            provinceListTh.find(e => e.value == formControllerValue["controller-province-" + index]).label :
+                            provinceListEn.find(e => e.value == formControllerValue["controller-province-" + index]).label
+                        }</Text>}
+
+                        <Ionicons name="chevron-down" size={20} style={PADDING_CHEVRON} />
+                      </TouchableOpacity>
+
+                      <Controller
+                        control={control}
+                        render={({ onChange, onBlur, value }) => (
+                          <Modal
+                            visible={visible}
+                            onTouchOutside={() => setvisible(false)}
+                            onSwipeOut={() => setvisible(false)}
+                            swipeDirection={['up', 'down']} // can be string or an array
+                            swipeThreshold={200} // default 100
+                          >
+                            <ModalContent >
+                              <View style={{ width: (width / 1.1), height: '100%', justifyContent: 'flex-start' }}>
+                                <SafeAreaView style={{ flex: 1 }}>
+                                  <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
+                                    <Text style={{ color: color.primary }} preset={"topic"} tx={"uploadVehicleScreen.pleaseSelectProvince"} />
+                                  </View>
+
+                                  <View style={PADDING_TOP}>
+                                    {AddressStore.province && AddressStore.province.length && <MultiSelector
+                                      key={"dd-province-" + index}
+                                      items={JSON.parse(JSON.stringify(AddressStore.province))}
+                                      keyer={"list-province-" + index}
+                                      selectedItems={[value]}
+                                      selectText={translate("uploadVehicleScreen.pleaseSelectProvince")}
+                                      onSelectedItemsChange={(val: any) => {
+                                        console.tron.log("Value when select dropdown :: ", val)
+                                        onChange(val[0])
+                                        // control.setValue(`controller-province-${index}`, val[0])
+                                        setvisible(false)
+                                      }}
+                                    />}
+                                  </View>
+
+                                  <View>
+                                    <SectionList
+                                      sections={list_province_popular ? list_province_popular : []}
+                                      keyExtractor={(item, index) => 'section-list-' + item.name + index}
+                                      renderItem={({ item, index }) => _renderSectionModalProvince(item, index, onChange)}
+                                      renderSectionHeader={({ section: { title } }) => (
+                                        <Text tx={title} style={PADDING_TOP} />
+                                      )}
+                                    />
+                                  </View>
+                                </SafeAreaView>
+
+                              </View>
+                            </ModalContent>
+                          </Modal>
+
+
+                        )}
+                        key={'controller-dropdown-province-' + index}
+                        name={"controller-province-" + index}
+                        defaultValue=""
+                      />
+                      {/* <Controller
+                        control={control}
+                        render={({ onChange, onBlur, value }) => {
+                          return (
+                            <RNPickerSelect
+                              value={value}
+                              onValueChange={(value) => onChange(value)}
+                              items={i18n.locale == "en" ?
+                                (valRegion[index] ? provinceListEn.filter(e => e.region == valRegion[index]) : provinceListEn) :
+                                (valRegion[index] ? provinceListTh.filter(e => e.region == valRegion[index]) : provinceListTh)}
+                              placeholder={{
+                                label: translate("uploadVehicleScreen.province"),
+                                color: color.black
+                              }}
+                              useNativeAndroidPickerStyle={false}
+                              style={{
+                                inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
+                                iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
+                                placeholder: { color: color.black }
+                              }}
+                              Icon={() => {
+                                return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
+                              }}
+                            />
+                          )
+                        }}
+                        key={'controller-dropdown-province-' + index}
+                        name={"controller-province-" + index}
+                        defaultValue=""
+                      /> */}
+
+
+
+
+
+
+
+                    </View>)
+                  }
                 }) : <></>
-                
-                
-
-
-                
 
 
 
 
 
 
-                
+
+
+
+
+
+
+
+
                 }
                 {index == ddRegion.length - 1 && <TouchableOpacity key={'icon-add-circle-' + index} style={ADD_DROPDOWN_REGION} onPress={() => _addRowDropdown()}>
                   <Ionicons size={22} color={color.darkGreen} name={"add-circle-outline"} />
