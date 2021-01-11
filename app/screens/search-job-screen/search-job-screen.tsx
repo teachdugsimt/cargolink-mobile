@@ -10,6 +10,7 @@ import ShipperJobStore from "../../store/shipper-job-store/shipper-job-store";
 import { GetTruckType } from '../../utils/get-truck-type'
 import i18n from 'i18n-js'
 import AdvanceSearchStore from "../../store/shipper-job-store/advance-search-store";
+import TruckTypeStore from "../../store/my-vehicle-store/truck-type-store"
 import { provinceListEn, provinceListTh } from '../../screens/home-screen/manage-vehicle/datasource'
 
 interface SubButtonSearch {
@@ -280,43 +281,47 @@ const SUB_BUTTON: Array<SubButtonSearch> = [
 
 const initialState = {
   subButtons: SUB_BUTTON,
-  page: 1,
-
+  listLength: 0,
+  data: [],
 }
+
+let PAGE = 0;
 
 export const SearchJobScreen = observer(function SearchJobScreen() {
   const navigation = useNavigation()
 
-  const [data, setData] = useState(DATA_FIRST)
-  const [{ subButtons, page }, setState] = useState(initialState)
+  const [{ subButtons, data, listLength }, setState] = useState(initialState)
 
   useEffect(() => {
     ShipperJobStore.find()
+    return () => {
+      PAGE = 0
+      ShipperJobStore.setDefaultOfList()
+      setState(initialState)
+    }
   }, [])
 
   useEffect(() => {
-    if (ShipperJobStore.list && ShipperJobStore.list.length) {
-      // console.log('ShipperJobStore.list', JSON.parse(JSON.stringify(ShipperJobStore.list)))
+    setState(prevState => ({
+      ...prevState,
+      listLength: ShipperJobStore.list.length,
+    }))
+    if (!ShipperJobStore.loading && !data.length && ShipperJobStore.list && ShipperJobStore.list.length) {
+      setState(prevState => ({
+        ...prevState,
+        data: ShipperJobStore.list,
+      }))
     }
-    return () => {
-      // initialState
-    }
-  }, [ShipperJobStore.list])
-
-  useEffect(() => {
-    ShipperJobStore.find({ ...AdvanceSearchStore.filter, page: page })
-  }, [page])
+  }, [ShipperJobStore.loading, ShipperJobStore.list])
 
   const renderItem = ({ item }) => (
     <Item {...item} />
   )
 
   const onScrollList = () => {
-    // DATA_SECOND && data.length % 5 === 0 && setData(data.concat(DATA_SECOND))
-    setState(prevState => ({
-      ...prevState,
-      page: prevState.page + 1
-    }))
+    PAGE = ShipperJobStore.list.length === listLength ? listLength : PAGE + ShipperJobStore.list.length
+    const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE }
+    ShipperJobStore.find(advSearch)
   }
 
   const onPress = (id: number) => {
@@ -343,25 +348,25 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
         provinceListEn.filter(n => n.value === sLocale)[0].label
     ) : undefined
 
-    // console.log('fLocale', fLocale)
-    // console.log('sLocale', sLocale)
-
     AdvanceSearchStore.setFilter({
       descending: true,
       from: fLocale,
       to: sLocale,
-      page: 1,
-      rowsPerPage: 6,
+      page: 0,
+      // rowsPerPage: 6,
     })
   }
 
   const onSearch = () => {
     const filter = AdvanceSearchStore.filter
+    ShipperJobStore.setDefaultOfList()
     ShipperJobStore.find(filter)
   }
 
-  console.log('AdvanceSearchStore.filter', JSON.parse(JSON.stringify(AdvanceSearchStore.filter)))
-  console.log('page', page)
+  const onAdvanceSeach = () => {
+    TruckTypeStore.getTruckTypeDropdown(i18n.locale)
+    navigation.navigate('advanceSearch')
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -385,7 +390,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
           style={FULL_SEARCH_BOTTON}
           textStyle={FULL_SEARCH_TEXT}
           text={translate('searchJobScreen.fullSearch')} // ค้นหาโดยละเอียด
-          onPress={() => navigation.navigate('advanceSearch')}
+          onPress={onAdvanceSeach}
         />
         <View style={SUB_BUTTON_CONTAINER}>
           {subButtons.length && subButtons.map(button => {
@@ -403,12 +408,13 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
       </View>
       <View style={RESULT_CONTAINER}>
         {
-          !!JSON.parse(JSON.stringify(ShipperJobStore.list)).length && <FlatList
-            data={ShipperJobStore.list}
+          data && !!data.length && <FlatList
+            data={data}
             renderItem={renderItem}
             keyExtractor={item => item.id}
             onEndReached={() => onScrollList()}
             onEndReachedThreshold={0.5}
+          // onMomentumScrollBegin={() => console.log('onResponderEnd')}
           // onMomentumScrollEnd={() => console.log('onMomentumScrollEnd')}
           />
         }

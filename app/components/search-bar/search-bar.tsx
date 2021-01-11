@@ -113,11 +113,7 @@ export function SearchBar(props: SearchBarProps) {
   }
 
   useEffect(() => {
-    if (firstLocation || secondLocation) {
-      console.log('firstLocation', firstLocation)
-      console.log('secondLocation', secondLocation)
-      onToggle(firstLocation, secondLocation)
-    }
+    onToggle(firstLocation || undefined, secondLocation || undefined)
   }, [firstLocation, secondLocation])
 
   const textStyleContainer = { ...LOCATION_TEXT, ...textStyle }

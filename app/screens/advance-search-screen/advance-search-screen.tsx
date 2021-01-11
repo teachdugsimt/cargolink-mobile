@@ -5,6 +5,9 @@ import { Button, Checkbox, HeaderCenter, Text } from '../../components'
 import { color, spacing } from '../../theme'
 import { useNavigation } from '@react-navigation/native'
 import { ScrollView } from 'react-native-gesture-handler'
+import TruckTypeStore from "../../store/my-vehicle-store/truck-type-store"
+import { translate } from '../../i18n'
+import i18n from "i18n-js"
 
 const deviceWidht = Dimensions.get('window').width / 2
 const marginPercent = 1
@@ -15,7 +18,7 @@ interface MENU {
   isChecked?: boolean
   subMenu?: {
     id?: number
-    label?: string
+    name?: string
     isChecked?: boolean
   }[]
 }
@@ -79,23 +82,23 @@ const BUTTON_CONFIRM_TEXT: TextStyle = {
 const MENUS: Array<MENU> = [
   {
     id: 1,
-    topic: 'ประเภทรถ',
+    topic: translate('common.vehicleTypeField'),
     showSubColumn: 3,
     isChecked: false,
     subMenu: [
       {
         id: 11,
-        label: 'รถ 4 ล้อ',
+        name: 'รถ 4 ล้อ',
         isChecked: false,
       },
       {
         id: 12,
-        label: 'รถ 6 ล้อ',
+        name: 'รถ 6 ล้อ',
         isChecked: false,
       },
       {
         id: 13,
-        label: 'รถ 10 ล้อ',
+        name: 'รถ 10 ล้อ',
         isChecked: false,
       },
     ]
@@ -108,17 +111,17 @@ const MENUS: Array<MENU> = [
     subMenu: [
       {
         id: 21,
-        label: '1-2 คัน',
+        name: '1-2 คัน',
         isChecked: false,
       },
       {
         id: 22,
-        label: '3-4 คัน',
+        name: '3-4 คัน',
         isChecked: false,
       },
       {
         id: 23,
-        label: 'มากกว่า 4 คัน',
+        name: 'มากกว่า 4 คัน',
         isChecked: false,
       },
     ]
@@ -131,32 +134,32 @@ const MENUS: Array<MENU> = [
     subMenu: [
       {
         id: 31,
-        label: 'สินค้าเกษตร',
+        name: 'สินค้าเกษตร',
         isChecked: false,
       },
       {
         id: 32,
-        label: 'สินค้าเกษตร',
+        name: 'สินค้าเกษตร',
         isChecked: false,
       },
       {
         id: 33,
-        label: 'สินค้าเกษตร',
+        name: 'สินค้าเกษตร',
         isChecked: false,
       },
       {
         id: 34,
-        label: 'สินค้าเกษตร',
+        name: 'สินค้าเกษตร',
         isChecked: false,
       },
       {
         id: 35,
-        label: 'สินค้าเกษตร',
+        name: 'สินค้าเกษตร',
         isChecked: false,
       },
       {
         id: 36,
-        label: 'สินค้าเกษตร',
+        name: 'สินค้าเกษตร',
         isChecked: false,
       },
     ]
@@ -169,12 +172,12 @@ const MENUS: Array<MENU> = [
     subMenu: [
       {
         id: 41,
-        label: '1-5 ตัน',
+        name: '1-5 ตัน',
         isChecked: false,
       },
       {
         id: 42,
-        label: '5-10 ตัน',
+        name: '5-10 ตัน',
         isChecked: false,
       },
     ]
@@ -189,6 +192,28 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
   const navigation = useNavigation()
 
   const [{ settings }, setState] = useState(initialState)
+
+  useEffect(() => {
+    if (!TruckTypeStore.data.length) {
+      TruckTypeStore.getTruckTypeDropdown(i18n.locale)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (TruckTypeStore.data && TruckTypeStore.data.length) {
+      MENUS[0].showSubColumn = 2
+      MENUS[0].subMenu = TruckTypeStore.data.map(val => {
+        return {
+          ...val,
+          isChecked: false
+        }
+      })
+      setState(prevState => ({
+        ...prevState,
+        settings: MENUS
+      }))
+    }
+  }, [TruckTypeStore.loading, TruckTypeStore.data])
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -246,6 +271,8 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
     />)
   }
 
+  // console.log('MENUS', MENUS)
+
   return (
     <View style={CONTAINER}>
       <View style={SEARCH_ITEM_ROOT}>
@@ -263,8 +290,8 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
                     {
                       menu.subMenu && menu.subMenu.map((subMenu, i) => {
                         const percentWidth = (100 - (menu.showSubColumn * (marginPercent * 2))) / menu.showSubColumn
-                        const { id, label, isChecked } = subMenu
-                        return (<SubMenu key={id} id={id} label={label} isChecked={isChecked} mainIndex={menu.id} percentWidth={percentWidth} />)
+                        const { id, name, isChecked } = subMenu
+                        return (<SubMenu key={id} id={id} label={name} isChecked={isChecked} mainIndex={menu.id} percentWidth={percentWidth} />)
                       })
                     }
                   </View>

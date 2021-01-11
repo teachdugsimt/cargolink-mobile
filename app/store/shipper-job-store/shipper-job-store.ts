@@ -19,15 +19,14 @@ const ShipperJob = types.model({
         lat: types.maybeNull(types.string),
         lng: types.maybeNull(types.string),
     })),
-    to: types.maybeNull(types.array(types.model(
-        {
-            name: types.maybeNull(types.string),
-            dateTime: types.maybeNull(types.string),
-            contactName: types.maybeNull(types.string),
-            contactMobileNo: types.maybeNull(types.string),
-            lat: types.maybeNull(types.string),
-            lng: types.maybeNull(types.string),
-        }))),
+    to: types.maybeNull(types.array(types.model({
+        name: types.maybeNull(types.string),
+        dateTime: types.maybeNull(types.string),
+        contactName: types.maybeNull(types.string),
+        contactMobileNo: types.maybeNull(types.string),
+        lat: types.maybeNull(types.string),
+        lng: types.maybeNull(types.string),
+    }))),
     owner: types.maybeNull(types.model({
         id: types.maybeNull(types.number),
         companyName: types.maybeNull(types.string),
@@ -39,7 +38,7 @@ const ShipperJob = types.model({
 
 const ShipperJobStore = types
     .model({
-        list: types.maybeNull(types.array(ShipperJob)),
+        list: types.maybeNull(types.array(types.maybeNull(ShipperJob))),
         data: types.maybeNull(ShipperJob),
         loading: types.boolean,
         error: types.maybeNull(types.string),
@@ -51,7 +50,7 @@ const ShipperJobStore = types
             try {
                 const response = yield apiShipperJob.find(filter)
                 console.log("Response call api get shipper jobs : : ", response)
-                self.list = response.data || []
+                self.list = cast([...self.list, ...response.data] || [])
                 self.loading = false
             } catch (error) {
                 // ... including try/catch error handling
@@ -169,6 +168,10 @@ const ShipperJobStore = types
                 }
             })
         },
+
+        setDefaultOfList: function setDefaultOfList() {
+            self.list = cast([])
+        }
     }))
     .views((self) => ({
         get getList() {
