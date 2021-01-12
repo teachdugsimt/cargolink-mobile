@@ -356,49 +356,6 @@ export const UploadVehicleScreen = observer((props) => {
         _uploadFile(response, 'right')
         setfileRight(newImageResize);
       }
-
-      // ImageResizer.createResizedImage(response.uri, 1024, 1024, 'JPEG', 100, 0, null)
-      //   .then((response2) => {
-      //     __DEV__ && console.tron.log("Image resize response2 :: ", response2)
-      //     // ****** Send this to API ******
-      //     let newImageResize = {
-      //       uri: response2.uri,
-      //       type: 'image/jpeg',
-      //       name: response2.name,
-      //       size: response2.size,
-      //       tmp_name: response2.path,
-      //       paths: response2.path,
-      //       path: response2.path,
-      //       url: response2.uri,
-      //       id: tokenStore.profile.id
-      //     }
-      //     if (status == "front") {
-      //       newImageResize.id = 0
-      //       _uploadFile(response2, 'front')
-      //       setfileFront(newImageResize);
-      //     }
-      //     else if (status == "back") {
-      //       newImageResize.id = 1
-      //       _uploadFile(response2, 'back')
-      //       setfileBack(newImageResize);
-      //     }
-      //     else if (status == "left") {
-      //       newImageResize.id = 2
-      //       _uploadFile(response2, 'left')
-      //       setfileLeft(newImageResize);
-      //     }
-      //     else if (status == "right") {
-      //       newImageResize.id = 3
-      //       _uploadFile(response2, 'right')
-      //       setfileRight(newImageResize);
-      //     }
-      //     // ****** Send this to API ******
-
-      //   }).catch((err) => {
-      //     console.log("Image Resize Error :: => ", err)
-      //   });
-
-      // setFilePath(response);
     });
 
   };
@@ -475,7 +432,7 @@ export const UploadVehicleScreen = observer((props) => {
     const data_mock_call = {
       // id: tokenStore.profile.id,
       carrierId: editStatus == "add" ? tokenStore.profile.id : MyVehicleStore.data.id,
-      truckType: data['vehicle-type'],    // ** EDIT 1
+      truckType: data['vehicle-type'],
 
       loadingWeight: 2,
       stallHeight: Number(data['vehicle-height']),
@@ -497,6 +454,8 @@ export const UploadVehicleScreen = observer((props) => {
     }
 
     let uploadData = JSON.parse(JSON.stringify(UploadFileStore.data))
+    __DEV__ && console.tron.log("Upload file data onSubmit Form :: ", uploadData)
+    __DEV__ && console.log("Upload file data onSubmit Form :: ", uploadData)
     // ** EDIT 2
     const statusAction = JSON.parse(JSON.stringify(StatusStore.status))
     if (statusAction && statusAction == "edit") {
@@ -575,22 +534,28 @@ export const UploadVehicleScreen = observer((props) => {
 
 
     } else {
+      let cnt = 0
       if (fileFront && Object.keys(fileFront).length) {
         let fileFrontTmp = uploadData.find(e => e.position == "front")
         if (fileFrontTmp) data_mock_call.truckPhotos.front = fileFrontTmp.url
+        else cnt++
       }
       if (fileBack && Object.keys(fileBack).length) {
         let fileBackTmp = uploadData.find(e => e.position == "back")
         if (fileBackTmp) data_mock_call.truckPhotos.back = fileBackTmp.url
+        else cnt++
       }
       if (fileLeft && Object.keys(fileLeft).length) {
         let fileLeftTmp = uploadData.find(e => e.position == "left")
         if (fileLeftTmp) data_mock_call.truckPhotos.left = fileLeftTmp.url
+        else cnt++
       }
       if (fileRight && Object.keys(fileRight).length) {
         let fileRightTmp = uploadData.find(e => e.position == "right")
         if (fileRightTmp) data_mock_call.truckPhotos.right = fileRightTmp.url
+        else cnt++
       }
+      if (cnt == 4) data_mock_call.truckPhotos = null
     }
     let tmp_region = []
     let tmp_province = []
