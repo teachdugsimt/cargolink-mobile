@@ -67,7 +67,7 @@
     "ramda": "0.27.1",
     "react": "16.13.1",
     "react-hook-form": "^6.13.1",
-    "react-native": "0.63.2",
+    "react-native": "0.63.3",
     "react-native-confirmation-code-field": "^6.5.1",
     "react-native-countdown-component": "^2.7.1",
     "react-native-dropdown-latest": "0.0.8",
