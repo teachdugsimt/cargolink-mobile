@@ -1,4 +1,5 @@
 import { types, flow, destroy } from "mobx-state-tree"
+import { Platform } from "react-native"
 import { FileUploadApi } from '../../services/api/'
 const fileUploadApi = new FileUploadApi()
 
@@ -24,7 +25,13 @@ const UploadFileStore = types
             try {
                 // __DEV__ && console.tron.log('File upload comming :: ', file)
                 let formData = new FormData();
-                formData.append("file", file)
+                formData.append("file", {
+                    name:file.fileName,
+                    uri:  Platform.OS == 'ios' ? file.uri.replace("file://", "") : file.uri,
+                    type: file.type,
+                    width: file.width,
+                    size: file.fileSize
+                })
 
 
                 // formData.append('file', file);

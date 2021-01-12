@@ -327,6 +327,14 @@ export const UploadVehicleScreen = observer((props) => {
       }
       __DEV__ && console.tron.log('Image base64 -> ', response);
 
+      console.log('base64 -> ', response.base64);
+      console.log('uri -> ', response.uri);
+      console.log('width -> ', response.width);
+      console.log('height -> ', response.height);
+      console.log('fileSize -> ', response.fileSize);
+      console.log('type -> ', response.type);
+      console.log('fileName -> ', response.fileName);
+
       let newImageResize = response
       if (status == "front") {
         newImageResize.id = 0
@@ -348,7 +356,7 @@ export const UploadVehicleScreen = observer((props) => {
         _uploadFile(response, 'right')
         setfileRight(newImageResize);
       }
-      
+
       // ImageResizer.createResizedImage(response.uri, 1024, 1024, 'JPEG', 100, 0, null)
       //   .then((response2) => {
       //     __DEV__ && console.tron.log("Image resize response2 :: ", response2)
@@ -612,7 +620,6 @@ export const UploadVehicleScreen = observer((props) => {
 
     __DEV__ && console.tron.log("Finish FINAL submit data :: ", data_mock_call)
     if (editStatus && editStatus == "add") {
-      data_mock_call.truckPhotos = null
       CreateVehicleStore.createVehicleProfile(data_mock_call)
       setsubmitReady(true)
     }
@@ -1132,15 +1139,17 @@ export const UploadVehicleScreen = observer((props) => {
 
 
 
-                      <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN,]} onPress={async () => {
+                      <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN, Platform.OS == "ios" ? {} : {
+                        paddingTop: 10
+                      }]} onPress={async () => {
                         __DEV__ && console.tron.log("REGION :: ", index)
                         await AddressStore.getProvince({ regionId: valRegion[index] }, i18n.locale)
                         _updateVisibleModal(true, index)
                         // setvisible(true)
                       }}>
-                        {!formControllerValue["controller-province-" + index] && <Text style={{}} tx={"postJobScreen.pleaseSelectVehicleType"} />}
+                        {!formControllerValue["controller-province-" + index] && <Text style={CONTENT_TEXT} tx={"postJobScreen.pleaseSelectVehicleType"} />}
 
-                        {!!formControllerValue["controller-province-" + index] && <Text style={{}}>{
+                        {!!formControllerValue["controller-province-" + index] && <Text style={CONTENT_TEXT} >{
                           i18n.locale == 'th' ?
                             provinceListTh.find(e => e.value == formControllerValue["controller-province-" + index]).label :
                             provinceListEn.find(e => e.value == formControllerValue["controller-province-" + index]).label
