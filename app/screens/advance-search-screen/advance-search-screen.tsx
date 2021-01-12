@@ -1,27 +1,14 @@
 import React, { useState, ReactElement, useLayoutEffect, useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
 import { Dimensions, TextStyle, View, ViewStyle } from 'react-native'
-import { Button, Checkbox, HeaderCenter, Text } from '../../components'
+import { Button, Checkbox, HeaderCenter, Text, CollapsibleList, ModalLoading } from '../../components'
 import { color, spacing } from '../../theme'
 import { useNavigation } from '@react-navigation/native'
 import { ScrollView } from 'react-native-gesture-handler'
-import TruckTypeStore from "../../store/my-vehicle-store/truck-type-store"
-import { translate } from '../../i18n'
-import i18n from "i18n-js"
+import AdvanceSearchStore from "../../store/shipper-job-store/advance-search-store"
 
 const deviceWidht = Dimensions.get('window').width / 2
 const marginPercent = 1
-interface MENU {
-  id?: number
-  topic?: string
-  showSubColumn?: number
-  isChecked?: boolean
-  subMenu?: {
-    id?: number
-    name?: string
-    isChecked?: boolean
-  }[]
-}
 
 const CONTAINER: ViewStyle = {
   flex: 1,
@@ -79,181 +66,94 @@ const BUTTON_CONFIRM_TEXT: TextStyle = {
   paddingBottom: 5
 }
 
-const MENUS: Array<MENU> = [
-  {
-    id: 1,
-    topic: translate('common.vehicleTypeField'),
-    showSubColumn: 3,
-    isChecked: false,
-    subMenu: [
-      {
-        id: 11,
-        name: 'รถ 4 ล้อ',
-        isChecked: false,
-      },
-      {
-        id: 12,
-        name: 'รถ 6 ล้อ',
-        isChecked: false,
-      },
-      {
-        id: 13,
-        name: 'รถ 10 ล้อ',
-        isChecked: false,
-      },
-    ]
-  },
-  {
-    id: 2,
-    topic: 'จำนวนรถ',
-    showSubColumn: 3,
-    isChecked: false,
-    subMenu: [
-      {
-        id: 21,
-        name: '1-2 คัน',
-        isChecked: false,
-      },
-      {
-        id: 22,
-        name: '3-4 คัน',
-        isChecked: false,
-      },
-      {
-        id: 23,
-        name: 'มากกว่า 4 คัน',
-        isChecked: false,
-      },
-    ]
-  },
-  {
-    id: 3,
-    topic: 'ประเภทสินค้า',
-    showSubColumn: 2,
-    isChecked: false,
-    subMenu: [
-      {
-        id: 31,
-        name: 'สินค้าเกษตร',
-        isChecked: false,
-      },
-      {
-        id: 32,
-        name: 'สินค้าเกษตร',
-        isChecked: false,
-      },
-      {
-        id: 33,
-        name: 'สินค้าเกษตร',
-        isChecked: false,
-      },
-      {
-        id: 34,
-        name: 'สินค้าเกษตร',
-        isChecked: false,
-      },
-      {
-        id: 35,
-        name: 'สินค้าเกษตร',
-        isChecked: false,
-      },
-      {
-        id: 36,
-        name: 'สินค้าเกษตร',
-        isChecked: false,
-      },
-    ]
-  },
-  {
-    id: 4,
-    topic: 'น้ำหนัก',
-    showSubColumn: 2,
-    isChecked: false,
-    subMenu: [
-      {
-        id: 41,
-        name: '1-5 ตัน',
-        isChecked: false,
-      },
-      {
-        id: 42,
-        name: '5-10 ตัน',
-        isChecked: false,
-      },
-    ]
-  },
-]
-
 const initialState = {
-  settings: MENUS
+  // settings: MENUS,
+  truckTypes: [],
+  truckAmount: 0,
+  productType: [],
+  truckWeight: 0,
 }
 
 export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
   const navigation = useNavigation()
 
-  const [{ settings }, setState] = useState(initialState)
+  const [{ truckTypes, truckAmount, productType, truckWeight }, setState] = useState(initialState)
 
   useEffect(() => {
-    if (!TruckTypeStore.data.length) {
-      TruckTypeStore.getTruckTypeDropdown(i18n.locale)
+    if (!AdvanceSearchStore.menu || !AdvanceSearchStore.menu.length) {
+      AdvanceSearchStore.mapMenu()
     }
   }, [])
 
-  useEffect(() => {
-    if (TruckTypeStore.data && TruckTypeStore.data.length) {
-      MENUS[0].showSubColumn = 2
-      MENUS[0].subMenu = TruckTypeStore.data.map(val => {
-        return {
-          ...val,
-          isChecked: false
-        }
-      })
-      setState(prevState => ({
-        ...prevState,
-        settings: MENUS
-      }))
-    }
-  }, [TruckTypeStore.loading, TruckTypeStore.data])
-
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => <Text tx={"searchJobScreen.clear"} onPress={() => setState(initialState)} />,
+      headerRight: () => <Text tx={"searchJobScreen.clear"} onPress={() => AdvanceSearchStore.clearMenu()} />,
     })
   }, [navigation]);
 
   const onClick = (id: number, isChecked: boolean) => {
-    const newMenu = settings.map(menu => {
-      if (menu.id !== id) return menu
+    const newMenu = AdvanceSearchStore.menu.map(menu => {
+      if (menu.id !== id || !menu.isMultiSelect) return menu
       const subMenu = menu.subMenu && menu.subMenu.length ? menu.subMenu.map(item => {
         return { ...item, isChecked: !isChecked }
       }) : []
       return { ...menu, isChecked: !isChecked, subMenu }
     })
-
-    setState(prevState => ({
-      ...prevState,
-      settings: newMenu
-    }))
+    AdvanceSearchStore.mapMenu(newMenu)
   }
 
-  const onSelect = (subId: number, mainId: number, isChecked: boolean) => {
-    const newMenu = settings.map(menu => {
-      if (menu.id !== mainId) return menu
-      const subMenu = menu.subMenu && menu.subMenu.length ? menu.subMenu.map(item => {
-        if (item.id !== subId) return item
-        return { ...item, isChecked: !isChecked }
-      }) : []
-      const unCheckedAll = subMenu.filter(menu => menu.isChecked === true)
-      return { ...menu, isChecked: !!unCheckedAll.length, subMenu }
+  const onConfirm = () => {
+    const resultMapFilter = AdvanceSearchStore.menu.map(menu => {
+      const result = menu.subMenu.filter(subMenu => subMenu.isChecked).map(val => val.value)
+      if (menu.type === 'truckAmount' && menu.isChecked) {
+        const numbs = JSON.parse(JSON.stringify(result[0]))
+        return {
+          [`${menu.type}Min`]: Math.min(...numbs),
+          [`${menu.type}Max`]: Math.max(...numbs),
+        }
+      }
+      return {
+        [menu.type]: menu.isMultiSelect ? result : result[0]
+      }
     })
-
-    setState(prevState => ({
-      ...prevState,
-      settings: newMenu
-    }))
+    __DEV__ && console.tron.log('resultMapFilter', resultMapFilter)
+    let attrFilterToObject = {}
+    for (const attr of resultMapFilter) {
+      attrFilterToObject = { ...attrFilterToObject, ...attr }
+    }
+    __DEV__ && console.tron.log('attrFilterToObject', attrFilterToObject)
+    AdvanceSearchStore.setFilter({ ...AdvanceSearchStore.filter, ...attrFilterToObject })
+    navigation.navigate("searchJob")
   }
 
-  const SubMenu = ({ id, label, isChecked, mainIndex, percentWidth }): ReactElement => {
+  const onSelect = (subId: number, mainId: number, isChecked: boolean, isMultiSelect: boolean) => {
+    let newMenu = null
+    let settings = JSON.parse(JSON.stringify(AdvanceSearchStore.menu))
+    if (!isMultiSelect) {
+      const indexMainId = mainId - 1
+      const newSubMenu = settings[indexMainId].subMenu.map(menu => ({ ...menu, isChecked: menu.id === subId ? !isChecked : false }))
+
+      delete settings[indexMainId].subMenu
+      settings[indexMainId].isChecked = !isChecked
+      settings[indexMainId].subMenu = newSubMenu
+
+      newMenu = [...settings]
+    } else {
+      newMenu = settings.map(menu => {
+        if (menu.id !== mainId) return menu
+        const subMenu = menu.subMenu && menu.subMenu.length ? menu.subMenu.map(item => {
+          if (item.id !== subId) return item
+          return { ...item, isChecked: !isChecked }
+        }) : []
+        const unCheckedAll = subMenu.filter(({ isChecked }) => isChecked)
+        return { ...menu, isChecked: !!unCheckedAll.length, subMenu }
+      })
+    }
+
+    AdvanceSearchStore.mapMenu(newMenu)
+  }
+
+  const SubMenu = ({ id, label, isChecked, mainIndex, percentWidth, isMultiSelect }): ReactElement => {
 
     return (<Button
       key={id}
@@ -267,19 +167,20 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
         color: color.textBlack,
         fontSize: 12
       }}
-      onPress={() => onSelect(id, mainIndex, isChecked)}
+      onPress={() => onSelect(id, mainIndex, isChecked, isMultiSelect)}
     />)
   }
 
-  // console.log('MENUS', MENUS)
+  __DEV__ && console.tron.log('truckTypes', truckTypes)
 
   return (
     <View style={CONTAINER}>
+      {AdvanceSearchStore.loading && <ModalLoading size={'large'} color={color.primary} visible={AdvanceSearchStore.loading} />}
       <View style={SEARCH_ITEM_ROOT}>
         <ScrollView style={{ padding: spacing[3] }}>
 
           {
-            settings.length && settings.map((menu, index) => {
+            AdvanceSearchStore.menu && !!AdvanceSearchStore.menu.length && AdvanceSearchStore.menu.map((menu, index) => {
               return (
                 <View style={ITEM} key={index} >
                   <View style={ROW}>
@@ -287,13 +188,33 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
                     <Text text={menu.topic} style={CONTENT} onPress={() => onClick(menu.id, menu.isChecked)} />
                   </View>
                   <View style={SUB_MENU}>
+                    {/* <CollapsibleList
+                    numberOfVisibleItems={4}
+                    wrapperStyle={{
+                      marginTop: 20,
+                      overflow: "hidden",
+                      backgroundColor: "#FFF",
+                      borderRadius: 5,
+
+                      flexDirection: 'row'
+                    }}
+                    buttonContent={
+                      <View style={{}}>
+                        <Text text={translate('searchJobScreen.more')} />
+                      </View>
+                    }
+                    buttonPosition={'bottom'}
+                  > */}
                     {
                       menu.subMenu && menu.subMenu.map((subMenu, i) => {
                         const percentWidth = (100 - (menu.showSubColumn * (marginPercent * 2))) / menu.showSubColumn
                         const { id, name, isChecked } = subMenu
-                        return (<SubMenu key={id} id={id} label={name} isChecked={isChecked} mainIndex={menu.id} percentWidth={percentWidth} />)
+                        return (
+                          <SubMenu key={id} id={id} label={name} isChecked={isChecked} mainIndex={menu.id} percentWidth={percentWidth} isMultiSelect={menu.isMultiSelect} />
+                        )
                       })
                     }
+                    {/* </CollapsibleList> */}
                   </View>
                 </View>
               )
@@ -309,7 +230,7 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
           style={BUTTON_CONFIRM}
           textStyle={BUTTON_CONFIRM_TEXT}
           text={'ยืนยัน'}
-          onPress={() => navigation.navigate("searchJob")}
+          onPress={onConfirm}
         />
       </View>
     </View>

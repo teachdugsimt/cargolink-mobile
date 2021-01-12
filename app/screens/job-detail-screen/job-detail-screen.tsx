@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
 import { Dimensions, Image, ImageStyle, ScrollView, TextStyle, View, ViewStyle } from 'react-native'
 import { Button, Icon, PostingBy, Text } from '../../components'
@@ -7,6 +7,9 @@ import { color, spacing } from '../../theme'
 import { translate } from '../../i18n'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
+import ShipperJobStore from '../../store/shipper-job-store/shipper-job-store'
+import { GetTruckType } from '../../utils/get-truck-type'
+import i18n from 'i18n-js'
 
 const FONT_SIZE_SMALL = 15
 
@@ -26,9 +29,10 @@ const TOP_ROOT: ViewStyle = {
     ...MARGIN_BOTTOM,
     position: 'absolute',
     width: 'auto',
-    bottom: 5,
+    // bottom: 5,
     right: 0,
     left: 0,
+    top: -100,
     marginHorizontal: spacing[3],
     borderRadius: spacing[1],
     paddingVertical: spacing[2],
@@ -144,83 +148,87 @@ const DATA = {
 
 export const JobDetailScreen = observer(function JobDetailScreen() {
     const navigation = useNavigation()
-    // const goBack = () => navigation.goBack()
 
-    const {
-        fromText,
-        toText,
-        truckType,
-        // packaging,
-        count,
-        postBy,
-        isVerified,
-        isCrown,
-        rating,
-        ratingCount,
-        logo,
-        weigh,
-        productType,
-        productName,
-        distance,
-        period,
-    } = DATA
+    useEffect(() => {
+        return () => {
+            ShipperJobStore.setDefaultOfData()
+        }
+    }, [])
+
+    useEffect(() => {
+        if (ShipperJobStore.data && Object.keys(ShipperJobStore.data).length) {
+            console.log('ShipperJobStore.data', JSON.parse(JSON.stringify(ShipperJobStore.data)))
+        }
+    }, [ShipperJobStore.loading, ShipperJobStore.data])
 
     const onPress = () => {
         navigation.navigate('shipperProfile')
     }
 
+    const {
+        from,
+        to,
+        productName,
+        productTypeId,
+        requiredTruckAmount,
+        truckType,
+        weight
+    } = JSON.parse(JSON.stringify(ShipperJobStore.data))
+
+    const txtTruckType = GetTruckType(+truckType, i18n.locale)
+    console.log('txtTruckType', txtTruckType)
+
     return (
         <View style={CONTAINER}>
             <View style={MAP_CONTAINER}>
                 <Image source={{ uri: 'https://f.ptcdn.info/799/063/000/pqyi1shocoZJuUFhvZ0-o.png' }} resizeMode={'cover'} style={MAP} />
-
-                <View style={TOP_ROOT}>
-                    <View>
-                        <Text text={translate('jobDetailScreen.pickUpPoint')} style={{ ...TEXT_SMALL, color: color.disable, }} />
-                    </View>
-                    <View style={LOCATION_CONTAINER}>
-                        <View style={LOCATION_BOX}>
-                            <View style={LOCATION}>
-                                <Icon icon="pinDropYellow" style={PIN_ICON} />
-                                <Text
-                                    text={`${translate('common.from')}  :`}
-                                    style={{ ...LOCATION_TEXT, width: 45 }}
-                                />
-                                <Text
-                                    text={fromText}
-                                    style={LOCATION_TEXT}
-                                />
-                            </View>
-                            <View style={LOCATION}>
-                                <Icon icon="pinDropGreen" style={PIN_ICON} />
-                                <Text
-                                    text={`${translate('common.to')}  :`}
-                                    style={{ ...LOCATION_TEXT, width: 45 }}
-                                />
-                                <Text
-                                    text={toText}
-                                    style={LOCATION_TEXT}
-                                />
-                            </View>
-                        </View>
-                        <View style={DISTANCE_BOX}>
-                            <Text style={{ paddingVertical: spacing[1] }} >{`${distance} `}<Text text={'KM'} style={TEXT_SMALL} /></Text>
-                            <Text text={`${period}`} style={{ ...TEXT_SMALL, paddingVertical: spacing[1], }} />
-                        </View>
-                    </View>
-                </View>
-
             </View>
 
-            <View style={{
-                flex: 1,
-            }}>
+            <View style={{ flex: 1, position: 'relative', top: 50 }}>
                 <ScrollView
                     onScroll={({ nativeEvent }) => {
                     }}
                     style={{}}
                     scrollEventThrottle={400}
                 >
+
+                    <View style={TOP_ROOT}>
+                        <View>
+                            <Text text={translate('jobDetailScreen.pickUpPoint')} style={{ ...TEXT_SMALL, color: color.disable, }} />
+                        </View>
+                        <View style={LOCATION_CONTAINER}>
+                            <View style={LOCATION_BOX}>
+                                <View style={LOCATION}>
+                                    <Icon icon="pinDropYellow" style={PIN_ICON} />
+                                    <Text
+                                        text={`${translate('common.from')}  :`}
+                                        style={{ ...LOCATION_TEXT, width: 45 }}
+                                    />
+                                    <Text
+                                        text={from && from.name}
+                                        style={LOCATION_TEXT}
+                                    />
+                                </View>
+                                {to?.length && to.map(attr => (
+                                    <View style={LOCATION}>
+                                        <Icon icon="pinDropGreen" style={PIN_ICON} />
+                                        <Text
+                                            text={`${translate('common.to')}  :`}
+                                            style={{ ...LOCATION_TEXT, width: 45 }}
+                                        />
+                                        <Text
+                                            text={attr.name}
+                                            style={LOCATION_TEXT}
+                                        />
+                                    </View>
+                                ))}
+                            </View>
+                            <View style={DISTANCE_BOX}>
+                                <Text style={{ paddingVertical: spacing[1] }} >{`${DATA.distance} `}<Text text={'KM'} style={TEXT_SMALL} /></Text>
+                                <Text text={`${DATA.period}`} style={{ ...TEXT_SMALL, paddingVertical: spacing[1], }} />
+                            </View>
+                        </View>
+                    </View>
 
                     <View style={{
                         ...PRODUCT_ROOT
@@ -233,8 +241,8 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                                 <MaterialCommunityIcons name={'truck-outline'} size={24} color={color.primary} />
                             </View>
                             <View style={DETAIL_BOX}>
-                                <Text text={`${translate('common.vehicleTypeField')} : ${truckType}`} style={TEXT} />
-                                <Text text={`${translate('common.count')} : ${count} คัน`} style={TEXT} />
+                                <Text text={`${translate('common.vehicleTypeField')} : ${txtTruckType && txtTruckType.name ? txtTruckType.name : ''}`} style={TEXT} />
+                                <Text text={`${translate('common.count')} : ${requiredTruckAmount} คัน`} style={TEXT} />
                             </View>
                         </View>
                         <View style={PRODUCT_ROW}>
@@ -242,9 +250,9 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                                 <SimpleLineIcons name={'social-dropbox'} size={24} color={color.primary} />
                             </View>
                             <View style={DETAIL_BOX}>
-                                <Text text={`${translate('jobDetailScreen.productType')} : ${productType}`} style={TEXT} />
+                                <Text text={`${translate('jobDetailScreen.productType')} : ${productTypeId}`} style={TEXT} />
                                 <Text text={`${translate('jobDetailScreen.productName')} : ${productName}`} style={TEXT} />
-                                <Text text={`${translate('jobDetailScreen.weightTon')} : ${weigh}`} style={TEXT} />
+                                <Text text={`${translate('jobDetailScreen.weightTon')} : ${weight}`} style={TEXT} />
                             </View>
                         </View>
                     </View>
@@ -262,8 +270,14 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                 <Button
                     testID="call-with-owner"
                     style={CALL_BUTTON}
-                    textStyle={CALL_TEXT}
-                    text={translate('jobDetailScreen.call')}
+                    // textStyle={CALL_TEXT}
+                    children={
+                        <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+                            <MaterialCommunityIcons name={'phone'} size={24} color={color.textWhite} style={{ paddingRight: spacing[2] }} />
+                            <Text style={CALL_TEXT} text={translate('jobDetailScreen.call')} />
+                        </View>
+                    }
+                    // text={translate('jobDetailScreen.call')}
                     onPress={() => navigation.navigate('feedback')}
                 />
             </View>

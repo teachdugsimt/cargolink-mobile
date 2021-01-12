@@ -144,5 +144,20 @@ export interface ShipperJobCreate {
   weight: number
 }
 
+export interface AdvanceSearchMenu {
+  id?: number
+  type?: string
+  topic?: string
+  showSubColumn?: number
+  isChecked?: boolean
+  isMultiSelect?: boolean
+  subMenu?: {
+    id?: number
+    value?: number | Array<number>
+    name?: string
+    isChecked?: boolean
+  }[]
+}
+
 export type GetUsersResult = { kind: "ok"; users: User[] } | GeneralApiProblem
 export type GetUserResult = { kind: "ok"; user: User } | GeneralApiProblem

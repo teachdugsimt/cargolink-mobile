@@ -1,18 +1,18 @@
-import React from 'react'
-import { Dimensions, Image, ImageBackground, ImageStyle, TextStyle, View, ViewStyle } from 'react-native';
+import React, { useState } from 'react'
+import { ImageBackground, ImageStyle, TextStyle, View, ViewStyle } from 'react-native';
 import { SearchItemProps } from './search-item.props';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { color, spacing } from '../../theme';
 import { Icon } from '../icon/icon';
-import { Button } from '../button/button';
 import { PostingBy } from '../posting-by/posting-by';
 import { Text } from '../text/text';
 import { translate } from '../../i18n';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+
 const truckBackImage = require("./truck-back.png")
 
-const FONT_SIZE = 20
 const FONT_SIZE_SMALL = 15
-const FONT_SIZE_LARGE = 25
 
 const PADDING_TOP = { paddingTop: spacing[1] }
 const PADDING_BOTTOM = { paddingBottom: spacing[1] }
@@ -60,14 +60,6 @@ const PIN_ICON: ImageStyle = {
   width: 22,
   height: 22,
 }
-const SMALL_ICON: ImageStyle = {
-  width: 18,
-  height: 18,
-}
-const HEART_ICON: ImageStyle = {
-  width: FONT_SIZE_LARGE,
-  height: FONT_SIZE_LARGE
-}
 const LOCATION_TEXT: TextStyle = {
   fontSize: FONT_SIZE_SMALL,
   ...PADDING_LEFT
@@ -84,9 +76,6 @@ const CAR_DETAIL_ROOT: TextStyle = {
 const CAR_DETAIL: ViewStyle = {
   flex: 1,
   flexDirection: "row",
-}
-const PACKAGING: ViewStyle = {
-  flex: 1
 }
 const CONTENT_RIGHT: ViewStyle = {
   flex: 1,
@@ -127,11 +116,6 @@ const ACCOUNT_ROOT: ViewStyle = {
   flexDirection: 'row',
   justifyContent: "flex-end"
 }
-const BUTTON_VIEW: ViewStyle = {
-  backgroundColor: color.transparent,
-  paddingHorizontal: 0,
-  paddingVertical: 0
-}
 const TEXT_VIEW: TextStyle = {
   color: color.disable,
   fontSize: 14,
@@ -141,6 +125,7 @@ const TEXT_VIEW: TextStyle = {
 
 export function SearchItem(props: SearchItemProps) {
   const {
+    id,
     fromText,
     toText,
     count,
@@ -151,7 +136,7 @@ export function SearchItem(props: SearchItemProps) {
     viewDetail,
     viewDetailToRight,
     backgroundImage,
-    isLike,
+    isLike: like = false,
     iconOnBottom,
     isRecommened,
     rexommenedOnTop,
@@ -162,10 +147,19 @@ export function SearchItem(props: SearchItemProps) {
     isCrown,
     logo,
     containerStyle,
-    onPress
+    onPress,
+    onToggleHeart
   } = props
+
+  const [isLike, setIsLike] = useState(like)
+
+  const onSelectedHeart = () => {
+    setIsLike(!isLike)
+    onToggleHeart({ id, isLike: !isLike })
+  }
+
   return (
-    <View style={{ ...CONTAINER, ...containerStyle }}>
+    <TouchableOpacity style={{ ...CONTAINER, ...containerStyle }} activeOpacity={1} onPress={onPress}>
       <View style={TOP_ROOT}>
         <ImageBackground source={truckBackImage} style={BACKGROUND} ></ImageBackground>
         <View style={CONTENT}>
@@ -218,7 +212,9 @@ export function SearchItem(props: SearchItemProps) {
           </View>
         </View>
         <View style={CONTENT_RIGHT}>
-          <Icon icon={isLike ? 'heartActive' : 'heartInactive'} style={HEART_ICON} />
+          <TouchableOpacity onPress={onSelectedHeart}>
+            <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} size={24} color={isLike ? color.red : color.disable} />
+          </TouchableOpacity>
           {isRecommened &&
             <View style={RECOMMENED_ROOT}>
               <Text
@@ -230,14 +226,8 @@ export function SearchItem(props: SearchItemProps) {
       </View>
       <View style={BUTTOM_ROOT}>
         <View style={VIEW_DETAIL_ROOT}>
-          <Button
-            testID="view-detail"
-            style={BUTTON_VIEW}
-            textStyle={TEXT_VIEW}
-            text={translate('jobDetailScreen.seeDetail')} // ดูรายละเอียด
-            onPress={onPress}
-          />
-          <AntDesign name="right" size={FONT_SIZE_LARGE} color={color.disable} />
+          <Text text={translate('jobDetailScreen.seeDetail')} style={TEXT_VIEW} />
+          <AntDesign name="right" size={spacing[5]} color={color.disable} />
         </View>
         <View style={ACCOUNT_ROOT}>
           <PostingBy {
@@ -252,6 +242,6 @@ export function SearchItem(props: SearchItemProps) {
           } />
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   )
 }

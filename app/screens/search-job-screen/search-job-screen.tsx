@@ -53,163 +53,6 @@ const FULL_SEARCH_TEXT: TextStyle = {
   color: color.textBlack,
 }
 
-const DATA_FIRST = [
-  {
-    id: 1,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: true,
-    isLike: true,
-    rating: '4.9',
-    ratingCount: '122',
-    isCrown: true,
-    isRecommened: true,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-  {
-    id: 2,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: false,
-    isLike: false,
-    rating: '1.9',
-    ratingCount: '3',
-    isCrown: false,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-  {
-    id: 3,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: true,
-    isLike: true,
-    rating: '4.9',
-    ratingCount: '122',
-    isCrown: true,
-    isRecommened: true,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-  {
-    id: 4,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: true,
-    isLike: true,
-    rating: '4.5',
-    ratingCount: '69',
-    isCrown: false,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-  {
-    id: 5,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: true,
-    isLike: true,
-    rating: '4.9',
-    ratingCount: '122',
-    isCrown: true,
-    isRecommened: true,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-]
-
-const DATA_SECOND = [
-  {
-    id: 6,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'GG Transport Thailand',
-    isVerified: true,
-    isLike: false,
-    rating: '3.3',
-    ratingCount: '31',
-    isCrown: false,
-    isRecommened: false,
-    logo: 'https://seeklogo.com/images/T/truck-logo-D561DC5A08-seeklogo.com.png',
-  },
-  {
-    id: 7,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: true,
-    isLike: true,
-    rating: '4.9',
-    ratingCount: '122',
-    isCrown: true,
-    isRecommened: true,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-  {
-    id: 8,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: true,
-    isLike: true,
-    rating: '4.9',
-    ratingCount: '122',
-    isCrown: true,
-    isRecommened: true,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-  {
-    id: 9,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: true,
-    isLike: true,
-    rating: '4.9',
-    ratingCount: '122',
-    isCrown: true,
-    isRecommened: true,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-]
-
 const Item = (data) => {
   const {
     id,
@@ -226,9 +69,12 @@ const Item = (data) => {
   const navigation = useNavigation()
 
   const onPress = () => {
-    navigation.navigate('jobDetail', {
-      name: 'Hello world'
-    })
+    ShipperJobStore.findOne(id)
+    navigation.navigate('jobDetail')
+  }
+
+  const onToggleHeart = (data) => {
+    console.log('onToggleHeart data', data)
   }
 
   const typeOfTruck = GetTruckType(+truckType, i18n.locale).name
@@ -238,6 +84,7 @@ const Item = (data) => {
       <SearchItem
         {
         ...{
+          id,
           fromText: from.name,
           toText: to.map(location => location.name).join(', '),
           count: requiredTruckAmount,
@@ -258,7 +105,8 @@ const Item = (data) => {
             paddingTop: spacing[2],
             borderRadius: 6
           },
-          onPress
+          onPress,
+          onToggleHeart
         }
         }
       />
@@ -349,6 +197,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
     ) : undefined
 
     AdvanceSearchStore.setFilter({
+      ...AdvanceSearchStore.filter,
       descending: true,
       from: fLocale,
       to: sLocale,
@@ -367,6 +216,8 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
     TruckTypeStore.getTruckTypeDropdown(i18n.locale)
     navigation.navigate('advanceSearch')
   }
+
+  console.log('AdvanceSearchStore.filter', JSON.parse(JSON.stringify(AdvanceSearchStore.filter)))
 
   return (
     <View style={{ flex: 1 }}>
