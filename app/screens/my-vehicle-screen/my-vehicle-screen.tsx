@@ -78,6 +78,7 @@ export const MyVehicle = observer(function MyVehicle() {
       />
     )
   }
+  console.log("")
 
   return (
     <View style={CONTAINER}>
