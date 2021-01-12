@@ -22,7 +22,7 @@ const UploadFileStore = types
             yield fileUploadApi.setup()
             self.loading = true
             try {
-                console.log('File upload comming :: ', file)
+                // __DEV__ && console.tron.log('File upload comming :: ', file)
                 let formData = new FormData();
                 formData.append("file", file)
 
@@ -38,7 +38,7 @@ const UploadFileStore = types
                 // console.log("Form data after BUILD :: => ", formData)
 
                 const response = yield fileUploadApi.uploadVehiclePicture(formData)
-                console.log("🚀 ~ file: upload-file-store.ts ~ line 39 ~ uploadImage:flow ~ response : ", response)
+                __DEV__ && console.tron.log("🚀 ~ file: upload-file-store.ts ~ line 39 ~ uploadImage:flow ~ response : ", response)
                 if (response.ok) {
 
                     let tmp = self.data
