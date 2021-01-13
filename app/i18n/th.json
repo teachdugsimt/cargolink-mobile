@@ -98,7 +98,8 @@
     "exampleImageRight": "ตัวอย่างรูปภาพด้านขวา",
     "workZone": "โซนที่วิ่งงาน",
     "region": "ภูมิภาค",
-    "province": "จังหวัด"
+    "province": "จังหวัด",
+    "pleaseSelectProvince": "กรุณาเลือกจังหวัด"
   },
   "profileScreen": {
     "profile": "โปรไฟล์",

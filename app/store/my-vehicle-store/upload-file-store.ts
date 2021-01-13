@@ -1,12 +1,22 @@
 import { types, flow, destroy } from "mobx-state-tree"
+import { Platform } from "react-native"
 import { FileUploadApi } from '../../services/api/'
 const fileUploadApi = new FileUploadApi()
+
+const ImageObject = types.model({
+    fileName: types.maybeNull(types.string),
+    fileUrl: types.maybeNull(types.string),
+    fileType: types.maybeNull(types.string),
+    token: types.maybeNull(types.string),
+    uploadedDate: types.maybeNull(types.string)
+})
 
 const UploadFileStore = types
     .model({
         loading: types.boolean,
         data: types.array(types.model({
             url: types.maybeNull(types.string),
+            image: types.maybeNull(ImageObject),
             position: types.maybeNull(types.string)
         })),
         error: types.string
@@ -20,12 +30,17 @@ const UploadFileStore = types
         // },
         uploadImage: flow(function* (file, position) {
             yield fileUploadApi.setup()
-            console.log("Config Header here :: => " ,fileUploadApi.apisauce)
             self.loading = true
             try {
-                console.log('File upload comming :: ', file)
+                // __DEV__ && console.tron.log('File upload comming :: ', file)
                 let formData = new FormData();
-                formData.append("file", file)
+                formData.append("file", {
+                    name: file.fileName,
+                    uri: Platform.OS == 'ios' ? file.uri.replace("file://", "") : file.uri,
+                    type: file.type,
+                    width: file.width,
+                    size: file.fileSize
+                })
 
 
                 // formData.append('file', file);
@@ -39,24 +54,25 @@ const UploadFileStore = types
                 // console.log("Form data after BUILD :: => ", formData)
 
                 const response = yield fileUploadApi.uploadVehiclePicture(formData)
-                console.log("🚀 ~ file: upload-file-store.ts ~ line 39 ~ uploadImage:flow ~ response : ", response)
                 if (response.ok) {
 
                     let tmp = self.data
                     if (tmp.find(e => e.position == position)) {
                         tmp.map((e, i) => {
                             if (e.position == position) tmp.splice(i, 1, {
-                                url: response.data.reminder.url || '',
+                                url: response.data.fileUrl || '',
+                                image: response.data,
                                 position
                             })
                         })
                     } else {
                         tmp.push({
-                            url: response.data.reminder.url || '',
+                            url: response.data.fileUrl || '',
+                            image: response.data,
                             position
                         })
                     }
-                    console.log("TMp before merge :: ", JSON.parse(JSON.stringify(tmp)))
+                    __DEV__ && console.tron.log("TMp before merge :: ", JSON.parse(JSON.stringify(tmp)))
 
                     self.data = tmp
                 } else {

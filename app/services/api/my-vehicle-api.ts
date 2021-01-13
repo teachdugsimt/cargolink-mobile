@@ -81,7 +81,7 @@ export class MyVehicleAPI {
     try {
       const response: ApiResponse<any> = await this.apisauce.get(`api/v1/mobile/carriers/truck/${id}`)
 
-      console.log("Response call api get user (MOCK) : ", response)
+      console.log("Response call api get truck ttype by id : ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
         if (problem) return problem
@@ -89,7 +89,7 @@ export class MyVehicleAPI {
       return { kind: "ok", data: response.data }
       // transform the data into the format we are expecting
     } catch (error) {
-      console.log("Error call api get user (MOCK): ", error)
+      console.log("Error call api get truck ttype by id: ", error)
       return error
     }
   }
@@ -149,7 +149,7 @@ export class MyVehicleAPI {
   async patchMyVehicle(params: any): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.put(`api/v1/mobile/carriers/truck/edit/${params.id}`, params)
+      const response: ApiResponse<any> = await this.apisauce.put(`api/v1/mobile/carriers/truck/edit/${params.carrierId}`, params)
       // the typical ways to die when calling an api
       console.log("Response call api patch upload vehicle profile (MOCK) : ", response)
       if (!response.ok) {

@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react"
 import {
   View, ViewStyle, TextStyle,
   ScrollView, Switch, Dimensions, Platform, Alert, ImageStyle, PermissionsAndroid,
-  SafeAreaView, SectionList, Image
+  SafeAreaView, SectionList, Image, ActivityIndicator
 } from "react-native"
 import { useForm, Controller } from "react-hook-form";
 import { observer } from "mobx-react-lite"
-import { Text, TextInputTheme, Button, UploadVehicle, RoundedButton, HeaderCenter, MultiSelector } from "../../../components"
+import { Text, TextInputTheme, Button, UploadVehicle, RoundedButton, HeaderCenter, MultiSelector, ModalLoading } from "../../../components"
 import { spacing, color, typography, images } from "../../../theme"
 
 import RNPickerSelect from 'react-native-picker-select';
@@ -129,13 +129,20 @@ const ROW_TEXT: ViewStyle = {
   flexDirection: 'row',
 }
 const JUSTIFY_BETWEEN: ViewStyle = {
-  justifyContent: 'space-between'
+  justifyContent: 'space-between',
 }
 const PADDING_TOP: ViewStyle = { marginTop: 10 }
-const PADDING_CHEVRON: ViewStyle = { paddingTop: 7.5, paddingRight: 5 }
+const PADDING_CHEVRON: ViewStyle = { paddingRight: 5 }
 const ROOT_FLAT_LIST: ViewStyle = {
   width: '100%',
   height: 100,
+  flexDirection: 'row',
+  alignItems: 'center',
+  zIndex: 5,
+}
+const ROOT_FLAT_LIST2: ViewStyle = {
+  width: '100%',
+  height: 60,
   flexDirection: 'row',
   alignItems: 'center',
   zIndex: 5,
@@ -154,19 +161,20 @@ const IMAGE_LIST: ImageStyle = {
 
 
 let initForm = 0
+let initModal = Array(77).fill(false)
 export const UploadVehicleScreen = observer((props) => {
   const navigation = useNavigation()
   const [toggleDump, settoggleDump] = useState(false)
   const { tokenStore } = useStores()
 
-
+  const [visibleModal, setvisibleModal] = useState(initModal)
   const [stateData, setstateData] = useState(null)
 
 
   useEffect(() => {
 
     AddressStore.getRegion(i18n.locale)
-    AddressStore.getProvince(i18n.locale)
+    // AddressStore.getProvince(i18n.locale)
     TruckTypeStore.getTruckTypeDropdown(i18n.locale)
 
 
@@ -317,6 +325,8 @@ export const UploadVehicleScreen = observer((props) => {
         Alert.alert(response.errorMessage);
         return;
       }
+      __DEV__ && console.tron.log('Image base64 -> ', response);
+
       console.log('base64 -> ', response.base64);
       console.log('uri -> ', response.uri);
       console.log('width -> ', response.width);
@@ -325,52 +335,27 @@ export const UploadVehicleScreen = observer((props) => {
       console.log('type -> ', response.type);
       console.log('fileName -> ', response.fileName);
 
-      ImageResizer.createResizedImage(response.uri, 1024, 1024, 'JPEG', 100, 0, null)
-        .then((response2) => {
-          console.log("Image resize response2 :: ", response2)
-          // ****** Send this to API ******
-          let newImageResize = {
-            uri: response2.uri,
-            type: 'image/jpeg',
-            name: response2.name,
-            size: response2.size,
-            tmp_name: response2.path,
-            paths: response2.path,
-            path: response2.path,
-            url: response2.uri,
-            id: tokenStore.profile.id
-          }
-          if (status == "front") {
-            newImageResize.id = 0
-            _uploadFile(response2, 'front')
-            // _uploadFile(newImageResize, 'front')
-            setfileFront(newImageResize);
-          }
-          else if (status == "back") {
-            newImageResize.id = 1
-            _uploadFile(response2, 'back')
-            // _uploadFile(newImageResize, 'back')
-            setfileBack(newImageResize);
-          }
-          else if (status == "left") {
-            newImageResize.id = 2
-            _uploadFile(response2, 'left')
-            // _uploadFile(newImageResize, 'left')
-            setfileLeft(newImageResize);
-          }
-          else if (status == "right") {
-            newImageResize.id = 3
-            _uploadFile(response2, 'right')
-            // _uploadFile(newImageResize, 'right')
-            setfileRight(newImageResize);
-          }
-          // ****** Send this to API ******
-
-        }).catch((err) => {
-          console.log("Image Resize Error :: => ", err)
-        });
-
-      // setFilePath(response);
+      let newImageResize = response
+      if (status == "front") {
+        newImageResize.id = 0
+        _uploadFile(response, 'front')
+        setfileFront(newImageResize);
+      }
+      else if (status == "back") {
+        newImageResize.id = 1
+        _uploadFile(response, 'back')
+        setfileBack(newImageResize);
+      }
+      else if (status == "left") {
+        newImageResize.id = 2
+        _uploadFile(response, 'left')
+        setfileLeft(newImageResize);
+      }
+      else if (status == "right") {
+        newImageResize.id = 3
+        _uploadFile(response, 'right')
+        setfileRight(newImageResize);
+      }
     });
 
   };
@@ -427,8 +412,9 @@ export const UploadVehicleScreen = observer((props) => {
   const [submitReady, setsubmitReady] = useState(false)
 
   const onSubmit = data => {
+    let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
     setinputRegistration(data)
-    console.log("Form data :: => ", data)
+    console.tron.log("Raw Form Data :: => ", data)
 
     if (!data['vehicle-type']) {
       _alert(translate('common.vehicleTypeField'))
@@ -445,8 +431,8 @@ export const UploadVehicleScreen = observer((props) => {
 
     const data_mock_call = {
       // id: tokenStore.profile.id,
-      carrierId: tokenStore.profile.id,
-      truckType: data['vehicle-type'],    // ** EDIT 1
+      carrierId: editStatus == "add" ? tokenStore.profile.id : MyVehicleStore.data.id,
+      truckType: data['vehicle-type'],
 
       loadingWeight: 2,
       stallHeight: Number(data['vehicle-height']),
@@ -457,7 +443,7 @@ export const UploadVehicleScreen = observer((props) => {
       // "updatedAt": "2020-12-25T07:14:23.687Z",
       // "approveStatus": "Pending",
 
-     
+
       truckPhotos: {
         front: null,
         back: null,
@@ -468,6 +454,8 @@ export const UploadVehicleScreen = observer((props) => {
     }
 
     let uploadData = JSON.parse(JSON.stringify(UploadFileStore.data))
+    __DEV__ && console.tron.log("Upload file data onSubmit Form :: ", uploadData)
+    __DEV__ && console.log("Upload file data onSubmit Form :: ", uploadData)
     // ** EDIT 2
     const statusAction = JSON.parse(JSON.stringify(StatusStore.status))
     if (statusAction && statusAction == "edit") {
@@ -546,22 +534,28 @@ export const UploadVehicleScreen = observer((props) => {
 
 
     } else {
+      let cnt = 0
       if (fileFront && Object.keys(fileFront).length) {
         let fileFrontTmp = uploadData.find(e => e.position == "front")
         if (fileFrontTmp) data_mock_call.truckPhotos.front = fileFrontTmp.url
+        else cnt++
       }
       if (fileBack && Object.keys(fileBack).length) {
         let fileBackTmp = uploadData.find(e => e.position == "back")
         if (fileBackTmp) data_mock_call.truckPhotos.back = fileBackTmp.url
+        else cnt++
       }
       if (fileLeft && Object.keys(fileLeft).length) {
         let fileLeftTmp = uploadData.find(e => e.position == "left")
         if (fileLeftTmp) data_mock_call.truckPhotos.left = fileLeftTmp.url
+        else cnt++
       }
       if (fileRight && Object.keys(fileRight).length) {
         let fileRightTmp = uploadData.find(e => e.position == "right")
         if (fileRightTmp) data_mock_call.truckPhotos.right = fileRightTmp.url
+        else cnt++
       }
+      if (cnt == 4) data_mock_call.truckPhotos = null
     }
     let tmp_region = []
     let tmp_province = []
@@ -580,17 +574,17 @@ export const UploadVehicleScreen = observer((props) => {
 
     tmp_region.map((reg, ir) => {
       data_mock_call['workingZones'].push({
-        province: reg,
-        region: tmp_province[ir] ? tmp_province[ir] : ""
+        region: reg || "",
+        province: tmp_province[ir] || ""
       })
     })
-    data_mock_call['workingZones'] = [{ region: 1, province: 2 }]
-    console.log("Finish FINAL submit data :: ", data_mock_call)
+    // data_mock_call['workingZones'] = [{ region: 1, province: 2 }]
+    // console.log("Finish FINAL submit data :: ", data_mock_call)
 
-    let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
+    // let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
 
+    __DEV__ && console.tron.log("Finish FINAL submit data :: ", data_mock_call)
     if (editStatus && editStatus == "add") {
-      data_mock_call.truckPhotos = null
       CreateVehicleStore.createVehicleProfile(data_mock_call)
       setsubmitReady(true)
     }
@@ -753,11 +747,51 @@ export const UploadVehicleScreen = observer((props) => {
     </TouchableOpacity>
   }
 
+  const _renderSectionModalProvince = (item: any, index: any, onChange: any, indexX: number) => {
+    return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name + index} style={{ ...ROOT_FLAT_LIST2 }} onPress={() => {
+      onChange(item.id)
+      // setvisible(false)
+      _updateVisibleModal(false, indexX)
+    }}>
+      <View style={{ borderBottomWidth: 1, borderBottomColor: color.line, flex: 1 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1, marginVertical: 20 }}>
+          <Text style={{ width: '50%' }}>{item.name}</Text>
+          <Ionicons name="chevron-forward" size={24} color={color.line} style={{ marginRight: 5 }} />
+        </View>
+      </View>
+    </TouchableOpacity>
+  }
+
+  const _updateVisibleModal = (visibleX, index) => {
+    let tmp = visibleModal
+    tmp[index] = visibleX
+    setvisible(!visible)
+    setvisibleModal(tmp)
+  }
+
+  // useEffect(() => {
+  //   __DEV__ && console.tron.log("Visible Modal in useEffect :: ", visibleModal)
+  //   __DEV__ && console.tron.log("Visible Modal in useEffect :: ", visibleModal)
+  //   if (visibleModal) {
+  //     __DEV__ && console.tron.log("Visible Modal in useEffect :: ", visibleModal)
+  //   }
+  // }, [JSON.parse(JSON.stringify(visibleModal))])
+
+
   // console.log("Dropdown region :: => ", dropdownRegion)
-  console.log("Dropdown Province DD  :: ", ddProvince)
-  console.log("Dropdown Regions VALUE :: ", valRegion)
+  // console.log("Dropdown Province DD  :: ", ddProvince)
+  // console.log("Dropdown Regions VALUE :: ", valRegion)
   console.log("List Truc type :: ", JSON.parse(JSON.stringify(TruckTypeStore.data)))
 
+
+  const list_province_popular = [
+    {
+      title: 'postJobScreen.popular',
+      data: [{ id: 1, name: 'กรุงเทพมหานคร' },
+      { id: 10, name: 'เชียงใหม่' },
+      { id: 48, name: 'ภูเก็ต' }]
+    },
+  ]
 
   const list_vehicle_popular = [
     {
@@ -774,17 +808,30 @@ export const UploadVehicleScreen = observer((props) => {
     }
   ]
   let multi_select
+  let formControllerValue = control.getValues()
   let dropdown_vehicle_type
-  if (control.fieldsRef.current['vehicle-type'] && control.fieldsRef.current['vehicle-type'].ref.value) {
-    dropdown_vehicle_type = control.fieldsRef.current['vehicle-type'].ref.value
+  if (formControllerValue['vehicle-type'] && formControllerValue['vehicle-type']) {
+    dropdown_vehicle_type = formControllerValue['vehicle-type']
   }
+  __DEV__ && console.tron.logImportant("Form in render :: ", formControllerValue)
+  // __DEV__ && console.tron.logImportant("Controller pure : ", control.setValue())
+  __DEV__ && console.tron.log("Fetching Trucktype :: ", TruckTypeStore.loading)
   let list_vehicle = JSON.parse(JSON.stringify(TruckTypeStore.data))
 
   return (
     <View testID="UploadVehicleScreen" style={FULL}>
+
+      <ModalLoading
+        containerStyle={{ zIndex: 2 }}
+        size={'large'} color={color.primary} visible={TruckTypeStore.loading || UploadFileStore.loading ||
+          CreateVehicleStore.loading || CreateVehicleStore.loadingPatchMyVehicle} />
+
       <ScrollView testID={"scrollViewUpload"} style={FULL}>
 
+        {/* {JSON.parse(JSON.stringify(TruckTypeStore.loading)) || JSON.parse(JSON.stringify(AddressStore.loading)) && <ModalLoading size={'large'} color={color.primary} visible={JSON.parse(JSON.stringify(TruckTypeStore.loading)) || JSON.parse(JSON.stringify(AddressStore.loading))} />} */}
+
         <View style={TOP_VIEW}>
+
           <View style={WRAPPER_TOP}>
             <Text tx={"uploadVehicleScreen.selectVehicleType"} style={{ ...TITLE_TOPIC, ...MARGIN_TOP_BIG }} />
             <View style={WRAP_DROPDOWN}>
@@ -985,7 +1032,7 @@ export const UploadVehicleScreen = observer((props) => {
 
 
             {/* ********************** DROPDOWN ZONE ********************** */}
-            {ddRegion.length ? ddRegion.map((e, index) => {
+            {ddRegion.length && AddressStore.region && AddressStore.region.length ? ddRegion.map((e, index) => {
               return <View key={'view-dropdown-region-' + index} style={WRAPPER_REGION_DROPDOWN}>
                 <View style={{ ...WRAP_DROPDOWN, marginLeft: 5 }} key={'view-dropdown-province-' + index}>
                   <Controller
@@ -1014,7 +1061,8 @@ export const UploadVehicleScreen = observer((props) => {
                             setrenderProvince(!renderProvince)
 
                           }}
-                          items={i18n.locale == "en" ? regionListEn : regionListTh}
+                          // items={i18n.locale == "en" ? regionListEn : regionListTh}
+                          items={JSON.parse(JSON.stringify(AddressStore.region))}
                           placeholder={{
                             label: translate("uploadVehicleScreen.region"),
                             color: color.black
@@ -1022,7 +1070,7 @@ export const UploadVehicleScreen = observer((props) => {
                           useNativeAndroidPickerStyle={false}
                           style={{
                             inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
-                            iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
+                            iconContainer: Platform.OS == "ios" ? {} : { ...DROPDOWN_ICON_CONTAINER },
                             placeholder: { color: color.black }
                           }}
                           Icon={() => {
@@ -1037,40 +1085,121 @@ export const UploadVehicleScreen = observer((props) => {
                   /></View>
 
                 {ddProvince.length ? ddProvince.map((pro, indexPro) => {
-                  console.log("All Val region :: ", valRegion)
-                  console.log("Render Dropdown Province :: ", valRegion[index])
-                  if (indexPro == index)
-                    return (<View style={{ ...WRAP_DROPDOWN, marginLeft: 5 }} key={'view-dropdown-province-' + index}><Controller
-                      control={control}
-                      render={({ onChange, onBlur, value }) => {
-                        return (
-                          <RNPickerSelect
-                            value={value}
-                            onValueChange={(value) => onChange(value)}
-                            items={i18n.locale == "en" ?
-                              (valRegion[index] ? provinceListEn.filter(e => e.region == valRegion[index]) : provinceListEn) :
-                              (valRegion[index] ? provinceListTh.filter(e => e.region == valRegion[index]) : provinceListTh)}
-                            placeholder={{
-                              label: translate("uploadVehicleScreen.province"),
-                              color: color.black
-                            }}
-                            useNativeAndroidPickerStyle={false}
-                            style={{
-                              inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
-                              iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
-                              placeholder: { color: color.black }
-                            }}
-                            Icon={() => {
-                              return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
-                            }}
-                          />
-                        )
-                      }}
-                      key={'controller-dropdown-province-' + index}
-                      name={"controller-province-" + index}
-                      defaultValue=""
-                    /></View>)
-                }) : <></>}
+
+
+
+
+
+
+
+
+
+
+
+
+                  if (indexPro == index && valRegion[index] != 7) {
+
+                    // __DEV__ && console.tron.log("PROVINCE :: ", formControllerValue["controller-province-" + index])
+                    return (<View style={{ ...WRAP_DROPDOWN, marginLeft: 5 }} key={'view-dropdown-province-' + index}>
+
+
+
+                      <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN, Platform.OS == "ios" ? {} : {
+                        paddingTop: 10
+                      }]} onPress={async () => {
+                        __DEV__ && console.tron.log("REGION :: ", index)
+                        await AddressStore.getProvince({ regionId: valRegion[index] }, i18n.locale)
+                        _updateVisibleModal(true, index)
+                        // setvisible(true)
+                      }}>
+                        {!formControllerValue["controller-province-" + index] && <Text style={CONTENT_TEXT} tx={"postJobScreen.pleaseSelectVehicleType"} />}
+
+                        {!!formControllerValue["controller-province-" + index] && <Text style={CONTENT_TEXT} >{
+                          i18n.locale == 'th' ?
+                            provinceListTh.find(e => e.value == formControllerValue["controller-province-" + index]).label :
+                            provinceListEn.find(e => e.value == formControllerValue["controller-province-" + index]).label
+                        }</Text>}
+
+                        <Ionicons name="chevron-down" size={20} style={PADDING_CHEVRON} />
+                      </TouchableOpacity>
+
+                      <Controller
+                        control={control}
+                        render={({ onChange, onBlur, value }) => (
+                          <Modal
+                            visible={visibleModal[index]}
+                            onTouchOutside={() => _updateVisibleModal(false, index)}
+                            onSwipeOut={() => _updateVisibleModal(false, index)}
+                            swipeDirection={['up', 'down']} // can be string or an array
+                            swipeThreshold={200} // default 100
+                          >
+                            <ModalContent >
+                              <View style={{ width: (width / 1.1), height: '100%', justifyContent: 'flex-start' }}>
+                                <SafeAreaView style={{ flex: 1 }}>
+                                  <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
+                                    <Text style={{ color: color.primary }} preset={"topic"} tx={"uploadVehicleScreen.pleaseSelectProvince"} />
+                                  </View>
+
+                                  <View style={PADDING_TOP}>
+                                    {AddressStore.province && AddressStore.province.length && <MultiSelector
+                                      key={"dd-province-" + index}
+                                      items={JSON.parse(JSON.stringify(AddressStore.province))}
+                                      keyer={"list-province-" + index}
+                                      selectedItems={[value]}
+                                      selectText={translate("uploadVehicleScreen.pleaseSelectProvince")}
+                                      onSelectedItemsChange={(val: any) => {
+                                        onChange(val[0])
+                                        _updateVisibleModal(false, index)
+                                      }}
+                                    />}
+                                  </View>
+
+                                  <View>
+                                    <SectionList
+                                      sections={list_province_popular ? list_province_popular : []}
+                                      keyExtractor={(item, indexX) => 'section-list-' + item.name + indexX}
+                                      renderItem={(data) => _renderSectionModalProvince(data.item, data.index, onChange, index)}
+                                      renderSectionHeader={({ section: { title } }) => (
+                                        <Text tx={title} style={PADDING_TOP} />
+                                      )}
+                                    />
+                                  </View>
+                                </SafeAreaView>
+
+                              </View>
+                            </ModalContent>
+                          </Modal>
+
+
+                        )}
+                        key={'controller-dropdown-province-' + index}
+                        name={"controller-province-" + index}
+                        defaultValue=""
+                      />
+
+
+
+
+
+
+                    </View>)
+                  }
+                }) : <></>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                }
                 {index == ddRegion.length - 1 && <TouchableOpacity key={'icon-add-circle-' + index} style={ADD_DROPDOWN_REGION} onPress={() => _addRowDropdown()}>
                   <Ionicons size={22} color={color.darkGreen} name={"add-circle-outline"} />
                 </TouchableOpacity>}

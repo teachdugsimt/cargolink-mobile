@@ -159,6 +159,7 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
 
   return (
     <View style={CONTAINER}>
+      
       {MyVehicleStore.loading && <ModalLoading size={'large'} color={color.primary} visible={MyVehicleStore.loading} />}
       <ScrollView onScroll={({ nativeEvent }) => { }} style={{}} scrollEventThrottle={400}>
         <View style={COLUMN}>

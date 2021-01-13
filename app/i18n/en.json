@@ -98,7 +98,8 @@
     "exampleImageRight": "example image rightside",
     "workZone": "Work zone",
     "region": "region",
-    "province": "province"
+    "province": "province",
+    "pleaseSelectProvince": "please select province"
   },
   "profileScreen": {
     "profile": "Profile",

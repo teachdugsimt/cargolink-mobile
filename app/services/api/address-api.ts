@@ -64,7 +64,7 @@ export class AddressApi {
         // make the api call
         // console.log("Filter truck type  :: ", filter)
         try {
-            const response: ApiResponse<any> = await this.apisauce.get('/api/v1/mobile/multi-roles/province')
+            const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/multi-roles/province', filter)
             // the typical ways to die when calling an api
             console.log("Response get province :: ", response)
             if (!response.ok) {
