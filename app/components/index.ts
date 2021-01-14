@@ -26,9 +26,6 @@ export * from "./modal-loading/modal-loading"
 export * from "./modal-alert/modal-alert"
 export * from "./rating-star/rating-start"
 export * from "./multi-select/multi-select"
-<<<<<<< HEAD
 export * from "./date-picker-remake/date-picker-remake"
 export * from "./date-picker-remake/time-picker-remake"
-=======
 export * from "./collapsible-list/collapsible-list"
->>>>>>> 05503465d8f735182b92ea832328b2c5443dea18
