@@ -21,6 +21,7 @@ import MyVehicleStore from '../../store/my-vehicle-store/my-vehicle-store'
 import StatusStore from '../../store/my-vehicle-store/status-vehicle-store'
 import { GetTruckType } from "../../utils/get-truck-type";
 import i18n from 'i18n-js';
+import { useStores } from "../../models/root-store/root-store-context";
 
 const deviceWidht = Dimensions.get("window").width
 const deviceHeight = Dimensions.get("window").height
@@ -113,6 +114,8 @@ const initialState = {
 export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
   const navigation = useNavigation()
 
+  const { tokenStore } = useStores()
+
   const [{ openViewer, indexOfImage }, setState] = useState(initialState)
   const {
     truckType,
@@ -152,14 +155,16 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
   const transformImage = truckPhotos &&
     Object.keys(truckPhotos).length ?
     Object.entries(truckPhotos).map(img => {
-      return { url: img[1] }
+      return {
+        url: img[1],
+      }
     }) : []
 
   const txtTruckType = GetTruckType(truckType, i18n.locale)
 
   return (
     <View style={CONTAINER}>
-      
+
       {MyVehicleStore.loading && <ModalLoading size={'large'} color={color.primary} visible={MyVehicleStore.loading} />}
       <ScrollView onScroll={({ nativeEvent }) => { }} style={{}} scrollEventThrottle={400}>
         <View style={COLUMN}>
@@ -172,7 +177,13 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
                 transformImage.map((image, index) => {
                   return (
                     <TouchableOpacity style={TOUCHABLE} key={index} onPress={(attr) => onViewer(index)}>
-                      <Image style={IMAGE} source={MyVehicleStore.data.id ? { uri: image.url } : imageComponent[image.url]} key={index} />
+                      <Image style={IMAGE} source={MyVehicleStore.data.id ? {
+                        uri: image.url,
+                        method: 'GET',
+                        headers: {
+                          Authorization: `Bearer ${tokenStore.token.accessToken}`
+                        },
+                      } : imageComponent[image.url]} key={index} />
                     </TouchableOpacity>
                   )
                 })}
@@ -254,3 +265,4 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
     </View>
   )
 })
+

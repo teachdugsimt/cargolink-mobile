@@ -13,7 +13,7 @@ target 'CargoLinkMobile' do
 
 
 
-
+  pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker/RNDateTimePicker.podspec'
   pod 'RNCPicker', :path => '../node_modules/@react-native-picker/picker'
 
 

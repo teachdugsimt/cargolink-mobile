@@ -2,7 +2,7 @@
 
 
 import React from "react"
-import { TextStyle, ViewStyle, Dimensions } from "react-native"
+import { TextStyle, ViewStyle, Dimensions, View } from "react-native"
 import { color, spacing, typography } from "../../theme"
 import { Button } from '../button/button'
 import { Text } from '../text/text'
@@ -29,14 +29,21 @@ const ADD_VEHICLE_BUTTON: ViewStyle = {
     borderColor: color.line,
     backgroundColor: color.textWhite
 }
-
+const MAIN_VIEW: ViewStyle = {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+}
 export function RoundedButton(props: any) {
     const { containerStyle, textStyle, text, leftIconName, rightIconName, rightIconcolor, leftIconColor, onPress, ...rest } = props
     return (
         <Button onPress={onPress} style={{ ...ADD_VEHICLE_BUTTON, ...containerStyle }} {...rest}>
-            {leftIconName && <Ionicons name={leftIconName} size={spacing[5]} color={leftIconColor} />}
-            <Text tx={text} style={{ ...CONTENT_TEXT, ...textStyle }} />
-            {rightIconName && <Ionicons name={rightIconName} size={spacing[5]} color={rightIconcolor} />}
+            <View style={MAIN_VIEW}>
+                {leftIconName && <Ionicons name={leftIconName} size={spacing[5]} color={leftIconColor} />}
+                <Text tx={text} style={{ ...CONTENT_TEXT, ...textStyle, paddingLeft: leftIconName ? 7.5 : 0 }} />
+                {rightIconName && <Ionicons name={rightIconName} size={spacing[5]} color={rightIconcolor} />}
+            </View>
         </Button>
     )
 }

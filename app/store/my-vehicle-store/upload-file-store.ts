@@ -42,17 +42,6 @@ const UploadFileStore = types
                     size: file.fileSize
                 })
 
-
-                // formData.append('file', file);
-                // formData.append('fullPath', file.paths)
-                // formData.append('fullPathWithoutFile', file.paths.slice(0, file.paths.lastIndexOf('/')))
-                // formData.append('id', file.id)
-                // formData.append('name', file.name)
-                // formData.append('paths', file.path)
-                // formData.append('realName', file.name)
-                // formData.append('url', file.uri)
-                // console.log("Form data after BUILD :: => ", formData)
-
                 const response = yield fileUploadApi.uploadVehiclePicture(formData)
                 if (response.ok) {
 
@@ -87,7 +76,7 @@ const UploadFileStore = types
         }),
 
         deleteUploadData() {
-            destroy(self.data)
+            self.data = []
         }
     }))
     .create({

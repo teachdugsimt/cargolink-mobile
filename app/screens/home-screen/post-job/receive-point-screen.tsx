@@ -1,37 +1,43 @@
-import React, { useEffect } from "react"
-import { View, ViewStyle, TextStyle, FlatList, Platform } from "react-native"
+import React, { useEffect, useState } from "react"
+import { View, ViewStyle, TextStyle, FlatList, Platform, ImageStyle } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { useForm, Controller } from "react-hook-form";
 import RNPickerSelect from 'react-native-picker-select';
 import { observer } from "mobx-react-lite"
 import { Text } from "../../../components"
 import { translate } from "../../../i18n"
-import { AddJobElement, TextInputTheme, RoundedButton } from '../../../components'
-import { ScrollView } from "react-native-gesture-handler"
+import { AddJobElement, TextInputTheme, RoundedButton, Icon, DatePickerRemake, TimePickerRemake } from '../../../components'
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import i18n from 'i18n-js'
 import TruckTypeStore from '../../../store/my-vehicle-store/truck-type-store'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { spacing, color, typography, images } from "../../../theme"
+import DateTimePicker from '@react-native-community/datetimepicker';
+import date from 'date-and-time';
 // const bowserLogo = require("./bowser.png")
 
 const FULL: ViewStyle = { flex: 1 }
 
 const BOLD: TextStyle = { fontWeight: "bold" }
-
-const HEADER: TextStyle = {
-    paddingTop: spacing[3],
-    paddingBottom: spacing[5] - 1,
-    paddingHorizontal: 0,
-    backgroundColor: color.mainTheme
+const SPACE_BETWEEN: ViewStyle = { justifyContent: 'space-between' }
+const GREY_TEXT: ViewStyle = { backgroundColor: color.grey }
+const BORDER_RADIUS_20: ViewStyle = {
+    borderRadius: 20,
 }
-const HEADER_TITLE: TextStyle = {
-    ...BOLD,
-    fontSize: 12,
-    lineHeight: 15,
-    textAlign: "center",
-    letterSpacing: 1.5,
-    color: color.black
+const DATE_BUTTON: ViewStyle = {
+    borderRadius: spacing[1],
+    height: 40,
+    borderWidth: 1,
+    borderColor: color.grey,
+    paddingLeft: 10
 }
+const ADD_NEW_POINT: ViewStyle = {
+    backgroundColor: color.transparent2,
+    borderWidth: 1,
+    borderColor: color.primary,
+    ...BORDER_RADIUS_20
+}
+const PADDING_PURE: ViewStyle = { padding: 5 }
 
 const TOP_VIEW: ViewStyle = {
     flex: Platform.OS == "ios" ? 1.25 : 1.25,
@@ -61,6 +67,8 @@ const CONTENT_TEXT: TextStyle = {
     color: color.black,
     fontSize: typography.title
 }
+const MARGIN_HORIZONTTAL_MEDIUM: ViewStyle = { paddingHorizontal: 10 }
+const MARGIN_LEFT_SMALL: ViewStyle = { paddingLeft: 5 }
 const MARGIN_TOP: ViewStyle = { marginTop: 5 }
 const DROPDOWN_ICON_CONTAINER: ViewStyle = {
     paddingTop: 12.5, paddingRight: 5
@@ -86,27 +94,77 @@ const RED_DOT: TextStyle = {
     color: color.red,
     paddingTop: 10, paddingLeft: 7.5
 }
+const ICON_PIN_YELLOW: ImageStyle = {
+    height: 20, width: 20,
+    marginTop: 10
+}
+const PADDING_RIGHT_SMALL: ViewStyle = { paddingRight: 5 }
+const PADDING_LEFT_SMALL: ViewStyle = { paddingLeft: 5 }
 export const ReceivePointScreen = observer(function ReceivePointScreen() {
-    // const navigation = useNavigation()
+    const navigation = useNavigation()
+    const [fieldShipping, setfieldShipping] = useState([])
+
+    const [rerender, setrerender] = useState(false)
+    const [rerenderTime, setrerenderTime] = useState(false)
+    const [initDatePicker, setinitDatePicker] = useState(new Date());
+    const [swipe, setswipe] = useState(false)
 
     const { control, handleSubmit, errors } = useForm({
+        defaultValues: {
+            "receive-date": initDatePicker,
+            "receive-time": initDatePicker
+        }
         // defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : MyVehicleStore.MappingData
     });
 
     useEffect(() => {
-        TruckTypeStore.getTruckTypeDropdown(i18n.locale)
+        _addFieldInputShipping()
     }, [])
 
     const onSubmit = (data) => {
-        console.log("Data Form Post job : ", data)
+        // __DEV__ && console.tron.log("Data Form Post job : ", data)
+        let data_post_job2 = data
+        let final = data
+        Object.keys(data).map(function (key) {
+            if (key.includes("shipping-date")) {
+                final['shipping-date'] = data_post_job2['shipping-date'].slice(0, 10)
+            }
+            if (key.includes("shipping-time")) {
+                let raw_time = date.addHours(data_post_job2['shipping-time'], 7).slice(11, 16)
+                final['shipping-time'] = raw_time
+            }
+        })
+        __DEV__ && console.tron.log("Final object postjob screen 2 :: => ", final)
+
+
+    }
+    const _addFieldInputShipping = () => {
+        let tmp_field_level = fieldShipping
+        tmp_field_level.push({
+            id: tmp_field_level.length + 1,
+            showDate: false,
+            showTime: false,
+        })
+        setfieldShipping(tmp_field_level)
+        setswipe(!swipe)
+    }
+    const _setRenderDateAndTimeField = (val: boolean, index: number, field: string) => {
+        let tmp_field_level = fieldShipping
+        if (field == "date") tmp_field_level[index].showDate = val
+        else tmp_field_level[index].showTime = val
+        setfieldShipping(tmp_field_level)
+        setswipe(!swipe)
     }
 
     const list_status = [
-        { key: 1,no: 1, id: 1, name: 'postJobScreen.vehicleDetailAndProduct', active: false },
-        { key: 2,no: 2, id: 2, name: 'postJobScreen.getProductLocation', active: true },
-        { key: 3,no: 3, id: 3, name: 'postJobScreen.checkInformation', active: false },
-        { key: 4,no: 4, id: 4, name: 'postJobScreen.success', active: false },
+        { key: 1, no: 1, id: 1, name: 'postJobScreen.vehicleDetailAndProduct', active: false },
+        { key: 2, no: 2, id: 2, name: 'postJobScreen.getProductLocation', active: true },
+        { key: 3, no: 3, id: 3, name: 'postJobScreen.checkInformation', active: false },
+        { key: 4, no: 4, id: 4, name: 'postJobScreen.success', active: false },
     ]
+    let formControllerValue = control.getValues()
+
+    __DEV__ && console.tron.log("show date format : ", formControllerValue)
     return (
         <View testID="ReceivePointScreen" style={FULL}>
             <View style={TOP_VIEW}>
@@ -120,80 +178,105 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                     <View style={TOP_VIEW_2}>
                         <View style={WRAPPER_TOP}>
                             <View style={ROW_TEXT}>
-                                <Text tx={"postJobScreen.selectVehicleType"} preset={'topic'} style={MARGIN_TOP_BIG} />
+                                <Icon icon={'pinDropYellow'} style={ICON_PIN_YELLOW} />
+                                <Text tx={"postJobScreen.acceptPointProduct"} preset={'topic'} style={[MARGIN_TOP_BIG, MARGIN_LEFT_SMALL]} />
                                 <Text preset={'topic'} style={RED_DOT} >*</Text>
                             </View>
-
-
-                            <View style={WRAP_DROPDOWN}>
-
-                                {TruckTypeStore.data && TruckTypeStore.data.length ? <Controller
-                                    control={control}
-                                    render={({ onChange, onBlur, value }) => (<RNPickerSelect
-                                        value={value}
-                                        onValueChange={(value) => onChange(value)}
-                                        items={JSON.parse(JSON.stringify(TruckTypeStore.data))}
-                                        placeholder={{
-                                            label: translate("postJobScreen.selectVehicleType"),
-                                            color: color.black
-                                        }}
-                                        useNativeAndroidPickerStyle={false}
-                                        style={{
-                                            inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
-                                            iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
-                                            placeholder: { color: color.black }
-                                        }}
-                                        Icon={() => {
-                                            return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
-                                        }}
-                                    />
-                                    )}
-                                    key={'controller-dropdown-vehicle-type'}
-                                    name={"vehicle-type"}
-                                    defaultValue=""
-                                /> :
-                                    <Controller
-                                        control={control}
-                                        render={({ onChange, onBlur, value }) => {
-                                            return <RNPickerSelect
-                                                value={value}
-                                                onValueChange={(value) => onChange(value)}
-                                                // items={i18n.locale == "en" ? vehicleEn : vehicleTh}
-                                                items={[]}
-                                                placeholder={{
-                                                    label: translate("postJobScreen.selectVehicleType"),
-                                                    color: color.black
-                                                }}
-                                                useNativeAndroidPickerStyle={false}
-                                                style={{
-                                                    inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
-                                                    iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
-                                                    placeholder: { color: color.black }
-                                                }}
-                                                Icon={() => {
-                                                    return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
-                                                }}
-                                            />
-                                        }}
-                                        key={'controller-dropdown-vehicle-type-null'}
-                                        name={"vehicle-type-null"}
-                                        defaultValue=""
-                                    />}
+                            <View style={ROW_TEXT}>
+                                <Text tx={"postJobScreen.inputLocationReceive"} preset={'topic'} style={[MARGIN_TOP_BIG, MARGIN_LEFT_SMALL]} />
                             </View>
 
-                            <Text tx={"postJobScreen.vehicleNum"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+
                             <Controller
                                 control={control}
                                 render={({ onChange, onBlur, value }) => (
                                     <TextInputTheme
-                                        testID={"car-num"}
-                                        placeholder={'คัน'}
+                                        testID={"receive-location"}
                                         inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
                                 )}
-                                key={'text-input-car-num'}
-                                name={"car-num"}
+                                key={'text-input-receive-location'}
+                                name={"receive-location"}
                                 defaultValue=""
                             />
+
+
+
+                            <View style={ROW_TEXT}>
+                                <View style={[FULL, PADDING_RIGHT_SMALL]}>
+                                    <Text tx={"postJobScreen.dateReceive"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                                    <Controller
+                                        control={control}
+                                        render={({ onChange, onBlur, value }) => (
+                                            <DatePickerRemake
+                                                key={"receive-date1"}
+                                                testID={"testID-receive-date"}
+                                                value={value}
+                                                onChange={onChange}
+                                                label={formControllerValue['receive-date']}
+                                                rerender={rerender}
+                                                iconName={"calendar-sharp"}
+                                                mode={"date"}
+                                                rerenderFunction={() => setrerender(!rerender)}
+                                            />
+                                        )}
+                                        key={'text-input-receive-date'}
+                                        name={"receive-date"}
+                                        defaultValue=""
+                                    />
+                                </View>
+                                <View style={[FULL, PADDING_LEFT_SMALL]}>
+                                    <Text tx={"postJobScreen.timeReceive"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                                    <Controller
+                                        control={control}
+                                        render={({ onChange, onBlur, value }) => (
+                                            <TimePickerRemake
+                                                key={"receive-time1"}
+                                                testID={"testID-receive-date2"}
+                                                value={value}
+                                                onChange={onChange}
+                                                label={formControllerValue['receive-time']}
+                                                rerender={rerenderTime}
+                                                mode={"time"}
+                                                iconName={"time-outline"}
+                                                rerenderFunction={() => setrerenderTime(!rerender)}
+                                            />
+                                        )}
+                                        key={'text-input-receive-time'}
+                                        name={"receive-time"}
+                                        defaultValue=""
+                                    />
+                                </View>
+                            </View>
+
+
+
+                            <Text tx={"postJobScreen.receiverInfo"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                            <Text tx={"postJobScreen.receiverName"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                            <Controller
+                                control={control}
+                                render={({ onChange, onBlur, value }) => (
+                                    <TextInputTheme
+                                        testID={"receive-name"}
+                                        inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                                )}
+                                key={'text-input-receive-name'}
+                                name={"receive-name"}
+                                defaultValue=""
+                            />
+
+                            <Text tx={"postJobScreen.receiverTel"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                            <Controller
+                                control={control}
+                                render={({ onChange, onBlur, value }) => (
+                                    <TextInputTheme
+                                        testID={"receive-tel-no"}
+                                        inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                                )}
+                                key={'text-input-receive-tel-no'}
+                                name={"receive-tel-no"}
+                                defaultValue=""
+                            />
+
                         </View>
                     </View>
 
@@ -204,103 +287,151 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
 
 
 
-                    <View style={[TOP_VIEW_2, MARGIN_TOP]}>
-                        <View style={WRAPPER_TOP}>
-                            <View style={ROW_TEXT}>
-                                <Text tx={"postJobScreen.itemDetail"} preset={'topic'} style={MARGIN_TOP_BIG} />
-                                <Text preset={'topic'} style={RED_DOT} >*</Text>
-                            </View>
 
 
-                            <View style={WRAP_DROPDOWN}>
 
-                                {TruckTypeStore.data && TruckTypeStore.data.length ? <Controller
+
+
+
+
+
+
+
+
+
+
+
+                    {fieldShipping && fieldShipping.length > 0 && fieldShipping.map((e, i) => {
+                        return <View style={[TOP_VIEW_2, MARGIN_TOP]}>
+                            <View style={WRAPPER_TOP}>
+                                <View style={ROW_TEXT}>
+                                    <Icon icon={'pinDropGreen'} style={ICON_PIN_YELLOW} />
+                                    <Text tx={"postJobScreen.shipingPoint"} preset={'topic'} style={MARGIN_TOP_BIG} />
+                                    <Text preset={'topic'} style={MARGIN_TOP_BIG}>{i + 1}</Text>
+                                    <Text preset={'topic'} style={RED_DOT} >*</Text>
+                                </View>
+
+                                <Text tx={"postJobScreen.shippingAddr"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                                <Controller
                                     control={control}
-                                    render={({ onChange, onBlur, value }) => (<RNPickerSelect
-                                        value={value}
-                                        onValueChange={(value) => onChange(value)}
-                                        items={JSON.parse(JSON.stringify(TruckTypeStore.data))}
-                                        placeholder={{
-                                            label: translate("postJobScreen.selectItemType"),
-                                            color: color.black
-                                        }}
-                                        useNativeAndroidPickerStyle={false}
-                                        style={{
-                                            inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
-                                            iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
-                                            placeholder: { color: color.black }
-                                        }}
-                                        Icon={() => {
-                                            return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
-                                        }}
-                                    />
+                                    render={({ onChange, onBlur, value }) => (
+                                        <TextInputTheme
+                                            testID={"shipping-address-" + e.id}
+                                            inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
                                     )}
-                                    key={'controller-dropdown-item-type'}
-                                    name={"item-type"}
+                                    key={'text-input-shipping-address-' + e.id}
+                                    name={"shipping-address-" + e.id}
                                     defaultValue=""
-                                /> :
-                                    <Controller
-                                        control={control}
-                                        render={({ onChange, onBlur, value }) => {
-                                            return <RNPickerSelect
-                                                value={value}
-                                                onValueChange={(value) => onChange(value)}
-                                                // items={i18n.locale == "en" ? vehicleEn : vehicleTh}
-                                                items={[]}
-                                                placeholder={{
-                                                    label: translate("postJobScreen.selectItemType"),
-                                                    color: color.black
-                                                }}
-                                                useNativeAndroidPickerStyle={false}
-                                                style={{
-                                                    inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
-                                                    iconContainer: Platform.OS == "ios" ? {} : DROPDOWN_ICON_CONTAINER,
-                                                    placeholder: { color: color.black }
-                                                }}
-                                                Icon={() => {
-                                                    return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
-                                                }}
-                                            />
-                                        }}
-                                        key={'controller-dropdown-item-type-null'}
-                                        name={"item-type-null"}
-                                        defaultValue=""
-                                    />}
+                                />
+
+                                <View style={ROW_TEXT}>
+                                    <View style={[FULL, PADDING_RIGHT_SMALL]}>
+                                        <Text tx={"postJobScreen.dateShipping"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                                        <Controller
+                                            control={control}
+                                            render={({ onChange, onBlur, value }) => (
+                                                <DatePickerRemake
+                                                    key={"shipping-date-" + e.id}
+                                                    testID={"testID-shipping-date-" + e.id}
+                                                    value={value}
+                                                    onChange={onChange}
+                                                    label={formControllerValue["shipping-date-" + e.id]}
+                                                    iconName={"calendar-sharp"}
+                                                    mode={"date"}
+                                                    rerender={e.showDate}
+                                                    rerenderFunction={() => _setRenderDateAndTimeField(!e.showDate, i, 'date')}
+                                                />
+                                            )}
+                                            key={'text-input-shipping-date-' + e.id}
+                                            name={"shipping-date-" + e.id}
+                                            defaultValue={initDatePicker}
+                                        />
+                                    </View>
+                                    <View style={[FULL, PADDING_LEFT_SMALL]}>
+                                        <Text tx={"postJobScreen.timeShipping"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                                        <Controller
+                                            control={control}
+                                            render={({ onChange, onBlur, value }) => (
+                                                <TimePickerRemake
+                                                    key={"shipping-time-" + e.id}
+                                                    testID={"testID-shipping-time-" + e.id}
+                                                    value={value}
+                                                    onChange={onChange}
+                                                    label={formControllerValue["shipping-time-" + e.id]}
+                                                    rerender={e.showTime}
+                                                    mode={"time"}
+                                                    iconName={"time-outline"}
+                                                    rerenderFunction={() => _setRenderDateAndTimeField(!e.showTime, i, 'time')}
+                                                />
+                                            )}
+                                            key={'text-input-shipping-time-' + e.id}
+                                            name={"shipping-time-" + e.id}
+                                            defaultValue={initDatePicker}
+                                        />
+                                    </View>
+                                </View>
+
+                                <Text tx={"postJobScreen.shipperInfo"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                                <Text tx={"postJobScreen.shipperName"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                                <Controller
+                                    control={control}
+                                    render={({ onChange, onBlur, value }) => (
+                                        <TextInputTheme
+                                            testID={"shipper-name-" + e.id}
+                                            inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                                    )}
+                                    key={'text-input-shipper-name-' + e.id}
+                                    name={"shipper-name-" + e.id}
+                                    defaultValue=""
+                                />
+
+                                <Text tx={"postJobScreen.shipperTel"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                                <Controller
+                                    control={control}
+                                    render={({ onChange, onBlur, value }) => (
+                                        <TextInputTheme
+                                            testID={"shipper-tel-no-" + e.id}
+                                            inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                                    )}
+                                    key={'text-input-shipper-tel-no-' + e.id}
+                                    name={"shipper-tel-no-" + e.id}
+                                    defaultValue=""
+                                />
+
                             </View>
-
-                            <Text tx={"postJobScreen.inputYourItem"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
-                            <Controller
-                                control={control}
-                                render={({ onChange, onBlur, value }) => (
-                                    <TextInputTheme
-                                        testID={"item-name"}
-                                        inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
-                                )}
-                                key={'text-input-item-name'}
-                                name={"item-name"}
-                                defaultValue=""
-                            />
-
-                            <Text tx={"postJobScreen.weightNumber"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
-                            <Controller
-                                control={control}
-                                render={({ onChange, onBlur, value }) => (
-                                    <TextInputTheme
-                                        testID={"item-weight"}
-                                        inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
-                                )}
-                                key={'text-input-item-weight'}
-                                name={"item-weight"}
-                                defaultValue=""
-                            />
                         </View>
+                    })}
+
+
+
+
+
+
+
+
+
+
+
+                    <View style={[MARGIN_TOP_EXTRA, MARGIN_HORIZONTTAL_MEDIUM]}>
+                        <RoundedButton
+                            style={ADD_NEW_POINT}
+                            onPress={() => _addFieldInputShipping()} text={"postJobScreen.addShippingPoint"}
+                            textStyle={{ color: color.primary }}
+                            leftIconName="add-circle-outline"
+                            leftIconColor={color.primary}
+                        />
                     </View>
 
 
 
                     <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_EXTRA }}>
-                        <View style={WRAPPER_TOP}>
-                            <RoundedButton onPress={handleSubmit(onSubmit)} text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
+                        <View style={ROW_TEXT}>
+                            <View style={[WRAPPER_TOP, FULL]}>
+                                <RoundedButton style={[FULL, BORDER_RADIUS_20, GREY_TEXT]} onPress={() => navigation.goBack()} text={"common.back"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
+                            </View>
+                            <View style={[WRAPPER_TOP, FULL]}>
+                                <RoundedButton style={[FULL, BORDER_RADIUS_20]} onPress={handleSubmit(onSubmit)} text={"common.next"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
+                            </View>
                         </View>
                     </View>
 
@@ -310,5 +441,3 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
         </View>
     )
 })
-
-

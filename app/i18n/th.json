@@ -2,7 +2,8 @@
   "common": {
     "ok": "ตกลง",
     "cancel": "Cancel",
-    "back": "Back",
+    "back": "กลับ",
+    "next": "ต่อไป",
     "from": "จาก",
     "to": "ถึง",
     "confirm": "ยืนยัน",
@@ -80,7 +81,25 @@
     "inputYourItem": "ระบุชื่อสินค้าของคุณ",
     "weightNumber": "จำนวนน้ำหนัก (ตัน)",
     "popular": "ยอดนิยม",
-    "4maxType": "ประเภท 4 ล้อ"
+    "4maxType": "ประเภท 4 ล้อ",
+
+    "acceptPointProduct": "จุดรับสินค้า",
+    "inputLocationReceive": "ระบุสถานที่เข้ารับสินค้า",
+    "dateReceive": "วันรับสินค้า",
+    "timeReceive": "เวลารับสินค้า",
+    "receiverInfo": "ข้อมูลติดต่อผู้รับสินค้า",
+    "receiverName": "ชื่อผู้รับสินค้า",
+    "receiverTel": "เบอร์ติดต่อ",
+
+    "shipingPoint": "จุดส่งสินค้าที่",
+    "shippingAddr": "ระบุสถานที่ส่งสินค้า",
+    "dateShipping": "วันส่งสินค้า",
+    "timeShipping": "เวลาส่งสินค้า",
+    "shipperInfo": "ข้อมูลติดต่อผู้ส่งสินค้า",
+    "shipperName": "ชื่อผู้ส่งสินค้า",
+    "shipperTel": "เบอร์ติดต่อ",
+
+    "addShippingPoint": "เพิ่มจุดส่งสินค้า"
   },
   "uploadVehicleScreen": {
     "addVehicle": "เพิ่มรถ",
@@ -99,7 +118,9 @@
     "workZone": "โซนที่วิ่งงาน",
     "region": "ภูมิภาค",
     "province": "จังหวัด",
-    "pleaseSelectProvince": "กรุณาเลือกจังหวัด"
+    "pleaseSelectProvince": "กรุณาเลือกจังหวัด",
+    "selectFromLibrary": "เลือกจากอัลบั้ม",
+    "captureNew": "กล้องถ่ายรูป"
   },
   "profileScreen": {
     "profile": "โปรไฟล์",
