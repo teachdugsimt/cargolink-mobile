@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ImageBackground, ImageStyle, TextStyle, View, ViewStyle } from 'react-native';
+import { ImageBackground, ImageStyle, TextStyle, View, ViewStyle, TouchableOpacity } from 'react-native';
 import { SearchItemProps } from './search-item.props';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { color, spacing } from '../../theme';
@@ -7,7 +7,7 @@ import { Icon } from '../icon/icon';
 import { PostingBy } from '../posting-by/posting-by';
 import { Text } from '../text/text';
 import { translate } from '../../i18n';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+// import { TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const truckBackImage = require("./truck-back.png")

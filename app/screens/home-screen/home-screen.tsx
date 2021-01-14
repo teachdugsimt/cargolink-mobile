@@ -129,7 +129,7 @@ export const HomeScreen = observer((props) => {
         {
             title: "เจ้าของสินค้า / Shippers",
             data: [{ id: 3, name: "homeScreen.postJob", onPressButton: () => navigation.navigate("postjob"), img: images.sheet1 },
-            { id: 4, name: "homeScreen.findCar", onPressButton: () => navigation.navigate("searchCar"), img: images.word1 }]
+            { id: 4, name: "homeScreen.findCar", onPressButton: () => navigation.navigate("searchTruck"), img: images.word1 }]
         }
     ]
     return (

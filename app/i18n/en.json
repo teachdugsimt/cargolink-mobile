@@ -247,5 +247,8 @@
     "countRating": "Help me rate your satisfaction with this one on a scale of 1 - 5 stars.",
     "moreAdvice": "More advice",
     "price": "Price"
+  },
+  "searchTruckScreen": {
+    "findTruck": "Find truck"
   }
 }

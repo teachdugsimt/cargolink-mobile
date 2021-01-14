@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite';
 import { Dimensions, FlatList, TextStyle, View, ViewStyle } from 'react-native';
-import { Button, ModalLoading, SearchBar } from '../../components';
+import { AdvanceSearchTab, Button, ModalLoading, SearchBar } from '../../components';
 import { color, spacing } from '../../theme';
 import { SearchItem } from '../../components/search-item/search-item';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { translate } from '../../i18n';
 import ShipperJobStore from "../../store/shipper-job-store/shipper-job-store";
 import { GetTruckType } from '../../utils/get-truck-type'
@@ -140,6 +140,19 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
 
   const [{ subButtons, data, listLength }, setState] = useState(initialState)
 
+  // useFocusEffect(
+  //   useCallback(() => {
+  //   navigation.addListener('focus', () => {
+  //     console.log('focussed');
+  //   });
+  // }))
+
+  useFocusEffect(
+    useCallback(() => {
+      console.log('Hello world')
+    }, [])
+  );
+
   useEffect(() => {
     ShipperJobStore.find()
     return () => {
@@ -162,6 +175,10 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
     }
   }, [ShipperJobStore.loading, ShipperJobStore.list])
 
+  // useEffect(() => {
+  //   console.log('AdvanceSearchStore.filter', JSON.parse(JSON.stringify(AdvanceSearchStore.filter)))
+  // }, [AdvanceSearchStore.filter])
+
   const renderItem = ({ item }) => (
     <Item {...item} />
   )
@@ -173,6 +190,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
   }
 
   const onPress = (id: number) => {
+    console.log('id', id)
     const newButtonSearch = subButtons.map(button => {
       if (button.id !== id) return button
       return { ...button, isChecked: !button.isChecked }
@@ -217,8 +235,6 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
     navigation.navigate('advanceSearch')
   }
 
-  console.log('AdvanceSearchStore.filter', JSON.parse(JSON.stringify(AdvanceSearchStore.filter)))
-
   return (
     <View style={{ flex: 1 }}>
       {ShipperJobStore.loading && <ModalLoading size={'large'} color={color.primary} visible={ShipperJobStore.loading} />}
@@ -235,7 +251,17 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
           }}
         />
       </View>
+
       <View style={BUTTON_CONTAINER}>
+        <AdvanceSearchTab
+          mainText={translate('searchJobScreen.fullSearch')}
+          subButtons={subButtons.length ? subButtons : []}
+          onPress={(id) => onPress(id)}
+          onAdvanceSeach={onAdvanceSeach}
+        />
+      </View>
+
+      {/* <View style={BUTTON_CONTAINER}>
         <Button
           testID="full-search-button"
           style={FULL_SEARCH_BOTTON}
@@ -256,7 +282,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
             />
           })}
         </View>
-      </View>
+      </View> */}
       <View style={RESULT_CONTAINER}>
         {
           data && !!data.length && <FlatList

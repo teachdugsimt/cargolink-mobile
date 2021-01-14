@@ -97,7 +97,9 @@
     "reactotron-mst": "^3.1.1",
     "reactotron-react-native": "^5.0.0",
     "sprintf-js": "^1.1.2",
-    "validate.js": "0.13.1"
+    "validate.js": "0.13.1",
+    "@mapbox/polyline": "^1.1.1",
+    "react-native-maps": "https://github.com/react-community/react-native-maps.git"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

@@ -1,10 +1,17 @@
 import React, { useState } from 'react'
 import { observer } from 'mobx-react-lite';
-import { FlatList, SafeAreaView, TextStyle, View, ViewStyle } from 'react-native';
-import { Header, SearchBar } from '../../components';
+import { FlatList, TextStyle, View, ViewStyle } from 'react-native';
+import { AdvanceSearchTab, SearchBar } from '../../components';
 import { color, spacing } from '../../theme';
 import { SearchItem } from '../../components/search-item/search-item';
 import { useNavigation } from '@react-navigation/native';
+import { translate } from '../../i18n';
+
+interface SubButtonSearch {
+  id?: number
+  label?: string
+  isChecked?: boolean
+}
 
 const TEXT: TextStyle = { color: color.textBlack, }
 const BOLD: TextStyle = { fontWeight: "bold" }
@@ -26,6 +33,12 @@ const SEARCH_BAR: ViewStyle = {
 }
 const RESULT_CONTAINER: ViewStyle = {
   flex: 1,
+}
+const BUTTON_CONTAINER: ViewStyle = {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginVertical: spacing[2],
+  justifyContent: 'center',
 }
 
 const DATA = [
@@ -155,11 +168,29 @@ const Item = (data) => {
   )
 }
 
-export const SearchCarScreen = observer(function SearchCarScreen() {
-  const navigation = useNavigation()
-  const goBack = () => navigation.goBack()
+const SUB_BUTTON: Array<SubButtonSearch> = [
+  {
+    id: 1,
+    label: 'สินค้าเกษตร',
+    isChecked: false,
+  },
+  {
+    id: 2,
+    label: 'อุสาหกรรม',
+    isChecked: false,
+  },
+]
 
-  const [data, setData] = useState(DATA)
+const initialState = {
+  subButtons: SUB_BUTTON,
+  data: DATA,
+}
+
+
+export const SearchTruckScreen = observer(function SearchTruckScreen() {
+  const navigation = useNavigation()
+
+  const [{ subButtons, data }, setState] = useState(initialState)
 
   const renderItem = ({ item }) => (
     <Item {...item} />
@@ -169,29 +200,38 @@ export const SearchCarScreen = observer(function SearchCarScreen() {
     console.log('scroll down')
   }
 
+  const onPress = (id: number) => {
+    const newButtonSearch = subButtons.map(button => {
+      if (button.id !== id) return button
+      return { ...button, isChecked: !button.isChecked }
+    })
+
+    setState(prevState => ({
+      ...prevState,
+      subButtons: newButtonSearch,
+    }))
+  }
+
+  const onAdvanceSeach = () => {
+    // TruckTypeStore.getTruckTypeDropdown(i18n.locale)
+    navigation.navigate('advanceSearch')
+  }
+
   return (
     <View style={{ flex: 1 }}>
-      <Header
-        headerTx="searchCarScreen.searchCar"
-        style={HEADER}
-        titleStyle={HEADER_TITLE}
-        headerText={"หารถ"}
-        leftIconReal={true}
-        leftIconName={"chevron-back"}
-        leftIconSize={24}
-        onLeftPress={goBack}
-      />
       <View>
-        <SearchBar
-          {...{
-            fromText: 'ภาคกลาง',
-            toText: 'ภาคกลาง',
-            navigationTo: 'advanceSearch',
-            style: SEARCH_BAR
-          }}
+
+      </View>
+      <View style={BUTTON_CONTAINER}>
+        <AdvanceSearchTab
+          mainText={translate('searchJobScreen.fullSearch')}
+          subButtons={subButtons?.length ? subButtons : []}
+          onPress={(id) => onPress(id)}
+          onAdvanceSeach={onAdvanceSeach}
+          count={2}
         />
       </View>
-      <SafeAreaView style={RESULT_CONTAINER}>
+      <View style={RESULT_CONTAINER}>
         <FlatList
           data={data}
           renderItem={renderItem}
@@ -199,7 +239,7 @@ export const SearchCarScreen = observer(function SearchCarScreen() {
           onEndReached={() => onScrollList()}
           onEndReachedThreshold={0.5}
         />
-      </SafeAreaView>
+      </View>
     </View>
   )
 });

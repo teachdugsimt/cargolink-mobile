@@ -11,10 +11,10 @@ import { Icon, Text, HeaderCenter, HeaderLeft, HeaderRight } from "../components
 import { color, images } from '../theme'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import {
-    DetailScreen, HomeScreen, JobDetailScreen, MyVehicle, PostJobScreen, SearchCarScreen, SearchJobScreen, AdvanceSearchScreen,
+    DetailScreen, HomeScreen, JobDetailScreen, MyVehicle, PostJobScreen, SearchJobScreen, AdvanceSearchScreen,
     UploadVehicleScreen, SuccessUpload,
     VehicleDetailScreen,
-    ShipperProfileScreen, ReceivePointScreen, FeedbackScreen
+    ShipperProfileScreen, ReceivePointScreen, FeedbackScreen, SearchTruckScreen
 } from "../screens"
 import { translate } from "../i18n"
 /**
@@ -36,7 +36,7 @@ export type PrimaryHomeParamList = {
     searchJob: undefined
     advanceSearch: undefined
     jobDetail: undefined
-    searchCar: undefined
+    searchTruck: undefined
     uploadVehicle: undefined
     myVehicle: undefined
     vehicleDetail: undefined
@@ -139,7 +139,12 @@ export function HomeNavigator() {
                     headerCenter: () => <HeaderCenter tx={"jobDetailScreen.jobDetail"} />,
                     headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
                 })} />
-            <Stack.Screen name="searchCar" component={SearchCarScreen} />
+            <Stack.Screen name="searchTruck" component={SearchTruckScreen}
+                options={({ navigation, route }) => ({
+                    // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
+                    headerCenter: () => <HeaderCenter tx={"searchTruckScreen.findTruck"} />,
+                    headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+                })} />
 
             <Stack.Screen name="uploadVehicle" component={UploadVehicleScreen}
                 options={({ navigation, route }) => ({
