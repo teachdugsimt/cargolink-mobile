@@ -251,7 +251,8 @@
     "settingSearch": "ตั้งค่าการค้นหา",
     "clear": "ล้าง",
     "fullSearch": "ค้นหาโดยละเอียด",
-    "search": "ค้นหา"
+    "search": "ค้นหา",
+    "more": "แสดงเพิ่มเติม"
   },
   "shipperProfileScreen": {
     "verified": "ผู้ใช้ผ่านการตรวจสอบ",

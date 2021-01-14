@@ -10,6 +10,7 @@ import ShipperJobStore from "../../store/shipper-job-store/shipper-job-store";
 import { GetTruckType } from '../../utils/get-truck-type'
 import i18n from 'i18n-js'
 import AdvanceSearchStore from "../../store/shipper-job-store/advance-search-store";
+import TruckTypeStore from "../../store/my-vehicle-store/truck-type-store"
 import { provinceListEn, provinceListTh } from '../../screens/home-screen/manage-vehicle/datasource'
 
 interface SubButtonSearch {
@@ -52,163 +53,6 @@ const FULL_SEARCH_TEXT: TextStyle = {
   color: color.textBlack,
 }
 
-const DATA_FIRST = [
-  {
-    id: 1,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: true,
-    isLike: true,
-    rating: '4.9',
-    ratingCount: '122',
-    isCrown: true,
-    isRecommened: true,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-  {
-    id: 2,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: false,
-    isLike: false,
-    rating: '1.9',
-    ratingCount: '3',
-    isCrown: false,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-  {
-    id: 3,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: true,
-    isLike: true,
-    rating: '4.9',
-    ratingCount: '122',
-    isCrown: true,
-    isRecommened: true,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-  {
-    id: 4,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: true,
-    isLike: true,
-    rating: '4.5',
-    ratingCount: '69',
-    isCrown: false,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-  {
-    id: 5,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: true,
-    isLike: true,
-    rating: '4.9',
-    ratingCount: '122',
-    isCrown: true,
-    isRecommened: true,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-]
-
-const DATA_SECOND = [
-  {
-    id: 6,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'GG Transport Thailand',
-    isVerified: true,
-    isLike: false,
-    rating: '3.3',
-    ratingCount: '31',
-    isCrown: false,
-    isRecommened: false,
-    logo: 'https://seeklogo.com/images/T/truck-logo-D561DC5A08-seeklogo.com.png',
-  },
-  {
-    id: 7,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: true,
-    isLike: true,
-    rating: '4.9',
-    ratingCount: '122',
-    isCrown: true,
-    isRecommened: true,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-  {
-    id: 8,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: true,
-    isLike: true,
-    rating: '4.9',
-    ratingCount: '122',
-    isCrown: true,
-    isRecommened: true,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-  {
-    id: 9,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: true,
-    isLike: true,
-    rating: '4.9',
-    ratingCount: '122',
-    isCrown: true,
-    isRecommened: true,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-]
-
 const Item = (data) => {
   const {
     id,
@@ -225,9 +69,12 @@ const Item = (data) => {
   const navigation = useNavigation()
 
   const onPress = () => {
-    navigation.navigate('jobDetail', {
-      name: 'Hello world'
-    })
+    ShipperJobStore.findOne(id)
+    navigation.navigate('jobDetail')
+  }
+
+  const onToggleHeart = (data) => {
+    console.log('onToggleHeart data', data)
   }
 
   const typeOfTruck = GetTruckType(+truckType, i18n.locale).name
@@ -237,6 +84,7 @@ const Item = (data) => {
       <SearchItem
         {
         ...{
+          id,
           fromText: from.name,
           toText: to.map(location => location.name).join(', '),
           count: requiredTruckAmount,
@@ -257,7 +105,8 @@ const Item = (data) => {
             paddingTop: spacing[2],
             borderRadius: 6
           },
-          onPress
+          onPress,
+          onToggleHeart
         }
         }
       />
@@ -280,43 +129,47 @@ const SUB_BUTTON: Array<SubButtonSearch> = [
 
 const initialState = {
   subButtons: SUB_BUTTON,
-  page: 1,
-
+  listLength: 0,
+  data: [],
 }
+
+let PAGE = 0;
 
 export const SearchJobScreen = observer(function SearchJobScreen() {
   const navigation = useNavigation()
 
-  const [data, setData] = useState(DATA_FIRST)
-  const [{ subButtons, page }, setState] = useState(initialState)
+  const [{ subButtons, data, listLength }, setState] = useState(initialState)
 
   useEffect(() => {
     ShipperJobStore.find()
+    return () => {
+      PAGE = 0
+      ShipperJobStore.setDefaultOfList()
+      setState(initialState)
+    }
   }, [])
 
   useEffect(() => {
-    if (ShipperJobStore.list && ShipperJobStore.list.length) {
-      // console.log('ShipperJobStore.list', JSON.parse(JSON.stringify(ShipperJobStore.list)))
+    setState(prevState => ({
+      ...prevState,
+      listLength: ShipperJobStore.list.length,
+    }))
+    if (!ShipperJobStore.loading && !data.length && ShipperJobStore.list && ShipperJobStore.list.length) {
+      setState(prevState => ({
+        ...prevState,
+        data: ShipperJobStore.list,
+      }))
     }
-    return () => {
-      // initialState
-    }
-  }, [ShipperJobStore.list])
-
-  useEffect(() => {
-    ShipperJobStore.find({ ...AdvanceSearchStore.filter, page: page })
-  }, [page])
+  }, [ShipperJobStore.loading, ShipperJobStore.list])
 
   const renderItem = ({ item }) => (
     <Item {...item} />
   )
 
   const onScrollList = () => {
-    // DATA_SECOND && data.length % 5 === 0 && setData(data.concat(DATA_SECOND))
-    setState(prevState => ({
-      ...prevState,
-      page: prevState.page + 1
-    }))
+    PAGE = ShipperJobStore.list.length === listLength ? listLength : PAGE + ShipperJobStore.list.length
+    const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE }
+    ShipperJobStore.find(advSearch)
   }
 
   const onPress = (id: number) => {
@@ -343,25 +196,28 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
         provinceListEn.filter(n => n.value === sLocale)[0].label
     ) : undefined
 
-    // console.log('fLocale', fLocale)
-    // console.log('sLocale', sLocale)
-
     AdvanceSearchStore.setFilter({
+      ...AdvanceSearchStore.filter,
       descending: true,
       from: fLocale,
       to: sLocale,
-      page: 1,
-      rowsPerPage: 6,
+      page: 0,
+      // rowsPerPage: 6,
     })
   }
 
   const onSearch = () => {
     const filter = AdvanceSearchStore.filter
+    ShipperJobStore.setDefaultOfList()
     ShipperJobStore.find(filter)
   }
 
+  const onAdvanceSeach = () => {
+    TruckTypeStore.getTruckTypeDropdown(i18n.locale)
+    navigation.navigate('advanceSearch')
+  }
+
   console.log('AdvanceSearchStore.filter', JSON.parse(JSON.stringify(AdvanceSearchStore.filter)))
-  console.log('page', page)
 
   return (
     <View style={{ flex: 1 }}>
@@ -385,7 +241,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
           style={FULL_SEARCH_BOTTON}
           textStyle={FULL_SEARCH_TEXT}
           text={translate('searchJobScreen.fullSearch')} // ค้นหาโดยละเอียด
-          onPress={() => navigation.navigate('advanceSearch')}
+          onPress={onAdvanceSeach}
         />
         <View style={SUB_BUTTON_CONTAINER}>
           {subButtons.length && subButtons.map(button => {
@@ -403,12 +259,13 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
       </View>
       <View style={RESULT_CONTAINER}>
         {
-          !!JSON.parse(JSON.stringify(ShipperJobStore.list)).length && <FlatList
-            data={ShipperJobStore.list}
+          data && !!data.length && <FlatList
+            data={data}
             renderItem={renderItem}
             keyExtractor={item => item.id}
             onEndReached={() => onScrollList()}
             onEndReachedThreshold={0.5}
+          // onMomentumScrollBegin={() => console.log('onResponderEnd')}
           // onMomentumScrollEnd={() => console.log('onMomentumScrollEnd')}
           />
         }

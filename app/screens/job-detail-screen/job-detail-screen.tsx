@@ -1,12 +1,16 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { observer } from 'mobx-react-lite'
-import { Dimensions, Image, ImageStyle, ScrollView, TextStyle, View, ViewStyle } from 'react-native'
+import { Dimensions, Image, ImageStyle, ScrollView, TextStyle, View, ViewStyle, TouchableOpacity } from 'react-native'
 import { Button, Icon, PostingBy, Text } from '../../components'
 import { useNavigation } from '@react-navigation/native'
 import { color, spacing } from '../../theme'
 import { translate } from '../../i18n'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
+import ShipperJobStore from '../../store/shipper-job-store/shipper-job-store'
+import { GetTruckType } from '../../utils/get-truck-type'
+import i18n from 'i18n-js'
+import { Modalize } from 'react-native-modalize';
 
 const FONT_SIZE_SMALL = 15
 
@@ -15,20 +19,19 @@ const PADDING_BOTTOM = { paddingBottom: spacing[1] }
 const PADDING_LEFT = { paddingLeft: spacing[1] }
 const MARGIN_BOTTOM = { marginBottom: spacing[1] }
 const BACKGROUND_COLOR = { backgroundColor: color.backgroundWhite }
+const BOTTOM_LINE = {
+    borderBottomColor: color.line,
+    borderBottomWidth: 1,
+}
 
 const CONTAINER: ViewStyle = {
     flex: 1,
     backgroundColor: color.backgroundPrimary,
 }
 const TOP_ROOT: ViewStyle = {
-    padding: spacing[4],
     ...BACKGROUND_COLOR,
     ...MARGIN_BOTTOM,
-    position: 'absolute',
-    width: 'auto',
-    bottom: 5,
-    right: 0,
-    left: 0,
+    padding: spacing[4],
     marginHorizontal: spacing[3],
     borderRadius: spacing[1],
     paddingVertical: spacing[2],
@@ -39,11 +42,11 @@ const MAP_CONTAINER: ViewStyle = {
 }
 const MAP: ImageStyle = {
     width: Math.floor(Dimensions.get('window').width),
-    height: Math.floor(Dimensions.get('window').height / 2),
+    height: Math.floor(Dimensions.get('window').height),
 }
 const LOCATION_CONTAINER: ViewStyle = {
     flex: 1,
-    flexDirection: 'row'
+    flexDirection: 'row',
 }
 const LOCATION_BOX: ViewStyle = {
     flex: 2,
@@ -56,6 +59,7 @@ const PRODUCT_ROOT: ViewStyle = {
     paddingHorizontal: spacing[5],
     ...BACKGROUND_COLOR,
     ...MARGIN_BOTTOM,
+    ...BOTTOM_LINE
 }
 const DISTANCE_BOX: ViewStyle = {
     flex: 1,
@@ -118,6 +122,9 @@ const CALL_TEXT: TextStyle = {
 const TEXT: TextStyle = {
     paddingVertical: spacing[2]
 }
+const SCROLL_VIEW: ViewStyle = {
+    marginTop: spacing[5],
+}
 
 const DATA = {
     id: 9,
@@ -142,89 +149,119 @@ const DATA = {
     logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
 }
 
+const PickUpPoint = ({ to, from, containerStyle = {} }) => (
+    <View style={{ ...LOCATION_CONTAINER, ...containerStyle }}>
+        <View style={LOCATION_BOX}>
+            <View style={LOCATION}>
+                <Icon icon="pinDropYellow" style={PIN_ICON} />
+                <Text
+                    text={`${translate('common.from')}  :`}
+                    style={{ ...LOCATION_TEXT, width: 45 }}
+                />
+                <Text
+                    text={from && from.name}
+                    style={LOCATION_TEXT}
+                />
+            </View>
+            {to?.length && to.map((attr, index) => (
+                <View key={index} style={LOCATION}>
+                    <Icon icon="pinDropGreen" style={PIN_ICON} />
+                    <Text
+                        text={`${translate('common.to')}  :`}
+                        style={{ ...LOCATION_TEXT, width: 45 }}
+                    />
+                    <Text
+                        text={attr.name}
+                        style={LOCATION_TEXT}
+                    />
+                </View>
+            ))}
+        </View>
+        <View style={DISTANCE_BOX}>
+            <Text style={{ paddingVertical: spacing[1] }} >{`${DATA.distance} `}<Text text={'KM'} style={TEXT_SMALL} /></Text>
+            <Text text={`${DATA.period}`} style={{ ...TEXT_SMALL, paddingVertical: spacing[1], }} />
+        </View>
+    </View>
+)
+
 export const JobDetailScreen = observer(function JobDetailScreen() {
     const navigation = useNavigation()
-    // const goBack = () => navigation.goBack()
 
-    const {
-        fromText,
-        toText,
-        truckType,
-        // packaging,
-        count,
-        postBy,
-        isVerified,
-        isCrown,
-        rating,
-        ratingCount,
-        logo,
-        weigh,
-        productType,
-        productName,
-        distance,
-        period,
-    } = DATA
+    const modalizeRef = useRef<Modalize>(null);
+
+    useEffect(() => {
+        return () => {
+            ShipperJobStore.setDefaultOfData()
+        }
+    }, [])
+
+    useEffect(() => {
+        if (ShipperJobStore.data && Object.keys(ShipperJobStore.data).length) {
+            console.log('ShipperJobStore.data', JSON.parse(JSON.stringify(ShipperJobStore.data)))
+        }
+    }, [ShipperJobStore.loading, ShipperJobStore.data])
 
     const onPress = () => {
+        modalizeRef.current?.close();
         navigation.navigate('shipperProfile')
     }
+
+    const onOpen = () => {
+        modalizeRef.current?.open();
+    };
+
+    const {
+        from,
+        to,
+        productName,
+        productTypeId,
+        requiredTruckAmount,
+        truckType,
+        weight
+    } = JSON.parse(JSON.stringify(ShipperJobStore.data))
+
+    const txtTruckType = GetTruckType(+truckType, i18n.locale)
 
     return (
         <View style={CONTAINER}>
             <View style={MAP_CONTAINER}>
                 <Image source={{ uri: 'https://f.ptcdn.info/799/063/000/pqyi1shocoZJuUFhvZ0-o.png' }} resizeMode={'cover'} style={MAP} />
-
-                <View style={TOP_ROOT}>
-                    <View>
-                        <Text text={translate('jobDetailScreen.pickUpPoint')} style={{ ...TEXT_SMALL, color: color.disable, }} />
-                    </View>
-                    <View style={LOCATION_CONTAINER}>
-                        <View style={LOCATION_BOX}>
-                            <View style={LOCATION}>
-                                <Icon icon="pinDropYellow" style={PIN_ICON} />
-                                <Text
-                                    text={`${translate('common.from')}  :`}
-                                    style={{ ...LOCATION_TEXT, width: 45 }}
-                                />
-                                <Text
-                                    text={fromText}
-                                    style={LOCATION_TEXT}
-                                />
-                            </View>
-                            <View style={LOCATION}>
-                                <Icon icon="pinDropGreen" style={PIN_ICON} />
-                                <Text
-                                    text={`${translate('common.to')}  :`}
-                                    style={{ ...LOCATION_TEXT, width: 45 }}
-                                />
-                                <Text
-                                    text={toText}
-                                    style={LOCATION_TEXT}
-                                />
-                            </View>
-                        </View>
-                        <View style={DISTANCE_BOX}>
-                            <Text style={{ paddingVertical: spacing[1] }} >{`${distance} `}<Text text={'KM'} style={TEXT_SMALL} /></Text>
-                            <Text text={`${period}`} style={{ ...TEXT_SMALL, paddingVertical: spacing[1], }} />
-                        </View>
-                    </View>
-                </View>
-
             </View>
 
-            <View style={{
-                flex: 1,
-            }}>
+            <TouchableOpacity activeOpacity={1} onPress={onOpen} style={{ ...TOP_ROOT, height: 105, }}>
+                <View>
+                    <Text text={translate('jobDetailScreen.pickUpPoint')} style={{ ...TEXT_SMALL, color: color.disable, }} />
+                </View>
+                <PickUpPoint from={from} to={to} />
+            </TouchableOpacity>
+
+            <Modalize
+                ref={modalizeRef}
+                scrollViewProps={{ showsVerticalScrollIndicator: true }}
+                snapPoint={300}
+                // HeaderComponent={}
+                modalStyle={{
+                    flex: 1,
+                    marginTop: spacing[5],
+                }}
+                withHandle={true}
+            // tapGestureEnabled={true}
+            >
                 <ScrollView
                     onScroll={({ nativeEvent }) => {
                     }}
-                    style={{}}
+                    style={SCROLL_VIEW}
                     scrollEventThrottle={400}
                 >
 
-                    <View style={{
-                        ...PRODUCT_ROOT
-                    }}>
+                    <View style={TOP_ROOT}>
+                        <View>
+                            <Text text={translate('jobDetailScreen.pickUpPoint')} style={{ ...TEXT_SMALL, color: color.disable, }} />
+                        </View>
+                        <PickUpPoint from={from} to={to} containerStyle={{ paddingBottom: spacing[4], ...BOTTOM_LINE }} />
+                    </View>
+
+                    <View style={PRODUCT_ROOT}>
                         <View>
                             <Text text={translate('jobDetailScreen.jobDetail')} preset={'topic'} style={{ color: color.primary }} />
                         </View>
@@ -233,8 +270,8 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                                 <MaterialCommunityIcons name={'truck-outline'} size={24} color={color.primary} />
                             </View>
                             <View style={DETAIL_BOX}>
-                                <Text text={`${translate('common.vehicleTypeField')} : ${truckType}`} style={TEXT} />
-                                <Text text={`${translate('common.count')} : ${count} คัน`} style={TEXT} />
+                                <Text text={`${translate('common.vehicleTypeField')} : ${txtTruckType && txtTruckType.name ? txtTruckType.name : ''}`} style={TEXT} />
+                                <Text text={`${translate('common.count')} : ${requiredTruckAmount} คัน`} style={TEXT} />
                             </View>
                         </View>
                         <View style={PRODUCT_ROW}>
@@ -242,28 +279,34 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                                 <SimpleLineIcons name={'social-dropbox'} size={24} color={color.primary} />
                             </View>
                             <View style={DETAIL_BOX}>
-                                <Text text={`${translate('jobDetailScreen.productType')} : ${productType}`} style={TEXT} />
+                                <Text text={`${translate('jobDetailScreen.productType')} : ${productTypeId}`} style={TEXT} />
                                 <Text text={`${translate('jobDetailScreen.productName')} : ${productName}`} style={TEXT} />
-                                <Text text={`${translate('jobDetailScreen.weightTon')} : ${weigh}`} style={TEXT} />
+                                <Text text={`${translate('jobDetailScreen.weightTon')} : ${weight}`} style={TEXT} />
                             </View>
                         </View>
                     </View>
 
-                    <View style={ONWER_ROOT}>
-                        <View style={ROW}>
-                            <Text style={{ color: color.disable }}>{translate('jobDetailScreen.postBy')}</Text>
-                            <PostingBy {...DATA} onToggle={() => onPress()} />
-                        </View>
-                    </View>
                 </ScrollView>
-            </View>
+
+                <View style={ONWER_ROOT}>
+                    <View style={ROW}>
+                        <Text style={{ color: color.disable }}>{translate('jobDetailScreen.postBy')}</Text>
+                        <PostingBy {...DATA} onToggle={() => onPress()} />
+                    </View>
+                </View>
+
+            </Modalize>
 
             <View style={BOTTOM_ROOT}>
                 <Button
                     testID="call-with-owner"
                     style={CALL_BUTTON}
-                    textStyle={CALL_TEXT}
-                    text={translate('jobDetailScreen.call')}
+                    children={
+                        <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+                            <MaterialCommunityIcons name={'phone'} size={24} color={color.textWhite} style={{ paddingRight: spacing[2] }} />
+                            <Text style={CALL_TEXT} text={translate('jobDetailScreen.call')} />
+                        </View>
+                    }
                     onPress={() => navigation.navigate('feedback')}
                 />
             </View>
