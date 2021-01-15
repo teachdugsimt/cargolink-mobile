@@ -1,8 +1,8 @@
 
 
 
-import React, { useState } from 'react';
-import { View, Button, Platform, TouchableOpacity, ViewStyle } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Platform, TouchableOpacity, ViewStyle } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useForm, Controller } from "react-hook-form";
 import { spacing, color, typography, images } from "../../theme"
@@ -31,48 +31,56 @@ export const TimePickerRemake = (props) => {
 
     const [show, setShow] = useState(false);
 
-    const _openDatePicker = () => setShow(true)
+    const _openDatePicker = () => {
+        setShow(true)
+    }
 
     const { testID, value, onChange, label,
-        rerender, rerenderFunction, mode, iconName, key
+        rerender, rerenderFunction, mode, iconName, keyer
     } = props
+    // __DEV__ && console.tron.log("Show time status :: ", show)
+
     return (
 
-        <View key={'root-' + key} style={[FULL, MARGIN_MEDIUM]}>
+        <View key={"root-time-picker-" + keyer} style={[FULL, MARGIN_MEDIUM]}>
 
-            <TouchableOpacity key={"button-" + key} style={DATE_BUTTON} onPress={_openDatePicker}>
-                <View style={[ROW_TEXT, SPACE_BETWEEN]}>
-                    <View>
-                        {rerender ? <Text style={PADDING_PURE}>{label && typeof label != undefined ?
-                            (Platform.OS == 'android' ? date.format(label, "HH:mm") : '') : ''}</Text> :
-                            <Text style={PADDING_PURE}>{label && typeof label != undefined ?
-                                (Platform.OS == 'android' ? date.format(label, "HH:mm") : '') : ''}</Text>}
+            <Button keyer={keyer} label={label} iconName={iconName} openDatePicker={_openDatePicker} />
 
-                    </View>
-                    <Ionicons name={iconName} size={20} style={PADDING_PURE} />
-                </View>
-            </TouchableOpacity>
+            {show &&
+                <DateTimePicker
+                    testID={testID}
+                    value={value}
+                    mode={mode}
+                    is24Hour={true}
+                    display="default"
+                    timeZoneOffsetInMinutes={420}
+                    timeZoneOffsetInSeconds={25200}
+                    onTouchCancel={() => setShow(Platform.OS === 'ios')}
+                    onChange={(event, selectedDate) => {
+                        if (selectedDate) {
+                            setShow(Platform.OS === 'ios');
+                            onChange(selectedDate)
+                            rerenderFunction()  // for render text show time
+                        }
+                    }}
+                />
+            }
 
-            <View>{show && (
-                <>
-                    <DateTimePicker
-                        key={key}
-                        testID={testID}
-                        value={value}
-                        mode={mode}
-                        is24Hour={true}
-                        display="default"
-                        onChange={(event, selectedDate) => {
-                            if (selectedDate) {
-                                onChange(selectedDate)
-                                setShow(Platform.OS === 'ios');
-                            }
-                            rerenderFunction()
-                        }}
-                    />
-                </>
-            )}
-            </View>
         </View>
     );
 };
+
+const Button = (props) => {
+
+    const { keyer, label, iconName, openDatePicker } = props
+
+    return <TouchableOpacity key={"button-time-picker-" + keyer} style={DATE_BUTTON} onPress={openDatePicker}>
+        <View style={[ROW_TEXT, SPACE_BETWEEN]} key={'v-time-' + keyer}>
+            <View key={"v-time2-" + keyer}>
+                <Text style={PADDING_PURE}>{label && typeof label != undefined ?
+                    (Platform.OS == 'android' ? date.format(label, "HH:mm") : '') : ''}</Text>
+            </View>
+            <Ionicons name={iconName} size={20} style={PADDING_PURE} />
+        </View>
+    </TouchableOpacity>
+}

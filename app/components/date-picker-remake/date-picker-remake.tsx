@@ -34,22 +34,19 @@ export const DatePickerRemake = (props) => {
     const _openDatePicker = () => setShow(true)
 
     const { testID, value, onChange, label,
-        rerender, rerenderFunction, mode, iconName, key
+        rerender, rerenderFunction, mode, iconName, keyer
     } = props
     return (
 
-        <View key={"root-" + key} style={[FULL, MARGIN_MEDIUM]}>
+        <View key={"root-date-picker-" + keyer} style={[FULL, MARGIN_MEDIUM]}>
 
-            <TouchableOpacity key={'button-' + key} style={DATE_BUTTON} onPress={_openDatePicker}>
+            <TouchableOpacity key={"button-date-picker-" + keyer}  style={DATE_BUTTON} onPress={_openDatePicker}>
                 <View style={[ROW_TEXT, SPACE_BETWEEN]}>
                     <View>
                         {rerender ? <Text style={PADDING_PURE}>{label && typeof label != undefined ?
                             (Platform.OS == 'android' ? date.format(label, "YYYY-MM-DD") : '') : ''}</Text> :
                             <Text style={PADDING_PURE}>{label && typeof label != undefined ?
                                 (Platform.OS == 'android' ? date.format(label, "YYYY-MM-DD") : '') : ''}</Text>}
-
-                        {/* <Text style={PADDING_PURE}>{label && typeof label != undefined ?
-                            (Platform.OS == 'android' ? date.format(label,  "YYYY-MM-DD" ) : '') : ''}</Text> */}
                     </View>
                     <Ionicons name={iconName} size={20} style={PADDING_PURE} />
                 </View>
@@ -58,18 +55,20 @@ export const DatePickerRemake = (props) => {
             <View>{show && (
                 <>
                     <DateTimePicker
-                        key={key}
                         testID={testID}
                         value={value}
                         mode={mode}
                         is24Hour={true}
                         display="default"
+                        timeZoneOffsetInMinutes={420}
+                        timeZoneOffsetInSeconds={25200}
+                        onTouchCancel={() => setShow(Platform.OS === 'ios')}
                         onChange={(event, selectedDate) => {
                             if (selectedDate) {
                                 onChange(selectedDate)
                                 setShow(Platform.OS === 'ios');
+                                rerenderFunction()
                             }
-                            rerenderFunction()
                         }}
                     />
                 </>

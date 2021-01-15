@@ -14,6 +14,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { spacing, color, typography, images } from "../../../theme"
 import DateTimePicker from '@react-native-community/datetimepicker';
 import date from 'date-and-time';
+import PostJobStore from "../../../store/post-job-store/post-job-store";
+import _ from 'lodash'
+import mapValues from 'lodash/mapValues';
 // const bowserLogo = require("./bowser.png")
 
 const FULL: ViewStyle = { flex: 1 }
@@ -107,12 +110,13 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
     const [rerender, setrerender] = useState(false)
     const [rerenderTime, setrerenderTime] = useState(false)
     const [initDatePicker, setinitDatePicker] = useState(new Date());
+
     const [swipe, setswipe] = useState(false)
 
     const { control, handleSubmit, errors } = useForm({
         defaultValues: {
-            "receive-date": initDatePicker,
-            "receive-time": initDatePicker
+            // "receive-date": initDatePicker,
+            // "receive-time": initDatePicker
         }
         // defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : MyVehicleStore.MappingData
     });
@@ -122,22 +126,60 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
     }, [])
 
     const onSubmit = (data) => {
-        // __DEV__ && console.tron.log("Data Form Post job : ", data)
-        let data_post_job2 = data
-        let final = data
-        Object.keys(data).map(function (key) {
-            if (key.includes("shipping-date")) {
-                final['shipping-date'] = data_post_job2['shipping-date'].slice(0, 10)
-            }
-            if (key.includes("shipping-time")) {
-                let raw_time = date.addHours(data_post_job2['shipping-time'], 7).slice(11, 16)
-                final['shipping-time'] = raw_time
+        __DEV__ && console.tron.log("Raw Data Form Post job : ", data)
+        console.log("Raw Data Form Post job : ", data)
+        let tmp_data = JSON.parse(JSON.stringify(data))
+        let final = { ...tmp_data }
+        // Object.keys(tmp_data).forEach((key) => {
+        //     let arr = key.split("-")
+        //     let indexing = arr[arr.length - 1]
+        //     if (key.includes("shipping-date-")) {
+        //         final[key] = date.format(data['shipping-date-' + indexing], "YYYY:MM:DD")
+        //     }
+        //     if (key.includes("shipping-time-")) {
+        //         final[key] = date.format(data['shipping-time-' + indexing], "HH:mm")
+        //     }
+        //     if (key.includes("receive-date")) {
+        //         final[key] = date.format(data['receive-date'], "YYYY:MM:DD")
+        //     }
+        //     if (key.includes("receive-time")) {
+        //         final[key] = date.format(data['receive-time'], "HH:mm")
+        //     }
+        // })
+
+
+
+
+
+
+        let shippingInformation = []
+        let pure_object = {}
+        Object.keys(tmp_data).forEach((key) => {
+            if (key.includes("shipping-")) {
+                pure_object[key] = tmp_data[key]
             }
         })
+        fieldShipping.forEach((e, i) => {
+            shippingInformation.push({
+                "shipping-address": pure_object[`shipping-address-${i + 1}`],
+                "shipping-date": pure_object[`shipping-date-${i + 1}`],
+                "shipping-time": pure_object[`shipping-time-${i + 1}`],
+                "shipper-name": pure_object[`shipping-name-${i + 1}`],
+                "shipper-tel-no": pure_object[`shipping-tel-no-${i + 1}`],
+            })
+        })
+        final['shipping-information'] = shippingInformation
+        // PostJobStore.setPostJob(2, newObj)
         __DEV__ && console.tron.log("Final object postjob screen 2 :: => ", final)
 
 
+
+
+
+
+
     }
+
     const _addFieldInputShipping = () => {
         let tmp_field_level = fieldShipping
         tmp_field_level.push({
@@ -164,7 +206,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
     ]
     let formControllerValue = control.getValues()
 
-    __DEV__ && console.tron.log("show date format : ", formControllerValue)
+    // __DEV__ && console.tron.log("show date format : ", formControllerValue)
     return (
         <View testID="ReceivePointScreen" style={FULL}>
             <View style={TOP_VIEW}>
@@ -208,20 +250,20 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                                         control={control}
                                         render={({ onChange, onBlur, value }) => (
                                             <DatePickerRemake
-                                                key={"receive-date1"}
+                                                keyer={"receive-date1"}
                                                 testID={"testID-receive-date"}
                                                 value={value}
                                                 onChange={onChange}
                                                 label={formControllerValue['receive-date']}
-                                                rerender={rerender}
                                                 iconName={"calendar-sharp"}
                                                 mode={"date"}
+                                                rerender={rerender}
                                                 rerenderFunction={() => setrerender(!rerender)}
                                             />
                                         )}
                                         key={'text-input-receive-date'}
                                         name={"receive-date"}
-                                        defaultValue=""
+                                        defaultValue={initDatePicker}
                                     />
                                 </View>
                                 <View style={[FULL, PADDING_LEFT_SMALL]}>
@@ -230,20 +272,20 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                                         control={control}
                                         render={({ onChange, onBlur, value }) => (
                                             <TimePickerRemake
-                                                key={"receive-time1"}
+                                                keyer={"receive-time1"}
                                                 testID={"testID-receive-date2"}
                                                 value={value}
                                                 onChange={onChange}
                                                 label={formControllerValue['receive-time']}
-                                                rerender={rerenderTime}
                                                 mode={"time"}
                                                 iconName={"time-outline"}
-                                                rerenderFunction={() => setrerenderTime(!rerender)}
+                                                rerender={rerenderTime}
+                                                rerenderFunction={() => setrerenderTime(!rerenderTime)}
                                             />
                                         )}
                                         key={'text-input-receive-time'}
                                         name={"receive-time"}
-                                        defaultValue=""
+                                        defaultValue={initDatePicker}
                                     />
                                 </View>
                             </View>
@@ -377,11 +419,11 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                                     control={control}
                                     render={({ onChange, onBlur, value }) => (
                                         <TextInputTheme
-                                            testID={"shipper-name-" + e.id}
+                                            testID={"shipping-name-" + e.id}
                                             inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
                                     )}
-                                    key={'text-input-shipper-name-' + e.id}
-                                    name={"shipper-name-" + e.id}
+                                    key={'text-input-shipping-name-' + e.id}
+                                    name={"shipping-name-" + e.id}
                                     defaultValue=""
                                 />
 
@@ -390,11 +432,11 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                                     control={control}
                                     render={({ onChange, onBlur, value }) => (
                                         <TextInputTheme
-                                            testID={"shipper-tel-no-" + e.id}
+                                            testID={"shipping-tel-no-" + e.id}
                                             inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
                                     )}
-                                    key={'text-input-shipper-tel-no-' + e.id}
-                                    name={"shipper-tel-no-" + e.id}
+                                    key={'text-input-shipping-tel-no-' + e.id}
+                                    name={"shipping-tel-no-" + e.id}
                                     defaultValue=""
                                 />
 
