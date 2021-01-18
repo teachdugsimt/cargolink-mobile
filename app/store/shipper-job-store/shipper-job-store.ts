@@ -2,6 +2,7 @@ import { types, flow, cast } from "mobx-state-tree"
 import { ShipperJobAPI, GoogleMapAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
 import { decode } from "@mapbox/polyline";
+import FavoriteJobStore from "./favorite-job-store";
 
 const apiShipperJob = new ShipperJobAPI()
 const apiGoogleMap = new GoogleMapAPI()
@@ -35,7 +36,8 @@ const ShipperJob = types.model({
         fullName: types.maybeNull(types.string),
         mobileNo: types.maybeNull(types.string),
         email: types.maybeNull(types.string)
-    }))
+    })),
+    isLiked: types.maybeNull(types.optional(types.boolean, false))
 })
 
 const Directions = types.model({
@@ -43,18 +45,11 @@ const Directions = types.model({
     longitude: types.number,
 })
 
-// function* callApiMap(prev, curr) {
-//     const apiGoogleMap = new ShipperJobAPI()
-//     apiGoogleMap.config.url = 'https://maps.googleapis.com'
-//     yield apiGoogleMap.setup()
-
-//     const result = yield apiGoogleMap.getDirections(`${prev.lat},${prev.lng}`, `${curr.lat},${curr.lng}`)
-// }
-
 const ShipperJobStore = types
     .model({
         list: types.maybeNull(types.array(types.maybeNull(ShipperJob))),
         data: types.maybeNull(ShipperJob),
+        favoriteList: types.maybeNull(ShipperJob),
         directions: types.optional(types.array(types.array(Directions)), []),
         loading: types.boolean,
         mapLoading: types.boolean,
@@ -67,12 +62,28 @@ const ShipperJobStore = types
             try {
                 const response = yield apiShipperJob.find(filter)
                 console.log("Response call api get shipper jobs : : ", response)
-                self.list = cast([...self.list, ...response.data] || [])
-                self.loading = false
+                if (response.kind === 'ok') {
+                    FavoriteJobStore.find()
+                    let arrMerge = [...self.list, ...response.data] || []
+                    const favoriteList = JSON.parse(JSON.stringify(FavoriteJobStore.list))
+
+                    if (favoriteList && favoriteList.length) {
+                        const result = yield Promise.all(arrMerge.map(attr => {
+                            return {
+                                ...attr,
+                                isLiked: favoriteList.every(val => val.id === attr.id)
+                            }
+                        }))
+                        self.list = JSON.parse(JSON.stringify(result))
+                    } else {
+                        self.list = cast(arrMerge)
+                    }
+                    self.loading = false
+                } else {
+                    self.loading = false
+                }
             } catch (error) {
-                // ... including try/catch error handling
                 console.error("Failed to fetch get shipper jobs : ", error)
-                // self.data = []
                 self.loading = false
                 self.error = "error fetch api get shipper jobs"
             }

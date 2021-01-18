@@ -27,3 +27,5 @@ export * from "./home-screen/success-upload/success-upload"
 
 export * from "./shipper-profile-screen/shipper-profile-screen"
 export * from "./feedback-screen/feedback-screen"
+export * from "./advance-search-truck-screen/advance-search-truck-screen"
+export * from "./truck-detail-screen/truck-detail-screen"

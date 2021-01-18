@@ -232,6 +232,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
     const txtTruckType = GetTruckType(+truckType, i18n.locale)
     console.log('coordinates.length', coordinates.length)
+    console.log('JSON.stringify(ShipperJobStore.directions)', JSON.stringify(ShipperJobStore.directions))
 
     return (
         <View style={CONTAINER}>

@@ -43,15 +43,13 @@ const FavoriteJobStore = types
         error: types.maybeNull(types.string),
     })
     .actions((self) => ({
-
-
         find: flow(function* find(filter: Types.ShipperJobRequest = {}) {
             yield favoriteJobApi.setup()
             self.loading = true
             try {
                 const response = yield favoriteJobApi.find(filter)
                 console.log("Response call api get favorite jobs : : ", response)
-                self.list = cast([...self.list, ...response.data] || [])
+                self.list = response.data || []
                 self.loading = false
             } catch (error) {
                 console.error("Failed to fetch get favorite jobs : ", error)

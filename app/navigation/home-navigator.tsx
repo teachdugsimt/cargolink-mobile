@@ -14,7 +14,7 @@ import {
     DetailScreen, HomeScreen, JobDetailScreen, MyVehicle, PostJobScreen, SearchJobScreen, AdvanceSearchScreen,
     UploadVehicleScreen, SuccessUpload,
     VehicleDetailScreen,
-    ShipperProfileScreen, ReceivePointScreen, FeedbackScreen, SearchTruckScreen
+    ShipperProfileScreen, ReceivePointScreen, FeedbackScreen, SearchTruckScreen, AdvanceSearchTruckScreen, TruckDetailScreen
 } from "../screens"
 import { translate } from "../i18n"
 /**
@@ -44,6 +44,8 @@ export type PrimaryHomeParamList = {
     shipperProfile: undefined
     receivePoint: undefined
     feedback: undefined
+    advanceSearchJob: undefined,
+    truckDetail: undefined,
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -192,6 +194,20 @@ export function HomeNavigator() {
                 component={FeedbackScreen}
                 options={({ navigation, route }) => ({
                     headerCenter: () => <HeaderCenter tx={"feedbackScreen.yourOpinion"} />,
+                    headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+                })}
+            />
+            <Stack.Screen name="advanceSearchJob" component={AdvanceSearchTruckScreen}
+                options={({ navigation, route }) => ({
+                    headerRight: () => <Text tx={"searchJobScreen.clear"} onPress={() => console.log('Clear all!!')} />,
+                    headerCenter: () => <HeaderCenter tx={"searchJobScreen.settingSearch"} />,
+                    headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+                })} />
+            <Stack.Screen
+                name="truckDetail"
+                component={TruckDetailScreen}
+                options={({ navigation, route }) => ({
+                    headerCenter: () => <HeaderCenter tx={"truckDetailScreen.truckDetail"} />,
                     headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
                 })}
             />

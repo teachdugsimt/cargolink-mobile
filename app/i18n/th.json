@@ -30,7 +30,10 @@
     "search": "ค้นหา ...",
     "requireField": "ข้อมูลที่จำเป็น",
     "licensePlate": "ทะเบียน",
-    "notFound": "ไม่พบรายการ"
+    "notFound": "ไม่พบรายการ",
+    "have": "มี",
+    "notHave": "ไม่มี",
+    "M": "เมตร"
   },
   "bottomTab": {
     "home": "หน้าแรก",
@@ -273,6 +276,11 @@
   },
   "searchTruckScreen": {
     "findTruck": "หารถ",
-    "selectZoneWorking": "ระบุโซนวิ่งงานที่คุณต้องการ"
+    "selectWorkingZone": "ระบุโซนวิ่งงานที่คุณต้องการ",
+    "workingZone": "โซนวิ่งงาน"
+  },
+  "truckDetailScreen": {
+    "truckDetail": "รายละเอียดรถ",
+    "heighttOfTheCarStall": "ความสูงของคอกรถ"
   }
 }
