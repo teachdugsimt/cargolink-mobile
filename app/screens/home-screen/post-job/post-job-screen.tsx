@@ -420,8 +420,6 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                                         <View style={[PADDING_TOP]}>
 
                                                             <MultiSelector
-                                                                // items={list_product_type[0].data}
-                                                                // items={data_product_type}
                                                                 items={listProductState}
                                                                 keyer={"list-item-type-01"}
                                                                 selectedItems={[value]}

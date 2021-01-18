@@ -70,6 +70,10 @@ const PostJobStore = types.model({
                 self.error = "set up state mobx error"
             }
         }),
+
+        clearDataPostjob(){
+            self.data_postjob = null
+        }
     }))
     .views((self) => ({
         get MappingInitValue() {

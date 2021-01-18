@@ -1,9 +1,9 @@
-import React, { } from "react"
-import { View, ViewStyle, TextStyle, Platform } from "react-native"
+import React, { useEffect } from "react"
+import { View, ViewStyle, TextStyle, Platform, Image } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
 import { Text, RoundedButton, AddJobElement } from "../../../components"
-import { color } from "../../../theme"
+import { color, images } from "../../../theme"
 import PostJobStore from "../../../store/post-job-store/post-job-store";
 // const bowserLogo = require("./bowser.png")
 const FULL: ViewStyle = {
@@ -58,6 +58,12 @@ export const PostSuccessScreen = observer(function PostSuccessScreen() {
     ]
     const id_post = (JSON.parse(JSON.stringify(PostJobStore.data_postjob))) || ''
 
+    useEffect(() => {
+        return () => {
+            PostJobStore.clearDataPostjob()
+        }
+    }, [])
+
     return (
         <View testID="PostSuccessScreen" style={FULL}>
             <View style={TOP_VIEW}>
@@ -65,6 +71,9 @@ export const PostSuccessScreen = observer(function PostSuccessScreen() {
             </View>
             <View style={BOTTOM_VIEW}>
                 <View style={TEXT_VIEW}>
+                    {/* <View>
+                        <Image source={images.postJobSuccess} width={50} height={50} resizeMode={"stretch"} />
+                    </View> */}
                     <Text tx={"postJobScreen.postJobSuccess"} preset={'topic'} style={TEXT_TOPIC} />
                     <View style={ROW_TEXT}>
                         <Text tx={"common.id"} preset={'topicExtra'} style={TEXT_SUB_TITLE} />

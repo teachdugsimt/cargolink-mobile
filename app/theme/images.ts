@@ -48,6 +48,7 @@ export const images = {
   addTruck2B: require("../images/add-truck-icon/FTruck.png"),
   defaultImage: require("../images/default_image.png"),
   bell: require("../images/bell.png"),
+  postJobSuccess: require("../images/post-job-success.png"),
   // clearLogo: require('../Images/top_logo.png'),
 }
 

@@ -25,6 +25,7 @@ import { Modal, ModalContent } from 'react-native-modals';
 import PostJobStore from "../../../store/post-job-store/post-job-store";
 import _ from 'lodash'
 import { MapTruckImageName } from '../../../utils/map-truck-image-name'
+import AdvanceSearchStore from "../../../store/shipper-job-store/advance-search-store";
 // const bowserLogo = require("./bowser.png")
 
 const { width, height } = Dimensions.get("window")
@@ -135,6 +136,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
     const [rerender, setrerender] = useState(false)
     const [rerenderTime, setrerenderTime] = useState(false)
     const [initDatePicker, setinitDatePicker] = useState(new Date());
+    const [listProductState, setlistProductState] = useState(null)
 
     const [swipe, setswipe] = useState(false)
     const [swipe2, setswipe2] = useState(false)
@@ -184,7 +186,6 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
 
     const _renderSectionModal = (item: any, index: any, onChange: any, section: any) => {
         return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name + index} style={ROOT_FLAT_LIST} onPress={() => {
-            console.log("ITEM FUCK YEAH :: ", item)
             if (section == 1) setvisible0(false)
             else if (section == 2) setvisible(false)
             onChange(item.id)
@@ -201,8 +202,6 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
             </View>
         </TouchableOpacity>
     }
-
-
 
     useEffect(() => {
         let tmp_field = fieldShippingCheck
@@ -304,6 +303,18 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
     }
 
     useEffect(() => {
+        let tmp_data = JSON.parse(JSON.stringify(AdvanceSearchStore.productTypes))
+        if (tmp_data && tmp_data.length) {
+            tmp_data.map((e) => {
+                e.image = "bell"
+                return e
+            })
+            setlistProductState(tmp_data)
+        }
+    }, [AdvanceSearchStore.productTypes])
+
+
+    useEffect(() => {
         let data_postjob = JSON.parse(JSON.stringify(PostJobStore.data_postjob))
         if (data_postjob) navigation.navigate("postSuccess")
     }, [PostJobStore.data_postjob])
@@ -357,6 +368,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
     __DEV__ && console.tron.log("Form control Check Information Screen : ", formControllerValue)
 
     __DEV__ && console.tron.log("Field shipping level :: ", fieldShippingCheck)
+    __DEV__ && console.tron.log("List Product Type post job 3 :: ", listProductState)
     return (
         <View testID="CheckInformationScreen" style={FULL}>
             <View style={TOP_VIEW}>
@@ -477,8 +489,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                                     {!dropdown_item_type && <><Text style={{ padding: 10 }} tx={"postJobScreen.selectItemType"} />
                                         <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} />
                                     </>}
-                                    {/* {dropdown_item_type && <Text style={{ padding: 10 }}>{list_product_type[0].data.find(e => e.id == dropdown_item_type).name}</Text>} */}
-                                    {dropdown_item_type && _renderSelectedList(list_product_type[0].data.find(e => e.id == dropdown_item_type), 2)}
+                                    {dropdown_item_type && _renderSelectedList(listProductState.find(e => e.id == dropdown_item_type), 2)}
 
                                 </TouchableOpacity>
 
@@ -502,7 +513,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                                                         <View style={[PADDING_TOP]}>
 
                                                             <MultiSelector
-                                                                items={list_product_type[0].data}
+                                                                items={listProductState}
                                                                 keyer={"list-item-type-01"}
                                                                 selectedItems={[value]}
                                                                 selectText={translate("postJobScreen.pleaseSelectVehicleType")}
