@@ -29,7 +29,8 @@
     "count": "Count",
     "search": "Search ...",
     "requireField": "require field",
-    "licensePlate": "License plate"
+    "licensePlate": "License plate",
+    "notFound": "Not Found"
   },
   "bottomTab": {
     "home": "Home",
@@ -269,5 +270,9 @@
     "countRating": "Help me rate your satisfaction with this one on a scale of 1 - 5 stars.",
     "moreAdvice": "More advice",
     "price": "Price"
+  },
+  "searchTruckScreen": {
+    "findTruck": "Find truck",
+    "selectZoneWorking": "Select zone working"
   }
 }

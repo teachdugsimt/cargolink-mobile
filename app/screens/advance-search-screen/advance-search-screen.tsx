@@ -1,11 +1,12 @@
 import React, { useState, ReactElement, useLayoutEffect, useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
 import { Dimensions, TextStyle, View, ViewStyle } from 'react-native'
-import { Button, Checkbox, HeaderCenter, Text, CollapsibleList, ModalLoading } from '../../components'
+import { Button, Checkbox, HeaderCenter, Text, CollapsibleList, ModalLoading, HeaderLeft } from '../../components'
 import { color, spacing } from '../../theme'
 import { useNavigation } from '@react-navigation/native'
-import { ScrollView } from 'react-native-gesture-handler'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import AdvanceSearchStore from "../../store/shipper-job-store/advance-search-store"
+import { translate } from '../../i18n'
 
 const deviceWidht = Dimensions.get('window').width / 2
 const marginPercent = 1
@@ -18,7 +19,7 @@ const SEARCH_ITEM_ROOT: ViewStyle = {
   flex: 5,
   // backgroundColor: "lightblue",
   borderWidth: 1,
-  borderColor: color.disable,
+  borderColor: color.line,
 }
 const ITEM: ViewStyle = {
   borderBottomColor: color.line,
@@ -87,7 +88,8 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => <Text tx={"searchJobScreen.clear"} onPress={() => AdvanceSearchStore.clearMenu()} />,
+      headerLeft: () => <HeaderLeft onLeftPress={() => onConfirm()} />,
+      headerRight: () => <TouchableOpacity onPress={() => AdvanceSearchStore.clearMenu()}><Text tx={"searchJobScreen.clear"} /></TouchableOpacity>,
     })
   }, [navigation]);
 

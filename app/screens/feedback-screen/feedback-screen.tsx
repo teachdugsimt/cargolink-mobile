@@ -21,14 +21,14 @@ const ROW: ViewStyle = {
 }
 const TEXT_INPUT: TextStyle = {
     padding: spacing[3],
-    borderColor: color.disable,
+    borderColor: color.line,
     borderWidth: 1,
     borderRadius: spacing[1],
 }
 const TEXT_AREA: TextStyle = {
     height: 120,
     borderWidth: 1,
-    borderColor: color.disable,
+    borderColor: color.line,
     borderRadius: spacing[1],
     padding: spacing[3],
     textAlignVertical: 'top'
@@ -38,7 +38,7 @@ const BUTTON: ViewStyle = {
     width: 120,
     marginHorizontal: spacing[2],
     paddingVertical: spacing[1] + 2,
-    backgroundColor: color.disable,
+    backgroundColor: color.line,
     borderWidth: 1,
     borderColor: color.dim,
 }
@@ -119,7 +119,7 @@ export const FeedbackScreen = observer(function FeedbackScreen() {
                                     activeOpacity={1}
                                     testID={`btn-select-${index + 1}`}
                                     text={button.label}
-                                    style={{ ...BUTTON, backgroundColor: Object.keys(selectedChoice).length && selectedChoice[button.id] ? color.primary : color.disable }}
+                                    style={{ ...BUTTON, backgroundColor: Object.keys(selectedChoice).length && selectedChoice[button.id] ? color.primary : color.line }}
                                     textStyle={BUTTON_TEXT}
                                     onPress={() => onPressButton(button.id)} />)
                             )}
@@ -141,7 +141,7 @@ export const FeedbackScreen = observer(function FeedbackScreen() {
                             <RatingStart
                                 size={38}
                                 colorActive={color.primary}
-                                colorInActive={color.disable}
+                                colorInActive={color.line}
                                 countIcon={5}
                                 isHorizontal={true}
                                 space={spacing[1]}

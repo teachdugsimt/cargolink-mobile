@@ -12,11 +12,6 @@ import RNPickerSelect from 'react-native-picker-select';
 import i18n from 'i18n-js'
 import { provinceListEn, provinceListTh } from '../../screens/home-screen/manage-vehicle/datasource'
 
-interface LocationProps {
-  label?: string
-  value?: string
-}
-
 interface Input {
   firstLocation: string
   secondLocation: string
@@ -52,7 +47,7 @@ const PIN_ICON: ImageStyle = {
 const ARROW_ICON: ImageStyle = {
   width: 26,
   height: 26,
-  backgroundColor: color.disable,
+  backgroundColor: color.line,
   resizeMode: 'cover',
   borderRadius: Math.round(Dimensions.get('window').width + Dimensions.get('window').height) / 2,
 }

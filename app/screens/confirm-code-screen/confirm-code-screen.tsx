@@ -46,7 +46,7 @@ const CELL_TEXT: TextStyle = {
   textAlign: 'center',
 }
 const FOCUS_CELL: TextStyle = {
-  borderBottomColor: color.disable,
+  borderBottomColor: color.line,
   borderBottomWidth: 2,
 }
 const CODE_INFORMATION: ViewStyle = {
@@ -59,7 +59,7 @@ const RESEND_CODE_ROOT: ViewStyle = {
   alignItems: "center",
 }
 const RESEND_CODE_TEXT: TextStyle = {
-  color: color.disable
+  color: color.line
 }
 const CONFIRM_CODE_ROOT: ViewStyle = {
   flexDirection: "column-reverse",
@@ -105,7 +105,7 @@ const MINUTE: number = 60;
 const initialState = {
   isExpired: false,
   disabled: true,
-  buttonColor: color.disable,
+  buttonColor: color.line,
   resendCode: true,
   autoFocus: true,
   isLoading: false,
@@ -135,14 +135,14 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
       setState(prevState => ({
         ...prevState,
         disabled: isExpired,
-        buttonColor: isExpired ? color.disable : color.primary,
+        buttonColor: isExpired ? color.line : color.primary,
         autoFocus: false
       }))
     } else {
       setState(prevState => ({
         ...prevState,
         disabled: true,
-        buttonColor: color.disable,
+        buttonColor: color.line,
       }))
     }
   }
@@ -165,7 +165,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
       resendCode: !prevState.resendCode,
       isExpired: !prevState.isExpired,
       disabled: true,
-      buttonColor: color.disable
+      buttonColor: color.line
     }))
   }
 

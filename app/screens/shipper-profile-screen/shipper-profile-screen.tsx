@@ -42,7 +42,7 @@ const TRUCK_IMAGE: ImageStyle = {
     width: 55,
     height: 55,
     borderRadius: Math.round(deviceWidht + deviceHeight) / 2,
-    backgroundColor: color.disable,
+    backgroundColor: color.line,
 }
 const OUTER_CIRCLE: ViewStyle = {
     borderRadius: Math.round(deviceWidht + deviceHeight) / 2,
@@ -63,7 +63,7 @@ const START_CONTAINER: ViewStyle = {
 }
 const RATING_BAR_CONTAINER: ViewStyle = {
     flex: 4,
-    backgroundColor: color.disable,
+    backgroundColor: color.line,
     height: 8,
     borderRadius: 3
 }
@@ -259,13 +259,13 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
     const Star = ({ show, count }) => (
         <View style={RATING_CONTAINER}>
             <View style={START_CONTAINER}>
-                {Array(5).fill(show).map((_, index) => <MaterialCommunityIcons key={index} name={'star'} size={16} color={index < show ? color.primary : color.disable} style={{ paddingHorizontal: 2 }} />)}
+                {Array(5).fill(show).map((_, index) => <MaterialCommunityIcons key={index} name={'star'} size={16} color={index < show ? color.primary : color.line} style={{ paddingHorizontal: 2 }} />)}
             </View>
             <View style={RATING_BAR_CONTAINER}>
                 <View style={{ flex: 1, width: '50%', backgroundColor: color.primary, borderRadius: 3 }} />
             </View>
             <View style={COUNT_CONTAINER}>
-                <Text text={`(${count})`} style={{ color: count ? color.textBlack : color.disable }} />
+                <Text text={`(${count})`} style={{ color: count ? color.textBlack : color.line }} />
             </View>
         </View>
     )

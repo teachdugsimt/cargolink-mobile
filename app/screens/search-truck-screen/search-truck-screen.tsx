@@ -1,31 +1,50 @@
 import React, { useState } from 'react'
 import { observer } from 'mobx-react-lite';
-import { FlatList, SafeAreaView, TextStyle, View, ViewStyle } from 'react-native';
-import { Header, SearchBar } from '../../components';
+import { Dimensions, FlatList, ImageStyle, TextStyle, View, ViewStyle } from 'react-native';
+import { AdvanceSearchTab, SearchBar } from '../../components';
 import { color, spacing } from '../../theme';
 import { SearchItem } from '../../components/search-item/search-item';
 import { useNavigation } from '@react-navigation/native';
+import { translate } from '../../i18n';
+import RNPickerSelect from 'react-native-picker-select';
+import i18n from 'i18n-js'
+import { provinceListEn, provinceListTh } from '../../screens/home-screen/manage-vehicle/datasource'
+import { Icon } from '../../components/icon/icon';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
-const TEXT: TextStyle = { color: color.textBlack, }
-const BOLD: TextStyle = { fontWeight: "bold" }
-const HEADER: TextStyle = { backgroundColor: color.primary }
-const HEADER_TITLE: TextStyle = {
-  ...TEXT,
-  ...BOLD,
-  fontSize: 12,
-  lineHeight: 15,
-  textAlign: "center",
-  letterSpacing: 1.5,
+interface SubButtonSearch {
+  id?: number
+  label?: string
+  isChecked?: boolean
 }
+
 const SEARCH_BAR: ViewStyle = {
-  paddingTop: spacing[4],
+  backgroundColor: color.backgroundWhite,
+  paddingHorizontal: spacing[4],
+  paddingTop: spacing[6],
   paddingBottom: spacing[4],
-  paddingLeft: 10 + spacing[2],
-  paddingRight: 10,
-  marginBottom: 10,
+  marginBottom: spacing[2],
+}
+const SEARCH_BAR_ROW: ViewStyle = {
+  flexDirection: 'row',
+  alignItems: 'center',
+  paddingBottom: spacing[2],
+  borderBottomWidth: 1,
+  borderBottomColor: color.line,
 }
 const RESULT_CONTAINER: ViewStyle = {
   flex: 1,
+}
+const BUTTON_CONTAINER: ViewStyle = {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginVertical: spacing[2],
+  justifyContent: 'center',
+}
+const PIN_ICON: ImageStyle = {
+  width: 25,
+  height: 25,
+  marginRight: spacing[5],
 }
 
 const DATA = [
@@ -155,11 +174,30 @@ const Item = (data) => {
   )
 }
 
-export const SearchCarScreen = observer(function SearchCarScreen() {
-  const navigation = useNavigation()
-  const goBack = () => navigation.goBack()
+const SUB_BUTTON: Array<SubButtonSearch> = [
+  {
+    id: 1,
+    label: 'สินค้าเกษตร',
+    isChecked: false,
+  },
+  {
+    id: 2,
+    label: 'อุสาหกรรม',
+    isChecked: false,
+  },
+]
 
-  const [data, setData] = useState(DATA)
+const initialState = {
+  subButtons: SUB_BUTTON,
+  data: DATA,
+  value: ''
+}
+
+
+export const SearchTruckScreen = observer(function SearchTruckScreen() {
+  const navigation = useNavigation()
+
+  const [{ subButtons, data, value }, setState] = useState(initialState)
 
   const renderItem = ({ item }) => (
     <Item {...item} />
@@ -169,29 +207,73 @@ export const SearchCarScreen = observer(function SearchCarScreen() {
     console.log('scroll down')
   }
 
+  const onPress = (id: number) => {
+    const newButtonSearch = subButtons.map(button => {
+      if (button.id !== id) return button
+      return { ...button, isChecked: !button.isChecked }
+    })
+
+    setState(prevState => ({
+      ...prevState,
+      subButtons: newButtonSearch,
+    }))
+  }
+
+  const onAdvanceSeach = () => {
+    // TruckTypeStore.getTruckTypeDropdown(i18n.locale)
+    navigation.navigate('advanceSearch')
+  }
+
+  const onChangeValue = (val) => {
+    console.log(val)
+  }
+
   return (
     <View style={{ flex: 1 }}>
-      <Header
-        headerTx="searchCarScreen.searchCar"
-        style={HEADER}
-        titleStyle={HEADER_TITLE}
-        headerText={"หารถ"}
-        leftIconReal={true}
-        leftIconName={"chevron-back"}
-        leftIconSize={24}
-        onLeftPress={goBack}
-      />
-      <View>
-        <SearchBar
-          {...{
-            fromText: 'ภาคกลาง',
-            toText: 'ภาคกลาง',
-            navigationTo: 'advanceSearch',
-            style: SEARCH_BAR
-          }}
+      <View style={SEARCH_BAR}>
+        <View style={SEARCH_BAR_ROW}>
+          <Icon icon="pinDropYellow" style={PIN_ICON} />
+          <RNPickerSelect
+            // testID={"picker_vehicle_type"}
+            value={value}
+            onValueChange={onChangeValue}
+            items={i18n.locale == "en" ? provinceListEn : provinceListTh}
+            placeholder={{
+              label: translate("searchTruckScreen.selectZoneWorking"),
+              color: color.black
+            }}
+            useNativeAndroidPickerStyle={false}
+            style={{
+              inputAndroidContainer: {
+                width: Dimensions.get('window').width
+              },
+              inputAndroid: {
+                color: color.textBlack,
+              },
+              inputIOSContainer: {
+                marginTop: 1,
+                paddingVertical: spacing[2],
+                width: Dimensions.get('window').width
+              },
+              inputIOS: {
+                color: color.textBlack,
+                marginLeft: spacing[1],
+              },
+            }}
+          />
+          <MaterialCommunityIcons name={'chevron-down'} size={30} color={color.line} style={{ marginLeft: 'auto' }} />
+        </View>
+      </View>
+      <View style={BUTTON_CONTAINER}>
+        <AdvanceSearchTab
+          mainText={translate('searchJobScreen.fullSearch')}
+          subButtons={subButtons?.length ? subButtons : []}
+          onPress={(id) => onPress(id)}
+          onAdvanceSeach={onAdvanceSeach}
+          count={2}
         />
       </View>
-      <SafeAreaView style={RESULT_CONTAINER}>
+      <View style={RESULT_CONTAINER}>
         <FlatList
           data={data}
           renderItem={renderItem}
@@ -199,7 +281,7 @@ export const SearchCarScreen = observer(function SearchCarScreen() {
           onEndReached={() => onScrollList()}
           onEndReachedThreshold={0.5}
         />
-      </SafeAreaView>
+      </View>
     </View>
   )
 });

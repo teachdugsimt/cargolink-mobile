@@ -27,7 +27,7 @@ const SCROLL_VIEW: ViewStyle = {
   // flex: 2,
   marginLeft: 10,
   marginRight: 10,
-  backgroundColor: color.disable,
+  backgroundColor: color.line,
   borderRadius: 6
 }
 const CONTENT: TextStyle = {
@@ -43,7 +43,7 @@ const BUTTON_ROOT: ViewStyle = {
   paddingTop: 20,
 }
 const CONTINUE_BUTTON: ViewStyle = {
-  backgroundColor: color.disable,
+  backgroundColor: color.line,
   width: '100%',
   borderRadius: 20,
   marginBottom: 15
@@ -67,7 +67,7 @@ const initialState = {
 
 export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
   const navigation = useNavigation()
-  // const [buttonColor, setButtonColor] = useState(color.disable)
+  // const [buttonColor, setButtonColor] = useState(color.line)
   // const [disabled, setDisabled] = useState(true)
   const [{ isLoading }, setState] = useState(initialState)
 

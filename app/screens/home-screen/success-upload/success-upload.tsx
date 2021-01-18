@@ -23,7 +23,7 @@ const VIEW_BUTTON: ViewStyle = {
     backgroundColor: color.textWhite,
     justifyContent: 'center',
     alignItems: 'center',
-    borderTopColor: color.disable,
+    borderTopColor: color.line,
     borderTopWidth: 1,
 }
 

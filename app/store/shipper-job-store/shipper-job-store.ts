@@ -1,8 +1,10 @@
 import { types, flow, cast } from "mobx-state-tree"
-import { ShipperJobAPI } from "../../services/api"
+import { ShipperJobAPI, GoogleMapAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
+import { decode } from "@mapbox/polyline";
 
 const apiShipperJob = new ShipperJobAPI()
+const apiGoogleMap = new GoogleMapAPI()
 
 const ShipperJob = types.model({
     id: types.maybeNull(types.string),
@@ -36,11 +38,26 @@ const ShipperJob = types.model({
     }))
 })
 
+const Directions = types.model({
+    latitude: types.number,
+    longitude: types.number,
+})
+
+// function* callApiMap(prev, curr) {
+//     const apiGoogleMap = new ShipperJobAPI()
+//     apiGoogleMap.config.url = 'https://maps.googleapis.com'
+//     yield apiGoogleMap.setup()
+
+//     const result = yield apiGoogleMap.getDirections(`${prev.lat},${prev.lng}`, `${curr.lat},${curr.lng}`)
+// }
+
 const ShipperJobStore = types
     .model({
         list: types.maybeNull(types.array(types.maybeNull(ShipperJob))),
         data: types.maybeNull(ShipperJob),
+        directions: types.optional(types.array(types.array(Directions)), []),
         loading: types.boolean,
+        mapLoading: types.boolean,
         error: types.maybeNull(types.string),
     })
     .actions((self) => ({
@@ -66,11 +83,11 @@ const ShipperJobStore = types
             self.loading = true
             try {
                 const response = yield apiShipperJob.findOne(id)
-                console.log("Response call api get shipper job : : ", response)
+                console.log("Response call api get shipper job : : ", JSON.stringify(response))
                 if (response.kind === 'ok') {
                     self.data = response.data || {}
                 } else {
-                    self.error = response.data.message
+                    self.error = response?.data?.message || response.kind
                 }
                 self.loading = false
             } catch (error) {
@@ -133,6 +150,43 @@ const ShipperJobStore = types
             }
         }),
 
+        getDirections: flow(function* getDirections(coordinates: Array<Types.MapDirectionsRequest>) {
+            yield apiGoogleMap.setup()
+            self.mapLoading = true
+            try {
+                let arrDirections = []
+                for (let index = 0; index < coordinates.length; index++) {
+                    if (index + 1 < coordinates.length) {
+                        const startLoc = `${coordinates[index].lat},${coordinates[index].lng}`
+                        const destinationLoc = `${coordinates[index + 1].lat},${coordinates[index + 1].lng}`
+                        const response = yield apiGoogleMap.getDirections(startLoc, destinationLoc)
+
+                        if (response.kind === 'ok') {
+                            const points = decode(response.data.routes[0].overview_polyline.points);
+                            const coords = points.map(point => {
+                                return {
+                                    latitude: point[0],
+                                    longitude: point[1]
+                                };
+                            });
+                            arrDirections[index] = coords
+                        } else {
+                            self.error = response.data.message
+                        }
+                    }
+                }
+                // console.log('arrDirections', JSON.stringify(arrDirections))
+                self.directions = cast(arrDirections)
+                // const result = coordinates.reduce((prev, curr) => yield callApiMap(prev, curr))
+                // const response = yield apiGoogleMap.getDirections(startLoc, destinationLoc)
+                self.mapLoading = false
+            } catch (error) {
+                console.error("Failed to fetch google map : ", error)
+                self.mapLoading = false
+                self.error = "error fetch api google map"
+            }
+        }),
+
         setDefaultOfData: function setDefaultOfData() {
             self.data = cast({
                 id: '',
@@ -186,7 +240,9 @@ const ShipperJobStore = types
         list: [],
         data: {},
         loading: false,
+        mapLoading: false,
         error: "",
+        directions: [],
     })
 
 export default ShipperJobStore

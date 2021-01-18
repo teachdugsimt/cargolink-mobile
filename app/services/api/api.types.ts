@@ -159,5 +159,14 @@ export interface AdvanceSearchMenu {
   }[]
 }
 
+export interface MapDirectionsRequest {
+  contactMobileNo?: string
+  contactName?: string
+  dateTime?: string
+  lat: string
+  lng: string
+  name?: string
+}
+
 export type GetUsersResult = { kind: "ok"; users: User[] } | GeneralApiProblem
 export type GetUserResult = { kind: "ok"; user: User } | GeneralApiProblem

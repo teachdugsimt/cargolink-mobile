@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ImageBackground, ImageStyle, TextStyle, View, ViewStyle } from 'react-native';
+import { ImageBackground, ImageStyle, TextStyle, View, ViewStyle, TouchableOpacity } from 'react-native';
 import { SearchItemProps } from './search-item.props';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { color, spacing } from '../../theme';
@@ -7,7 +7,7 @@ import { Icon } from '../icon/icon';
 import { PostingBy } from '../posting-by/posting-by';
 import { Text } from '../text/text';
 import { translate } from '../../i18n';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+// import { TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const truckBackImage = require("./truck-back.png")
@@ -24,7 +24,7 @@ const CONTAINER: ViewStyle = {
   position: "relative",
   backgroundColor: color.backgroundWhite,
   borderWidth: 1,
-  borderColor: color.disable,
+  borderColor: color.line,
   marginTop: spacing[1],
   marginBottom: spacing[1],
 }
@@ -40,7 +40,7 @@ const TOP_ROOT: ViewStyle = {
   flexDirection: "row",
   paddingBottom: spacing[2],
   borderBottomWidth: 1,
-  borderBottomColor: color.disable,
+  borderBottomColor: color.line,
   marginLeft: spacing[1],
   marginRight: spacing[1],
   ...PADDING_LEFT,
@@ -117,7 +117,7 @@ const ACCOUNT_ROOT: ViewStyle = {
   justifyContent: "flex-end"
 }
 const TEXT_VIEW: TextStyle = {
-  color: color.disable,
+  color: color.line,
   fontSize: 14,
   paddingHorizontal: 0,
   paddingVertical: 0
@@ -213,7 +213,7 @@ export function SearchItem(props: SearchItemProps) {
         </View>
         <View style={CONTENT_RIGHT}>
           <TouchableOpacity onPress={onSelectedHeart}>
-            <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} size={24} color={isLike ? color.red : color.disable} />
+            <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} size={24} color={isLike ? color.red : color.line} />
           </TouchableOpacity>
           {isRecommened &&
             <View style={RECOMMENED_ROOT}>
@@ -227,7 +227,7 @@ export function SearchItem(props: SearchItemProps) {
       <View style={BUTTOM_ROOT}>
         <View style={VIEW_DETAIL_ROOT}>
           <Text text={translate('jobDetailScreen.seeDetail')} style={TEXT_VIEW} />
-          <AntDesign name="right" size={spacing[5]} color={color.disable} />
+          <AntDesign name="right" size={spacing[5]} color={color.line} />
         </View>
         <View style={ACCOUNT_ROOT}>
           <PostingBy {

@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { observer } from 'mobx-react-lite'
-import { Dimensions, Image, ImageStyle, ScrollView, TextStyle, View, ViewStyle, TouchableOpacity } from 'react-native'
-import { Button, Icon, PostingBy, Text } from '../../components'
+import { Dimensions, ImageStyle, ScrollView, TextStyle, View, ViewStyle, TouchableOpacity } from 'react-native'
+import { Button, Icon, ModalLoading, PostingBy, Text } from '../../components'
 import { useNavigation } from '@react-navigation/native'
 import { color, spacing } from '../../theme'
 import { translate } from '../../i18n'
@@ -11,8 +11,12 @@ import ShipperJobStore from '../../store/shipper-job-store/shipper-job-store'
 import { GetTruckType } from '../../utils/get-truck-type'
 import i18n from 'i18n-js'
 import { Modalize } from 'react-native-modalize';
-
-const FONT_SIZE_SMALL = 15
+import MapView, {
+    Polyline,
+    Marker,
+    Callout,
+    PROVIDER_GOOGLE,
+} from 'react-native-maps';
 
 const PADDING_TOP = { paddingTop: spacing[1] }
 const PADDING_BOTTOM = { paddingBottom: spacing[1] }
@@ -185,9 +189,11 @@ const PickUpPoint = ({ to, from, containerStyle = {} }) => (
 )
 
 export const JobDetailScreen = observer(function JobDetailScreen() {
+
     const navigation = useNavigation()
 
     const modalizeRef = useRef<Modalize>(null);
+    const [coordinates, setCoordinates] = useState([])
 
     useEffect(() => {
         return () => {
@@ -196,8 +202,12 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     }, [])
 
     useEffect(() => {
-        if (ShipperJobStore.data && Object.keys(ShipperJobStore.data).length) {
+        if (ShipperJobStore.data && ShipperJobStore.data.id) {
             console.log('ShipperJobStore.data', JSON.parse(JSON.stringify(ShipperJobStore.data)))
+            console.log('ShipperJobStore.directions', JSON.parse(JSON.stringify(ShipperJobStore.directions)))
+            const coordinates = [ShipperJobStore.data.from, ...ShipperJobStore.data.to]
+            setCoordinates(coordinates)
+            ShipperJobStore.getDirections(coordinates)
         }
     }, [ShipperJobStore.loading, ShipperJobStore.data])
 
@@ -221,16 +231,43 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     } = JSON.parse(JSON.stringify(ShipperJobStore.data))
 
     const txtTruckType = GetTruckType(+truckType, i18n.locale)
+    console.log('coordinates.length', coordinates.length)
 
     return (
         <View style={CONTAINER}>
+            {ShipperJobStore.mapLoading && <ModalLoading size={'large'} color={color.primary} visible={ShipperJobStore.mapLoading} />}
             <View style={MAP_CONTAINER}>
-                <Image source={{ uri: 'https://f.ptcdn.info/799/063/000/pqyi1shocoZJuUFhvZ0-o.png' }} resizeMode={'cover'} style={MAP} />
+                {from && !!from.lat && !!from.lng && !!ShipperJobStore.directions.length &&
+                    <MapView
+                        style={{ height: Dimensions.get('window').height }}
+                        provider={PROVIDER_GOOGLE}
+                        initialRegion={{
+                            latitude: +from.lat - 0.03,
+                            longitude: +from.lng,
+                            latitudeDelta: 0.1,
+                            longitudeDelta: 0.1
+                        }}>
+                        {!!coordinates.length && coordinates.map((attr, index) => (
+                            <Marker
+                                key={index}
+                                coordinate={{ latitude: +attr.lat, longitude: +attr.lng }}
+                                pinColor="green"
+                            >
+                                <Callout>
+                                    <Text>{attr.contactName}</Text>
+                                </Callout>
+                            </Marker>
+                        ))}
+                        {JSON.parse(JSON.stringify(ShipperJobStore.directions)).map((attr, index) => {
+                            return (<Polyline key={index} coordinates={attr} strokeWidth={4} strokeColor={'red'} />)
+                        })}
+                    </MapView>
+                }
             </View>
 
             <TouchableOpacity activeOpacity={1} onPress={onOpen} style={{ ...TOP_ROOT, height: 105, }}>
                 <View>
-                    <Text text={translate('jobDetailScreen.pickUpPoint')} style={{ ...TEXT_SMALL, color: color.disable, }} />
+                    <Text text={translate('jobDetailScreen.pickUpPoint')} style={{ ...TEXT_SMALL, color: color.line, }} />
                 </View>
                 <PickUpPoint from={from} to={to} />
             </TouchableOpacity>
@@ -256,7 +293,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
                     <View style={TOP_ROOT}>
                         <View>
-                            <Text text={translate('jobDetailScreen.pickUpPoint')} style={{ ...TEXT_SMALL, color: color.disable, }} />
+                            <Text text={translate('jobDetailScreen.pickUpPoint')} style={{ ...TEXT_SMALL, color: color.line, }} />
                         </View>
                         <PickUpPoint from={from} to={to} containerStyle={{ paddingBottom: spacing[4], ...BOTTOM_LINE }} />
                     </View>
@@ -290,7 +327,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
                 <View style={ONWER_ROOT}>
                     <View style={ROW}>
-                        <Text style={{ color: color.disable }}>{translate('jobDetailScreen.postBy')}</Text>
+                        <Text style={{ color: color.line }}>{translate('jobDetailScreen.postBy')}</Text>
                         <PostingBy {...DATA} onToggle={() => onPress()} />
                     </View>
                 </View>

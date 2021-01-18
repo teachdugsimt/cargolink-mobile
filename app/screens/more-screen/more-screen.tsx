@@ -54,10 +54,10 @@ const MENU: ViewStyle = {
     paddingTop: spacing[2],
     paddingBottom: spacing[2],
     borderBottomWidth: 1,
-    borderColor: color.disable,
+    borderColor: color.line,
 }
 const BUTTON: ViewStyle = {
-    backgroundColor: color.disable,
+    backgroundColor: color.line,
     marginBottom: spacing[3]
 }
 const BUTTON_TEXT: TextStyle = {
@@ -130,10 +130,10 @@ export const MoreScreen = observer(function MoreScreen() {
 
     useEffect(() => {
         navigation.setOptions({
-            headerCenter : () => (
-             <HeaderCenter tx={"moreScreen.moreMenu"}/>
+            headerCenter: () => (
+                <HeaderCenter tx={"moreScreen.moreMenu"} />
             ),
-          });
+        });
     }, [renderNew])
 
     const _pressMenu = (item) => {
@@ -179,7 +179,7 @@ export const MoreScreen = observer(function MoreScreen() {
                                 return (
                                     <TouchableOpacity key={item.key} style={MENU} onPress={() => _pressMenu(item)}>
                                         <Text tx={item.label} />
-                                        <Icon name={item.icon} size={24} color={color.disable} />
+                                        <Icon name={item.icon} size={24} color={color.line} />
                                     </TouchableOpacity>
                                 )
                             })}

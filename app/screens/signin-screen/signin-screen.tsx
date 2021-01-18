@@ -61,7 +61,7 @@ const MOBILE_FORM: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
   borderWidth: 1,
-  borderColor: color.disable,
+  borderColor: color.line,
   borderRadius: 4,
   paddingHorizontal: spacing[3],
   paddingVertical: spacing[1],
@@ -85,7 +85,7 @@ const FIRST_MOBILE_NO: string = "0"
 
 const initialState = {
   disabled: true,
-  buttonColor: color.disable,
+  buttonColor: color.line,
   value: '',
   visibleModal: true,
 }
@@ -150,7 +150,7 @@ export const SigninScreen = observer(function SigninScreen() {
       setState(prevState => ({
         ...prevState,
         disabled: true,
-        buttonColor: color.disable,
+        buttonColor: color.line,
       }))
       if (value.slice(-3).match(' - ')) value = value.slice(0, -3)
       return value;
@@ -241,13 +241,13 @@ export const SigninScreen = observer(function SigninScreen() {
         containerStyle={{ paddingVertical: spacing[3] }}
         iconName={'bell-alert-outline'}
         iconStyle={{
-          color: color.disable,
+          color: color.line,
           size: 100
         }}
         header={'ไม่สามารถเข้าสู่ระบบได้'}
         headerStyle={{ paddingVertical: spacing[3], color: color.primary }}
         content={'เนื่องจากมีการปิดปรับปรุงระบบในช่วงเวลา 12.00 - 20.00 น. คุณสามารถเข้าสู่ระบบหลังช่วงเวลาดังกล่าว'}
-        contentStyle={{ paddingTop: spacing[3], paddingBottom: spacing[5], paddingHorizontal: spacing[7], color: color.disable }}
+        contentStyle={{ paddingTop: spacing[3], paddingBottom: spacing[5], paddingHorizontal: spacing[7], color: color.line }}
         buttonContainerStyle={{ width: '90%' }}
         buttonComponent={RenderButtonAlert}
         visible={visibleModal}

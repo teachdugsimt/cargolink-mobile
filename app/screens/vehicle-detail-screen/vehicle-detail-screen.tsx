@@ -56,7 +56,7 @@ const IMAGE: ImageStyle = {
   aspectRatio: 4 / 2,
   margin: spacing[1],
   borderRadius: 4,
-  backgroundColor: color.disable,
+  backgroundColor: color.line,
 }
 const BUTTON_EDIT: ViewStyle = {
   backgroundColor: color.primary,
@@ -96,7 +96,7 @@ const LOGO: ImageStyle = {
   width: 55,
   height: 55,
   borderRadius: Math.round(deviceWidht + deviceHeight) / 2,
-  backgroundColor: color.disable,
+  backgroundColor: color.line,
 }
 const TYPE_CAR_NAME: TextStyle = {
   paddingLeft: spacing[4],
