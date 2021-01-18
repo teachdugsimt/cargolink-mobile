@@ -20,6 +20,7 @@ export const color = {
    * by their under-powered GPUs.
    */
   transparent: "rgba(0, 0, 0, 0)",
+  transparent2: "transparent",
   /**
    * The screen background.
    */
@@ -39,7 +40,8 @@ export const color = {
   /**
    * A subtle color used for borders and lines.
    */
-  line: palette.lightGray,
+  // line: palette.lightGray,
+  line: palette.mainGrey,
   /**
    * Warning message and background color.
    */

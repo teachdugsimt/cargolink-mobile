@@ -212,6 +212,7 @@ dependencies {
     implementation project(':react-native-vector-icons')
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     implementation project(':react-native-reanimated')
+    // implementation project(':@react-native-community_datetimepicker')
 
     implementation project(':react-native-maps')
 

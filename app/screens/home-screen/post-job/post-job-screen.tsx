@@ -58,9 +58,17 @@ const WRAPPER_TOP: ViewStyle = {
     padding: 10
 }
 
-const WRAP_DROPDOWN: ViewStyle = {
-    flex: 1, borderColor: color.grey, borderWidth: 1, padding: Platform.OS == "ios" ? 7.5 : 0,
+const BORDER_GREY: ViewStyle = {
+    borderColor: color.grey, borderWidth: 1
+}
+
+const WRAP_DROPDOWN_VALUE: ViewStyle = {
+    flex: 1, padding: Platform.OS == "ios" ? 7.5 : 0,
     borderRadius: 2.5
+}
+const WRAP_DROPDOWN: ViewStyle = {
+    ...BORDER_GREY,
+    ...WRAP_DROPDOWN_VALUE
 }
 
 const CONTENT_TEXT: TextStyle = {
@@ -100,7 +108,7 @@ const PADDING_CHEVRON: ViewStyle = { paddingTop: 7.5, paddingRight: 5 }
 const PADDING_TOP: ViewStyle = { marginTop: 10 }
 
 const ROOT_FLAT_LIST: ViewStyle = {
-    width: '100%',
+    width: '98%',
     height: 100,
     flexDirection: 'row',
     alignItems: 'center',
@@ -118,6 +126,7 @@ const IMAGE_LIST: ImageStyle = {
     borderRadius: 30,
     borderColor: color.primary, borderWidth: 2,
 }
+let check_load_truck_type = 0
 
 export const PostJobScreen = observer(function PostJobScreen() {
     const navigation = useNavigation()
@@ -127,13 +136,18 @@ export const PostJobScreen = observer(function PostJobScreen() {
     });
 
     useEffect(() => {
-        TruckTypeStore.getTruckTypeDropdown(i18n.locale)
+        if (check_load_truck_type == 0) {
+            check_load_truck_type = 1
+            TruckTypeStore.getTruckTypeDropdown(i18n.locale)
+        }
+
     }, [])
 
     const onSubmit = (data) => {
         if (!data['item-type'] || !data['vehicle-type']) AlertForm('common.requireField')
         else {
             console.log("Data Form Post job : ", data)
+            PostJobStore.setPostJob(1, data)
             navigation.navigate("receivePoint")
         }
     }
@@ -164,7 +178,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
             if (section == 1) setvisible0(true)
             else if (section == 2) setvisible(true)
         }}>
-            <View style={BORDER_BOTTOM}>
+            <View style={{ ...BORDER_BOTTOM }}>
                 <View style={VIEW_LIST_IMAGE}>
                     {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
                         <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} />}
@@ -174,7 +188,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                         <Text style={{ marginLeft: 20 }}>{item.name}</Text>
                     </View>
 
-                    <Ionicons name="chevron-forward" size={24} style={{ marginRight: Platform.OS == "ios" ? 25 : 40 }} />
+                    <Ionicons name="chevron-forward" size={24} style={{  }} />
                 </View>
             </View>
         </TouchableOpacity>
@@ -214,13 +228,15 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
     let multi_select: object, multi_select2: object
     console.log("Multi select Item :: ", multi_select, multi_select2)
+    let formControllerValue = control.getValues()
+
     let dropdown_item_type
     let dropdown_vehicle_type
-    if (control.fieldsRef.current['item-type'] && control.fieldsRef.current['item-type'].ref.value) {
-        dropdown_item_type = control.fieldsRef.current['item-type'].ref.value
+    if (formControllerValue['item-type']) {
+        dropdown_item_type = formControllerValue['item-type']
     }
-    if (control.fieldsRef.current['vehicle-type'] && control.fieldsRef.current['vehicle-type'].ref.value) {
-        dropdown_vehicle_type = control.fieldsRef.current['vehicle-type'].ref.value
+    if (formControllerValue['vehicle-type']) {
+        dropdown_vehicle_type = formControllerValue['vehicle-type']
     }
     let list_vehicle = JSON.parse(JSON.stringify(TruckTypeStore.data))
 
@@ -233,7 +249,6 @@ export const PostJobScreen = observer(function PostJobScreen() {
             <View style={BOTTOM_VIEW}>
                 <ScrollView style={FULL}>
 
-
                     <View style={TOP_VIEW_2}>
                         <View style={WRAPPER_TOP}>
                             <View style={ROW_TEXT}>
@@ -241,8 +256,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                 <Text preset={'topic'} style={RED_DOT} >*</Text>
                             </View>
 
-
-                            <View style={[WRAP_DROPDOWN, PADDING_TOP]}>
+                            <View style={[PADDING_TOP, !dropdown_vehicle_type ? { ...WRAP_DROPDOWN } : { ...WRAP_DROPDOWN_VALUE }]}>
 
 
 
@@ -251,9 +265,10 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
 
                                 <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible0(true)}>
-                                    {!dropdown_vehicle_type && <Text style={{ padding: 10 }} tx={"postJobScreen.pleaseSelectVehicleType"} />}
-                                    {dropdown_vehicle_type && _renderSelectedList(JSON.parse(JSON.stringify(TruckTypeStore.data)).find(e => e.id == dropdown_vehicle_type), 1)}
-                                    <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} />
+                                    {!dropdown_vehicle_type && <><Text style={{ padding: 10 }} tx={"postJobScreen.pleaseSelectVehicleType"} />
+                                        <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} /></>}
+                                    {dropdown_vehicle_type && TruckTypeStore.data && TruckTypeStore.data.length && _renderSelectedList(JSON.parse(JSON.stringify(TruckTypeStore.data)).find(e => e.id == dropdown_vehicle_type), 1)}
+
                                 </TouchableOpacity>
 
                                 <Controller
@@ -353,13 +368,15 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
 
 
-                            <View style={[WRAP_DROPDOWN, PADDING_TOP]}>
+                            <View style={[PADDING_TOP, !dropdown_vehicle_type ? { ...WRAP_DROPDOWN } : { ...WRAP_DROPDOWN_VALUE }]}>
 
                                 <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible(true)}>
-                                    {!dropdown_item_type && <Text style={{ padding: 10 }} tx={"postJobScreen.selectItemType"} />}
+                                    {!dropdown_item_type && <><Text style={{ padding: 10 }} tx={"postJobScreen.selectItemType"} />
+                                        <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} />
+                                    </>}
                                     {/* {dropdown_item_type && <Text style={{ padding: 10 }}>{list_product_type[0].data.find(e => e.id == dropdown_item_type).name}</Text>} */}
                                     {dropdown_item_type && _renderSelectedList(list_product_type[0].data.find(e => e.id == dropdown_item_type), 2)}
-                                    <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} />
+
                                 </TouchableOpacity>
 
                                 <Controller
@@ -459,10 +476,9 @@ export const PostJobScreen = observer(function PostJobScreen() {
                         </View>
                     </View>
 
-
                 </ScrollView>
             </View>
-        </View>
+        </View >
     )
 })
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import {
   View, ViewStyle, TextStyle,
   ScrollView, Switch, Dimensions, Platform, Alert, ImageStyle, PermissionsAndroid,
-  SafeAreaView, SectionList, Image, ActivityIndicator
+  SafeAreaView, SectionList, Image, TouchableOpacity
 } from "react-native"
 import { useForm, Controller } from "react-hook-form";
 import { observer } from "mobx-react-lite"
@@ -18,19 +18,50 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
 import { vehicleEn, vehicleTh, regionListEn, regionListTh, provinceListEn, provinceListTh } from './datasource'
 import i18n from 'i18n-js'
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native"
 import MyVehicleStore from '../../../store/my-vehicle-store/my-vehicle-store'
 import StatusStore from '../../../store/my-vehicle-store/status-vehicle-store'
 import UploadFileStore from '../../../store/my-vehicle-store/upload-file-store'
 import TruckTypeStore from '../../../store/my-vehicle-store/truck-type-store'
 import AddressStore from '../../../store/my-vehicle-store/address-store'
-import { Modal, ModalContent } from 'react-native-modals';
+import { Modal, ModalContent, ModalFooter, ModalButton } from 'react-native-modals';
 import { useStores } from "../../../models/root-store/root-store-context";
 
 const { width, height } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
 const GREY_TEXT: TextStyle = { color: color.grey }
+
+const WIDTH_WITH_MARGIN: ViewStyle = {
+  width: width / 1.1
+}
+const SAFE_AREA_MODAL: ViewStyle = {
+  ...WIDTH_WITH_MARGIN,
+  height: 100
+}
+const CONTAINER_MODAL: ViewStyle = {
+  ...FULL,
+  ...WIDTH_WITH_MARGIN
+}
+const BORDER_MODAL_BUTTON: ViewStyle = {
+  borderBottomWidth: 1,
+  borderBottomColor: color.line
+}
+const BUTTON_MODAL1: ViewStyle = {
+  ...WIDTH_WITH_MARGIN,
+  ...BORDER_MODAL_BUTTON,
+  height: 50,
+  justifyContent: 'center',
+  alignItems: 'center',
+}
+const BUTTON_MODAL2: ViewStyle = {
+  ...WIDTH_WITH_MARGIN,
+  height: 50,
+  justifyContent: 'center',
+  alignItems: 'center',
+}
+const TEXT_MODAL_BUTTON: TextStyle = {
+  color: color.black, paddingLeft: 20
+}
 
 const PADDING_LEFT5: TextStyle = {
   paddingLeft: 5
@@ -237,10 +268,11 @@ export const UploadVehicleScreen = observer((props) => {
   };
 
   const captureImage = async (type, status: string) => {
+    setSelectCapture(false)
     let options = {
       mediaType: type,
-      maxWidth: 300,
-      maxHeight: 550,
+      maxWidth: 1024,
+      maxHeight: 1024,
       quality: 1,
       videoQuality: 'low',
       durationLimit: 30, //Video max duration in seconds
@@ -273,25 +305,27 @@ export const UploadVehicleScreen = observer((props) => {
         console.log('type -> ', response.type);
         console.log('fileName -> ', response.fileName);
 
-        ImageResizer.createResizedImage(response.uri, 1024, 1024, 'JPEG', 100, 0, null)
-          .then((response) => {
-            // ****** Send this to API ******
-            const newImageResize = {
-              uri: response.uri,
-              type: 'image/jpeg',
-              name: response.name,
-              size: response.size,
-              tmp_name: response.path
-            }
-            if (status == "front") setfileFront(newImageResize);
-            else if (status == "back") setfileBack(newImageResize);
-            else if (status == "left") setfileLeft(newImageResize);
-            else if (status == "right") setfileRight(newImageResize);
-            // ****** Send this to API ******
-
-          }).catch((err) => {
-            console.log("Image Resize Error :: => ", err)
-          });
+        let newImageResize = response
+        if (status == "front") {
+          newImageResize.id = 0
+          _uploadFile(response, 'front')
+          setfileFront(newImageResize);
+        }
+        else if (status == "back") {
+          newImageResize.id = 1
+          _uploadFile(response, 'back')
+          setfileBack(newImageResize);
+        }
+        else if (status == "left") {
+          newImageResize.id = 2
+          _uploadFile(response, 'left')
+          setfileLeft(newImageResize);
+        }
+        else if (status == "right") {
+          newImageResize.id = 3
+          _uploadFile(response, 'right')
+          setfileRight(newImageResize);
+        }
 
         // setFilePath(response);
       });
@@ -303,6 +337,7 @@ export const UploadVehicleScreen = observer((props) => {
     UploadFileStore.uploadImage(file, position)
   }
   const chooseFile = (type, status: string) => {
+    setSelectCapture(false)
     let options = {
       mediaType: type,
       maxWidth: 1024,
@@ -375,10 +410,14 @@ export const UploadVehicleScreen = observer((props) => {
   const [fileLeft, setfileLeft] = useState({});
   const [fileRight, setfileRight] = useState({});
 
+  const [positionFile, setpositionFile] = useState(null)
+
   const _chooseFile = (status) => {
     console.log("Status Image :: ", status)
-    chooseFile('photo', status)
+    // chooseFile('photo', status)
     // captureImage('photo', status)
+    setpositionFile(status)
+    setSelectCapture(true)
   };
 
 
@@ -472,25 +511,25 @@ export const UploadVehicleScreen = observer((props) => {
       if (initData.truckPhotos.front && !objectTmpImage.front) {
         data_mock_call.truckPhotos.front = { url: null, action: 'DELETE' }
       } else if (initData.truckPhotos.front && objectTmpImage.front && initData.truckPhotos.front == objectTmpImage.front) {
-        data_mock_call.truckPhotos.front = { url: objectTmpImage.front, action: null }
+        data_mock_call.truckPhotos.front = { url: objectTmpImage.front, action: "NOCHANGE" }
       }
 
       if (initData.truckPhotos.back && !objectTmpImage.back) {
         data_mock_call.truckPhotos.back = { url: null, action: 'DELETE' }
       } else if (initData.truckPhotos.back && objectTmpImage.back && initData.truckPhotos.back == objectTmpImage.back) {
-        data_mock_call.truckPhotos.back = { url: objectTmpImage.back, action: null }
+        data_mock_call.truckPhotos.back = { url: objectTmpImage.back, action: "NOCHANGE" }
       }
 
       if (initData.truckPhotos.left && !objectTmpImage.left) {
         data_mock_call.truckPhotos.left = { url: null, action: 'DELETE' }
       } else if (initData.truckPhotos.left && objectTmpImage.left && initData.truckPhotos.left == objectTmpImage.left) {
-        data_mock_call.truckPhotos.left = { url: objectTmpImage.left, action: null }
+        data_mock_call.truckPhotos.left = { url: objectTmpImage.left, action: "NOCHANGE" }
       }
 
       if (initData.truckPhotos.right && !objectTmpImage.right) {
         data_mock_call.truckPhotos.right = { url: null, action: 'DELETE' }
       } else if (initData.truckPhotos.right && objectTmpImage.right && initData.truckPhotos.right == objectTmpImage.right) {
-        data_mock_call.truckPhotos.right = { url: objectTmpImage.right, action: null }
+        data_mock_call.truckPhotos.right = { url: objectTmpImage.right, action: "NOCHANGE" }
       }
 
       // REPLACE ZONE - NEW ZONE
@@ -573,10 +612,17 @@ export const UploadVehicleScreen = observer((props) => {
 
 
     tmp_region.map((reg, ir) => {
-      data_mock_call['workingZones'].push({
-        region: reg || "",
-        province: tmp_province[ir] || ""
-      })
+      if (reg == 7) {
+        data_mock_call['workingZones'].push({
+          region: reg,
+        })
+      } else {
+        data_mock_call['workingZones'].push({
+          region: reg || "",
+          province: tmp_province[ir] || ""
+        })
+      }
+
     })
     // data_mock_call['workingZones'] = [{ region: 1, province: 2 }]
     // console.log("Finish FINAL submit data :: ", data_mock_call)
@@ -650,10 +696,34 @@ export const UploadVehicleScreen = observer((props) => {
     if (editStatus && editStatus == "edit") {
       settoggleDump(initData.tipper)
       if (initData.truckPhotos) {
-        if (initData.truckPhotos.front) setfileFront({ uri: initData.truckPhotos.front })
-        if (initData.truckPhotos.back) setfileBack({ uri: initData.truckPhotos.back })
-        if (initData.truckPhotos.left) setfileLeft({ uri: initData.truckPhotos.left })
-        if (initData.truckPhotos.right) setfileRight({ uri: initData.truckPhotos.right })
+        if (initData.truckPhotos.front) setfileFront({
+          uri: initData.truckPhotos.front,
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${tokenStore.token.accessToken}`
+          },
+        })
+        if (initData.truckPhotos.back) setfileBack({
+          uri: initData.truckPhotos.back,
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${tokenStore.token.accessToken}`
+          },
+        })
+        if (initData.truckPhotos.left) setfileLeft({
+          uri: initData.truckPhotos.left,
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${tokenStore.token.accessToken}`
+          },
+        })
+        if (initData.truckPhotos.right) setfileRight({
+          uri: initData.truckPhotos.right,
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${tokenStore.token.accessToken}`
+          },
+        })
       }
 
       if (initData.workingZones && initData.workingZones.length) {
@@ -769,20 +839,7 @@ export const UploadVehicleScreen = observer((props) => {
     setvisibleModal(tmp)
   }
 
-  // useEffect(() => {
-  //   __DEV__ && console.tron.log("Visible Modal in useEffect :: ", visibleModal)
-  //   __DEV__ && console.tron.log("Visible Modal in useEffect :: ", visibleModal)
-  //   if (visibleModal) {
-  //     __DEV__ && console.tron.log("Visible Modal in useEffect :: ", visibleModal)
-  //   }
-  // }, [JSON.parse(JSON.stringify(visibleModal))])
-
-
-  // console.log("Dropdown region :: => ", dropdownRegion)
-  // console.log("Dropdown Province DD  :: ", ddProvince)
-  // console.log("Dropdown Regions VALUE :: ", valRegion)
-  console.log("List Truc type :: ", JSON.parse(JSON.stringify(TruckTypeStore.data)))
-
+  const [selectCapture, setSelectCapture] = useState(false)
 
   const list_province_popular = [
     {
@@ -830,6 +887,36 @@ export const UploadVehicleScreen = observer((props) => {
 
         {/* {JSON.parse(JSON.stringify(TruckTypeStore.loading)) || JSON.parse(JSON.stringify(AddressStore.loading)) && <ModalLoading size={'large'} color={color.primary} visible={JSON.parse(JSON.stringify(TruckTypeStore.loading)) || JSON.parse(JSON.stringify(AddressStore.loading))} />} */}
 
+
+
+
+        <Modal
+          visible={selectCapture}
+          onTouchOutside={() => setSelectCapture(false)}
+          onSwipeOut={() => setSelectCapture(false)}
+          onDismiss={() => setSelectCapture(false)}
+          swipeDirection={['up', 'down']} // can be string or an array
+          swipeThreshold={100} // default 100
+        >
+          <SafeAreaView style={SAFE_AREA_MODAL}>
+            <View style={CONTAINER_MODAL}>
+              <TouchableOpacity style={BUTTON_MODAL1} onPress={() => captureImage("photo", positionFile)}>
+                <View style={ROW_TEXT}>
+                  <Ionicons name="camera" size={20} color={color.primary} />
+                  <Text style={TEXT_MODAL_BUTTON} tx={"uploadVehicleScreen.captureNew"} /></View>
+              </TouchableOpacity>
+              <TouchableOpacity style={BUTTON_MODAL2} onPress={() => chooseFile("photo", positionFile)}>
+                <View style={ROW_TEXT}>
+                  <Ionicons name="library" size={20} color={color.primary} />
+                  <Text style={TEXT_MODAL_BUTTON} tx={"uploadVehicleScreen.selectFromLibrary"} /></View>
+              </TouchableOpacity>
+            </View>
+          </SafeAreaView>
+        </Modal>
+
+
+
+
         <View style={TOP_VIEW}>
 
           <View style={WRAPPER_TOP}>
@@ -841,7 +928,7 @@ export const UploadVehicleScreen = observer((props) => {
 
               <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible0(true)}>
                 {!dropdown_vehicle_type && <Text style={{ padding: 10 }} tx={"postJobScreen.pleaseSelectVehicleType"} />}
-                {dropdown_vehicle_type && <Text style={{ padding: 10 }}>{JSON.parse(JSON.stringify(TruckTypeStore.data)).find(e => e.id == dropdown_vehicle_type).name}</Text>}
+                {dropdown_vehicle_type && TruckTypeStore.data && TruckTypeStore.data.length && <Text style={{ padding: 10 }}>{JSON.parse(JSON.stringify(TruckTypeStore.data)).find(e => e.id == dropdown_vehicle_type).name}</Text>}
                 <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} />
               </TouchableOpacity>
 
@@ -1014,7 +1101,7 @@ export const UploadVehicleScreen = observer((props) => {
             </View>
           </View>
         </View>
-        { }
+
 
 
         <View style={{ ...TOP_VIEW, ...MARGIN_TOP }}>
