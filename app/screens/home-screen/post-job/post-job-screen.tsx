@@ -140,6 +140,9 @@ export const PostJobScreen = observer(function PostJobScreen() {
             check_load_truck_type = 1
             TruckTypeStore.getTruckTypeDropdown(i18n.locale)
         }
+        return () => {
+            check_load_truck_type = 0
+        }
 
     }, [])
 

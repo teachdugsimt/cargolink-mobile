@@ -45,7 +45,7 @@ export class TruckTypeApi {
 
         // construct the apisauce instance
         // console.log("Setup token header truck-type-api :: ", token)
-        this.apisauce = await create({
+        this.apisauce = create({
             baseURL: this.config.url,
             timeout: this.config.timeout,
             headers: {

@@ -23,7 +23,7 @@ const FULL: ViewStyle = { flex: 1 }
 
 const BOLD: TextStyle = { fontWeight: "bold" }
 const SPACE_BETWEEN: ViewStyle = { justifyContent: 'space-between' }
-const GREY_TEXT: ViewStyle = { backgroundColor: color.grey }
+const GREY_TEXT: ViewStyle = { backgroundColor: color.line }
 const BORDER_RADIUS_20: ViewStyle = {
     borderRadius: 20,
 }
@@ -31,7 +31,7 @@ const DATE_BUTTON: ViewStyle = {
     borderRadius: spacing[1],
     height: 40,
     borderWidth: 1,
-    borderColor: color.grey,
+    borderColor: color.line,
     paddingLeft: 10
 }
 const ADD_NEW_POINT: ViewStyle = {
@@ -61,7 +61,7 @@ const WRAPPER_TOP: ViewStyle = {
 }
 
 const WRAP_DROPDOWN: ViewStyle = {
-    flex: 1, borderColor: color.grey, borderWidth: 1, padding: Platform.OS == "ios" ? 7.5 : 0,
+    flex: 1, borderColor: color.line, borderWidth: 1, padding: Platform.OS == "ios" ? 7.5 : 0,
     borderRadius: 2.5
 }
 
@@ -164,20 +164,23 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                 "shipping-address": pure_object[`shipping-address-${i + 1}`],
                 "shipping-date": pure_object[`shipping-date-${i + 1}`],
                 "shipping-time": pure_object[`shipping-time-${i + 1}`],
-                "shipper-name": pure_object[`shipping-name-${i + 1}`],
-                "shipper-tel-no": pure_object[`shipping-tel-no-${i + 1}`],
+                "shipping-name": pure_object[`shipping-name-${i + 1}`],
+                "shipping-tel-no": pure_object[`shipping-tel-no-${i + 1}`],
             })
         })
         final['shipping-information'] = shippingInformation
-        // PostJobStore.setPostJob(2, newObj)
+        Object.keys(final).forEach((key) => {
+            if (key.includes("shipping-address-") || key.includes("shipping-date-") ||
+                key.includes("shipping-time-") || key.includes("shipping-name-") ||
+                key.includes("shipping-tel-no-")) {
+                delete final[key]
+            }
+        })
+
+        PostJobStore.setPostJob(2, final)
+
         __DEV__ && console.tron.log("Final object postjob screen 2 :: => ", final)
-
-
-
-
-
-
-
+        navigation.navigate("checkInformation")
     }
 
     const _addFieldInputShipping = () => {
@@ -206,7 +209,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
     ]
     let formControllerValue = control.getValues()
 
-    // __DEV__ && console.tron.log("show date format : ", formControllerValue)
+    __DEV__ && console.tron.log("show date format : ", formControllerValue)
     return (
         <View testID="ReceivePointScreen" style={FULL}>
             <View style={TOP_VIEW}>
@@ -442,7 +445,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
 
                             </View>
                         </View>
-                    })}
+                    }) }
 
 
 
