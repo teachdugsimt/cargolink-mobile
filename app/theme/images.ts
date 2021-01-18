@@ -1,6 +1,7 @@
 // leave off @2x/@3x
 export const images = {
   logo: require("../images/logo_cargolink.png"),
+  logoNew: require("../images/CargolinkLogo.png"),
   truck1: require("../images/iconcarma.png"),
   pinbox: require("../images/iconfindwork.png"),
   sheet1: require("../images/iconpostwork.png"),
@@ -47,6 +48,7 @@ export const images = {
   addTruck2B: require("../images/add-truck-icon/FTruck.png"),
   defaultImage: require("../images/default_image.png"),
   bell: require("../images/bell.png"),
+  postJobSuccess: require("../images/post-job-success.png"),
   // clearLogo: require('../Images/top_logo.png'),
 }
 

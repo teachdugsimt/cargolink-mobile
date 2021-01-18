@@ -11,6 +11,7 @@ import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import i18n from 'i18n-js'
 import TruckTypeStore from '../../../store/my-vehicle-store/truck-type-store'
 import PostJobStore from '../../../store/post-job-store/post-job-store'
+import AdvanceSearchStore from '../../../store/shipper-job-store/advance-search-store'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { spacing, color, typography, images } from "../../../theme"
 import { Modal, ModalContent } from 'react-native-modals';
@@ -131,6 +132,7 @@ let check_load_truck_type = 0
 export const PostJobScreen = observer(function PostJobScreen() {
     const navigation = useNavigation()
 
+    const [listProductState, setlistProductState] = useState(null)
     const { control, handleSubmit, errors } = useForm({
         // defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : MyVehicleStore.MappingData
     });
@@ -139,9 +141,25 @@ export const PostJobScreen = observer(function PostJobScreen() {
         if (check_load_truck_type == 0) {
             check_load_truck_type = 1
             TruckTypeStore.getTruckTypeDropdown(i18n.locale)
+            AdvanceSearchStore.getProductTypes(i18n.locale)
+        }
+        return () => {
+            check_load_truck_type = 0
         }
 
     }, [])
+
+    useEffect(() => {
+        let tmp_list_product = JSON.parse(JSON.stringify(AdvanceSearchStore.productTypes))
+        if (tmp_list_product && tmp_list_product.length) {
+            tmp_list_product.map((e, i) => {
+                e.image = "bell"
+                return e
+            })
+            setlistProductState(tmp_list_product)
+            __DEV__ && console.tron.log("Tmp list Product :: ", tmp_list_product)
+        }
+    }, [AdvanceSearchStore.productTypes])
 
     const onSubmit = (data) => {
         if (!data['item-type'] || !data['vehicle-type']) AlertForm('common.requireField')
@@ -188,7 +206,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                         <Text style={{ marginLeft: 20 }}>{item.name}</Text>
                     </View>
 
-                    <Ionicons name="chevron-forward" size={24} style={{  }} />
+                    <Ionicons name="chevron-forward" size={24} style={{}} />
                 </View>
             </View>
         </TouchableOpacity>
@@ -217,12 +235,16 @@ export const PostJobScreen = observer(function PostJobScreen() {
             ]
         }
     ]
+    // const data_product_type = JSON.parse(JSON.stringify(AdvanceSearchStore.productTypes))
+    // data_product_type.map((e) => e.image = "bell")
+    __DEV__ && console.tron.log("Data product type :: ", listProductState)
+
     const list_product_type = [
         {
             title: 'postJobScreen.popular',
-            data: [{ id: 13, name: 'สินค้าการเกษตร', image: 'bell' },
-            { id: 17, name: 'สินค้าการประมง', image: 'bell' },
-            { id: 21, name: 'เครื่องดื่ม', image: 'bell' }]
+            data: [{ id: 1, name: 'วัสดุก่อสร้าง', image: 'bell' },
+            { id: 2, name: 'สินค้าเกษตร', image: 'bell' },
+            { id: 3, name: 'อาหาร และสินค้าบริโภค', image: 'bell' }]
         }
     ]
 
@@ -374,8 +396,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                     {!dropdown_item_type && <><Text style={{ padding: 10 }} tx={"postJobScreen.selectItemType"} />
                                         <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} />
                                     </>}
-                                    {/* {dropdown_item_type && <Text style={{ padding: 10 }}>{list_product_type[0].data.find(e => e.id == dropdown_item_type).name}</Text>} */}
-                                    {dropdown_item_type && _renderSelectedList(list_product_type[0].data.find(e => e.id == dropdown_item_type), 2)}
+                                    {dropdown_item_type && !!listProductState && _renderSelectedList(listProductState.find(e => e.id == dropdown_item_type), 2)}
 
                                 </TouchableOpacity>
 
@@ -399,7 +420,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                                         <View style={[PADDING_TOP]}>
 
                                                             <MultiSelector
-                                                                items={list_product_type[0].data}
+                                                                items={listProductState}
                                                                 keyer={"list-item-type-01"}
                                                                 selectedItems={[value]}
                                                                 selectText={translate("postJobScreen.pleaseSelectVehicleType")}

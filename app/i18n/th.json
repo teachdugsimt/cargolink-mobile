@@ -33,7 +33,8 @@
     "notFound": "ไม่พบรายการ",
     "have": "มี",
     "notHave": "ไม่มี",
-    "M": "เมตร"
+    "M": "เมตร",
+    "id": "รหัส"
   },
   "bottomTab": {
     "home": "หน้าแรก",
@@ -103,7 +104,8 @@
     "shipperName": "ชื่อผู้ส่งสินค้า",
     "shipperTel": "เบอร์ติดต่อ",
 
-    "addShippingPoint": "เพิ่มจุดส่งสินค้า"
+    "addShippingPoint": "เพิ่มจุดส่งสินค้า",
+    "postJobSuccess": "ยินดีด้วยคุณเพิ่มงานสำเร็จแล้ว"
   },
   "uploadVehicleScreen": {
     "addVehicle": "เพิ่มรถ",

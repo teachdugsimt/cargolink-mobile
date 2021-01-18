@@ -41,7 +41,7 @@ const { width, height } = Dimensions.get('window')
 const FULL: ViewStyle = { flex: 1 }
 
 const TOP_VIEW: ViewStyle = {
-    ...FULL,
+    flex: Platform.OS == "ios" ? 1 : 1.5,
     backgroundColor: color.mainTheme,
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
@@ -51,6 +51,7 @@ const BOTTOM_VIEW: ViewStyle = {
 }
 
 const IMAGE_LOGO: ImageStyle = {
+    // backgroundColor: 'red',
     width: '100%',
 }
 const IMG_VIEW: ViewStyle = {
@@ -137,11 +138,11 @@ export const HomeScreen = observer((props) => {
             <View testID="HomeScreen" style={ROOT_HOME}>
                 <View style={TOP_VIEW}>
                     <View style={IMG_VIEW}>
-                        {Platform.OS == "ios" ? <Image style={IMAGE_LOGO} height={(height / 12)}
+                        {Platform.OS == "ios" ? <Image style={IMAGE_LOGO} height={(height / 6)}
                             resizeMode='stretch'
-                            source={images.logo} /> : <Image style={IMAGE_LOGO} height={(height / 10)}
+                            source={images.logoNew} /> : <Image style={IMAGE_LOGO} height={(height / 5)}
                                 resizeMode='stretch'
-                                source={images.logo} />}
+                                source={images.logoNew} />}
                     </View>
                 </View>
                 <View style={BOTTOM_VIEW}>
