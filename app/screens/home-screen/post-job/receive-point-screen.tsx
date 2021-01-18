@@ -1,38 +1,30 @@
 import React, { useEffect, useState } from "react"
-import { View, ViewStyle, TextStyle, FlatList, Platform, ImageStyle } from "react-native"
+import { View, ViewStyle, TextStyle, Platform, ImageStyle, SafeAreaView, Dimensions } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { useForm, Controller } from "react-hook-form";
-import RNPickerSelect from 'react-native-picker-select';
 import { observer } from "mobx-react-lite"
 import { Text } from "../../../components"
-import { translate } from "../../../i18n"
 import { AddJobElement, TextInputTheme, RoundedButton, Icon, DatePickerRemake, TimePickerRemake } from '../../../components'
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
-import i18n from 'i18n-js'
-import TruckTypeStore from '../../../store/my-vehicle-store/truck-type-store'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import { spacing, color, typography, images } from "../../../theme"
-import DateTimePicker from '@react-native-community/datetimepicker';
-import date from 'date-and-time';
+import { color, typography } from "../../../theme"
 import PostJobStore from "../../../store/post-job-store/post-job-store";
 import _ from 'lodash'
-import mapValues from 'lodash/mapValues';
-// const bowserLogo = require("./bowser.png")
+import { Modal, ModalContent } from 'react-native-modals';
+import Geolocation from '@react-native-community/geolocation';
+import MapView, {
+    Polyline,
+    Marker,
+    Callout,
+    PROVIDER_GOOGLE,
+} from 'react-native-maps';
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
+const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
 
-const BOLD: TextStyle = { fontWeight: "bold" }
-const SPACE_BETWEEN: ViewStyle = { justifyContent: 'space-between' }
 const GREY_TEXT: ViewStyle = { backgroundColor: color.line }
 const BORDER_RADIUS_20: ViewStyle = {
     borderRadius: 20,
-}
-const DATE_BUTTON: ViewStyle = {
-    borderRadius: spacing[1],
-    height: 40,
-    borderWidth: 1,
-    borderColor: color.line,
-    paddingLeft: 10
 }
 const ADD_NEW_POINT: ViewStyle = {
     backgroundColor: color.transparent2,
@@ -40,7 +32,6 @@ const ADD_NEW_POINT: ViewStyle = {
     borderColor: color.primary,
     ...BORDER_RADIUS_20
 }
-const PADDING_PURE: ViewStyle = { padding: 5 }
 
 const TOP_VIEW: ViewStyle = {
     flex: Platform.OS == "ios" ? 1.25 : 1.25,
@@ -59,12 +50,6 @@ const WRAPPER_TOP: ViewStyle = {
     flex: 1,
     padding: 10
 }
-
-const WRAP_DROPDOWN: ViewStyle = {
-    flex: 1, borderColor: color.line, borderWidth: 1, padding: Platform.OS == "ios" ? 7.5 : 0,
-    borderRadius: 2.5
-}
-
 const CONTENT_TEXT: TextStyle = {
     fontFamily: 'Kanit-Medium',
     color: color.black,
@@ -73,9 +58,6 @@ const CONTENT_TEXT: TextStyle = {
 const MARGIN_HORIZONTTAL_MEDIUM: ViewStyle = { paddingHorizontal: 10 }
 const MARGIN_LEFT_SMALL: ViewStyle = { paddingLeft: 5 }
 const MARGIN_TOP: ViewStyle = { marginTop: 5 }
-const DROPDOWN_ICON_CONTAINER: ViewStyle = {
-    paddingTop: 12.5, paddingRight: 5
-}
 const MARGIN_TOP_BIG: ViewStyle = { marginTop: 10 }
 const MARGIN_TOP_EXTRA: ViewStyle = { marginTop: 20 }
 const LAYOUT_REGISTRATION_FIELD: TextStyle = {
@@ -109,11 +91,15 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
 
     const [rerender, setrerender] = useState(false)
     const [rerenderTime, setrerenderTime] = useState(false)
-    const [initDatePicker, setinitDatePicker] = useState(new Date());
+    const [initDatePicker] = useState(new Date());
+
+    const [visibleMap, setvisibleMap] = useState(false)
 
     const [swipe, setswipe] = useState(false)
 
-    const { control, handleSubmit, errors } = useForm({
+    const [position, setposition] = useState({})
+
+    const { control, handleSubmit } = useForm({
         defaultValues: {
             // "receive-date": initDatePicker,
             // "receive-time": initDatePicker
@@ -123,6 +109,17 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
 
     useEffect(() => {
         _addFieldInputShipping()
+        // Geolocation.getCurrentPosition((position) => {
+        //     __DEV__ && console.tron.log("Position current :: ", position)
+        //     setposition(position)
+        // }, (error) => {
+        //     __DEV__ && console.tron.log("Error get location :: ", error)
+        //     // alert(JSON.stringify(error))
+        // }, {
+        //     enableHighAccuracy: true,
+        //     timeout: 20000,
+        //     maximumAge: 1000
+        // });
     }, [])
 
     const onSubmit = (data) => {
@@ -130,27 +127,6 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
         console.log("Raw Data Form Post job : ", data)
         let tmp_data = JSON.parse(JSON.stringify(data))
         let final = { ...tmp_data }
-        // Object.keys(tmp_data).forEach((key) => {
-        //     let arr = key.split("-")
-        //     let indexing = arr[arr.length - 1]
-        //     if (key.includes("shipping-date-")) {
-        //         final[key] = date.format(data['shipping-date-' + indexing], "YYYY:MM:DD")
-        //     }
-        //     if (key.includes("shipping-time-")) {
-        //         final[key] = date.format(data['shipping-time-' + indexing], "HH:mm")
-        //     }
-        //     if (key.includes("receive-date")) {
-        //         final[key] = date.format(data['receive-date'], "YYYY:MM:DD")
-        //     }
-        //     if (key.includes("receive-time")) {
-        //         final[key] = date.format(data['receive-time'], "HH:mm")
-        //     }
-        // })
-
-
-
-
-
 
         let shippingInformation = []
         let pure_object = {}
@@ -209,7 +185,9 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
     ]
     let formControllerValue = control.getValues()
 
+
     __DEV__ && console.tron.log("show date format : ", formControllerValue)
+    // const { longitude, latitude } = position?.coords || {}
     return (
         <View testID="ReceivePointScreen" style={FULL}>
             <View style={TOP_VIEW}>
@@ -218,6 +196,62 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
 
             <View style={BOTTOM_VIEW}>
                 <ScrollView style={FULL}>
+
+
+
+                    {/* <Modal
+                        visible={visibleMap}
+                        onTouchOutside={() => setvisibleMap(false)}
+                        onSwipeOut={() => setvisibleMap(false)}
+                    // swipeDirection={['down']} // can be string or an array
+                    // swipeThreshold={200} // default 100
+                    >
+                        <ModalContent >
+                            <View style={{ width: (width / 1), height: '100%', justifyContent: 'flex-start' }}>
+                                <SafeAreaView style={{ flex: 1 }}>
+                                    <TouchableOpacity style={{}}>
+                                        <Ionicons name={"close-circle"} size={24} />
+                                    </TouchableOpacity>
+                                    <View style={{ flex: 1, position: 'relative' }}>
+
+
+                                        {!!longitude && !!longitude && <MapView
+                                            style={{ height: Dimensions.get('window').height }}
+                                            provider={PROVIDER_GOOGLE}
+                                            initialRegion={{
+                                                latitude: +latitude - 0.03,
+                                                longitude: +longitude,
+                                                latitudeDelta: 0.1,
+                                                longitudeDelta: 0.1
+                                            }}>
+                                        
+
+                                                       {!!coordinates.length && coordinates.map((attr, index) => (
+                                       <Marker
+                                           key={index}
+                                           coordinate={{ latitude: +attr.lat, longitude: +attr.lng }}
+                                           pinColor="green"
+                                       >
+                                           <Callout>
+                                               <Text>{attr.contactName}</Text>
+                                           </Callout>
+                                       </Marker>
+                                   ))}
+                                   {JSON.parse(JSON.stringify(ShipperJobStore.directions)).map((attr, index) => {
+                                       return (<Polyline key={index} coordinates={attr} strokeWidth={4} strokeColor={'red'} />)
+                                   })}
+
+
+                                        </MapView>}
+                                    </View>
+
+                                </SafeAreaView>
+
+                            </View>
+                        </ModalContent>
+                    </Modal> */}
+
+
 
 
                     <View style={TOP_VIEW_2}>
@@ -235,9 +269,19 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                             <Controller
                                 control={control}
                                 render={({ onChange, onBlur, value }) => (
-                                    <TextInputTheme
-                                        testID={"receive-location"}
-                                        inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                                    <>
+                                        {/* {!formControllerValue["receive-location"] && <TouchableOpacity
+                                            onPress={() => setvisibleMap(true)}
+                                            style={{ padding: 10, borderWidth: 1, borderRadius: 2.5, borderColor: color.line }}>
+                                            <Text>receive location</Text>
+                                        </TouchableOpacity>} */}
+                                        {/* {!!formControllerValue["receive-location"] && <TextInputTheme
+                                            testID={"receive-location-01"}
+                                            inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />} */}
+                                        <TextInputTheme
+                                            testID={"receive-location-01"}
+                                            inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                                    </>
                                 )}
                                 key={'text-input-receive-location'}
                                 name={"receive-location"}
@@ -347,8 +391,8 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
 
 
                     {fieldShipping && fieldShipping.length > 0 && fieldShipping.map((e, i) => {
-                        return <View style={[TOP_VIEW_2, MARGIN_TOP]}>
-                            <View style={WRAPPER_TOP}>
+                        return <View style={[TOP_VIEW_2, MARGIN_TOP]} key={`view-shippping-${i + 1}`}>
+                            <View key={`view-shippping-wrapper-top-${i + 1}`} style={WRAPPER_TOP}>
                                 <View style={ROW_TEXT}>
                                     <Icon icon={'pinDropGreen'} style={ICON_PIN_YELLOW} />
                                     <Text tx={"postJobScreen.shipingPoint"} preset={'topic'} style={MARGIN_TOP_BIG} />
@@ -445,7 +489,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
 
                             </View>
                         </View>
-                    }) }
+                    })}
 
 
 

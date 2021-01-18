@@ -223,9 +223,9 @@ export const PostJobScreen = observer(function PostJobScreen() {
     const list_product_type = [
         {
             title: 'postJobScreen.popular',
-            data: [{ id: 13, name: 'สินค้าการเกษตร', image: 'bell' },
-            { id: 17, name: 'สินค้าการประมง', image: 'bell' },
-            { id: 21, name: 'เครื่องดื่ม', image: 'bell' }]
+            data: [{ id: 1, name: 'วัสดุก่อสร้าง', image: 'bell' },
+            { id: 2, name: 'สินค้าเกษตร', image: 'bell' },
+            { id: 3, name: 'อาหาร และสินค้าบริโภค', image: 'bell' }]
         }
     ]
 

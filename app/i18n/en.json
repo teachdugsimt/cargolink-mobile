@@ -30,7 +30,8 @@
     "search": "Search ...",
     "requireField": "require field",
     "licensePlate": "License plate",
-    "notFound": "Not Found"
+    "notFound": "Not Found",
+    "id": "id"
   },
   "bottomTab": {
     "home": "Home",
@@ -101,7 +102,8 @@
     "shipperName": "shipper name",
     "shipperTel": "tel no",
 
-    "addShippingPoint": "เพิ่มจุดส่งสินค้า"
+    "addShippingPoint": "add ship point",
+    "postJobSuccess": "welcome your post job was success"
   },
   "uploadVehicleScreen": {
     "addVehicle": "Add Vehicle",

@@ -12,7 +12,7 @@ import { Text } from "../../../components"
 import { translate } from "../../../i18n"
 import {
     AddJobElement, MultiSelector,
-    TextInputTheme, RoundedButton,
+    TextInputTheme, RoundedButton, ModalLoading,
     Icon, DatePickerRemake, TimePickerRemake
 } from '../../../components'
 import i18n from 'i18n-js'
@@ -229,47 +229,84 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
         }
     }, [])
 
+    const compareDateTime = (d1, t1) => {
+        return d1.slice(0, 10) + " " + t1.slice(11, t1.length)
+    }
+
     const onSubmit = (data) => {
         __DEV__ && console.tron.log("Raw Data Form Post job 3 : ", data)
         let tmp_data = JSON.parse(JSON.stringify(data))
-        // let final = { ...tmp_data }
-        // Object.keys(tmp_data).forEach((key) => {
-        //     let arr = key.split("-")
-        //     let indexing = arr[arr.length - 1]
-        //     if (key.includes("shipping-date-")) {
-        //         final[key] = date.format(data['shipping-date-' + indexing], "YYYY:MM:DD")
-        //     }
-        //     if (key.includes("shipping-time-")) {
-        //         final[key] = date.format(data['shipping-time-' + indexing], "HH:mm")
-        //     }
-        //     if (key.includes("receive-date")) {
-        //         final[key] = date.format(data['receive-date'], "YYYY:MM:DD")
-        //     }
-        //     if (key.includes("receive-time")) {
-        //         final[key] = date.format(data['receive-time'], "HH:mm")
-        //     }
-        // })
+        let final = { ...tmp_data }
+        Object.keys(tmp_data).forEach((key) => {
+            let arr = key.split("-")
+            let indexing = arr[arr.length - 1]
+            if (key.includes("shipping-date-")) {
+                // final[key] = date.format(data['shipping-date-' + indexing], "YYYY:MM:DD")
+                final[key] = date.format(data['shipping-date-' + indexing], "DD-MM-YYYY hh:mm:ss")
+            }
+            if (key.includes("shipping-time-")) {
+                // final[key] = date.format(data['shipping-time-' + indexing], "HH:mm")
+                final[key] = date.format(data['shipping-time-' + indexing], "DD-MM-YYYY hh:mm:ss")
+            }
+            if (key.includes("receive-date")) {
+                // final[key] = date.format(data['receive-date'], "YYYY:MM:DD")
+                final[key] = date.format(data['receive-date'], "DD-MM-YYYY hh:mm:ss")
+            }
+            if (key.includes("receive-time")) {
+                // final[key] = date.format(data['receive-time'], "HH:mm")
+                final[key] = date.format(data['receive-time'], "DD-MM-YYYY hh:mm:ss")
+            }
+        })
+        console.log("Position 1 :: ", final)
 
-        // let shippingInformation = []
-        // let pure_object = {}
-        // Object.keys(tmp_data).forEach((key) => {
-        //     if (key.includes("shipping-")) {
-        //         pure_object[key] = tmp_data[key]
-        //     }
-        // })
-        // fieldShippingCheck.forEach((e, i) => {
-        //     shippingInformation.push({
-        //         "shipping-address": pure_object[`shipping-address-${i + 1}`],
-        //         "shipping-date": pure_object[`shipping-date-${i + 1}`],
-        //         "shipping-time": pure_object[`shipping-time-${i + 1}`],
-        //         "shipping-name": pure_object[`shipping-name-${i + 1}`],
-        //         "shipping-tel-no": pure_object[`shipping-tel-no-${i + 1}`],
-        //     })
-        // })
-        // final['shipping-information'] = shippingInformation
-        // PostJobStore.setPostJob(2, newObj)
-        // __DEV__ && console.tron.log("Final object postjob screen 2 :: => ", final)
+
+        let shippingLocation = []
+        let tmp_field = fieldShippingCheck
+        console.log("position 1.5 :: ", tmp_field)
+        tmp_field.forEach((e, i) => {
+            let shippingName = final[`shipping-name-${i + 1}`]
+            let shippingTime = compareDateTime(final[`shipping-date-${i + 1}`], final[`shipping-time-${i + 1}`])
+            let shippingTelNo = final[`shipping-tel-no-${i + 1}`]
+
+            shippingLocation.push({
+                "name": shippingName,
+                "dateTime": shippingTime, // Format: DD-MM-YYYY hh:ss
+                "contactName": shippingName,
+                "contactMobileNo": shippingTelNo,
+                "lat": "19.8667",
+                "lng": "110.1917"
+            })
+        })
+        console.log("Position 2 :: ", shippingLocation)
+
+        let request_data = {
+            "truckType": final['vehicle-type'],
+            "truckAmount": final['car-num'],
+            "productTypeId": final['item-type'],
+            "productName": "string",
+            "weight": final['item-weight'],
+            "price": 0, // No need now 
+            "expiredTime": date.format(new Date(2029, 11, 11), "DD-MM-YYYY hh:mm:ss"), // No need now
+            "note": 'note text',
+            "from": {
+                "name": final['receive-name'],
+                "dateTime": compareDateTime(final['receive-date'], final['receive-time']),
+                "contactName": final['receive-name'],
+                "contactMobileNo": final['receive-tel-no'],
+                "lat": "13.8667",
+                "lng": "100.1917"
+            },
+            "to": shippingLocation
+        }
+        __DEV__ && console.tron.log("Final data Post job 3 :: ", request_data)
+        console.log("Position 3 :: ", request_data)
+        PostJobStore.createPostJobRequest(request_data)
     }
+
+    useEffect(() => {
+        let data_postjob = JSON.parse(JSON.stringify(PostJobStore.data_postjob))
+        if (data_postjob) navigation.navigate("postSuccess")
+    }, [PostJobStore.data_postjob])
 
     const _setRenderDateAndTimeField = (val: boolean, index: number, field: string) => {
         let tmp_field_level = fieldShippingCheck
@@ -302,9 +339,9 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
     const list_product_type = [
         {
             title: 'postJobScreen.popular',
-            data: [{ id: 13, name: 'สินค้าการเกษตร', image: 'bell' },
-            { id: 17, name: 'สินค้าการประมง', image: 'bell' },
-            { id: 21, name: 'เครื่องดื่ม', image: 'bell' }]
+            data: [{ id: 1, name: 'วัสดุก่อสร้าง', image: 'bell' },
+            { id: 2, name: 'สินค้าเกษตร', image: 'bell' },
+            { id: 3, name: 'อาหาร และสินค้าบริโภค', image: 'bell' }]
         }
     ]
     let list_vehicle = JSON.parse(JSON.stringify(TruckTypeStore.data))
@@ -331,7 +368,9 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
 
 
 
-
+                    <ModalLoading
+                        containerStyle={{ zIndex: 2 }}
+                        size={'large'} color={color.primary} visible={PostJobStore.loading} />
 
 
 
@@ -659,7 +698,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
 
 
                     {fieldShippingCheck && fieldShippingCheck.length > 0 ? fieldShippingCheck.map((e, i) => {
-                        return <View style={[TOP_VIEW_2, MARGIN_TOP]}>
+                        return <View style={[TOP_VIEW_2, MARGIN_TOP]} key={`view-shipping-${i + 1}`}>
                             <View style={WRAPPER_TOP}>
                                 <View style={ROW_TEXT}>
                                     <Icon icon={'pinDropGreen'} style={ICON_PIN_YELLOW} />

@@ -1,5 +1,7 @@
-import { types, destroy } from "mobx-state-tree"
+import { types, destroy, flow } from "mobx-state-tree"
 import { TextPropTypes } from "react-native"
+import { PostJobAPI } from '../../services/api'
+const postjobAPI = new PostJobAPI()
 
 const PostJob1 = types.model({
     "car-num": types.maybeNull(types.string),
@@ -31,6 +33,10 @@ const PostJob2 = types.model({
 const PostJobStore = types.model({
     postjob1: types.maybeNull(PostJob1),
     postjob2: types.maybeNull(PostJob2),
+
+    loading: types.maybeNull(types.boolean),
+    error: types.maybeNull(types.string),
+    data_postjob: types.maybeNull(types.number)
 })
     .actions(self => ({
         setPostJob(params: number, data: any) {
@@ -39,7 +45,31 @@ const PostJobStore = types.model({
             } else if (params == 2) {
                 self.postjob2 = data
             }
-        }
+        },
+
+        createPostJobRequest: flow(function* createPostJobRequest(params) { // <- note the star, this a generator function!
+            yield postjobAPI.setup()
+            self.loading = true
+            try {
+                // ... yield can be used in async/await style
+                const response = yield postjobAPI.createPostJob(params)
+                __DEV__ && console.tron.log("Response call create post job : : ", response)
+                console.log("Response call create post job : : ", response)
+                if (response.ok) {
+                    self.data_postjob = response.data || {}
+                    self.loading = false
+                } else {
+                    self.loading = false
+                    self.error = "error fetch create post job"
+                }
+            } catch (error) {
+                // ... including try/catch error handling
+                console.error("Failed to store value create post job : ", error)
+                // self.data = []
+                self.loading = false
+                self.error = "set up state mobx error"
+            }
+        }),
     }))
     .views((self) => ({
         get MappingInitValue() {
@@ -48,7 +78,7 @@ const PostJobStore = types.model({
                 let tmpPostJob2 = self.postjob2
                 __DEV__ && console.tron.log("RAW DATA POSTJOB2 :: ", tmpPostJob2)
                 if (tmpPostJob2["shipping-information"]) {
-                   
+
                     self.postjob2["shipping-information"].forEach((e, i) => {
                         tmpPostJob2[`shipping-address-${i + 1}`] = e["shipping-address"]
                         tmpPostJob2[`shipping-time-${i + 1}`] = e["shipping-time"]
@@ -59,8 +89,8 @@ const PostJobStore = types.model({
                 }
                 __DEV__ && console.tron.log("After parse object MOBX :: ", tmpPostJob2)
                 // delete tmpPostJob2["shipping-information"]
-               
-                
+
+
                 let newPostJob2 = tmpPostJob2
                 // delete newPostJob2["shipping-information"]
                 __DEV__ && console.tron.log("Post job2 data in mobx :: ", newPostJob2)

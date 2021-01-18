@@ -30,7 +30,8 @@
     "search": "ค้นหา ...",
     "requireField": "ข้อมูลที่จำเป็น",
     "licensePlate": "ทะเบียน",
-    "notFound": "ไม่พบรายการ"
+    "notFound": "ไม่พบรายการ",
+    "id": "รหัส"
   },
   "bottomTab": {
     "home": "หน้าแรก",
@@ -100,7 +101,8 @@
     "shipperName": "ชื่อผู้ส่งสินค้า",
     "shipperTel": "เบอร์ติดต่อ",
 
-    "addShippingPoint": "เพิ่มจุดส่งสินค้า"
+    "addShippingPoint": "เพิ่มจุดส่งสินค้า",
+    "postJobSuccess": "ยินดีด้วยคุณเพิ่มงานสำเร็จแล้ว"
   },
   "uploadVehicleScreen": {
     "addVehicle": "เพิ่มรถ",

@@ -14,7 +14,8 @@ import {
     DetailScreen, HomeScreen, JobDetailScreen, MyVehicle, PostJobScreen, SearchJobScreen, AdvanceSearchScreen,
     UploadVehicleScreen, SuccessUpload,
     VehicleDetailScreen, CheckInformationScreen,
-    ShipperProfileScreen, ReceivePointScreen, FeedbackScreen, SearchTruckScreen
+    ShipperProfileScreen, ReceivePointScreen, FeedbackScreen, SearchTruckScreen,
+    PostSuccessScreen
 } from "../screens"
 import { translate } from "../i18n"
 /**
@@ -45,6 +46,7 @@ export type PrimaryHomeParamList = {
     receivePoint: undefined
     feedback: undefined
     checkInformation: undefined
+    postSuccess: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -118,6 +120,14 @@ export function HomeNavigator() {
                 })}
             />
             <Stack.Screen name="checkInformation" component={CheckInformationScreen}
+                options={({ navigation, route }) => ({
+                    // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
+                    headerCenter: () => <HeaderCenter tx={"postJobScreen.postjob"} />,
+                    headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+                    headerHideShadow: true
+                })}
+            />
+            <Stack.Screen name="postSuccess" component={PostSuccessScreen}
                 options={({ navigation, route }) => ({
                     // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
                     headerCenter: () => <HeaderCenter tx={"postJobScreen.postjob"} />,

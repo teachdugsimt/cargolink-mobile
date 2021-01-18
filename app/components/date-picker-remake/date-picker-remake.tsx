@@ -65,8 +65,8 @@ export const DatePickerRemake = (props) => {
                         onTouchCancel={() => setShow(Platform.OS === 'ios')}
                         onChange={(event, selectedDate) => {
                             if (selectedDate) {
-                                onChange(selectedDate)
                                 setShow(Platform.OS === 'ios');
+                                onChange(selectedDate)
                                 rerenderFunction()
                             }
                         }}
