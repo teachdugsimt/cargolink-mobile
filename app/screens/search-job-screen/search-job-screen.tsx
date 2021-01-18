@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite';
-import { Dimensions, FlatList, TextStyle, View, ViewStyle } from 'react-native';
-import { AdvanceSearchTab, Button, ModalLoading, SearchBar } from '../../components';
+import { FlatList, TextStyle, View, ViewStyle } from 'react-native';
+import { AdvanceSearchTab, ModalLoading, SearchBar, Text } from '../../components';
 import { color, spacing } from '../../theme';
 import { SearchItem } from '../../components/search-item/search-item';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -12,6 +12,8 @@ import i18n from 'i18n-js'
 import AdvanceSearchStore from "../../store/shipper-job-store/advance-search-store";
 import TruckTypeStore from "../../store/my-vehicle-store/truck-type-store"
 import { provinceListEn, provinceListTh } from '../../screens/home-screen/manage-vehicle/datasource'
+import Feather from 'react-native-vector-icons/Feather'
+import FavoriteJobStore from "../../store/shipper-job-store/favorite-job-store"
 
 interface SubButtonSearch {
   id?: number
@@ -32,25 +34,14 @@ const BUTTON_CONTAINER: ViewStyle = {
   marginVertical: spacing[2],
   justifyContent: 'center',
 }
-const SUB_BUTTON_CONTAINER: ViewStyle = {
-  marginLeft: spacing[2],
-  paddingLeft: spacing[2],
-  flexDirection: 'row',
-  borderLeftWidth: 1,
-  borderLeftColor: color.disable,
+const CONTEXT_NOT_FOUND: ViewStyle = {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  top: -spacing[5],
 }
-const FULL_SEARCH_BOTTON: ViewStyle = {
-  backgroundColor: color.transparent,
-  borderRadius: Dimensions.get('window').width / 2,
-  borderWidth: 1,
-  borderColor: color.primary,
-  marginHorizontal: spacing[1],
-  paddingHorizontal: spacing[0],
-  paddingVertical: spacing[0],
-}
-const FULL_SEARCH_TEXT: TextStyle = {
-  fontSize: 16,
-  color: color.textBlack,
+const NOT_FOUND_TEXT: TextStyle = {
+  color: color.line,
 }
 
 const Item = (data) => {
@@ -75,6 +66,7 @@ const Item = (data) => {
 
   const onToggleHeart = (data) => {
     console.log('onToggleHeart data', data)
+    FavoriteJobStore.add(data.id)
   }
 
   const typeOfTruck = GetTruckType(+truckType, i18n.locale).name
@@ -131,6 +123,7 @@ const initialState = {
   subButtons: SUB_BUTTON,
   listLength: 0,
   data: [],
+  filterLength: 0
 }
 
 let PAGE = 0;
@@ -138,18 +131,22 @@ let PAGE = 0;
 export const SearchJobScreen = observer(function SearchJobScreen() {
   const navigation = useNavigation()
 
-  const [{ subButtons, data, listLength }, setState] = useState(initialState)
-
-  // useFocusEffect(
-  //   useCallback(() => {
-  //   navigation.addListener('focus', () => {
-  //     console.log('focussed');
-  //   });
-  // }))
+  const [{ subButtons, data, listLength, filterLength }, setState] = useState(initialState)
 
   useFocusEffect(
     useCallback(() => {
-      console.log('Hello world')
+      const { productType, truckAmountMax, truckAmountMin, truckType, weight } = JSON.parse(JSON.stringify(AdvanceSearchStore.filter))
+      const length = [
+        ...[...productType || []],
+        ...[...truckType || []],
+        weight,
+        truckAmountMax || truckAmountMin
+      ].filter(Boolean).length
+
+      setState(prevState => ({
+        ...prevState,
+        filterLength: length
+      }))
     }, [])
   );
 
@@ -174,10 +171,6 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
       }))
     }
   }, [ShipperJobStore.loading, ShipperJobStore.list])
-
-  // useEffect(() => {
-  //   console.log('AdvanceSearchStore.filter', JSON.parse(JSON.stringify(AdvanceSearchStore.filter)))
-  // }, [AdvanceSearchStore.filter])
 
   const renderItem = ({ item }) => (
     <Item {...item} />
@@ -231,6 +224,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
   }
 
   const onAdvanceSeach = () => {
+    // AdvanceSearchStore.getProductTypes()
     TruckTypeStore.getTruckTypeDropdown(i18n.locale)
     navigation.navigate('advanceSearch')
   }
@@ -258,34 +252,13 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
           subButtons={subButtons.length ? subButtons : []}
           onPress={(id) => onPress(id)}
           onAdvanceSeach={onAdvanceSeach}
+          count={filterLength}
         />
       </View>
 
-      {/* <View style={BUTTON_CONTAINER}>
-        <Button
-          testID="full-search-button"
-          style={FULL_SEARCH_BOTTON}
-          textStyle={FULL_SEARCH_TEXT}
-          text={translate('searchJobScreen.fullSearch')} // ค้นหาโดยละเอียด
-          onPress={onAdvanceSeach}
-        />
-        <View style={SUB_BUTTON_CONTAINER}>
-          {subButtons.length && subButtons.map(button => {
-            const borderColor = button.isChecked ? color.primary : color.disable
-            return <Button
-              key={button.id}
-              testID={`button-search-${button.id}`}
-              style={{ ...FULL_SEARCH_BOTTON, borderColor }}
-              textStyle={FULL_SEARCH_TEXT}
-              text={button.label}
-              onPress={() => onPress(button.id)}
-            />
-          })}
-        </View>
-      </View> */}
       <View style={RESULT_CONTAINER}>
         {
-          data && !!data.length && <FlatList
+          data && !!data.length ? <FlatList
             data={data}
             renderItem={renderItem}
             keyExtractor={item => item.id}
@@ -293,7 +266,10 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
             onEndReachedThreshold={0.5}
           // onMomentumScrollBegin={() => console.log('onResponderEnd')}
           // onMomentumScrollEnd={() => console.log('onMomentumScrollEnd')}
-          />
+          /> : <View style={CONTEXT_NOT_FOUND}>
+              <Feather name={'inbox'} size={50} color={color.line} />
+              <Text text={translate('common.notFound')} style={NOT_FOUND_TEXT} preset={'topicExtra'} />
+            </View>
         }
       </View>
     </View>

@@ -28,7 +28,8 @@
     "count": "จำนวน",
     "search": "ค้นหา ...",
     "requireField": "ข้อมูลที่จำเป็น",
-    "licensePlate": "ทะเบียน"
+    "licensePlate": "ทะเบียน",
+    "notFound": "ไม่พบรายการ"
   },
   "bottomTab": {
     "home": "หน้าแรก",
@@ -250,6 +251,7 @@
     "price": "ราคา"
   },
   "searchTruckScreen": {
-    "findTruck": "หารถ"
+    "findTruck": "หารถ",
+    "selectZoneWorking": "ระบุโซนวิ่งงานที่คุณต้องการ"
   }
 }

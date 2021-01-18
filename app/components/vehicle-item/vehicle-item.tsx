@@ -17,7 +17,7 @@ const CONTAINER: ViewStyle = {
   backgroundColor: color.backgroundWhite,
   marginBottom: spacing[3],
   padding: spacing[3],
-  shadowColor: color.disable,
+  shadowColor: color.line,
   shadowOffset: { width: 0, height: 1 },
   shadowOpacity: 0.8,
   shadowRadius: 5,
@@ -40,7 +40,7 @@ const SUB_TOPIC: TextStyle = {
   paddingTop: spacing[1],
 }
 const INFORMATION_DATE: TextStyle = {
-  color: color.disable,
+  color: color.line,
   fontSize: 13,
   fontFamily: 'Kanit-Medium',
 }

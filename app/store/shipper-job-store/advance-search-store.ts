@@ -3,6 +3,9 @@ import * as Types from "../../services/api/api.types"
 import TruckTypeStore from "../my-vehicle-store/truck-type-store"
 import i18n from "i18n-js"
 import { translate } from "../../i18n"
+import { ProductTypeAPI } from "../../services/api"
+
+const productTypeApi = new ProductTypeAPI()
 
 const Menu = types.model({
     id: (types.number),
@@ -32,6 +35,12 @@ const Filter = types.model({
     truckAmountMin: types.maybeNull(types.number),
     truckType: types.maybeNull(types.array(types.number)),
     weight: types.maybeNull(types.number),
+})
+
+const ProductType = types.model({
+    id: types.number,
+    name: types.maybeNull(types.string),
+    image: types.maybeNull(types.string),
 })
 
 const MENUS: Array<Types.AdvanceSearchMenu> = [
@@ -165,7 +174,9 @@ const AdvanceSearchStore = types
     .model({
         filter: Filter,
         menu: types.array(Menu),
-        loading: types.boolean
+        productTypes: types.array(ProductType),
+        loading: types.boolean,
+        error: types.string
     })
     .actions((self) => ({
         setFilter: function setFilter(filter: Types.ShipperJobRequest = {}) {
@@ -177,6 +188,7 @@ const AdvanceSearchStore = types
                 self.menu = cast(menus)
             } else {
                 self.loading = true
+                yield AdvanceSearchStore.getProductTypes()
                 yield TruckTypeStore.getTruckTypeDropdown(i18n.locale)
                 if (TruckTypeStore.data && TruckTypeStore.data.length) {
                     MENUS[0].showSubColumn = 2
@@ -187,7 +199,7 @@ const AdvanceSearchStore = types
                             isChecked: false
                         }
                     })
-                    self.menu = cast(MENUS)
+                    self.menu = cast([...self.menu, ...MENUS])
                 }
                 self.loading = false
             }
@@ -212,7 +224,35 @@ const AdvanceSearchStore = types
                 truckType: null,
                 weight: null,
             }
-        }
+        },
+
+        getProductTypes: flow(function* (filter: object = {}) {
+            yield productTypeApi.setup()
+            self.loading = true
+            try {
+                const response = yield productTypeApi.findAll(filter)
+                console.log("Response call api get product types : : ", response)
+                self.productTypes = response.data
+
+                if (response.data && response.data.length) {
+                    MENUS[2].showSubColumn = 2
+                    MENUS[2].subMenu = response.data.map(val => {
+                        return {
+                            ...val,
+                            value: val.id,
+                            isChecked: false
+                        }
+                    })
+                    // self.menu = cast([...self.menu, ...MENUS])
+                }
+
+                self.loading = false
+            } catch (error) {
+                console.error("Failed to fetch get product types : ", error)
+                self.loading = false
+                self.error = "error fetch api get product types"
+            }
+        }),
     }))
     .views((self) => ({
         get getFilter() {
@@ -223,7 +263,9 @@ const AdvanceSearchStore = types
         // IMPORTANT !!
         filter: {},
         menu: [],
-        loading: false
+        productTypes: [],
+        loading: false,
+        error: ''
     })
 
 export default AdvanceSearchStore

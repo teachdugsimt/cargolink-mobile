@@ -1,11 +1,16 @@
 import React, { useState } from 'react'
 import { observer } from 'mobx-react-lite';
-import { FlatList, TextStyle, View, ViewStyle } from 'react-native';
+import { Dimensions, FlatList, ImageStyle, TextStyle, View, ViewStyle } from 'react-native';
 import { AdvanceSearchTab, SearchBar } from '../../components';
 import { color, spacing } from '../../theme';
 import { SearchItem } from '../../components/search-item/search-item';
 import { useNavigation } from '@react-navigation/native';
 import { translate } from '../../i18n';
+import RNPickerSelect from 'react-native-picker-select';
+import i18n from 'i18n-js'
+import { provinceListEn, provinceListTh } from '../../screens/home-screen/manage-vehicle/datasource'
+import { Icon } from '../../components/icon/icon';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 interface SubButtonSearch {
   id?: number
@@ -13,23 +18,19 @@ interface SubButtonSearch {
   isChecked?: boolean
 }
 
-const TEXT: TextStyle = { color: color.textBlack, }
-const BOLD: TextStyle = { fontWeight: "bold" }
-const HEADER: TextStyle = { backgroundColor: color.primary }
-const HEADER_TITLE: TextStyle = {
-  ...TEXT,
-  ...BOLD,
-  fontSize: 12,
-  lineHeight: 15,
-  textAlign: "center",
-  letterSpacing: 1.5,
-}
 const SEARCH_BAR: ViewStyle = {
-  paddingTop: spacing[4],
+  backgroundColor: color.backgroundWhite,
+  paddingHorizontal: spacing[4],
+  paddingTop: spacing[6],
   paddingBottom: spacing[4],
-  paddingLeft: 10 + spacing[2],
-  paddingRight: 10,
-  marginBottom: 10,
+  marginBottom: spacing[2],
+}
+const SEARCH_BAR_ROW: ViewStyle = {
+  flexDirection: 'row',
+  alignItems: 'center',
+  paddingBottom: spacing[2],
+  borderBottomWidth: 1,
+  borderBottomColor: color.line,
 }
 const RESULT_CONTAINER: ViewStyle = {
   flex: 1,
@@ -39,6 +40,11 @@ const BUTTON_CONTAINER: ViewStyle = {
   alignItems: 'center',
   marginVertical: spacing[2],
   justifyContent: 'center',
+}
+const PIN_ICON: ImageStyle = {
+  width: 25,
+  height: 25,
+  marginRight: spacing[5],
 }
 
 const DATA = [
@@ -184,13 +190,14 @@ const SUB_BUTTON: Array<SubButtonSearch> = [
 const initialState = {
   subButtons: SUB_BUTTON,
   data: DATA,
+  value: ''
 }
 
 
 export const SearchTruckScreen = observer(function SearchTruckScreen() {
   const navigation = useNavigation()
 
-  const [{ subButtons, data }, setState] = useState(initialState)
+  const [{ subButtons, data, value }, setState] = useState(initialState)
 
   const renderItem = ({ item }) => (
     <Item {...item} />
@@ -217,10 +224,45 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
     navigation.navigate('advanceSearch')
   }
 
+  const onChangeValue = (val) => {
+    console.log(val)
+  }
+
   return (
     <View style={{ flex: 1 }}>
-      <View>
-
+      <View style={SEARCH_BAR}>
+        <View style={SEARCH_BAR_ROW}>
+          <Icon icon="pinDropYellow" style={PIN_ICON} />
+          <RNPickerSelect
+            // testID={"picker_vehicle_type"}
+            value={value}
+            onValueChange={onChangeValue}
+            items={i18n.locale == "en" ? provinceListEn : provinceListTh}
+            placeholder={{
+              label: translate("searchTruckScreen.selectZoneWorking"),
+              color: color.black
+            }}
+            useNativeAndroidPickerStyle={false}
+            style={{
+              inputAndroidContainer: {
+                width: Dimensions.get('window').width
+              },
+              inputAndroid: {
+                color: color.textBlack,
+              },
+              inputIOSContainer: {
+                marginTop: 1,
+                paddingVertical: spacing[2],
+                width: Dimensions.get('window').width
+              },
+              inputIOS: {
+                color: color.textBlack,
+                marginLeft: spacing[1],
+              },
+            }}
+          />
+          <MaterialCommunityIcons name={'chevron-down'} size={30} color={color.line} style={{ marginLeft: 'auto' }} />
+        </View>
       </View>
       <View style={BUTTON_CONTAINER}>
         <AdvanceSearchTab

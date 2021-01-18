@@ -254,7 +254,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                                 pinColor="green"
                             >
                                 <Callout>
-                                    <Text>{attr.name}</Text>
+                                    <Text>{attr.contactName}</Text>
                                 </Callout>
                             </Marker>
                         ))}
@@ -267,7 +267,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
             <TouchableOpacity activeOpacity={1} onPress={onOpen} style={{ ...TOP_ROOT, height: 105, }}>
                 <View>
-                    <Text text={translate('jobDetailScreen.pickUpPoint')} style={{ ...TEXT_SMALL, color: color.disable, }} />
+                    <Text text={translate('jobDetailScreen.pickUpPoint')} style={{ ...TEXT_SMALL, color: color.line, }} />
                 </View>
                 <PickUpPoint from={from} to={to} />
             </TouchableOpacity>
@@ -293,7 +293,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
                     <View style={TOP_ROOT}>
                         <View>
-                            <Text text={translate('jobDetailScreen.pickUpPoint')} style={{ ...TEXT_SMALL, color: color.disable, }} />
+                            <Text text={translate('jobDetailScreen.pickUpPoint')} style={{ ...TEXT_SMALL, color: color.line, }} />
                         </View>
                         <PickUpPoint from={from} to={to} containerStyle={{ paddingBottom: spacing[4], ...BOTTOM_LINE }} />
                     </View>
@@ -327,7 +327,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
                 <View style={ONWER_ROOT}>
                     <View style={ROW}>
-                        <Text style={{ color: color.disable }}>{translate('jobDetailScreen.postBy')}</Text>
+                        <Text style={{ color: color.line }}>{translate('jobDetailScreen.postBy')}</Text>
                         <PostingBy {...DATA} onToggle={() => onPress()} />
                     </View>
                 </View>

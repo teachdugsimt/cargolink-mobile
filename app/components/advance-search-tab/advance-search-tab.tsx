@@ -65,11 +65,11 @@ export function AdvanceSearchTab(props: AdvanceSearchTabProps) {
     return (
         <View style={BTN_CONTAINER}>
             {mapMenu.length && mapMenu.map((button, index) => {
-                const borderColor = button.isChecked ? color.primary : color.disable
+                const borderColor = button.isChecked ? color.primary : color.line
                 const customStyle: ViewStyle = {
                     paddingRight: spacing[3],
                     borderRightWidth: 1,
-                    borderRightColor: color.disable,
+                    borderRightColor: color.line,
                     position: 'relative',
                 }
 
