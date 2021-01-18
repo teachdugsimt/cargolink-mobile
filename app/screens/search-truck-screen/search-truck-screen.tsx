@@ -308,13 +308,19 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
     }))
   }
 
+  const isSelected = zones.find(zone => zone.isSelected === true)
+  console.log('isSelected', isSelected)
+
   return (
     <View style={{ flex: 1 }}>
       {ShipperTruckStore.loading && <ModalLoading size={'large'} color={color.primary} visible={ShipperTruckStore.loading} />}
       <View style={SEARCH_BAR}>
         <View style={SEARCH_BAR_ROW}>
           <Icon icon="pinDropYellow" style={PIN_ICON} />
-          <Text text={translate("searchTruckScreen.selectWorkingZone")} onPress={() => setVisible(!visible)} style={DROPDOWN_TEXT} />
+          <Text
+            text={isSelected ? translate('searchTruckScreen.selected') : translate("searchTruckScreen.selectWorkingZone")}
+            onPress={() => setVisible(!visible)} style={DROPDOWN_TEXT}
+          />
           <MaterialCommunityIcons name={'chevron-down'} size={30} color={color.line} style={{ marginLeft: 'auto' }} />
           <Modal
             visible={visible}

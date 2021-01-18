@@ -279,7 +279,8 @@
   "searchTruckScreen": {
     "findTruck": "หารถ",
     "selectWorkingZone": "ระบุโซนวิ่งงานที่คุณต้องการ",
-    "workingZone": "โซนวิ่งงาน"
+    "workingZone": "โซนวิ่งงาน",
+    "selected": "เลือกแล้ว"
   },
   "truckDetailScreen": {
     "truckDetail": "รายละเอียดรถ",

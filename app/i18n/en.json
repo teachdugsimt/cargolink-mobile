@@ -279,7 +279,8 @@
   "searchTruckScreen": {
     "findTruck": "Find truck",
     "selectWorkingZone": "Select zone working",
-    "workingZone": "Working zone"
+    "workingZone": "Working zone",
+    "selected": "Selected"
   },
   "truckDetailScreen": {
     "truckDetail": "Truck detail",
