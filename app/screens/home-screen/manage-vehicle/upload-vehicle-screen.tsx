@@ -475,7 +475,7 @@ export const UploadVehicleScreen = observer((props) => {
 
       loadingWeight: 2.5,
       // stallHeight: Number(parseFloat(data['vehicle-height']).toFixed(1)),
-      stallHeight: data['vehicle-height'],
+      stallHeight: data['vehicle-height'].toUpperCase(),
 
 
       tipper: toggleDump,

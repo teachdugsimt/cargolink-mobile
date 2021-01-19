@@ -23,7 +23,7 @@ const vehicleModel = {
     updatedAt: types.maybeNull(types.string),
     registrationNumber: types.maybeNull(types.array(types.string)),
     truckType: types.maybeNull(types.number),
-    stallHeight: types.maybeNull(types.number),
+    stallHeight: types.maybeNull(types.string),
     tipper: types.maybeNull(types.boolean),
     loadingWeight: types.maybeNull(types.number),
 }

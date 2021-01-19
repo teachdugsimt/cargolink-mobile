@@ -22,7 +22,7 @@ const VehicleNew = types.model({
 
     loadingWeight: types.maybeNull(types.number),
     registrationNumber: types.maybeNull(types.array(types.string)),
-    stallHeight: types.string,
+    stallHeight: types.maybeNull(types.string),
     tipper: types.maybeNull(types.boolean),
     truckPhotos: types.maybeNull(ImageType),
     truckType: types.maybeNull(types.number),
