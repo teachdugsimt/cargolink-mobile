@@ -149,6 +149,8 @@ export const PostJobScreen = observer(function PostJobScreen() {
     const onSubmit = (data) => {
         __DEV__ && console.tron.log("Data Form Post job : ", data)
 
+        if (!data['vehicle-type']) { AlertForm("postJobScreen.truckType"); return; }
+        else if (!data['item-type']) { AlertForm("postJobScreen.productType"); return; }
         PostJobStore.setPostJob(1, data)
         navigation.navigate("receivePoint")
     }

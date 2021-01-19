@@ -18,6 +18,7 @@ import MapView, {
     PROVIDER_GOOGLE,
 } from 'react-native-maps';
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { AlertForm } from "../../../utils/alert-form";
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -125,6 +126,17 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
     const onSubmit = (data) => {
         __DEV__ && console.tron.log("Raw Data Form Post job : ", data)
         console.log("Raw Data Form Post job : ", data)
+
+        if (!data['receive-location']) { AlertForm("postJobScreen.receiveLocation"); return; }
+        else if (!data['receive-date']) { AlertForm("postJobScreen.receiveDate"); return; }
+        else if (!data['receive-time']) { AlertForm("postJobScreen.receiveTime"); return; }
+        else if (!data['receive-name']) { AlertForm("postJobScreen.receiveName"); return; }
+        else if (!data['receive-tel-no']) { AlertForm("postJobScreen.receiveTelno"); return; }
+
+        else if (!data['shipping-address-1']) { AlertForm("postJobScreen.shippingLocation"); return; }
+        else if (!data['shipping-date-1']) { AlertForm("postJobScreen.shippingDate"); return; }
+        else if (!data['shipping-time-1']) { AlertForm("postJobScreen.shippingTime"); return; }
+
         let tmp_data = JSON.parse(JSON.stringify(data))
         let final = { ...tmp_data }
 
