@@ -8,6 +8,7 @@ import Icon from "react-native-vector-icons/Ionicons"
 import { translate } from "../../i18n"
 import i18n from 'i18n-js'
 import { useStores } from "../../models/root-store/root-store-context";
+import AuthStore from "../../store/auth-store/auth-store"
 
 interface SubMenuProps {
     key?: string
@@ -202,6 +203,7 @@ export const MoreScreen = observer(function MoreScreen() {
                 <View style={{ ...COLUMN, justifyContent: 'flex-end', paddingVertical: 10 }}>
                     <RoundedButton onPress={() => {
                         tokenStore.clearToken()
+                        AuthStore.clearAuthProfile()
                         navigation.navigate("signin")
                         console.log("Token after logout :: ", tokenStore.token)
                     }}

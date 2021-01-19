@@ -29,6 +29,7 @@ export const Token = types.model({
   },  
   clearToken() {
     self.token = null
+    self.profile = null
   }
 })).views(self => ({
   get tokenData() {

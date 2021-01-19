@@ -152,14 +152,25 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
     }
   }, [MyVehicleStore.data])
 
-  const transformImage = truckPhotos &&
+  const swap = (input, index_A, index_B) => {
+    let data = input
+    let temp = data[index_A];
+    data[index_A] = data[index_B];
+    data[index_B] = temp;
+    return data
+  }
+
+  __DEV__ && console.tron.log("Truck Photos :: ", truckPhotos)
+
+  const raw_image = truckPhotos &&
     Object.keys(truckPhotos).length ?
     Object.entries(truckPhotos).map(img => {
       return {
         url: img[1],
       }
     }) : []
-
+  const transformImage = swap(raw_image, 0, 1)
+  __DEV__ && console.tron.log("Transform Image Photos :: ", transformImage)
   const txtTruckType = GetTruckType(truckType, i18n.locale)
 
   return (

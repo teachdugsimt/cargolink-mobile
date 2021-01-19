@@ -6,6 +6,7 @@ import { color } from "../../theme"
 import { useNavigation } from '@react-navigation/native';
 import { translate } from '../../i18n';
 import AuthStore from '../../store/auth-store/auth-store'
+import { useStores } from "../../models/root-store/root-store-context";
 
 const ROOT: ViewStyle = {
   flex: 1,
@@ -67,6 +68,8 @@ const initialState = {
 
 export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
   const navigation = useNavigation()
+
+  const { tokenStore } = useStores()
   // const [buttonColor, setButtonColor] = useState(color.line)
   // const [disabled, setDisabled] = useState(true)
   const [{ isLoading }, setState] = useState(initialState)
@@ -93,6 +96,8 @@ export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
       navigation.navigate("home")
     })
   }
+  // 094 769 7823
+  // 9430
 
   console.log('AuthStore.policyData.data :>> ', AuthStore.policyData.data);
 
@@ -132,7 +137,11 @@ export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
           style={CONTINUE_BUTTON}
           textStyle={CONTINUE_TEXT}
           text={translate('acceptPolicyScreen.cancel')} // ไม่ยอมรับเงื่อนไข
-          onPress={() => navigation.navigate("signin")}
+          onPress={() => {
+            AuthStore.clearAuthProfile()
+            tokenStore.clearToken()
+            navigation.navigate("signin")
+          }}
         />
       </View>
     </View>

@@ -409,7 +409,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                                                         </View>
 
                                                         <View style={PADDING_TOP}>
-                                                            {list_vehicle && list_vehicle.length && <MultiSelector
+                                                            {!!list_vehicle && list_vehicle.length > 0 && <MultiSelector
                                                                 key="dd-01-type"
                                                                 items={list_vehicle}
                                                                 keyer={"list-vehicle-type-01"}
@@ -500,7 +500,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
 
                                                         <View style={[PADDING_TOP]}>
 
-                                                            {list_product_type_all && list_product_type_all.length && <MultiSelector
+                                                            {!!list_product_type_all && list_product_type_all.length > 0 && <MultiSelector
                                                                 items={list_product_type_all}
                                                                 keyer={"list-item-type-01"}
                                                                 selectedItems={[value]}
