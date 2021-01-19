@@ -31,6 +31,9 @@
     "requireField": "require field",
     "licensePlate": "License plate",
     "notFound": "Not Found",
+    "have": "Have",
+    "notHave": "No",
+    "M": "m.",
     "id": "id"
   },
   "bottomTab": {
@@ -275,6 +278,12 @@
   },
   "searchTruckScreen": {
     "findTruck": "Find truck",
-    "selectZoneWorking": "Select zone working"
+    "selectWorkingZone": "Select zone working",
+    "workingZone": "Working zone",
+    "selected": "Selected"
+  },
+  "truckDetailScreen": {
+    "truckDetail": "Truck detail",
+    "heighttOfTheCarStall": "Stall Height"
   }
 }

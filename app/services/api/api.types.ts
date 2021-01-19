@@ -168,5 +168,11 @@ export interface MapDirectionsRequest {
   name?: string
 }
 
+export interface ShipperTruckFilter {
+  truckAmount?: number,
+  truckType?: number,
+  zoneIds?: number[]
+}
+
 export type GetUsersResult = { kind: "ok"; users: User[] } | GeneralApiProblem
 export type GetUserResult = { kind: "ok"; user: User } | GeneralApiProblem

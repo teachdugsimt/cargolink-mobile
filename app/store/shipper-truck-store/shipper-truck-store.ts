@@ -1,0 +1,129 @@
+import { types, flow, cast } from "mobx-state-tree"
+import { ShipperTruckAPI } from "../../services/api"
+import * as Types from "../../services/api/api.types"
+
+const shipperTruckApi = new ShipperTruckAPI()
+
+const defaultModel = {
+    id: types.maybeNull(types.string),
+    truckType: types.maybeNull(types.number),
+    loadingWeight: types.maybeNull(types.number),
+    stallHeight: types.maybeNull(types.string),
+    createdAt: types.maybeNull(types.string),
+    updatedAt: types.maybeNull(types.string),
+    approveStatus: types.maybeNull(types.string),
+    registrationNumber: types.maybeNull(types.array(types.string)),
+    tipper: types.maybeNull(types.boolean)
+}
+
+const ShipperJob = types.model(defaultModel)
+
+const ShipperJobFull = types.model({
+    ...defaultModel,
+    truckPhotos: types.maybeNull(types.model({
+        front: types.maybeNull(types.string),
+        back: types.maybeNull(types.string),
+        left: types.maybeNull(types.string),
+        right: types.maybeNull(types.string),
+    })),
+    workingZones: types.maybeNull(types.array(types.model({
+        region: types.maybeNull(types.number),
+        province: types.maybeNull(types.number),
+    })))
+})
+
+const ShipperTruckStore = types
+    .model({
+        list: types.maybeNull(types.array(ShipperJob)),
+        data: types.maybeNull(ShipperJobFull),
+        loading: types.boolean,
+        error: types.maybeNull(types.string),
+    })
+    .actions((self) => ({
+        find: flow(function* find(filter: Types.ShipperJobRequest = {}) {
+            yield shipperTruckApi.setup()
+            self.loading = true
+            try {
+                const response = yield shipperTruckApi.find(filter)
+                console.log("Response call api get shipper trucks : : ", response)
+                if (response.kind === 'ok') {
+                    self.list = response.data || []
+                }
+                self.loading = false
+            } catch (error) {
+                console.error("Failed to fetch get shipper trucks : ", error)
+                self.loading = false
+                self.error = "error fetch api get shipper trucks"
+            }
+        }),
+
+        findOne: flow(function* findOne(id: string) {
+            yield shipperTruckApi.setup()
+            self.loading = true
+            try {
+                const response = yield shipperTruckApi.findOne(id)
+                console.log("Response call api get shipper truck : : ", JSON.stringify(response))
+                if (response.kind === 'ok') {
+                    self.data = response.data || {}
+                } else {
+                    self.error = response?.data?.message || response.kind
+                }
+                self.loading = false
+            } catch (error) {
+                // ... including try/catch error handling
+                console.error("Failed to fetch get shipper truck : ", error)
+                // self.data = []
+                self.loading = false
+                self.error = "error fetch api get shipper truck"
+            }
+        }),
+
+        setDefaultOfData: function setDefaultOfData() {
+            self.data = {
+                id: '',
+                truckType: 0,
+                loadingWeight: 2,
+                stallHeight: null,
+                createdAt: '',
+                updatedAt: '',
+                approveStatus: '',
+                registrationNumber: cast([
+                    ''
+                ]),
+                truckPhotos: {
+                    front: null,
+                    back: null,
+                    left: null,
+                    right: null
+                },
+                workingZones: cast([
+                    {
+                        region: 1,
+                        province: null
+                    }
+                ]),
+                tipper: false
+            }
+        },
+
+        setDefaultOfList: function setDefaultOfList() {
+            self.list = cast([])
+        }
+
+    }))
+    .views((self) => ({
+        get getList() {
+            return self.list
+        },
+        get getData() {
+            return self.data
+        }
+    }))
+    .create({
+        list: [],
+        data: {},
+        loading: false,
+        error: "",
+    })
+
+export default ShipperTruckStore

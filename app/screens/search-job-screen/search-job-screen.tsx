@@ -55,6 +55,7 @@ const Item = (data) => {
     from,
     to,
     owner,
+    isLiked,
   } = data
 
   const navigation = useNavigation()
@@ -67,6 +68,13 @@ const Item = (data) => {
   const onToggleHeart = (data) => {
     console.log('onToggleHeart data', data)
     FavoriteJobStore.add(data.id)
+    // const nList = ShipperJobStore.list.map(attr => {
+    //   return {
+    //     ...attr,
+    //     isLiked: data.id === attr.id ? !attr.isLiked : attr.isLiked
+    //   }
+    // }) // [PENDING]
+    // ShipperJobStore.list = JSON.parse(JSON.stringify(nList))
   }
 
   const typeOfTruck = GetTruckType(+truckType, i18n.locale).name
@@ -87,7 +95,7 @@ const Item = (data) => {
           viewDetail: true,
           postBy: owner.companyName,
           isVerified: true,
-          // isLike,
+          isLike: isLiked,
           // rating,
           // ratingCount,
           // isCrown,
@@ -123,7 +131,7 @@ const initialState = {
   subButtons: SUB_BUTTON,
   listLength: 0,
   data: [],
-  filterLength: 0
+  filterLength: 0,
 }
 
 let PAGE = 0;
@@ -177,9 +185,11 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
   )
 
   const onScrollList = () => {
-    PAGE = ShipperJobStore.list.length === listLength ? listLength : PAGE + ShipperJobStore.list.length
-    const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE }
-    ShipperJobStore.find(advSearch)
+    if (ShipperJobStore.list.length >= 10) {
+      PAGE = ShipperJobStore.list.length === listLength ? listLength : PAGE + ShipperJobStore.list.length
+      const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE }
+      ShipperJobStore.find(advSearch)
+    }
   }
 
   const onPress = (id: number) => {
@@ -219,8 +229,8 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
 
   const onSearch = () => {
     const filter = AdvanceSearchStore.filter
-    ShipperJobStore.setDefaultOfList()
     ShipperJobStore.find(filter)
+    ShipperJobStore.setDefaultOfList()
   }
 
   const onAdvanceSeach = () => {

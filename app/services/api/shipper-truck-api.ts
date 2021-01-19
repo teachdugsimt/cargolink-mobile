@@ -2,17 +2,12 @@ import { ApisauceInstance, create, ApiResponse } from "apisauce"
 import { getGeneralApiProblem } from "./api-problem"
 import { ApiConfig, DEFAULT_API_CONFIG } from "./api-config"
 import * as Types from "./api.types"
-import AuthStore from "../../store/auth-store/auth-store"
 import * as storage from "../../utils/storage"
-
-interface FavoriteJob {
-    id: string
-}
 
 /**
  * Manages all requests to the API.
  */
-export class FavoriteJobAPI {
+export class ShipperTruckAPI {
     /**
      * The underlying apisauce instance which performs the requests.
      */
@@ -58,34 +53,40 @@ export class FavoriteJobAPI {
             },
         })
     }
-
-    async find(filter: Types.ShipperJobRequest | {} = {}): Promise<any> {
+    /**
+     * Gets a list of users.
+     */
+    async find(filter: Types.ShipperTruckFilter | {} = {}): Promise<any> {
+        // make the api call
         try {
-            const response: ApiResponse<any> = await this.apisauce.get('/api/v1/mobile/carriers/jobs/favorite', filter)
-            console.log("Favorit job api [find] : ", response)
+            const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/shippers/truck', filter)
+            console.log("Shipper truck api [find] : ", response)
             if (!response.ok) {
                 const problem = getGeneralApiProblem(response)
                 if (problem) return problem
             }
             return { kind: "ok", data: response.data }
+            // transform the data into the format we are expecting
         } catch (error) {
-            console.log("Error call api find all Favorit job : ", error)
+            console.log("Error call api find all shipper truck : ", error)
             return error
         }
     }
 
-    async create(params: FavoriteJob): Promise<any> {
+    async findOne(id: string): Promise<any> {
         try {
-            const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/mobile/carriers/jobs/favorite/add`, params)
-            console.log("Favorit job api [create] : ", response)
+            const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/shippers/truck/${id}`)
+            console.log("Shipper truck api [findOne] : ", response)
             if (!response.ok) {
                 const problem = getGeneralApiProblem(response)
                 if (problem) return problem
             }
             return { kind: "ok", data: response.data }
+            // transform the data into the format we are expecting
         } catch (error) {
-            console.log("Error call api create Favorit job : ", error)
+            console.log("Error call api find one shipper truck : ", error)
             return error
         }
     }
+
 }

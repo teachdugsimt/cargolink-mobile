@@ -6,7 +6,10 @@ import { Text } from '../text/text'
 import { AdvanceSearchTabProps } from './advance-search-tab.props'
 
 const BTN_CONTAINER: ViewStyle = {
+    flex: 1,
     flexDirection: 'row',
+    justifyContent: 'center',
+    paddingHorizontal: spacing[2],
 }
 const FULL_SEARCH_BOTTON: ViewStyle = {
     backgroundColor: color.transparent,
@@ -21,6 +24,7 @@ const FULL_SEARCH_TEXT: TextStyle = {
     color: color.textBlack,
     paddingHorizontal: spacing[2],
     paddingVertical: spacing[1],
+    textAlign: 'center'
 }
 const COUNT: ViewStyle = {
     backgroundColor: color.red,
@@ -65,16 +69,18 @@ export function AdvanceSearchTab(props: AdvanceSearchTabProps) {
     return (
         <View style={BTN_CONTAINER}>
             {mapMenu.length && mapMenu.map((button, index) => {
+                if (index >= 3) return null
                 const borderColor = button.isChecked ? color.primary : color.line
                 const customStyle: ViewStyle = {
-                    paddingRight: spacing[3],
+                    flex: 3,
+                    paddingRight: spacing[2],
                     borderRightWidth: 1,
                     borderRightColor: color.line,
                     position: 'relative',
                 }
 
                 return (
-                    <View key={index} style={index === 0 ? customStyle : index === 1 ? { paddingLeft: spacing[3] } : {}} >
+                    <View key={index} style={index === 0 ? customStyle : index === 1 ? { paddingLeft: spacing[2], flex: 2 } : { flex: 2 }} >
                         <TouchableOpacity
                             testID={`btn-select-search-${index + 1}`}
                             style={{ ...advanceStyle, borderColor }}
@@ -82,9 +88,6 @@ export function AdvanceSearchTab(props: AdvanceSearchTabProps) {
                         >
                             <Text
                                 style={FULL_SEARCH_TEXT}
-                                // children={
-                                //     <Text style={FULL_SEARCH_TEXT}>{button.label}</Text>
-                                // }
                                 text={button.label}
                                 numberOfLines={1}
                             />
