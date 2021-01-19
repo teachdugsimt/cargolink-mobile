@@ -133,55 +133,32 @@ export const PostJobScreen = observer(function PostJobScreen() {
     const navigation = useNavigation()
 
     const [listProductState, setlistProductState] = useState(null)
+    const [swipe, setswipe] = useState(false)
     const { control, handleSubmit, errors } = useForm({
         // defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : MyVehicleStore.MappingData
     });
 
     useEffect(() => {
-        if (check_load_truck_type == 0) {
-            check_load_truck_type = 1
-            TruckTypeStore.getTruckTypeDropdown(i18n.locale)
-            AdvanceSearchStore.getProductTypes(i18n.locale)
-        }
-        return () => {
-            check_load_truck_type = 0
-        }
-
+        TruckTypeStore.getTruckTypeDropdown(i18n.locale)
+        AdvanceSearchStore.getProductTypes()
     }, [])
 
-    useEffect(() => {
-        let tmp_list_product = JSON.parse(JSON.stringify(AdvanceSearchStore.productTypes))
-        if (tmp_list_product && tmp_list_product.length) {
-            tmp_list_product.map((e, i) => {
-                e.image = "bell"
-                return e
-            })
-            setlistProductState(tmp_list_product)
-            __DEV__ && console.tron.log("Tmp list Product :: ", tmp_list_product)
-        }
-    }, [AdvanceSearchStore.productTypes])
-
     const onSubmit = (data) => {
-        // if (!data['item-type'] || !data['vehicle-type']) AlertForm('common.requireField')
-        // else {
         console.log("Data Form Post job : ", data)
         PostJobStore.setPostJob(1, data)
         navigation.navigate("receivePoint")
-        // }
     }
-    // 4 ล้อ
-    // 6 ล้อ
+    
     const _renderSectionModal = (item: any, index: any, onChange: any, section: any) => {
         return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name + index} style={ROOT_FLAT_LIST} onPress={() => {
-            console.log("ITEM FUCK YEAH :: ", item)
             if (section == 1) setvisible0(false)
             else if (section == 2) setvisible(false)
             onChange(item.id)
         }}>
             <View style={BORDER_BOTTOM}>
                 <View style={VIEW_LIST_IMAGE}>
-                    {Platform.OS == "ios" ? <Image source={images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
-                        <Image source={images[item.image]} style={IMAGE_LIST} height={60} width={60} />}
+                    {Platform.OS == "ios" ? <Image source={images.bell} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
+                        <Image source={images.bell} style={IMAGE_LIST} height={60} width={60} />}
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
                     <Text style={{ width: '50%', paddingLeft: 20 }}>{item.name}</Text>
@@ -198,8 +175,10 @@ export const PostJobScreen = observer(function PostJobScreen() {
         }}>
             <View style={{ ...BORDER_BOTTOM }}>
                 <View style={VIEW_LIST_IMAGE}>
-                    {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
-                        <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} />}
+                    {/* {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
+                        <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} />} */}
+                    {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images.bell} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
+                        <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images.bell} style={IMAGE_LIST} height={60} width={60} />}
                 </View>
                 <View style={{ flexDirection: 'row', flex: 1, width: '100%', justifyContent: 'space-between' }}>
                     <View style={{ width: '80%', alignItems: 'center' }}>
@@ -261,6 +240,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
         dropdown_vehicle_type = formControllerValue['vehicle-type']
     }
     let list_vehicle = JSON.parse(JSON.stringify(TruckTypeStore.data))
+    const list_product_type_all = JSON.parse(JSON.stringify(AdvanceSearchStore.productTypes))
 
     return (
         <View testID="PostJobScreen" style={FULL}>
@@ -396,7 +376,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                     {!dropdown_item_type && <><Text style={{ padding: 10 }} tx={"postJobScreen.selectItemType"} />
                                         <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} />
                                     </>}
-                                    {dropdown_item_type && !!listProductState && _renderSelectedList(listProductState.find(e => e.id == dropdown_item_type), 2)}
+                                    {dropdown_item_type && !!list_product_type_all && _renderSelectedList(list_product_type_all.find(e => e.id == dropdown_item_type), 2)}
 
                                 </TouchableOpacity>
 
@@ -419,8 +399,8 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
                                                         <View style={[PADDING_TOP]}>
 
-                                                            {listProductState && listProductState.length && <MultiSelector
-                                                                items={listProductState}
+                                                            {list_product_type_all && list_product_type_all.length && <MultiSelector
+                                                                items={list_product_type_all}
                                                                 keyer={"list-item-type-01"}
                                                                 selectedItems={[value]}
                                                                 selectText={translate("postJobScreen.pleaseSelectVehicleType")}

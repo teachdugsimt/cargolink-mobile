@@ -170,8 +170,8 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
         }}>
             <View style={{ ...BORDER_BOTTOM }}>
                 <View style={VIEW_LIST_IMAGE}>
-                    {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
-                        <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} />}
+                    {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images.bell} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
+                        <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images.bell} style={IMAGE_LIST} height={60} width={60} />}
                 </View>
                 <View style={{ flexDirection: 'row', flex: 1, width: '100%', justifyContent: 'space-between' }}>
                     <View style={{ width: '80%', alignItems: 'center' }}>
@@ -303,18 +303,6 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
     }
 
     useEffect(() => {
-        let tmp_data = JSON.parse(JSON.stringify(AdvanceSearchStore.productTypes))
-        if (tmp_data && tmp_data.length) {
-            tmp_data.map((e) => {
-                e.image = "bell"
-                return e
-            })
-            setlistProductState(tmp_data)
-        }
-    }, [AdvanceSearchStore.productTypes])
-
-
-    useEffect(() => {
         let data_postjob = JSON.parse(JSON.stringify(PostJobStore.data_postjob))
         if (data_postjob) navigation.navigate("postSuccess")
     }, [PostJobStore.data_postjob])
@@ -356,7 +344,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
         }
     ]
     let list_vehicle = JSON.parse(JSON.stringify(TruckTypeStore.data))
-
+    const list_product_type_all = JSON.parse(JSON.stringify(AdvanceSearchStore.productTypes))
     let formControllerValue = control.getValues()
     let dropdown_item_type, dropdown_vehicle_type
     if (formControllerValue['item-type']) {
@@ -489,7 +477,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                                     {!dropdown_item_type && <><Text style={{ padding: 10 }} tx={"postJobScreen.selectItemType"} />
                                         <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} />
                                     </>}
-                                    {dropdown_item_type && _renderSelectedList(listProductState.find(e => e.id == dropdown_item_type), 2)}
+                                    {dropdown_item_type && list_product_type_all && _renderSelectedList(list_product_type_all.find(e => e.id == dropdown_item_type), 2)}
 
                                 </TouchableOpacity>
 
@@ -512,8 +500,8 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
 
                                                         <View style={[PADDING_TOP]}>
 
-                                                            <MultiSelector
-                                                                items={listProductState}
+                                                            {list_product_type_all && list_product_type_all.length && <MultiSelector
+                                                                items={list_product_type_all}
                                                                 keyer={"list-item-type-01"}
                                                                 selectedItems={[value]}
                                                                 selectText={translate("postJobScreen.pleaseSelectVehicleType")}
@@ -521,7 +509,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                                                                     onChange(val[0])
                                                                     setvisible(false)
                                                                 }}
-                                                            />
+                                                            />}
                                                         </View>
 
                                                         <View>
