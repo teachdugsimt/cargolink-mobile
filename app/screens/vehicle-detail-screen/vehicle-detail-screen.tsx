@@ -19,6 +19,9 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 import { TouchableOpacity } from "react-native-gesture-handler"
 import MyVehicleStore from '../../store/my-vehicle-store/my-vehicle-store'
 import StatusStore from '../../store/my-vehicle-store/status-vehicle-store'
+import { GetTruckType } from "../../utils/get-truck-type";
+import i18n from 'i18n-js';
+import { useStores } from "../../models/root-store/root-store-context";
 
 const deviceWidht = Dimensions.get("window").width
 const deviceHeight = Dimensions.get("window").height
@@ -53,7 +56,7 @@ const IMAGE: ImageStyle = {
   aspectRatio: 4 / 2,
   margin: spacing[1],
   borderRadius: 4,
-  backgroundColor: color.disable,
+  backgroundColor: color.line,
 }
 const BUTTON_EDIT: ViewStyle = {
   backgroundColor: color.primary,
@@ -93,7 +96,7 @@ const LOGO: ImageStyle = {
   width: 55,
   height: 55,
   borderRadius: Math.round(deviceWidht + deviceHeight) / 2,
-  backgroundColor: color.disable,
+  backgroundColor: color.line,
 }
 const TYPE_CAR_NAME: TextStyle = {
   paddingLeft: spacing[4],
@@ -111,10 +114,11 @@ const initialState = {
 export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
   const navigation = useNavigation()
 
+  const { tokenStore } = useStores()
+
   const [{ openViewer, indexOfImage }, setState] = useState(initialState)
   const {
-    car_type,
-    image_car_type,
+    truckType,
     stallHeight,
     tipper,
     // imageTransform,
@@ -151,11 +155,16 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
   const transformImage = truckPhotos &&
     Object.keys(truckPhotos).length ?
     Object.entries(truckPhotos).map(img => {
-      return { url: img[1] }
+      return {
+        url: img[1],
+      }
     }) : []
+
+  const txtTruckType = GetTruckType(truckType, i18n.locale)
 
   return (
     <View style={CONTAINER}>
+
       {MyVehicleStore.loading && <ModalLoading size={'large'} color={color.primary} visible={MyVehicleStore.loading} />}
       <ScrollView onScroll={({ nativeEvent }) => { }} style={{}} scrollEventThrottle={400}>
         <View style={COLUMN}>
@@ -168,7 +177,13 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
                 transformImage.map((image, index) => {
                   return (
                     <TouchableOpacity style={TOUCHABLE} key={index} onPress={(attr) => onViewer(index)}>
-                      <Image style={IMAGE} source={MyVehicleStore.data.id ? { uri: image.url } : imageComponent[image.url]} key={index} />
+                      <Image style={IMAGE} source={MyVehicleStore.data.id ? {
+                        uri: image.url,
+                        method: 'GET',
+                        headers: {
+                          Authorization: `Bearer ${tokenStore.token.accessToken}`
+                        },
+                      } : imageComponent[image.url]} key={index} />
                     </TouchableOpacity>
                   )
                 })}
@@ -191,9 +206,9 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
           </View>
           <View style={{ ...ROW, alignItems: "center" }}>
             <View style={OUTER_CIRCLE}>
-              <Image source={imageComponent[image_car_type ? image_car_type : "truck17"]} style={LOGO} />
+              <Image source={imageComponent[truckType ? `truck${truckType}` : "truck17"]} style={LOGO} />
             </View>
-            <Text style={TYPE_CAR_NAME} text={car_type} />
+            <Text style={TYPE_CAR_NAME} text={txtTruckType && txtTruckType.name ? txtTruckType.name : ''} />
           </View>
           <View style={ROW}>
             <View style={SUB_TOPIC_ROOT}>
@@ -250,3 +265,4 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
     </View>
   )
 })
+

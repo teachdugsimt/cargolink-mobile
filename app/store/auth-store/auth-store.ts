@@ -1,7 +1,6 @@
 import { types, flow } from "mobx-state-tree"
 import { AuthAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
-
 const apiAuth = new AuthAPI()
 
 const SignIn = types.model({
@@ -111,26 +110,26 @@ const AuthStore = types
         self.error = "error fetch api otp verify"
       }
     }),
-
-    getPolicyRequest: flow(function* getPolicyRequest(id: number) {
-      apiAuth.setup()
-      self.loading = true
-      try {
-        const response = yield apiAuth.getPolicy(id)
-        console.log('response getPolicyRequest :>> ', response);
-        if (response.kind === 'ok') {
-          self.policyData = response.data || {}
-        } else {
-          self.error = response.data.message
-        }
-        self.loading = false
-      } catch (error) {
-        console.log('error getPolicyRequest :>> ', error);
-        self.loading = false
-        self.error = "error fetch api get policy"
-      }
-    }),
-
+    /*
+        getPolicyRequest: flow(function* getPolicyRequest(id: number) {
+          apiAuth.setup()
+          self.loading = true
+          try {
+            const response = yield apiAuth.getPolicy(id)
+            console.log('response getPolicyRequest :>> ', response);
+            if (response.kind === 'ok') {
+              self.policyData = response.data || {}
+            } else {
+              self.error = response.data.message
+            }
+            self.loading = false
+          } catch (error) {
+            console.log('error getPolicyRequest :>> ', error);
+            self.loading = false
+            self.error = "error fetch api get policy"
+          }
+        }),
+    */
     updatePolicyStatusRequest: flow(function* updatePolicyStatusRequest(id: number, data: Types.TermAndService) {
       apiAuth.setup()
       self.loading = true

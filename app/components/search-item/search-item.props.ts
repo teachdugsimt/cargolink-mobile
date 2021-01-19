@@ -1,13 +1,19 @@
 import { ViewStyle } from "react-native"
 
 export interface SearchItemProps {
+  id?: number | string
+
   fromText?: string
 
   toText?: string
 
-  count?: string
+  count?: string | number
 
   detail?: string
+
+  productName?: string
+
+  truckType?: string
 
   packaging?: string
 
@@ -39,7 +45,7 @@ export interface SearchItemProps {
 
   containerStyle?: ViewStyle
 
-  onToggle?: (data: object) => void
+  onToggleHeart?: (data: object) => void
 
   onPress?: (data: object) => void
 }

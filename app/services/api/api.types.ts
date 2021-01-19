@@ -51,6 +51,7 @@ export interface VehicleFilterRequest {
 
 export interface TermAndService {
   accept: boolean
+  version: string
 }
 
 export interface VehicleRequest {
@@ -77,6 +78,16 @@ export interface VehicleRequest {
     province?: string,
   }[]
 }
+
+// export interface CreateDataRequest {
+//   car_type: string
+//   tipper: boolean
+//   stallHeight: string
+//   registrationNumber: Array<string>
+//   images: Array<Object>
+//   workingZones: Array<Object>
+// }
+
 export interface PatchDataRequest {
   car_type: string
   tipper: boolean
@@ -91,6 +102,76 @@ export interface PolicyReponse {
   accepted: boolean
   acceptedAt: string
   data: string
+}
+
+export interface ShipperJobRequest {
+  descending?: boolean
+  from?: string
+  page?: number
+  productType?: number[]
+  rowsPerPage?: number
+  sortBy?: string
+  to?: string
+  truckAmountMax?: number
+  truckAmountMin?: number
+  truckType?: number[]
+  weight?: number
+}
+
+export interface ShipperJobCreate {
+  expiredTime: string
+  from: {
+    contactMobileNo: string
+    contactName: string
+    dateTime: string
+    lat: string
+    lng: string
+    name: string
+  }
+  note: string
+  productName: string
+  productTypeId: number
+  to: {
+    contactMobileNo: string
+    contactName: string
+    dateTime: string
+    lat: string
+    lng: string
+    name: string
+  }[]
+  truckAmount: number
+  truckType: string
+  weight: number
+}
+
+export interface AdvanceSearchMenu {
+  id?: number
+  type?: string
+  topic?: string
+  showSubColumn?: number
+  isChecked?: boolean
+  isMultiSelect?: boolean
+  subMenu?: {
+    id?: number
+    value?: number | Array<number>
+    name?: string
+    isChecked?: boolean
+  }[]
+}
+
+export interface MapDirectionsRequest {
+  contactMobileNo?: string
+  contactName?: string
+  dateTime?: string
+  lat: string
+  lng: string
+  name?: string
+}
+
+export interface ShipperTruckFilter {
+  truckAmount?: number,
+  truckType?: number,
+  zoneIds?: number[]
 }
 
 export type GetUsersResult = { kind: "ok"; users: User[] } | GeneralApiProblem

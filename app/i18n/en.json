@@ -3,6 +3,7 @@
     "ok": "OK!",
     "cancel": "Cancel",
     "back": "Back",
+    "next": "next",
     "from": "From",
     "to": "To",
     "confirm": "confirm",
@@ -24,7 +25,16 @@
     "ภาคใต้": "south",
     "ภาคตะวันตก": "west",
     "ภาคกลาง": "center",
-    "ภาคตะวันออก": "east"
+    "ภาคตะวันออก": "east",
+    "count": "Count",
+    "search": "Search ...",
+    "requireField": "require field",
+    "licensePlate": "License plate",
+    "notFound": "Not Found",
+    "have": "Have",
+    "notHave": "No",
+    "M": "m.",
+    "id": "id"
   },
   "bottomTab": {
     "home": "Home",
@@ -64,10 +74,39 @@
   },
   "postJobScreen": {
     "postjob": "post job",
-    "vehicleDetailAndProduct": "car&product detail",
-    "getProductLocation": "get product location",
+    "vehicleDetailAndProduct": "product detail",
+    "getProductLocation": "receive point",
     "checkInformation": "check detail",
-    "success": "success"
+    "success": "success",
+    "selectVehicleType": "Select vehicle ttype",
+    "pleaseSelectVehicleType": "please select vehicle type",
+    "vehicleNum": "How many cars",
+    "itemDetail": "Product detail",
+    "selectItemType": "please select your product type",
+    "inputYourItem": "Product name",
+    "weightNumber": "Weight (T)",
+    "popular": "popular",
+    "4maxType": "4 wheels type",
+
+
+    "acceptPointProduct": "receive point",
+    "inputLocationReceive": "input receive location",
+    "dateReceive": "receive date",
+    "timeReceive": "receive time",
+    "receiverInfo": "receiver information",
+    "receiverName": "receiver name",
+    "receiverTel": "tel no",
+
+    "shipingPoint": "shipping location ",
+    "shippingAddr": "input shipping address",
+    "dateShipping": "shipping date",
+    "timeShipping": "shipping time",
+    "shipperInfo": "shipper information",
+    "shipperName": "shipper name",
+    "shipperTel": "tel no",
+
+    "addShippingPoint": "add ship point",
+    "postJobSuccess": "welcome your post job was success"
   },
   "uploadVehicleScreen": {
     "addVehicle": "Add Vehicle",
@@ -85,7 +124,10 @@
     "exampleImageRight": "example image rightside",
     "workZone": "Work zone",
     "region": "region",
-    "province": "province"
+    "province": "province",
+    "pleaseSelectProvince": "please select province",
+    "selectFromLibrary": "choose image from library",
+    "captureNew": "camera"
   },
   "profileScreen": {
     "profile": "Profile",
@@ -126,7 +168,13 @@
     "seeDetail": "See detail",
     "productDetail": "Product Detail",
     "weightTon": "Weight (Ton)",
-    "call": "Call"
+    "call": "Call",
+    "jobDetail": "Job Detail",
+    "postBy": "Post by",
+    "productType": "Product Type",
+    "productName": "Product Name",
+    "pickUpPoint": "Pick up point",
+    "product": "Product"
   },
   "acceptPolicyScreen": {
     "termAndCondition": "Term and condition",
@@ -209,6 +257,33 @@
     "settingSearch": "Setting Search",
     "clear": "Clear",
     "fullSearch": "Full search",
-    "search": "Search"
+    "search": "Search",
+    "more": "more.."
+  },
+  "shipperProfileScreen": {
+    "verified": "Verified",
+    "notVerified": "Not Verified",
+    "workInProgress": "Work in progress",
+    "pastWork": "Past work"
+  },
+  "feedbackScreen": {
+    "yourOpinion": "Your opinion",
+    "canYouAgreeJob": "Can you agree the work through this app?",
+    "rightFromApp": "Right from app",
+    "notFromApp": "Not from app",
+    "canYouHowMuch": "Can you tell us about how much you fall in price?",
+    "countRating": "Help me rate your satisfaction with this one on a scale of 1 - 5 stars.",
+    "moreAdvice": "More advice",
+    "price": "Price"
+  },
+  "searchTruckScreen": {
+    "findTruck": "Find truck",
+    "selectWorkingZone": "Select zone working",
+    "workingZone": "Working zone",
+    "selected": "Selected"
+  },
+  "truckDetailScreen": {
+    "truckDetail": "Truck detail",
+    "heighttOfTheCarStall": "Stall Height"
   }
 }

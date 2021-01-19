@@ -2,6 +2,7 @@ import { Instance, SnapshotOut, types } from "mobx-state-tree"
 import { HomeStore } from '../../store/home-store/home-store'
 import { SigninStore } from '../../store/signin-store/signin-store'
 import { VersatileStore } from '../../store/versatile-store/versatile-store'
+import { Token } from '../../store/token-store/token-store'
 /**
  * A RootStore model.
  */
@@ -13,6 +14,7 @@ export const RootStoreModel = types.model({
     homeStore: HomeStore,
     signinStore: SigninStore,
     versatileStore: VersatileStore,
+    tokenStore: Token
 })
 console.log("Root Store Model :: ", RootStoreModel)
 

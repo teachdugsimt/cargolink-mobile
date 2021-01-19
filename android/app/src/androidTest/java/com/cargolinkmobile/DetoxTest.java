@@ -1,5 +1,5 @@
 // Replace "com.example" here and below with your app's package name from the top of MainActivity.java
-package com.cargolinkmobile;;
+package th.co.cargolink.mobile;
 
 import com.wix.detox.Detox;
 import com.wix.detox.config.DetoxConfig;

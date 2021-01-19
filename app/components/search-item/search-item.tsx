@@ -1,18 +1,18 @@
-import React from 'react'
-import { Dimensions, Image, ImageBackground, ImageStyle, TextStyle, View, ViewStyle } from 'react-native';
+import React, { useState } from 'react'
+import { ImageBackground, ImageStyle, TextStyle, View, ViewStyle, TouchableOpacity } from 'react-native';
 import { SearchItemProps } from './search-item.props';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { color, spacing } from '../../theme';
 import { Icon } from '../icon/icon';
-import { Button } from '../button/button';
 import { PostingBy } from '../posting-by/posting-by';
 import { Text } from '../text/text';
 import { translate } from '../../i18n';
+// import { TouchableOpacity } from 'react-native-gesture-handler';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+
 const truckBackImage = require("./truck-back.png")
 
-const FONT_SIZE = 20
 const FONT_SIZE_SMALL = 15
-const FONT_SIZE_LARGE = 25
 
 const PADDING_TOP = { paddingTop: spacing[1] }
 const PADDING_BOTTOM = { paddingBottom: spacing[1] }
@@ -24,7 +24,7 @@ const CONTAINER: ViewStyle = {
   position: "relative",
   backgroundColor: color.backgroundWhite,
   borderWidth: 1,
-  borderColor: color.disable,
+  borderColor: color.line,
   marginTop: spacing[1],
   marginBottom: spacing[1],
 }
@@ -40,7 +40,7 @@ const TOP_ROOT: ViewStyle = {
   flexDirection: "row",
   paddingBottom: spacing[2],
   borderBottomWidth: 1,
-  borderBottomColor: color.disable,
+  borderBottomColor: color.line,
   marginLeft: spacing[1],
   marginRight: spacing[1],
   ...PADDING_LEFT,
@@ -60,14 +60,6 @@ const PIN_ICON: ImageStyle = {
   width: 22,
   height: 22,
 }
-const SMALL_ICON: ImageStyle = {
-  width: 18,
-  height: 18,
-}
-const HEART_ICON: ImageStyle = {
-  width: FONT_SIZE_LARGE,
-  height: FONT_SIZE_LARGE
-}
 const LOCATION_TEXT: TextStyle = {
   fontSize: FONT_SIZE_SMALL,
   ...PADDING_LEFT
@@ -82,10 +74,8 @@ const CAR_DETAIL_ROOT: TextStyle = {
   ...PADDING_LEFT,
 }
 const CAR_DETAIL: ViewStyle = {
-  flex: 1
-}
-const PACKAGING: ViewStyle = {
-  flex: 1
+  flex: 1,
+  flexDirection: "row",
 }
 const CONTENT_RIGHT: ViewStyle = {
   flex: 1,
@@ -94,13 +84,15 @@ const CONTENT_RIGHT: ViewStyle = {
   ...PADDING_TOP,
   ...PADDING_BOTTOM,
 }
-const RECOMMENED: TextStyle = {
+const RECOMMENED_ROOT: ViewStyle = {
   backgroundColor: "#1b4262",
+  borderRadius: 5,
+}
+const RECOMMENED: TextStyle = {
   paddingLeft: spacing[2],
   paddingRight: spacing[2],
   paddingTop: spacing[1],
   paddingBottom: spacing[1],
-  borderRadius: 5,
   color: color.textWhite,
   fontSize: 12,
 }
@@ -124,13 +116,8 @@ const ACCOUNT_ROOT: ViewStyle = {
   flexDirection: 'row',
   justifyContent: "flex-end"
 }
-const BUTTON_VIEW: ViewStyle = {
-  backgroundColor: color.transparent,
-  paddingHorizontal: 0,
-  paddingVertical: 0
-}
 const TEXT_VIEW: TextStyle = {
-  color: color.disable,
+  color: color.line,
   fontSize: 14,
   paddingHorizontal: 0,
   paddingVertical: 0
@@ -138,15 +125,18 @@ const TEXT_VIEW: TextStyle = {
 
 export function SearchItem(props: SearchItemProps) {
   const {
+    id,
     fromText,
     toText,
     count,
     detail,
+    productName,
+    truckType,
     packaging,
     viewDetail,
     viewDetailToRight,
     backgroundImage,
-    isLike,
+    isLike: like = false,
     iconOnBottom,
     isRecommened,
     rexommenedOnTop,
@@ -157,19 +147,29 @@ export function SearchItem(props: SearchItemProps) {
     isCrown,
     logo,
     containerStyle,
-    onPress
+    onPress,
+    onToggleHeart
   } = props
+
+  const [isLike, setIsLike] = useState(like)
+
+  const onSelectedHeart = () => {
+    setIsLike(!isLike)
+    onToggleHeart({ id, isLike: !isLike })
+  }
+
   return (
-    <View style={{ ...CONTAINER, ...containerStyle }}>
+    <TouchableOpacity style={{ ...CONTAINER, ...containerStyle }} activeOpacity={1} onPress={onPress}>
       <View style={TOP_ROOT}>
         <ImageBackground source={truckBackImage} style={BACKGROUND} ></ImageBackground>
         <View style={CONTENT}>
           <View style={LOCATION}>
             <Icon icon="pinDropYellow" style={PIN_ICON} />
             <Text
-              text={`${translate('common.from')} :`} // จาก
-              style={LOCATION_TEXT}
+              text={`${translate('common.from')}`} // จาก
+              style={[LOCATION_TEXT, { width: 40 }]}
             />
+            <Text style={{ paddingRight: spacing[2] }} text={':'} />
             <Text
               text={fromText}
               style={LOCATION_TEXT}
@@ -179,50 +179,55 @@ export function SearchItem(props: SearchItemProps) {
           <View style={LOCATION}>
             <Icon icon="pinDropGreen" style={PIN_ICON} />
             <Text
-              text={`${translate('common.to')} :`} // ถึง
-              style={LOCATION_TEXT}
+              text={`${translate('common.to')}`} // ถึง
+              style={[LOCATION_TEXT, { width: 40 }]}
             />
+            <Text style={{ paddingRight: spacing[2] }} text={':'} />
             <Text
               text={toText}
               style={LOCATION_TEXT}
+              numberOfLines={1}
             />
           </View>
           <View style={CAR_DETAIL_ROOT}>
             <View style={CAR_DETAIL}>
               <Text
                 style={TEXT}
-                text={`${translate('jobDetailScreen.truckCount')} :`} // จำนวนรถบรรทุก
+                text={`${translate('jobDetailScreen.product')} : `} // จำนวนรถบรรทุก
               />
-              <Text style={TEXT} text={detail} />
+              <Text style={TEXT} text={productName} />
             </View>
-            <View style={PACKAGING}>
+          </View>
+          <View style={CAR_DETAIL_ROOT}>
+            <View style={CAR_DETAIL}>
+              <Text style={TEXT} text={truckType} />
+            </View>
+            <View style={CAR_DETAIL}>
               <Text
                 style={TEXT}
-                text={`${translate('jobDetailScreen.packaging')} :`} // บรรจุภัณฑ์
+                text={`${translate('common.count')} : `} // บรรจุภัณฑ์
               />
-              <Text style={TEXT} text={packaging} />
+              <Text style={TEXT} text={count.toString()} />
             </View>
           </View>
         </View>
         <View style={CONTENT_RIGHT}>
-          <Icon icon={isLike ? 'heartActive' : 'heartInactive'} style={HEART_ICON} />
+          <TouchableOpacity onPress={onSelectedHeart}>
+            <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} size={24} color={isLike ? color.red : color.line} />
+          </TouchableOpacity>
           {isRecommened &&
-            <Text
-              style={RECOMMENED}
-              text={translate('jobDetailScreen.jobRecommend')} // งานแนะนำ
-            />}
+            <View style={RECOMMENED_ROOT}>
+              <Text
+                style={RECOMMENED}
+                text={translate('jobDetailScreen.jobRecommend')} // งานแนะนำ
+              />
+            </View>}
         </View>
       </View>
       <View style={BUTTOM_ROOT}>
         <View style={VIEW_DETAIL_ROOT}>
-          <Button
-            testID="view-detail"
-            style={BUTTON_VIEW}
-            textStyle={TEXT_VIEW}
-            text={translate('jobDetailScreen.seeDetail')} // ดูรายละเอียด
-            onPress={onPress}
-          />
-          <AntDesign name="right" size={FONT_SIZE_LARGE} color={color.disable} />
+          <Text text={translate('jobDetailScreen.seeDetail')} style={TEXT_VIEW} />
+          <AntDesign name="right" size={spacing[5]} color={color.line} />
         </View>
         <View style={ACCOUNT_ROOT}>
           <PostingBy {
@@ -237,6 +242,6 @@ export function SearchItem(props: SearchItemProps) {
           } />
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   )
 }

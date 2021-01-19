@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Dimensions, ImageStyle, Platform, TextStyle, TouchableHighlight, View, ViewStyle } from 'react-native';
 import { color, spacing } from '../../theme';
 import { Button } from '../button/button';
@@ -11,11 +11,6 @@ import { translate } from '../../i18n';
 import RNPickerSelect from 'react-native-picker-select';
 import i18n from 'i18n-js'
 import { provinceListEn, provinceListTh } from '../../screens/home-screen/manage-vehicle/datasource'
-
-interface LocationProps {
-  label?: string
-  value?: string
-}
 
 interface Input {
   firstLocation: string
@@ -52,7 +47,7 @@ const PIN_ICON: ImageStyle = {
 const ARROW_ICON: ImageStyle = {
   width: 26,
   height: 26,
-  backgroundColor: color.disable,
+  backgroundColor: color.line,
   resizeMode: 'cover',
   borderRadius: Math.round(Dimensions.get('window').width + Dimensions.get('window').height) / 2,
 }
@@ -92,7 +87,9 @@ export function SearchBar(props: SearchBarProps) {
     style,
     navigationTo,
     textStyle,
-    buttonText
+    buttonText,
+    onToggle,
+    onSearch
   } = props
 
   const switching = () => {
@@ -103,11 +100,16 @@ export function SearchBar(props: SearchBarProps) {
   }
 
   const onChangeValue = (value: object) => {
+    console.log('onChangeValue province', value)
     setState(prevState => ({
       ...prevState,
       ...value
     }))
   }
+
+  useEffect(() => {
+    onToggle(firstLocation || undefined, secondLocation || undefined)
+  }, [firstLocation, secondLocation])
 
   const textStyleContainer = { ...LOCATION_TEXT, ...textStyle }
 
@@ -200,7 +202,7 @@ export function SearchBar(props: SearchBarProps) {
           style={SEARCH_BOTTON}
           textStyle={SEARCH_TEXT}
           text={buttonText} // ค้นหาโดยละเอียด
-          onPress={() => navigation.navigate(navigationTo)}
+          onPress={onSearch}
         />
       </View>
     </View>

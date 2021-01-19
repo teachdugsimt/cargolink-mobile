@@ -4,40 +4,56 @@ import * as Types from "../../services/api/api.types"
 const apiMyVehicle = new MyVehicleAPI()
 
 const Region = types.model({
-    region: types.maybeNull(types.string),
-    province: types.maybeNull(types.string)
+    region: types.maybeNull(types.number),
+    province: types.maybeNull(types.number)
 })
 
-const ImageVehicle = types.model({
-    uri: types.string,
-    type: types.string,
-    name: types.string,
-    size: types.number,
-    tmp_name: types.string
+const ImageType = types.model({
+    back: types.maybeNull(types.string),
+    front: types.maybeNull(types.string),
+    left: types.maybeNull(types.string),
+    right: types.maybeNull(types.string)
 })
 
 const VehicleNew = types.model({
-    car_type: types.string,
-    tipper: types.boolean,
-    stallHeight: types.string,
-    registrationNumber: types.array(types.string),
-    images: types.maybeNull(types.array(ImageVehicle)),
+    approveStatus: types.maybeNull(types.string),
+    createdAt: types.maybeNull(types.string),
+    id: types.maybeNull(types.string),
+
+    loadingWeight: types.maybeNull(types.number),
+    registrationNumber: types.maybeNull(types.array(types.string)),
+    stallHeight: types.number,
+    tipper: types.maybeNull(types.boolean),
+    truckPhotos: types.maybeNull(ImageType),
+    truckType: types.maybeNull(types.number),
+    updatedAt: types.maybeNull(types.string),
     workingZones: types.array(Region)
+    // carrierId: types.number,
+
+
+    // carrierId: types.number,
+    // loadingWeight: types.maybeNull(types.number),
+    // registrationNumber: types.array(types.string),
+    // stallHeight: types.number,
+    // tipper: types.boolean,
+    // truckPhotos: types.maybeNull(ImageType),
+    // truckType: types.number,
+    // workingZones: types.array(Region)
 })
 
 const VehiclePatch = types.model({
-    car_type: types.string,
-    tipper: types.boolean,
-    stallHeight: types.string,
-    registrationNumber: types.array(types.string),
-    images: types.maybeNull(types.array(types.model({
-        uri: types.string,
-        type: types.maybeNull(types.string),
-        name: types.maybeNull(types.string),
-        size: types.maybeNull(types.number),
-        tmp_name: types.maybeNull(types.string)
-    }))),
-    workingZones: types.array(Region)
+    carrierId: types.maybeNull(types.number),
+    truckType: types.maybeNull(types.number),
+    stallHeight: types.maybeNull(types.number),
+
+    loadingWeight: types.maybeNull(types.number),
+    tipper: types.maybeNull(types.boolean),
+    registrationNumber: types.maybeNull(types.array(types.string)),
+    truckPhotos: types.maybeNull(types.model({
+        url: types.maybeNull(types.string),
+        action: types.maybeNull(types.string)
+    })),
+    workingZones: types.maybeNull(types.array(Region))
 })
 
 const CreateVehicleStore = types.model({
@@ -45,20 +61,20 @@ const CreateVehicleStore = types.model({
     loading: types.boolean,
     error: types.maybeNull(types.string),
 
-    patchMyVehicle: types.maybeNull(VehiclePatch),
+    patchMyVehicle: types.maybeNull(types.model()),
     loadingPatchMyVehicle: types.boolean,
     errorPatchMyVehicle: types.maybeNull(types.string)
 
 }).actions(self => ({
     createVehicleProfile: flow(function* createVehicleProfile(params) { // <- note the star, this a generator function!
-        apiMyVehicle.setup()
+        yield apiMyVehicle.setup()
         self.loading = true
         try {
             // ... yield can be used in async/await style
             const response = yield apiMyVehicle.createVehicleProfile(params)
             console.log("Response call create upload vehicle : : ", response)
             if (response.ok) {
-                self.data = response.data.reminder || {}
+                self.data = response.data || {}
                 self.loading = false
             } else {
                 self.loading = false
@@ -74,12 +90,13 @@ const CreateVehicleStore = types.model({
     }),
     patchVehicleDetailsRequest: flow(function* findRequest(params: Types.PatchDataRequest) {
         // <- note the star, this a generator function!
-        apiMyVehicle.setup()
+        console.tron.logImportant(params)
+        yield apiMyVehicle.setup()
         self.loadingPatchMyVehicle = true
         try {
             const response = yield apiMyVehicle.patchMyVehicle(params)
             console.log("Response call api patch my vehicle : : ", response)
-            self.patchMyVehicle = response.data.reminder || []
+            self.patchMyVehicle = response.data || {}
             self.loadingPatchMyVehicle = false
         } catch (error) {
             // ... including try/catch error handling
@@ -90,10 +107,18 @@ const CreateVehicleStore = types.model({
         }
     }),
 
+    clearDataCreate() {
+        self.data = null
+    },
+    clearDataPatchVehicle() {
+        self.patchMyVehicle = null
+    }
+
 })).views(self => ({
     get getProfileFunction() {
         return self.data
     }
+
 }))
     .create({
         // IMPORTANT !!

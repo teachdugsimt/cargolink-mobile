@@ -2,7 +2,8 @@
   "common": {
     "ok": "ตกลง",
     "cancel": "Cancel",
-    "back": "Back",
+    "back": "กลับ",
+    "next": "ต่อไป",
     "from": "จาก",
     "to": "ถึง",
     "confirm": "ยืนยัน",
@@ -24,7 +25,16 @@
     "ภาคใต้": "ภาคใต้",
     "ภาคตะวันตก": "ภาคตะวันตก",
     "ภาคกลาง": "ภาคกลาง",
-    "ภาคตะวันออก": "ภาคตะวันออก"
+    "ภาคตะวันออก": "ภาคตะวันออก",
+    "count": "จำนวน",
+    "search": "ค้นหา ...",
+    "requireField": "ข้อมูลที่จำเป็น",
+    "licensePlate": "ทะเบียน",
+    "notFound": "ไม่พบรายการ",
+    "have": "มี",
+    "notHave": "ไม่มี",
+    "M": "เมตร",
+    "id": "รหัส"
   },
   "bottomTab": {
     "home": "หน้าแรก",
@@ -63,7 +73,39 @@
     "findCar": "หารถ"
   },
   "postJobScreen": {
-    "postjob": "หางาน"
+    "postjob": "หางาน",
+    "vehicleDetailAndProduct": "ข้อมูลรถและสินค้า",
+    "getProductLocation": "จุดรับส่งสินค้า",
+    "checkInformation": "ตรวจสอบข้อมูล",
+    "success": "สำเร็จ",
+    "selectVehicleType": "เลือกประเภทของรถที่คุณต้องการ",
+    "pleaseSelectVehicleType": "กรุณาเลือกประเภทรถ",
+    "vehicleNum": "จำนวนคันรถที่ต้องการ",
+    "itemDetail": "ข้อมูลสินค้าที่ต้องการส่ง",
+    "selectItemType": "กรุณาเลือกประเภทสินค้า",
+    "inputYourItem": "ระบุชื่อสินค้าของคุณ",
+    "weightNumber": "จำนวนน้ำหนัก (ตัน)",
+    "popular": "ยอดนิยม",
+    "4maxType": "ประเภท 4 ล้อ",
+
+    "acceptPointProduct": "จุดรับสินค้า",
+    "inputLocationReceive": "ระบุสถานที่เข้ารับสินค้า",
+    "dateReceive": "วันรับสินค้า",
+    "timeReceive": "เวลารับสินค้า",
+    "receiverInfo": "ข้อมูลติดต่อผู้รับสินค้า",
+    "receiverName": "ชื่อผู้รับสินค้า",
+    "receiverTel": "เบอร์ติดต่อ",
+
+    "shipingPoint": "จุดส่งสินค้าที่",
+    "shippingAddr": "ระบุสถานที่ส่งสินค้า",
+    "dateShipping": "วันส่งสินค้า",
+    "timeShipping": "เวลาส่งสินค้า",
+    "shipperInfo": "ข้อมูลติดต่อผู้ส่งสินค้า",
+    "shipperName": "ชื่อผู้ส่งสินค้า",
+    "shipperTel": "เบอร์ติดต่อ",
+
+    "addShippingPoint": "เพิ่มจุดส่งสินค้า",
+    "postJobSuccess": "ยินดีด้วยคุณเพิ่มงานสำเร็จแล้ว"
   },
   "uploadVehicleScreen": {
     "addVehicle": "เพิ่มรถ",
@@ -81,7 +123,10 @@
     "exampleImageRight": "ตัวอย่างรูปภาพด้านขวา",
     "workZone": "โซนที่วิ่งงาน",
     "region": "ภูมิภาค",
-    "province": "จังหวัด"
+    "province": "จังหวัด",
+    "pleaseSelectProvince": "กรุณาเลือกจังหวัด",
+    "selectFromLibrary": "เลือกจากอัลบั้ม",
+    "captureNew": "กล้องถ่ายรูป"
   },
   "profileScreen": {
     "profile": "โปรไฟล์",
@@ -123,7 +168,13 @@
     "seeDetail": "ดูรายละเอียด",
     "productDetail": "ข้อมูลสินค้า",
     "weightTon": "น้ำหนัก (ตัน)",
-    "call": "โทรติดต่อ"
+    "call": "โทรติดต่อ",
+    "jobDetail": "รายละเอียดงาน",
+    "postBy": "โพสโดย",
+    "productType": "ประเภทสินค้า",
+    "productName": "ชื่อสินค้า",
+    "pickUpPoint": "จุดรับส่งสินค้า",
+    "product": "สินค้า"
   },
   "acceptPolicyScreen": {
     "termAndCondition": "ข้อกำหนดและเงื่อนไข",
@@ -206,6 +257,33 @@
     "settingSearch": "ตั้งค่าการค้นหา",
     "clear": "ล้าง",
     "fullSearch": "ค้นหาโดยละเอียด",
-    "search": "ค้นหา"
+    "search": "ค้นหา",
+    "more": "แสดงเพิ่มเติม"
+  },
+  "shipperProfileScreen": {
+    "verified": "ผู้ใช้ผ่านการตรวจสอบ",
+    "notVerified": "ยังไม่ผ่านการตรวจสอบ",
+    "workInProgress": "งานที่กำลังดำเนินการ",
+    "pastWork": "งานที่ผ่านมา"
+  },
+  "feedbackScreen": {
+    "yourOpinion": "ความคิดเห็นของคุณ",
+    "canYouAgreeJob": "คุณตกลงงานผ่านแอปนี้ได้หรือไม่",
+    "rightFromApp": "ได้จากแอป",
+    "notFromApp": "ไม่ได้จากแอป",
+    "canYouHowMuch": "บอกเราหน่อยได้ไหมว่าคุณตกลงราคาได้ประมาณเท่าไหร่",
+    "countRating": "ช่วยให้คะแนนความพึงพอใจของคุณต่อการบริการครั้งนี้ในระดับ 1 - 5 ดาว",
+    "moreAdvice": "คำแนะนำเพิ่มเติม",
+    "price": "ราคา"
+  },
+  "searchTruckScreen": {
+    "findTruck": "หารถ",
+    "selectWorkingZone": "ระบุโซนวิ่งงานที่คุณต้องการ",
+    "workingZone": "โซนวิ่งงาน",
+    "selected": "เลือกแล้ว"
+  },
+  "truckDetailScreen": {
+    "truckDetail": "รายละเอียดรถ",
+    "heighttOfTheCarStall": "ความสูงของคอกรถ"
   }
 }
