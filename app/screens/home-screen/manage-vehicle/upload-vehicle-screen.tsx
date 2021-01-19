@@ -473,8 +473,8 @@ export const UploadVehicleScreen = observer((props) => {
       carrierId: editStatus == "add" ? tokenStore.profile.id : MyVehicleStore.data.id,
       truckType: data['vehicle-type'],
 
-      loadingWeight: 2,
-      stallHeight: Number(data['vehicle-height']),
+      loadingWeight: 2.5,
+      stallHeight: Number(parseFloat(data['vehicle-height']).toFixed(1)),
 
       tipper: toggleDump,
       registrationNumber: [],
@@ -1199,7 +1199,7 @@ export const UploadVehicleScreen = observer((props) => {
                         _updateVisibleModal(true, index)
                         // setvisible(true)
                       }}>
-                        {!formControllerValue["controller-province-" + index] && <Text style={CONTENT_TEXT} tx={"postJobScreen.pleaseSelectVehicleType"} />}
+                        {!formControllerValue["controller-province-" + index] && <Text style={CONTENT_TEXT} tx={"uploadVehicleScreen.pleaseSelectProvince"} />}
 
                         {!!formControllerValue["controller-province-" + index] && <Text style={CONTENT_TEXT} >{
                           i18n.locale == 'th' ?
