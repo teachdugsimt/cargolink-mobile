@@ -164,9 +164,9 @@ export const PostJobScreen = observer(function PostJobScreen() {
     const onSubmit = (data) => {
         // if (!data['item-type'] || !data['vehicle-type']) AlertForm('common.requireField')
         // else {
-            console.log("Data Form Post job : ", data)
-            PostJobStore.setPostJob(1, data)
-            navigation.navigate("receivePoint")
+        console.log("Data Form Post job : ", data)
+        PostJobStore.setPostJob(1, data)
+        navigation.navigate("receivePoint")
         // }
     }
     // 4 ล้อ
@@ -400,7 +400,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
                                 </TouchableOpacity>
 
-                                <Controller
+                                {listProductState && listProductState.length && <Controller
                                     control={control}
                                     render={({ onChange, onBlur, value }) => (
                                         <Modal
@@ -452,7 +452,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                     key={'controller-dropdown-item-type'}
                                     name={"item-type"}
                                     defaultValue=""
-                                />
+                                />}
 
                             </View>
 
