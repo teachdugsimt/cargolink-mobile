@@ -162,12 +162,12 @@ export const PostJobScreen = observer(function PostJobScreen() {
     }, [AdvanceSearchStore.productTypes])
 
     const onSubmit = (data) => {
-        if (!data['item-type'] || !data['vehicle-type']) AlertForm('common.requireField')
-        else {
+        // if (!data['item-type'] || !data['vehicle-type']) AlertForm('common.requireField')
+        // else {
             console.log("Data Form Post job : ", data)
             PostJobStore.setPostJob(1, data)
             navigation.navigate("receivePoint")
-        }
+        // }
     }
     // 4 ล้อ
     // 6 ล้อ
