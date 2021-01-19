@@ -111,13 +111,17 @@ const ROOT_FLAT_LIST: ViewStyle = {
     width: '98%',
     height: 100,
     flexDirection: 'row',
-    alignItems: 'center',
-    zIndex: 5,
+    justifyContent: 'center', alignItems: 'center'
 }
 
 const VIEW_LIST_IMAGE: ViewStyle = { alignSelf: 'flex-start', justifyContent: 'center', height: '100%' }
 
-const BORDER_BOTTOM: ViewStyle = { ...ROOT_FLAT_LIST, borderBottomWidth: 1, borderBottomColor: color.line, marginHorizontal: 10, }
+const BORDER_BOTTOM: ViewStyle = {
+    ...ROOT_FLAT_LIST,
+    width: '100%',
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    borderBottomWidth: 1, borderBottomColor: color.line, marginHorizontal: 10,
+}
 const IMAGE_LIST: ImageStyle = {
     // width: 50, height: 50,
     backgroundColor: color.line, padding: 10,
@@ -150,7 +154,6 @@ export const PostJobScreen = observer(function PostJobScreen() {
     }
 
     const _renderSectionModal = (item: any, index: any, onChange: any, section: any) => {
-
         return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name + index} style={ROOT_FLAT_LIST} onPress={() => {
             if (section == 1) setvisible0(false)
             else if (section == 2) setvisible(false)
@@ -158,12 +161,12 @@ export const PostJobScreen = observer(function PostJobScreen() {
         }}>
             <View style={BORDER_BOTTOM}>
                 <View style={VIEW_LIST_IMAGE}>
-                    {Platform.OS == "ios" ? <Image source={images.bell} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
-                        <Image source={images.bell} style={IMAGE_LIST} height={60} width={60} />}
+                    {Platform.OS == "ios" ? <Image source={images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
+                        <Image source={images[item.image]} style={IMAGE_LIST} height={60} width={60} />}
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                    <Text style={{ width: '50%', paddingLeft: 20 }}>{item.name}</Text>
-                    <Ionicons name="chevron-forward" size={24} style={{ marginRight: 5 }} />
+                <View style={{ flexDirection: 'row', flex: 1 }}>
+                    <Text style={{ paddingLeft: 40 }}>{item.name}</Text>
+                    {/* <Ionicons name="chevron-forward" size={24} style={{ marginRight: 5 }} /> */}
                 </View>
             </View>
         </TouchableOpacity>

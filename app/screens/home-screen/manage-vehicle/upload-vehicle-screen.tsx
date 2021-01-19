@@ -169,18 +169,19 @@ const ROOT_FLAT_LIST: ViewStyle = {
   width: '100%',
   height: 100,
   flexDirection: 'row',
-  alignItems: 'center',
-  zIndex: 5,
+  justifyContent: 'center', alignItems: 'center'
 }
 const ROOT_FLAT_LIST2: ViewStyle = {
   width: '100%',
   height: 60,
   flexDirection: 'row',
   alignItems: 'center',
-  zIndex: 5,
 }
 const VIEW_LIST_IMAGE: ViewStyle = { alignSelf: 'flex-start', justifyContent: 'center', height: '100%' }
-const BORDER_BOTTOM: ViewStyle = { ...ROOT_FLAT_LIST, borderBottomWidth: 1, borderBottomColor: color.line, marginHorizontal: 10, }
+const BORDER_BOTTOM: ViewStyle = { ...ROOT_FLAT_LIST, 
+  width: '100%',
+  flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+  borderBottomWidth: 1, borderBottomColor: color.line, marginHorizontal: 10, }
 const IMAGE_LIST: ImageStyle = {
   // width: 50, height: 50,
   backgroundColor: color.line, padding: 10,
@@ -801,20 +802,21 @@ export const UploadVehicleScreen = observer((props) => {
     setrenderNewRegion(!renderNewRegion)
   }
 
-
+  const _onPressSectionModal = (onChange, item) => {
+    onChange(item.id)
+    setvisible0(false)
+  }
   const _renderSectionModal = (item: any, index: any, onChange: any) => {
-    return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name + index} style={ROOT_FLAT_LIST} onPress={() => {
-      onChange(item.id)
-      setvisible0(false)
-    }}>
+    return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name + index}
+     style={ROOT_FLAT_LIST} onPress={() => _onPressSectionModal(onChange, item)}>
       <View style={BORDER_BOTTOM}>
         <View style={VIEW_LIST_IMAGE}>
           {Platform.OS == "ios" ? <Image source={images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
             <Image source={images[item.image]} style={IMAGE_LIST} height={60} width={60} />}
         </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-          <Text style={{ width: '50%', paddingLeft: 20 }}>{item.name}</Text>
-          <Ionicons name="chevron-forward" size={24} style={{ marginRight: 5 }} />
+        <View style={{ flexDirection: 'row', flex: 1 }}>
+          <Text style={{ paddingLeft: 40 }}>{item.name}</Text>
+          {/* <Ionicons name="chevron-forward" size={24} style={{ marginRight: 5 }} /> */}
         </View>
       </View>
     </TouchableOpacity>
