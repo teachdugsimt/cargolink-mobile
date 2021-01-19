@@ -29,7 +29,7 @@ import { useStores } from "../../../models/root-store/root-store-context";
 
 const { width, height } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
-const GREY_TEXT: TextStyle = { color: color.grey }
+const GREY_TEXT: TextStyle = { color: color.line }
 
 const WIDTH_WITH_MARGIN: ViewStyle = {
   width: width / 1.1
@@ -79,7 +79,7 @@ const WRAPPER_TOP: ViewStyle = {
 }
 const ALIGN_RIGHT: TextStyle = {
   alignSelf: 'flex-end',
-  color: color.grey
+  color: color.line
 }
 const MARGIN_TOP_BIG: ViewStyle = { marginTop: 10 }
 const MARGIN_TOP_MEDIUM: ViewStyle = { marginTop: 15 }
@@ -115,7 +115,7 @@ const ADD_VEHICLE_BUTTON: ViewStyle = {
   height: 40,
   borderRadius: 20,
   borderWidth: 1,
-  borderColor: color.grey,
+  borderColor: color.line,
   backgroundColor: color.textWhite
 }
 
@@ -130,7 +130,7 @@ const ROUND_BUTTON_TEXT: TextStyle = {
   color: color.textWhite
 }
 const WRAP_DROPDOWN: ViewStyle = {
-  flex: 1, borderColor: color.grey, borderWidth: 1, padding: Platform.OS == "ios" ? 7.5 : 0,
+  flex: 1, borderColor: color.line, borderWidth: 1, padding: Platform.OS == "ios" ? 7.5 : 0,
   borderRadius: 2.5
 }
 const DROPDOWN_ICON_CONTAINER: ViewStyle = {
@@ -149,7 +149,8 @@ const LAYOUT_REGISTRATION_FIELD: TextStyle = {
 const ADD_DROPDOWN_REGION: ViewStyle = {
   alignSelf: 'flex-end',
   paddingLeft: 10,
-  paddingTop: Platform.OS == "ios" ? 8 : 12
+  justifyContent: 'center', height: 50
+  // paddingTop: Platform.OS == "ios" ? 8 : 12
 }
 
 const WRAPPER_REGION_DROPDOWN: ViewStyle = {
@@ -182,7 +183,7 @@ const VIEW_LIST_IMAGE: ViewStyle = { alignSelf: 'flex-start', justifyContent: 'c
 const BORDER_BOTTOM: ViewStyle = { ...ROOT_FLAT_LIST, borderBottomWidth: 1, borderBottomColor: color.line, marginHorizontal: 10, }
 const IMAGE_LIST: ImageStyle = {
   // width: 50, height: 50,
-  backgroundColor: color.grey, padding: 10,
+  backgroundColor: color.line, padding: 10,
   resizeMode: "cover",
   aspectRatio: 2 / 2,
   borderRadius: 30,
@@ -1039,7 +1040,7 @@ export const UploadVehicleScreen = observer((props) => {
               {textInput.map(e => { return e })}
             </View>
             <Button onPress={() => addTextInput(textInput.length)} style={{ ...ADD_VEHICLE_BUTTON, ...MARGIN_TOP_EXTRA }}>
-              <Ionicons name={"add-circle-outline"} size={spacing[5]} color={color.grey} />
+              <Ionicons name={"add-circle-outline"} size={spacing[5]} color={color.line} />
               <Text tx={"uploadVehicleScreen.addVehicleRegistration"} style={{ ...CONTENT_TEXT, ...GREY_TEXT, ...PADDING_LEFT5 }} />
             </Button>
 
@@ -1287,9 +1288,8 @@ export const UploadVehicleScreen = observer((props) => {
 
 
 
-
                 }
-                {index == ddRegion.length - 1 && <TouchableOpacity key={'icon-add-circle-' + index} style={ADD_DROPDOWN_REGION} onPress={() => _addRowDropdown()}>
+                {index == ddRegion.length - 1 && <TouchableOpacity key={'icon-add-circle-' + index} style={[ADD_DROPDOWN_REGION]} onPress={() => _addRowDropdown()}>
                   <Ionicons size={22} color={color.darkGreen} name={"add-circle-outline"} />
                 </TouchableOpacity>}
               </View>

@@ -87,7 +87,7 @@ const ROOT_FLAT_LIST: ViewStyle = {
 }
 const IMAGE_LIST: ImageStyle = {
     // width: 50, height: 50,
-    backgroundColor: color.grey, padding: 10,
+    backgroundColor: color.line, padding: 10,
     resizeMode: "cover",
     aspectRatio: 2 / 2,
     borderRadius: 30,

@@ -59,7 +59,7 @@ const WRAPPER_TOP: ViewStyle = {
 }
 
 const BORDER_GREY: ViewStyle = {
-    borderColor: color.grey, borderWidth: 1
+    borderColor: color.line, borderWidth: 1
 }
 
 const WRAP_DROPDOWN_VALUE: ViewStyle = {
@@ -120,7 +120,7 @@ const VIEW_LIST_IMAGE: ViewStyle = { alignSelf: 'flex-start', justifyContent: 'c
 const BORDER_BOTTOM: ViewStyle = { ...ROOT_FLAT_LIST, borderBottomWidth: 1, borderBottomColor: color.line, marginHorizontal: 10, }
 const IMAGE_LIST: ImageStyle = {
     // width: 50, height: 50,
-    backgroundColor: color.grey, padding: 10,
+    backgroundColor: color.line, padding: 10,
     resizeMode: "cover",
     aspectRatio: 2 / 2,
     borderRadius: 30,

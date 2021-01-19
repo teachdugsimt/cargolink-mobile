@@ -16,7 +16,7 @@ const DATE_BUTTON: ViewStyle = {
     borderRadius: spacing[1],
     height: 40,
     borderWidth: 1,
-    borderColor: color.grey,
+    borderColor: color.line,
     paddingLeft: 10
 }
 const MARGIN_MEDIUM: ViewStyle = {

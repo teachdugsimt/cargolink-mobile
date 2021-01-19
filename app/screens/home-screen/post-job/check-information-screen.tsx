@@ -31,9 +31,9 @@ import AdvanceSearchStore from "../../../store/shipper-job-store/advance-search-
 const { width, height } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
 const BORDER_GREY: ViewStyle = {
-    borderColor: color.grey, borderWidth: 1
+    borderColor: color.line, borderWidth: 1
 }
-const GREY_TEXT: ViewStyle = { backgroundColor: color.grey }
+const GREY_TEXT: ViewStyle = { backgroundColor: color.line }
 const BORDER_RADIUS_20: ViewStyle = {
     borderRadius: 20,
 }
@@ -61,12 +61,12 @@ const WRAP_DROPDOWN_VALUE: ViewStyle = {
     borderRadius: 2.5
 }
 const WRAP_DROPDOWN: ViewStyle = {
-    flex: 1, borderColor: color.grey, borderWidth: 1, padding: Platform.OS == "ios" ? 7.5 : 0,
+    flex: 1, borderColor: color.line, borderWidth: 1, padding: Platform.OS == "ios" ? 7.5 : 0,
     borderRadius: 2.5
 }
 const IMAGE_LIST: ImageStyle = {
     // width: 50, height: 50,
-    backgroundColor: color.grey, padding: 10,
+    backgroundColor: color.line, padding: 10,
     resizeMode: "cover",
     aspectRatio: 2 / 2,
     borderRadius: 30,
