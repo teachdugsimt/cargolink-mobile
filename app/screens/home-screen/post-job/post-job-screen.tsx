@@ -400,7 +400,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
                                 </TouchableOpacity>
 
-                                {listProductState && listProductState.length && <Controller
+                                <Controller
                                     control={control}
                                     render={({ onChange, onBlur, value }) => (
                                         <Modal
@@ -419,7 +419,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
                                                         <View style={[PADDING_TOP]}>
 
-                                                            <MultiSelector
+                                                            {listProductState && listProductState.length && <MultiSelector
                                                                 items={listProductState}
                                                                 keyer={"list-item-type-01"}
                                                                 selectedItems={[value]}
@@ -428,7 +428,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                                                     onChange(val[0])
                                                                     setvisible(false)
                                                                 }}
-                                                            />
+                                                            />}
                                                         </View>
 
                                                         <View>
@@ -452,7 +452,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                     key={'controller-dropdown-item-type'}
                                     name={"item-type"}
                                     defaultValue=""
-                                />}
+                                />
 
                             </View>
 
