@@ -22,7 +22,7 @@ const VehicleNew = types.model({
 
     loadingWeight: types.maybeNull(types.number),
     registrationNumber: types.maybeNull(types.array(types.string)),
-    stallHeight: types.number,
+    stallHeight: types.string,
     tipper: types.maybeNull(types.boolean),
     truckPhotos: types.maybeNull(ImageType),
     truckType: types.maybeNull(types.number),
@@ -61,7 +61,7 @@ const CreateVehicleStore = types.model({
     loading: types.boolean,
     error: types.maybeNull(types.string),
 
-    patchMyVehicle: types.maybeNull(types.model()),
+    patchMyVehicle: types.maybeNull(types.number),
     loadingPatchMyVehicle: types.boolean,
     errorPatchMyVehicle: types.maybeNull(types.string)
 
