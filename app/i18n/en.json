@@ -34,7 +34,8 @@
     "have": "Have",
     "notHave": "No",
     "M": "m.",
-    "id": "id"
+    "id": "id",
+    "notSpecified": "Not specified"
   },
   "bottomTab": {
     "home": "Home",

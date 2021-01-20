@@ -10,10 +10,13 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Feather from 'react-native-vector-icons/Feather'
 import { Modal, ModalContent } from 'react-native-modals';
-import { GetTruckType } from '../../utils/get-truck-type'
+import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
 import ShipperTruckStore from '../../store/shipper-truck-store/shipper-truck-store'
 import AdvanceSearchTruckStore from '../../store/shipper-truck-store/advance-search-store'
 import i18n from 'i18n-js'
+import { GetTruckType } from "../../utils/get-truck-type";
+import AdvanceSearchStore from '../../store/shipper-truck-store/advance-search-store';
+import FavoriteTruckStore from '../../store/shipper-truck-store/favorite-truck-store';
 
 const width = Dimensions.get('window').width
 interface SubButtonSearch {
@@ -124,6 +127,8 @@ const Item = (data) => {
     approveStatus,
     registrationNumber,
     tipper,
+    isLiked,
+    workingZones,
   } = data
 
   const navigation = useNavigation()
@@ -135,9 +140,10 @@ const Item = (data) => {
 
   const onToggleHeart = (data) => {
     console.log('onToggleHeart data', data)
+    FavoriteTruckStore.add(data.id)
   }
 
-  const typeOfTruck = GetTruckType(+truckType, i18n.locale).name
+  TruckTypeStore.getTruckTypeById(+truckType)
 
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
@@ -147,11 +153,11 @@ const Item = (data) => {
           id,
           fromText: 'ภาคกลาง',
           count: 2,
-          truckType: typeOfTruck,
+          truckType: TruckTypeStore.data?.name || translate('common.notSpecified'),
           // viewDetail,
           postBy: 'CargoLink',
           isVerified: true,
-          // isLike,
+          isLike: isLiked,
           // rating,
           // ratingCount,
           isCrown: true,
@@ -190,6 +196,7 @@ const initialState = {
   value: '',
   zones: [],
   filterLength: 0,
+  loading: true,
 }
 
 const sortArray = (list) => list.sort((a, b) => (a.value > b.value) ? 1 : -1)
@@ -207,12 +214,11 @@ const mappingDefaultZone = (regions, provinces) => {
 }
 
 let PAGE = 0
-let runNumb = 0
 
 export const SearchTruckScreen = observer(function SearchTruckScreen() {
   const navigation = useNavigation()
 
-  const [{ subButtons, data, value, zones, filterLength }, setState] = useState(initialState)
+  const [{ subButtons, data, value, zones, filterLength, listLength, loading }, setState] = useState(initialState)
   const [visible, setVisible] = useState<boolean>(false)
 
   useFocusEffect(
@@ -247,7 +253,6 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
 
     return () => {
       PAGE = 0
-      runNumb = 0
       ShipperTruckStore.setDefaultOfList()
       setState(initialState)
     }
@@ -257,11 +262,19 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
     setState(prevState => ({
       ...prevState,
       listLength: ShipperTruckStore.list.length,
+      loading: true,
     }))
     if (!ShipperTruckStore.loading && !data.length && ShipperTruckStore.list && ShipperTruckStore.list.length) {
       setState(prevState => ({
         ...prevState,
         data: ShipperTruckStore.list,
+        loading: false,
+      }))
+    }
+    if (!ShipperTruckStore.loading && (data.length || !data.length)) {
+      setState(prevState => ({
+        ...prevState,
+        loading: false,
       }))
     }
   }, [ShipperTruckStore.loading, ShipperTruckStore.list])
@@ -271,7 +284,11 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
   )
 
   const onScrollList = () => {
-    console.log('scroll down')
+    if (ShipperTruckStore.list.length >= 10) {
+      PAGE = ShipperTruckStore.list.length === listLength ? listLength : PAGE + ShipperTruckStore.list.length
+      const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE }
+      ShipperTruckStore.find(advSearch)
+    }
   }
 
   const onPress = (id: number) => {
@@ -358,11 +375,10 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
   }
 
   const isSelected = zones.find(zone => zone.isSelected === true)
-  console.log('zones', zones)
 
   return (
     <View style={{ flex: 1 }}>
-      {ShipperTruckStore.loading && <ModalLoading size={'large'} color={color.primary} visible={ShipperTruckStore.loading} />}
+      {loading && <ModalLoading size={'large'} color={color.primary} visible={loading} />}
       <View style={SEARCH_BAR}>
         <View style={SEARCH_BAR_ROW}>
           <Icon icon="pinDropYellow" style={PIN_ICON} />
@@ -456,27 +472,20 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
         />
       </View>
       <View style={RESULT_CONTAINER}>
-        {/* <FlatList
-          data={data}
-          renderItem={renderItem}
-          keyExtractor={item => item.id.toString()}
-          onEndReached={() => onScrollList()}
-          onEndReachedThreshold={0.5}
-        /> */}
-        {/* {
+        {
           data && !!data.length ? <FlatList
             data={data}
             renderItem={renderItem}
-            keyExtractor={item => (item.id + (++runNumb))}
-            // onEndReached={() => onScrollList()}
+            keyExtractor={item => item.id}
+            onEndReached={() => onScrollList()}
             onEndReachedThreshold={0.5}
           // onMomentumScrollBegin={() => console.log('onResponderEnd')}
           // onMomentumScrollEnd={() => console.log('onMomentumScrollEnd')}
-          /> : <View style={CONTEXT_NOT_FOUND}>
-              <Feather name={'inbox'} size={50} color={color.line} />
-              <Text text={translate('common.notFound')} style={NOT_FOUND_TEXT} preset={'topicExtra'} />
-            </View>
-        } */}
+          /> : (!loading && <View style={CONTEXT_NOT_FOUND}>
+            <Feather name={'inbox'} size={50} color={color.line} />
+            <Text text={translate('common.notFound')} style={NOT_FOUND_TEXT} preset={'topicExtra'} />
+          </View>)
+        }
       </View>
     </View>
   )

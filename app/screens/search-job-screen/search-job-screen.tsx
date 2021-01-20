@@ -68,13 +68,6 @@ const Item = (data) => {
   const onToggleHeart = (data) => {
     console.log('onToggleHeart data', data)
     FavoriteJobStore.add(data.id)
-    // const nList = ShipperJobStore.list.map(attr => {
-    //   return {
-    //     ...attr,
-    //     isLiked: data.id === attr.id ? !attr.isLiked : attr.isLiked
-    //   }
-    // }) // [PENDING]
-    // ShipperJobStore.list = JSON.parse(JSON.stringify(nList))
   }
 
   const typeOfTruck = GetTruckType(+truckType, i18n.locale).name
@@ -132,6 +125,7 @@ const initialState = {
   listLength: 0,
   data: [],
   filterLength: 0,
+  loading: true,
 }
 
 let PAGE = 0;
@@ -139,7 +133,7 @@ let PAGE = 0;
 export const SearchJobScreen = observer(function SearchJobScreen() {
   const navigation = useNavigation()
 
-  const [{ subButtons, data, listLength, filterLength }, setState] = useState(initialState)
+  const [{ subButtons, data, listLength, filterLength, loading }, setState] = useState(initialState)
 
   useFocusEffect(
     useCallback(() => {
@@ -171,11 +165,19 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
     setState(prevState => ({
       ...prevState,
       listLength: ShipperJobStore.list.length,
+      loading: true,
     }))
     if (!ShipperJobStore.loading && !data.length && ShipperJobStore.list && ShipperJobStore.list.length) {
       setState(prevState => ({
         ...prevState,
         data: ShipperJobStore.list,
+        loading: false
+      }))
+    }
+    if (!ShipperJobStore.loading && (data.length || !data.length)) {
+      setState(prevState => ({
+        ...prevState,
+        loading: false
       }))
     }
   }, [ShipperJobStore.loading, ShipperJobStore.list])
@@ -241,7 +243,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      {ShipperJobStore.loading && <ModalLoading size={'large'} color={color.primary} visible={ShipperJobStore.loading} />}
+      {loading && <ModalLoading size={'large'} color={color.primary} visible={loading} />}
       <View>
         <SearchBar
           {...{
@@ -276,10 +278,10 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
             onEndReachedThreshold={0.5}
           // onMomentumScrollBegin={() => console.log('onResponderEnd')}
           // onMomentumScrollEnd={() => console.log('onMomentumScrollEnd')}
-          /> : <View style={CONTEXT_NOT_FOUND}>
-              <Feather name={'inbox'} size={50} color={color.line} />
-              <Text text={translate('common.notFound')} style={NOT_FOUND_TEXT} preset={'topicExtra'} />
-            </View>
+          /> : (!loading && <View style={CONTEXT_NOT_FOUND}>
+            <Feather name={'inbox'} size={50} color={color.line} />
+            <Text text={translate('common.notFound')} style={NOT_FOUND_TEXT} preset={'topicExtra'} />
+          </View>)
         }
       </View>
     </View>

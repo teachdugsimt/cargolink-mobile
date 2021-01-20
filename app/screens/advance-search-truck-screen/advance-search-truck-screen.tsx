@@ -113,8 +113,8 @@ export const AdvanceSearchTruckScreen = observer(function AdvanceSearchTruckScre
     }
 
     const onConfirm = () => {
-        const arrChildOfSubMenu = []
         const resultMapFilter = AdvanceSearchJobStore.menu.map(menu => {
+            const arrChildOfSubMenu = []
             const filterSelected = menu.subMenu.filter(subMenu => {
                 if (subMenu?.subMenu?.length) {
                     const res = subMenu.subMenu.filter(sub => sub.isChecked)

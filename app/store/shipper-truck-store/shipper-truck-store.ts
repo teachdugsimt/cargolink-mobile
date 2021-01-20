@@ -1,6 +1,7 @@
 import { types, flow, cast } from "mobx-state-tree"
 import { ShipperTruckAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
+import FavoriteTruckStore from "./favorite-truck-store"
 
 const shipperTruckApi = new ShipperTruckAPI()
 
@@ -13,7 +14,8 @@ const defaultModel = {
     updatedAt: types.maybeNull(types.string),
     approveStatus: types.maybeNull(types.string),
     registrationNumber: types.maybeNull(types.array(types.string)),
-    tipper: types.maybeNull(types.boolean)
+    tipper: types.maybeNull(types.boolean),
+    isLiked: types.maybeNull(types.optional(types.boolean, false))
 }
 
 const ShipperJob = types.model(defaultModel)
@@ -45,11 +47,27 @@ const ShipperTruckStore = types
             self.loading = true
             try {
                 const response = yield shipperTruckApi.find(filter)
-                console.log("Response call api get shipper trucks : : ", response)
+                console.log("Response call api get shipper jobs : : ", response)
                 if (response.kind === 'ok') {
-                    self.list = response.data || []
+                    yield FavoriteTruckStore.find()
+                    let arrMerge = [...self.list, ...response.data] || []
+                    const favoriteList = JSON.parse(JSON.stringify(FavoriteTruckStore.list))
+
+                    if (favoriteList?.length) {
+                        const result = yield Promise.all(arrMerge.map(attr => {
+                            return {
+                                ...attr,
+                                isLiked: favoriteList.some(val => val.id === attr.id)
+                            }
+                        }))
+                        self.list = JSON.parse(JSON.stringify(result))
+                    } else {
+                        self.list = cast(arrMerge)
+                    }
+                    self.loading = false
+                } else {
+                    self.loading = false
                 }
-                self.loading = false
             } catch (error) {
                 console.error("Failed to fetch get shipper trucks : ", error)
                 self.loading = false
@@ -102,7 +120,8 @@ const ShipperTruckStore = types
                         province: null
                     }
                 ]),
-                tipper: false
+                tipper: false,
+                isLiked: false
             }
         },
 

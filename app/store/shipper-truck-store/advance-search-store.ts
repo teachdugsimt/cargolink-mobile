@@ -101,10 +101,11 @@ const AdvanceSearchStore = types
                 self.menu = cast(menus)
             } else {
                 self.loading = true
-                yield TruckTypeStore.find()
                 yield TruckTypeStore.findGroup()
-                yield TruckTypeStore.mappingType()
+                yield TruckTypeStore.find()
+                TruckTypeStore.mappingType()
                 if (TruckTypeStore.listMapping && TruckTypeStore.listMapping.length) {
+                    console.log('TruckTypeStore.listMapping', JSON.parse(JSON.stringify(TruckTypeStore.listMapping)))
                     MENUS[0].showSubColumn = 2
                     MENUS[0].subMenu = TruckTypeStore.listMapping.map(type => {
                         const subMenu = type.subTypes.map(subType => ({ ...subType, value: subType.id, isChecked: false }))

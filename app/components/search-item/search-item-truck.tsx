@@ -33,7 +33,7 @@ const BACKGROUND: ImageStyle = {
   height: 100,
   position: 'absolute',
   right: 0,
-  bottom: spacing[3],
+  bottom: spacing[1],
 }
 const TOP_ROOT: ViewStyle = {
   // flex: 2,
@@ -150,7 +150,7 @@ export function SearchItemJob(props: SearchItemProps) {
   return (
     <TouchableOpacity style={{ ...CONTAINER, ...containerStyle }} activeOpacity={1} onPress={onPress}>
       <View style={TOP_ROOT}>
-        <ImageBackground source={truckBackImage} style={BACKGROUND} ></ImageBackground>
+        <ImageBackground source={truckBackImage} style={BACKGROUND} />
         <View style={CONTENT}>
           <View style={LOCATION}>
             <Icon icon="pinDropYellow" style={PIN_ICON} />
@@ -164,7 +164,7 @@ export function SearchItemJob(props: SearchItemProps) {
               style={LOCATION_TEXT}
             />
           </View>
-          <View style={{ ...CAR_DETAIL_ROOT, paddingTop: spacing[2] }}>
+          <View style={{ ...CAR_DETAIL_ROOT, paddingTop: spacing[1] }}>
             <View style={CAR_DETAIL}>
               <Text
                 style={TEXT}
@@ -173,7 +173,7 @@ export function SearchItemJob(props: SearchItemProps) {
               <Text style={TEXT} text={count.toString()} />
             </View>
           </View>
-          <View style={{ ...CAR_DETAIL_ROOT, paddingBottom: spacing[5] }}>
+          <View style={{ ...CAR_DETAIL_ROOT, paddingBottom: spacing[1] }}>
             <View style={CAR_DETAIL}>
               <Text style={TEXT} text={truckType} />
             </View>

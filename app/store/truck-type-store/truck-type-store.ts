@@ -21,6 +21,7 @@ const TruckTypeMapping = types.model({
 const TruckTypeStore = types
     .model({
         // list: types.array(types.maybeNull(TruckTypeGroup)),
+        data: types.maybeNull(types.model(TruckType)),
         list: types.optional(types.array(TruckTypeGroup), []),
         listGroup: types.optional(types.array(TruckTypeGroup), []),
         listMapping: types.optional(types.array(TruckTypeMapping), []),
@@ -33,12 +34,27 @@ const TruckTypeStore = types
             yield truckTypeApi.setup(i18n.locale)
             self.loading = true
             try {
+                const response = yield truckTypeApi.getTruckTypeDropdown(filter)
+                console.log("Response call api get truck type : : ", response)
+                self.list = response.data
+                self.loading = false
+            } catch (error) {
+                console.error("Failed to fetch get truck type : ", error)
+                self.loading = false
+                self.error = "error fetch api get truck type"
+            }
+        }),
+
+        findGroup: flow(function* findGroup(filter: any = {}) {
+            yield truckTypeApi.setup(i18n.locale)
+            self.loading = true
+            try {
                 const response = yield truckTypeApi.getGroup(filter)
                 console.log("Response call api get truck type group : : ", response)
                 if (response.kind === 'ok') {
-                    self.list = response.data
+                    self.listGroup = response.data
                 } else {
-                    self.list = cast([])
+                    self.listGroup = cast([])
                 }
                 self.loading = false
             } catch (error) {
@@ -48,29 +64,13 @@ const TruckTypeStore = types
             }
         }),
 
-        findGroup: flow(function* findGroup(filter: any = {}) {
-            yield truckTypeApi.setup(i18n.locale)
-            self.loading = true
-            try {
-                const response = yield truckTypeApi.getTruckTypeDropdown(filter)
-                console.log("Response call api get truck type group : : ", response)
-                self.listGroup = response.data
-                self.loading = false
-            } catch (error) {
-                console.error("Failed to fetch get truck type group : ", error)
-                self.loading = false
-                self.error = "error fetch api get truck type group"
-            }
-        }),
-
-        mappingType: flow(function* mappingType() {
+        mappingType: function mappingType() {
             // yield truckTypeApi.setup(i18n.locale)
             self.mappingLoding = true
             try {
-                // yield TruckTypeStore.find()
-                // yield TruckTypeStore.findGroup()
-                const mapping = JSON.parse(JSON.stringify(self.list)).map(type => {
-                    const subTypes = JSON.parse(JSON.stringify(self.listGroup)).filter(subType => subType.groupId === type.id)
+                console.log('JSON.parse(JSON.stringify(self.list))', JSON.parse(JSON.stringify(self.list)))
+                const mapping = JSON.parse(JSON.stringify(self.listGroup)).map(type => {
+                    const subTypes = JSON.parse(JSON.stringify(self.list)).filter(subType => subType.groupId === type.id)
                     return {
                         ...type,
                         subTypes
@@ -84,6 +84,14 @@ const TruckTypeStore = types
                 self.mappingLoding = false
                 self.error = "error fetch api get truck type group"
             }
+        },
+
+        getTruckTypeById: flow(function* getTruckType(id: number) {
+            if (!JSON.parse(JSON.stringify(self.list)).length) {
+                yield TruckTypeStore.find()
+            }
+            const truckType = JSON.parse(JSON.stringify(self.list)).filter(type => type.id === id)[0]
+            self.data = truckType
         }),
 
     }))
@@ -93,6 +101,7 @@ const TruckTypeStore = types
         },
     }))
     .create({
+        data: {},
         list: [],
         listGroup: [],
         listMapping: [],
