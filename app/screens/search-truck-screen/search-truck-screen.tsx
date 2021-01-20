@@ -7,6 +7,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { translate } from '../../i18n';
 import { provinceListEn, provinceListTh, regionListEn, regionListTh } from '../../screens/home-screen/manage-vehicle/datasource'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Feather from 'react-native-vector-icons/Feather'
 import { Modal, ModalContent } from 'react-native-modals';
 import { GetTruckType } from '../../utils/get-truck-type'
@@ -76,6 +77,41 @@ const CONTEXT_NOT_FOUND: ViewStyle = {
 const NOT_FOUND_TEXT: TextStyle = {
   color: color.line,
 }
+const SELECTED: ViewStyle = {
+  flexDirection: 'row',
+  alignItems: 'center',
+  borderWidth: 1,
+  borderColor: color.line,
+  borderRadius: Dimensions.get('window').width / 2,
+  paddingVertical: spacing[1],
+  paddingHorizontal: spacing[2],
+  marginHorizontal: spacing[1],
+  marginVertical: spacing[3],
+}
+const SELECTED_TEXT: TextStyle = {
+  color: color.line,
+  paddingRight: spacing[2],
+}
+const CIRCLE_VISIBLE_BUTTON: ViewStyle = {
+  width: 60,
+  height: 60,
+  backgroundColor: color.primary,
+  borderRadius: width / 2,
+  alignItems: 'center',
+  justifyContent: 'center',
+  position: 'absolute',
+  right: 0,
+  // marginLeft: 'auto',
+  // marginRight: 'auto',
+  // left: '50%',
+  // transform: [{
+  //   translateX: ,
+  // }],
+  bottom: spacing[5],
+}
+const CIRCLE_VISIBLE_BUTTON_TEXT: TextStyle = {
+  color: color.textWhite,
+}
 
 const Item = (data) => {
   const {
@@ -134,16 +170,6 @@ const Item = (data) => {
   )
 }
 
-const makeid = (length: number) => {
-  var result = '';
-  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  var charactersLength = characters.length;
-  for (var i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-}
-
 const SUB_BUTTON: Array<SubButtonSearch> = [
   {
     id: 1,
@@ -166,7 +192,22 @@ const initialState = {
   filterLength: 0,
 }
 
+const sortArray = (list) => list.sort((a, b) => (a.value > b.value) ? 1 : -1)
+
+const mappingDefaultZone = (regions, provinces) => {
+  return regions.map(reg => {
+    const resultProvinces = provinces.filter(prov => prov.region === reg.value).map(prov => ({ ...prov, isSelected: false }))
+    return {
+      ...reg,
+      isSelected: false,
+      isSelectedAll: false,
+      provinces: resultProvinces,
+    }
+  })
+}
+
 let PAGE = 0
+let runNumb = 0
 
 export const SearchTruckScreen = observer(function SearchTruckScreen() {
   const navigation = useNavigation()
@@ -193,25 +234,11 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
     ShipperTruckStore.find()
     let newZone = null
     if (i18n.locale === 'th') {
-      newZone = regionListTh.map(reg => {
-        const provinces = provinceListTh.filter(prov => prov.region === reg.value).map(prov => ({ ...prov, isSelected: false }))
-        return {
-          ...reg,
-          isSelected: false,
-          isSelectedAll: false,
-          provinces,
-        }
-      })
+      const ascZones = sortArray(regionListTh)
+      newZone = mappingDefaultZone(ascZones, provinceListTh)
     } else {
-      newZone = regionListEn.map(reg => {
-        const provinces = provinceListEn.filter(prov => prov.region === reg.value).map(prov => ({ ...prov, isSelected: false }))
-        return {
-          ...reg,
-          isSelected: false,
-          isSelectedAll: false,
-          provinces,
-        }
-      })
+      const ascZones = sortArray(regionListEn)
+      newZone = mappingDefaultZone(ascZones, provinceListEn)
     }
     setState(prevState => ({
       ...prevState,
@@ -220,6 +247,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
 
     return () => {
       PAGE = 0
+      runNumb = 0
       ShipperTruckStore.setDefaultOfList()
       setState(initialState)
     }
@@ -308,8 +336,29 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
     }))
   }
 
+  const deleteZone = (primaryId: string, childId: string = null) => {
+    const zoneIdx = zones.findIndex((zone) => zone.value === primaryId)
+    if (childId) {
+      const provinceIdx = zones[zoneIdx].provinces.findIndex(prov => prov.value === childId)
+      zones[zoneIdx].provinces[provinceIdx].isSelected = false
+      const searchSelected = zones[zoneIdx].provinces.findIndex(prov => prov.isSelected === true)
+      if (searchSelected <= 0) {
+        zones[zoneIdx].isSelected = false
+        zones[zoneIdx].isSelectedAll = false
+      }
+    } else {
+      zones[zoneIdx].isSelected = false
+      zones[zoneIdx].isSelectedAll = false
+      zones[zoneIdx].provinces = zones[zoneIdx].provinces.map(prov => ({ ...prov, isSelected: false }))
+    }
+    setState(prevState => ({
+      ...prevState,
+      zones: zones
+    }))
+  }
+
   const isSelected = zones.find(zone => zone.isSelected === true)
-  console.log('isSelected', isSelected)
+  console.log('zones', zones)
 
   return (
     <View style={{ flex: 1 }}>
@@ -331,7 +380,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
           >
             <ModalContent >
               <View style={{ width: (width / 1.1), height: '100%', justifyContent: 'flex-start' }}>
-                <SafeAreaView style={{ flex: 1 }}>
+                <SafeAreaView style={{ flex: 1, position: 'relative' }}>
                   <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
                     <Text style={{ color: color.primary }} preset={"topic"} tx={"searchTruckScreen.selectWorkingZone"} />
                   </View>
@@ -358,38 +407,44 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
                       )
                     })}
                   </ScrollView>
+                  <TouchableOpacity onPress={() => setVisible(!visible)} style={CIRCLE_VISIBLE_BUTTON}>
+                    {/* <Text tx={'common.ok'} style={CIRCLE_VISIBLE_BUTTON_TEXT} /> */}
+                    <MaterialCommunityIcons name={'close-thick'} color={color.textWhite} size={30} />
+                  </TouchableOpacity>
                 </SafeAreaView>
               </View>
             </ModalContent>
           </Modal>
 
         </View>
-        {/* <View style={{ flexDirection: 'row', overflow: 'hidden' }}>
+        <ScrollView horizontal={true} style={{ flexDirection: 'row' }}>
           {!!zones?.length && zones.map((zone, index) => {
             if (zone.isSelectedAll) {
               return (
-                <TouchableOpacity key={`menu-selected-${index}-${zone.value}`}>
-                  <Text text={zone.label} />
+                <TouchableOpacity key={`menu-selected-${index}-${zone.value}`} style={SELECTED} onPress={() => deleteZone(zone.value)} >
+                  <Text text={zone.label} style={SELECTED_TEXT} />
+                  <MaterialIcons name={'cancel'} color={color.line} size={18} />
                 </TouchableOpacity>
               )
             } else if (zone.isSelected) {
-              // return (
-              //   <View key={`menu-selected-${index}-${zone.value}`}>
-              {
-                zone.provinces.map((prov, i) => {
-                  return prov.isSelected ? (
-                    <TouchableOpacity key={`menu-selected-${zone.value}-${i}-${prov.value}`}>
-                      <Text text={prov.label} />
-                    </TouchableOpacity>
-                  ) : null
-                })
-              }
-              // </View>
-              // )
+              return (
+                <View key={`menu-selected-${index}-${zone.value}`} style={{ flexDirection: 'row' }}>
+                  {
+                    zone.provinces.map((prov, i) => {
+                      return prov.isSelected ? (
+                        <TouchableOpacity key={`menu-selected-${zone.value}-${i}-${prov.value}`} style={SELECTED} onPress={() => deleteZone(zone.value, prov.value)}>
+                          <Text text={prov.label} style={SELECTED_TEXT} />
+                          <MaterialIcons name={'cancel'} color={color.line} size={18} />
+                        </TouchableOpacity>
+                      ) : null
+                    })
+                  }
+                </View>
+              )
             }
             return null
           })}
-        </View> */}
+        </ScrollView>
       </View>
       <View style={BUTTON_CONTAINER}>
         <AdvanceSearchTab
@@ -408,12 +463,12 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
           onEndReached={() => onScrollList()}
           onEndReachedThreshold={0.5}
         /> */}
-        {
+        {/* {
           data && !!data.length ? <FlatList
             data={data}
             renderItem={renderItem}
-            keyExtractor={item => { return item.id + makeid(6) }}
-            onEndReached={() => onScrollList()}
+            keyExtractor={item => (item.id + (++runNumb))}
+            // onEndReached={() => onScrollList()}
             onEndReachedThreshold={0.5}
           // onMomentumScrollBegin={() => console.log('onResponderEnd')}
           // onMomentumScrollEnd={() => console.log('onMomentumScrollEnd')}
@@ -421,7 +476,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
               <Feather name={'inbox'} size={50} color={color.line} />
               <Text text={translate('common.notFound')} style={NOT_FOUND_TEXT} preset={'topicExtra'} />
             </View>
-        }
+        } */}
       </View>
     </View>
   )
