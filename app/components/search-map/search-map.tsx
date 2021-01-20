@@ -39,13 +39,12 @@ export const LocationPicker = (props) => {
 
     const goToInitialLocation = (region) => {
         let initialRegion = Object.assign({}, region);
-        initialRegion["latitudeDelta"] = 0.005;
-        initialRegion["longitudeDelta"] = 0.005;
+        initialRegion["latitudeDelta"] = 0.005;     // zoom in
+        initialRegion["longitudeDelta"] = 0.005;      // zoom out
         mapView.animateToRegion(initialRegion, 2000);
     };
     const onRegionChange = (region) => {
         // อนุเสา  ธรรมศาสตร์
-        __DEV__ && console.tron.log("___________________________ On Region Change ___________________________ : ", region)
         setregion(region)
         setState(prev => ({ ...prev, forceRefresh: Math.floor(Math.random() * 100) }))
         getAddress();

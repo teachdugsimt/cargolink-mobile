@@ -404,7 +404,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                                 <SafeAreaView style={{ flex: 1 }}>
                                     <View style={{ flex: 1, position: 'relative' }}>
 
-                                        <LocationPicker banner={statusMap.includes('receive') ?  "postJobScreen.receiveLocation" : "postJobScreen.shippingLocation"} onSubmitMap={(addr, region) => _submitLocation(addr, region)} />
+                                        {statusMap && <LocationPicker banner={statusMap.includes('receive') ? "postJobScreen.receiveLocation" : "postJobScreen.shippingLocation"} onSubmitMap={(addr, region) => _submitLocation(addr, region)} />}
 
                                     </View>
 
