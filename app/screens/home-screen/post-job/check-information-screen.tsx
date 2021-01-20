@@ -13,7 +13,7 @@ import { translate } from "../../../i18n"
 import {
     AddJobElement, MultiSelector,
     TextInputTheme, RoundedButton, ModalLoading,
-    Icon, DatePickerRemake, TimePickerRemake
+    Icon, DatePickerRemake, TimePickerRemake, LocationPicker
 } from '../../../components'
 import i18n from 'i18n-js'
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -128,10 +128,14 @@ const PADDING_RIGHT_SMALL: ViewStyle = { paddingRight: 5 }
 const PADDING_LEFT_SMALL: ViewStyle = { paddingLeft: 5 }
 const PADDING_CHEVRON: ViewStyle = { paddingTop: 7.5, paddingRight: 5 }
 const PADDING_TOP: ViewStyle = { marginTop: 10 }
+const BUTTON_MAP: ViewStyle = { padding: 10, borderWidth: 1, borderRadius: 2.5, borderColor: color.line }
 
 export const CheckInformationScreen = observer(function CheckInformationScreen(props) {
     const navigation = useNavigation()
     const [fieldShippingCheck, setfieldShippingCheck] = useState([])
+
+    const [visibleMap, setvisibleMap] = useState(false)
+    const [statusMap, setstatusMap] = useState(null)
 
     const [rerender, setrerender] = useState(false)
     const [rerenderTime, setrerenderTime] = useState(false)
@@ -232,8 +236,24 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
         return d1.slice(0, 10) + " " + t1.slice(11, t1.length)
     }
 
+    const _submitLocation = (addr, region) => {
+        if (statusMap.includes('receive')) {
+            __DEV__ && console.tron.log("__________________ Receive Addr __________________")
+            control.setValue("receive-location", addr)
+            control.setValue("receive-region", region)
+            setvisibleMap(false)
+        } else {
+            let splitPath = statusMap.split("-")
+            let path = "shipping-region-" + splitPath[splitPath.length - 1]
+            control.setValue(statusMap, addr)
+            control.setValue(path, region)
+            setvisibleMap(false)
+        }
+    }
+
     const onSubmit = (data) => {
         __DEV__ && console.tron.log("Raw Data Form Post job 3 : ", data)
+        console.log("Raw data post job 3 :: ", data)
         let tmp_data = JSON.parse(JSON.stringify(data))
         let final = { ...tmp_data }
         Object.keys(tmp_data).forEach((key) => {
@@ -266,14 +286,16 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
             let shippingName = final[`shipping-name-${i + 1}`]
             let shippingTime = compareDateTime(final[`shipping-date-${i + 1}`], final[`shipping-time-${i + 1}`])
             let shippingTelNo = final[`shipping-tel-no-${i + 1}`]
+            let shippingAddress = final[`shipping-address-${i + 1}`]
+            let shippingRegion = final[`shipping-region-${i + 1}`]
 
             shippingLocation.push({
-                "name": shippingName,
+                "name": shippingAddress,
                 "dateTime": shippingTime, // Format: DD-MM-YYYY hh:ss
                 "contactName": shippingName,
                 "contactMobileNo": shippingTelNo,
-                "lat": "19.8667",
-                "lng": "110.1917"
+                "lat": shippingRegion['latitude'],
+                "lng": shippingRegion['longitude']
             })
         })
         console.log("Position 2 :: ", shippingLocation)
@@ -288,12 +310,12 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
             "expiredTime": date.format(new Date(2029, 11, 11), "DD-MM-YYYY hh:mm:ss"), // No need now
             "note": 'note text',
             "from": {
-                "name": final['receive-name'],
+                "name": final['receive-location'],
                 "dateTime": compareDateTime(final['receive-date'], final['receive-time']),
                 "contactName": final['receive-name'],
                 "contactMobileNo": final['receive-tel-no'],
-                "lat": "13.8667",
-                "lng": "100.1917"
+                "lat": final['receive-region'].latitude,
+                "lng": final['receive-region'].longitude
             },
             "to": shippingLocation
         }
@@ -373,6 +395,24 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                         size={'large'} color={color.primary} visible={PostJobStore.loading} />
 
 
+                    <Modal
+                        visible={visibleMap}
+                        onTouchOutside={() => setvisibleMap(false)}
+                        onSwipeOut={() => setvisibleMap(false)}>
+                        <ModalContent >
+                            <View style={{ width: (width / 1), height: '100%', justifyContent: 'flex-start' }}>
+                                <SafeAreaView style={{ flex: 1 }}>
+                                    <View style={{ flex: 1, position: 'relative' }}>
+
+                                        <LocationPicker banner={statusMap.includes('receive') ?  "postJobScreen.receiveLocation" : "postJobScreen.shippingLocation"} onSubmitMap={(addr, region) => _submitLocation(addr, region)} />
+
+                                    </View>
+
+                                </SafeAreaView>
+
+                            </View>
+                        </ModalContent>
+                    </Modal>
 
                     <View style={TOP_VIEW_2}>
                         <View style={WRAPPER_TOP}>
@@ -594,9 +634,25 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                             <Controller
                                 control={control}
                                 render={({ onChange, onBlur, value }) => (
-                                    <TextInputTheme
-                                        testID={"receive-location"}
-                                        inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                                    <>
+                                    </>
+                                )}
+                                key={'text-input-receive-region'}
+                                name={"receive-region"}
+                                defaultValue=""
+                            />
+                            <Controller
+                                control={control}
+                                render={({ onChange, onBlur, value }) => (
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            setvisibleMap(true)
+                                            setstatusMap('receive-location')
+                                        }}
+                                        style={BUTTON_MAP}>
+                                        {!formControllerValue["receive-location"] && <Text tx={"postJobScreen.receiveLocation"} />}
+                                        {!!formControllerValue["receive-location"] && <Text>{formControllerValue["receive-location"]}</Text>}
+                                    </TouchableOpacity>
                                 )}
                                 key={'text-input-receive-location'}
                                 name={"receive-location"}
@@ -626,7 +682,6 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                                         key={'text-input-receive-date'}
                                         name={"receive-date"}
                                         defaultValue={initDatePicker}
-                                    // defaultValue={date.parse("2021-01-18T10:25:22.643Z", 'YYYY/MM/DD HH:mm:ss')}
                                     />
                                 </View>
                                     <View style={[FULL, PADDING_LEFT_SMALL]}>
@@ -649,7 +704,6 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                                             key={'text-input-receive-time'}
                                             name={"receive-time"}
                                             defaultValue={initDatePicker}
-                                        // defaultValue={date.parse("2021-01-18T10:25:22.643Z", 'YYYY/MM/DD HH:mm:ss')}
                                         />
                                     </View></>
                             </View>
@@ -706,13 +760,30 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                                     <Text preset={'topic'} style={RED_DOT} >*</Text>
                                 </View>
 
+                                <Controller
+                                    control={control}
+                                    render={({ onChange, onBlur, value }) => (
+                                        <>
+                                        </>
+                                    )}
+                                    key={'text-input-receive-region'}
+                                    name={"shipping-region-" + e.id}
+                                    defaultValue=""
+                                />
+
                                 <Text tx={"postJobScreen.shippingAddr"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
                                 <Controller
                                     control={control}
                                     render={({ onChange, onBlur, value }) => (
-                                        <TextInputTheme
-                                            testID={"shipping-address-" + e.id}
-                                            inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                setvisibleMap(true)
+                                                setstatusMap("shipping-address-" + e.id)
+                                            }}
+                                            style={BUTTON_MAP}>
+                                            {!formControllerValue["shipping-address-" + e.id] && <Text tx={"postJobScreen.shippingLocation"} />}
+                                            {!!formControllerValue["shipping-address-" + e.id] && <Text>{formControllerValue["shipping-address-" + e.id]}</Text>}
+                                        </TouchableOpacity>
                                     )}
                                     key={'text-input-shipping-address-' + e.id}
                                     name={"shipping-address-" + e.id}

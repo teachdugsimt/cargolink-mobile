@@ -15,16 +15,17 @@ const ROOT_STYLE: ViewStyle = {
 }
 
 export function TextInputTheme(props: any) {
-    const { forwardedRef, inputStyle, actualPlaceholder, ...rest } = props
+    const { forwardedRef, inputStyle, actualPlaceholder, editable, ...rest } = props
     return (
-            <TextInput
-                testId={"vehicle-upload-input"}
-                placeholder={actualPlaceholder}
-                placeholderTextColor={color.palette.lighterGrey}
-                underlineColorAndroid={color.transparent}
-                {...rest}
-                style={{ ...ROOT_STYLE, ...inputStyle }}
-                ref={forwardedRef}
-            />
+        <TextInput
+            editable={editable === false ? false : true}
+            testId={"vehicle-upload-input"}
+            placeholder={actualPlaceholder}
+            placeholderTextColor={color.palette.lighterGrey}
+            underlineColorAndroid={color.transparent}
+            {...rest}
+            style={{ ...ROOT_STYLE, ...inputStyle }}
+            ref={forwardedRef}
+        />
     )
 }
