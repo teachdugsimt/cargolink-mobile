@@ -1,6 +1,7 @@
 import React from 'react'
 import { Dimensions } from 'react-native'
-import MultiSelect from 'react-native-multiple-select';
+// import MultiSelect from 'react-native-multiple-select';
+import MultiSelect from '../multi-select-dropdown/react-native-multi-select'
 import { translate } from "../../i18n"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { color } from "../../theme"
