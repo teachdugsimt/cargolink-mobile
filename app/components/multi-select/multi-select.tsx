@@ -26,7 +26,6 @@ export const MultiSelector = (props) => {
             onSelectedItemsChange={onSelectedItemsChange}
             selectedItems={selectedItems}
             selectText={selectText ? selectText : translate("postJobScreen.pleaseSelectVehicleType")}
-            sty
             searchIcon={searchIcon ? searchIcon : <Ionicons name="search-outline" size={20} color={color.primary} />}
             hideSubmitButton={true}
             single={true}

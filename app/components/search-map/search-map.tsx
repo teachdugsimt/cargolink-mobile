@@ -8,14 +8,18 @@ import { Text } from '../../components/'
 import { color, images } from "../../theme";
 import i18n from 'i18n-js'
 import styles from './styles'
-const latitudeDelta = 0.025;
-const longitudeDelta = 0.025;
+import Geolocation from '@react-native-community/geolocation';
+
+const latitudeDelta = 0.005;
+const longitudeDelta = 0.005;
 
 const initialData = {
     latitudeDelta,
     longitudeDelta,
     latitude: 13.736717,
     longitude: 100.523186,
+    // longitude: -122.08400000000002,
+    // latitude: 37.421998333333335
 }
 let mapView: MapView
 let searchText
@@ -31,32 +35,8 @@ let initialState = {
 
 export const LocationPicker = (props) => {
     const [region, setregion] = useState(initialData)
-
     const [{ address, listViewDisplayed,
         showAddress, search, currentLat, currentLng, forceRefresh }, setState] = useState(initialState)
-
-    const { onSubmitMap, banner } = props
-
-    const goToInitialLocation = (region) => {
-        let initialRegion = Object.assign({}, region);
-        initialRegion["latitudeDelta"] = 0.005;     // zoom in
-        initialRegion["longitudeDelta"] = 0.005;      // zoom out
-        mapView.animateToRegion(initialRegion, 2000);
-        // mapView.animateCamera(initialRegion);
-    };
-    const onRegionChange = (region) => {
-        __DEV__ && console.tron.log("________ ON Region Change _________ :: ", region)
-        // อนุเสา  ธรรมศาสตร์
-        setregion(region)
-        setState(prev => ({ ...prev, forceRefresh: Math.floor(Math.random() * 100) }))
-        getAddress();
-    };
-
-    useEffect(() => {
-        getAddress()
-    }, [])
-
-
     const getAddress = () => {
         //function to get address using current lat and lng
         fetch("https://maps.googleapis.com/maps/api/geocode/json?address=" + region.latitude + "," + region.longitude + "&key=" + GOOGLE_API_KEY)
@@ -65,10 +45,44 @@ export const LocationPicker = (props) => {
                 console.log("ADDRESS GEOCODE is BACK!! => " + JSON.stringify(responseJson));
                 setState(prevState => ({
                     ...prevState,
-                    address: JSON.stringify(responseJson.results[0].formatted_address).replace(/"/g, "")
+                    address: responseJson?.results[0] ? JSON.stringify(responseJson.results[0].formatted_address).replace(/"/g, "") : ""
                 }))
             });
     }
+    useEffect(() => {
+        Geolocation.getCurrentPosition(info => _currentRegion(info), error => __DEV__ && console.tron.log(error))
+        getAddress()
+    }, [])
+
+
+    const { onSubmitMap, banner } = props
+
+    const goToInitialLocation = (region) => {
+        let initialRegion = Object.assign({}, region);
+        initialRegion["latitudeDelta"] = 0.0005;     // zoom in
+        initialRegion["longitudeDelta"] = 0.0005;      // zoom out
+        __DEV__ && console.tron.log("Region in goToInitialLocation :: ", initialRegion)
+        // mapView.animateToRegion(initialRegion, 2000);
+        // mapView.animateCamera(initialRegion);
+    };
+    const onRegionChange = (regionParam) => {
+        __DEV__ && console.tron.log("________ ON Region Change _________ :: ", regionParam)
+        // อนุเสา  ธรรมศาสตร์
+        mapView.animateToRegion(regionParam, 2000);
+        setregion(regionParam)
+        setState(prev => ({ ...prev, forceRefresh: Math.floor(Math.random() * 100) }))
+        getAddress();
+    };
+
+    const _currentRegion = (info) => {
+        __DEV__ && console.tron.log("______ INFO CURRENT LOCATION :: ", info)
+        let tmp = Object.assign({}, region);
+        tmp.latitude = info.coords.latitude
+        tmp.longitude = info.coords.longitude
+        __DEV__ && console.tron.log("After set Current Location :: ", tmp)
+        setregion(tmp)
+    }
+
     console.log("MapView :", mapView)
     console.log("Autocomplete Google :: ", searchText)
     return (
@@ -78,6 +92,7 @@ export const LocationPicker = (props) => {
                 onMapReady={() => goToInitialLocation(region)}
                 style={styles.map}
                 initialRegion={region}
+                region={region}
                 onRegionChangeComplete={onRegionChange}
             />
 
@@ -107,6 +122,7 @@ export const LocationPicker = (props) => {
                         listUnderlayColor="lightgrey"
                         onPress={(data, details) => {
                             __DEV__ && console.tron.log("Data google place autocomplete :: ", data)
+                            __DEV__ && console.tron.log("Detail google place autocomplete :: ", details)
                             setState(prevState => ({
                                 ...prevState,
                                 listViewDisplayed: false,
@@ -221,7 +237,7 @@ export const LocationPicker = (props) => {
                         shadowRadius: 1, //IOS
                         elevation: 2, // Android 
                     }}>
-                    <Text style={{ paddingVertical: 2.5 }} tx={"common.confirm"}/>
+                    <Text style={{ paddingVertical: 2.5 }} tx={"common.confirm"} />
                 </TouchableOpacity>
             </KeyboardAvoidingView>
         </View>
