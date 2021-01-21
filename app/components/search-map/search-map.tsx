@@ -17,7 +17,7 @@ const initialData = {
     latitude: 13.736717,
     longitude: 100.523186,
 }
-let mapView
+let mapView: MapView
 let searchText
 let initialState = {
     listViewDisplayed: true,
@@ -42,8 +42,10 @@ export const LocationPicker = (props) => {
         initialRegion["latitudeDelta"] = 0.005;     // zoom in
         initialRegion["longitudeDelta"] = 0.005;      // zoom out
         mapView.animateToRegion(initialRegion, 2000);
+        // mapView.animateCamera(initialRegion);
     };
     const onRegionChange = (region) => {
+        __DEV__ && console.tron.log("________ ON Region Change _________ :: ", region)
         // อนุเสา  ธรรมศาสตร์
         setregion(region)
         setState(prev => ({ ...prev, forceRefresh: Math.floor(Math.random() * 100) }))
@@ -180,7 +182,7 @@ export const LocationPicker = (props) => {
 
             <KeyboardAvoidingView style={styles.footer}>
                 <View style={{ flexDirection: "row", margin: 10 }}>
-                    <Icon name="home" size={24} color="#DC2B6B" style={{ padding: 10 }} />
+                    <Icon name="home" size={24} color={color.primary} style={{ padding: 10 }} />
                     <Text style={styles.addressText} tx={banner} />
                 </View>
                 <TextInput
@@ -219,10 +221,7 @@ export const LocationPicker = (props) => {
                         shadowRadius: 1, //IOS
                         elevation: 2, // Android 
                     }}>
-                    <Text style={{
-                        color: "white", fontFamily: "Kanit-Medium",
-                        fontSize: 12, paddingVertical: 4
-                    }}> SAVE </Text>
+                    <Text style={{ paddingVertical: 2.5 }} tx={"common.confirm"}/>
                 </TouchableOpacity>
             </KeyboardAvoidingView>
         </View>
