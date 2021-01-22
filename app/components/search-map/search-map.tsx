@@ -35,8 +35,10 @@ let initialState = {
 
 export const LocationPicker = (props) => {
     const [region, setregion] = useState(initialData)
+    const [tmpCurrentRegion, settmpCurrentRegion] = useState(null)
     const [{ address, listViewDisplayed,
         showAddress, search, currentLat, currentLng, forceRefresh }, setState] = useState(initialState)
+
     const getAddress = () => {
         //function to get address using current lat and lng
         fetch("https://maps.googleapis.com/maps/api/geocode/json?address=" + region.latitude + "," + region.longitude + "&key=" + GOOGLE_API_KEY)
@@ -52,6 +54,9 @@ export const LocationPicker = (props) => {
     useEffect(() => {
         Geolocation.getCurrentPosition(info => _currentRegion(info), error => __DEV__ && console.tron.log(error))
         getAddress()
+        return () => {
+            Geolocation.stopObserving()
+        }
     }, [])
 
 
@@ -75,6 +80,7 @@ export const LocationPicker = (props) => {
     };
 
     const _currentRegion = (info) => {
+        settmpCurrentRegion(info)
         __DEV__ && console.tron.log("______ INFO CURRENT LOCATION :: ", info)
         let tmp = Object.assign({}, region);
         tmp.latitude = info.coords.latitude

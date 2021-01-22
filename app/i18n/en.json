@@ -34,7 +34,9 @@
     "have": "Have",
     "notHave": "No",
     "M": "m.",
-    "id": "id"
+    "id": "id",
+    "noSign": "no input special character",
+    "noSignAndCharacter": "please check special sign or character"
   },
   "bottomTab": {
     "home": "Home",
@@ -113,7 +115,15 @@
     "receiveTelno": "receive tel no",
     "shippingLocation": "shipping location",
     "shippingDate": "shipping date",
-    "shippingTime": "shipping time"
+    "shippingTime": "shipping time",
+    
+    "validateTruckType": "Vehicle type is required.",
+    "validateProductType": "Product type is reuiqred.",
+    "validateReceiveLocation": "please input receive location",
+    "validateShippingLocation": "please input shipping location",
+    "validateReceiveName": "please check receive name",
+    "validateShippingName": "please check shipping name",
+    "validateReceiveTel": "please check receive tel no"
   },
   "uploadVehicleScreen": {
     "addVehicle": "Add Vehicle",

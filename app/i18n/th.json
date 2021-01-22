@@ -34,7 +34,9 @@
     "have": "มี",
     "notHave": "ไม่มี",
     "M": "เมตร",
-    "id": "รหัส"
+    "id": "รหัส",
+    "noSign": "กรุณาตรวจสอบอักขระพิเศษ",
+    "noSignAndCharacter": "กรุณาตรวจสอบอักขระพิเศษและตัวอักษร"
   },
   "bottomTab": {
     "home": "หน้าแรก",
@@ -103,7 +105,6 @@
     "shipperTel": "เบอร์ติดต่อ",
     "addShippingPoint": "เพิ่มจุดส่งสินค้า",
     "postJobSuccess": "ยินดีด้วยคุณเพิ่มงานสำเร็จแล้ว",
-
     "truckType": "ประเภทรถ",
     "productType": "ประเภทสินค้า",
     "receiveLocation": "จุดรับสินค้า",
@@ -113,7 +114,15 @@
     "receiveTelno": "เบอร์โทรผู้รับสินค้า",
     "shippingLocation": "สถานที่ส่งสินค้า",
     "shippingDate": "วันที่ส่งสินค้า",
-    "shippingTime": "เวลาส่งสินค้า"
+    "shippingTime": "เวลาส่งสินค้า",
+    "validateTruckType": "กรุณาเลือกประเภทรถ",
+    "validateProductType": "กรุณาเลือกประเภทสินค้า",
+    "validateReceiveLocation": "กรุณาเลือกจุดรับสินค้า",
+    "validateShippingLocation": "กรุณาเลือกจุดส่งสินค้า",
+    "validateReceiveName": "กรุณาตรวจสอบชื่อผู้รับสินค้า",
+    "validateShippingName": "กรุณาตรวจสอบชื่อผู้ส่งสินค้า",
+    "validateReceiveTel": "กรุณาตรวจสอบเบอร์ติดต่อ"
+
   },
   "uploadVehicleScreen": {
     "addVehicle": "เพิ่มรถ",
