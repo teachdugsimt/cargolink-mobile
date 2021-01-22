@@ -108,7 +108,7 @@ const AdvanceSearchStore = types
                     console.log('TruckTypeStore.listMapping', JSON.parse(JSON.stringify(TruckTypeStore.listMapping)))
                     MENUS[0].showSubColumn = 2
                     MENUS[0].subMenu = TruckTypeStore.listMapping.map(type => {
-                        const subMenu = type.subTypes.map(subType => ({ ...subType, value: subType.id, isChecked: false }))
+                        const subMenu = type.subTypes.map(subType => ({ ...subType, showSubColumn: 2, value: subType.id, isChecked: false }))
                         return {
                             ...type,
                             value: type.id,

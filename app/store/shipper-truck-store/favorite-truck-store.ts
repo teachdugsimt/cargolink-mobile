@@ -19,6 +19,8 @@ const ShipperTruck = types.model({
 const FavoriteTruckStore = types
     .model({
         list: types.maybeNull(types.array(types.maybeNull(ShipperTruck))),
+        id: types.maybeNull(types.string),
+        liked: types.boolean,
         loading: types.boolean,
         error: types.maybeNull(types.string),
     })
@@ -55,6 +57,11 @@ const FavoriteTruckStore = types
             }
         }),
 
+        keepLiked: function keepLiked(id: string, liked: boolean) {
+            self.id = id
+            self.liked = liked
+        }
+
     }))
     .views((self) => ({
         get getList() {
@@ -63,6 +70,8 @@ const FavoriteTruckStore = types
     }))
     .create({
         list: [],
+        id: '',
+        liked: false,
         loading: false,
         error: "",
     })

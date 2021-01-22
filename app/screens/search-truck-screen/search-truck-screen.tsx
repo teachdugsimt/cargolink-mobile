@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite';
 import { Dimensions, FlatList, ImageStyle, TextStyle, View, ViewStyle, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
-import { AdvanceSearchTab, Text, SearchItemJob, Icon, ModalLoading } from '../../components';
-import { color, spacing } from '../../theme';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { AdvanceSearchTab, Text, SearchItemTruck, Icon, ModalLoading } from '../../components';
+import { color, spacing, images as imageComponent } from '../../theme';
+import { useFocusEffect, useNavigation, useIsFocused } from '@react-navigation/native';
 import { translate } from '../../i18n';
 import { provinceListEn, provinceListTh, regionListEn, regionListTh } from '../../screens/home-screen/manage-vehicle/datasource'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -11,12 +11,14 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Feather from 'react-native-vector-icons/Feather'
 import { Modal, ModalContent } from 'react-native-modals';
 import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
+// import SearchTruckTypeStore from '../../store/truck-type-store/search-truck-type-store'
 import ShipperTruckStore from '../../store/shipper-truck-store/shipper-truck-store'
 import AdvanceSearchTruckStore from '../../store/shipper-truck-store/advance-search-store'
 import i18n from 'i18n-js'
-import { GetTruckType } from "../../utils/get-truck-type";
+import { GetRegion } from "../../utils/get-region";
 import AdvanceSearchStore from '../../store/shipper-truck-store/advance-search-store';
 import FavoriteTruckStore from '../../store/shipper-truck-store/favorite-truck-store';
+import { MapTruckImageName } from '../../utils/map-truck-image-name';
 
 const width = Dimensions.get('window').width
 interface SubButtonSearch {
@@ -139,25 +141,30 @@ const Item = (data) => {
   }
 
   const onToggleHeart = (data) => {
-    console.log('onToggleHeart data', data)
     FavoriteTruckStore.add(data.id)
   }
 
   TruckTypeStore.getTruckTypeById(+truckType)
 
+  const workingZoneStr = workingZones?.length ? workingZones.map(zone => {
+    let reg = GetRegion(zone.region, i18n.locale)
+    return reg.label
+  }).join(', ') : translate('common.notSpecified')
+
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
-      <SearchItemJob
+      <SearchItemTruck
         {
         ...{
           id,
-          fromText: 'ภาคกลาง',
+          fromText: workingZoneStr,
           count: 2,
-          truckType: TruckTypeStore.data?.name || translate('common.notSpecified'),
+          truckType: `${translate('common.vehicleTypeField')} : ${JSON.parse(JSON.stringify(TruckTypeStore.data)).name || translate('common.notSpecified')}`,
           // viewDetail,
           postBy: 'CargoLink',
           isVerified: true,
           isLike: isLiked,
+          backgroundImage: imageComponent[MapTruckImageName(+truckType) || 'truck'],
           // rating,
           // ratingCount,
           isCrown: true,
@@ -197,6 +204,7 @@ const initialState = {
   zones: [],
   filterLength: 0,
   loading: true,
+  isLike: false,
 }
 
 const sortArray = (list) => list.sort((a, b) => (a.value > b.value) ? 1 : -1)
@@ -217,8 +225,9 @@ let PAGE = 0
 
 export const SearchTruckScreen = observer(function SearchTruckScreen() {
   const navigation = useNavigation()
+  const isFocused = useIsFocused()
 
-  const [{ subButtons, data, value, zones, filterLength, listLength, loading }, setState] = useState(initialState)
+  const [{ subButtons, data, value, zones, filterLength, listLength, loading, isLike }, setState] = useState(initialState)
   const [visible, setVisible] = useState<boolean>(false)
 
   useFocusEffect(
@@ -231,13 +240,30 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
 
       setState(prevState => ({
         ...prevState,
-        filterLength: length
+        filterLength: length,
       }))
     }, [])
   );
 
   useEffect(() => {
+    if (FavoriteTruckStore.id) {
+      const newData = [...data]
+      const index = data.findIndex(({ id }) => id === FavoriteTruckStore.id)
+      if (index !== -1) {
+        newData.splice(index, 1, { ...newData[index], isLiked: FavoriteTruckStore.liked })
+        setState(prevState => ({
+          ...prevState,
+          data: newData,
+          isLike: !prevState.isLike,
+        }))
+      }
+      FavoriteTruckStore.keepLiked('', false)
+    }
+  }, [isFocused])
+
+  useEffect(() => {
     ShipperTruckStore.find()
+    TruckTypeStore.find()
     let newZone = null
     if (i18n.locale === 'th') {
       const ascZones = sortArray(regionListTh)
@@ -285,6 +311,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
 
   const onScrollList = () => {
     if (ShipperTruckStore.list.length >= 10) {
+      // TruckTypeStore.find()
       PAGE = ShipperTruckStore.list.length === listLength ? listLength : PAGE + ShipperTruckStore.list.length
       const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE }
       ShipperTruckStore.find(advSearch)

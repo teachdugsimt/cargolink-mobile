@@ -49,6 +49,7 @@ export const images = {
   defaultImage: require("../images/default_image.png"),
   bell: require("../images/bell.png"),
   postJobSuccess: require("../images/post-job-success.png"),
+  noImageAvailable: require("../images/no-image-available.jpg"),
   // clearLogo: require('../Images/top_logo.png'),
 }
 

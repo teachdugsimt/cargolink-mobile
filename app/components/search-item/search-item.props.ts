@@ -1,4 +1,4 @@
-import { ViewStyle } from "react-native"
+import { ImageSourcePropType, ViewStyle } from "react-native"
 
 export interface SearchItemProps {
   id?: number | string
@@ -21,7 +21,7 @@ export interface SearchItemProps {
 
   viewDetailToRight?: boolean
 
-  backgroundImage?: string
+  backgroundImage?: ImageSourcePropType
 
   isLike?: boolean
 

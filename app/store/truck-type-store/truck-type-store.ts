@@ -21,7 +21,8 @@ const TruckTypeMapping = types.model({
 const TruckTypeStore = types
     .model({
         // list: types.array(types.maybeNull(TruckTypeGroup)),
-        data: types.maybeNull(types.model(TruckType)),
+        data: types.optional(types.model(TruckType), {}),
+        // data: types.optional(types.model(TruckType), types.null),
         list: types.optional(types.array(TruckTypeGroup), []),
         listGroup: types.optional(types.array(TruckTypeGroup), []),
         listMapping: types.optional(types.array(TruckTypeMapping), []),
@@ -68,7 +69,6 @@ const TruckTypeStore = types
             // yield truckTypeApi.setup(i18n.locale)
             self.mappingLoding = true
             try {
-                console.log('JSON.parse(JSON.stringify(self.list))', JSON.parse(JSON.stringify(self.list)))
                 const mapping = JSON.parse(JSON.stringify(self.listGroup)).map(type => {
                     const subTypes = JSON.parse(JSON.stringify(self.list)).filter(subType => subType.groupId === type.id)
                     return {
@@ -86,13 +86,10 @@ const TruckTypeStore = types
             }
         },
 
-        getTruckTypeById: flow(function* getTruckType(id: number) {
-            if (!JSON.parse(JSON.stringify(self.list)).length) {
-                yield TruckTypeStore.find()
-            }
-            const truckType = JSON.parse(JSON.stringify(self.list)).filter(type => type.id === id)[0]
-            self.data = truckType
-        }),
+        getTruckTypeById: function getTruckType(id: number) {
+            const truckType = self.list.filter(type => type.id === id)
+            self.data = truckType?.length ? JSON.parse(JSON.stringify(truckType))[0] : {}
+        },
 
     }))
     .views((self) => ({

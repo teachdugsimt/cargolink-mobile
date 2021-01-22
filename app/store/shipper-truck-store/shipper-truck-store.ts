@@ -15,7 +15,11 @@ const defaultModel = {
     approveStatus: types.maybeNull(types.string),
     registrationNumber: types.maybeNull(types.array(types.string)),
     tipper: types.maybeNull(types.boolean),
-    isLiked: types.maybeNull(types.optional(types.boolean, false))
+    isLiked: types.maybeNull(types.optional(types.boolean, false)),
+    workingZones: types.maybeNull(types.array(types.model({
+        region: types.maybeNull(types.number),
+        province: types.maybeNull(types.number),
+    })))
 }
 
 const ShipperJob = types.model(defaultModel)
@@ -28,10 +32,6 @@ const ShipperJobFull = types.model({
         left: types.maybeNull(types.string),
         right: types.maybeNull(types.string),
     })),
-    workingZones: types.maybeNull(types.array(types.model({
-        region: types.maybeNull(types.number),
-        province: types.maybeNull(types.number),
-    })))
 })
 
 const ShipperTruckStore = types
@@ -82,7 +82,9 @@ const ShipperTruckStore = types
                 const response = yield shipperTruckApi.findOne(id)
                 console.log("Response call api get shipper truck : : ", JSON.stringify(response))
                 if (response.kind === 'ok') {
-                    self.data = response.data || {}
+                    const result = response.data || {}
+                    const isLiked = self.list.find(({ id }) => id === result.id).isLiked
+                    self.data = { ...result, isLiked }
                 } else {
                     self.error = response?.data?.message || response.kind
                 }
@@ -95,6 +97,14 @@ const ShipperTruckStore = types
                 self.error = "error fetch api get shipper truck"
             }
         }),
+
+        updateFavoriteInList: function updateFavoriteInList(id: string, isLiked) {
+            const index = self.list.findIndex(({ id: idx }) => idx === id)
+            self.list[index].isLiked = isLiked
+            console.log('id', id)
+            console.log('JSON.parse(JSON.stringify(self.list[index]))', JSON.parse(JSON.stringify(self.list)))
+            self.list = JSON.parse(JSON.stringify(self.list))
+        },
 
         setDefaultOfData: function setDefaultOfData() {
             self.data = {
