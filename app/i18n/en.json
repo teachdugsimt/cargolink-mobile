@@ -36,7 +36,8 @@
     "M": "m.",
     "id": "id",
     "noSign": "no input special character",
-    "noSignAndCharacter": "please check special sign or character"
+    "noSignAndCharacter": "please check special sign or character",
+    "notSpecified": "Not specified"
   },
   "bottomTab": {
     "home": "Home",

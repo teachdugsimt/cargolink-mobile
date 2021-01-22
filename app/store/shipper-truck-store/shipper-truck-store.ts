@@ -1,6 +1,7 @@
 import { types, flow, cast } from "mobx-state-tree"
 import { ShipperTruckAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
+import FavoriteTruckStore from "./favorite-truck-store"
 
 const shipperTruckApi = new ShipperTruckAPI()
 
@@ -13,7 +14,12 @@ const defaultModel = {
     updatedAt: types.maybeNull(types.string),
     approveStatus: types.maybeNull(types.string),
     registrationNumber: types.maybeNull(types.array(types.string)),
-    tipper: types.maybeNull(types.boolean)
+    tipper: types.maybeNull(types.boolean),
+    isLiked: types.maybeNull(types.optional(types.boolean, false)),
+    workingZones: types.maybeNull(types.array(types.model({
+        region: types.maybeNull(types.number),
+        province: types.maybeNull(types.number),
+    })))
 }
 
 const ShipperJob = types.model(defaultModel)
@@ -26,10 +32,6 @@ const ShipperJobFull = types.model({
         left: types.maybeNull(types.string),
         right: types.maybeNull(types.string),
     })),
-    workingZones: types.maybeNull(types.array(types.model({
-        region: types.maybeNull(types.number),
-        province: types.maybeNull(types.number),
-    })))
 })
 
 const ShipperTruckStore = types
@@ -45,11 +47,27 @@ const ShipperTruckStore = types
             self.loading = true
             try {
                 const response = yield shipperTruckApi.find(filter)
-                console.log("Response call api get shipper trucks : : ", response)
+                console.log("Response call api get shipper jobs : : ", response)
                 if (response.kind === 'ok') {
-                    self.list = response.data || []
+                    yield FavoriteTruckStore.find()
+                    let arrMerge = [...self.list, ...response.data] || []
+                    const favoriteList = JSON.parse(JSON.stringify(FavoriteTruckStore.list))
+
+                    if (favoriteList?.length) {
+                        const result = yield Promise.all(arrMerge.map(attr => {
+                            return {
+                                ...attr,
+                                isLiked: favoriteList.some(val => val.id === attr.id)
+                            }
+                        }))
+                        self.list = JSON.parse(JSON.stringify(result))
+                    } else {
+                        self.list = cast(arrMerge)
+                    }
+                    self.loading = false
+                } else {
+                    self.loading = false
                 }
-                self.loading = false
             } catch (error) {
                 console.error("Failed to fetch get shipper trucks : ", error)
                 self.loading = false
@@ -64,7 +82,9 @@ const ShipperTruckStore = types
                 const response = yield shipperTruckApi.findOne(id)
                 console.log("Response call api get shipper truck : : ", JSON.stringify(response))
                 if (response.kind === 'ok') {
-                    self.data = response.data || {}
+                    const result = response.data || {}
+                    const isLiked = self.list.find(({ id }) => id === result.id).isLiked
+                    self.data = { ...result, isLiked }
                 } else {
                     self.error = response?.data?.message || response.kind
                 }
@@ -77,6 +97,14 @@ const ShipperTruckStore = types
                 self.error = "error fetch api get shipper truck"
             }
         }),
+
+        updateFavoriteInList: function updateFavoriteInList(id: string, isLiked) {
+            const index = self.list.findIndex(({ id: idx }) => idx === id)
+            self.list[index].isLiked = isLiked
+            console.log('id', id)
+            console.log('JSON.parse(JSON.stringify(self.list[index]))', JSON.parse(JSON.stringify(self.list)))
+            self.list = JSON.parse(JSON.stringify(self.list))
+        },
 
         setDefaultOfData: function setDefaultOfData() {
             self.data = {
@@ -102,7 +130,8 @@ const ShipperTruckStore = types
                         province: null
                     }
                 ]),
-                tipper: false
+                tipper: false,
+                isLiked: false
             }
         },
 

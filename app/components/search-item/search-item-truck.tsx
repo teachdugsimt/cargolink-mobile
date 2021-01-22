@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ImageBackground, ImageStyle, TextStyle, View, ViewStyle, TouchableOpacity } from 'react-native';
 import { SearchItemProps } from './search-item.props';
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -9,8 +9,6 @@ import { Text } from '../text/text';
 import { translate } from '../../i18n';
 // import { TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-
-const truckBackImage = require("./truck-back.png")
 
 const FONT_SIZE_SMALL = 15
 
@@ -28,15 +26,23 @@ const CONTAINER: ViewStyle = {
   marginTop: spacing[1],
   marginBottom: spacing[1],
 }
-const BACKGROUND: ImageStyle = {
-  width: 130,
-  height: 100,
+const BACKGROUND_CONTAINER: ViewStyle = {
+  width: 230,
+  height: 120,
   position: 'absolute',
+  overflow: 'hidden',
   right: 0,
-  bottom: spacing[3],
+}
+const BACKGROUND: ImageStyle = {
+  width: '100%',
+  height: '100%',
+  position: 'absolute',
+  right: -100,
+  opacity: 0.4
 }
 const TOP_ROOT: ViewStyle = {
   // flex: 2,
+  position: 'relative',
   flexDirection: "row",
   paddingBottom: spacing[2],
   borderBottomWidth: 1,
@@ -121,7 +127,7 @@ const TEXT_VIEW: TextStyle = {
   paddingVertical: 0
 }
 
-export function SearchItemJob(props: SearchItemProps) {
+export function SearchItemTruck(props: SearchItemProps) {
   const {
     id,
     fromText,
@@ -136,21 +142,28 @@ export function SearchItemJob(props: SearchItemProps) {
     isCrown,
     logo,
     containerStyle,
+    backgroundImage,
     onPress,
     onToggleHeart
   } = props
 
   const [isLike, setIsLike] = useState(like)
 
+  useEffect(() => {
+    setIsLike(like)
+  }, [like])
+
   const onSelectedHeart = () => {
     setIsLike(!isLike)
-    onToggleHeart({ id, isLike: !isLike })
+    onToggleHeart({ id, isLike: !like })
   }
 
   return (
     <TouchableOpacity style={{ ...CONTAINER, ...containerStyle }} activeOpacity={1} onPress={onPress}>
       <View style={TOP_ROOT}>
-        <ImageBackground source={truckBackImage} style={BACKGROUND} ></ImageBackground>
+        <View style={BACKGROUND_CONTAINER}>
+          <ImageBackground source={backgroundImage} style={BACKGROUND} resizeMode={'contain'} />
+        </View>
         <View style={CONTENT}>
           <View style={LOCATION}>
             <Icon icon="pinDropYellow" style={PIN_ICON} />
@@ -159,12 +172,9 @@ export function SearchItemJob(props: SearchItemProps) {
               style={LOCATION_TEXT}
             />
             <Text style={{ paddingHorizontal: spacing[2] }} text={':'} />
-            <Text
-              text={fromText}
-              style={LOCATION_TEXT}
-            />
+            <Text text={fromText} style={LOCATION_TEXT} numberOfLines={1} />
           </View>
-          <View style={{ ...CAR_DETAIL_ROOT, paddingTop: spacing[2] }}>
+          <View style={{ ...CAR_DETAIL_ROOT, paddingTop: spacing[1] }}>
             <View style={CAR_DETAIL}>
               <Text
                 style={TEXT}
@@ -173,9 +183,9 @@ export function SearchItemJob(props: SearchItemProps) {
               <Text style={TEXT} text={count.toString()} />
             </View>
           </View>
-          <View style={{ ...CAR_DETAIL_ROOT, paddingBottom: spacing[5] }}>
+          <View style={{ ...CAR_DETAIL_ROOT, paddingBottom: spacing[1] }}>
             <View style={CAR_DETAIL}>
-              <Text style={TEXT} text={truckType} />
+              <Text style={TEXT} text={truckType} numberOfLines={1} />
             </View>
           </View>
         </View>

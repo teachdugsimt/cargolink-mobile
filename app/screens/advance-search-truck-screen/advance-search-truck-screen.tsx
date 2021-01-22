@@ -81,6 +81,7 @@ export const AdvanceSearchTruckScreen = observer(function AdvanceSearchTruckScre
     const [state, setState] = useState(initialState)
 
     useEffect(() => {
+        // AdvanceSearchJobStore.mapMenu()
         if (!AdvanceSearchJobStore.menu || !AdvanceSearchJobStore.menu.length) {
             AdvanceSearchJobStore.mapMenu()
         }
@@ -97,7 +98,14 @@ export const AdvanceSearchTruckScreen = observer(function AdvanceSearchTruckScre
         const newMenu = AdvanceSearchJobStore.menu.map(menu => {
             if (menu.id !== id || !menu.isMultiSelect) return menu
             const subMenu = menu.subMenu && menu.subMenu.length ? menu.subMenu.map(item => {
-                return { ...item, isChecked: !isChecked }
+                if (item?.subMenu?.length) {
+                    const childOfSubMenu = item.subMenu.map(attr => {
+                        return { ...attr, isChecked: !isChecked }
+                    })
+                    return { ...item, subMenu: childOfSubMenu }
+                } else {
+                    return { ...item, isChecked: !isChecked }
+                }
             }) : []
             return { ...menu, isChecked: !isChecked, subMenu }
         })
@@ -106,7 +114,16 @@ export const AdvanceSearchTruckScreen = observer(function AdvanceSearchTruckScre
 
     const onConfirm = () => {
         const resultMapFilter = AdvanceSearchJobStore.menu.map(menu => {
-            const result = menu.subMenu.filter(subMenu => subMenu.isChecked).map(val => val.value)
+            const arrChildOfSubMenu = []
+            const filterSelected = menu.subMenu.filter(subMenu => {
+                if (subMenu?.subMenu?.length) {
+                    const res = subMenu.subMenu.filter(sub => sub.isChecked)
+                    arrChildOfSubMenu.push(...res)
+                    return false;
+                }
+                return subMenu.isChecked
+            })
+            const result = [...filterSelected, ...arrChildOfSubMenu].map(val => val.value)
             if (menu.type === 'truckAmount' && menu.isChecked) {
                 const numbs = JSON.parse(JSON.stringify(result[0]))
                 return {
@@ -129,6 +146,7 @@ export const AdvanceSearchTruckScreen = observer(function AdvanceSearchTruckScre
     const onSelect = (subId: number, mainId: number, isChecked: boolean, isMultiSelect: boolean) => {
         let newMenu = null
         let settings = JSON.parse(JSON.stringify(AdvanceSearchJobStore.menu))
+        // let settings = AdvanceSearchJobStore.menu
         if (!isMultiSelect) {
             const indexMainId = mainId - 1
             const newSubMenu = settings[indexMainId].subMenu.map(menu => ({ ...menu, isChecked: menu.id === subId ? !isChecked : false }))
@@ -142,10 +160,23 @@ export const AdvanceSearchTruckScreen = observer(function AdvanceSearchTruckScre
             newMenu = settings.map(menu => {
                 if (menu.id !== mainId) return menu
                 const subMenu = menu.subMenu && menu.subMenu.length ? menu.subMenu.map(item => {
+                    if (item?.subMenu?.length) {
+                        const childOfSubMenu = item.subMenu.map(attr => {
+                            if (attr.id !== subId) return attr
+                            return { ...attr, isChecked: !isChecked }
+                        })
+                        return { ...item, subMenu: childOfSubMenu }
+                    }
                     if (item.id !== subId) return item
                     return { ...item, isChecked: !isChecked }
                 }) : []
-                const unCheckedAll = subMenu.filter(({ isChecked }) => isChecked)
+                const unCheckedAll = subMenu.filter(({ isChecked, subMenu: childOfSubMenu }) => {
+                    if (childOfSubMenu?.length) {
+                        const childUnCheckAll = childOfSubMenu.filter(({ isChecked: subChecked }) => subChecked)
+                        return !!childUnCheckAll.length
+                    }
+                    return isChecked
+                })
                 return { ...menu, isChecked: !!unCheckedAll.length, subMenu }
             })
         }
@@ -189,10 +220,27 @@ export const AdvanceSearchTruckScreen = observer(function AdvanceSearchTruckScre
                                         {
                                             menu.subMenu && menu.subMenu.map((subMenu, i) => {
                                                 const percentWidth = (100 - (menu.showSubColumn * (marginPercent * 2))) / menu.showSubColumn
-                                                const { id, name, isChecked } = subMenu
-                                                return (
-                                                    <SubMenu key={id} id={id} label={name} isChecked={isChecked} mainIndex={menu.id} percentWidth={percentWidth} isMultiSelect={menu.isMultiSelect} />
-                                                )
+                                                if (subMenu?.subMenu?.length) {
+                                                    return (
+                                                        <View key={i}>
+                                                            <Text text={subMenu.name} style={{ color: color.line }} />
+                                                            <View style={[SUB_MENU, { paddingVertical: spacing[1] }]}>
+                                                                {subMenu.subMenu.map(childOfSubMenu => {
+                                                                    const { id, name, isChecked } = childOfSubMenu
+                                                                    return (
+                                                                        <SubMenu key={id} id={id} label={name} isChecked={isChecked} mainIndex={menu.id} percentWidth={percentWidth} isMultiSelect={menu.isMultiSelect} />
+                                                                    )
+                                                                })}
+                                                            </View>
+                                                        </View>
+                                                    )
+                                                } else {
+                                                    const { id, name, isChecked } = subMenu
+                                                    return (
+                                                        <SubMenu key={id} id={id} label={name} isChecked={isChecked} mainIndex={menu.id} percentWidth={percentWidth} isMultiSelect={menu.isMultiSelect} />
+                                                    )
+                                                }
+
                                             })
                                         }
                                     </View>

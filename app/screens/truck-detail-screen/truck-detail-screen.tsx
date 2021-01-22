@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useLayoutEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
 import {
     Dimensions,
@@ -10,17 +10,19 @@ import {
     View,
     ViewStyle,
 } from "react-native"
-import { Button, ModalLoading, PostingBy, Text } from "../../components"
+import { Button, HeaderLeft, ModalLoading, PostingBy, Text } from "../../components"
 import { translate } from "../../i18n"
 import { color, images as imageComponent, spacing } from "../../theme"
 import { useNavigation } from "@react-navigation/native"
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { TouchableOpacity } from "react-native-gesture-handler"
 import ShipperTruckStore from '../../store/shipper-truck-store/shipper-truck-store'
-import { GetTruckType } from "../../utils/get-truck-type";
+import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
 import i18n from 'i18n-js';
 import { useStores } from "../../models/root-store/root-store-context";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import ShipperJobStore from "../../store/shipper-job-store/shipper-job-store"
+import FavoriteTruckStore from "../../store/shipper-truck-store/favorite-truck-store"
 
 const deviceWidht = Dimensions.get("window").width
 const deviceHeight = Dimensions.get("window").height
@@ -86,6 +88,7 @@ const TEXT: TextStyle = {
 const initialState = {
     openViewer: false,
     indexOfImage: 0,
+    liked: false
 }
 
 export const TruckDetailScreen = observer(function TruckDetailScreen() {
@@ -93,14 +96,37 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
 
     const { tokenStore } = useStores()
 
-    const [{ openViewer, indexOfImage }, setState] = useState(initialState)
+    const [{ openViewer, indexOfImage, liked }, setState] = useState(initialState)
     const {
+        id,
         truckType,
         stallHeight,
         tipper,
+        isLiked,
         // imageTransform,
         truckPhotos,
     } = ShipperTruckStore.data
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerRight: () => (<TouchableOpacity onPress={() => onSelectedHeart(id)}>
+                <MaterialCommunityIcons name={liked ? 'heart' : 'heart-outline'} size={24} color={liked ? color.red : color.line} />
+            </TouchableOpacity>),
+        })
+        return () => { }
+    }, [liked, id, navigation]);
+
+    useEffect(() => {
+        setState(prevState => ({
+            ...prevState,
+            liked: isLiked,
+        }))
+    }, [isLiked])
+
+    useEffect(() => {
+        console.log('truckType', truckType)
+        TruckTypeStore.getTruckTypeById(+truckType)
+    }, [truckType])
 
     const onViewer = (index: number) => {
         setState(prevState => ({
@@ -114,6 +140,15 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
         setState(prevState => ({
             ...prevState,
             openViewer: false
+        }))
+    }
+
+    const onSelectedHeart = (id: string) => {
+        FavoriteTruckStore.keepLiked(id, !liked)
+        FavoriteTruckStore.add(id)
+        setState(prevState => ({
+            ...prevState,
+            liked: !prevState.liked,
         }))
     }
 
@@ -132,18 +167,17 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
     const transformImage = truckPhotos &&
         Object.keys(truckPhotos).length ?
         Object.entries(truckPhotos).map(img => {
-            return {
-                url: img[1],
+            let imgObj = {
+                url: img[1] || '',
+                props: {
+                    source: !img[1] ? imageComponent['noImageAvailable'] : undefined
+                }
             }
+            return JSON.parse(JSON.stringify(imgObj))
         }) : []
-
-    const txtTruckType = GetTruckType(truckType, i18n.locale)
-
-    console.log('truckType', truckType)
 
     return (
         <View style={CONTAINER}>
-
             {ShipperTruckStore.loading && <ModalLoading size={'large'} color={color.primary} visible={ShipperTruckStore.loading} />}
             <ScrollView onScroll={({ nativeEvent }) => { }} style={{}} scrollEventThrottle={400}>
                 <View style={COLUMN}>
@@ -156,13 +190,13 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
                                 transformImage.map((image, index) => {
                                     return (
                                         <TouchableOpacity style={TOUCHABLE} key={index} onPress={(attr) => onViewer(index)}>
-                                            <Image style={IMAGE} source={ShipperTruckStore.data.id ? {
+                                            <Image style={IMAGE} source={ShipperTruckStore.data.id && image.url ? {
                                                 uri: image.url,
                                                 method: 'GET',
                                                 headers: {
                                                     Authorization: `Bearer ${tokenStore.token.accessToken}`
                                                 },
-                                            } : imageComponent[image.url]} key={index} />
+                                            } : imageComponent['noImageAvailable']} key={index} />
                                         </TouchableOpacity>
                                     )
                                 })}
@@ -189,7 +223,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
                             <MaterialCommunityIcons name={'truck-outline'} size={24} color={color.primary} />
                         </View>
                         <View style={DETAIL_BOX}>
-                            <Text text={`${translate('common.vehicleTypeField')} : ${txtTruckType && txtTruckType.name ? txtTruckType.name : ''}`} style={TEXT} />
+                            <Text text={`${translate('common.vehicleTypeField')} : ${TruckTypeStore.data?.name || translate('common.notSpecified')}`} style={TEXT} />
                             <Text text={`${translate('common.count')} : ${2} คัน`} style={TEXT} />
                             <Text text={`${translate('vehicleDetailScreen.carHaveDum')} : ${tipper ? translate('common.have') : translate('common.notHave')}`} style={TEXT} />
                             <Text text={`${translate('truckDetailScreen.heighttOfTheCarStall')} : ${stallHeight || '-'} ${translate('common.M')}`} style={TEXT} />

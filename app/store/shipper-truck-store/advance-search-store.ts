@@ -1,11 +1,19 @@
 import { types, flow, cast } from "mobx-state-tree"
 import * as Types from "../../services/api/api.types"
-import TruckTypeStore from "../my-vehicle-store/truck-type-store"
+// import TruckTypeStore from "../my-vehicle-store/truck-type-store"
+import TruckTypeStore from "../truck-type-store/truck-type-store"
 import i18n from "i18n-js"
 import { translate } from "../../i18n"
-import { ProductTypeAPI } from "../../services/api"
+// import { ProductTypeAPI } from "../../services/api"
 
-const productTypeApi = new ProductTypeAPI()
+// const productTypeApi = new ProductTypeAPI()
+
+const SubMenu = {
+    id: (types.number),
+    value: types.union(types.array(types.number), types.number),
+    name: (types.string),
+    isChecked: (types.boolean),
+}
 
 const Menu = types.model({
     id: (types.number),
@@ -16,10 +24,8 @@ const Menu = types.model({
     isChecked: (types.boolean),
     isMultiSelect: (types.boolean),
     subMenu: types.array(types.model({
-        id: (types.number),
-        value: types.union(types.array(types.number), types.number),
-        name: (types.string),
-        isChecked: (types.boolean),
+        ...SubMenu,
+        subMenu: types.maybeNull(types.array(types.model(SubMenu)))
     }))
 })
 
@@ -51,26 +57,7 @@ const MENUS: Array<Types.AdvanceSearchMenu> = [
         showSubColumn: 3,
         isChecked: false,
         isMultiSelect: true,
-        subMenu: [
-            {
-                id: 11,
-                name: 'รถ 4 ล้อ',
-                value: 1,
-                isChecked: false,
-            },
-            {
-                id: 12,
-                name: 'รถ 6 ล้อ',
-                value: 2,
-                isChecked: false,
-            },
-            {
-                id: 13,
-                name: 'รถ 10 ล้อ',
-                value: 3,
-                isChecked: false,
-            },
-        ]
+        subMenu: []
     },
     {
         id: 2,
@@ -114,14 +101,19 @@ const AdvanceSearchStore = types
                 self.menu = cast(menus)
             } else {
                 self.loading = true
-                yield TruckTypeStore.getTruckTypeDropdown(i18n.locale)
-                if (TruckTypeStore.data && TruckTypeStore.data.length) {
+                yield TruckTypeStore.findGroup()
+                yield TruckTypeStore.find()
+                TruckTypeStore.mappingType()
+                if (TruckTypeStore.listMapping && TruckTypeStore.listMapping.length) {
+                    console.log('TruckTypeStore.listMapping', JSON.parse(JSON.stringify(TruckTypeStore.listMapping)))
                     MENUS[0].showSubColumn = 2
-                    MENUS[0].subMenu = TruckTypeStore.data.map(val => {
+                    MENUS[0].subMenu = TruckTypeStore.listMapping.map(type => {
+                        const subMenu = type.subTypes.map(subType => ({ ...subType, showSubColumn: 2, value: subType.id, isChecked: false }))
                         return {
-                            ...val,
-                            value: val.id,
-                            isChecked: false
+                            ...type,
+                            value: type.id,
+                            isChecked: false,
+                            subMenu,
                         }
                     })
                     self.menu = cast([...self.menu, ...MENUS])
@@ -136,7 +128,11 @@ const AdvanceSearchStore = types
                 return {
                     ...menu,
                     subMenu: menu.subMenu.map(subMenu => {
-                        return { ...subMenu, isChecked: false }
+                        let childOfSubMenu = null
+                        if (subMenu?.subMenu?.length) {
+                            childOfSubMenu = subMenu.subMenu.map(childOfSubMenu => ({ ...childOfSubMenu, isChecked: false }))
+                        }
+                        return { ...subMenu, isChecked: false, subMenu: childOfSubMenu }
                     })
                 }
             })

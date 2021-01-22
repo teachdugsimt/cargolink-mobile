@@ -1,18 +1,24 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite';
 import { Dimensions, FlatList, ImageStyle, TextStyle, View, ViewStyle, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
-import { AdvanceSearchTab, Text, SearchItemJob, Icon, ModalLoading } from '../../components';
-import { color, spacing } from '../../theme';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { AdvanceSearchTab, Text, SearchItemTruck, Icon, ModalLoading } from '../../components';
+import { color, spacing, images as imageComponent } from '../../theme';
+import { useFocusEffect, useNavigation, useIsFocused } from '@react-navigation/native';
 import { translate } from '../../i18n';
 import { provinceListEn, provinceListTh, regionListEn, regionListTh } from '../../screens/home-screen/manage-vehicle/datasource'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Feather from 'react-native-vector-icons/Feather'
 import { Modal, ModalContent } from 'react-native-modals';
-import { GetTruckType } from '../../utils/get-truck-type'
+import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
+// import SearchTruckTypeStore from '../../store/truck-type-store/search-truck-type-store'
 import ShipperTruckStore from '../../store/shipper-truck-store/shipper-truck-store'
 import AdvanceSearchTruckStore from '../../store/shipper-truck-store/advance-search-store'
 import i18n from 'i18n-js'
+import { GetRegion } from "../../utils/get-region";
+import AdvanceSearchStore from '../../store/shipper-truck-store/advance-search-store';
+import FavoriteTruckStore from '../../store/shipper-truck-store/favorite-truck-store';
+import { MapTruckImageName } from '../../utils/map-truck-image-name';
 
 const width = Dimensions.get('window').width
 interface SubButtonSearch {
@@ -76,6 +82,41 @@ const CONTEXT_NOT_FOUND: ViewStyle = {
 const NOT_FOUND_TEXT: TextStyle = {
   color: color.line,
 }
+const SELECTED: ViewStyle = {
+  flexDirection: 'row',
+  alignItems: 'center',
+  borderWidth: 1,
+  borderColor: color.line,
+  borderRadius: Dimensions.get('window').width / 2,
+  paddingVertical: spacing[1],
+  paddingHorizontal: spacing[2],
+  marginHorizontal: spacing[1],
+  marginVertical: spacing[3],
+}
+const SELECTED_TEXT: TextStyle = {
+  color: color.line,
+  paddingRight: spacing[2],
+}
+const CIRCLE_VISIBLE_BUTTON: ViewStyle = {
+  width: 60,
+  height: 60,
+  backgroundColor: color.primary,
+  borderRadius: width / 2,
+  alignItems: 'center',
+  justifyContent: 'center',
+  position: 'absolute',
+  right: 0,
+  // marginLeft: 'auto',
+  // marginRight: 'auto',
+  // left: '50%',
+  // transform: [{
+  //   translateX: ,
+  // }],
+  bottom: spacing[5],
+}
+const CIRCLE_VISIBLE_BUTTON_TEXT: TextStyle = {
+  color: color.textWhite,
+}
 
 const Item = (data) => {
   const {
@@ -88,6 +129,8 @@ const Item = (data) => {
     approveStatus,
     registrationNumber,
     tipper,
+    isLiked,
+    workingZones,
   } = data
 
   const navigation = useNavigation()
@@ -98,24 +141,30 @@ const Item = (data) => {
   }
 
   const onToggleHeart = (data) => {
-    console.log('onToggleHeart data', data)
+    FavoriteTruckStore.add(data.id)
   }
 
-  const typeOfTruck = GetTruckType(+truckType, i18n.locale).name
+  TruckTypeStore.getTruckTypeById(+truckType)
+
+  const workingZoneStr = workingZones?.length ? workingZones.map(zone => {
+    let reg = GetRegion(zone.region, i18n.locale)
+    return reg.label
+  }).join(', ') : translate('common.notSpecified')
 
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
-      <SearchItemJob
+      <SearchItemTruck
         {
         ...{
           id,
-          fromText: 'ภาคกลาง',
+          fromText: workingZoneStr,
           count: 2,
-          truckType: typeOfTruck,
+          truckType: `${translate('common.vehicleTypeField')} : ${JSON.parse(JSON.stringify(TruckTypeStore.data)).name || translate('common.notSpecified')}`,
           // viewDetail,
           postBy: 'CargoLink',
           isVerified: true,
-          // isLike,
+          isLike: isLiked,
+          backgroundImage: imageComponent[MapTruckImageName(+truckType) || 'truck'],
           // rating,
           // ratingCount,
           isCrown: true,
@@ -132,16 +181,6 @@ const Item = (data) => {
       />
     </View>
   )
-}
-
-const makeid = (length: number) => {
-  var result = '';
-  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  var charactersLength = characters.length;
-  for (var i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
 }
 
 const SUB_BUTTON: Array<SubButtonSearch> = [
@@ -164,14 +203,31 @@ const initialState = {
   value: '',
   zones: [],
   filterLength: 0,
+  loading: true,
+  isLike: false,
+}
+
+const sortArray = (list) => list.sort((a, b) => (a.value > b.value) ? 1 : -1)
+
+const mappingDefaultZone = (regions, provinces) => {
+  return regions.map(reg => {
+    const resultProvinces = provinces.filter(prov => prov.region === reg.value).map(prov => ({ ...prov, isSelected: false }))
+    return {
+      ...reg,
+      isSelected: false,
+      isSelectedAll: false,
+      provinces: resultProvinces,
+    }
+  })
 }
 
 let PAGE = 0
 
 export const SearchTruckScreen = observer(function SearchTruckScreen() {
   const navigation = useNavigation()
+  const isFocused = useIsFocused()
 
-  const [{ subButtons, data, value, zones, filterLength }, setState] = useState(initialState)
+  const [{ subButtons, data, value, zones, filterLength, listLength, loading, isLike }, setState] = useState(initialState)
   const [visible, setVisible] = useState<boolean>(false)
 
   useFocusEffect(
@@ -184,34 +240,37 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
 
       setState(prevState => ({
         ...prevState,
-        filterLength: length
+        filterLength: length,
       }))
     }, [])
   );
 
   useEffect(() => {
+    if (FavoriteTruckStore.id) {
+      const newData = [...data]
+      const index = data.findIndex(({ id }) => id === FavoriteTruckStore.id)
+      if (index !== -1) {
+        newData.splice(index, 1, { ...newData[index], isLiked: FavoriteTruckStore.liked })
+        setState(prevState => ({
+          ...prevState,
+          data: newData,
+          isLike: !prevState.isLike,
+        }))
+      }
+      FavoriteTruckStore.keepLiked('', false)
+    }
+  }, [isFocused])
+
+  useEffect(() => {
     ShipperTruckStore.find()
+    TruckTypeStore.find()
     let newZone = null
     if (i18n.locale === 'th') {
-      newZone = regionListTh.map(reg => {
-        const provinces = provinceListTh.filter(prov => prov.region === reg.value).map(prov => ({ ...prov, isSelected: false }))
-        return {
-          ...reg,
-          isSelected: false,
-          isSelectedAll: false,
-          provinces,
-        }
-      })
+      const ascZones = sortArray(regionListTh)
+      newZone = mappingDefaultZone(ascZones, provinceListTh)
     } else {
-      newZone = regionListEn.map(reg => {
-        const provinces = provinceListEn.filter(prov => prov.region === reg.value).map(prov => ({ ...prov, isSelected: false }))
-        return {
-          ...reg,
-          isSelected: false,
-          isSelectedAll: false,
-          provinces,
-        }
-      })
+      const ascZones = sortArray(regionListEn)
+      newZone = mappingDefaultZone(ascZones, provinceListEn)
     }
     setState(prevState => ({
       ...prevState,
@@ -229,11 +288,19 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
     setState(prevState => ({
       ...prevState,
       listLength: ShipperTruckStore.list.length,
+      loading: true,
     }))
     if (!ShipperTruckStore.loading && !data.length && ShipperTruckStore.list && ShipperTruckStore.list.length) {
       setState(prevState => ({
         ...prevState,
         data: ShipperTruckStore.list,
+        loading: false,
+      }))
+    }
+    if (!ShipperTruckStore.loading && (data.length || !data.length)) {
+      setState(prevState => ({
+        ...prevState,
+        loading: false,
       }))
     }
   }, [ShipperTruckStore.loading, ShipperTruckStore.list])
@@ -243,7 +310,12 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
   )
 
   const onScrollList = () => {
-    console.log('scroll down')
+    if (ShipperTruckStore.list.length >= 10) {
+      // TruckTypeStore.find()
+      PAGE = ShipperTruckStore.list.length === listLength ? listLength : PAGE + ShipperTruckStore.list.length
+      const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE }
+      ShipperTruckStore.find(advSearch)
+    }
   }
 
   const onPress = (id: number) => {
@@ -308,12 +380,32 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
     }))
   }
 
+  const deleteZone = (primaryId: string, childId: string = null) => {
+    const zoneIdx = zones.findIndex((zone) => zone.value === primaryId)
+    if (childId) {
+      const provinceIdx = zones[zoneIdx].provinces.findIndex(prov => prov.value === childId)
+      zones[zoneIdx].provinces[provinceIdx].isSelected = false
+      const searchSelected = zones[zoneIdx].provinces.findIndex(prov => prov.isSelected === true)
+      if (searchSelected <= 0) {
+        zones[zoneIdx].isSelected = false
+        zones[zoneIdx].isSelectedAll = false
+      }
+    } else {
+      zones[zoneIdx].isSelected = false
+      zones[zoneIdx].isSelectedAll = false
+      zones[zoneIdx].provinces = zones[zoneIdx].provinces.map(prov => ({ ...prov, isSelected: false }))
+    }
+    setState(prevState => ({
+      ...prevState,
+      zones: zones
+    }))
+  }
+
   const isSelected = zones.find(zone => zone.isSelected === true)
-  console.log('isSelected', isSelected)
 
   return (
     <View style={{ flex: 1 }}>
-      {ShipperTruckStore.loading && <ModalLoading size={'large'} color={color.primary} visible={ShipperTruckStore.loading} />}
+      {loading && <ModalLoading size={'large'} color={color.primary} visible={loading} />}
       <View style={SEARCH_BAR}>
         <View style={SEARCH_BAR_ROW}>
           <Icon icon="pinDropYellow" style={PIN_ICON} />
@@ -331,7 +423,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
           >
             <ModalContent >
               <View style={{ width: (width / 1.1), height: '100%', justifyContent: 'flex-start' }}>
-                <SafeAreaView style={{ flex: 1 }}>
+                <SafeAreaView style={{ flex: 1, position: 'relative' }}>
                   <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
                     <Text style={{ color: color.primary }} preset={"topic"} tx={"searchTruckScreen.selectWorkingZone"} />
                   </View>
@@ -358,38 +450,44 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
                       )
                     })}
                   </ScrollView>
+                  <TouchableOpacity onPress={() => setVisible(!visible)} style={CIRCLE_VISIBLE_BUTTON}>
+                    {/* <Text tx={'common.ok'} style={CIRCLE_VISIBLE_BUTTON_TEXT} /> */}
+                    <MaterialCommunityIcons name={'close-thick'} color={color.textWhite} size={30} />
+                  </TouchableOpacity>
                 </SafeAreaView>
               </View>
             </ModalContent>
           </Modal>
 
         </View>
-        {/* <View style={{ flexDirection: 'row', overflow: 'hidden' }}>
+        <ScrollView horizontal={true} style={{ flexDirection: 'row' }}>
           {!!zones?.length && zones.map((zone, index) => {
             if (zone.isSelectedAll) {
               return (
-                <TouchableOpacity key={`menu-selected-${index}-${zone.value}`}>
-                  <Text text={zone.label} />
+                <TouchableOpacity key={`menu-selected-${index}-${zone.value}`} style={SELECTED} onPress={() => deleteZone(zone.value)} >
+                  <Text text={zone.label} style={SELECTED_TEXT} />
+                  <MaterialIcons name={'cancel'} color={color.line} size={18} />
                 </TouchableOpacity>
               )
             } else if (zone.isSelected) {
-              // return (
-              //   <View key={`menu-selected-${index}-${zone.value}`}>
-              {
-                zone.provinces.map((prov, i) => {
-                  return prov.isSelected ? (
-                    <TouchableOpacity key={`menu-selected-${zone.value}-${i}-${prov.value}`}>
-                      <Text text={prov.label} />
-                    </TouchableOpacity>
-                  ) : null
-                })
-              }
-              // </View>
-              // )
+              return (
+                <View key={`menu-selected-${index}-${zone.value}`} style={{ flexDirection: 'row' }}>
+                  {
+                    zone.provinces.map((prov, i) => {
+                      return prov.isSelected ? (
+                        <TouchableOpacity key={`menu-selected-${zone.value}-${i}-${prov.value}`} style={SELECTED} onPress={() => deleteZone(zone.value, prov.value)}>
+                          <Text text={prov.label} style={SELECTED_TEXT} />
+                          <MaterialIcons name={'cancel'} color={color.line} size={18} />
+                        </TouchableOpacity>
+                      ) : null
+                    })
+                  }
+                </View>
+              )
             }
             return null
           })}
-        </View> */}
+        </ScrollView>
       </View>
       <View style={BUTTON_CONTAINER}>
         <AdvanceSearchTab
@@ -401,26 +499,19 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
         />
       </View>
       <View style={RESULT_CONTAINER}>
-        {/* <FlatList
-          data={data}
-          renderItem={renderItem}
-          keyExtractor={item => item.id.toString()}
-          onEndReached={() => onScrollList()}
-          onEndReachedThreshold={0.5}
-        /> */}
         {
           data && !!data.length ? <FlatList
             data={data}
             renderItem={renderItem}
-            keyExtractor={item => { return item.id + makeid(6) }}
+            keyExtractor={item => item.id}
             onEndReached={() => onScrollList()}
             onEndReachedThreshold={0.5}
           // onMomentumScrollBegin={() => console.log('onResponderEnd')}
           // onMomentumScrollEnd={() => console.log('onMomentumScrollEnd')}
-          /> : <View style={CONTEXT_NOT_FOUND}>
-              <Feather name={'inbox'} size={50} color={color.line} />
-              <Text text={translate('common.notFound')} style={NOT_FOUND_TEXT} preset={'topicExtra'} />
-            </View>
+          /> : (!loading && <View style={CONTEXT_NOT_FOUND}>
+            <Feather name={'inbox'} size={50} color={color.line} />
+            <Text text={translate('common.notFound')} style={NOT_FOUND_TEXT} preset={'topicExtra'} />
+          </View>)
         }
       </View>
     </View>

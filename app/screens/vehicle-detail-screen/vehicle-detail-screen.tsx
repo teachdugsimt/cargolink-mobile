@@ -463,12 +463,22 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
 
   const swap = (input, index_A, index_B) => {
     let data = input
-    if (input[index_A] && input[index_A].url && input[index_B] && input[index_B].url) {
-      let temp = data[index_A];
-      data[index_A] = data[index_B];
-      data[index_B] = temp;
-    }
+    let temp = data[index_A];
+    data[index_A] = data[index_B];
+    data[index_B] = temp;
     return data
+  }
+
+  const _pushEmptyImage = (arr) => {
+    let tmp = arr.map((e, i) => {
+      if (!e.url) {
+        return {
+          url: '',
+          props: { source: imageComponent["noImageAvailable"] }
+        }
+      } else return e
+    })
+    return tmp
   }
 
   // __DEV__ && console.tron.log("Truck Photos :: ", truckPhotos)
@@ -482,6 +492,7 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
     }) : []
   __DEV__ && console.tron.log("RAW Image Photos :: ", raw_image)
   const transformImage = swap(raw_image, 0, 1)
+  const viewListImage = _pushEmptyImage(transformImage)
   __DEV__ && console.tron.log("Transform Image Photos :: ", transformImage)
   const txtTruckType = GetTruckType(truckType, i18n.locale)
 
@@ -503,20 +514,20 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
                   __DEV__ && console.tron.log("Each Image render ::  ", image) // undefined || {url: "xxxxx"}
                   return (
                     <TouchableOpacity style={TOUCHABLE} key={index} onPress={(attr) => onViewer(index)}>
-                      <Image style={IMAGE} source={MyVehicleStore.data.id ? (image && !!image.url ? {
+                      <Image style={IMAGE} source={MyVehicleStore.data.id && image && !!image.url ? {
                         uri: image.url,
                         method: 'GET',
                         headers: {
                           Authorization: `Bearer ${tokenStore.token.accessToken}`
                         },
-                      } : imageComponent[image.url]) : imageComponent[image.url]} key={index} />
-                      {!image && <Image style={IMAGE} source={imageComponent.pinbox} key={index} />}
+                      } : imageComponent["noImageAvailable"]} key={index} />
                     </TouchableOpacity>
                   )
                 })}
               <Modal visible={openViewer} transparent={true}>
                 <ImageViewer
-                  imageUrls={transformImage}
+                  // imageUrls={transformImage}
+                  imageUrls={viewListImage}
                   index={indexOfImage}
                   onCancel={onCancel}
                   enableSwipeDown={true}

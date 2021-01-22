@@ -63,7 +63,7 @@ const ShipperJobStore = types
                 const response = yield apiShipperJob.find(filter)
                 console.log("Response call api get shipper jobs : : ", response)
                 if (response.kind === 'ok') {
-                    FavoriteJobStore.find()
+                    yield FavoriteJobStore.find()
                     let arrMerge = [...self.list, ...response.data] || []
                     const favoriteList = JSON.parse(JSON.stringify(FavoriteJobStore.list))
 
@@ -71,7 +71,7 @@ const ShipperJobStore = types
                         const result = yield Promise.all(arrMerge.map(attr => {
                             return {
                                 ...attr,
-                                isLiked: favoriteList.every(val => val.id === attr.id)
+                                isLiked: favoriteList.some(val => val.id === attr.id)
                             }
                         }))
                         self.list = JSON.parse(JSON.stringify(result))
