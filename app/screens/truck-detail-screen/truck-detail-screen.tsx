@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite"
 import {
     Dimensions,
     Image,
+    ImageBackground,
     ImageStyle,
     Modal,
     ScrollView,
@@ -23,6 +24,8 @@ import { useStores } from "../../models/root-store/root-store-context";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import ShipperJobStore from "../../store/shipper-job-store/shipper-job-store"
 import FavoriteTruckStore from "../../store/shipper-truck-store/favorite-truck-store"
+import { GetTruckType } from "../../utils/get-truck-type"
+import { MapTruckImageName } from "../../utils/map-truck-image-name"
 
 const deviceWidht = Dimensions.get("window").width
 const deviceHeight = Dimensions.get("window").height
@@ -36,6 +39,7 @@ const COLUMN: ViewStyle = {
     marginBottom: spacing[1],
     paddingHorizontal: spacing[4],
     paddingVertical: spacing[4],
+    position: 'relative',
 }
 const ROW: ViewStyle = {
     flex: 1,
@@ -84,11 +88,26 @@ const DETAIL_BOX: ViewStyle = {
 const TEXT: TextStyle = {
     paddingVertical: spacing[2]
 }
+const BACKGROUND_CONTAINER: ViewStyle = {
+    width: 230,
+    height: 200,
+    position: 'absolute',
+    overflow: 'hidden',
+    right: 0,
+    bottom: 0,
+}
+const BACKGROUND: ImageStyle = {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    right: -100,
+    opacity: 0.3
+}
 
 const initialState = {
     openViewer: false,
     indexOfImage: 0,
-    liked: false
+    liked: false,
 }
 
 export const TruckDetailScreen = observer(function TruckDetailScreen() {
@@ -103,7 +122,6 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
         stallHeight,
         tipper,
         isLiked,
-        // imageTransform,
         truckPhotos,
     } = ShipperTruckStore.data
 
@@ -122,11 +140,6 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
             liked: isLiked,
         }))
     }, [isLiked])
-
-    useEffect(() => {
-        console.log('truckType', truckType)
-        TruckTypeStore.getTruckTypeById(+truckType)
-    }, [truckType])
 
     const onViewer = (index: number) => {
         setState(prevState => ({
@@ -153,16 +166,19 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
     }
 
     useEffect(() => {
+        if (!TruckTypeStore.list?.length) {
+            TruckTypeStore.find()
+        }
         return () => {
             ShipperTruckStore.setDefaultOfData()
         }
     }, [])
 
-    useEffect(() => {
-        if (ShipperTruckStore.data) {
-            console.log('ShipperTruckStore.data :>> ', JSON.parse(JSON.stringify(ShipperTruckStore.data)));
-        }
-    }, [ShipperTruckStore.data])
+    // useEffect(() => {
+    //     if (ShipperTruckStore.data) {
+    //         console.log('ShipperTruckStore.data :>> ', JSON.parse(JSON.stringify(ShipperTruckStore.data)));
+    //     }
+    // }, [ShipperTruckStore.data])
 
     const transformImage = truckPhotos &&
         Object.keys(truckPhotos).length ?
@@ -223,12 +239,17 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
                             <MaterialCommunityIcons name={'truck-outline'} size={24} color={color.primary} />
                         </View>
                         <View style={DETAIL_BOX}>
-                            <Text text={`${translate('common.vehicleTypeField')} : ${TruckTypeStore.data?.name || translate('common.notSpecified')}`} style={TEXT} />
+                            <Text text={`${translate('common.vehicleTypeField')} : ${GetTruckType(+truckType)?.name || translate('common.notSpecified')}`} style={TEXT} />
                             <Text text={`${translate('common.count')} : ${2} คัน`} style={TEXT} />
                             <Text text={`${translate('vehicleDetailScreen.carHaveDum')} : ${tipper ? translate('common.have') : translate('common.notHave')}`} style={TEXT} />
                             <Text text={`${translate('truckDetailScreen.heighttOfTheCarStall')} : ${stallHeight || '-'} ${translate('common.M')}`} style={TEXT} />
                         </View>
                     </View>
+
+                    <View style={BACKGROUND_CONTAINER}>
+                        <ImageBackground source={imageComponent[MapTruckImageName(+truckType) || '']} style={BACKGROUND} resizeMode={'contain'} />
+                    </View>
+
                 </View>
 
                 <View style={COLUMN}>

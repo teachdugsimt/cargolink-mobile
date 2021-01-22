@@ -7,6 +7,8 @@ import { useNavigation } from '@react-navigation/native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import AdvanceSearchJobStore from "../../store/shipper-truck-store/advance-search-store"
 import { translate } from '../../i18n'
+import ShipperTruckStore from '../../store/shipper-truck-store/shipper-truck-store'
+import AdvanceSearchStore from '../../store/shipper-truck-store/advance-search-store'
 
 const deviceWidht = Dimensions.get('window').width / 2
 const marginPercent = 1
@@ -84,6 +86,10 @@ export const AdvanceSearchTruckScreen = observer(function AdvanceSearchTruckScre
         // AdvanceSearchJobStore.mapMenu()
         if (!AdvanceSearchJobStore.menu || !AdvanceSearchJobStore.menu.length) {
             AdvanceSearchJobStore.mapMenu()
+        }
+        return () => {
+            ShipperTruckStore.find(AdvanceSearchStore.filter)
+            ShipperTruckStore.setDefaultOfList()
         }
     }, [])
 

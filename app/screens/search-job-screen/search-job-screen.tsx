@@ -11,6 +11,7 @@ import { GetTruckType } from '../../utils/get-truck-type'
 import i18n from 'i18n-js'
 import AdvanceSearchStore from "../../store/shipper-job-store/advance-search-store";
 import TruckTypeStore from "../../store/my-vehicle-store/truck-type-store"
+import MainTruckTypeStore from "../../store/truck-type-store/truck-type-store"
 import { provinceListEn, provinceListTh } from '../../screens/home-screen/manage-vehicle/datasource'
 import Feather from 'react-native-vector-icons/Feather'
 import FavoriteJobStore from "../../store/shipper-job-store/favorite-job-store"
@@ -70,7 +71,7 @@ const Item = (data) => {
     FavoriteJobStore.add(data.id)
   }
 
-  const typeOfTruck = GetTruckType(+truckType, i18n.locale).name
+  const typeOfTruck = GetTruckType(+truckType)?.name || translate('common.notSpecified')
 
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
@@ -154,6 +155,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
 
   useEffect(() => {
     ShipperJobStore.find()
+    MainTruckTypeStore.find()
     return () => {
       PAGE = 0
       ShipperJobStore.setDefaultOfList()

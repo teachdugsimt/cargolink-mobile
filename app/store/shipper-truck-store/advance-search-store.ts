@@ -2,7 +2,6 @@ import { types, flow, cast } from "mobx-state-tree"
 import * as Types from "../../services/api/api.types"
 // import TruckTypeStore from "../my-vehicle-store/truck-type-store"
 import TruckTypeStore from "../truck-type-store/truck-type-store"
-import i18n from "i18n-js"
 import { translate } from "../../i18n"
 // import { ProductTypeAPI } from "../../services/api"
 
@@ -31,16 +30,15 @@ const Menu = types.model({
 
 const Filter = types.model({
     descending: types.maybeNull(types.boolean),
-    from: types.maybeNull(types.string),
-    page: types.maybeNull(types.number),
-    productType: types.maybeNull(types.array(types.number)),
-    rowsPerPage: types.maybe(types.number),
+    page: types.optional(types.number, 0),
+    rowsPerPage: types.optional(types.number, 10),
     sortBy: types.maybeNull(types.string),
-    to: types.maybeNull(types.string),
-    truckAmountMax: types.maybeNull(types.number),
-    truckAmountMin: types.maybeNull(types.number),
+    // truckAmountMax: types.maybeNull(types.number),
+    // truckAmountMin: types.maybeNull(types.number),
+    truckAmount: types.maybeNull(types.number),
     truckType: types.maybeNull(types.array(types.number)),
-    weight: types.maybeNull(types.number),
+    zoneIds: types.maybeNull(types.array(types.number)),
+    // weight: types.maybeNull(types.number),
 })
 
 const ProductType = types.model({
@@ -59,28 +57,28 @@ const MENUS: Array<Types.AdvanceSearchMenu> = [
         isMultiSelect: true,
         subMenu: []
     },
-    {
-        id: 2,
-        type: 'weight',
-        topic: 'น้ำหนัก',
-        showSubColumn: 2,
-        isChecked: false,
-        isMultiSelect: false,
-        subMenu: [
-            {
-                id: 41,
-                name: '1-5 ตัน',
-                value: 1,
-                isChecked: false,
-            },
-            {
-                id: 42,
-                name: '5-10 ตัน',
-                value: 5,
-                isChecked: false,
-            },
-        ]
-    },
+    // {
+    //     id: 2,
+    //     type: 'weight',
+    //     topic: 'น้ำหนัก',
+    //     showSubColumn: 2,
+    //     isChecked: false,
+    //     isMultiSelect: false,
+    //     subMenu: [
+    //         {
+    //             id: 41,
+    //             name: '1-5 ตัน',
+    //             value: 1,
+    //             isChecked: false,
+    //         },
+    //         {
+    //             id: 42,
+    //             name: '5-10 ตัน',
+    //             value: 5,
+    //             isChecked: false,
+    //         },
+    //     ]
+    // },
 ]
 
 const AdvanceSearchStore = types
@@ -105,7 +103,6 @@ const AdvanceSearchStore = types
                 yield TruckTypeStore.find()
                 TruckTypeStore.mappingType()
                 if (TruckTypeStore.listMapping && TruckTypeStore.listMapping.length) {
-                    console.log('TruckTypeStore.listMapping', JSON.parse(JSON.stringify(TruckTypeStore.listMapping)))
                     MENUS[0].showSubColumn = 2
                     MENUS[0].subMenu = TruckTypeStore.listMapping.map(type => {
                         const subMenu = type.subTypes.map(subType => ({ ...subType, showSubColumn: 2, value: subType.id, isChecked: false }))
@@ -123,7 +120,7 @@ const AdvanceSearchStore = types
         }),
 
         clearMenu: function clearMenu() {
-            const newMenu = self.menu.length && self.menu.map(menu => {
+            const newMenu = self.menu?.length ? self.menu.map(menu => {
                 menu.isChecked = false
                 return {
                     ...menu,
@@ -135,15 +132,13 @@ const AdvanceSearchStore = types
                         return { ...subMenu, isChecked: false, subMenu: childOfSubMenu }
                     })
                 }
-            })
+            }) : []
             self.menu = cast(JSON.parse(JSON.stringify(newMenu)))
             self.filter = {
                 ...self.filter,
-                productType: null,
-                truckAmountMax: null,
-                truckAmountMin: null,
+                truckAmount: null,
                 truckType: null,
-                weight: null,
+                zoneIds: null
             }
         },
 
@@ -154,7 +149,6 @@ const AdvanceSearchStore = types
         },
     }))
     .create({
-        // IMPORTANT !!
         filter: {},
         menu: [],
         productTypes: [],
@@ -163,4 +157,3 @@ const AdvanceSearchStore = types
     })
 
 export default AdvanceSearchStore
-// Type 2 : not persist store

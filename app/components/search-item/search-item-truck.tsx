@@ -38,7 +38,7 @@ const BACKGROUND: ImageStyle = {
   height: '100%',
   position: 'absolute',
   right: -100,
-  opacity: 0.4
+  opacity: 0.3,
 }
 const TOP_ROOT: ViewStyle = {
   // flex: 2,
@@ -155,7 +155,7 @@ export function SearchItemTruck(props: SearchItemProps) {
 
   const onSelectedHeart = () => {
     setIsLike(!isLike)
-    onToggleHeart({ id, isLike: !like })
+    onToggleHeart({ id, isLike: !isLike })
   }
 
   return (
@@ -191,7 +191,7 @@ export function SearchItemTruck(props: SearchItemProps) {
         </View>
         <View style={CONTENT_RIGHT}>
           <TouchableOpacity onPress={onSelectedHeart}>
-            <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} size={24} color={isLike ? color.red : color.line} />
+            <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} size={26} color={isLike ? color.red : color.line} />
           </TouchableOpacity>
           {isRecommened &&
             <View style={RECOMMENED_ROOT}>

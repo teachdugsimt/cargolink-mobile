@@ -88,7 +88,7 @@ const TruckTypeStore = types
 
         getTruckTypeById: function getTruckType(id: number) {
             const truckType = self.list.filter(type => type.id === id)
-            self.data = truckType?.length ? JSON.parse(JSON.stringify(truckType))[0] : {}
+            self.data = JSON.parse(JSON.stringify(truckType))[0]
         },
 
     }))

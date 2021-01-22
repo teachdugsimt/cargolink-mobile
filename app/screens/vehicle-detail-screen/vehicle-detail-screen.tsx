@@ -171,7 +171,7 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
     }) : []
   const transformImage = swap(raw_image, 0, 1)
   __DEV__ && console.tron.log("Transform Image Photos :: ", transformImage)
-  const txtTruckType = GetTruckType(truckType, i18n.locale)
+  const txtTruckType = GetTruckType(+truckType)
 
   return (
     <View style={CONTAINER}>
