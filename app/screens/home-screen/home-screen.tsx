@@ -11,32 +11,6 @@ import { GridView } from '../../components/home-element/home-element'
 import i18n from 'i18n-js'
 import MyVehicleStore from "../../store/my-vehicle-store/my-vehicle-store"
 
-// import { createServer } from "miragejs"
-// createServer({
-//     routes() {
-//         this.get("https://jsonplaceholder.typicode.com/todos/", () => [
-//             { id: "1", name: "Luke" },
-//             { id: "2", name: "Leia" },
-//             { id: "3", name: "Anakin" },
-//         ])
-
-//         this.get("https://jsonplaceholder.typicode.com/todos/1", () => [
-//             { id: "1", name: "Luke" },
-//             { id: "2", name: "Leia" },
-//             { id: "3", name: "Anakin" },
-//         ])
-
-//         this.post("https://jsonplaceholder.typicode.com/todos/post", (schema, request) => {
-//             let attrs = JSON.parse(request.requestBody)
-//             // console.log(attrs)
-//             // debugger
-//             return { responseData: { data: 555 } }
-//         })
-//     },
-// })
-
-
-// const bowserLogo = require("./bowser.png")
 const { width, height } = Dimensions.get('window')
 const FULL: ViewStyle = { flex: 1 }
 
@@ -53,11 +27,13 @@ const BOTTOM_VIEW: ViewStyle = {
 const IMAGE_LOGO: ImageStyle = {
     // backgroundColor: 'red',
     width: '100%',
+    marginTop: -25,
 }
 const IMG_VIEW: ViewStyle = {
     ...FULL,
     width: width - 40,
     alignSelf: 'center',
+    justifyContent: 'flex-start'
 }
 
 const VIEW_GRID_BOX: ViewStyle = {
@@ -138,9 +114,9 @@ export const HomeScreen = observer((props) => {
             <View testID="HomeScreen" style={ROOT_HOME}>
                 <View style={TOP_VIEW}>
                     <View style={IMG_VIEW}>
-                        {Platform.OS == "ios" ? <Image style={IMAGE_LOGO} height={(height / 6)}
+                        {Platform.OS == "ios" ? <Image style={IMAGE_LOGO} height={(height / 4.5)}
                             resizeMode='stretch'
-                            source={images.logoNew} /> : <Image style={IMAGE_LOGO} height={(height / 5)}
+                            source={images.logoNew} /> : <Image style={IMAGE_LOGO} height={(height / 3.5)}
                                 resizeMode='stretch'
                                 source={images.logoNew} />}
                     </View>

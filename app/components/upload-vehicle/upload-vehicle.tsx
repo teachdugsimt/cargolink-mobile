@@ -20,7 +20,7 @@ const UPLOAD_VIEW: ViewStyle = {
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: color.grey,
+    borderColor: color.line,
     borderRadius: 10,
     overflow: 'hidden',
     borderStyle: 'dashed',
@@ -43,7 +43,7 @@ const IMAGE_PLACHOLDER: ImageStyle = {
 }
 const CONTENT_TEXT: TextStyle = {
     fontFamily: 'Kanit-Medium',
-    color: color.grey,
+    color: color.line,
     fontSize: typography.content,
 }
 const DELETE_BUTTON: ViewStyle = {
@@ -59,7 +59,7 @@ export function UploadVehicle(props: any) {
             <TouchableOpacity style={UPLOAD_BUTTON} onPress={onPress} testID={"select-image"}>
                 <View style={UPLOAD_VIEW}>
                     <View style={VIEW_ICON}>
-                        <Ionicons name={"camera-outline"} size={22} color={color.grey} />
+                        <Ionicons name={"camera-outline"} size={22} color={color.line} />
                     </View>
 
                     <View style={{ ...IMAGE_AND_TEXT, ...viewImageStyle }}>

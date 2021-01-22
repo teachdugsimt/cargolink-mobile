@@ -102,7 +102,7 @@ const MyVehicleStore = types
                 createdAt: '',
                 updatedAt: '',
                 approveStatus: '',
-                stallHeight: 0,
+                stallHeight: 'LOW',
                 tipper: false,
                 truckPhotos: {
                     back: 'defaultImage',

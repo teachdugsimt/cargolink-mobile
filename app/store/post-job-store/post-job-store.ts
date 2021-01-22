@@ -3,6 +3,13 @@ import { TextPropTypes } from "react-native"
 import { PostJobAPI } from '../../services/api'
 const postjobAPI = new PostJobAPI()
 
+const RegionMap = types.model({
+    longitudeDelta: types.maybeNull(types.number),
+    longitude: types.maybeNull(types.number),
+    latitudeDelta: types.maybeNull(types.number),
+    latitude: types.maybeNull(types.number),
+})
+
 const PostJob1 = types.model({
     "car-num": types.maybeNull(types.string),
     "item-name": types.maybeNull(types.string),
@@ -17,10 +24,12 @@ const Shipping = types.model({
     "shipping-time": types.maybeNull(types.string),
     "shipping-name": types.maybeNull(types.string),
     "shipping-tel-no": types.maybeNull(types.string),
+    "shipping-region": types.maybeNull(RegionMap)
 })
 
 const PostJob2 = types.model({
     "receive-location": types.maybeNull(types.string),
+    "receive-region": types.maybeNull(RegionMap),
     "receive-date": types.maybeNull(types.string),
     "receive-time": types.maybeNull(types.string),
     // "receive-date": types.maybeNull(types.union(types.string, types.Date)),
@@ -71,7 +80,7 @@ const PostJobStore = types.model({
             }
         }),
 
-        clearDataPostjob(){
+        clearDataPostjob() {
             self.data_postjob = null
         }
     }))
@@ -89,14 +98,12 @@ const PostJobStore = types.model({
                         tmpPostJob2[`shipping-date-${i + 1}`] = e["shipping-date"]
                         tmpPostJob2[`shipping-name-${i + 1}`] = e["shipping-name"]
                         tmpPostJob2[`shipping-tel-no-${i + 1}`] = e["shipping-tel-no"]
+                        tmpPostJob2[`shipping-region-${i + 1}`] = e["shipping-region"]
                     })
                 }
                 __DEV__ && console.tron.log("After parse object MOBX :: ", tmpPostJob2)
-                // delete tmpPostJob2["shipping-information"]
-
 
                 let newPostJob2 = tmpPostJob2
-                // delete newPostJob2["shipping-information"]
                 __DEV__ && console.tron.log("Post job2 data in mobx :: ", newPostJob2)
 
                 let initialVlaue = { ...self.postjob1, ...tmpPostJob2 }

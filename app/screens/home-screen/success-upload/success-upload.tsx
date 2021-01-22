@@ -28,7 +28,7 @@ const VIEW_BUTTON: ViewStyle = {
 }
 
 const BUTTON_CONTAINER: ViewStyle = {
-    backgroundColor: color.darkGrey
+    backgroundColor: color.primary
 }
 
 const TEXT_TOPIC: TextStyle = { color: color.primary }

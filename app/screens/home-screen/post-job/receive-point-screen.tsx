@@ -4,20 +4,17 @@ import { useNavigation } from "@react-navigation/native"
 import { useForm, Controller } from "react-hook-form";
 import { observer } from "mobx-react-lite"
 import { Text } from "../../../components"
-import { AddJobElement, TextInputTheme, RoundedButton, Icon, DatePickerRemake, TimePickerRemake } from '../../../components'
+import {
+    AddJobElement, TextInputTheme, RoundedButton, Icon, DatePickerRemake, TimePickerRemake,
+    LocationPicker
+} from '../../../components'
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import { color, typography } from "../../../theme"
 import PostJobStore from "../../../store/post-job-store/post-job-store";
 import _ from 'lodash'
 import { Modal, ModalContent } from 'react-native-modals';
-import Geolocation from '@react-native-community/geolocation';
-import MapView, {
-    Polyline,
-    Marker,
-    Callout,
-    PROVIDER_GOOGLE,
-} from 'react-native-maps';
-import Ionicons from 'react-native-vector-icons/Ionicons'
+
+import { AlertForm } from "../../../utils/alert-form";
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -85,6 +82,8 @@ const ICON_PIN_YELLOW: ImageStyle = {
 }
 const PADDING_RIGHT_SMALL: ViewStyle = { paddingRight: 5 }
 const PADDING_LEFT_SMALL: ViewStyle = { paddingLeft: 5 }
+const BUTTON_MAP: ViewStyle = { padding: 10, borderWidth: 1, borderRadius: 2.5, borderColor: color.line }
+
 export const ReceivePointScreen = observer(function ReceivePointScreen() {
     const navigation = useNavigation()
     const [fieldShipping, setfieldShipping] = useState([])
@@ -97,34 +96,49 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
 
     const [swipe, setswipe] = useState(false)
 
-    const [position, setposition] = useState({})
+    const [statusMap, setstatusMap] = useState(null)
 
     const { control, handleSubmit } = useForm({
-        defaultValues: {
-            // "receive-date": initDatePicker,
-            // "receive-time": initDatePicker
-        }
-        // defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : MyVehicleStore.MappingData
+        defaultValues: {}
     });
+
+    const _submitLocation = (addr, region) => {
+        __DEV__ && console.tron.log("By : ", statusMap)
+        if (statusMap.includes('receive')) {
+            __DEV__ && console.tron.log("__________________ Receive Addr __________________")
+            control.setValue("receive-location", addr)
+            control.setValue("receive-region", region)
+            setvisibleMap(false)
+        } else {
+            let splitPath = statusMap.split("-")
+            let path = "shipping-region-" + splitPath[splitPath.length - 1]
+            control.setValue(statusMap, addr)
+            control.setValue(path, region)
+            setvisibleMap(false)
+            __DEV__ && console.tron.log('__________________ Shipping Addr __________________')
+            __DEV__ && console.tron.log("Addr shipping : ", addr)
+            __DEV__ && console.tron.log("Region shipping : ", region)
+        }
+    }
 
     useEffect(() => {
         _addFieldInputShipping()
-        // Geolocation.getCurrentPosition((position) => {
-        //     __DEV__ && console.tron.log("Position current :: ", position)
-        //     setposition(position)
-        // }, (error) => {
-        //     __DEV__ && console.tron.log("Error get location :: ", error)
-        //     // alert(JSON.stringify(error))
-        // }, {
-        //     enableHighAccuracy: true,
-        //     timeout: 20000,
-        //     maximumAge: 1000
-        // });
     }, [])
 
     const onSubmit = (data) => {
         __DEV__ && console.tron.log("Raw Data Form Post job : ", data)
         console.log("Raw Data Form Post job : ", data)
+
+        if (!data['receive-location']) { AlertForm("postJobScreen.receiveLocation"); return; }
+        else if (!data['receive-date']) { AlertForm("postJobScreen.receiveDate"); return; }
+        else if (!data['receive-time']) { AlertForm("postJobScreen.receiveTime"); return; }
+        else if (!data['receive-name']) { AlertForm("postJobScreen.receiveName"); return; }
+        else if (!data['receive-tel-no']) { AlertForm("postJobScreen.receiveTelno"); return; }
+
+        else if (!data['shipping-address-1']) { AlertForm("postJobScreen.shippingLocation"); return; }
+        else if (!data['shipping-date-1']) { AlertForm("postJobScreen.shippingDate"); return; }
+        else if (!data['shipping-time-1']) { AlertForm("postJobScreen.shippingTime"); return; }
+
         let tmp_data = JSON.parse(JSON.stringify(data))
         let final = { ...tmp_data }
 
@@ -142,13 +156,14 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                 "shipping-time": pure_object[`shipping-time-${i + 1}`],
                 "shipping-name": pure_object[`shipping-name-${i + 1}`],
                 "shipping-tel-no": pure_object[`shipping-tel-no-${i + 1}`],
+                "shipping-region": pure_object[`shipping-region-${i + 1}`]
             })
         })
         final['shipping-information'] = shippingInformation
         Object.keys(final).forEach((key) => {
             if (key.includes("shipping-address-") || key.includes("shipping-date-") ||
                 key.includes("shipping-time-") || key.includes("shipping-name-") ||
-                key.includes("shipping-tel-no-")) {
+                key.includes("shipping-tel-no-") || key.includes("shipping-region-")) {
                 delete final[key]
             }
         })
@@ -199,58 +214,36 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
 
 
 
-                    {/* <Modal
+                    <Modal
                         visible={visibleMap}
                         onTouchOutside={() => setvisibleMap(false)}
-                        onSwipeOut={() => setvisibleMap(false)}
-                    // swipeDirection={['down']} // can be string or an array
-                    // swipeThreshold={200} // default 100
-                    >
+                        onSwipeOut={() => setvisibleMap(false)}>
                         <ModalContent >
                             <View style={{ width: (width / 1), height: '100%', justifyContent: 'flex-start' }}>
                                 <SafeAreaView style={{ flex: 1 }}>
-                                    <TouchableOpacity style={{}}>
-                                        <Ionicons name={"close-circle"} size={24} />
-                                    </TouchableOpacity>
                                     <View style={{ flex: 1, position: 'relative' }}>
 
+                                        {statusMap && <LocationPicker banner={statusMap.includes('receive') ?  "postJobScreen.receiveLocation" : "postJobScreen.shippingLocation"} onSubmitMap={(addr, region) => _submitLocation(addr, region)} />}
 
-                                        {!!longitude && !!longitude && <MapView
-                                            style={{ height: Dimensions.get('window').height }}
-                                            provider={PROVIDER_GOOGLE}
-                                            initialRegion={{
-                                                latitude: +latitude - 0.03,
-                                                longitude: +longitude,
-                                                latitudeDelta: 0.1,
-                                                longitudeDelta: 0.1
-                                            }}>
-                                        
-
-                                                       {!!coordinates.length && coordinates.map((attr, index) => (
-                                       <Marker
-                                           key={index}
-                                           coordinate={{ latitude: +attr.lat, longitude: +attr.lng }}
-                                           pinColor="green"
-                                       >
-                                           <Callout>
-                                               <Text>{attr.contactName}</Text>
-                                           </Callout>
-                                       </Marker>
-                                   ))}
-                                   {JSON.parse(JSON.stringify(ShipperJobStore.directions)).map((attr, index) => {
-                                       return (<Polyline key={index} coordinates={attr} strokeWidth={4} strokeColor={'red'} />)
-                                   })}
-
-
-                                        </MapView>}
                                     </View>
 
                                 </SafeAreaView>
 
                             </View>
                         </ModalContent>
-                    </Modal> */}
+                    </Modal>
 
+
+                    <Controller
+                        control={control}
+                        render={({ onChange, onBlur, value }) => (
+                            <>
+                            </>
+                        )}
+                        key={'text-input-receive-region'}
+                        name={"receive-region"}
+                        defaultValue=""
+                    />
 
 
 
@@ -270,17 +263,15 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                                 control={control}
                                 render={({ onChange, onBlur, value }) => (
                                     <>
-                                        {/* {!formControllerValue["receive-location"] && <TouchableOpacity
-                                            onPress={() => setvisibleMap(true)}
-                                            style={{ padding: 10, borderWidth: 1, borderRadius: 2.5, borderColor: color.line }}>
-                                            <Text>receive location</Text>
-                                        </TouchableOpacity>} */}
-                                        {/* {!!formControllerValue["receive-location"] && <TextInputTheme
-                                            testID={"receive-location-01"}
-                                            inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />} */}
-                                        <TextInputTheme
-                                            testID={"receive-location-01"}
-                                            inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                setvisibleMap(true)
+                                                setstatusMap('receive-location')
+                                            }}
+                                            style={BUTTON_MAP}>
+                                            {!formControllerValue["receive-location"] && <Text tx={"postJobScreen.receiveLocation"} />}
+                                            {!!formControllerValue["receive-location"] && <Text>{formControllerValue["receive-location"]}</Text>}
+                                        </TouchableOpacity>
                                     </>
                                 )}
                                 key={'text-input-receive-location'}
@@ -400,13 +391,32 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                                     <Text preset={'topic'} style={RED_DOT} >*</Text>
                                 </View>
 
+                                <Controller
+                                    control={control}
+                                    render={({ onChange, onBlur, value }) => (
+                                        <>
+                                        </>
+                                    )}
+                                    key={'text-input-receive-region'}
+                                    name={"shipping-region-" + e.id}
+                                    defaultValue=""
+                                />
+
                                 <Text tx={"postJobScreen.shippingAddr"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
                                 <Controller
                                     control={control}
                                     render={({ onChange, onBlur, value }) => (
-                                        <TextInputTheme
-                                            testID={"shipping-address-" + e.id}
-                                            inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                                        <>
+                                            <TouchableOpacity
+                                                onPress={() => {
+                                                    setvisibleMap(true)
+                                                    setstatusMap("shipping-address-" + e.id)
+                                                }}
+                                                style={BUTTON_MAP}>
+                                                {!formControllerValue["shipping-address-" + e.id] && <Text tx={"postJobScreen.shippingLocation"} />}
+                                                {!!formControllerValue["shipping-address-" + e.id] && <Text>{formControllerValue["shipping-address-" + e.id]}</Text>}
+                                            </TouchableOpacity>
+                                        </>
                                     )}
                                     key={'text-input-shipping-address-' + e.id}
                                     name={"shipping-address-" + e.id}

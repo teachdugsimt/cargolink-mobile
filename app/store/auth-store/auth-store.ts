@@ -152,6 +152,11 @@ const AuthStore = types
       }
     }),
 
+    clearAuthProfile() {
+      self.profile = {}
+      self.policyData = {}
+    }
+
   }))
   .views((self) => ({
     get getAuthData() {

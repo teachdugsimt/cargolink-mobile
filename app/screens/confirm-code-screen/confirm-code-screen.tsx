@@ -180,9 +180,9 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
     })
       .then(() => {
         let profile = JSON.parse(JSON.stringify(AuthStore.profile))
-        tokenStore.setToken(profile.token || null)
-        tokenStore.setProfile(profile.userProfile || null)
         if (profile && profile.termOfService) {
+          tokenStore.setToken(profile.token || null)
+          tokenStore.setProfile(profile.userProfile || null)
           let screen = 'acceptPolicy'
           if (profile.termOfService.accepted) {
             screen = 'home'

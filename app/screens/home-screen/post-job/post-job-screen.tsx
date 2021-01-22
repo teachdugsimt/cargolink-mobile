@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { View, ViewStyle, TextStyle, Dimensions, Platform, ImageStyle, Image, SectionList } from "react-native"
+import { View, ViewStyle, TextStyle, Dimensions, Platform, ImageStyle, Image, SectionList, TouchableOpacity, ScrollView } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { useForm, Controller } from "react-hook-form";
 import RNPickerSelect from 'react-native-picker-select';
@@ -7,7 +7,6 @@ import { observer } from "mobx-react-lite"
 import { Text } from "../../../components"
 import { translate } from "../../../i18n"
 import { AddJobElement, TextInputTheme, RoundedButton, MultiSelector } from '../../../components'
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import i18n from 'i18n-js'
 import TruckTypeStore from '../../../store/my-vehicle-store/truck-type-store'
 import PostJobStore from '../../../store/post-job-store/post-job-store'
@@ -60,7 +59,7 @@ const WRAPPER_TOP: ViewStyle = {
 }
 
 const BORDER_GREY: ViewStyle = {
-    borderColor: color.grey, borderWidth: 1
+    borderColor: color.line, borderWidth: 1
 }
 
 const WRAP_DROPDOWN_VALUE: ViewStyle = {
@@ -112,16 +111,20 @@ const ROOT_FLAT_LIST: ViewStyle = {
     width: '98%',
     height: 100,
     flexDirection: 'row',
-    alignItems: 'center',
-    zIndex: 5,
+    justifyContent: 'center', alignItems: 'center'
 }
 
 const VIEW_LIST_IMAGE: ViewStyle = { alignSelf: 'flex-start', justifyContent: 'center', height: '100%' }
 
-const BORDER_BOTTOM: ViewStyle = { ...ROOT_FLAT_LIST, borderBottomWidth: 1, borderBottomColor: color.line, marginHorizontal: 10, }
+const BORDER_BOTTOM: ViewStyle = {
+    ...ROOT_FLAT_LIST,
+    width: '100%',
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    borderBottomWidth: 1, borderBottomColor: color.line, marginHorizontal: 10,
+}
 const IMAGE_LIST: ImageStyle = {
     // width: 50, height: 50,
-    backgroundColor: color.grey, padding: 10,
+    backgroundColor: color.line, padding: 10,
     resizeMode: "cover",
     aspectRatio: 2 / 2,
     borderRadius: 30,
@@ -144,11 +147,14 @@ export const PostJobScreen = observer(function PostJobScreen() {
     }, [])
 
     const onSubmit = (data) => {
-        console.log("Data Form Post job : ", data)
+        __DEV__ && console.tron.log("Data Form Post job : ", data)
+
+        if (!data['vehicle-type']) { AlertForm("postJobScreen.truckType"); return; }
+        else if (!data['item-type']) { AlertForm("postJobScreen.productType"); return; }
         PostJobStore.setPostJob(1, data)
         navigation.navigate("receivePoint")
     }
-    
+
     const _renderSectionModal = (item: any, index: any, onChange: any, section: any) => {
         return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name + index} style={ROOT_FLAT_LIST} onPress={() => {
             if (section == 1) setvisible0(false)
@@ -157,12 +163,12 @@ export const PostJobScreen = observer(function PostJobScreen() {
         }}>
             <View style={BORDER_BOTTOM}>
                 <View style={VIEW_LIST_IMAGE}>
-                    {Platform.OS == "ios" ? <Image source={images.bell} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
-                        <Image source={images.bell} style={IMAGE_LIST} height={60} width={60} />}
+                    {Platform.OS == "ios" ? <Image source={images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
+                        <Image source={images[item.image]} style={IMAGE_LIST} height={60} width={60} />}
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                    <Text style={{ width: '50%', paddingLeft: 20 }}>{item.name}</Text>
-                    <Ionicons name="chevron-forward" size={24} style={{ marginRight: 5 }} />
+                <View style={{ flexDirection: 'row', flex: 1 }}>
+                    <Text style={{ paddingLeft: 40 }}>{item.name}</Text>
+                    {/* <Ionicons name="chevron-forward" size={24} style={{ marginRight: 5 }} /> */}
                 </View>
             </View>
         </TouchableOpacity>
@@ -216,7 +222,6 @@ export const PostJobScreen = observer(function PostJobScreen() {
     ]
     // const data_product_type = JSON.parse(JSON.stringify(AdvanceSearchStore.productTypes))
     // data_product_type.map((e) => e.image = "bell")
-    __DEV__ && console.tron.log("Data product type :: ", listProductState)
 
     const list_product_type = [
         {
@@ -240,7 +245,9 @@ export const PostJobScreen = observer(function PostJobScreen() {
         dropdown_vehicle_type = formControllerValue['vehicle-type']
     }
     let list_vehicle = JSON.parse(JSON.stringify(TruckTypeStore.data))
-    const list_product_type_all = JSON.parse(JSON.stringify(AdvanceSearchStore.productTypes))
+    let list_product_type_all = JSON.parse(JSON.stringify(AdvanceSearchStore.productTypes))
+
+    let reference
 
     return (
         <View testID="PostJobScreen" style={FULL}>
@@ -291,7 +298,8 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                                         </View>
 
                                                         <View style={PADDING_TOP}>
-                                                            {list_vehicle && list_vehicle.length && <MultiSelector
+                                                            {!!list_vehicle && list_vehicle.length > 0 && <MultiSelector
+                                                                reference={reference}
                                                                 key="dd-01-type"
                                                                 items={list_vehicle}
                                                                 keyer={"list-vehicle-type-01"}
@@ -376,7 +384,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                     {!dropdown_item_type && <><Text style={{ padding: 10 }} tx={"postJobScreen.selectItemType"} />
                                         <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} />
                                     </>}
-                                    {dropdown_item_type && !!list_product_type_all && _renderSelectedList(list_product_type_all.find(e => e.id == dropdown_item_type), 2)}
+                                    {dropdown_item_type && list_product_type_all && _renderSelectedList(list_product_type_all.find(e => e.id == dropdown_item_type), 2)}
 
                                 </TouchableOpacity>
 
@@ -399,7 +407,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
                                                         <View style={[PADDING_TOP]}>
 
-                                                            {list_product_type_all && list_product_type_all.length && <MultiSelector
+                                                            {!!list_product_type_all && list_product_type_all.length > 0 && <MultiSelector
                                                                 items={list_product_type_all}
                                                                 keyer={"list-item-type-01"}
                                                                 selectedItems={[value]}
@@ -409,12 +417,13 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                                                     setvisible(false)
                                                                 }}
                                                             />}
+
                                                         </View>
 
                                                         <View>
                                                             <SectionList
                                                                 sections={list_product_type}
-                                                                keyExtractor={(item, index) => 'section-list-' + item.name + index}
+                                                                keyExtractor={(item, index) => 'section-list-' + item.name + item.id + index}
                                                                 renderItem={({ item, index }) => _renderSectionModal(item, index, onChange, 2)}
                                                                 renderSectionHeader={({ section: { title } }) => (
                                                                     <Text tx={title} style={PADDING_TOP} />
