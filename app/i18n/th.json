@@ -303,5 +303,11 @@
   "truckDetailScreen": {
     "truckDetail": "รายละเอียดรถ",
     "heighttOfTheCarStall": "ความสูงของคอกรถ"
+  },
+  "favoriteScreen": {
+    "favoriteList": "รายการโปรด",
+    "lastestContact": "ที่ติดต่อล่าสุด",
+    "job": "งาน",
+    "vehicle": "รถ"
   }
 }

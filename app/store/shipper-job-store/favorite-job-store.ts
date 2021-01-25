@@ -33,7 +33,8 @@ const ShipperJob = types.model({
         fullName: types.maybeNull(types.string),
         mobileNo: types.maybeNull(types.string),
         email: types.maybeNull(types.string)
-    }))
+    })),
+    isLiked: types.maybeNull(types.optional(types.boolean, true)),
 })
 
 const FavoriteJobStore = types

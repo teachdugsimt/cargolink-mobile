@@ -85,8 +85,8 @@ const ShipperTruckStore = types
                 console.log("Response call api get shipper truck : : ", JSON.stringify(response))
                 if (response.kind === 'ok') {
                     const result = response.data || {}
-                    const isLiked = self.list.find(({ id }) => id === result.id).isLiked
-                    self.data = { ...result, isLiked, truckTypeName: self.truckTypeName }
+                    const isLiked = FavoriteTruckStore.list.find(({ id }) => id === result.id)?.isLiked
+                    self.data = { ...result, isLiked: isLiked || false, truckTypeName: self.truckTypeName }
                 } else {
                     self.error = response?.data?.message || response.kind
                 }

@@ -303,5 +303,11 @@
   "truckDetailScreen": {
     "truckDetail": "Truck detail",
     "heighttOfTheCarStall": "Stall Height"
+  },
+  "favoriteScreen": {
+    "favoriteList": "Favorite List",
+    "lastestContact": "Lastest Contact",
+    "job": "Job",
+    "vehicle": "Vehicle"
   }
 }
