@@ -90,7 +90,7 @@ const CreateVehicleStore = types.model({
     }),
     patchVehicleDetailsRequest: flow(function* findRequest(params: Types.PatchDataRequest) {
         // <- note the star, this a generator function!
-        console.tron.logImportant(params)
+        __DEV__ && console.tron.logImportant(params)
         yield apiMyVehicle.setup()
         self.loadingPatchMyVehicle = true
         try {

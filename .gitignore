@@ -53,6 +53,8 @@ buck-out/
 /fastlane/Preview.html
 /fastlane/screenshots
 
+/CargoLinkMobile.app.dSYM.zip
+
 # Bundle artifact
 *.jsbundle
 

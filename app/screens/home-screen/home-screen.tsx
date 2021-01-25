@@ -10,6 +10,8 @@ import BookStore from '../../store/test-store/book-store'
 import { GridView } from '../../components/home-element/home-element'
 import i18n from 'i18n-js'
 import MyVehicleStore from "../../store/my-vehicle-store/my-vehicle-store"
+import date from 'date-and-time';
+// import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
 
 const { width, height } = Dimensions.get('window')
 const FULL: ViewStyle = { flex: 1 }
@@ -47,11 +49,20 @@ const ROOT_HOME: ViewStyle = {
 
 export const HomeScreen = observer((props) => {
     const { books } = BookStore
-    const { signinStore, tokenStore } = useStores()
+    const { signinStore, tokenStore, versatileStore } = useStores()
 
     const navigation = useNavigation()
 
     useEffect(() => {
+
+        versatileStore.findGroup()
+        versatileStore.find()
+
+        const now = new Date();
+        const yesterday = date.addDays(now, -1);
+        __DEV__ && console.tron.log("Test -1 Date :: => ", yesterday)
+
+
 
         signinStore.addCartItem({
             name: "test 1",

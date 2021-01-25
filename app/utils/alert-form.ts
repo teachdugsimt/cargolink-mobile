@@ -14,3 +14,17 @@ export const AlertForm = (field) => {
     )
     return;
 }
+
+export const AlertFormDate = () => {
+    Alert.alert(
+        translate('common.pleaseInputCorrect'),
+        translate("postJobScreen.receiveDateMoreThan"),
+        [
+            {
+                text: translate('common.ok'), onPress: () => { }
+            }
+        ]
+        , { cancelable: false }
+    )
+    return;
+}

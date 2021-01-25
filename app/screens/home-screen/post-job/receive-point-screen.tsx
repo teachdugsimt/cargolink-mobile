@@ -13,8 +13,8 @@ import { color, typography } from "../../../theme"
 import PostJobStore from "../../../store/post-job-store/post-job-store";
 import _ from 'lodash'
 import { Modal, ModalContent } from 'react-native-modals';
-
-import { AlertForm } from "../../../utils/alert-form";
+import date from 'date-and-time'
+import { AlertForm, AlertFormDate } from "../../../utils/alert-form";
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -125,10 +125,22 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
         _addFieldInputShipping()
     }, [])
 
+    const addDays = (date, days) => {
+        var result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
+    }
+
     const onSubmit = (data) => {
         __DEV__ && console.tron.log("Raw Data Form Post job : ", data)
         console.log("Raw Data Form Post job : ", data)
+        const a = new Date()
+        const expiredDate = addDays(a, 2)
+        const tmpCheckDate = data['receive-date']
+        const receiveDateForCheck = date.addHours(tmpCheckDate, 7)
 
+        __DEV__ && console.tron.log("Expire date :: ", expiredDate, " : ", receiveDateForCheck)
+        if (receiveDateForCheck < expiredDate) { AlertFormDate(); return; }
         if (!data['receive-location']) { AlertForm("postJobScreen.receiveLocation"); return; }
         else if (!data['receive-date']) { AlertForm("postJobScreen.receiveDate"); return; }
         else if (!data['receive-time']) { AlertForm("postJobScreen.receiveTime"); return; }
