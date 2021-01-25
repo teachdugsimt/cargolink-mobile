@@ -32,12 +32,14 @@ const ShipperJobFull = types.model({
         left: types.maybeNull(types.string),
         right: types.maybeNull(types.string),
     })),
+    truckTypeName: types.maybeNull(types.string),
 })
 
 const ShipperTruckStore = types
     .model({
         list: types.maybeNull(types.array(ShipperJob)),
         data: types.maybeNull(ShipperJobFull),
+        truckTypeName: types.maybeNull(types.string),
         loading: types.boolean,
         error: types.maybeNull(types.string),
     })
@@ -83,8 +85,8 @@ const ShipperTruckStore = types
                 console.log("Response call api get shipper truck : : ", JSON.stringify(response))
                 if (response.kind === 'ok') {
                     const result = response.data || {}
-                    const isLiked = self.list.find(({ id }) => id === result.id).isLiked
-                    self.data = { ...result, isLiked }
+                    const isLiked = FavoriteTruckStore.list.find(({ id }) => id === result.id)?.isLiked
+                    self.data = { ...result, isLiked: isLiked || false, truckTypeName: self.truckTypeName }
                 } else {
                     self.error = response?.data?.message || response.kind
                 }
@@ -99,11 +101,10 @@ const ShipperTruckStore = types
         }),
 
         updateFavoriteInList: function updateFavoriteInList(id: string, isLiked) {
+            const newList = JSON.parse(JSON.stringify(self.list))
             const index = self.list.findIndex(({ id: idx }) => idx === id)
-            self.list[index].isLiked = isLiked
-            console.log('id', id)
-            console.log('JSON.parse(JSON.stringify(self.list[index]))', JSON.parse(JSON.stringify(self.list)))
-            self.list = JSON.parse(JSON.stringify(self.list))
+            newList.splice(index, 1, { ...newList[index], isLiked })
+            self.list = cast(newList)
         },
 
         setDefaultOfData: function setDefaultOfData() {
@@ -131,7 +132,8 @@ const ShipperTruckStore = types
                     }
                 ]),
                 tipper: false,
-                isLiked: false
+                isLiked: false,
+                truckTypeName: null,
             }
         },
 

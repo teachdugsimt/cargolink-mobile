@@ -38,7 +38,7 @@ const BACKGROUND: ImageStyle = {
   height: '100%',
   position: 'absolute',
   right: -100,
-  opacity: 0.4
+  opacity: 0.3,
 }
 const TOP_ROOT: ViewStyle = {
   // flex: 2,
@@ -82,7 +82,7 @@ const CAR_DETAIL: ViewStyle = {
   flexDirection: "row",
 }
 const CONTENT_RIGHT: ViewStyle = {
-  flex: 1,
+  // flex: 1,
   alignItems: "flex-end",
   justifyContent: "space-between",
   ...PADDING_TOP,
@@ -101,12 +101,12 @@ const RECOMMENED: TextStyle = {
   fontSize: 12,
 }
 const BUTTOM_ROOT: ViewStyle = {
-  flex: 1,
+  // flex: 1,
   flexDirection: 'row',
   ...PADDING_LEFT,
   ...PADDING_RIGHT,
-  marginLeft: spacing[3],
-  marginRight: spacing[3],
+  marginLeft: spacing[2],
+  marginRight: spacing[1],
   paddingTop: spacing[2],
   paddingBottom: spacing[2],
 }
@@ -116,7 +116,7 @@ const VIEW_DETAIL_ROOT: ViewStyle = {
   alignItems: 'center'
 }
 const ACCOUNT_ROOT: ViewStyle = {
-  flex: 1,
+  // flex: 1,
   flexDirection: 'row',
   justifyContent: "flex-end"
 }
@@ -155,7 +155,7 @@ export function SearchItemTruck(props: SearchItemProps) {
 
   const onSelectedHeart = () => {
     setIsLike(!isLike)
-    onToggleHeart({ id, isLike: !like })
+    onToggleHeart({ id, isLike: !isLike })
   }
 
   return (
@@ -191,7 +191,7 @@ export function SearchItemTruck(props: SearchItemProps) {
         </View>
         <View style={CONTENT_RIGHT}>
           <TouchableOpacity onPress={onSelectedHeart}>
-            <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} size={24} color={isLike ? color.red : color.line} />
+            <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} size={26} color={isLike ? color.red : color.line} />
           </TouchableOpacity>
           {isRecommened &&
             <View style={RECOMMENED_ROOT}>

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite';
-import { Dimensions, FlatList, ImageStyle, TextStyle, View, ViewStyle, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
+import { Dimensions, FlatList, ImageStyle, TextStyle, View, ViewStyle, SafeAreaView, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
 import { AdvanceSearchTab, Text, SearchItemTruck, Icon, ModalLoading } from '../../components';
 import { color, spacing, images as imageComponent } from '../../theme';
 import { useFocusEffect, useNavigation, useIsFocused } from '@react-navigation/native';
@@ -19,6 +19,7 @@ import { GetRegion } from "../../utils/get-region";
 import AdvanceSearchStore from '../../store/shipper-truck-store/advance-search-store';
 import FavoriteTruckStore from '../../store/shipper-truck-store/favorite-truck-store';
 import { MapTruckImageName } from '../../utils/map-truck-image-name';
+import { GetTruckType } from '../../utils/get-truck-type';
 
 const width = Dimensions.get('window').width
 interface SubButtonSearch {
@@ -122,13 +123,13 @@ const Item = (data) => {
   const {
     id,
     truckType,
-    loadingWeight,
-    stallHeight,
-    createdAt,
-    updatedAt,
-    approveStatus,
-    registrationNumber,
-    tipper,
+    // loadingWeight,
+    // stallHeight,
+    // createdAt,
+    // updatedAt,
+    // approveStatus,
+    // registrationNumber,
+    // tipper,
     isLiked,
     workingZones,
   } = data
@@ -140,11 +141,10 @@ const Item = (data) => {
     navigation.navigate('truckDetail')
   }
 
-  const onToggleHeart = (data) => {
+  const onToggleHeart = (data) => { // id, isLike
     FavoriteTruckStore.add(data.id)
+    ShipperTruckStore.updateFavoriteInList(data.id, data.isLike)
   }
-
-  TruckTypeStore.getTruckTypeById(+truckType)
 
   const workingZoneStr = workingZones?.length ? workingZones.map(zone => {
     let reg = GetRegion(zone.region, i18n.locale)
@@ -159,7 +159,7 @@ const Item = (data) => {
           id,
           fromText: workingZoneStr,
           count: 2,
-          truckType: `${translate('common.vehicleTypeField')} : ${JSON.parse(JSON.stringify(TruckTypeStore.data)).name || translate('common.notSpecified')}`,
+          truckType: `${translate('common.vehicleTypeField')} : ${GetTruckType(+truckType)?.name || translate('common.notSpecified')}`,
           // viewDetail,
           postBy: 'CargoLink',
           isVerified: true,
@@ -199,12 +199,10 @@ const SUB_BUTTON: Array<SubButtonSearch> = [
 const initialState = {
   subButtons: SUB_BUTTON,
   data: [],
-  listLength: 0,
-  value: '',
+  // listLength: 0,
   zones: [],
   filterLength: 0,
-  loading: true,
-  isLike: false,
+  // loading: true,
 }
 
 const sortArray = (list) => list.sort((a, b) => (a.value > b.value) ? 1 : -1)
@@ -227,21 +225,23 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
   const navigation = useNavigation()
   const isFocused = useIsFocused()
 
-  const [{ subButtons, data, value, zones, filterLength, listLength, loading, isLike }, setState] = useState(initialState)
+  const [{ subButtons, data, zones, filterLength }, setState] = useState(initialState)
   const [visible, setVisible] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(true)
 
   useFocusEffect(
     useCallback(() => {
-      const { productType, truckAmountMax, truckAmountMin, truckType, weight } = JSON.parse(JSON.stringify(AdvanceSearchTruckStore.filter))
+      console.log('JSON.parse(JSON.stringify(AdvanceSearchTruckStore.filter))', JSON.parse(JSON.stringify(AdvanceSearchTruckStore.filter)))
+      const { truckType } = JSON.parse(JSON.stringify(AdvanceSearchTruckStore.filter))
       const length = [
         ...[...truckType || []],
-        weight,
       ].filter(Boolean).length
 
       setState(prevState => ({
         ...prevState,
         filterLength: length,
       }))
+      PAGE = 0
     }, [])
   );
 
@@ -254,7 +254,6 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
         setState(prevState => ({
           ...prevState,
           data: newData,
-          isLike: !prevState.isLike,
         }))
       }
       FavoriteTruckStore.keepLiked('', false)
@@ -279,40 +278,59 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
 
     return () => {
       PAGE = 0
+      AdvanceSearchStore.clearMenu()
+      AdvanceSearchStore.setFilter({})
       ShipperTruckStore.setDefaultOfList()
       setState(initialState)
     }
   }, [])
 
   useEffect(() => {
-    setState(prevState => ({
-      ...prevState,
-      listLength: ShipperTruckStore.list.length,
-      loading: true,
-    }))
-    if (!ShipperTruckStore.loading && !data.length && ShipperTruckStore.list && ShipperTruckStore.list.length) {
+    setLoading(true)
+    // setState(prevState => ({
+    //   ...prevState,
+    //   listLength: ShipperTruckStore.list.length,
+    //   // loading: true,
+    // }))
+    if (!ShipperTruckStore.loading && !data.length && ShipperTruckStore.list && ShipperTruckStore.list.length && !TruckTypeStore.loading) {
       setState(prevState => ({
         ...prevState,
         data: ShipperTruckStore.list,
-        loading: false,
+        // loading: false
       }))
+      setLoading(false)
     }
-    if (!ShipperTruckStore.loading && (data.length || !data.length)) {
-      setState(prevState => ({
-        ...prevState,
-        loading: false,
-      }))
+    if (!ShipperTruckStore.loading) {
+      // setState(prevState => ({
+      //   ...prevState,
+      //   // loading: false
+      // }))
+      setLoading(false)
     }
-  }, [ShipperTruckStore.loading, ShipperTruckStore.list])
+  }, [ShipperTruckStore.loading, TruckTypeStore.loading, ShipperTruckStore.list])
+
+  useEffect(() => {
+    const zoneIds = zones.filter(({ isSelected }) => isSelected).map(({ value }) => value)
+    if (!visible && zoneIds.length) {
+      console.log('JSON.parse(JSON.stringify(zones))', JSON.parse(JSON.stringify(zones)))
+      const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), zoneIds }
+      AdvanceSearchStore.setFilter(advSearch)
+      ShipperTruckStore.find(advSearch)
+      ShipperTruckStore.setDefaultOfList()
+      PAGE = 0
+    }
+  }, [visible])
 
   const renderItem = ({ item }) => (
     <Item {...item} />
   )
 
   const onScrollList = () => {
-    if (ShipperTruckStore.list.length >= 10) {
-      // TruckTypeStore.find()
-      PAGE = ShipperTruckStore.list.length === listLength ? listLength : PAGE + ShipperTruckStore.list.length
+    if (ShipperTruckStore.list.length >= AdvanceSearchStore.filter.rowsPerPage) {
+      // PAGE = ShipperTruckStore.list.length === listLength ? listLength : PAGE + ShipperTruckStore.list.length
+      // PAGE += ShipperTruckStore.list.length % listLength === 0 ? 1 : 0
+      PAGE += 1
+      console.log('PAGE', PAGE)
       const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE }
       ShipperTruckStore.find(advSearch)
     }
@@ -331,7 +349,6 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
   }
 
   const onAdvanceSeach = () => {
-    // TruckTypeStore.getTruckTypeDropdown(i18n.locale)
     navigation.navigate('advanceSearchJob')
   }
 
@@ -395,17 +412,31 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
       zones[zoneIdx].isSelectedAll = false
       zones[zoneIdx].provinces = zones[zoneIdx].provinces.map(prov => ({ ...prov, isSelected: false }))
     }
+
     setState(prevState => ({
       ...prevState,
       zones: zones
     }))
+
+    const zoneIds = zones.filter(({ isSelected }) => isSelected).map(({ value }) => value)
+    const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), zoneIds }
+    AdvanceSearchStore.setFilter(advSearch)
+    ShipperTruckStore.find(advSearch)
+    ShipperTruckStore.setDefaultOfList()
+    PAGE = 0
+  }
+
+  const onRefresh = () => {
+    ShipperTruckStore.find(AdvanceSearchStore.filter)
+    ShipperTruckStore.setDefaultOfList()
+    PAGE = 0
   }
 
   const isSelected = zones.find(zone => zone.isSelected === true)
 
   return (
     <View style={{ flex: 1 }}>
-      {loading && <ModalLoading size={'large'} color={color.primary} visible={loading} />}
+      <ModalLoading size={'large'} color={color.primary} visible={loading} />
       <View style={SEARCH_BAR}>
         <View style={SEARCH_BAR_ROW}>
           <Icon icon="pinDropYellow" style={PIN_ICON} />
@@ -451,7 +482,6 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
                     })}
                   </ScrollView>
                   <TouchableOpacity onPress={() => setVisible(!visible)} style={CIRCLE_VISIBLE_BUTTON}>
-                    {/* <Text tx={'common.ok'} style={CIRCLE_VISIBLE_BUTTON_TEXT} /> */}
                     <MaterialCommunityIcons name={'close-thick'} color={color.textWhite} size={30} />
                   </TouchableOpacity>
                 </SafeAreaView>
@@ -500,14 +530,18 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
       </View>
       <View style={RESULT_CONTAINER}>
         {
-          data && !!data.length ? <FlatList
+          data && !!data.length && !TruckTypeStore.loading ? <FlatList
             data={data}
             renderItem={renderItem}
             keyExtractor={item => item.id}
             onEndReached={() => onScrollList()}
             onEndReachedThreshold={0.5}
-          // onMomentumScrollBegin={() => console.log('onResponderEnd')}
-          // onMomentumScrollEnd={() => console.log('onMomentumScrollEnd')}
+            refreshControl={
+              <RefreshControl
+                refreshing={ShipperTruckStore.loading}
+                onRefresh={onRefresh}
+              />
+            }
           /> : (!loading && <View style={CONTEXT_NOT_FOUND}>
             <Feather name={'inbox'} size={50} color={color.line} />
             <Text text={translate('common.notFound')} style={NOT_FOUND_TEXT} preset={'topicExtra'} />

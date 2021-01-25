@@ -17,6 +17,7 @@ import MapView, {
     Callout,
     PROVIDER_GOOGLE,
 } from 'react-native-maps';
+import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
 
 const PADDING_TOP = { paddingTop: spacing[1] }
 const PADDING_BOTTOM = { paddingBottom: spacing[1] }
@@ -196,6 +197,9 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     const [coordinates, setCoordinates] = useState([])
 
     useEffect(() => {
+        if (!TruckTypeStore.list?.length) {
+            TruckTypeStore.find()
+        }
         return () => {
             ShipperJobStore.setDefaultOfData()
         }
@@ -230,13 +234,14 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         weight
     } = JSON.parse(JSON.stringify(ShipperJobStore.data))
 
-    const txtTruckType = GetTruckType(+truckType, i18n.locale)
+    const txtTruckType = GetTruckType(+truckType)
     console.log('coordinates.length', coordinates.length)
     console.log('JSON.stringify(ShipperJobStore.directions)', JSON.stringify(ShipperJobStore.directions))
+    console.log('ShipperJobStore.mapLoading', ShipperJobStore.mapLoading)
 
     return (
         <View style={CONTAINER}>
-            {ShipperJobStore.mapLoading && <ModalLoading size={'large'} color={color.primary} visible={ShipperJobStore.mapLoading} />}
+            <ModalLoading size={'large'} color={color.primary} visible={ShipperJobStore.mapLoading} />
             <View style={MAP_CONTAINER}>
                 {from && !!from.lat && !!from.lng && !!ShipperJobStore.directions.length &&
                     <MapView

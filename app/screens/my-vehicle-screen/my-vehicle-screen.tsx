@@ -10,6 +10,7 @@ import StatusStore from '../../store/my-vehicle-store/status-vehicle-store'
 import { GetTruckType } from "../../utils/get-truck-type";
 import i18n from 'i18n-js';
 import date from 'date-and-time';
+import TruckTypeStore from "../../store/truck-type-store/truck-type-store"
 
 const CONTAINER: ViewStyle = {
   flex: 1,
@@ -42,6 +43,10 @@ export const MyVehicle = observer(function MyVehicle() {
   }
 
   useEffect(() => {
+    TruckTypeStore.find()
+  }, [])
+
+  useEffect(() => {
     if (MyVehicleStore.list && MyVehicleStore.list.length) {
       console.log('MyVehicleStore.list :>> ', JSON.parse(JSON.stringify(MyVehicleStore.list)));
     }
@@ -61,7 +66,7 @@ export const MyVehicle = observer(function MyVehicle() {
     const statusColor = item.approveStatus === 'Approve' ? color.success : color.primary
     // const registrationNumber = item.registrationNumber.map((n: string) => `ทะเบียน ${n}`)
     const registrationNumber = item.registrationNumber.join(', ')
-    const txtTruckType = `${translate("myVehicleScreen.type")}  ${GetTruckType(item.truckType, i18n.locale).name}`
+    const txtTruckType = `${translate("myVehicleScreen.type")}  ${GetTruckType(+item.truckType)?.name || translate('common.notSpecified')}`
     const txtDateTime = `${translate("myVehicleScreen.informationAt")} ${date.format(new Date(item.updatedAt), 'DD/MM/YY')}`
 
     return (
