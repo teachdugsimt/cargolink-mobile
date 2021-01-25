@@ -115,8 +115,8 @@ const PostJobStore = types.model({
 
     }))
     .create({
-        postjob1: {},
-        postjob2: {}
+        postjob1: null,
+        postjob2: null
     })
 
 export default PostJobStore

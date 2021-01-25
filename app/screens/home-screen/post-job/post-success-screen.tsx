@@ -5,6 +5,7 @@ import { observer } from "mobx-react-lite"
 import { Text, RoundedButton, AddJobElement } from "../../../components"
 import { color, images } from "../../../theme"
 import PostJobStore from "../../../store/post-job-store/post-job-store";
+import LottieView from 'lottie-react-native';
 // const bowserLogo = require("./bowser.png")
 const FULL: ViewStyle = {
     flex: 1,
@@ -79,6 +80,10 @@ export const PostSuccessScreen = observer(function PostSuccessScreen() {
                         <Text tx={"common.id"} preset={'topicExtra'} style={TEXT_SUB_TITLE} />
                         {!!id_post && <Text preset={'topicExtra'} style={TEXT_SUB_TITLE}>{" " + id_post}</Text>}
                     </View>
+                </View>
+
+                <View>
+                    <LottieView source={require('./order-packed.json')} autoPlay loop />;
                 </View>
 
                 <View style={VIEW_BUTTON}>

@@ -226,7 +226,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
             setTimeout(() => {
                 setswipe(!swipe)
             }, 2000);
-        }
+        } else { navigation.navigate("home") }
         return () => {
             setswipe2(false)
         }
@@ -254,6 +254,8 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
     const onSubmit = (data) => {
         __DEV__ && console.tron.log("Raw Data Form Post job 3 : ", data)
         console.log("Raw data post job 3 :: ", data)
+        const expirationDate = compareDateTime(date.format(date.addDays(data['receive-date'], -1), "DD-MM-YYYY hh:mm:ss")
+            , date.format(data['receive-time'], "DD-MM-YYYY hh:mm:ss"))
         let tmp_data = JSON.parse(JSON.stringify(data))
         let final = { ...tmp_data }
         Object.keys(tmp_data).forEach((key) => {
@@ -300,6 +302,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
         })
         console.log("Position 2 :: ", shippingLocation)
 
+        const tmpDate = new Date()
         let request_data = {
             "truckType": final['vehicle-type'],
             "truckAmount": final['car-num'],
@@ -307,7 +310,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
             "productName": "string",
             "weight": final['item-weight'],
             "price": 0, // No need now 
-            "expiredTime": date.format(new Date(2029, 11, 11), "DD-MM-YYYY hh:mm:ss"), // No need now
+            "expiredTime": expirationDate, // No need now
             "note": 'note text',
             "from": {
                 "name": final['receive-location'],

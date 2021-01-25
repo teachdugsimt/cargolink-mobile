@@ -470,8 +470,9 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
   }
 
   const _pushEmptyImage = (arr) => {
+    __DEV__ && console.tron.log("Arr Tranform already :: ", arr)
     let tmp = arr.map((e, i) => {
-      if (!e.url) {
+      if (!e || !e.url) {
         return {
           url: '',
           props: { source: imageComponent["noImageAvailable"] }
