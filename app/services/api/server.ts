@@ -5,7 +5,7 @@ import shipperJob from './mock-data/shipper-job'
 import truckTypeTh from './mock-data/truck-type-th'
 import truckTypeEn from './mock-data/truck-type-en'
 
-const { API_URL, API_URL_DEV } = require("../../config/env")
+const { API_URL } = require("../../config/env")
 
 const makeId = (length: number) => {
     let result = ""

@@ -178,10 +178,12 @@ const ROOT_FLAT_LIST2: ViewStyle = {
   alignItems: 'center',
 }
 const VIEW_LIST_IMAGE: ViewStyle = { alignSelf: 'flex-start', justifyContent: 'center', height: '100%' }
-const BORDER_BOTTOM: ViewStyle = { ...ROOT_FLAT_LIST, 
+const BORDER_BOTTOM: ViewStyle = {
+  ...ROOT_FLAT_LIST,
   width: '100%',
   flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-  borderBottomWidth: 1, borderBottomColor: color.line, marginHorizontal: 10, }
+  borderBottomWidth: 1, borderBottomColor: color.line, marginHorizontal: 10,
+}
 const IMAGE_LIST: ImageStyle = {
   // width: 50, height: 50,
   backgroundColor: color.line, padding: 10,
@@ -455,7 +457,7 @@ export const UploadVehicleScreen = observer((props) => {
   const onSubmit = data => {
     let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
     setinputRegistration(data)
-    console.tron.log("Raw Form Data :: => ", data)
+    __DEV__ && console.tron.log("Raw Form Data :: => ", data)
 
     if (!data['vehicle-type']) {
       _alert(translate('common.vehicleTypeField'))
@@ -808,7 +810,7 @@ export const UploadVehicleScreen = observer((props) => {
   }
   const _renderSectionModal = (item: any, index: any, onChange: any) => {
     return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name + index}
-     style={ROOT_FLAT_LIST} onPress={() => _onPressSectionModal(onChange, item)}>
+      style={ROOT_FLAT_LIST} onPress={() => _onPressSectionModal(onChange, item)}>
       <View style={BORDER_BOTTOM}>
         <View style={VIEW_LIST_IMAGE}>
           {Platform.OS == "ios" ? <Image source={images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
