@@ -96,6 +96,9 @@ const TruckTypeStore = types
         get getList() {
             return self.list
         },
+        get getListGroup(){
+            return self.listGroup
+        }
     }))
     .create({
         data: {},

@@ -1,11 +1,98 @@
-import { types } from "mobx-state-tree";
+import { types, flow, cast } from "mobx-state-tree"
+import { TruckTypeApi } from "../../services/api"
+import i18n from "i18n-js"
+
+const truckTypeApi = new TruckTypeApi()
+
+const TruckType = {
+    id: types.maybeNull(types.number),
+    name: types.maybeNull(types.string),
+    image: types.maybeNull(types.string),
+    groupId: types.maybeNull(types.number),
+}
+
+const TruckTypeGroup = types.model(TruckType)
+
+const TruckTypeMapping = types.model({
+    ...TruckType,
+    subTypes: types.optional(types.array(types.model(TruckType)), [])
+})
 
 export const VersatileStore = types.model({
-    language: types.string
+    language: types.string,
+
+    data: types.optional(types.model(TruckType), {}),
+    list: types.optional(types.array(TruckTypeGroup), []),
+    listGroup: types.optional(types.array(TruckTypeGroup), []),
+    loading: types.boolean,
+    mappingLoding: types.boolean,
+    listMapping: types.optional(types.array(TruckTypeMapping), []),
+    error: types.maybeNull(types.string),
 }).actions(self => ({
     setLanguage(lang) {
         self.language = lang
-    }
+    },
+    find: flow(function* find(filter: any = {}) {
+        yield truckTypeApi.setup(i18n.locale)
+        self.loading = true
+        try {
+            const response = yield truckTypeApi.getTruckTypeDropdown(filter)
+            console.log("Response call api get truck type : : ", response)
+            self.list = response.data
+            self.loading = false
+        } catch (error) {
+            console.error("Failed to fetch get truck type : ", error)
+            self.loading = false
+            self.error = "error fetch api get truck type"
+        }
+    }),
+
+    findGroup: flow(function* findGroup(filter: any = {}) {
+        yield truckTypeApi.setup(i18n.locale)
+        self.loading = true
+        try {
+            const response = yield truckTypeApi.getGroup(filter)
+            console.log("Response call api get truck type group : : ", response)
+            if (response.kind === 'ok') {
+                self.listGroup = response.data
+            } else {
+                self.listGroup = cast([])
+            }
+            self.loading = false
+        } catch (error) {
+            console.error("Failed to fetch get truck type group : ", error)
+            self.loading = false
+            self.error = "error fetch api get truck type group"
+        }
+
+    }),
+
+    mappingType() {
+        // yield truckTypeApi.setup(i18n.locale)
+        self.mappingLoding = true
+        try {
+            const mapping = JSON.parse(JSON.stringify(self.listGroup)).map(type => {
+                const subTypes = JSON.parse(JSON.stringify(self.list)).filter(subType => subType.groupId === type.id)
+                return {
+                    ...type,
+                    subTypes
+                }
+            })
+
+            self.listMapping = mapping
+            self.mappingLoding = false
+        } catch (error) {
+            console.error("Failed to fetch get truck type group : ", error)
+            self.mappingLoding = false
+            self.error = "error fetch api get truck type group"
+        }
+    },
+
+    getTruckTypeById(id: number) {
+        const truckType = self.list.filter(type => type.id === id)
+        self.data = JSON.parse(JSON.stringify(truckType))[0]
+    },
+
 })).views(self => ({
     get getLanguage() {
         return self.language

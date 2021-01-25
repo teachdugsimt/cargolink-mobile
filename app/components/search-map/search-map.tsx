@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Image, TouchableOpacity, TextInput, KeyboardAvoidingView } from "react-native";
-import MapView from "react-native-maps";
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { GOOGLE_API_KEY } from '../../config/env'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -97,6 +97,7 @@ export const LocationPicker = (props) => {
                 ref={(ref) => mapView = ref}
                 onMapReady={() => goToInitialLocation(region)}
                 style={styles.map}
+                provider={PROVIDER_GOOGLE}
                 initialRegion={region}
                 region={region}
                 onRegionChangeComplete={onRegionChange}
