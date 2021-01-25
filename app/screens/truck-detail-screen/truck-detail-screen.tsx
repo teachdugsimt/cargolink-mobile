@@ -11,7 +11,7 @@ import {
     View,
     ViewStyle,
 } from "react-native"
-import { Button, HeaderLeft, ModalLoading, PostingBy, Text } from "../../components"
+import { Button, ModalLoading, PostingBy, Text } from "../../components"
 import { translate } from "../../i18n"
 import { color, images as imageComponent, spacing } from "../../theme"
 import { useNavigation } from "@react-navigation/native"
@@ -19,16 +19,13 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 import { TouchableOpacity } from "react-native-gesture-handler"
 import ShipperTruckStore from '../../store/shipper-truck-store/shipper-truck-store'
 import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
-import i18n from 'i18n-js';
 import { useStores } from "../../models/root-store/root-store-context";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import ShipperJobStore from "../../store/shipper-job-store/shipper-job-store"
 import FavoriteTruckStore from "../../store/shipper-truck-store/favorite-truck-store"
 import { GetTruckType } from "../../utils/get-truck-type"
 import { MapTruckImageName } from "../../utils/map-truck-image-name"
 
 const deviceWidht = Dimensions.get("window").width
-const deviceHeight = Dimensions.get("window").height
 
 const CONTAINER: ViewStyle = {
     flex: 1,

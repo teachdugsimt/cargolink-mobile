@@ -5,7 +5,7 @@ import { Button, Checkbox, HeaderCenter, Text, CollapsibleList, ModalLoading, He
 import { color, spacing } from '../../theme'
 import { useNavigation } from '@react-navigation/native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
-import AdvanceSearchStore from "../../store/shipper-job-store/advance-search-store"
+import AdvanceSearchStore from "../../store/carriers-job-store/advance-search-store"
 import { translate } from '../../i18n'
 
 const deviceWidht = Dimensions.get('window').width / 2

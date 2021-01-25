@@ -15,11 +15,11 @@ const defaultModel = {
     approveStatus: types.maybeNull(types.string),
     registrationNumber: types.maybeNull(types.array(types.string)),
     tipper: types.maybeNull(types.boolean),
-    isLiked: types.maybeNull(types.optional(types.boolean, false)),
-    workingZones: types.maybeNull(types.array(types.model({
+    isLiked: types.optional(types.boolean, false),
+    workingZones: types.optional(types.array(types.model({
         region: types.maybeNull(types.number),
         province: types.maybeNull(types.number),
-    })))
+    })), [])
 }
 
 const ShipperJob = types.model(defaultModel)
@@ -81,6 +81,7 @@ const ShipperTruckStore = types
             yield shipperTruckApi.setup()
             self.loading = true
             try {
+                yield FavoriteTruckStore.find()
                 const response = yield shipperTruckApi.findOne(id)
                 console.log("Response call api get shipper truck : : ", JSON.stringify(response))
                 if (response.kind === 'ok') {
@@ -100,11 +101,11 @@ const ShipperTruckStore = types
             }
         }),
 
-        updateFavoriteInList: function updateFavoriteInList(id: string, isLiked) {
+        updateFavoriteInList: function updateFavoriteInList(id: string, isLiked: boolean) {
             const newList = JSON.parse(JSON.stringify(self.list))
             const index = self.list.findIndex(({ id: idx }) => idx === id)
-            newList.splice(index, 1, { ...newList[index], isLiked })
-            self.list = cast(newList)
+            const oldData = JSON.parse(JSON.stringify(newList[index]))
+            self.list.splice(index, 1, { ...oldData, isLiked })
         },
 
         setDefaultOfData: function setDefaultOfData() {

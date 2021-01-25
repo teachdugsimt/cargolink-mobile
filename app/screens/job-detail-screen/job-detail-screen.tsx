@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { Dimensions, ImageStyle, ScrollView, TextStyle, View, ViewStyle, TouchableOpacity } from 'react-native'
 import { Button, Icon, ModalLoading, PostingBy, Text } from '../../components'
@@ -7,7 +7,7 @@ import { color, spacing } from '../../theme'
 import { translate } from '../../i18n'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
-import ShipperJobStore from '../../store/shipper-job-store/shipper-job-store'
+import CarriersJobStore from '../../store/carriers-job-store/carriers-job-store'
 import { GetTruckType } from '../../utils/get-truck-type'
 import i18n from 'i18n-js'
 import { Modalize } from 'react-native-modalize';
@@ -18,6 +18,7 @@ import MapView, {
     PROVIDER_GOOGLE,
 } from 'react-native-maps';
 import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
+import FavoriteJobStore from '../../store/carriers-job-store/favorite-job-store'
 
 const PADDING_TOP = { paddingTop: spacing[1] }
 const PADDING_BOTTOM = { paddingBottom: spacing[1] }
@@ -131,7 +132,7 @@ const SCROLL_VIEW: ViewStyle = {
     marginTop: spacing[5],
 }
 
-const DATA = {
+const DATA = { // [Mocking]
     id: 9,
     fromText: 'กรุงเทพมหานคร',
     toText: 'นครศรีธรรมราช',
@@ -195,25 +196,58 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
     const modalizeRef = useRef<Modalize>(null);
     const [coordinates, setCoordinates] = useState([])
+    const [liked, setLiked] = useState<boolean>(false)
+
+    const {
+        id,
+        from,
+        to,
+        productName,
+        productTypeId,
+        requiredTruckAmount,
+        truckType,
+        isLiked,
+        weight
+    } = JSON.parse(JSON.stringify(CarriersJobStore.data))
 
     useEffect(() => {
         if (!TruckTypeStore.list?.length) {
             TruckTypeStore.find()
         }
         return () => {
-            ShipperJobStore.setDefaultOfData()
+            CarriersJobStore.setDefaultOfData()
         }
     }, [])
 
+    useLayoutEffect(() => {
+        console.log('isLiked', isLiked)
+        navigation.setOptions({
+            headerRight: () => (<TouchableOpacity onPress={() => onSelectedHeart(id)}>
+                <MaterialCommunityIcons name={liked ? 'heart' : 'heart-outline'} size={24} color={liked ? color.red : color.line} />
+            </TouchableOpacity>),
+        })
+        return () => { }
+    }, [liked, id, navigation]);
+
     useEffect(() => {
-        if (ShipperJobStore.data && ShipperJobStore.data.id) {
-            console.log('ShipperJobStore.data', JSON.parse(JSON.stringify(ShipperJobStore.data)))
-            console.log('ShipperJobStore.directions', JSON.parse(JSON.stringify(ShipperJobStore.directions)))
-            const coordinates = [ShipperJobStore.data.from, ...ShipperJobStore.data.to]
+        setLiked(isLiked)
+    }, [isLiked])
+
+    useEffect(() => {
+        if (CarriersJobStore.data && CarriersJobStore.data.id) {
+            // console.log('CarriersJobStore.data', JSON.parse(JSON.stringify(CarriersJobStore.data)))
+            // console.log('CarriersJobStore.directions', JSON.parse(JSON.stringify(CarriersJobStore.directions)))
+            const coordinates = [CarriersJobStore.data.from, ...CarriersJobStore.data.to]
             setCoordinates(coordinates)
-            ShipperJobStore.getDirections(coordinates)
+            CarriersJobStore.getDirections(coordinates)
         }
-    }, [ShipperJobStore.loading, ShipperJobStore.data])
+    }, [CarriersJobStore.loading, CarriersJobStore.data])
+
+    const onSelectedHeart = (id: string) => {
+        FavoriteJobStore.keepLiked(id, !liked)
+        FavoriteJobStore.add(id)
+        setLiked(!liked)
+    }
 
     const onPress = () => {
         modalizeRef.current?.close();
@@ -224,35 +258,32 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         modalizeRef.current?.open();
     };
 
-    const {
-        from,
-        to,
-        productName,
-        productTypeId,
-        requiredTruckAmount,
-        truckType,
-        weight
-    } = JSON.parse(JSON.stringify(ShipperJobStore.data))
-
     const txtTruckType = GetTruckType(+truckType)
-    console.log('coordinates.length', coordinates.length)
-    console.log('JSON.stringify(ShipperJobStore.directions)', JSON.stringify(ShipperJobStore.directions))
-    console.log('ShipperJobStore.mapLoading', ShipperJobStore.mapLoading)
+    // console.log('coordinates.length', coordinates.length)
+    // console.log('JSON.stringify(CarriersJobStore.directions)', JSON.stringify(CarriersJobStore.directions))
+    // console.log('CarriersJobStore.mapLoading', CarriersJobStore.mapLoading)
 
     return (
         <View style={CONTAINER}>
-            <ModalLoading size={'large'} color={color.primary} visible={ShipperJobStore.mapLoading} />
+            <ModalLoading size={'large'} color={color.primary} visible={CarriersJobStore.mapLoading} />
             <View style={MAP_CONTAINER}>
-                {from && !!from.lat && !!from.lng && !!ShipperJobStore.directions.length &&
+                {from && !!from.lat && !!from.lng && !!CarriersJobStore.directions.length &&
                     <MapView
                         style={{ height: Dimensions.get('window').height }}
                         provider={PROVIDER_GOOGLE}
                         initialRegion={{
                             latitude: +from.lat - 0.03,
                             longitude: +from.lng,
-                            latitudeDelta: 0.1,
-                            longitudeDelta: 0.1
-                        }}>
+                            latitudeDelta: 0.05,
+                            longitudeDelta: 0.05
+                        }}
+                        region={{
+                            latitude: +from.lat - 0.03,
+                            longitude: +from.lng,
+                            latitudeDelta: 0.05,
+                            longitudeDelta: 0.05
+                        }}
+                    >
                         {!!coordinates.length && coordinates.map((attr, index) => (
                             <Marker
                                 key={index}
@@ -264,7 +295,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                                 </Callout>
                             </Marker>
                         ))}
-                        {JSON.parse(JSON.stringify(ShipperJobStore.directions)).map((attr, index) => {
+                        {JSON.parse(JSON.stringify(CarriersJobStore.directions)).map((attr, index) => {
                             return (<Polyline key={index} coordinates={attr} strokeWidth={4} strokeColor={'red'} />)
                         })}
                     </MapView>

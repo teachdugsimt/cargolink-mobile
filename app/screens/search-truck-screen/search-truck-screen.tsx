@@ -115,9 +115,9 @@ const CIRCLE_VISIBLE_BUTTON: ViewStyle = {
   // }],
   bottom: spacing[5],
 }
-const CIRCLE_VISIBLE_BUTTON_TEXT: TextStyle = {
-  color: color.textWhite,
-}
+// const CIRCLE_VISIBLE_BUTTON_TEXT: TextStyle = {
+//   color: color.textWhite,
+// }
 
 const Item = (data) => {
   const {
@@ -231,7 +231,6 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      console.log('JSON.parse(JSON.stringify(AdvanceSearchTruckStore.filter))', JSON.parse(JSON.stringify(AdvanceSearchTruckStore.filter)))
       const { truckType } = JSON.parse(JSON.stringify(AdvanceSearchTruckStore.filter))
       const length = [
         ...[...truckType || []],
@@ -275,7 +274,6 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
       ...prevState,
       zones: newZone,
     }))
-
     return () => {
       PAGE = 0
       AdvanceSearchStore.clearMenu()

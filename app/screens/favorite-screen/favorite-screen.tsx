@@ -5,8 +5,8 @@ import { ModalLoading, SearchItem, SearchItemTruck, Text } from "../../component
 import { color, spacing, images as imageComponent } from "../../theme"
 import FavoriteTruckStore from "../../store/shipper-truck-store/favorite-truck-store"
 import ShipperTruckStore from "../../store/shipper-truck-store/shipper-truck-store"
-import FavoriteJobStore from "../../store/shipper-job-store/favorite-job-store"
-import ShipperJobStore from "../../store/shipper-job-store/shipper-job-store"
+import FavoriteJobStore from "../../store/carriers-job-store/favorite-job-store"
+import CarriersJobStore from "../../store/carriers-job-store/carriers-job-store"
 import TruckTypeStore from "../../store/truck-type-store/truck-type-store"
 import Feather from 'react-native-vector-icons/Feather'
 import { GetTruckType } from "../../utils/get-truck-type"
@@ -83,18 +83,23 @@ const JobItem = (data) => {
         to,
         owner,
         isLiked,
+        list,
+        setUnFollow
     } = data
 
     const navigation = useNavigation()
 
     const onPress = () => {
-        ShipperJobStore.findOne(id)
+        CarriersJobStore.findOne(id)
         navigation.navigate('favoriteJobDetail')
     }
 
     const onToggleHeart = (data) => {
-        console.log('onToggleHeart data', data)
-        // FavoriteJobStore.add(data.id)
+        const newData = [...JSON.parse(JSON.stringify(list))].filter(({ id }) => id !== data.id)
+        if (newData.length) {
+            setUnFollow(newData)
+        }
+        FavoriteJobStore.add(data.id)
     }
 
     const typeOfTruck = GetTruckType(+truckType)?.name || translate('common.notSpecified')
@@ -140,19 +145,25 @@ const TruckItem = (data) => {
         truckType,
         workingZones,
         isLiked,
+        list,
+        setUnFollow
     } = data
 
     const navigation = useNavigation()
 
     const onPress = () => {
         ShipperTruckStore.findOne(id)
-        FavoriteTruckStore.keepPreviousActivityFunc(true)
+        // FavoriteTruckStore.keepPreviousActivityFunc(true)
         navigation.navigate('favoriteTruckDetail')
     }
 
     const onToggleHeart = (data) => { // id, isLike
+        const newData = [...JSON.parse(JSON.stringify(list))].filter(({ id }) => id !== data.id)
+        if (newData.length) {
+            setUnFollow(newData)
+        }
         FavoriteTruckStore.add(data.id)
-        ShipperTruckStore.updateFavoriteInList(data.id, data.isLike)
+        // ShipperTruckStore.updateFavoriteInList(data.id, data.isLike)
     }
 
     const workingZoneStr = workingZones?.length ? workingZones.map(zone => {
@@ -251,9 +262,9 @@ export const FavoriteScreen = observer(function FavoriteScreen() {
 
     const renderItem = ({ item }) => {
         if (!isActivitySwitch) { // job
-            return <JobItem {...item} />
+            return <JobItem {...item} list={data} setUnFollow={setData} />
         }
-        return <TruckItem {...item} />
+        return <TruckItem {...item} list={data} setUnFollow={setData} />
     }
 
     const onScrollList = () => {

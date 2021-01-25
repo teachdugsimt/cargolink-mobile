@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ImageBackground, ImageStyle, TextStyle, View, ViewStyle, TouchableOpacity } from 'react-native';
 import { SearchItemProps } from './search-item.props';
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -151,6 +151,10 @@ export function SearchItem(props: SearchItemProps) {
 
   const [isLike, setIsLike] = useState(like)
 
+  useEffect(() => {
+    setIsLike(like)
+  }, [like])
+
   const onSelectedHeart = () => {
     setIsLike(!isLike)
     onToggleHeart({ id, isLike: !isLike })
@@ -168,10 +172,7 @@ export function SearchItem(props: SearchItemProps) {
               style={[LOCATION_TEXT, { width: 40 }]}
             />
             <Text style={{ paddingRight: spacing[2] }} text={':'} />
-            <Text
-              text={fromText}
-              style={LOCATION_TEXT}
-            />
+            <Text text={fromText} style={[LOCATION_TEXT, { paddingRight: spacing[7] }]} numberOfLines={1} />
             <Icon />
           </View>
           <View style={LOCATION}>
@@ -179,13 +180,10 @@ export function SearchItem(props: SearchItemProps) {
             <Text
               text={`${translate('common.to')}`} // ถึง
               style={[LOCATION_TEXT, { width: 40 }]}
-            />
-            <Text style={{ paddingRight: spacing[2] }} text={':'} />
-            <Text
-              text={toText}
-              style={LOCATION_TEXT}
               numberOfLines={1}
             />
+            <Text style={{ paddingRight: spacing[2] }} text={':'} />
+            <Text text={toText} style={[LOCATION_TEXT, { paddingRight: spacing[7] }]} numberOfLines={1} />
           </View>
           <View style={CAR_DETAIL_ROOT}>
             <View style={CAR_DETAIL}>
