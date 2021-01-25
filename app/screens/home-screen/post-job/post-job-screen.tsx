@@ -309,6 +309,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                                                     onChange(val[0])
                                                                     setvisible0(false)
                                                                 }}
+
                                                             />}
                                                         </View>
 
@@ -332,15 +333,12 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                     )}
                                     key={'controller-dropdown-vehicle-type'}
                                     name={"vehicle-type"}
+                                    rules={{ required: true, pattern: /^[a-zA-Z0-9 .!?"-]+$/ }}
                                     defaultValue=""
                                 />
-
-
-
-
-
-
                             </View>
+                            {errors['vehicle-type'] && <Text style={{ color: color.red }} tx={"postJobScreen.validateTruckType"} />}
+
 
                             <Text tx={"postJobScreen.vehicleNum"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
                             <Controller
@@ -353,8 +351,10 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                 )}
                                 key={'text-input-car-num'}
                                 name={"car-num"}
+                                rules={{ pattern: /^[0-9]+$/ }}
                                 defaultValue=""
                             />
+                            {errors['car-num'] && <Text style={{ color: color.red }} tx={"common.noSignAndCharacter"} />}
                         </View>
                     </View>
 
@@ -440,11 +440,12 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                     )}
                                     key={'controller-dropdown-item-type'}
                                     name={"item-type"}
+                                    rules={{ required: true, pattern: /^[a-zA-Z0-9 .!?"-]+$/ }}
                                     defaultValue=""
                                 />
 
                             </View>
-
+                            {errors['item-type'] && <Text style={{ color: color.red }} tx={"postJobScreen.validateProductType"} />}
 
 
 
@@ -460,8 +461,10 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                 )}
                                 key={'text-input-item-name'}
                                 name={"item-name"}
+                                rules={{ pattern: /^[a-zA-Z0-9 .!?"-]+$/ }}
                                 defaultValue=""
                             />
+                            {errors['item-name'] && <Text style={{ color: color.red }} tx={"common.noSign"} />}
 
                             <Text tx={"postJobScreen.weightNumber"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
                             <Controller
@@ -473,8 +476,10 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                 )}
                                 key={'text-input-item-weight'}
                                 name={"item-weight"}
+                                rules={{ pattern: /^[0-9]+$/ }}
                                 defaultValue=""
                             />
+                            {errors['item-weight'] && <Text style={{ color: color.red }} tx={"common.noSignAndCharacter"} />}
                         </View>
                     </View>
 

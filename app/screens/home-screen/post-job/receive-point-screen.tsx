@@ -98,7 +98,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
 
     const [statusMap, setstatusMap] = useState(null)
 
-    const { control, handleSubmit } = useForm({
+    const { control, handleSubmit, errors } = useForm({
         defaultValues: {}
     });
 
@@ -223,7 +223,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                                 <SafeAreaView style={{ flex: 1 }}>
                                     <View style={{ flex: 1, position: 'relative' }}>
 
-                                        {statusMap && <LocationPicker banner={statusMap.includes('receive') ?  "postJobScreen.receiveLocation" : "postJobScreen.shippingLocation"} onSubmitMap={(addr, region) => _submitLocation(addr, region)} />}
+                                        {statusMap && <LocationPicker banner={statusMap.includes('receive') ? "postJobScreen.receiveLocation" : "postJobScreen.shippingLocation"} onSubmitMap={(addr, region) => _submitLocation(addr, region)} />}
 
                                     </View>
 
@@ -234,16 +234,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                     </Modal>
 
 
-                    <Controller
-                        control={control}
-                        render={({ onChange, onBlur, value }) => (
-                            <>
-                            </>
-                        )}
-                        key={'text-input-receive-region'}
-                        name={"receive-region"}
-                        defaultValue=""
-                    />
+
 
 
 
@@ -258,7 +249,16 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                                 <Text tx={"postJobScreen.inputLocationReceive"} preset={'topic'} style={[MARGIN_TOP_BIG, MARGIN_LEFT_SMALL]} />
                             </View>
 
-
+                            <Controller
+                                control={control}
+                                render={({ onChange, onBlur, value }) => (
+                                    <>
+                                    </>
+                                )}
+                                key={'text-input-receive-region'}
+                                name={"receive-region"}
+                                defaultValue=""
+                            />
                             <Controller
                                 control={control}
                                 render={({ onChange, onBlur, value }) => (
@@ -276,9 +276,10 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                                 )}
                                 key={'text-input-receive-location'}
                                 name={"receive-location"}
+                                rules={{ required: true }}
                                 defaultValue=""
                             />
-
+                            {(errors['receive-location'] && !formControllerValue["receive-location"]) && <Text style={{ color: color.red }} tx={"postJobScreen.validateReceiveLocation"} />}
 
 
                             <View style={ROW_TEXT}>
@@ -341,8 +342,11 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                                 )}
                                 key={'text-input-receive-name'}
                                 name={"receive-name"}
+                                rules={{ pattern: /^[a-zA-Z0-9 .!?"-]+$/ }}
                                 defaultValue=""
                             />
+                            {errors['receive-name'] && <Text style={{ color: color.red }} tx={"postJobScreen.validateReceiveName"} />}
+
 
                             <Text tx={"postJobScreen.receiverTel"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
                             <Controller
@@ -354,8 +358,10 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                                 )}
                                 key={'text-input-receive-tel-no'}
                                 name={"receive-tel-no"}
+                                rules={{ pattern: /^\(?([0]{1})\)?([0-9]{9})$/ }}
                                 defaultValue=""
                             />
+                            {errors['receive-tel-no'] && <Text style={{ color: color.red }} tx={"postJobScreen.validateReceiveTel"} />}
 
                         </View>
                     </View>
@@ -391,6 +397,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                                     <Text preset={'topic'} style={RED_DOT} >*</Text>
                                 </View>
 
+                                <Text tx={"postJobScreen.shippingAddr"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
                                 <Controller
                                     control={control}
                                     render={({ onChange, onBlur, value }) => (
@@ -401,8 +408,6 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                                     name={"shipping-region-" + e.id}
                                     defaultValue=""
                                 />
-
-                                <Text tx={"postJobScreen.shippingAddr"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
                                 <Controller
                                     control={control}
                                     render={({ onChange, onBlur, value }) => (
@@ -420,8 +425,10 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                                     )}
                                     key={'text-input-shipping-address-' + e.id}
                                     name={"shipping-address-" + e.id}
+                                    rules={{ required: true }}
                                     defaultValue=""
                                 />
+                                {errors["shipping-address-" + e.id] && !formControllerValue["shipping-address-" + e.id] && <Text style={{ color: color.red }} tx={"postJobScreen.validateShippingLocation"} />}
 
                                 <View style={ROW_TEXT}>
                                     <View style={[FULL, PADDING_RIGHT_SMALL]}>
@@ -481,8 +488,11 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                                     )}
                                     key={'text-input-shipping-name-' + e.id}
                                     name={"shipping-name-" + e.id}
+                                    rules={{ pattern: /^[a-zA-Z0-9 .!?"-]+$/ }}
                                     defaultValue=""
                                 />
+                                {errors["shipping-name-" + e.id] && <Text style={{ color: color.red }} tx={"postJobScreen.validateShippingName"} />}
+
 
                                 <Text tx={"postJobScreen.shipperTel"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
                                 <Controller
@@ -494,8 +504,10 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                                     )}
                                     key={'text-input-shipping-tel-no-' + e.id}
                                     name={"shipping-tel-no-" + e.id}
+                                    rules={{ pattern: /^\(?([0]{1})\)?([0-9]{9})$/ }}
                                     defaultValue=""
                                 />
+                                {errors["shipping-tel-no-" + e.id] && <Text style={{ color: color.red }} tx={"postJobScreen.validateReceiveTel"} />}
 
                             </View>
                         </View>
