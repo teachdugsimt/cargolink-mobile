@@ -847,10 +847,10 @@ export const UploadVehicleScreen = observer((props) => {
     let res = []
     __DEV__ && console.tron.log("Truck type for stall height get :: ", truckType)
 
-    let slotTruck = JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.value == truckType)
+    let slotTruck = JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == truckType)
 
     if (slotTruck) {
-      let tmpTruckType = slotTruck.label.replace(/\s+/g, '').toLowerCase();
+      let tmpTruckType = slotTruck.name.replace(/\s+/g, '').toLowerCase();
       if (tmpTruckType.includes("trailer") || tmpTruckType.includes("เทรเลอร์") || tmpTruckType.includes("18ล้อพื้นเรียบ")
         || tmpTruckType.includes("หัวลาก")) {
         let lowTrailer = " (1.50 - 1.80 m)"
