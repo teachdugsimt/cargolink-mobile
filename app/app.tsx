@@ -11,6 +11,7 @@
  */
 import "./i18n"
 import "./utils/ignore-warnings"
+import { ModalPortal } from 'react-native-modals';
 import React, { useState, useEffect, useRef } from "react"
 import { NavigationContainerRef } from "@react-navigation/native"
 import { SafeAreaProvider, initialWindowSafeAreaInsets } from "react-native-safe-area-context"
@@ -70,6 +71,7 @@ function App(props: any) {
           initialState={initialNavigationState}
           onStateChange={onNavigationStateChange}
         />
+        <ModalPortal />
       </SafeAreaProvider>
     </RootStoreProvider>
   )

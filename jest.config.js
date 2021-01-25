@@ -1,12 +1,21 @@
 module.exports = {
   reporters: [
     "default",
+    // [
+    //   "./node_modules/jest-html-reporter",
+    //   {
+    //     pageTitle: "HTML Report for Cargo Link Mobile",
+    //     outputPath: "ut-report/index.html",
+    //     includeFailureMsg: true,
+    //   },
+    // ],
     [
-      "./node_modules/jest-html-reporter",
+      "jest-html-reporters",
       {
-        pageTitle: "HTML Report for Cargo Link Mobile",
-        outputPath: "ut-report/index.html",
-        includeFailureMsg: true,
+        pageTitle: "Unit Test - Cargo Link Mobile",
+        publicPath: "./ut-report",
+        filename: "report.html",
+        expand: true,
       },
     ],
   ],
@@ -16,4 +25,5 @@ module.exports = {
   globals: {
     __DEV__: true,
   },
+  testEnvironment: "node",
 }

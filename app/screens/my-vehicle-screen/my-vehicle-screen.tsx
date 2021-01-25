@@ -7,6 +7,10 @@ import { translate } from "../../i18n"
 import { useNavigation } from "@react-navigation/native"
 import MyVehicleStore from '../../store/my-vehicle-store/my-vehicle-store'
 import StatusStore from '../../store/my-vehicle-store/status-vehicle-store'
+import { GetTruckType } from "../../utils/get-truck-type";
+import i18n from 'i18n-js';
+import date from 'date-and-time';
+import TruckTypeStore from "../../store/truck-type-store/truck-type-store"
 
 const CONTAINER: ViewStyle = {
   flex: 1,
@@ -33,11 +37,14 @@ const TEXT_ADD: TextStyle = {
 
 export const MyVehicle = observer(function MyVehicle() {
   const navigation = useNavigation()
-
-  const onPress = (id: number) => {
+  const onPress = (id: string) => {
     MyVehicleStore.findOneRequest(id)
     navigation.navigate("vehicleDetail")
   }
+
+  useEffect(() => {
+    TruckTypeStore.find()
+  }, [])
 
   useEffect(() => {
     if (MyVehicleStore.list && MyVehicleStore.list.length) {
@@ -55,32 +62,27 @@ export const MyVehicle = observer(function MyVehicle() {
   }
 
   const renderItem = ({ item }) => {
-    const statusText = item.approveStatus === 'APPROVE' ? translate('myVehicleScreen.verified') : translate('myVehicleScreen.pending')
-    const statusColor = item.approveStatus === 'APPROVE' ? color.success : color.primary
-    const registrationNumber = item.registrationNumber.map((n: string) => `ทะเบียน ${n}`)
+    const statusText = item.approveStatus === 'Approve' ? translate('myVehicleScreen.verified') : translate('myVehicleScreen.pending')
+    const statusColor = item.approveStatus === 'Approve' ? color.success : color.primary
+    // const registrationNumber = item.registrationNumber.map((n: string) => `ทะเบียน ${n}`)
+    const registrationNumber = item.registrationNumber.join(', ')
+    const txtTruckType = `${translate("myVehicleScreen.type")}  ${GetTruckType(+item.truckType)?.name || translate('common.notSpecified')}`
+    const txtDateTime = `${translate("myVehicleScreen.informationAt")} ${date.format(new Date(item.updatedAt), 'DD/MM/YY')}`
 
     return (
       <VehicleItem
         key={item.id}
-        topic={registrationNumber}
-        subTopic={item.car_type}
-        updatedDate={item.updatedAt}
-        image={item.image_car_type}
+        topic={`${translate('common.licensePlate')} ${registrationNumber}`}
+        subTopic={txtTruckType}
+        updatedDate={txtDateTime}
+        image={item.truckType}
         status={statusText}
         imageStyle={{ marginBottom: spacing[1] }}
         statusStyle={{ color: statusColor }}
-        onPress={() => onPress(parseInt(item.id))}
+        onPress={() => onPress(item.id)}
       />
     )
   }
-
-  /**
-   * registrationNumber: topic
-   * car_type: subTopic
-   * to: updatedDate
-   * status: status
-   * image_name: image
-   */
 
   return (
     <View style={CONTAINER}>

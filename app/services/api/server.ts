@@ -1,6 +1,9 @@
 import { Server, Model } from "miragejs"
 import vehicleData from './mock-data/my-vehicle'
 import policy from './mock-data/policy'
+import shipperJob from './mock-data/shipper-job'
+import truckTypeTh from './mock-data/truck-type-th'
+import truckTypeEn from './mock-data/truck-type-en'
 
 const { API_URL, API_URL_DEV } = require("../../config/env")
 
@@ -20,10 +23,14 @@ export function makeServer({ environment = 'development' } = {}) {
             auth: Model,
             vehicle: Model,
             policy: Model,
+            shipperJob: Model,
         },
         fixtures: {
             vehicles: vehicleData,
             policies: policy,
+            shipperJobs: shipperJob,
+            truckTypeTh: truckTypeTh,
+            truckTypeEn: truckTypeEn
         },
         seeds(server) {
             server.loadFixtures()
@@ -84,11 +91,6 @@ export function makeServer({ environment = 'development' } = {}) {
                 }
             })
 
-            this.get(`${API_URL}/api/v1/mobile/carriers/truck`, (schema, request) => {
-                // console.log(JSON.parse(JSON.stringify(schema.vehicles.all().models)))
-                console.log(JSON.parse(JSON.stringify(server.db.vehicles)))
-                return server.db.vehicles
-            })
 
             this.get(`${API_URL}/api/v1/mobile/carriers/truck/:id`, (schema, request) => {
                 console.log('request.params.id', request.params.id)
@@ -110,12 +112,7 @@ export function makeServer({ environment = 'development' } = {}) {
                 }
             })
 
-            let newId = 3
-            this.post(`${API_URL}api/v1/car`, (schema, request) => {
-                let attrs = JSON.parse(request.requestBody)
-                attrs.id = newId++
-                return { reminder: attrs }
-            })
+
 
             this.get(`${API_URL}/api/v1/users/:id/term-of-service`, (schema, request) => {
                 const id = request.params.id
@@ -135,11 +132,63 @@ export function makeServer({ environment = 'development' } = {}) {
                 return {}
             })
 
+            this.get(`${API_URL}api/v1/mobile/carriers/truck`, (schema, request) => {
+                // console.log(JSON.parse(JSON.stringify(schema.vehicles.all().models)))
+                console.log(JSON.parse(JSON.stringify(server.db.vehicles)))
+                return server.db.vehicles
+            })
+
             let my_vehicle_id = 1
-            this.patch(`${API_URL}api/v1/my-vehicle`, (schema, request) => {
+            this.post(`${API_URL}api/v1/mobile/carriers/truck`, (schema, request) => {
+                let attrs = JSON.parse(request.requestBody)
+                attrs.id = my_vehicle_id++
+                // server.db.vehicles.firstOrCreate(JSON.parse(request.requestBody))
+                return { ...attrs }
+            })
+
+            this.put(`${API_URL}api/v1/mobile/carriers/truck/edit/1`, (schema, request) => {
                 let attrs = JSON.parse(request.requestBody)
                 attrs.id = my_vehicle_id++
                 return { reminder: attrs }
+            })
+
+            this.post(`${API_URL}api/v1/media/upload/image`, (schema, request) => {
+                let attrs = JSON.parse(request.requestBody)
+                // server.db.vehicles.firstOrCreate(JSON.parse(request.requestBody))
+                return { reminder: attrs }
+            })
+
+            this.get(`${API_URL}/api/v1/mobile/shippers/jobs`, (schema, request) => {
+                console.log(JSON.parse(JSON.stringify(server.db.shipperJobs)))
+                return server.db.shipperJobs
+            })
+
+            this.get(`${API_URL}/api/v1/mobile/shippers/jobs/:id`, (schema, request) => {
+                const id = request.params.id
+                console.log(JSON.parse(JSON.stringify(server.db.shipperJobs.findBy({ id }))))
+                return JSON.parse(JSON.stringify(server.db.shipperJobs.findBy({ id })))
+            })
+
+            this.post(`${API_URL}/api/v1/mobile/shippers/jobs`, (schema, request) => {
+                const attrs = JSON.parse(request.requestBody)
+                const result = server.db.shipperJobs.insert(attrs)
+                console.log('create shipper job result', result)
+                return result
+            })
+
+            this.put(`${API_URL}/api/v1/mobile/shippers/jobs/:id`, (schema, request) => {
+                const attrs = JSON.parse(request.requestBody)
+                return attrs
+            })
+
+            this.get(`${API_URL}api/v1/mobile/carriers/truck/truck-type`, (params, request) => {
+                console.log("Params call truck type API :: ", params)
+                console.log("Request truck type api :: ", request)
+                console.log("Request truck type api 22 :: ", request.queryParams[0])
+                if (request.queryParams && request.queryParams[0] && request.queryParams[0] == "en")
+                    return truckTypeEn
+                else return truckTypeTh
+                // return truckTypeTh
             })
         },
     })

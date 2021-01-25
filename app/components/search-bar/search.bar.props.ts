@@ -12,4 +12,8 @@ export interface SearchBarProps {
   buttonText?: string
 
   textStyle?: TextStyle
+
+  onToggle?: (firstLocale: string, secondLocale: string) => void
+
+  onSearch?: () => void
 }

@@ -8,6 +8,7 @@ import Icon from "react-native-vector-icons/Ionicons"
 import { translate } from "../../i18n"
 import i18n from 'i18n-js'
 import { useStores } from "../../models/root-store/root-store-context";
+import AuthStore from "../../store/auth-store/auth-store"
 
 interface SubMenuProps {
     key?: string
@@ -54,10 +55,10 @@ const MENU: ViewStyle = {
     paddingTop: spacing[2],
     paddingBottom: spacing[2],
     borderBottomWidth: 1,
-    borderColor: color.disable,
+    borderColor: color.line,
 }
 const BUTTON: ViewStyle = {
-    backgroundColor: color.disable,
+    backgroundColor: color.line,
     marginBottom: spacing[3]
 }
 const BUTTON_TEXT: TextStyle = {
@@ -121,7 +122,7 @@ const RADIO_VIEW: ViewStyle = {
 
 export const MoreScreen = observer(function MoreScreen() {
     const navigation = useNavigation()
-    const { versatileStore } = useStores()
+    const { versatileStore, tokenStore } = useStores()
     const [list, setlist] = useState([
         { label: 'moreScreen.Thai', value: 'th', active: i18n.locale == "th" ? true : false },
         { label: 'moreScreen.English', value: 'en', active: i18n.locale == "en" ? true : false },
@@ -130,10 +131,10 @@ export const MoreScreen = observer(function MoreScreen() {
 
     useEffect(() => {
         navigation.setOptions({
-            headerCenter : () => (
-             <HeaderCenter tx={"moreScreen.moreMenu"}/>
+            headerCenter: () => (
+                <HeaderCenter tx={"moreScreen.moreMenu"} />
             ),
-          });
+        });
     }, [renderNew])
 
     const _pressMenu = (item) => {
@@ -179,7 +180,7 @@ export const MoreScreen = observer(function MoreScreen() {
                                 return (
                                     <TouchableOpacity key={item.key} style={MENU} onPress={() => _pressMenu(item)}>
                                         <Text tx={item.label} />
-                                        <Icon name={item.icon} size={24} color={color.disable} />
+                                        <Icon name={item.icon} size={24} color={color.line} />
                                     </TouchableOpacity>
                                 )
                             })}
@@ -200,7 +201,12 @@ export const MoreScreen = observer(function MoreScreen() {
                 })}
 
                 <View style={{ ...COLUMN, justifyContent: 'flex-end', paddingVertical: 10 }}>
-                    <RoundedButton onPress={() => navigation.navigate("signin")}
+                    <RoundedButton onPress={() => {
+                        tokenStore.clearToken()
+                        AuthStore.clearAuthProfile()
+                        navigation.navigate("signin")
+                        console.log("Token after logout :: ", tokenStore.token)
+                    }}
                         text={"homeScreen.logout"}
                         containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT}
                     />

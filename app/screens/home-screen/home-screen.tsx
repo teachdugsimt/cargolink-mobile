@@ -11,38 +11,11 @@ import { GridView } from '../../components/home-element/home-element'
 import i18n from 'i18n-js'
 import MyVehicleStore from "../../store/my-vehicle-store/my-vehicle-store"
 
-
-// import { createServer } from "miragejs"
-// createServer({
-//     routes() {
-//         this.get("https://jsonplaceholder.typicode.com/todos/", () => [
-//             { id: "1", name: "Luke" },
-//             { id: "2", name: "Leia" },
-//             { id: "3", name: "Anakin" },
-//         ])
-
-//         this.get("https://jsonplaceholder.typicode.com/todos/1", () => [
-//             { id: "1", name: "Luke" },
-//             { id: "2", name: "Leia" },
-//             { id: "3", name: "Anakin" },
-//         ])
-
-//         this.post("https://jsonplaceholder.typicode.com/todos/post", (schema, request) => {
-//             let attrs = JSON.parse(request.requestBody)
-//             // console.log(attrs)
-//             // debugger
-//             return { responseData: { data: 555 } }
-//         })
-//     },
-// })
-
-
-// const bowserLogo = require("./bowser.png")
 const { width, height } = Dimensions.get('window')
 const FULL: ViewStyle = { flex: 1 }
 
 const TOP_VIEW: ViewStyle = {
-    ...FULL,
+    flex: Platform.OS == "ios" ? 1 : 1.5,
     backgroundColor: color.mainTheme,
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
@@ -52,12 +25,15 @@ const BOTTOM_VIEW: ViewStyle = {
 }
 
 const IMAGE_LOGO: ImageStyle = {
+    // backgroundColor: 'red',
     width: '100%',
+    marginTop: -25,
 }
 const IMG_VIEW: ViewStyle = {
     ...FULL,
     width: width - 40,
     alignSelf: 'center',
+    justifyContent: 'flex-start'
 }
 
 const VIEW_GRID_BOX: ViewStyle = {
@@ -71,7 +47,7 @@ const ROOT_HOME: ViewStyle = {
 
 export const HomeScreen = observer((props) => {
     const { books } = BookStore
-    const { signinStore, versatileStore } = useStores()
+    const { signinStore, tokenStore } = useStores()
 
     const navigation = useNavigation()
 
@@ -86,6 +62,7 @@ export const HomeScreen = observer((props) => {
             author: "Author john",
             read: false
         })
+        console.log("TOKEN STORE :: => ", JSON.parse(JSON.stringify(tokenStore.token)))
         console.log("Props useeffect :: ", props)
         console.log("Store signin store :: ", signinStore)
         console.log("All books 111 : ", JSON.parse(JSON.stringify(BookStore.allBooks)))
@@ -129,7 +106,7 @@ export const HomeScreen = observer((props) => {
         {
             title: "เจ้าของสินค้า / Shippers",
             data: [{ id: 3, name: "homeScreen.postJob", onPressButton: () => navigation.navigate("postjob"), img: images.sheet1 },
-            { id: 4, name: "homeScreen.findCar", onPressButton: () => navigation.navigate("searchCar"), img: images.word1 }]
+            { id: 4, name: "homeScreen.findCar", onPressButton: () => navigation.navigate("searchTruck"), img: images.word1 }]
         }
     ]
     return (
@@ -137,11 +114,11 @@ export const HomeScreen = observer((props) => {
             <View testID="HomeScreen" style={ROOT_HOME}>
                 <View style={TOP_VIEW}>
                     <View style={IMG_VIEW}>
-                        {Platform.OS == "ios" ? <Image style={IMAGE_LOGO} height={(height / 12)}
+                        {Platform.OS == "ios" ? <Image style={IMAGE_LOGO} height={(height / 4.5)}
                             resizeMode='stretch'
-                            source={images.logo} /> : <Image style={IMAGE_LOGO} height={(height / 10)}
+                            source={images.logoNew} /> : <Image style={IMAGE_LOGO} height={(height / 3.5)}
                                 resizeMode='stretch'
-                                source={images.logo} />}
+                                source={images.logoNew} />}
                     </View>
                 </View>
                 <View style={BOTTOM_VIEW}>

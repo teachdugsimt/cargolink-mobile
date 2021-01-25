@@ -6,6 +6,7 @@ import { color } from "../../theme"
 import { useNavigation } from '@react-navigation/native';
 import { translate } from '../../i18n';
 import AuthStore from '../../store/auth-store/auth-store'
+import { useStores } from "../../models/root-store/root-store-context";
 
 const ROOT: ViewStyle = {
   flex: 1,
@@ -27,7 +28,7 @@ const SCROLL_VIEW: ViewStyle = {
   // flex: 2,
   marginLeft: 10,
   marginRight: 10,
-  backgroundColor: color.disable,
+  backgroundColor: color.line,
   borderRadius: 6
 }
 const CONTENT: TextStyle = {
@@ -43,7 +44,7 @@ const BUTTON_ROOT: ViewStyle = {
   paddingTop: 20,
 }
 const CONTINUE_BUTTON: ViewStyle = {
-  backgroundColor: color.disable,
+  backgroundColor: color.line,
   width: '100%',
   borderRadius: 20,
   marginBottom: 15
@@ -67,7 +68,9 @@ const initialState = {
 
 export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
   const navigation = useNavigation()
-  // const [buttonColor, setButtonColor] = useState(color.disable)
+
+  const { tokenStore } = useStores()
+  // const [buttonColor, setButtonColor] = useState(color.line)
   // const [disabled, setDisabled] = useState(true)
   const [{ isLoading }, setState] = useState(initialState)
 
@@ -86,12 +89,15 @@ export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
       isLoading: true,
     })
     AuthStore.updatePolicyStatusRequest(AuthStore.profile.userProfile.id, {
-      accept: true
+      accept: true,
+      version: AuthStore.profile.termOfService.version
     }).then(() => {
       clearState()
       navigation.navigate("home")
     })
   }
+  // 094 769 7823
+  // 9430
 
   console.log('AuthStore.policyData.data :>> ', AuthStore.policyData.data);
 
@@ -131,7 +137,11 @@ export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
           style={CONTINUE_BUTTON}
           textStyle={CONTINUE_TEXT}
           text={translate('acceptPolicyScreen.cancel')} // ไม่ยอมรับเงื่อนไข
-          onPress={() => navigation.navigate("signin")}
+          onPress={() => {
+            AuthStore.clearAuthProfile()
+            tokenStore.clearToken()
+            navigation.navigate("signin")
+          }}
         />
       </View>
     </View>

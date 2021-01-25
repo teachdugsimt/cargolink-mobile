@@ -5,6 +5,7 @@ platform :ios, '10.0'
 
 target 'CargoLinkMobile' do
   config = use_native_modules!
+  rn_maps_path = '../node_modules/react-native-maps'
 
   use_react_native!(:path => config["reactNativePath"])
 
@@ -13,9 +14,17 @@ target 'CargoLinkMobile' do
 
 
 
-
+  # pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker/RNDateTimePicker.podspec'
   pod 'RNCPicker', :path => '../node_modules/@react-native-picker/picker'
 
+
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+
+  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
+
+  pod 'react-native-google-maps', path: rn_maps_path
+  pod 'GoogleMaps'
+  pod 'Google-Maps-iOS-Utils'
 
   target 'CargoLinkMobileTests' do
     inherit! :complete

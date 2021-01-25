@@ -45,7 +45,7 @@ export default function BottomNavigator() {
             })}
             tabBarOptions={{
                 activeTintColor: color.mainTheme,
-                inactiveTintColor: color.grey,
+                inactiveTintColor: color.line,
             }}
         >
             <Tab.Screen name={translate("bottomTab.home")} component={HomeNavigator} />

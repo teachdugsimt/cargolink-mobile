@@ -10,4 +10,6 @@ export interface PostingByProps {
   ratingCount?: string
 
   logo?: string
+
+  onToggle?: (newValue?: any) => void
 }

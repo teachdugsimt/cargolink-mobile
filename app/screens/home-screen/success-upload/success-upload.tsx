@@ -23,12 +23,12 @@ const VIEW_BUTTON: ViewStyle = {
     backgroundColor: color.textWhite,
     justifyContent: 'center',
     alignItems: 'center',
-    borderTopColor: color.disable,
+    borderTopColor: color.line,
     borderTopWidth: 1,
 }
 
 const BUTTON_CONTAINER: ViewStyle = {
-    backgroundColor: color.darkGrey
+    backgroundColor: color.primary
 }
 
 const TEXT_TOPIC: TextStyle = { color: color.primary }
