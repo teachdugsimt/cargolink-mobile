@@ -237,10 +237,11 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     const txtTruckType = GetTruckType(+truckType)
     console.log('coordinates.length', coordinates.length)
     console.log('JSON.stringify(ShipperJobStore.directions)', JSON.stringify(ShipperJobStore.directions))
+    console.log('ShipperJobStore.mapLoading', ShipperJobStore.mapLoading)
 
     return (
         <View style={CONTAINER}>
-            {ShipperJobStore.mapLoading && <ModalLoading size={'large'} color={color.primary} visible={ShipperJobStore.mapLoading} />}
+            <ModalLoading size={'large'} color={color.primary} visible={ShipperJobStore.mapLoading} />
             <View style={MAP_CONTAINER}>
                 {from && !!from.lat && !!from.lng && !!ShipperJobStore.directions.length &&
                     <MapView
