@@ -174,5 +174,12 @@ export interface ShipperTruckFilter {
   zoneIds?: number[]
 }
 
+export interface TruckType {
+  id: number
+  name?: string
+  image?: string
+  groupId?: number
+}
+
 export type GetUsersResult = { kind: "ok"; users: User[] } | GeneralApiProblem
 export type GetUserResult = { kind: "ok"; user: User } | GeneralApiProblem

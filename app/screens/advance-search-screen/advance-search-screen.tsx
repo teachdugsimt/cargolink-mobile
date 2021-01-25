@@ -73,12 +73,13 @@ const initialState = {
   truckAmount: 0,
   productType: [],
   truckWeight: 0,
+  loading: true,
 }
 
 export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
   const navigation = useNavigation()
 
-  const [{ truckTypes, truckAmount, productType, truckWeight }, setState] = useState(initialState)
+  const [{ truckTypes, truckAmount, productType, truckWeight, loading }, setState] = useState(initialState)
 
   useEffect(() => {
     if (!AdvanceSearchStore.menu || !AdvanceSearchStore.menu.length) {
@@ -93,11 +94,25 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
     })
   }, [navigation]);
 
+  useEffect(() => {
+    console.log('AdvanceSearchStore.menu?.length', AdvanceSearchStore.menu?.length)
+    if (!AdvanceSearchStore.loading && AdvanceSearchStore.menu?.length) {
+      console.log('useEffect')
+    }
+  }, [AdvanceSearchStore.loading, AdvanceSearchStore.menu])
+
   const onClick = (id: number, isChecked: boolean) => {
     const newMenu = AdvanceSearchStore.menu.map(menu => {
       if (menu.id !== id || !menu.isMultiSelect) return menu
       const subMenu = menu.subMenu && menu.subMenu.length ? menu.subMenu.map(item => {
-        return { ...item, isChecked: !isChecked }
+        if (item?.subMenu?.length) {
+          const childOfSubMenu = item.subMenu.map(attr => {
+            return { ...attr, isChecked: !isChecked }
+          })
+          return { ...item, subMenu: childOfSubMenu }
+        } else {
+          return { ...item, isChecked: !isChecked }
+        }
       }) : []
       return { ...menu, isChecked: !isChecked, subMenu }
     })
@@ -106,7 +121,19 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
 
   const onConfirm = () => {
     const resultMapFilter = AdvanceSearchStore.menu.map(menu => {
-      const result = menu.subMenu.filter(subMenu => subMenu.isChecked).map(val => val.value)
+      const arrChildOfSubMenu = []
+      const filterSelected = menu.subMenu.filter(subMenu => {
+        if (subMenu?.subMenu?.length) {
+          console.log('subMenu.name', subMenu.name)
+          const res = subMenu.subMenu.filter(sub => sub.isChecked)
+          arrChildOfSubMenu.push(...res)
+          return false;
+        }
+        return subMenu.isChecked
+      })
+
+      const result = [...filterSelected, ...arrChildOfSubMenu].map(val => val.value)
+
       if (menu.type === 'truckAmount' && menu.isChecked) {
         const numbs = JSON.parse(JSON.stringify(result[0]))
         return {
@@ -144,10 +171,23 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
       newMenu = settings.map(menu => {
         if (menu.id !== mainId) return menu
         const subMenu = menu.subMenu && menu.subMenu.length ? menu.subMenu.map(item => {
+          if (item?.subMenu?.length) {
+            const childOfSubMenu = item.subMenu.map(attr => {
+              if (attr.id !== subId) return attr
+              return { ...attr, isChecked: !isChecked }
+            })
+            return { ...item, subMenu: childOfSubMenu }
+          }
           if (item.id !== subId) return item
           return { ...item, isChecked: !isChecked }
         }) : []
-        const unCheckedAll = subMenu.filter(({ isChecked }) => isChecked)
+        const unCheckedAll = subMenu.filter(({ isChecked, subMenu: childOfSubMenu }) => {
+          if (childOfSubMenu?.length) {
+            const childUnCheckAll = childOfSubMenu.filter(({ isChecked: subChecked }) => subChecked)
+            return !!childUnCheckAll.length
+          }
+          return isChecked
+        })
         return { ...menu, isChecked: !!unCheckedAll.length, subMenu }
       })
     }
@@ -174,6 +214,7 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
   }
 
   __DEV__ && console.tron.log('truckTypes', truckTypes)
+  console.log('AdvanceSearchStore.loading', AdvanceSearchStore.loading)
 
   return (
     <View style={CONTAINER}>
@@ -190,30 +231,30 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
                     <Text text={menu.topic} style={CONTENT} onPress={() => onClick(menu.id, menu.isChecked)} />
                   </View>
                   <View style={SUB_MENU}>
-                    {/* <CollapsibleList
-                    numberOfVisibleItems={4}
-                    wrapperStyle={{
-                      marginTop: 20,
-                      overflow: "hidden",
-                      backgroundColor: "#FFF",
-                      borderRadius: 5,
-
-                      flexDirection: 'row'
-                    }}
-                    buttonContent={
-                      <View style={{}}>
-                        <Text text={translate('searchJobScreen.more')} />
-                      </View>
-                    }
-                    buttonPosition={'bottom'}
-                  > */}
                     {
                       menu.subMenu && menu.subMenu.map((subMenu, i) => {
                         const percentWidth = (100 - (menu.showSubColumn * (marginPercent * 2))) / menu.showSubColumn
-                        const { id, name, isChecked } = subMenu
-                        return (
-                          <SubMenu key={id} id={id} label={name} isChecked={isChecked} mainIndex={menu.id} percentWidth={percentWidth} isMultiSelect={menu.isMultiSelect} />
-                        )
+                        if (subMenu?.subMenu?.length) {
+                          return (
+                            <View key={i}>
+                              <Text text={subMenu.name} style={{ color: color.line }} />
+                              <View style={[SUB_MENU, { paddingVertical: spacing[1] }]}>
+                                {subMenu.subMenu.map(childOfSubMenu => {
+                                  const { id, name, isChecked } = childOfSubMenu
+                                  return (
+                                    <SubMenu key={id} id={id} label={name} isChecked={isChecked} mainIndex={menu.id} percentWidth={percentWidth} isMultiSelect={menu.isMultiSelect} />
+                                  )
+                                })}
+                              </View>
+                            </View>
+                          )
+                        } else {
+                          const { id, name, isChecked } = subMenu
+                          return (
+                            <SubMenu key={id} id={id} label={name} isChecked={isChecked} mainIndex={menu.id} percentWidth={percentWidth} isMultiSelect={menu.isMultiSelect} />
+                          )
+                        }
+
                       })
                     }
                     {/* </CollapsibleList> */}
@@ -238,3 +279,21 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
     </View>
   )
 })
+
+{/* <CollapsibleList
+  numberOfVisibleItems={4}
+  wrapperStyle={{
+    marginTop: 20,
+    overflow: "hidden",
+    backgroundColor: "#FFF",
+    borderRadius: 5,
+
+    flexDirection: 'row'
+  }}
+  buttonContent={
+    <View style={{}}>
+      <Text text={translate('searchJobScreen.more')} />
+    </View>
+  }
+  buttonPosition={'bottom'}
+> */}

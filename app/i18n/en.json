@@ -34,7 +34,10 @@
     "have": "Have",
     "notHave": "No",
     "M": "m.",
-    "id": "id"
+    "id": "id",
+    "noSign": "no input special character",
+    "noSignAndCharacter": "please check special sign or character",
+    "notSpecified": "Not specified"
   },
   "bottomTab": {
     "home": "Home",
@@ -87,8 +90,6 @@
     "weightNumber": "Weight (T)",
     "popular": "popular",
     "4maxType": "4 wheels type",
-
-
     "acceptPointProduct": "receive point",
     "inputLocationReceive": "input receive location",
     "dateReceive": "receive date",
@@ -96,7 +97,6 @@
     "receiverInfo": "receiver information",
     "receiverName": "receiver name",
     "receiverTel": "tel no",
-
     "shipingPoint": "shipping location ",
     "shippingAddr": "input shipping address",
     "dateShipping": "shipping date",
@@ -104,9 +104,27 @@
     "shipperInfo": "shipper information",
     "shipperName": "shipper name",
     "shipperTel": "tel no",
-
     "addShippingPoint": "add ship point",
-    "postJobSuccess": "welcome your post job was success"
+    "postJobSuccess": "welcome your post job was success",
+    
+    "truckType": "vehicle type",
+    "productType": "product type",
+    "receiveLocation": "receive location",
+    "receiveDate": "receive date",
+    "receiveTime": "receive time",
+    "receiveName": "receive name",
+    "receiveTelno": "receive tel no",
+    "shippingLocation": "shipping location",
+    "shippingDate": "shipping date",
+    "shippingTime": "shipping time",
+    
+    "validateTruckType": "Vehicle type is required.",
+    "validateProductType": "Product type is reuiqred.",
+    "validateReceiveLocation": "please input receive location",
+    "validateShippingLocation": "please input shipping location",
+    "validateReceiveName": "please check receive name",
+    "validateShippingName": "please check shipping name",
+    "validateReceiveTel": "please check receive tel no"
   },
   "uploadVehicleScreen": {
     "addVehicle": "Add Vehicle",

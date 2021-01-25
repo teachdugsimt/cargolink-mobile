@@ -34,7 +34,10 @@
     "have": "มี",
     "notHave": "ไม่มี",
     "M": "เมตร",
-    "id": "รหัส"
+    "id": "รหัส",
+    "noSign": "กรุณาตรวจสอบอักขระพิเศษ",
+    "noSignAndCharacter": "กรุณาตรวจสอบอักขระพิเศษและตัวอักษร",
+    "notSpecified": "ไม่ระบุ"
   },
   "bottomTab": {
     "home": "หน้าแรก",
@@ -87,7 +90,6 @@
     "weightNumber": "จำนวนน้ำหนัก (ตัน)",
     "popular": "ยอดนิยม",
     "4maxType": "ประเภท 4 ล้อ",
-
     "acceptPointProduct": "จุดรับสินค้า",
     "inputLocationReceive": "ระบุสถานที่เข้ารับสินค้า",
     "dateReceive": "วันรับสินค้า",
@@ -95,7 +97,6 @@
     "receiverInfo": "ข้อมูลติดต่อผู้รับสินค้า",
     "receiverName": "ชื่อผู้รับสินค้า",
     "receiverTel": "เบอร์ติดต่อ",
-
     "shipingPoint": "จุดส่งสินค้าที่",
     "shippingAddr": "ระบุสถานที่ส่งสินค้า",
     "dateShipping": "วันส่งสินค้า",
@@ -103,9 +104,26 @@
     "shipperInfo": "ข้อมูลติดต่อผู้ส่งสินค้า",
     "shipperName": "ชื่อผู้ส่งสินค้า",
     "shipperTel": "เบอร์ติดต่อ",
-
     "addShippingPoint": "เพิ่มจุดส่งสินค้า",
-    "postJobSuccess": "ยินดีด้วยคุณเพิ่มงานสำเร็จแล้ว"
+    "postJobSuccess": "ยินดีด้วยคุณเพิ่มงานสำเร็จแล้ว",
+    "truckType": "ประเภทรถ",
+    "productType": "ประเภทสินค้า",
+    "receiveLocation": "จุดรับสินค้า",
+    "receiveDate": "วันที่รับสินค้า",
+    "receiveTime": "เวลารับสินค้า",
+    "receiveName": "ชื่อผู้รับสินค้า",
+    "receiveTelno": "เบอร์โทรผู้รับสินค้า",
+    "shippingLocation": "สถานที่ส่งสินค้า",
+    "shippingDate": "วันที่ส่งสินค้า",
+    "shippingTime": "เวลาส่งสินค้า",
+    "validateTruckType": "กรุณาเลือกประเภทรถ",
+    "validateProductType": "กรุณาเลือกประเภทสินค้า",
+    "validateReceiveLocation": "กรุณาเลือกจุดรับสินค้า",
+    "validateShippingLocation": "กรุณาเลือกจุดส่งสินค้า",
+    "validateReceiveName": "กรุณาตรวจสอบชื่อผู้รับสินค้า",
+    "validateShippingName": "กรุณาตรวจสอบชื่อผู้ส่งสินค้า",
+    "validateReceiveTel": "กรุณาตรวจสอบเบอร์ติดต่อ"
+
   },
   "uploadVehicleScreen": {
     "addVehicle": "เพิ่มรถ",
