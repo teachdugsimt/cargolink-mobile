@@ -214,6 +214,7 @@ dependencies {
     implementation project(':react-native-reanimated')
     // implementation project(':@react-native-community_datetimepicker')
 
+    implementation project(':lottie-react-native')
     implementation project(':react-native-maps')
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {

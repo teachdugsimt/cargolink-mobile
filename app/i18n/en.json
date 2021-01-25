@@ -37,7 +37,11 @@
     "id": "id",
     "noSign": "no input special character",
     "noSignAndCharacter": "please check special sign or character",
-    "notSpecified": "Not specified"
+    "acceptOnlyCharacter": "accept only character",
+    "notSpecified": "Not specified",
+    "low": "Low Stall",
+    "medium": "Medium Stall",
+    "height": "Height Stall"
   },
   "bottomTab": {
     "home": "Home",
@@ -81,7 +85,7 @@
     "getProductLocation": "receive point",
     "checkInformation": "check detail",
     "success": "success",
-    "selectVehicleType": "Select vehicle ttype",
+    "selectVehicleType": "Select vehicle type",
     "pleaseSelectVehicleType": "please select vehicle type",
     "vehicleNum": "How many cars",
     "itemDetail": "Product detail",
@@ -106,7 +110,6 @@
     "shipperTel": "tel no",
     "addShippingPoint": "add ship point",
     "postJobSuccess": "welcome your post job was success",
-    
     "truckType": "vehicle type",
     "productType": "product type",
     "receiveLocation": "receive location",
@@ -117,20 +120,21 @@
     "shippingLocation": "shipping location",
     "shippingDate": "shipping date",
     "shippingTime": "shipping time",
-    
     "validateTruckType": "Vehicle type is required.",
     "validateProductType": "Product type is reuiqred.",
     "validateReceiveLocation": "please input receive location",
     "validateShippingLocation": "please input shipping location",
     "validateReceiveName": "please check receive name",
     "validateShippingName": "please check shipping name",
-    "validateReceiveTel": "please check receive tel no"
+    "validateReceiveTel": "please check receive tel no",
+    "receiveDateMoreThan": "receive date must be more 2 days from now"
   },
   "uploadVehicleScreen": {
     "addVehicle": "Add Vehicle",
     "selectVehicleType": "Select your vehicle type",
     "haveDump": "Vehicle have dump ? ",
-    "heightVehicle": "vehicle height (meters)",
+    "heightVehicle": "vehicle height",
+    "heightVehicleSelect": "please select vehicle height",
     "detailVehicle": "Vehicle detail",
     "atLeastOneRegister": "Use at least 1 register vehicle",
     "carRegistration": "Car registration",
@@ -145,7 +149,8 @@
     "province": "province",
     "pleaseSelectProvince": "please select province",
     "selectFromLibrary": "choose image from library",
-    "captureNew": "camera"
+    "captureNew": "camera",
+    "pleaseCheckRegistration": "please check registration number"
   },
   "profileScreen": {
     "profile": "Profile",
@@ -265,7 +270,7 @@
   "vehicleDetailScreen": {
     "vehicleImage": "Vehicle Image",
     "vehicleType": "Vehicle Type",
-    "heighttOfTheCarStall": "Height of the car stall (meters)",
+    "heighttOfTheCarStall": "Height of the car stall",
     "carHaveDum": "Does the car have a dum",
     "myVehicleDetail": "My vehicle detail",
     "vehicleRegistrationNumber": "Vehicle registration number",

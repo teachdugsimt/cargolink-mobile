@@ -5,6 +5,7 @@ import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.reactnativecommunity.picker.RNCPickerPackage;
+import com.airbnb.android.react.lottie.LottiePackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
@@ -33,6 +34,7 @@ public class MainApplication extends Application implements ReactApplication {
           // packages.add(new VectorIconsPackage());
           // packages.add(new SvgPackage());
           // packages.add(new RNDateTimePickerPackage());
+          // packages.add(new LottiePackage());
           return packages;
         }
 

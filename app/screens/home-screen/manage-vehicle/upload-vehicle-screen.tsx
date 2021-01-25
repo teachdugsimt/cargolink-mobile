@@ -13,21 +13,20 @@ import RNPickerSelect from 'react-native-picker-select';
 import { translate } from "../../../i18n"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import CreateVehicleStore from '../../../store/my-vehicle-store/create-vehicle-store'
-// import ImagePicker from 'react-native-image-picker';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import ImageResizer from 'react-native-image-resizer';
-import { vehicleEn, vehicleTh, regionListEn, regionListTh, provinceListEn, provinceListTh } from './datasource'
+import { MapTruckImageName } from '../../../utils/map-truck-image-name'
+import { provinceListEn, provinceListTh } from './datasource'
 import i18n from 'i18n-js'
 import { useNavigation } from "@react-navigation/native"
 import MyVehicleStore from '../../../store/my-vehicle-store/my-vehicle-store'
 import StatusStore from '../../../store/my-vehicle-store/status-vehicle-store'
 import UploadFileStore from '../../../store/my-vehicle-store/upload-file-store'
-import TruckTypeStore from '../../../store/my-vehicle-store/truck-type-store'
 import AddressStore from '../../../store/my-vehicle-store/address-store'
 import { Modal, ModalContent, ModalFooter, ModalButton } from 'react-native-modals';
 import { useStores } from "../../../models/root-store/root-store-context";
+import { FlatGrid } from 'react-native-super-grid';
 
-const { width, height } = Dimensions.get("window")
+const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
 const GREY_TEXT: TextStyle = { color: color.line }
 
@@ -200,7 +199,7 @@ let initModal = Array(77).fill(false)
 export const UploadVehicleScreen = observer((props) => {
   const navigation = useNavigation()
   const [toggleDump, settoggleDump] = useState(false)
-  const { tokenStore } = useStores()
+  const { tokenStore, versatileStore } = useStores()
 
   const [visibleModal, setvisibleModal] = useState(initModal)
   const [stateData, setstateData] = useState(null)
@@ -210,7 +209,8 @@ export const UploadVehicleScreen = observer((props) => {
 
     AddressStore.getRegion(i18n.locale)
     // AddressStore.getProvince(i18n.locale)
-    TruckTypeStore.getTruckTypeDropdown(i18n.locale)
+    versatileStore.find()
+
 
 
     let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
@@ -477,7 +477,7 @@ export const UploadVehicleScreen = observer((props) => {
       carrierId: editStatus == "add" ? tokenStore.profile.id : MyVehicleStore.data.id,
       truckType: data['vehicle-type'],
 
-      loadingWeight: 2.5,
+      // loadingWeight: 2.5,
       // stallHeight: Number(parseFloat(data['vehicle-height']).toFixed(1)),
       stallHeight: data['vehicle-height'].toUpperCase(),
 
@@ -675,7 +675,7 @@ export const UploadVehicleScreen = observer((props) => {
   //function to add TextInput dynamically
   const addTextInput = (index) => {
     let textInputTmp = textInput;
-    textInputTmp.push(<Controller
+    textInputTmp.push(<><Controller
       control={control}
       render={({ onChange, onBlur, value }) => (
         <TextInputTheme
@@ -688,8 +688,10 @@ export const UploadVehicleScreen = observer((props) => {
       )}
       key={"registration-key-" + index}
       name={"registration-" + index}
+      rules={{ required: true }}
       defaultValue=""
-    />);
+    />
+    </>);
     settextInput(textInputTmp);
     setrenderNew(!renderNew)
   }
@@ -813,12 +815,11 @@ export const UploadVehicleScreen = observer((props) => {
       style={ROOT_FLAT_LIST} onPress={() => _onPressSectionModal(onChange, item)}>
       <View style={BORDER_BOTTOM}>
         <View style={VIEW_LIST_IMAGE}>
-          {Platform.OS == "ios" ? <Image source={images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
-            <Image source={images[item.image]} style={IMAGE_LIST} height={60} width={60} />}
+          {Platform.OS == "ios" ? <Image source={images[MapTruckImageName(item.id)]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
+            <Image source={images[MapTruckImageName(item.id)]} style={IMAGE_LIST} height={60} width={60} />}
         </View>
         <View style={{ flexDirection: 'row', flex: 1 }}>
           <Text style={{ paddingLeft: 40 }}>{item.name}</Text>
-          {/* <Ionicons name="chevron-forward" size={24} style={{ marginRight: 5 }} /> */}
         </View>
       </View>
     </TouchableOpacity>
@@ -839,12 +840,119 @@ export const UploadVehicleScreen = observer((props) => {
     </TouchableOpacity>
   }
 
+  const _getStallHeightList = (truckType) => {
+    let low = { label: translate("common.low"), value: "LOW" }
+    let medium = { label: translate("common.medium"), value: "MEDIUM" }
+    let height = { label: translate("common.height"), value: "HEIGHT" }
+    let res = []
+    __DEV__ && console.tron.log("Truck type for stall height get :: ", truckType)
+
+    let slotTruck = JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == truckType)
+
+    if (slotTruck) {
+      let tmpTruckType = slotTruck.name.replace(/\s+/g, '').toLowerCase();
+      if (tmpTruckType.includes("trailer") || tmpTruckType.includes("เทรเลอร์") || tmpTruckType.includes("18ล้อพื้นเรียบ")
+        || tmpTruckType.includes("หัวลาก")) {
+        let lowTrailer = " (1.50 - 1.80 m)"
+        let mediumTrailer = " (1.80 - 2.00 m)"
+        let heightTrailer = " (2.20 - 2.50 m)"
+        low.label = low.label + lowTrailer
+        medium.label = medium.label + mediumTrailer
+        height.label = height.label + heightTrailer
+        res.push(low, medium, height)
+      }
+      else if (tmpTruckType.includes("4wheels") || tmpTruckType.includes("4ล้อ")) {
+        let low4Wheels = " (~ 1.4 m)"
+        let height4Wheels = " (~ 2.1 m)"
+        low.label = low.label + low4Wheels
+        height.label = height.label + height4Wheels
+        res.push(low, height)
+      } else if (tmpTruckType.includes("6wheels") || tmpTruckType.includes("6ล้อ")) {
+        let low6Wheels = " (~ 2.0 m)"
+        let height6Wheels = " (~ 3.0 m)"
+        low.label = low.label + low6Wheels
+        height.label = height.label + height6Wheels
+        res.push(low, height)
+      } else if (tmpTruckType.includes("10wheels") || tmpTruckType.includes("10ล้อ")) {
+        let medium10Wheels = " (~ 2.5 m)"
+        medium.label = medium.label + medium10Wheels
+        res.push(medium)
+      }
+      else {
+        res.push(low, medium, height)
+      }
+      return res
+    } else return res.push(low, medium, height)
+  }
+
   const _updateVisibleModal = (visibleX, index) => {
     let tmp = visibleModal
     tmp[index] = visibleX
     setvisible(!visible)
     setvisibleModal(tmp)
   }
+
+
+
+  const [vehicleType, setvehicleType] = useState([])
+  const [sectionTruckType, setsectionTruckType] = useState([])
+  const [initSection, setinitSection] = useState([])
+  useEffect(() => {
+    let grouping = JSON.parse(JSON.stringify(versatileStore.listGroup))
+    let truckTyping = JSON.parse(JSON.stringify(versatileStore.list))
+    if (grouping && truckTyping && grouping.length > 0 && truckTyping.length > 0) {
+      let tmp_section = []
+      grouping.map((gr, igr) => {
+        tmp_section.push({
+          title: gr.name,
+          id: gr.id,
+          image: gr.image,
+          data: truckTyping.filter(e => e.groupId == gr.id)
+        })
+      })
+      setsectionTruckType(tmp_section)
+      setinitSection(tmp_section)
+    }
+
+  }, [versatileStore.list, versatileStore.listGroup])
+  const _closeTruckType = () => {
+    setvisible0(false)
+    const list_all_real = JSON.parse(JSON.stringify(versatileStore.list))
+    setsectionTruckType(initSection)
+    setvehicleType(list_all_real)
+  }
+  const _filterGroupTruck = (item) => {
+    const list_all_real = JSON.parse(JSON.stringify(versatileStore.list))
+
+    let tmp_list, tmp_section_list
+    tmp_list = list_all_real.filter(e => e.groupId == item.id)
+    tmp_section_list = initSection.filter(e => e.id == item.id)
+
+    setsectionTruckType(tmp_section_list)
+    setvehicleType(tmp_list)
+  }
+  useEffect(() => {
+    let tmpProductList = JSON.parse(JSON.stringify(versatileStore.list))
+    if (tmpProductList && tmpProductList.length > 0) {
+      setvehicleType(tmpProductList)
+    }
+  }, [versatileStore.list])
+  const _renderGroupTruck = (list) => {
+    return <FlatGrid
+      itemDimension={100}
+      data={list}
+      // fixed={true}
+      renderItem={({ item }) => (<TouchableOpacity
+        style={{ flex: 1, borderColor: color.primary, borderRadius: 15, borderWidth: 1 }}
+        onPress={() => _filterGroupTruck(item)}>
+        <View style={{ flex: 1, width: '100%', height: 30, justifyContent: 'center' }}>
+          <Text style={{ alignSelf: 'center' }}>{item.name}</Text>
+        </View>
+      </TouchableOpacity>)}
+    />
+  }
+
+
 
   const [selectCapture, setSelectCapture] = useState(false)
 
@@ -857,21 +965,6 @@ export const UploadVehicleScreen = observer((props) => {
     },
   ]
 
-  const list_vehicle_popular = [
-    {
-      title: 'postJobScreen.popular',
-      data: [{ id: 13, name: 'รถบรรทุกของเหลว 6 ล้อ', image: 'truck2' },
-      { id: 17, name: 'รถกระบะ 4 ล้อตู้ทึบ', image: 'truck3' },
-      { id: 21, name: 'รถ 6 ล้อ ตู้ทึบ', image: 'truck4' }]
-    },
-    {
-      title: 'postJobScreen.4maxType',
-      data: [
-        { id: 24, name: 'รถ 6 ล้อ กระบะ', image: 'truck5' },
-      ]
-    }
-  ]
-  let multi_select
   let formControllerValue = control.getValues()
   let dropdown_vehicle_type
   if (formControllerValue['vehicle-type'] && formControllerValue['vehicle-type']) {
@@ -879,20 +972,29 @@ export const UploadVehicleScreen = observer((props) => {
   }
   __DEV__ && console.tron.logImportant("Form in render :: ", formControllerValue)
   // __DEV__ && console.tron.logImportant("Controller pure : ", control.setValue())
-  __DEV__ && console.tron.log("Fetching Trucktype :: ", TruckTypeStore.loading)
-  let list_vehicle = JSON.parse(JSON.stringify(TruckTypeStore.data))
+  __DEV__ && console.tron.log("Fetching Trucktype :: ", versatileStore.loading)
+  let list_vehicle = JSON.parse(JSON.stringify(versatileStore.list))
+
+  let default_stallHeightList = [
+    { label: translate("common.low"), value: "LOW" },
+    { label: translate("common.medium"), value: "MEDIUM" },
+    { label: translate("common.height"), value: "HEIGHT" },
+  ]
+
+  let defaultVehicleType = JSON.parse(JSON.stringify(versatileStore.list))
+  const listGroup = JSON.parse(JSON.stringify(versatileStore.listGroup))
 
   return (
     <View testID="UploadVehicleScreen" style={FULL}>
 
       <ModalLoading
         containerStyle={{ zIndex: 2 }}
-        size={'large'} color={color.primary} visible={TruckTypeStore.loading || UploadFileStore.loading ||
+        size={'large'} color={color.primary} visible={versatileStore.loading || UploadFileStore.loading ||
           CreateVehicleStore.loading || CreateVehicleStore.loadingPatchMyVehicle} />
 
       <ScrollView testID={"scrollViewUpload"} style={FULL}>
 
-        {/* {JSON.parse(JSON.stringify(TruckTypeStore.loading)) || JSON.parse(JSON.stringify(AddressStore.loading)) && <ModalLoading size={'large'} color={color.primary} visible={JSON.parse(JSON.stringify(TruckTypeStore.loading)) || JSON.parse(JSON.stringify(AddressStore.loading))} />} */}
+        {/* {JSON.parse(JSON.stringify(versatileStore.loading)) || JSON.parse(JSON.stringify(AddressStore.loading)) && <ModalLoading size={'large'} color={color.primary} visible={JSON.parse(JSON.stringify(versatileStore.loading)) || JSON.parse(JSON.stringify(AddressStore.loading))} />} */}
 
 
 
@@ -935,8 +1037,8 @@ export const UploadVehicleScreen = observer((props) => {
 
               <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible0(true)}>
                 {!dropdown_vehicle_type && <Text style={{ padding: 10 }} tx={"postJobScreen.pleaseSelectVehicleType"} />}
-                {dropdown_vehicle_type && TruckTypeStore.data && TruckTypeStore.data.length && <Text style={{ padding: 10 }}>{JSON.parse(JSON.stringify(TruckTypeStore.data)).find(e => e.id == dropdown_vehicle_type).name}</Text>}
-                <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} />
+                {dropdown_vehicle_type && versatileStore.list && <Text style={{ padding: 10 }}>{JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == dropdown_vehicle_type).name}</Text>}
+                <Ionicons name="chevron-down" size={24} style={[PADDING_CHEVRON, { paddingTop: Platform.OS == "android" ? 7.5 : 0 }]} />
               </TouchableOpacity>
 
               <Controller
@@ -944,8 +1046,8 @@ export const UploadVehicleScreen = observer((props) => {
                 render={({ onChange, onBlur, value }) => (
                   <Modal
                     visible={visible0}
-                    onTouchOutside={() => setvisible0(false)}
-                    onSwipeOut={() => setvisible0(false)}
+                    onTouchOutside={() => _closeTruckType()}
+                    onSwipeOut={() => _closeTruckType()}
                     swipeDirection={['up', 'down']} // can be string or an array
                     swipeThreshold={200} // default 100
                   >
@@ -957,29 +1059,37 @@ export const UploadVehicleScreen = observer((props) => {
                           </View>
 
                           <View style={PADDING_TOP}>
-                            {list_vehicle && list_vehicle.length && <MultiSelector
-                              key="dd-01-type"
-                              items={list_vehicle}
-                              keyer={"list-vehicle-type-01"}
+                            {!!defaultVehicleType && defaultVehicleType.length > 0 && <MultiSelector
+                              items={vehicleType && vehicleType.length > 0 ? vehicleType : defaultVehicleType}
                               selectedItems={[value]}
                               selectText={translate("postJobScreen.pleaseSelectVehicleType")}
                               onSelectedItemsChange={(val: any) => {
                                 onChange(val[0])
-                                setvisible0(false)
+                                _closeTruckType()
                               }}
                             />}
                           </View>
 
-                          <View>
+                          {listGroup && listGroup.length > 1 && <View>
+                            {_renderGroupTruck(listGroup)}
+                          </View>}
+
+                          <View style={{ flex: 1 }}>
                             <SectionList
-                              sections={list_vehicle_popular ? list_vehicle_popular : []}
-                              keyExtractor={(item, index) => 'section-list-' + item.name + index}
+                              sections={sectionTruckType}
+                              keyExtractor={(item, index) => 'section-list-' + (item.name || item.title) + index}
                               renderItem={({ item, index }) => _renderSectionModal(item, index, onChange)}
                               renderSectionHeader={({ section: { title } }) => (
-                                <Text tx={title} style={PADDING_TOP} />
+                                <Text style={PADDING_TOP} >{title}</Text>
                               )}
+                              ListFooterComponent={
+                                <View style={{ height: 50 }}></View>
+                              }
                             />
+
+
                           </View>
+
                         </SafeAreaView>
 
                       </View>
@@ -990,19 +1100,14 @@ export const UploadVehicleScreen = observer((props) => {
                 )}
                 key={'controller-dropdown-vehicle-type'}
                 name={"vehicle-type"}
+                rules={{ required: true, pattern: /^[a-zA-Z0-9 .!?"-]+$/ }}
                 defaultValue=""
               />
-
-
-
-
-
-
-
-
-
-
             </View>
+            {errors['vehicle-type'] && <Text style={{ color: color.red }} tx={"postJobScreen.validateTruckType"} />}
+
+
+
             <View style={HAVE_DUMP_VIEW}>
               <Text tx={"uploadVehicleScreen.haveDump"} style={CONTENT_TEXT} />
               <Switch
@@ -1014,17 +1119,41 @@ export const UploadVehicleScreen = observer((props) => {
               />
             </View>
             <Text tx={"uploadVehicleScreen.heightVehicle"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
-            <Controller
-              control={control}
-              render={({ onChange, onBlur, value }) => (
-                <TextInputTheme
-                  testID={"upload-vehicle-height"}
-                  inputStyle={MARGIN_TOP_BIG} value={value} onChangeText={(text) => onChange(text)} />
-              )}
-              key={'text-input-vehicle-height'}
-              name={"vehicle-height"}
-              defaultValue=""
-            />
+            <View style={{ ...WRAP_DROPDOWN }} key={'view-dropdown-vehicle-height'}>
+              <Controller
+                control={control}
+                render={({ onChange, onBlur, value }) => (
+                  <>
+                    <RNPickerSelect
+                      value={value}
+                      onValueChange={(value) => onChange(value)}
+                      items={dropdown_vehicle_type ? _getStallHeightList(dropdown_vehicle_type) : default_stallHeightList}
+                      placeholder={{
+                        label: translate("uploadVehicleScreen.heightVehicleSelect"),
+                        color: color.black
+                      }}
+                      useNativeAndroidPickerStyle={false}
+                      style={{
+                        inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
+                        iconContainer: Platform.OS == "ios" ? {} : { ...DROPDOWN_ICON_CONTAINER },
+                        placeholder: { color: color.black }
+                      }}
+                      Icon={() => {
+                        return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
+                      }}
+                    />
+                  </>
+                  // <TextInputTheme
+                  //   testID={"upload-vehicle-height"}
+                  //   inputStyle={{ ...CONTENT_TEXT, ...MARGIN_TOP_BIG }} value={value} onChangeText={(text) => onChange(text)} />
+                )}
+                key={'text-input-vehicle-height'}
+                name={"vehicle-height"}
+                rules={{ pattern: /^[a-zA-Z]+$/ }}
+                defaultValue=""
+              />
+            </View>
+            {errors['vehicle-height'] && <Text style={{ color: color.red }} tx={"common.acceptOnlyCharacter"} />}
           </View>
         </View>
 
@@ -1041,7 +1170,13 @@ export const UploadVehicleScreen = observer((props) => {
 
 
             <View>
-              {textInput.map(e => { return e })}
+              {textInput.map((e, index) => {
+                return (<>
+                  {e}
+                  {!!errors["registration-" + index] && <Text style={{ color: color.red }} tx={"uploadVehicleScreen.pleaseCheckRegistration"} />}
+                </>)
+              })}
+
             </View>
             <Button onPress={() => addTextInput(textInput.length)} style={{ ...ADD_VEHICLE_BUTTON, ...MARGIN_TOP_EXTRA }}>
               <Ionicons name={"add-circle-outline"} size={spacing[5]} color={color.line} />
@@ -1176,7 +1311,8 @@ export const UploadVehicleScreen = observer((props) => {
                     key={'controller-dropdown-region-' + index}
                     name={"controller-region-" + index}
                     defaultValue=""
-                  /></View>
+                  />
+                </View>
 
                 {ddProvince.length ? ddProvince.map((pro, indexPro) => {
 
@@ -1199,7 +1335,7 @@ export const UploadVehicleScreen = observer((props) => {
 
 
                       <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN, Platform.OS == "ios" ? {} : {
-                        paddingTop: 10
+                        alignItems: 'center', height: 50
                       }]} onPress={async () => {
                         __DEV__ && console.tron.log("REGION :: ", index)
                         await AddressStore.getProvince({ regionId: valRegion[index] }, i18n.locale)

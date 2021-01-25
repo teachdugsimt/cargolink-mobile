@@ -31,6 +31,9 @@ export const MapTruckImageName = (id) => {
     else if (id == 48 || id == "tractorHeadTruck") return "truck14"
     else if (id == 5 || id == "4WheelsOpenTop") return "truck7"
     else if (id == 10 || id == "12WheelsCarCarrier") return "truck35"
+
+    else if (id == 49 || id == "4wheelsOpenPickup") return "truck"
+    
     else if (id == 2 || id == "4wheelsOpenPickup") return "truck6"
 
     else if (id == 3 || id == "6WheelsBox") return "truck15"
@@ -67,5 +70,6 @@ export const MapTruckImageName = (id) => {
     else if (id == 36 || id == "20Trainer18WheelsStallDump") return "truck34"
 
     else if (id == 15 || id == "other") return "truck"
+
 }
 
