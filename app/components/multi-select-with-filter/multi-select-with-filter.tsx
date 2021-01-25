@@ -14,7 +14,7 @@ export const MultiSelectWithFilter = (props) => {
     const [filterList, setfilterList] = useState(items)
 
     const _filterGroupTruck = (item) => {
-        console.tron.log("On Press filter button : ", item)
+        __DEV__ && console.tron.log("On Press filter button : ", item)
         if (!filterList || filterList.length < 1) return;
         let tmp_list = filterList.filter(e => e.groupId == item.id)
         setfilterList(tmp_list)

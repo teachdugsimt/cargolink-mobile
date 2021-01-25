@@ -13,24 +13,20 @@ import RNPickerSelect from 'react-native-picker-select';
 import { translate } from "../../../i18n"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import CreateVehicleStore from '../../../store/my-vehicle-store/create-vehicle-store'
-// import ImagePicker from 'react-native-image-picker';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { MapTruckImageName } from '../../../utils/map-truck-image-name'
-import ImageResizer from 'react-native-image-resizer';
-import { vehicleEn, vehicleTh, regionListEn, regionListTh, provinceListEn, provinceListTh } from './datasource'
+import { provinceListEn, provinceListTh } from './datasource'
 import i18n from 'i18n-js'
 import { useNavigation } from "@react-navigation/native"
 import MyVehicleStore from '../../../store/my-vehicle-store/my-vehicle-store'
 import StatusStore from '../../../store/my-vehicle-store/status-vehicle-store'
 import UploadFileStore from '../../../store/my-vehicle-store/upload-file-store'
-import TruckTypeStore from '../../../store/my-vehicle-store/truck-type-store'
 import AddressStore from '../../../store/my-vehicle-store/address-store'
 import { Modal, ModalContent, ModalFooter, ModalButton } from 'react-native-modals';
 import { useStores } from "../../../models/root-store/root-store-context";
-import * as TruckGroup from '../../../store/truck-type-store/truck-type-store'
 import { FlatGrid } from 'react-native-super-grid';
 
-const { width, height } = Dimensions.get("window")
+const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
 const GREY_TEXT: TextStyle = { color: color.line }
 
@@ -203,7 +199,7 @@ let initModal = Array(77).fill(false)
 export const UploadVehicleScreen = observer((props) => {
   const navigation = useNavigation()
   const [toggleDump, settoggleDump] = useState(false)
-  const { tokenStore } = useStores()
+  const { tokenStore, versatileStore } = useStores()
 
   const [visibleModal, setvisibleModal] = useState(initModal)
   const [stateData, setstateData] = useState(null)
@@ -213,7 +209,8 @@ export const UploadVehicleScreen = observer((props) => {
 
     AddressStore.getRegion(i18n.locale)
     // AddressStore.getProvince(i18n.locale)
-    TruckTypeStore.getTruckTypeDropdown(i18n.locale)
+    versatileStore.find()
+
 
 
     let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
@@ -460,7 +457,7 @@ export const UploadVehicleScreen = observer((props) => {
   const onSubmit = data => {
     let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
     setinputRegistration(data)
-    console.tron.log("Raw Form Data :: => ", data)
+    __DEV__ && console.tron.log("Raw Form Data :: => ", data)
 
     if (!data['vehicle-type']) {
       _alert(translate('common.vehicleTypeField'))
@@ -850,7 +847,7 @@ export const UploadVehicleScreen = observer((props) => {
     let res = []
     __DEV__ && console.tron.log("Truck type for stall height get :: ", truckType)
 
-    let slotTruck = JSON.parse(JSON.stringify(TruckTypeStore.data)).find(e => e.value == truckType)
+    let slotTruck = JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.value == truckType)
 
     if (slotTruck) {
       let tmpTruckType = slotTruck.label.replace(/\s+/g, '').toLowerCase();
@@ -901,8 +898,8 @@ export const UploadVehicleScreen = observer((props) => {
   const [sectionTruckType, setsectionTruckType] = useState([])
   const [initSection, setinitSection] = useState([])
   useEffect(() => {
-    let grouping = JSON.parse(JSON.stringify(TruckGroup.default.listGroup))
-    let truckTyping = JSON.parse(JSON.stringify(TruckGroup.default.list))
+    let grouping = JSON.parse(JSON.stringify(versatileStore.listGroup))
+    let truckTyping = JSON.parse(JSON.stringify(versatileStore.list))
     if (grouping && truckTyping && grouping.length > 0 && truckTyping.length > 0) {
       let tmp_section = []
       grouping.map((gr, igr) => {
@@ -917,15 +914,15 @@ export const UploadVehicleScreen = observer((props) => {
       setinitSection(tmp_section)
     }
 
-  }, [TruckGroup.default.list, TruckGroup.default.listGroup])
+  }, [versatileStore.list, versatileStore.listGroup])
   const _closeTruckType = () => {
     setvisible0(false)
-    const list_all_real = JSON.parse(JSON.stringify(TruckGroup.default.list))
+    const list_all_real = JSON.parse(JSON.stringify(versatileStore.list))
     setsectionTruckType(initSection)
     setvehicleType(list_all_real)
   }
   const _filterGroupTruck = (item) => {
-    const list_all_real = JSON.parse(JSON.stringify(TruckGroup.default.list))
+    const list_all_real = JSON.parse(JSON.stringify(versatileStore.list))
 
     let tmp_list, tmp_section_list
     tmp_list = list_all_real.filter(e => e.groupId == item.id)
@@ -935,11 +932,11 @@ export const UploadVehicleScreen = observer((props) => {
     setvehicleType(tmp_list)
   }
   useEffect(() => {
-    let tmpProductList = JSON.parse(JSON.stringify(TruckGroup.default.list))
+    let tmpProductList = JSON.parse(JSON.stringify(versatileStore.list))
     if (tmpProductList && tmpProductList.length > 0) {
       setvehicleType(tmpProductList)
     }
-  }, [TruckGroup.default.list])
+  }, [versatileStore.list])
   const _renderGroupTruck = (list) => {
     return <FlatGrid
       itemDimension={100}
@@ -975,8 +972,8 @@ export const UploadVehicleScreen = observer((props) => {
   }
   __DEV__ && console.tron.logImportant("Form in render :: ", formControllerValue)
   // __DEV__ && console.tron.logImportant("Controller pure : ", control.setValue())
-  __DEV__ && console.tron.log("Fetching Trucktype :: ", TruckTypeStore.loading)
-  let list_vehicle = JSON.parse(JSON.stringify(TruckTypeStore.data))
+  __DEV__ && console.tron.log("Fetching Trucktype :: ", versatileStore.loading)
+  let list_vehicle = JSON.parse(JSON.stringify(versatileStore.list))
 
   let default_stallHeightList = [
     { label: translate("common.low"), value: "LOW" },
@@ -984,20 +981,20 @@ export const UploadVehicleScreen = observer((props) => {
     { label: translate("common.height"), value: "HEIGHT" },
   ]
 
-  let defaultVehicleType = JSON.parse(JSON.stringify(TruckGroup.default.list))
-  const listGroup = JSON.parse(JSON.stringify(TruckGroup.default.listGroup))
+  let defaultVehicleType = JSON.parse(JSON.stringify(versatileStore.list))
+  const listGroup = JSON.parse(JSON.stringify(versatileStore.listGroup))
 
   return (
     <View testID="UploadVehicleScreen" style={FULL}>
 
       <ModalLoading
         containerStyle={{ zIndex: 2 }}
-        size={'large'} color={color.primary} visible={TruckTypeStore.loading || UploadFileStore.loading ||
+        size={'large'} color={color.primary} visible={versatileStore.loading || UploadFileStore.loading ||
           CreateVehicleStore.loading || CreateVehicleStore.loadingPatchMyVehicle} />
 
       <ScrollView testID={"scrollViewUpload"} style={FULL}>
 
-        {/* {JSON.parse(JSON.stringify(TruckTypeStore.loading)) || JSON.parse(JSON.stringify(AddressStore.loading)) && <ModalLoading size={'large'} color={color.primary} visible={JSON.parse(JSON.stringify(TruckTypeStore.loading)) || JSON.parse(JSON.stringify(AddressStore.loading))} />} */}
+        {/* {JSON.parse(JSON.stringify(versatileStore.loading)) || JSON.parse(JSON.stringify(AddressStore.loading)) && <ModalLoading size={'large'} color={color.primary} visible={JSON.parse(JSON.stringify(versatileStore.loading)) || JSON.parse(JSON.stringify(AddressStore.loading))} />} */}
 
 
 
@@ -1040,7 +1037,7 @@ export const UploadVehicleScreen = observer((props) => {
 
               <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible0(true)}>
                 {!dropdown_vehicle_type && <Text style={{ padding: 10 }} tx={"postJobScreen.pleaseSelectVehicleType"} />}
-                {dropdown_vehicle_type && TruckGroup.default.list && <Text style={{ padding: 10 }}>{JSON.parse(JSON.stringify(TruckGroup.default.list)).find(e => e.id == dropdown_vehicle_type).name}</Text>}
+                {dropdown_vehicle_type && versatileStore.list && <Text style={{ padding: 10 }}>{JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == dropdown_vehicle_type).name}</Text>}
                 <Ionicons name="chevron-down" size={24} style={[PADDING_CHEVRON, { paddingTop: Platform.OS == "android" ? 7.5 : 0 }]} />
               </TouchableOpacity>
 
@@ -1081,7 +1078,7 @@ export const UploadVehicleScreen = observer((props) => {
                             <SectionList
                               sections={sectionTruckType}
                               keyExtractor={(item, index) => 'section-list-' + (item.name || item.title) + index}
-                              renderItem={({ item, index }) => _renderSectionModal(item, index, onChange, 1)}
+                              renderItem={({ item, index }) => _renderSectionModal(item, index, onChange)}
                               renderSectionHeader={({ section: { title } }) => (
                                 <Text style={PADDING_TOP} >{title}</Text>
                               )}

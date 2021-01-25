@@ -7,7 +7,6 @@ import { observer } from "mobx-react-lite"
 import { translate } from "../../../i18n"
 import { Text, AddJobElement, TextInputTheme, RoundedButton, MultiSelector } from '../../../components'
 import i18n from 'i18n-js'
-// import TruckTypeStore from '../../../store/my-vehicle-store/truck-type-store'
 import PostJobStore from '../../../store/post-job-store/post-job-store'
 import AdvanceSearchStore from '../../../store/shipper-job-store/advance-search-store'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -15,8 +14,8 @@ import { spacing, color, typography, images } from "../../../theme"
 import { Modal, ModalContent, ModalPortal } from 'react-native-modals';
 import { MapTruckImageName } from '../../../utils/map-truck-image-name'
 import { AlertForm } from '../../../utils/alert-form'
-import TruckTypeStore from '../../../store/truck-type-store/truck-type-store'
 import { FlatGrid } from 'react-native-super-grid';
+import { useStores } from "../../../models/root-store/root-store-context";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 const items = [{ id: '92iijs7yta', name: 'Ondo', value: 'dd' }, { id: 'a0s0a8ssbsd', name: 'Ogun' }, { id: '16hbajsabsd', name: 'Calabar' }, { id: 'nahs75a5sg', name: 'Lagos' }, { id: '667atsas', name: 'Maiduguri' }, { id: 'hsyasajs', name: 'Anambra' }, { id: 'djsjudksjd', name: 'Benue' }, { id: 'sdhyaysdj', name: 'Kaduna' }, { id: 'suudydjsjd', name: 'Abuja' }];
@@ -134,6 +133,7 @@ const IMAGE_LIST: ImageStyle = {
 let check_load_truck_type = 0
 
 export const PostJobScreen = observer(function PostJobScreen() {
+    const { versatileStore } = useStores()
     const navigation = useNavigation()
 
     // const [listProductState, setlistProductState] = useState(null)
@@ -144,9 +144,6 @@ export const PostJobScreen = observer(function PostJobScreen() {
     });
 
     useEffect(() => {
-        TruckTypeStore.findGroup()
-        TruckTypeStore.find()
-        // TruckTypeStore.getTruckTypeDropdown(i18n.locale)
         AdvanceSearchStore.getProductTypes()
     }, [])
 
@@ -206,38 +203,38 @@ export const PostJobScreen = observer(function PostJobScreen() {
     const [sectionTruckType, setsectionTruckType] = useState([])
     const [initSection, setinitSection] = useState([])
     useEffect(() => {
-        let grouping = JSON.parse(JSON.stringify(TruckTypeStore.listGroup))
-        let truckTyping = JSON.parse(JSON.stringify(TruckTypeStore.list))
+        let grouping = JSON.parse(JSON.stringify(versatileStore.listGroup))
+        let truckTyping = JSON.parse(JSON.stringify(versatileStore.list))
         __DEV__ && console.tron.log('Grouping useEffect :: ', grouping)
         __DEV__ && console.tron.log('Truck type useEffect:: ', truckTyping)
-        // if (grouping && truckTyping && grouping.length > 0 && truckTyping.length > 0) {
-        let tmp_section = []
-        grouping.map((gr, igr) => {
-            tmp_section.push({
-                title: gr.name,
-                id: gr.id,
-                image: gr.image,
-                data: truckTyping.filter(e => e.groupId == gr.id)
+        if (grouping && truckTyping && grouping.length > 0 && truckTyping.length > 0) {
+            let tmp_section = []
+            grouping.map((gr, igr) => {
+                tmp_section.push({
+                    title: gr.name,
+                    id: gr.id,
+                    image: gr.image,
+                    data: truckTyping.filter(e => e.groupId == gr.id)
+                })
             })
-        })
-        __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
-        __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
-        __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
-        __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
-        __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
-        setsectionTruckType(tmp_section)
-        setinitSection(tmp_section)
-        // }
+            __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
+            __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
+            __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
+            __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
+            __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
+            setsectionTruckType(tmp_section)
+            setinitSection(tmp_section)
+        }
 
-    }, [JSON.parse(JSON.stringify(TruckTypeStore.list)), JSON.parse(JSON.stringify(TruckTypeStore.listGroup))])
+    }, [versatileStore.list, versatileStore.listGroup])
     const _closeTruckType = () => {
         setvisible0(false)
-        const list_all_real = JSON.parse(JSON.stringify(TruckTypeStore.list))
+        const list_all_real = JSON.parse(JSON.stringify(versatileStore.list))
         setsectionTruckType(initSection)
         setvehicleType(list_all_real)
     }
     const _filterGroupTruck = (item) => {
-        const list_all_real = JSON.parse(JSON.stringify(TruckTypeStore.list))
+        const list_all_real = JSON.parse(JSON.stringify(versatileStore.list))
 
         let tmp_list, tmp_section_list
         tmp_list = list_all_real.filter(e => e.groupId == item.id)
@@ -247,11 +244,11 @@ export const PostJobScreen = observer(function PostJobScreen() {
         setvehicleType(tmp_list)
     }
     useEffect(() => {
-        let tmpProductList = JSON.parse(JSON.stringify(TruckTypeStore.list))
+        let tmpProductList = JSON.parse(JSON.stringify(versatileStore.list))
         if (tmpProductList && tmpProductList.length > 0) {
             setvehicleType(tmpProductList)
         }
-    }, [TruckTypeStore.list])
+    }, [versatileStore.list])
     const _renderGroupTruck = (list) => {
         return <FlatGrid
             itemDimension={100}
@@ -303,12 +300,12 @@ export const PostJobScreen = observer(function PostJobScreen() {
     if (formControllerValue['vehicle-type']) {
         dropdown_vehicle_type = formControllerValue['vehicle-type']
     }
-    // let list_vehicle = JSON.parse(JSON.stringify(TruckTypeStore.data))
-    let defaultVehicleType = JSON.parse(JSON.stringify(TruckTypeStore.list))
+    // let list_vehicle = JSON.parse(JSON.stringify(versatileStore.data))
+    let defaultVehicleType = JSON.parse(JSON.stringify(versatileStore.list))
     let list_product_type_all = JSON.parse(JSON.stringify(AdvanceSearchStore.productTypes))
 
 
-    const listGroup = JSON.parse(JSON.stringify(TruckTypeStore.listGroup))
+    const listGroup = JSON.parse(JSON.stringify(versatileStore.listGroup))
     __DEV__ && console.tron.log("State list vehicle type :: ", vehicleType)
     __DEV__ && console.tron.log("State section list vehicle type :: ", sectionTruckType)
 
@@ -341,7 +338,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                 <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible0(true)}>
                                     {!dropdown_vehicle_type && <><Text style={{ padding: 10 }} tx={"postJobScreen.pleaseSelectVehicleType"} />
                                         <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} /></>}
-                                    {dropdown_vehicle_type && TruckTypeStore.list && _renderSelectedList(JSON.parse(JSON.stringify(TruckTypeStore.list)).find(e => e.id == dropdown_vehicle_type), 1)}
+                                    {dropdown_vehicle_type && versatileStore.list && _renderSelectedList(JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == dropdown_vehicle_type), 1)}
 
                                 </TouchableOpacity>
 
@@ -382,7 +379,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
                                                         <View style={{ flex: 1 }}>
 
-                                                            {sectionTruckType && <SectionList
+                                                            <SectionList
                                                                 sections={sectionTruckType}
                                                                 keyExtractor={(item, index) => 'section-list-' + (item.name || item.title) + index}
                                                                 renderItem={({ item, index }) => _renderSectionModal(item, index, onChange, 1)}
@@ -392,12 +389,9 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                                                 ListFooterComponent={
                                                                     <View style={{ height: 50 }}></View>
                                                                 }
-                                                            />}
-
+                                                            />
 
                                                         </View>
-
-
 
                                                     </SafeAreaView>
 

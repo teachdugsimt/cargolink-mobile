@@ -49,14 +49,14 @@ const ROOT_HOME: ViewStyle = {
 
 export const HomeScreen = observer((props) => {
     const { books } = BookStore
-    const { signinStore, tokenStore } = useStores()
+    const { signinStore, tokenStore, versatileStore } = useStores()
 
     const navigation = useNavigation()
 
     useEffect(() => {
 
-        // TruckTypeStore.findGroup()
-        // TruckTypeStore.find()
+        versatileStore.findGroup()
+        versatileStore.find()
 
         const now = new Date();
         const yesterday = date.addDays(now, -1);

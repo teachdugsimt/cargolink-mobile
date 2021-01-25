@@ -82,9 +82,9 @@ export const PostSuccessScreen = observer(function PostSuccessScreen() {
                     </View>
                 </View>
 
-                <View>
+                {/* <View>
                     <LottieView source={require('./order-packed.json')} autoPlay loop />;
-                </View>
+                </View> */}
 
                 <View style={VIEW_BUTTON}>
                     <RoundedButton testID={"success-vehicle-detail"} onPress={() => navigation.navigate("home")} text={"common.ok"} containerStyle={BUTTON_CONTAINER} textStyle={TEXT_BUTTTON_STYLE} />
