@@ -843,7 +843,7 @@ export const UploadVehicleScreen = observer((props) => {
   const _getStallHeightList = (truckType) => {
     let low = { label: translate("common.low"), value: "LOW" }
     let medium = { label: translate("common.medium"), value: "MEDIUM" }
-    let height = { label: translate("common.height"), value: "HEIGHT" }
+    let height = { label: translate("common.height"), value: "HIGH" }
     let res = []
     __DEV__ && console.tron.log("Truck type for stall height get :: ", truckType)
 
