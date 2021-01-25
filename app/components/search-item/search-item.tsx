@@ -16,8 +16,8 @@ const FONT_SIZE_SMALL = 15
 
 const PADDING_TOP = { paddingTop: spacing[1] }
 const PADDING_BOTTOM = { paddingBottom: spacing[1] }
-const PADDING_LEFT = { paddingLeft: spacing[1] }
-const PADDING_RIGHT = { paddingRight: spacing[1] }
+const PADDING_LEFT = { paddingLeft: spacing[2] }
+const PADDING_RIGHT = { paddingRight: spacing[2] }
 const CONTAINER: ViewStyle = {
   width: '100%',
   ...PADDING_TOP,
@@ -69,7 +69,7 @@ const TEXT: TextStyle = {
   ...PADDING_BOTTOM
 }
 const CAR_DETAIL_ROOT: TextStyle = {
-  flex: 1,
+  // flex: 1,
   flexDirection: "row",
   ...PADDING_LEFT,
 }
@@ -78,7 +78,7 @@ const CAR_DETAIL: ViewStyle = {
   flexDirection: "row",
 }
 const CONTENT_RIGHT: ViewStyle = {
-  flex: 1,
+  // flex: 1,
   alignItems: "flex-end",
   justifyContent: "space-between",
   ...PADDING_TOP,
@@ -97,12 +97,11 @@ const RECOMMENED: TextStyle = {
   fontSize: 12,
 }
 const BUTTOM_ROOT: ViewStyle = {
-  flex: 1,
   flexDirection: 'row',
   ...PADDING_LEFT,
   ...PADDING_RIGHT,
-  marginLeft: spacing[3],
-  marginRight: spacing[3],
+  marginLeft: spacing[2],
+  marginRight: spacing[1],
   paddingTop: spacing[2],
   paddingBottom: spacing[2],
 }
@@ -112,7 +111,6 @@ const VIEW_DETAIL_ROOT: ViewStyle = {
   alignItems: 'center'
 }
 const ACCOUNT_ROOT: ViewStyle = {
-  flex: 1,
   flexDirection: 'row',
   justifyContent: "flex-end"
 }

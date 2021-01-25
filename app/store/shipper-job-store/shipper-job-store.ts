@@ -96,7 +96,9 @@ const ShipperJobStore = types
                 const response = yield apiShipperJob.findOne(id)
                 console.log("Response call api get shipper job : : ", JSON.stringify(response))
                 if (response.kind === 'ok') {
-                    self.data = response.data || {}
+                    const result = response.data || {}
+                    const isLiked = FavoriteJobStore.list.find(({ id }) => id === result.id)?.isLiked
+                    self.data = { ...result, isLiked: isLiked || false }
                 } else {
                     self.error = response?.data?.message || response.kind
                 }
