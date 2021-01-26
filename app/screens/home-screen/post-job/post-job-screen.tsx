@@ -175,6 +175,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
     }
 
     const _renderSelectedList = (item, section) => {
+        __DEV__ && console.tron.log('Item :: ', item)
         return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name} style={ROOT_FLAT_LIST} onPress={() => {
             if (section == 1) setvisible0(true)
             else if (section == 2) setvisible(true)
@@ -309,7 +310,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
     __DEV__ && console.tron.log("State list vehicle type :: ", vehicleType)
     __DEV__ && console.tron.log("State section list vehicle type :: ", sectionTruckType)
 
-
+    __DEV__ && console.tron.log("List group =>  :: ", list_product_type_all)
 
 
 
@@ -490,14 +491,14 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                                         </View>
 
                                                         <View>
-                                                            <SectionList
+                                                            {!!list_product_type_all && list_product_type_all.length > 0 && <SectionList
                                                                 sections={list_product_type}
                                                                 keyExtractor={(item, index) => 'section-list-' + item.name + item.id + index}
                                                                 renderItem={({ item, index }) => _renderSectionModal(item, index, onChange, 2)}
                                                                 renderSectionHeader={({ section: { title } }) => (
                                                                     <Text tx={title} style={PADDING_TOP} />
                                                                 )}
-                                                            />
+                                                            />}
                                                         </View>
                                                     </SafeAreaView>
 
