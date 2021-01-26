@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { View, ViewStyle, TextStyle, TouchableOpacity, FlatList, RefreshControl } from "react-native"
 import { observer } from "mobx-react-lite"
-import { ModalLoading, SearchItem, SearchItemTruck, Text } from "../../components"
+import { ModalLoading, SearchItem, SearchItemTruck, Text, EmptyListMessage } from "../../components"
 import { color, spacing, images as imageComponent } from "../../theme"
 import FavoriteTruckStore from "../../store/shipper-truck-store/favorite-truck-store"
 import ShipperTruckStore from "../../store/shipper-truck-store/shipper-truck-store"
@@ -96,9 +96,7 @@ const JobItem = (data) => {
 
     const onToggleHeart = (data) => {
         const newData = [...JSON.parse(JSON.stringify(list))].filter(({ id }) => id !== data.id)
-        if (newData.length) {
-            setUnFollow(newData)
-        }
+        setUnFollow(newData)
         FavoriteJobStore.add(data.id)
     }
 
@@ -159,9 +157,7 @@ const TruckItem = (data) => {
 
     const onToggleHeart = (data) => { // id, isLike
         const newData = [...JSON.parse(JSON.stringify(list))].filter(({ id }) => id !== data.id)
-        if (newData.length) {
-            setUnFollow(newData)
-        }
+        setUnFollow(newData)
         FavoriteTruckStore.add(data.id)
         // ShipperTruckStore.updateFavoriteInList(data.id, data.isLike)
     }
@@ -291,7 +287,7 @@ export const FavoriteScreen = observer(function FavoriteScreen() {
     return (
         <View testID="FavoriteScreen" style={FULL}>
 
-            <ModalLoading size={'large'} color={color.primary} visible={loading} />
+            {/* <ModalLoading size={'large'} color={color.primary} visible={loading} /> */}
 
             <View style={HEADER}>
                 <TouchableOpacity activeOpacity={1} style={favoriteHeaderStyle} onPress={() => setIsFirstHeaderSelected(!isFirstHeaderSelected)} >
@@ -313,22 +309,21 @@ export const FavoriteScreen = observer(function FavoriteScreen() {
 
             <View style={RESULT_CONTAINER}>
                 {
-                    data && !!data.length && !loading ? <FlatList
+                    <FlatList
                         data={data}
                         renderItem={renderItem}
                         keyExtractor={item => item.id}
                         onEndReached={() => onScrollList()}
                         onEndReachedThreshold={0.5}
+                        ListEmptyComponent={<EmptyListMessage />}
+                        contentContainerStyle={{ flexGrow: 1 }}
                         refreshControl={
                             <RefreshControl
                                 refreshing={loading}
                                 onRefresh={onRefresh}
                             />
                         }
-                    /> : (!loading && <View style={CONTEXT_NOT_FOUND}>
-                        <Feather name={'inbox'} size={50} color={color.line} />
-                        <Text tx={'common.notFound'} style={NOT_FOUND_TEXT} preset={'topicExtra'} />
-                    </View>)
+                    />
                 }
             </View>
 

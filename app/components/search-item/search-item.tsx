@@ -149,7 +149,7 @@ export function SearchItem(props: SearchItemProps) {
     onToggleHeart
   } = props
 
-  const [isLike, setIsLike] = useState(like)
+  const [isLike, setIsLike] = useState<boolean>(like)
 
   useEffect(() => {
     setIsLike(like)

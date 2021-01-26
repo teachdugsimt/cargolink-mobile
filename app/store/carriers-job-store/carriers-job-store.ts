@@ -49,6 +49,7 @@ const CarriersJobStore = types
     .model({
         list: types.maybeNull(types.array(types.maybeNull(CarriersJob))),
         data: types.maybeNull(CarriersJob),
+        previousListLength: types.optional(types.number, 0),
         favoriteList: types.maybeNull(CarriersJob),
         directions: types.optional(types.array(types.array(Directions)), []),
         loading: types.boolean,
@@ -60,6 +61,7 @@ const CarriersJobStore = types
             yield apiCarriersJob.setup()
             self.loading = true
             try {
+                self.previousListLength = self.list.length
                 const response = yield apiCarriersJob.find(filter)
                 console.log("Response call api get shipper jobs : : ", response)
                 if (response.kind === 'ok') {
@@ -151,10 +153,13 @@ const CarriersJobStore = types
         }),
 
         updateFavoriteInList: function updateFavoriteInList(id: string, isLiked) {
-            const newList = JSON.parse(JSON.stringify(self.list))
-            const index = self.list.findIndex(({ id: idx }) => idx === id)
-            const oldData = JSON.parse(JSON.stringify(newList[index]))
-            self.list.splice(index, 1, { ...oldData, isLiked })
+            if (id.length) {
+                const newList = JSON.parse(JSON.stringify(self.list))
+                const index = self.list.findIndex(({ id: idx }) => idx === id)
+                const oldData = newList[index]
+                newList.splice(index, 1, { ...oldData, isLiked })
+                self.list = newList
+            }
         },
 
         setDefaultOfData: function setDefaultOfData() {
@@ -209,6 +214,7 @@ const CarriersJobStore = types
         // IMPORTANT !!
         list: [],
         data: {},
+        previousListLength: 0,
         loading: false,
         mapLoading: false,
         error: "",

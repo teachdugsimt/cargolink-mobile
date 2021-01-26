@@ -168,14 +168,9 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
         }
         return () => {
             ShipperTruckStore.setDefaultOfData()
+            ShipperTruckStore.updateFavoriteInList(FavoriteTruckStore.id, FavoriteTruckStore.liked)
         }
     }, [])
-
-    // useEffect(() => {
-    //     if (ShipperTruckStore.data) {
-    //         console.log('ShipperTruckStore.data :>> ', JSON.parse(JSON.stringify(ShipperTruckStore.data)));
-    //     }
-    // }, [ShipperTruckStore.data])
 
     const transformImage = truckPhotos &&
         Object.keys(truckPhotos).length ?

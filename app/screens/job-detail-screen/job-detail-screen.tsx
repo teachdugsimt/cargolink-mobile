@@ -216,11 +216,20 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         }
         return () => {
             CarriersJobStore.setDefaultOfData()
+            CarriersJobStore.updateFavoriteInList(FavoriteJobStore.id, FavoriteJobStore.liked)
+        }
+    }, [])
+
+    useEffect(() => {
+        if (!TruckTypeStore.list?.length) {
+            TruckTypeStore.find()
+        }
+        return () => {
+            CarriersJobStore.setDefaultOfData()
         }
     }, [])
 
     useLayoutEffect(() => {
-        console.log('isLiked', isLiked)
         navigation.setOptions({
             headerRight: () => (<TouchableOpacity onPress={() => onSelectedHeart(id)}>
                 <MaterialCommunityIcons name={liked ? 'heart' : 'heart-outline'} size={24} color={liked ? color.red : color.line} />
@@ -235,8 +244,6 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
     useEffect(() => {
         if (CarriersJobStore.data && CarriersJobStore.data.id) {
-            // console.log('CarriersJobStore.data', JSON.parse(JSON.stringify(CarriersJobStore.data)))
-            // console.log('CarriersJobStore.directions', JSON.parse(JSON.stringify(CarriersJobStore.directions)))
             const coordinates = [CarriersJobStore.data.from, ...CarriersJobStore.data.to]
             setCoordinates(coordinates)
             CarriersJobStore.getDirections(coordinates)
@@ -259,9 +266,6 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     };
 
     const txtTruckType = GetTruckType(+truckType)
-    // console.log('coordinates.length', coordinates.length)
-    // console.log('JSON.stringify(CarriersJobStore.directions)', JSON.stringify(CarriersJobStore.directions))
-    // console.log('CarriersJobStore.mapLoading', CarriersJobStore.mapLoading)
 
     return (
         <View style={CONTAINER}>

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite';
 import { FlatList, RefreshControl, TextStyle, View, ViewStyle } from 'react-native';
-import { AdvanceSearchTab, ModalLoading, SearchBar, Text } from '../../components';
+import { AdvanceSearchTab, EmptyListMessage, ModalLoading, SearchBar, Text } from '../../components';
 import { color, spacing, images as imageComponent } from '../../theme';
 import { SearchItem } from '../../components/search-item/search-item';
 import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
@@ -138,6 +138,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
   const isFocused = useIsFocused()
 
   const [{ subButtons, data, listLength, filterLength, loading }, setState] = useState(initialState)
+  const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState<boolean>(true)
 
   useFocusEffect(
     useCallback(() => {
@@ -158,16 +159,6 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
 
   useEffect(() => {
     if (FavoriteJobStore.id) {
-      const newData = [...data]
-      const index = data.findIndex(({ id }) => id === FavoriteJobStore.id)
-      if (index !== -1) {
-        newData.splice(index, 1, { ...newData[index], isLiked: FavoriteJobStore.liked })
-        console.log('JSON.parse(JSON.stringify(newData))', JSON.parse(JSON.stringify(newData)))
-        setState(prevState => ({
-          ...prevState,
-          data: newData,
-        }))
-      }
       FavoriteJobStore.keepLiked('', false)
     }
   }, [isFocused])
@@ -188,32 +179,28 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
     setState(prevState => ({
       ...prevState,
       listLength: CarriersJobStore.list.length,
-      loading: true,
     }))
-    if (!CarriersJobStore.loading && !data.length && CarriersJobStore.list && CarriersJobStore.list.length) {
-      setState(prevState => ({
-        ...prevState,
-        data: CarriersJobStore.list,
-        loading: false
-      }))
-    }
-    if (!CarriersJobStore.loading && (data.length || !data.length)) {
-      setState(prevState => ({
-        ...prevState,
-        loading: false
-      }))
-    }
-  }, [CarriersJobStore.loading, TruckTypeStore.loading, CarriersJobStore.list])
+    // if (!CarriersJobStore.loading && !data.length && CarriersJobStore.list && CarriersJobStore.list.length) {
+    //   setState(prevState => ({
+    //     ...prevState,
+    //     data: CarriersJobStore.list,
+    //   }))
+    // }
+  }, [CarriersJobStore.loading])
 
   const renderItem = ({ item }) => (
     <Item {...item} />
   )
 
   const onScrollList = () => {
-    if (CarriersJobStore.list.length >= 10) {
+    if (!onEndReachedCalledDuringMomentum
+      && CarriersJobStore.list.length >= 10
+      && !CarriersJobStore.loading
+      && CarriersJobStore.previousListLength !== listLength) {
       PAGE = CarriersJobStore.list.length === listLength ? listLength : PAGE + CarriersJobStore.list.length
       const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE }
       CarriersJobStore.find(advSearch)
+      setOnEndReachedCalledDuringMomentum(true)
     }
   }
 
@@ -264,14 +251,14 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
   }
 
   const onRefresh = () => {
-    CarriersJobStore.find(AdvanceSearchStore.filter)
     CarriersJobStore.setDefaultOfList()
+    CarriersJobStore.find(AdvanceSearchStore.filter)
     PAGE = 0
   }
 
   return (
     <View style={{ flex: 1 }}>
-      <ModalLoading size={'large'} color={color.primary} visible={loading} />
+      {/* <ModalLoading size={'large'} color={color.primary} visible={loading} /> */}
       <View>
         <SearchBar
           {...{
@@ -298,22 +285,22 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
 
       <View style={RESULT_CONTAINER}>
         {
-          data && !!data.length ? <FlatList
-            data={data}
+          <FlatList
+            data={CarriersJobStore.list}
             renderItem={renderItem}
             keyExtractor={item => item.id}
             onEndReached={() => onScrollList()}
-            onEndReachedThreshold={0.5}
+            onEndReachedThreshold={0.1}
+            contentContainerStyle={{ flexGrow: 1 }}
+            ListEmptyComponent={<EmptyListMessage />}
+            onMomentumScrollBegin={() => setOnEndReachedCalledDuringMomentum(false)}
             refreshControl={
               <RefreshControl
                 refreshing={CarriersJobStore.loading}
                 onRefresh={onRefresh}
               />
             }
-          /> : (!loading && <View style={CONTEXT_NOT_FOUND}>
-            <Feather name={'inbox'} size={50} color={color.line} />
-            <Text text={translate('common.notFound')} style={NOT_FOUND_TEXT} preset={'topicExtra'} />
-          </View>)
+          />
         }
       </View>
     </View>

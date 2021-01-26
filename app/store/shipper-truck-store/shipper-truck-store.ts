@@ -39,6 +39,7 @@ const ShipperTruckStore = types
     .model({
         list: types.maybeNull(types.array(ShipperJob)),
         data: types.maybeNull(ShipperJobFull),
+        previousListLength: types.optional(types.number, 0),
         truckTypeName: types.maybeNull(types.string),
         loading: types.boolean,
         error: types.maybeNull(types.string),
@@ -48,6 +49,7 @@ const ShipperTruckStore = types
             yield shipperTruckApi.setup()
             self.loading = true
             try {
+                self.previousListLength = self.list.length
                 const response = yield shipperTruckApi.find(filter)
                 console.log("Response call api get shipper jobs : : ", response)
                 if (response.kind === 'ok') {
@@ -102,10 +104,12 @@ const ShipperTruckStore = types
         }),
 
         updateFavoriteInList: function updateFavoriteInList(id: string, isLiked: boolean) {
-            const newList = JSON.parse(JSON.stringify(self.list))
-            const index = self.list.findIndex(({ id: idx }) => idx === id)
-            const oldData = JSON.parse(JSON.stringify(newList[index]))
-            self.list.splice(index, 1, { ...oldData, isLiked })
+            if (id.length) {
+                const newList = JSON.parse(JSON.stringify(self.list))
+                const index = self.list.findIndex(({ id: idx }) => idx === id)
+                const oldData = JSON.parse(JSON.stringify(newList[index]))
+                self.list.splice(index, 1, { ...oldData, isLiked })
+            }
         },
 
         setDefaultOfData: function setDefaultOfData() {
@@ -154,6 +158,7 @@ const ShipperTruckStore = types
     .create({
         list: [],
         data: {},
+        previousListLength: 0,
         loading: false,
         error: "",
     })

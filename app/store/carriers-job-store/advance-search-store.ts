@@ -49,7 +49,7 @@ const ProductType = types.model({
     image: types.maybeNull(types.string),
 })
 
-const MENUS: Array<Types.AdvanceSearchMenu> = [
+let MENUS: Array<Types.AdvanceSearchMenu> = [
     {
         id: 1,
         type: 'truckType',
@@ -138,7 +138,7 @@ const AdvanceSearchStore = types
                 self.menu = cast(menus)
             } else {
                 self.loading = true
-                // yield AdvanceSearchStore.getProductTypes()
+                yield AdvanceSearchStore.getProductTypes()
                 yield TruckTypeStore.find()
                 yield TruckTypeStore.findGroup()
                 TruckTypeStore.mappingType()

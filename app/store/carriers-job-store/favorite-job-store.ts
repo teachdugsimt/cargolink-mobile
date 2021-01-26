@@ -96,7 +96,7 @@ const FavoriteJobStore = types
         liked: false,
         loadingOfAdd: false,
         loading: false,
-        error: "",
+        error: '',
     })
 
 export default FavoriteJobStore

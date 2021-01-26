@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite';
 import { Dimensions, FlatList, ImageStyle, TextStyle, View, ViewStyle, SafeAreaView, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
-import { AdvanceSearchTab, Text, SearchItemTruck, Icon, ModalLoading } from '../../components';
+import { AdvanceSearchTab, Text, SearchItemTruck, Icon, ModalLoading, EmptyListMessage } from '../../components';
 import { color, spacing, images as imageComponent } from '../../theme';
 import { useFocusEffect, useNavigation, useIsFocused } from '@react-navigation/native';
 import { translate } from '../../i18n';
@@ -199,7 +199,7 @@ const SUB_BUTTON: Array<SubButtonSearch> = [
 const initialState = {
   subButtons: SUB_BUTTON,
   data: [],
-  // listLength: 0,
+  listLength: 0,
   zones: [],
   filterLength: 0,
   // loading: true,
@@ -225,9 +225,10 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
   const navigation = useNavigation()
   const isFocused = useIsFocused()
 
-  const [{ subButtons, data, zones, filterLength }, setState] = useState(initialState)
+  const [{ subButtons, data, zones, filterLength, listLength }, setState] = useState(initialState)
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(true)
+  const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState<boolean>(true)
 
   useFocusEffect(
     useCallback(() => {
@@ -246,15 +247,6 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
 
   useEffect(() => {
     if (FavoriteTruckStore.id) {
-      const newData = [...data]
-      const index = data.findIndex(({ id }) => id === FavoriteTruckStore.id)
-      if (index !== -1) {
-        newData.splice(index, 1, { ...newData[index], isLiked: FavoriteTruckStore.liked })
-        setState(prevState => ({
-          ...prevState,
-          data: newData,
-        }))
-      }
       FavoriteTruckStore.keepLiked('', false)
     }
   }, [isFocused])
@@ -284,33 +276,22 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
   }, [])
 
   useEffect(() => {
-    setLoading(true)
-    // setState(prevState => ({
-    //   ...prevState,
-    //   listLength: ShipperTruckStore.list.length,
-    //   // loading: true,
-    // }))
-    if (!ShipperTruckStore.loading && !data.length && ShipperTruckStore.list && ShipperTruckStore.list.length && !TruckTypeStore.loading) {
-      setState(prevState => ({
-        ...prevState,
-        data: ShipperTruckStore.list,
-        // loading: false
-      }))
-      setLoading(false)
-    }
-    if (!ShipperTruckStore.loading) {
-      // setState(prevState => ({
-      //   ...prevState,
-      //   // loading: false
-      // }))
-      setLoading(false)
-    }
+    setState(prevState => ({
+      ...prevState,
+      listLength: ShipperTruckStore.list.length,
+    }))
+    // if (!ShipperTruckStore.loading && !data.length && ShipperTruckStore.list && ShipperTruckStore.list.length && !TruckTypeStore.loading) {
+    //   setState(prevState => ({
+    //     ...prevState,
+    //     data: ShipperTruckStore.list,
+    //   }))
+    //   setLoading(false)
+    // }
   }, [ShipperTruckStore.loading, TruckTypeStore.loading, ShipperTruckStore.list])
 
   useEffect(() => {
     const zoneIds = zones.filter(({ isSelected }) => isSelected).map(({ value }) => value)
     if (!visible && zoneIds.length) {
-      console.log('JSON.parse(JSON.stringify(zones))', JSON.parse(JSON.stringify(zones)))
       const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), zoneIds }
       AdvanceSearchStore.setFilter(advSearch)
       ShipperTruckStore.find(advSearch)
@@ -324,13 +305,14 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
   )
 
   const onScrollList = () => {
-    if (ShipperTruckStore.list.length >= AdvanceSearchStore.filter.rowsPerPage) {
-      // PAGE = ShipperTruckStore.list.length === listLength ? listLength : PAGE + ShipperTruckStore.list.length
-      // PAGE += ShipperTruckStore.list.length % listLength === 0 ? 1 : 0
+    if (!onEndReachedCalledDuringMomentum
+      && ShipperTruckStore.list.length >= AdvanceSearchStore.filter.rowsPerPage
+      && !ShipperTruckStore.loading
+      && ShipperTruckStore.previousListLength !== listLength) {
       PAGE += 1
-      console.log('PAGE', PAGE)
       const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE }
       ShipperTruckStore.find(advSearch)
+      setOnEndReachedCalledDuringMomentum(true)
     }
   }
 
@@ -425,8 +407,8 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
   }
 
   const onRefresh = () => {
-    ShipperTruckStore.find(AdvanceSearchStore.filter)
     ShipperTruckStore.setDefaultOfList()
+    ShipperTruckStore.find(AdvanceSearchStore.filter)
     PAGE = 0
   }
 
@@ -434,7 +416,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <ModalLoading size={'large'} color={color.primary} visible={loading} />
+      {/* <ModalLoading size={'large'} color={color.primary} visible={loading} /> */}
       <View style={SEARCH_BAR}>
         <View style={SEARCH_BAR_ROW}>
           <Icon icon="pinDropYellow" style={PIN_ICON} />
@@ -528,22 +510,22 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
       </View>
       <View style={RESULT_CONTAINER}>
         {
-          data && !!data.length && !TruckTypeStore.loading ? <FlatList
-            data={data}
+          <FlatList
+            data={ShipperTruckStore.list}
             renderItem={renderItem}
             keyExtractor={item => item.id}
             onEndReached={() => onScrollList()}
             onEndReachedThreshold={0.5}
+            contentContainerStyle={{ flexGrow: 1 }}
+            ListEmptyComponent={<EmptyListMessage />}
+            onMomentumScrollBegin={() => setOnEndReachedCalledDuringMomentum(false)}
             refreshControl={
               <RefreshControl
                 refreshing={ShipperTruckStore.loading}
                 onRefresh={onRefresh}
               />
             }
-          /> : (!loading && <View style={CONTEXT_NOT_FOUND}>
-            <Feather name={'inbox'} size={50} color={color.line} />
-            <Text text={translate('common.notFound')} style={NOT_FOUND_TEXT} preset={'topicExtra'} />
-          </View>)
+          />
         }
       </View>
     </View>
