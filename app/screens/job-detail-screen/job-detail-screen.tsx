@@ -19,6 +19,10 @@ import MapView, {
 } from 'react-native-maps';
 import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
 import FavoriteJobStore from '../../store/carriers-job-store/favorite-job-store'
+import { useStores } from "../../models/root-store/root-store-context";
+
+const deviceWidht = Dimensions.get('window').width
+const deviceHeight = Dimensions.get('window').height
 
 const PADDING_TOP = { paddingTop: spacing[1] }
 const PADDING_BOTTOM = { paddingBottom: spacing[1] }
@@ -47,17 +51,18 @@ const MAP_CONTAINER: ViewStyle = {
     position: 'relative',
 }
 const MAP: ImageStyle = {
-    width: Math.floor(Dimensions.get('window').width),
-    height: Math.floor(Dimensions.get('window').height),
+    width: deviceWidht,
+    height: deviceHeight,
 }
 const LOCATION_CONTAINER: ViewStyle = {
     flex: 1,
     flexDirection: 'row',
 }
 const LOCATION_BOX: ViewStyle = {
-    flex: 2,
+    flex: 3,
     borderRightWidth: 1,
-    borderRightColor: color.line
+    borderRightColor: color.line,
+    paddingRight: spacing[4]
 }
 const PRODUCT_ROOT: ViewStyle = {
     flexDirection: 'column',
@@ -70,7 +75,7 @@ const PRODUCT_ROOT: ViewStyle = {
 const DISTANCE_BOX: ViewStyle = {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'flex-end'
 }
 const ICON_BOX: ViewStyle = {
     paddingTop: spacing[2]
@@ -96,13 +101,14 @@ const ONWER_ROOT: ViewStyle = {
 }
 const LOCATION: ViewStyle = {
     flexDirection: "row",
-    alignItems: "center",
+    // alignItems: "center",
     ...PADDING_TOP,
     ...PADDING_BOTTOM
 }
 const PIN_ICON: ImageStyle = {
     width: 22,
     height: 22,
+    marginTop: spacing[1]
 }
 const LOCATION_TEXT: TextStyle = {
     paddingVertical: spacing[1],
@@ -130,6 +136,17 @@ const TEXT: TextStyle = {
 }
 const SCROLL_VIEW: ViewStyle = {
     marginTop: spacing[5],
+}
+const CONTENT_SMALL: ViewStyle = {
+    ...TOP_ROOT,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: spacing[6],
+    height: 105,
+    overflow: 'hidden',
+    marginHorizontal: spacing[3],
+    paddingVertical: spacing[4],
 }
 
 const DATA = { // [Mocking]
@@ -162,11 +179,11 @@ const PickUpPoint = ({ to, from, containerStyle = {} }) => (
                 <Icon icon="pinDropYellow" style={PIN_ICON} />
                 <Text
                     text={`${translate('common.from')}  :`}
-                    style={{ ...LOCATION_TEXT, width: 45 }}
+                    style={{ ...LOCATION_TEXT, width: 45, justifyContent: 'flex-end' }}
                 />
                 <Text
                     text={from && from.name}
-                    style={LOCATION_TEXT}
+                    style={{ ...LOCATION_TEXT, flexShrink: 1 }}
                 />
             </View>
             {to?.length && to.map((attr, index) => (
@@ -178,14 +195,16 @@ const PickUpPoint = ({ to, from, containerStyle = {} }) => (
                     />
                     <Text
                         text={attr.name}
-                        style={LOCATION_TEXT}
+                        style={{ ...LOCATION_TEXT, flexShrink: 1 }}
                     />
                 </View>
             ))}
         </View>
         <View style={DISTANCE_BOX}>
-            <Text style={{ paddingVertical: spacing[1] }} >{`${DATA.distance} `}<Text text={'KM'} style={TEXT_SMALL} /></Text>
-            <Text text={`${DATA.period}`} style={{ ...TEXT_SMALL, paddingVertical: spacing[1], }} />
+            <View style={{ alignItems: 'center' }}>
+                <Text style={{ paddingVertical: spacing[1] }} >{`${DATA.distance} `}<Text text={'KM'} style={TEXT_SMALL} /></Text>
+                <Text text={`${DATA.period}`} style={{ ...TEXT_SMALL, paddingVertical: spacing[1], }} />
+            </View>
         </View>
     </View>
 )
@@ -209,6 +228,21 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         isLiked,
         weight
     } = JSON.parse(JSON.stringify(CarriersJobStore.data))
+    // const data = { "id": "ZQGE91EK", "isLiked": false, "productTypeId": 2, "productName": "string", "truckType": "7", "weight": 2, "requiredTruckAmount": 3, "from": { "name": "Tha Phra, 2 Charan Sanitwong Rd, Khwaeng Wat Tha Phra, Khet Bangkok Yai, Krung Thep Maha Nakhon 10600, Thailand", "dateTime": "28-01-2021 07:35", "contactName": "art", "contactMobileNo": "0976662222", "lat": "13.729651993632958", "lng": "100.47416215762496" }, "to": [{ "name": "Mo Chit, Khwaeng Chatuchak, Khet Chatuchak, Krung Thep Maha Nakhon 10900, Thailand", "dateTime": "29-01-2021 05:20", "contactName": "tuu", "contactMobileNo": "0985554444", "lat": "13.802638551978331", "lng": "100.55384019389749" }], "owner": { "id": 612, "companyName": null, "fullName": null, "mobileNo": "0929818252", "email": null } }
+    // const {
+    //     id,
+    //     from,
+    //     to,
+    //     productName,
+    //     productTypeId,
+    //     requiredTruckAmount,
+    //     truckType,
+    //     isLiked,
+    //     weight
+    // } = data
+
+
+    const { versatileStore } = useStores()
 
     useEffect(() => {
         if (!TruckTypeStore.list?.length) {
@@ -265,24 +299,34 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         modalizeRef.current?.open();
     };
 
-    const txtTruckType = GetTruckType(+truckType)
+    const truckTypeList = versatileStore.list
+    const txtTruckType = productTypeId && truckTypeList.length
+        ? (truckTypeList.filter(({ id }) => id === +truckType)?.[0]?.name || translate('common.notSpecified'))
+        : translate('common.notSpecified')
+
+    // const txtTruckType = GetTruckType(+truckType)
+
+    const productTypeList = versatileStore.listProductType
+    const productType = productTypeId && productTypeList.length
+        ? (productTypeList.filter(({ id }) => id === +productTypeId)?.[0]?.name || translate('common.notSpecified'))
+        : translate('common.notSpecified')
 
     return (
         <View style={CONTAINER}>
             <ModalLoading size={'large'} color={color.primary} visible={CarriersJobStore.mapLoading} />
-            <View style={MAP_CONTAINER}>
+            <View style={{ ...MAP_CONTAINER }}>
                 {from && !!from.lat && !!from.lng && !!CarriersJobStore.directions.length &&
                     <MapView
-                        style={{ height: Dimensions.get('window').height }}
+                        style={{ flex: 1 }}
                         provider={PROVIDER_GOOGLE}
                         initialRegion={{
-                            latitude: +from.lat - 0.03,
+                            latitude: +from.lat - 0.01,
                             longitude: +from.lng,
                             latitudeDelta: 0.05,
                             longitudeDelta: 0.05
                         }}
                         region={{
-                            latitude: +from.lat - 0.03,
+                            latitude: +from.lat - 0.01,
                             longitude: +from.lng,
                             latitudeDelta: 0.05,
                             longitudeDelta: 0.05
@@ -304,14 +348,22 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                         })}
                     </MapView>
                 }
+
+                <TouchableOpacity activeOpacity={1} onPress={onOpen} style={CONTENT_SMALL}>
+                    <View>
+                        <Text text={translate('jobDetailScreen.pickUpPoint')} style={{ ...TEXT_SMALL, color: color.line, }} />
+                    </View>
+                    <PickUpPoint from={from} to={to} />
+                </TouchableOpacity>
+
             </View>
 
-            <TouchableOpacity activeOpacity={1} onPress={onOpen} style={{ ...TOP_ROOT, height: 105, }}>
+            {/* <TouchableOpacity activeOpacity={1} onPress={onOpen} style={{ ...CONTENT_SMALL, top: -spacing[6] }}>
                 <View>
                     <Text text={translate('jobDetailScreen.pickUpPoint')} style={{ ...TEXT_SMALL, color: color.line, }} />
                 </View>
                 <PickUpPoint from={from} to={to} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <Modalize
                 ref={modalizeRef}
@@ -348,7 +400,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                                 <MaterialCommunityIcons name={'truck-outline'} size={24} color={color.primary} />
                             </View>
                             <View style={DETAIL_BOX}>
-                                <Text text={`${translate('common.vehicleTypeField')} : ${txtTruckType && txtTruckType.name ? txtTruckType.name : ''}`} style={TEXT} />
+                                <Text text={`${translate('common.vehicleTypeField')} : ${txtTruckType}`} style={TEXT} />
                                 <Text text={`${translate('common.count')} : ${requiredTruckAmount} คัน`} style={TEXT} />
                             </View>
                         </View>
@@ -357,7 +409,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                                 <SimpleLineIcons name={'social-dropbox'} size={24} color={color.primary} />
                             </View>
                             <View style={DETAIL_BOX}>
-                                <Text text={`${translate('jobDetailScreen.productType')} : ${productTypeId}`} style={TEXT} />
+                                <Text text={`${translate('jobDetailScreen.productType')} : ${productType}`} style={TEXT} />
                                 <Text text={`${translate('jobDetailScreen.productName')} : ${productName}`} style={TEXT} />
                                 <Text text={`${translate('jobDetailScreen.weightTon')} : ${weight}`} style={TEXT} />
                             </View>

@@ -124,7 +124,6 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
       const arrChildOfSubMenu = []
       const filterSelected = menu.subMenu.filter(subMenu => {
         if (subMenu?.subMenu?.length) {
-          console.log('subMenu.name', subMenu.name)
           const res = subMenu.subMenu.filter(sub => sub.isChecked)
           arrChildOfSubMenu.push(...res)
           return false;
@@ -214,7 +213,6 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
   }
 
   __DEV__ && console.tron.log('truckTypes', truckTypes)
-  console.log('AdvanceSearchStore.loading', AdvanceSearchStore.loading)
 
   return (
     <View style={CONTAINER}>

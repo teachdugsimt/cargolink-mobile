@@ -128,6 +128,7 @@ const initialState = {
   listLength: 0,
   data: [],
   filterLength: 0,
+  arrayFilter: [],
   loading: true,
 }
 
@@ -137,35 +138,48 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
   const navigation = useNavigation()
   const isFocused = useIsFocused()
 
-  const [{ subButtons, data, listLength, filterLength, loading }, setState] = useState(initialState)
+  const [{ subButtons, data, listLength, filterLength, loading, arrayFilter }, setState] = useState(initialState)
   const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState<boolean>(true)
 
   useFocusEffect(
     useCallback(() => {
       const { productType, truckAmountMax, truckAmountMin, truckType, weight } = JSON.parse(JSON.stringify(AdvanceSearchStore.filter))
-      const length = [
+      const arrayFilter = [
         ...[...productType || []],
         ...[...truckType || []],
         weight,
         truckAmountMax || truckAmountMin
-      ].filter(Boolean).length
+      ].filter(Boolean)
+
+      const length = arrayFilter.length
 
       setState(prevState => ({
         ...prevState,
-        filterLength: length
+        filterLength: length,
+        arrayFilter: arrayFilter
       }))
     }, [])
   );
 
   useEffect(() => {
-    if (FavoriteJobStore.id) {
-      FavoriteJobStore.keepLiked('', false)
+    CarriersJobStore.setDefaultOfList()
+    if (!arrayFilter.length) {
+      CarriersJobStore.find()
+    } else {
+      CarriersJobStore.find(AdvanceSearchStore.filter)
     }
-  }, [isFocused])
+  }, [JSON.stringify(arrayFilter)])
+
+  // useEffect(() => {
+  //   if (FavoriteJobStore.id) {
+  //     FavoriteJobStore.keepLiked('', false)
+  //   }
+  // }, [isFocused])
 
   useEffect(() => {
-    CarriersJobStore.find()
+    // CarriersJobStore.find()
     TruckTypeStore.find()
+
     return () => {
       PAGE = 0
       AdvanceSearchStore.clearMenu()
@@ -180,7 +194,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
       ...prevState,
       listLength: CarriersJobStore.list.length,
     }))
-    // if (!CarriersJobStore.loading && !data.length && CarriersJobStore.list && CarriersJobStore.list.length) {
+    // if (!CarriersJobStore.loading && CarriersJobStore.list && CarriersJobStore.list.length) {
     //   setState(prevState => ({
     //     ...prevState,
     //     data: CarriersJobStore.list,
