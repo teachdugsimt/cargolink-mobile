@@ -354,10 +354,8 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                                 )}
                                 key={'text-input-receive-name'}
                                 name={"receive-name"}
-                                rules={{ pattern: /^[a-zA-Z0-9 .!?"-]+$/ }}
                                 defaultValue=""
                             />
-                            {errors['receive-name'] && <Text style={{ color: color.red }} tx={"postJobScreen.validateReceiveName"} />}
 
 
                             <Text tx={"postJobScreen.receiverTel"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
@@ -500,10 +498,8 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                                     )}
                                     key={'text-input-shipping-name-' + e.id}
                                     name={"shipping-name-" + e.id}
-                                    rules={{ pattern: /^[a-zA-Z0-9 .!?"-]+$/ }}
                                     defaultValue=""
                                 />
-                                {errors["shipping-name-" + e.id] && <Text style={{ color: color.red }} tx={"postJobScreen.validateShippingName"} />}
 
 
                                 <Text tx={"postJobScreen.shipperTel"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />

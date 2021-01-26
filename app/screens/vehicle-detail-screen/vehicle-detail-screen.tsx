@@ -314,6 +314,7 @@ import {
   Image,
   ImageStyle,
   Modal,
+  Platform,
   ScrollView,
   Switch,
   TextStyle,
@@ -474,11 +475,23 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
     let tmp = arr.map((e, i) => {
       if (!e || !e.url) {
         return {
-          url: '',
-          props: { source: imageComponent["noImageAvailable"] }
+          url: 'https://lh3.googleusercontent.com/proxy/8v18GiWo4ycOZuF1k6ENga93Zysro2pv28HXyHLlcHvnnutcmeqBSrLVm_YqyA8CUhSkXr1p8ptsokjmgFV3ltFkndafYf8PBNfAG_GXlO1IoA2zsfhpzCYelbEk',
+          // props: { source: imageComponent["noImageAvailable"] }
         }
       } else return e
+      // } else return {
+      //   url: e.url,
+      //   props: {
+      //     uri: e.url,
+      //     method: 'GET',
+      //     headers: {
+      //       Authorization: `Bearer ${tokenStore.token.accessToken}`
+      //     }
+      //   }
+      // }
+
     })
+    __DEV__ && console.tron.log("Arr after parse for IMAGE VIEWER :: ", tmp)
     return tmp
   }
 
