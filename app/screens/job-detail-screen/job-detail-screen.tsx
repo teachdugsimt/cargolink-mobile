@@ -228,19 +228,6 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         isLiked,
         weight
     } = JSON.parse(JSON.stringify(CarriersJobStore.data))
-    // const data = { "id": "ZQGE91EK", "isLiked": false, "productTypeId": 2, "productName": "string", "truckType": "7", "weight": 2, "requiredTruckAmount": 3, "from": { "name": "Tha Phra, 2 Charan Sanitwong Rd, Khwaeng Wat Tha Phra, Khet Bangkok Yai, Krung Thep Maha Nakhon 10600, Thailand", "dateTime": "28-01-2021 07:35", "contactName": "art", "contactMobileNo": "0976662222", "lat": "13.729651993632958", "lng": "100.47416215762496" }, "to": [{ "name": "Mo Chit, Khwaeng Chatuchak, Khet Chatuchak, Krung Thep Maha Nakhon 10900, Thailand", "dateTime": "29-01-2021 05:20", "contactName": "tuu", "contactMobileNo": "0985554444", "lat": "13.802638551978331", "lng": "100.55384019389749" }], "owner": { "id": 612, "companyName": null, "fullName": null, "mobileNo": "0929818252", "email": null } }
-    // const {
-    //     id,
-    //     from,
-    //     to,
-    //     productName,
-    //     productTypeId,
-    //     requiredTruckAmount,
-    //     truckType,
-    //     isLiked,
-    //     weight
-    // } = data
-
 
     const { versatileStore } = useStores()
 
