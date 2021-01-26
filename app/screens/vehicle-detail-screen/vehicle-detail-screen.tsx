@@ -326,6 +326,7 @@ import { translate } from "../../i18n"
 import { color, images as imageComponent, spacing } from "../../theme"
 import { useNavigation } from "@react-navigation/native"
 import ImageViewer from 'react-native-image-zoom-viewer';
+import ImageView from "react-native-image-viewing";
 import { TouchableOpacity } from "react-native-gesture-handler"
 import MyVehicleStore from '../../store/my-vehicle-store/my-vehicle-store'
 import StatusStore from '../../store/my-vehicle-store/status-vehicle-store'
@@ -474,21 +475,15 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
     __DEV__ && console.tron.log("Arr Tranform already :: ", arr)
     let tmp = arr.map((e, i) => {
       if (!e || !e.url) {
-        return {
-          url: 'https://lh3.googleusercontent.com/proxy/8v18GiWo4ycOZuF1k6ENga93Zysro2pv28HXyHLlcHvnnutcmeqBSrLVm_YqyA8CUhSkXr1p8ptsokjmgFV3ltFkndafYf8PBNfAG_GXlO1IoA2zsfhpzCYelbEk',
-          // props: { source: imageComponent["noImageAvailable"] }
-        }
-      } else return e
-      // } else return {
-      //   url: e.url,
-      //   props: {
-      //     uri: e.url,
-      //     method: 'GET',
-      //     headers: {
-      //       Authorization: `Bearer ${tokenStore.token.accessToken}`
-      //     }
-      //   }
-      // }
+        return imageComponent['noImageAvailable']
+      } else return {
+        uri: e.url,
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${tokenStore.token.accessToken}`
+        },
+        key: 'image-props-' + i
+      }
 
     })
     __DEV__ && console.tron.log("Arr after parse for IMAGE VIEWER :: ", tmp)
@@ -514,6 +509,7 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
 
   __DEV__ && console.tron.log("MyVehicleStore data id ::  ", JSON.parse(JSON.stringify(MyVehicleStore.data)))
 
+
   return (
     <View style={CONTAINER}>
 
@@ -529,7 +525,7 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
                 transformImage.map((image, index) => {
                   __DEV__ && console.tron.log("Each Image render ::  ", image) // undefined || {url: "xxxxx"}
                   return (
-                    <TouchableOpacity style={TOUCHABLE} key={index} onPress={(attr) => onViewer(index)}>
+                    <TouchableOpacity style={TOUCHABLE} key={"image-index" + index} onPress={(attr) => onViewer(index)}>
                       <Image style={IMAGE} source={MyVehicleStore.data.id && image && !!image.url ? {
                         uri: image.url,
                         method: 'GET',
@@ -540,16 +536,21 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
                     </TouchableOpacity>
                   )
                 })}
-              <Modal visible={openViewer} transparent={true}>
-                <ImageViewer
-                  // imageUrls={transformImage}
+              {/* <Modal visible={openViewer} transparent={true}> */}
+              {/* <ImageViewer
                   imageUrls={viewListImage}
                   index={indexOfImage}
                   onCancel={onCancel}
                   enableSwipeDown={true}
                   pageAnimateTime={transformImage ? transformImage.length : 0}
-                />
-              </Modal>
+                /> */}
+              <ImageView
+                images={viewListImage}
+                imageIndex={indexOfImage}
+                visible={openViewer}
+                onRequestClose={() => onCancel()}
+              />
+              {/* </Modal> */}
             </View>
           </View>
         </View>
