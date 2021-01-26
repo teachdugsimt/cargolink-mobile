@@ -325,7 +325,8 @@ import { Button, ModalLoading, Text } from "../../components"
 import { translate } from "../../i18n"
 import { color, images as imageComponent, spacing } from "../../theme"
 import { useNavigation } from "@react-navigation/native"
-import ImageViewer from 'react-native-image-zoom-viewer';
+// import ImageViewer from 'react-native-image-zoom-viewer';
+import ImageView from 'react-native-image-view';
 import { TouchableOpacity } from "react-native-gesture-handler"
 import MyVehicleStore from '../../store/my-vehicle-store/my-vehicle-store'
 import StatusStore from '../../store/my-vehicle-store/status-vehicle-store'
@@ -475,20 +476,23 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
     let tmp = arr.map((e, i) => {
       if (!e || !e.url) {
         return {
-          url: 'https://lh3.googleusercontent.com/proxy/8v18GiWo4ycOZuF1k6ENga93Zysro2pv28HXyHLlcHvnnutcmeqBSrLVm_YqyA8CUhSkXr1p8ptsokjmgFV3ltFkndafYf8PBNfAG_GXlO1IoA2zsfhpzCYelbEk',
-          // props: { source: imageComponent["noImageAvailable"] }
+          source: imageComponent['noImageAvailable'],
+          width: 1024,
+          height: 720,
+          title: 'no-' + i
         }
-      } else return e
-      // } else return {
-      //   url: e.url,
-      //   props: {
-      //     uri: e.url,
-      //     method: 'GET',
-      //     headers: {
-      //       Authorization: `Bearer ${tokenStore.token.accessToken}`
-      //     }
-      //   }
-      // }
+      } else return {
+        source: {
+          uri: e.url,
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${tokenStore.token.accessToken}`
+          }
+        },
+        width: 1024,
+        height: 720,
+        title: 'img-' + i
+      }
 
     })
     __DEV__ && console.tron.log("Arr after parse for IMAGE VIEWER :: ", tmp)
@@ -511,6 +515,7 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
   const txtTruckType = GetTruckType(+truckType)
 
   __DEV__ && console.tron.log("MyVehicleStore data id ::  ", JSON.parse(JSON.stringify(MyVehicleStore.data)))
+
 
   return (
     <View style={CONTAINER}>
@@ -538,16 +543,22 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
                     </TouchableOpacity>
                   )
                 })}
-              <Modal visible={openViewer} transparent={true}>
+              {/* <Modal visible={openViewer} transparent={true}>
                 <ImageViewer
-                  // imageUrls={transformImage}
                   imageUrls={viewListImage}
                   index={indexOfImage}
                   onCancel={onCancel}
                   enableSwipeDown={true}
                   pageAnimateTime={transformImage ? transformImage.length : 0}
                 />
-              </Modal>
+              </Modal> */}
+              <ImageView
+                images={viewListImage}
+                imageIndex={indexOfImage}
+                isVisible={openViewer}
+                onClose={onCancel}
+              // renderFooter={(currentImage) => (<View><Text>My footer</Text></View>)}
+              />
             </View>
           </View>
         </View>
