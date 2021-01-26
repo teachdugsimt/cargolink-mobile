@@ -495,7 +495,9 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
     return tmp
   }
 
-  // __DEV__ && console.tron.log("Truck Photos :: ", truckPhotos)
+
+
+  __DEV__ && console.tron.log("Truck Photos :: ", truckPhotos)
 
   const raw_image = truckPhotos &&
     Object.keys(truckPhotos).length ?
