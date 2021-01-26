@@ -41,7 +41,9 @@
     "notSpecified": "Not specified",
     "low": "Low Stall",
     "medium": "Medium Stall",
-    "height": "Height Stall"
+    "height": "Height Stall",
+    "somethingWrong": "something went wrong",
+    "pleaseCheckYourData": "please check your data"
   },
   "bottomTab": {
     "home": "Home",
@@ -127,7 +129,9 @@
     "validateReceiveName": "please check receive name",
     "validateShippingName": "please check shipping name",
     "validateReceiveTel": "please check receive tel no",
-    "receiveDateMoreThan": "receive date must be more 2 days from now"
+    "receiveDateMoreThan": "receive date must be more 2 days from now",
+    "checkShippingDate": "please check date",
+    "shippingDateMoreThan": "Date of delivery should not be a date before the date of loading"
   },
   "uploadVehicleScreen": {
     "addVehicle": "Add Vehicle",

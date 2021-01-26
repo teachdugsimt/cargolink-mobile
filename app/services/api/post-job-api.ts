@@ -64,10 +64,10 @@ export class PostJobAPI {
       // the typical ways to die when calling an api
       __DEV__ && console.tron.log("Response call api create POSTJOB  : ", response)
       console.log("Response call api create POSTJOB  : ", response)
-      if (!response.ok) {
-        const problem = getGeneralApiProblem(response)
-        if (problem) return problem
-      }
+      // if (!response.ok) {
+      //   const problem = getGeneralApiProblem(response)
+      //   if (problem) return problem
+      // }
       return response
       // transform the data into the format we are expecting
     } catch (error) {

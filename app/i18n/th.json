@@ -41,7 +41,9 @@
     "notSpecified": "ไม่ระบุ",
     "low": "คอกเตี้ย",
     "medium": "คอกธรรมดา",
-    "height": "คอกสูง"
+    "height": "คอกสูง",
+    "somethingWrong": "มีบางอย่างผิดพลาด",
+    "pleaseCheckYourData": "กรุณาตรวจสอบข้อมูล"
   },
   "bottomTab": {
     "home": "หน้าแรก",
@@ -127,8 +129,9 @@
     "validateReceiveName": "กรุณาตรวจสอบชื่อผู้รับสินค้า",
     "validateShippingName": "กรุณาตรวจสอบชื่อผู้ส่งสินค้า",
     "validateReceiveTel": "กรุณาตรวจสอบเบอร์ติดต่อ",
-    "receiveDateMoreThan": "วันรับสินค้าต้องมากกว่าวันปัจจุบัน 2 วัน"
-
+    "receiveDateMoreThan": "วันรับสินค้าต้องมากกว่าวันปัจจุบัน 2 วัน",
+    "checkShippingDate": "กรุตรวจสอบวันที่",
+    "shippingDateMoreThan": " วันส่งสินค้าต้องมากกว่าวันรับสินค้า"
   },
   "uploadVehicleScreen": {
     "addVehicle": "เพิ่มรถ",

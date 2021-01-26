@@ -41,7 +41,7 @@ const HEADER_TITLE: TextStyle = {
 }
 
 const TOP_VIEW: ViewStyle = {
-    flex: Platform.OS == "ios" ? 1 : 1.25,
+    flex: Platform.OS == "ios" ? 0.85 : 1.25,
     backgroundColor: color.mainTheme,
     justifyContent: 'center',
 }
