@@ -15,7 +15,7 @@ import {
     TextInputTheme, RoundedButton, ModalLoading,
     Icon, DatePickerRemake, TimePickerRemake, LocationPicker
 } from '../../../components'
-import i18n from 'i18n-js'
+import { AlertMessage } from "../../../utils/alert-form";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TruckTypeStore from '../../../store/my-vehicle-store/truck-type-store'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -40,7 +40,8 @@ const BORDER_RADIUS_20: ViewStyle = {
 
 
 const TOP_VIEW: ViewStyle = {
-    flex: Platform.OS == "ios" ? 1.25 : 1.25,
+    paddingTop: Platform.OS == "ios" ? 10 : 0,
+    flex: Platform.OS == "ios" ? 0.65 : 0.85,
     backgroundColor: color.mainTheme,
     justifyContent: 'center',
 }
@@ -141,6 +142,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
     const [rerenderTime, setrerenderTime] = useState(false)
     const [initDatePicker, setinitDatePicker] = useState(new Date());
     const [listProductState, setlistProductState] = useState(null)
+    const [errorPostJob, seterrorPostJob] = useState(null)
 
     const [swipe, setswipe] = useState(false)
     const [swipe2, setswipe2] = useState(false)
@@ -174,8 +176,8 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
         }}>
             <View style={{ ...BORDER_BOTTOM }}>
                 <View style={VIEW_LIST_IMAGE}>
-                    {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images.bell} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
-                        <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images.bell} style={IMAGE_LIST} height={60} width={60} />}
+                    {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images.greyMock} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
+                        <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images.greyMock} style={IMAGE_LIST} height={60} width={60} />}
                 </View>
                 <View style={{ flexDirection: 'row', flex: 1, width: '100%', justifyContent: 'space-between' }}>
                     <View style={{ width: '80%', alignItems: 'center' }}>
@@ -229,6 +231,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
         } else { navigation.navigate("home") }
         return () => {
             setswipe2(false)
+            seterrorPostJob(null)
         }
     }, [])
 
@@ -262,19 +265,15 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
             let arr = key.split("-")
             let indexing = arr[arr.length - 1]
             if (key.includes("shipping-date-")) {
-                // final[key] = date.format(data['shipping-date-' + indexing], "YYYY:MM:DD")
                 final[key] = date.format(data['shipping-date-' + indexing], "DD-MM-YYYY hh:mm:ss")
             }
             if (key.includes("shipping-time-")) {
-                // final[key] = date.format(data['shipping-time-' + indexing], "HH:mm")
                 final[key] = date.format(data['shipping-time-' + indexing], "DD-MM-YYYY hh:mm:ss")
             }
             if (key.includes("receive-date")) {
-                // final[key] = date.format(data['receive-date'], "YYYY:MM:DD")
                 final[key] = date.format(data['receive-date'], "DD-MM-YYYY hh:mm:ss")
             }
             if (key.includes("receive-time")) {
-                // final[key] = date.format(data['receive-time'], "HH:mm")
                 final[key] = date.format(data['receive-time'], "DD-MM-YYYY hh:mm:ss")
             }
         })
@@ -302,7 +301,6 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
         })
         console.log("Position 2 :: ", shippingLocation)
 
-        const tmpDate = new Date()
         let request_data = {
             "truckType": final['vehicle-type'],
             "truckAmount": final['car-num'],
@@ -327,10 +325,20 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
         PostJobStore.createPostJobRequest(request_data)
     }
 
+
     useEffect(() => {
         let data_postjob = JSON.parse(JSON.stringify(PostJobStore.data_postjob))
-        if (data_postjob) navigation.navigate("postSuccess")
-    }, [PostJobStore.data_postjob])
+        let error = JSON.parse(JSON.stringify(PostJobStore.error))
+        if (error && error != errorPostJob) {
+            seterrorPostJob(error)
+            AlertMessage(translate("postJobScreen.checkShippingDate"), translate("postJobScreen.shippingDateMoreThan"))
+            seterrorPostJob(null)
+            PostJobStore.setError()
+        } else {
+            if (data_postjob) navigation.navigate("postSuccess")
+        }
+
+    }, [PostJobStore.data_postjob, PostJobStore.error])
 
     const _setRenderDateAndTimeField = (val: boolean, index: number, field: string) => {
         let tmp_field_level = fieldShippingCheck
@@ -363,9 +371,9 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
     const list_product_type = [
         {
             title: 'postJobScreen.popular',
-            data: [{ id: 1, name: 'วัสดุก่อสร้าง', image: 'bell' },
-            { id: 2, name: 'สินค้าเกษตร', image: 'bell' },
-            { id: 3, name: 'อาหาร และสินค้าบริโภค', image: 'bell' }]
+            data: [{ id: 1, name: 'วัสดุก่อสร้าง', image: 'greyMock' },
+            { id: 2, name: 'สินค้าเกษตร', image: 'greyMock' },
+            { id: 3, name: 'อาหาร และสินค้าบริโภค', image: 'greyMock' }]
         }
     ]
     let list_vehicle = JSON.parse(JSON.stringify(TruckTypeStore.data))

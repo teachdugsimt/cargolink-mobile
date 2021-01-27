@@ -24,6 +24,7 @@ const FavoriteTruckStore = types
         keepPreviousActivity: types.optional(types.boolean, false),
         liked: types.boolean,
         loading: types.boolean,
+        loadingOfAdd: types.boolean,
         error: types.maybeNull(types.string),
     })
     .actions((self) => ({
@@ -44,21 +45,21 @@ const FavoriteTruckStore = types
 
         add: flow(function* add(id: string) {
             yield favoriteTruckApi.setup()
-            self.loading = true
+            self.loadingOfAdd = true
             try {
                 const response = yield favoriteTruckApi.create({ id })
                 console.log("Response call api add favorite job : : ", response)
                 if (response.kind !== 'ok') {
                     self.error = response?.data?.message || response.kind
                 }
-                self.loading = false
+                self.loadingOfAdd = false
             } catch (error) {
                 console.error("Failed to fetch get favorite job : ", error)
-                self.loading = false
+                self.loadingOfAdd = false
                 self.error = "error fetch api get favorite job"
             }
         }),
-
+        /*
         unFollow: flow(function* unFollow(id: string) { // use of favorite screen
             yield favoriteTruckApi.setup()
             self.loading = true
@@ -71,7 +72,8 @@ const FavoriteTruckStore = types
                     const newData = [...self.list]
                     const index = self.list.findIndex(({ id }) => id === FavoriteTruckStore.id)
                     if (index !== -1) {
-                        newData.splice(index, 1, { ...newData[index], isLiked: FavoriteTruckStore.liked })
+                        delete newData[index]
+
                     }
                 }
                 self.loading = false
@@ -81,7 +83,7 @@ const FavoriteTruckStore = types
                 self.error = "error fetch api get favorite job"
             }
         }),
-
+        */
         keepLiked: function keepLiked(id: string, liked: boolean) {
             self.id = id
             self.liked = liked
@@ -104,6 +106,7 @@ const FavoriteTruckStore = types
         liked: false,
         keepPreviousActivity: false,
         loading: false,
+        loadingOfAdd: false,
         error: "",
     })
 

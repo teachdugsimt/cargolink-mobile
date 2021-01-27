@@ -41,7 +41,9 @@
     "notSpecified": "ไม่ระบุ",
     "low": "คอกเตี้ย",
     "medium": "คอกธรรมดา",
-    "height": "คอกสูง"
+    "height": "คอกสูง",
+    "somethingWrong": "มีบางอย่างผิดพลาด",
+    "pleaseCheckYourData": "กรุณาตรวจสอบข้อมูล"
   },
   "bottomTab": {
     "home": "หน้าแรก",
@@ -74,10 +76,12 @@
   },
   "homeScreen": {
     "logout": "ออกจากระบบ",
-    "manageCar": "จัดการรถ",
+    "manageCar": "เพิ่มรถ",
     "findJob": "หางาน",
     "postJob": "โพสงาน",
-    "findCar": "หารถ"
+    "findCar": "หารถ",
+    "carriers": "ผู้ให้บริการขนส่ง / Carriers",
+    "shippers": "เจ้าของสินค้า / Shippers"
   },
   "postJobScreen": {
     "postjob": "เพิ่มงาน",
@@ -127,12 +131,13 @@
     "validateReceiveName": "กรุณาตรวจสอบชื่อผู้รับสินค้า",
     "validateShippingName": "กรุณาตรวจสอบชื่อผู้ส่งสินค้า",
     "validateReceiveTel": "กรุณาตรวจสอบเบอร์ติดต่อ",
-    "receiveDateMoreThan": "วันรับสินค้าต้องมากกว่าวันปัจจุบัน 2 วัน"
-
+    "receiveDateMoreThan": "วันรับสินค้าต้องมากกว่าวันปัจจุบัน 2 วัน",
+    "checkShippingDate": "กรุตรวจสอบวันที่",
+    "shippingDateMoreThan": " วันส่งสินค้าต้องมากกว่าวันรับสินค้า"
   },
   "uploadVehicleScreen": {
     "addVehicle": "เพิ่มรถ",
-    "selectVehicleType": "เลือกพาหนะของคุณ",
+    "selectVehicleType": "เลือกรถของคุณ",
     "haveDump": "รถมีที่ดั้มหรือไม่",
     "heightVehicle": "ความสูงของคอกรถ",
     "heightVehicleSelect": "กรุณาเลือกความสูงคอกรถ",
@@ -210,7 +215,9 @@
     "codeWillExpire": "รหัสจะหมดอายุใน",
     "codeExpired": "รหัสหมดอายุแล้ว",
     "requestNewOTP": "ขอรับรหัส OTP ใหม่",
-    "confirmOTP": "ยืนยันรหัส OTP"
+    "confirmOTP": "ยืนยันรหัส OTP",
+    "codeExpiredOrIncorrect": "รหัส OTP ของคุณหมดอายุ \n หรือไม่ถูกต้อง",
+    "confirmOTPAgianOrRequestNewOTP": "กรุณากรอกรหัส OTP อีกครั้งหากไม่สำเร็จให้เลือกขอรหัส OTP ใหม่อีกครั้ง"
   },
   "myVehicleScreen": {
     "informationAt": "ข้อมูล ณ วันที่",
@@ -316,5 +323,10 @@
     "lastestContact": "ที่ติดต่อล่าสุด",
     "job": "งาน",
     "vehicle": "รถ"
+  },
+  "myJobScreen": {
+    "myJob": "งานของฉัน",
+    "workInProgress": "งานที่กำลังดำเนินการ",
+    "workDone": "งานที่จบแล้ว"
   }
 }

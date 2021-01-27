@@ -41,7 +41,9 @@
     "notSpecified": "Not specified",
     "low": "Low Stall",
     "medium": "Medium Stall",
-    "height": "Height Stall"
+    "height": "Height Stall",
+    "somethingWrong": "something went wrong",
+    "pleaseCheckYourData": "please check your data"
   },
   "bottomTab": {
     "home": "Home",
@@ -77,7 +79,9 @@
     "manageCar": "Manage Car",
     "findJob": "Find Job",
     "postJob": "Post Job",
-    "findCar": "Find Car"
+    "findCar": "Find Car",
+    "carriers": "Carriers",
+    "shippers": "Shippers"
   },
   "postJobScreen": {
     "postjob": "post job",
@@ -127,7 +131,9 @@
     "validateReceiveName": "please check receive name",
     "validateShippingName": "please check shipping name",
     "validateReceiveTel": "please check receive tel no",
-    "receiveDateMoreThan": "receive date must be more 2 days from now"
+    "receiveDateMoreThan": "receive date must be more 2 days from now",
+    "checkShippingDate": "please check date",
+    "shippingDateMoreThan": "Date of delivery should not be a date before the date of loading"
   },
   "uploadVehicleScreen": {
     "addVehicle": "Add Vehicle",
@@ -208,7 +214,9 @@
     "codeWillExpire": "The code will expire",
     "codeExpired": "The code has expired",
     "requestNewOTP": "Request a new OTP",
-    "confirmOTP": "Confirm OTP"
+    "confirmOTP": "Confirm OTP",
+    "codeExpiredOrIncorrect": "Your OTP has expired or is incorrect.",
+    "confirmOTPAgianOrRequestNewOTP": "Please enter OTP again, if not successful, choose to request new OTP again."
   },
   "myVehicleScreen": {
     "informationAt": "Information at",
@@ -314,5 +322,10 @@
     "lastestContact": "Lastest Contact",
     "job": "Job",
     "vehicle": "Vehicle"
+  },
+  "myJobScreen": {
+    "myJob": "My job",
+    "workInProgress": "Work in progress",
+    "workDone": "Work done"
   }
 }

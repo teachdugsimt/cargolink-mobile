@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { observer } from "mobx-react-lite"
 import { Dimensions, ScrollView, TextStyle, View, ViewStyle } from 'react-native';
 import { Button, ModalLoading, Text } from '../../components';
@@ -70,15 +70,7 @@ export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
   const navigation = useNavigation()
 
   const { tokenStore } = useStores()
-  // const [buttonColor, setButtonColor] = useState(color.line)
-  // const [disabled, setDisabled] = useState(true)
   const [{ isLoading }, setState] = useState(initialState)
-
-  useEffect(() => {
-    if (AuthStore.policyData && Object.keys(AuthStore.policyData).length) {
-      console.log('AuthStore.policyData :>> ', JSON.parse(JSON.stringify(AuthStore.policyData)));
-    }
-  }, [AuthStore.policyData])
 
   const clearState = () => {
     setState({ ...initialState })
@@ -96,10 +88,6 @@ export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
       navigation.navigate("home")
     })
   }
-  // 094 769 7823
-  // 9430
-
-  console.log('AuthStore.policyData.data :>> ', AuthStore.policyData.data);
 
   return (
     <View style={ROOT} testID={"accept-policy-element"}>
@@ -128,15 +116,14 @@ export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
             backgroundColor: color.primary
           }}
           textStyle={CONTINUE_TEXT}
-          text={translate('acceptPolicyScreen.accept')} // 'ยอมรับเงื่อนไข
-          // disabled={disabled}
+          text={translate('acceptPolicyScreen.accept')}
           onPress={onContinue}
         />
         <Button
           testID="cancel-policy"
           style={CONTINUE_BUTTON}
           textStyle={CONTINUE_TEXT}
-          text={translate('acceptPolicyScreen.cancel')} // ไม่ยอมรับเงื่อนไข
+          text={translate('acceptPolicyScreen.cancel')}
           onPress={() => {
             AuthStore.clearAuthProfile()
             tokenStore.clearToken()

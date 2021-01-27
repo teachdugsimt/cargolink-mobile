@@ -1,13 +1,13 @@
 import { types, flow, cast } from "mobx-state-tree"
-import { ShipperJobAPI, GoogleMapAPI } from "../../services/api"
+import { CarriersJobAPI, GoogleMapAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
 import { decode } from "@mapbox/polyline";
 import FavoriteJobStore from "./favorite-job-store";
 
-const apiShipperJob = new ShipperJobAPI()
+const apiCarriersJob = new CarriersJobAPI()
 const apiGoogleMap = new GoogleMapAPI()
 
-const ShipperJob = types.model({
+const CarriersJob = types.model({
     id: types.maybeNull(types.string),
     productTypeId: types.maybeNull(types.number),
     productName: types.maybeNull(types.string),
@@ -45,24 +45,24 @@ const Directions = types.model({
     longitude: types.number,
 })
 
-const ShipperJobStore = types
+const CarriersJobStore = types
     .model({
-        list: types.maybeNull(types.array(types.maybeNull(ShipperJob))),
-        data: types.maybeNull(ShipperJob),
-        favoriteList: types.maybeNull(ShipperJob),
+        list: types.maybeNull(types.array(types.maybeNull(CarriersJob))),
+        data: types.maybeNull(CarriersJob),
         previousListLength: types.optional(types.number, 0),
+        favoriteList: types.maybeNull(CarriersJob),
         directions: types.optional(types.array(types.array(Directions)), []),
         loading: types.boolean,
         mapLoading: types.boolean,
         error: types.maybeNull(types.string),
     })
     .actions((self) => ({
-        find: flow(function* find(filter: Types.ShipperJobRequest = {}) {
-            yield apiShipperJob.setup()
+        find: flow(function* find(filter: Types.CarriersJobRequest = {}) {
+            yield apiCarriersJob.setup()
             self.loading = true
             try {
                 self.previousListLength = self.list.length
-                const response = yield apiShipperJob.find(filter)
+                const response = yield apiCarriersJob.find(filter)
                 console.log("Response call api get shipper jobs : : ", response)
                 if (response.kind === 'ok') {
                     yield FavoriteJobStore.find()
@@ -92,10 +92,11 @@ const ShipperJobStore = types
         }),
 
         findOne: flow(function* findOne(id: string) {
-            yield apiShipperJob.setup()
+            yield apiCarriersJob.setup()
             self.loading = true
             try {
-                const response = yield apiShipperJob.findOne(id)
+                yield FavoriteJobStore.find()
+                const response = yield apiCarriersJob.findOne(id)
                 console.log("Response call api get shipper job : : ", JSON.stringify(response))
                 if (response.kind === 'ok') {
                     const result = response.data || {}
@@ -103,57 +104,6 @@ const ShipperJobStore = types
                     self.data = { ...result, isLiked: isLiked || false }
                 } else {
                     self.error = response?.data?.message || response.kind
-                }
-                self.loading = false
-            } catch (error) {
-                // ... including try/catch error handling
-                console.error("Failed to fetch get shipper job : ", error)
-                // self.data = []
-                self.loading = false
-                self.error = "error fetch api get shipper job"
-            }
-        }),
-
-        create: flow(function* create(data: Types.ShipperJobCreate) {
-            yield apiShipperJob.setup()
-            self.loading = true
-            try {
-                const response = yield apiShipperJob.create(data)
-                console.log("Response call api get user : : ", response)
-                if (response.kind === 'ok') {
-                    self.data = response.data || {}
-                } else {
-                    self.error = response.data.message
-                }
-                self.loading = false
-            } catch (error) {
-                // ... including try/catch error handling
-                console.error("Failed to fetch get shipper job : ", error)
-                // self.data = []
-                self.loading = false
-                self.error = "error fetch api get shipper job"
-            }
-        }),
-
-        update: flow(function* update(id: string, data: Types.ShipperJobCreate) {
-            yield apiShipperJob.setup()
-            self.loading = true
-            try {
-                const response = yield apiShipperJob.update(id, data)
-                console.log("Response call api get user : : ", response)
-                if (response.kind === 'ok') {
-                    self.data = {
-                        ...self.data,
-                        from: data.from,
-                        productName: data.productName,
-                        productTypeId: data.productTypeId,
-                        requiredTruckAmount: data.truckAmount,
-                        truckType: data.truckType,
-                        weight: data.weight,
-                        // to: cast(data.to)
-                    }
-                } else {
-                    self.error = response.data.message
                 }
                 self.loading = false
             } catch (error) {
@@ -201,6 +151,16 @@ const ShipperJobStore = types
                 self.error = "error fetch api google map"
             }
         }),
+
+        updateFavoriteInList: function updateFavoriteInList(id: string, isLiked) {
+            if (id.length) {
+                const newList = JSON.parse(JSON.stringify(self.list))
+                const index = self.list.findIndex(({ id: idx }) => idx === id)
+                const oldData = newList[index]
+                newList.splice(index, 1, { ...oldData, isLiked })
+                self.list = newList
+            }
+        },
 
         setDefaultOfData: function setDefaultOfData() {
             self.data = cast({
@@ -261,5 +221,5 @@ const ShipperJobStore = types
         directions: [],
     })
 
-export default ShipperJobStore
+export default CarriersJobStore
 // Type 2 : not persist store

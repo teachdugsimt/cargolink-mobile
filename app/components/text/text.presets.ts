@@ -4,6 +4,11 @@ import { color, typography } from "../../theme"
 /**
  * All text will start off looking like this.
  */
+const BASE_SMALL: TextStyle = {
+  fontFamily: typography.primary,
+  color: color.textBlack,
+  fontSize: typography.small,
+}
 const BASE: TextStyle = {
   fontFamily: typography.primary,
   color: color.textBlack,
@@ -29,6 +34,7 @@ export const presets = {
   /**
    * The default text styles.
    */
+  small: BASE_SMALL,
   default: BASE,
   topic: TOPIC_BASE,
   topicExtra: TOPIC_EXTRA_BASE,

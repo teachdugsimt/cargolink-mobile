@@ -499,7 +499,6 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
     return tmp
   }
 
-  // __DEV__ && console.tron.log("Truck Photos :: ", truckPhotos)
 
   const raw_image = truckPhotos &&
     Object.keys(truckPhotos).length ?
@@ -543,21 +542,12 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
                     </TouchableOpacity>
                   )
                 })}
-              {/* <Modal visible={openViewer} transparent={true}>
-                <ImageViewer
-                  imageUrls={viewListImage}
-                  index={indexOfImage}
-                  onCancel={onCancel}
-                  enableSwipeDown={true}
-                  pageAnimateTime={transformImage ? transformImage.length : 0}
-                />
-              </Modal> */}
+             
               <ImageView
                 images={viewListImage}
                 imageIndex={indexOfImage}
                 isVisible={openViewer}
                 onClose={onCancel}
-              // renderFooter={(currentImage) => (<View><Text>My footer</Text></View>)}
               />
             </View>
           </View>

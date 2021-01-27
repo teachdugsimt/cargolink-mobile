@@ -145,7 +145,7 @@ export function HomeNavigator() {
                 component={SearchJobScreen}
                 options={({ navigation, route }) => ({
                     // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
-                    headerCenter: () => <HeaderCenter tx={"postJobScreen.postjob"} />,
+                    headerCenter: () => <HeaderCenter tx={"homeScreen.findJob"} />,
                     headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
                     headerHideShadow: true
                 })} />

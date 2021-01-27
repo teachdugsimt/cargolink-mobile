@@ -2,6 +2,7 @@
 export const images = {
   logo: require("../images/logo_cargolink.png"),
   logoNew: require("../images/CargolinkLogo.png"),
+  logoNewYellow: require("../images/CargolinkLogoYellow.png"),
   truck1: require("../images/iconcarma.png"),
   pinbox: require("../images/iconfindwork.png"),
   sheet1: require("../images/iconpostwork.png"),
@@ -50,6 +51,7 @@ export const images = {
   bell: require("../images/bell.png"),
   postJobSuccess: require("../images/post-job-success.png"),
   noImageAvailable: require("../images/no-image-available.jpg"),
+  greyMock: require("../images/just_grey_light_grey.jpg"),
   // clearLogo: require('../Images/top_logo.png'),
 }
 

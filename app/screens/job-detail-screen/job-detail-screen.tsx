@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { Dimensions, ImageStyle, ScrollView, TextStyle, View, ViewStyle, TouchableOpacity } from 'react-native'
 import { Button, Icon, ModalLoading, PostingBy, Text } from '../../components'
@@ -7,7 +7,7 @@ import { color, spacing } from '../../theme'
 import { translate } from '../../i18n'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
-import ShipperJobStore from '../../store/shipper-job-store/shipper-job-store'
+import CarriersJobStore from '../../store/carriers-job-store/carriers-job-store'
 import { GetTruckType } from '../../utils/get-truck-type'
 import i18n from 'i18n-js'
 import { Modalize } from 'react-native-modalize';
@@ -18,6 +18,11 @@ import MapView, {
     PROVIDER_GOOGLE,
 } from 'react-native-maps';
 import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
+import FavoriteJobStore from '../../store/carriers-job-store/favorite-job-store'
+import { useStores } from "../../models/root-store/root-store-context";
+
+const deviceWidht = Dimensions.get('window').width
+const deviceHeight = Dimensions.get('window').height
 
 const PADDING_TOP = { paddingTop: spacing[1] }
 const PADDING_BOTTOM = { paddingBottom: spacing[1] }
@@ -46,17 +51,18 @@ const MAP_CONTAINER: ViewStyle = {
     position: 'relative',
 }
 const MAP: ImageStyle = {
-    width: Math.floor(Dimensions.get('window').width),
-    height: Math.floor(Dimensions.get('window').height),
+    width: deviceWidht,
+    height: deviceHeight,
 }
 const LOCATION_CONTAINER: ViewStyle = {
     flex: 1,
     flexDirection: 'row',
 }
 const LOCATION_BOX: ViewStyle = {
-    flex: 2,
+    flex: 3,
     borderRightWidth: 1,
-    borderRightColor: color.line
+    borderRightColor: color.line,
+    paddingRight: spacing[4]
 }
 const PRODUCT_ROOT: ViewStyle = {
     flexDirection: 'column',
@@ -69,7 +75,7 @@ const PRODUCT_ROOT: ViewStyle = {
 const DISTANCE_BOX: ViewStyle = {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'flex-end'
 }
 const ICON_BOX: ViewStyle = {
     paddingTop: spacing[2]
@@ -95,13 +101,14 @@ const ONWER_ROOT: ViewStyle = {
 }
 const LOCATION: ViewStyle = {
     flexDirection: "row",
-    alignItems: "center",
+    // alignItems: "center",
     ...PADDING_TOP,
     ...PADDING_BOTTOM
 }
 const PIN_ICON: ImageStyle = {
     width: 22,
     height: 22,
+    marginTop: spacing[1]
 }
 const LOCATION_TEXT: TextStyle = {
     paddingVertical: spacing[1],
@@ -130,8 +137,19 @@ const TEXT: TextStyle = {
 const SCROLL_VIEW: ViewStyle = {
     marginTop: spacing[5],
 }
+const CONTENT_SMALL: ViewStyle = {
+    ...TOP_ROOT,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: spacing[6],
+    height: 105,
+    overflow: 'hidden',
+    marginHorizontal: spacing[3],
+    paddingVertical: spacing[4],
+}
 
-const DATA = {
+const DATA = { // [Mocking]
     id: 9,
     fromText: 'กรุงเทพมหานคร',
     toText: 'นครศรีธรรมราช',
@@ -161,11 +179,11 @@ const PickUpPoint = ({ to, from, containerStyle = {} }) => (
                 <Icon icon="pinDropYellow" style={PIN_ICON} />
                 <Text
                     text={`${translate('common.from')}  :`}
-                    style={{ ...LOCATION_TEXT, width: 45 }}
+                    style={{ ...LOCATION_TEXT, width: 45, justifyContent: 'flex-end' }}
                 />
                 <Text
                     text={from && from.name}
-                    style={LOCATION_TEXT}
+                    style={{ ...LOCATION_TEXT, flexShrink: 1 }}
                 />
             </View>
             {to?.length && to.map((attr, index) => (
@@ -177,14 +195,16 @@ const PickUpPoint = ({ to, from, containerStyle = {} }) => (
                     />
                     <Text
                         text={attr.name}
-                        style={LOCATION_TEXT}
+                        style={{ ...LOCATION_TEXT, flexShrink: 1 }}
                     />
                 </View>
             ))}
         </View>
         <View style={DISTANCE_BOX}>
-            <Text style={{ paddingVertical: spacing[1] }} >{`${DATA.distance} `}<Text text={'KM'} style={TEXT_SMALL} /></Text>
-            <Text text={`${DATA.period}`} style={{ ...TEXT_SMALL, paddingVertical: spacing[1], }} />
+            <View style={{ alignItems: 'center' }}>
+                <Text style={{ paddingVertical: spacing[1] }} >{`${DATA.distance} `}<Text text={'KM'} style={TEXT_SMALL} /></Text>
+                <Text text={`${DATA.period}`} style={{ ...TEXT_SMALL, paddingVertical: spacing[1], }} />
+            </View>
         </View>
     </View>
 )
@@ -195,25 +215,67 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
     const modalizeRef = useRef<Modalize>(null);
     const [coordinates, setCoordinates] = useState([])
+    const [liked, setLiked] = useState<boolean>(false)
+
+    const {
+        id,
+        from,
+        to,
+        productName,
+        productTypeId,
+        requiredTruckAmount,
+        truckType,
+        isLiked,
+        weight
+    } = JSON.parse(JSON.stringify(CarriersJobStore.data))
+
+    const { versatileStore } = useStores()
 
     useEffect(() => {
         if (!TruckTypeStore.list?.length) {
             TruckTypeStore.find()
         }
         return () => {
-            ShipperJobStore.setDefaultOfData()
+            CarriersJobStore.setDefaultOfData()
+            CarriersJobStore.updateFavoriteInList(FavoriteJobStore.id, FavoriteJobStore.liked)
         }
     }, [])
 
     useEffect(() => {
-        if (ShipperJobStore.data && ShipperJobStore.data.id) {
-            console.log('ShipperJobStore.data', JSON.parse(JSON.stringify(ShipperJobStore.data)))
-            console.log('ShipperJobStore.directions', JSON.parse(JSON.stringify(ShipperJobStore.directions)))
-            const coordinates = [ShipperJobStore.data.from, ...ShipperJobStore.data.to]
-            setCoordinates(coordinates)
-            ShipperJobStore.getDirections(coordinates)
+        if (!TruckTypeStore.list?.length) {
+            TruckTypeStore.find()
         }
-    }, [ShipperJobStore.loading, ShipperJobStore.data])
+        return () => {
+            CarriersJobStore.setDefaultOfData()
+        }
+    }, [])
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerRight: () => (<TouchableOpacity onPress={() => onSelectedHeart(id)}>
+                <MaterialCommunityIcons name={liked ? 'heart' : 'heart-outline'} size={24} color={liked ? color.red : color.line} />
+            </TouchableOpacity>),
+        })
+        return () => { }
+    }, [liked, id, navigation]);
+
+    useEffect(() => {
+        setLiked(isLiked)
+    }, [isLiked])
+
+    useEffect(() => {
+        if (CarriersJobStore.data && CarriersJobStore.data.id) {
+            const coordinates = [CarriersJobStore.data.from, ...CarriersJobStore.data.to]
+            setCoordinates(coordinates)
+            CarriersJobStore.getDirections(coordinates)
+        }
+    }, [CarriersJobStore.loading, CarriersJobStore.data])
+
+    const onSelectedHeart = (id: string) => {
+        FavoriteJobStore.keepLiked(id, !liked)
+        FavoriteJobStore.add(id)
+        setLiked(!liked)
+    }
 
     const onPress = () => {
         modalizeRef.current?.close();
@@ -224,35 +286,39 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         modalizeRef.current?.open();
     };
 
-    const {
-        from,
-        to,
-        productName,
-        productTypeId,
-        requiredTruckAmount,
-        truckType,
-        weight
-    } = JSON.parse(JSON.stringify(ShipperJobStore.data))
+    const truckTypeList = versatileStore.list
+    const txtTruckType = productTypeId && truckTypeList.length
+        ? (truckTypeList.filter(({ id }) => id === +truckType)?.[0]?.name || translate('common.notSpecified'))
+        : translate('common.notSpecified')
 
-    const txtTruckType = GetTruckType(+truckType)
-    console.log('coordinates.length', coordinates.length)
-    console.log('JSON.stringify(ShipperJobStore.directions)', JSON.stringify(ShipperJobStore.directions))
-    console.log('ShipperJobStore.mapLoading', ShipperJobStore.mapLoading)
+    // const txtTruckType = GetTruckType(+truckType)
+
+    const productTypeList = versatileStore.listProductType
+    const productType = productTypeId && productTypeList.length
+        ? (productTypeList.filter(({ id }) => id === +productTypeId)?.[0]?.name || translate('common.notSpecified'))
+        : translate('common.notSpecified')
 
     return (
         <View style={CONTAINER}>
-            <ModalLoading size={'large'} color={color.primary} visible={ShipperJobStore.mapLoading} />
-            <View style={MAP_CONTAINER}>
-                {from && !!from.lat && !!from.lng && !!ShipperJobStore.directions.length &&
+            <ModalLoading size={'large'} color={color.primary} visible={CarriersJobStore.mapLoading} />
+            <View style={{ ...MAP_CONTAINER }}>
+                {from && !!from.lat && !!from.lng && !!CarriersJobStore.directions.length &&
                     <MapView
-                        style={{ height: Dimensions.get('window').height }}
+                        style={{ flex: 1 }}
                         provider={PROVIDER_GOOGLE}
                         initialRegion={{
-                            latitude: +from.lat - 0.03,
+                            latitude: +from.lat - 0.01,
                             longitude: +from.lng,
-                            latitudeDelta: 0.1,
-                            longitudeDelta: 0.1
-                        }}>
+                            latitudeDelta: 0.05,
+                            longitudeDelta: 0.05
+                        }}
+                        region={{
+                            latitude: +from.lat - 0.01,
+                            longitude: +from.lng,
+                            latitudeDelta: 0.05,
+                            longitudeDelta: 0.05
+                        }}
+                    >
                         {!!coordinates.length && coordinates.map((attr, index) => (
                             <Marker
                                 key={index}
@@ -264,19 +330,27 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                                 </Callout>
                             </Marker>
                         ))}
-                        {JSON.parse(JSON.stringify(ShipperJobStore.directions)).map((attr, index) => {
+                        {JSON.parse(JSON.stringify(CarriersJobStore.directions)).map((attr, index) => {
                             return (<Polyline key={index} coordinates={attr} strokeWidth={4} strokeColor={'red'} />)
                         })}
                     </MapView>
                 }
+
+                <TouchableOpacity activeOpacity={1} onPress={onOpen} onPressOut={onOpen} style={CONTENT_SMALL}>
+                    <View>
+                        <Text text={translate('jobDetailScreen.pickUpPoint')} style={{ ...TEXT_SMALL, color: color.line, }} />
+                    </View>
+                    <PickUpPoint from={from} to={to} />
+                </TouchableOpacity>
+
             </View>
 
-            <TouchableOpacity activeOpacity={1} onPress={onOpen} style={{ ...TOP_ROOT, height: 105, }}>
+            {/* <TouchableOpacity activeOpacity={1} onPress={onOpen} style={{ ...CONTENT_SMALL, top: -spacing[6] }}>
                 <View>
                     <Text text={translate('jobDetailScreen.pickUpPoint')} style={{ ...TEXT_SMALL, color: color.line, }} />
                 </View>
                 <PickUpPoint from={from} to={to} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <Modalize
                 ref={modalizeRef}
@@ -313,7 +387,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                                 <MaterialCommunityIcons name={'truck-outline'} size={24} color={color.primary} />
                             </View>
                             <View style={DETAIL_BOX}>
-                                <Text text={`${translate('common.vehicleTypeField')} : ${txtTruckType && txtTruckType.name ? txtTruckType.name : ''}`} style={TEXT} />
+                                <Text text={`${translate('common.vehicleTypeField')} : ${txtTruckType}`} style={TEXT} />
                                 <Text text={`${translate('common.count')} : ${requiredTruckAmount} คัน`} style={TEXT} />
                             </View>
                         </View>
@@ -322,7 +396,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                                 <SimpleLineIcons name={'social-dropbox'} size={24} color={color.primary} />
                             </View>
                             <View style={DETAIL_BOX}>
-                                <Text text={`${translate('jobDetailScreen.productType')} : ${productTypeId}`} style={TEXT} />
+                                <Text text={`${translate('jobDetailScreen.productType')} : ${productType}`} style={TEXT} />
                                 <Text text={`${translate('jobDetailScreen.productName')} : ${productName}`} style={TEXT} />
                                 <Text text={`${translate('jobDetailScreen.weightTon')} : ${weight}`} style={TEXT} />
                             </View>

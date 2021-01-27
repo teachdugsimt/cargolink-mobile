@@ -1,20 +1,21 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite';
-import { FlatList, TextStyle, View, ViewStyle } from 'react-native';
-import { AdvanceSearchTab, ModalLoading, SearchBar, Text } from '../../components';
-import { color, spacing } from '../../theme';
+import { FlatList, RefreshControl, TextStyle, View, ViewStyle } from 'react-native';
+import { AdvanceSearchTab, EmptyListMessage, ModalLoading, SearchBar, Text } from '../../components';
+import { color, spacing, images as imageComponent } from '../../theme';
 import { SearchItem } from '../../components/search-item/search-item';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
 import { translate } from '../../i18n';
-import ShipperJobStore from "../../store/shipper-job-store/shipper-job-store";
+import CarriersJobStore from "../../store/carriers-job-store/carriers-job-store";
 import { GetTruckType } from '../../utils/get-truck-type'
 import i18n from 'i18n-js'
-import AdvanceSearchStore from "../../store/shipper-job-store/advance-search-store";
-import TruckTypeStore from "../../store/my-vehicle-store/truck-type-store"
-import MainTruckTypeStore from "../../store/truck-type-store/truck-type-store"
+import AdvanceSearchStore from "../../store/carriers-job-store/advance-search-store";
+// import TruckTypeStore from "../../store/my-vehicle-store/truck-type-store"
+import TruckTypeStore from "../../store/truck-type-store/truck-type-store"
 import { provinceListEn, provinceListTh } from '../../screens/home-screen/manage-vehicle/datasource'
 import Feather from 'react-native-vector-icons/Feather'
-import FavoriteJobStore from "../../store/shipper-job-store/favorite-job-store"
+import FavoriteJobStore from "../../store/carriers-job-store/favorite-job-store"
+import { MapTruckImageName } from '../../utils/map-truck-image-name';
 
 interface SubButtonSearch {
   id?: number
@@ -62,13 +63,13 @@ const Item = (data) => {
   const navigation = useNavigation()
 
   const onPress = () => {
-    ShipperJobStore.findOne(id)
+    CarriersJobStore.findOne(id)
     navigation.navigate('jobDetail')
   }
 
   const onToggleHeart = (data) => {
-    console.log('onToggleHeart data', data)
     FavoriteJobStore.add(data.id)
+    CarriersJobStore.updateFavoriteInList(data.id, data.isLike)
   }
 
   const typeOfTruck = GetTruckType(+truckType)?.name || translate('common.notSpecified')
@@ -90,6 +91,7 @@ const Item = (data) => {
           postBy: owner.companyName,
           isVerified: true,
           isLike: isLiked,
+          backgroundImage: imageComponent[MapTruckImageName(+truckType) || 'truck'],
           // rating,
           // ratingCount,
           // isCrown,
@@ -126,6 +128,7 @@ const initialState = {
   listLength: 0,
   data: [],
   filterLength: 0,
+  arrayFilter: [],
   loading: true,
 }
 
@@ -133,32 +136,55 @@ let PAGE = 0;
 
 export const SearchJobScreen = observer(function SearchJobScreen() {
   const navigation = useNavigation()
+  const isFocused = useIsFocused()
 
-  const [{ subButtons, data, listLength, filterLength, loading }, setState] = useState(initialState)
+  const [{ subButtons, data, listLength, filterLength, loading, arrayFilter }, setState] = useState(initialState)
+  const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState<boolean>(true)
 
   useFocusEffect(
     useCallback(() => {
       const { productType, truckAmountMax, truckAmountMin, truckType, weight } = JSON.parse(JSON.stringify(AdvanceSearchStore.filter))
-      const length = [
+      const arrayFilter = [
         ...[...productType || []],
         ...[...truckType || []],
         weight,
         truckAmountMax || truckAmountMin
-      ].filter(Boolean).length
+      ].filter(Boolean)
+
+      const length = arrayFilter.length
 
       setState(prevState => ({
         ...prevState,
-        filterLength: length
+        filterLength: length,
+        arrayFilter: arrayFilter
       }))
     }, [])
   );
 
   useEffect(() => {
-    ShipperJobStore.find()
-    MainTruckTypeStore.find()
+    CarriersJobStore.setDefaultOfList()
+    if (!arrayFilter.length) {
+      CarriersJobStore.find()
+    } else {
+      CarriersJobStore.find(AdvanceSearchStore.filter)
+    }
+  }, [JSON.stringify(arrayFilter)])
+
+  // useEffect(() => {
+  //   if (FavoriteJobStore.id) {
+  //     FavoriteJobStore.keepLiked('', false)
+  //   }
+  // }, [isFocused])
+
+  useEffect(() => {
+    // CarriersJobStore.find()
+    TruckTypeStore.find()
+
     return () => {
       PAGE = 0
-      ShipperJobStore.setDefaultOfList()
+      AdvanceSearchStore.clearMenu()
+      AdvanceSearchStore.setFilter({})
+      CarriersJobStore.setDefaultOfList()
       setState(initialState)
     }
   }, [])
@@ -166,38 +192,33 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
   useEffect(() => {
     setState(prevState => ({
       ...prevState,
-      listLength: ShipperJobStore.list.length,
-      loading: true,
+      listLength: CarriersJobStore.list.length,
     }))
-    if (!ShipperJobStore.loading && !data.length && ShipperJobStore.list && ShipperJobStore.list.length) {
-      setState(prevState => ({
-        ...prevState,
-        data: ShipperJobStore.list,
-        loading: false
-      }))
-    }
-    if (!ShipperJobStore.loading && (data.length || !data.length)) {
-      setState(prevState => ({
-        ...prevState,
-        loading: false
-      }))
-    }
-  }, [ShipperJobStore.loading, ShipperJobStore.list])
+    // if (!CarriersJobStore.loading && CarriersJobStore.list && CarriersJobStore.list.length) {
+    //   setState(prevState => ({
+    //     ...prevState,
+    //     data: CarriersJobStore.list,
+    //   }))
+    // }
+  }, [CarriersJobStore.loading])
 
   const renderItem = ({ item }) => (
     <Item {...item} />
   )
 
   const onScrollList = () => {
-    if (ShipperJobStore.list.length >= 10) {
-      PAGE = ShipperJobStore.list.length === listLength ? listLength : PAGE + ShipperJobStore.list.length
+    if (!onEndReachedCalledDuringMomentum
+      && CarriersJobStore.list.length >= 10
+      && !CarriersJobStore.loading
+      && CarriersJobStore.previousListLength !== listLength) {
+      PAGE = CarriersJobStore.list.length === listLength ? listLength : PAGE + CarriersJobStore.list.length
       const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE }
-      ShipperJobStore.find(advSearch)
+      CarriersJobStore.find(advSearch)
+      setOnEndReachedCalledDuringMomentum(true)
     }
   }
 
   const onPress = (id: number) => {
-    console.log('id', id)
     const newButtonSearch = subButtons.map(button => {
       if (button.id !== id) return button
       return { ...button, isChecked: !button.isChecked }
@@ -233,19 +254,25 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
 
   const onSearch = () => {
     const filter = AdvanceSearchStore.filter
-    ShipperJobStore.find(filter)
-    ShipperJobStore.setDefaultOfList()
+    CarriersJobStore.find(filter)
+    CarriersJobStore.setDefaultOfList()
   }
 
   const onAdvanceSeach = () => {
     // AdvanceSearchStore.getProductTypes()
-    TruckTypeStore.getTruckTypeDropdown(i18n.locale)
+    TruckTypeStore.find(i18n.locale)
     navigation.navigate('advanceSearch')
+  }
+
+  const onRefresh = () => {
+    CarriersJobStore.setDefaultOfList()
+    CarriersJobStore.find(AdvanceSearchStore.filter)
+    PAGE = 0
   }
 
   return (
     <View style={{ flex: 1 }}>
-      {loading && <ModalLoading size={'large'} color={color.primary} visible={loading} />}
+      {/* <ModalLoading size={'large'} color={color.primary} visible={loading} /> */}
       <View>
         <SearchBar
           {...{
@@ -272,18 +299,22 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
 
       <View style={RESULT_CONTAINER}>
         {
-          data && !!data.length ? <FlatList
-            data={data}
+          <FlatList
+            data={CarriersJobStore.list}
             renderItem={renderItem}
             keyExtractor={item => item.id}
             onEndReached={() => onScrollList()}
-            onEndReachedThreshold={0.5}
-          // onMomentumScrollBegin={() => console.log('onResponderEnd')}
-          // onMomentumScrollEnd={() => console.log('onMomentumScrollEnd')}
-          /> : (!loading && <View style={CONTEXT_NOT_FOUND}>
-            <Feather name={'inbox'} size={50} color={color.line} />
-            <Text text={translate('common.notFound')} style={NOT_FOUND_TEXT} preset={'topicExtra'} />
-          </View>)
+            onEndReachedThreshold={0.1}
+            contentContainerStyle={{ flexGrow: 1 }}
+            ListEmptyComponent={<EmptyListMessage />}
+            onMomentumScrollBegin={() => setOnEndReachedCalledDuringMomentum(false)}
+            refreshControl={
+              <RefreshControl
+                refreshing={CarriersJobStore.loading}
+                onRefresh={onRefresh}
+              />
+            }
+          />
         }
       </View>
     </View>

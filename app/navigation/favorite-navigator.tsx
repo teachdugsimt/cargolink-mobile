@@ -23,9 +23,9 @@ import { color } from "../theme"
  *   https://reactnavigation.org/docs/typescript#type-checking-the-navigator
  */
 export type PrimaryFavoriteParamList = {
-    favorite: undefined,
-    favoriteJobDetail: undefined,
-    favoriteTruckDetail: undefined,
+  favorite: undefined,
+  favoriteJobDetail: undefined,
+  favoriteTruckDetail: undefined,
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -33,46 +33,46 @@ const Stack = createNativeStackNavigator<PrimaryFavoriteParamList>()
 
 export function FavoriteNavigator() {
 
-    return (
-        <Stack.Navigator
-            screenOptions={{
-                headerShown: true,
-                gestureEnabled: true,
-                headerStyle: {
-                    backgroundColor: color.mainTheme,
-                },
-                headerTitleStyle: {
-                    fontFamily: 'Kanit-Medium',
-                    fontSize: 20
-                },
-            }}
-        >
-            {/* <Stack.Screen name="favorite" component={FavoriteScreen} /> */}
-            {/* <Stack.Screen name="detail" component={DetailScreen} /> */}
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: true,
+        gestureEnabled: true,
+        headerStyle: {
+          backgroundColor: color.mainTheme,
+        },
+        headerTitleStyle: {
+          fontFamily: 'Kanit-Medium',
+          fontSize: 20
+        },
+      }}
+    >
+      {/* <Stack.Screen name="favorite" component={FavoriteScreen} /> */}
+      {/* <Stack.Screen name="detail" component={DetailScreen} /> */}
 
-            <Stack.Screen name="favorite" component={FavoriteScreen}
-                options={({ navigation, route }) => ({
-                    // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
-                    headerCenter: () => <HeaderCenter tx={"favoriteScreen.favoriteList"} />,
-                    headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
-                    headerHideShadow: true
-                })}
-            />
+      <Stack.Screen name="favorite" component={FavoriteScreen}
+        options={({ navigation, route }) => ({
+          // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
+          headerCenter: () => <HeaderCenter tx={"favoriteScreen.favoriteList"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+          headerHideShadow: true
+        })}
+      />
 
-            <Stack.Screen name="favoriteJobDetail" component={JobDetailScreen}
-                options={({ navigation, route }) => ({
-                    headerCenter: () => <HeaderCenter tx={"jobDetailScreen.jobDetail"} />,
-                    headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
-                })} />
+      <Stack.Screen name="favoriteJobDetail" component={JobDetailScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"jobDetailScreen.jobDetail"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })} />
 
-            <Stack.Screen name="favoriteTruckDetail" component={TruckDetailScreen}
-                options={({ navigation, route }) => ({
-                    headerCenter: () => <HeaderCenter tx={"truckDetailScreen.truckDetail"} />,
-                    headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
-                })}
-            />
-        </Stack.Navigator>
-    )
+      <Stack.Screen name="favoriteTruckDetail" component={TruckDetailScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"truckDetailScreen.truckDetail"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+    </Stack.Navigator>
+  )
 }
 
 /**

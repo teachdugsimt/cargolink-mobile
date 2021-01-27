@@ -30,6 +30,7 @@ let initialData = {
     list: [],
     listGroup: [],
     listMapping: [],
+    listProductType: [],
     loading: false,
     mappingLoding: false,
     error: "",
