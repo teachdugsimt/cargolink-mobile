@@ -1,29 +1,31 @@
 import { types, flow, cast } from "mobx-state-tree"
-import { TruckTypeApi } from "../../services/api"
+import { TruckTypeApi, ProductTypeAPI } from "../../services/api"
 import i18n from "i18n-js"
 
 const truckTypeApi = new TruckTypeApi()
+const productTypeApi = new ProductTypeAPI()
 
-const TruckType = {
+const InitialType = {
     id: types.maybeNull(types.number),
     name: types.maybeNull(types.string),
     image: types.maybeNull(types.string),
     groupId: types.maybeNull(types.number),
 }
 
-const TruckTypeGroup = types.model(TruckType)
+const TruckTypeGroup = types.model(InitialType)
 
 const TruckTypeMapping = types.model({
-    ...TruckType,
-    subTypes: types.optional(types.array(types.model(TruckType)), [])
+    ...InitialType,
+    subTypes: types.optional(types.array(types.model(InitialType)), [])
 })
 
 export const VersatileStore = types.model({
     language: types.string,
 
-    data: types.optional(types.model(TruckType), {}),
+    data: types.optional(types.model(InitialType), {}),
     list: types.optional(types.array(TruckTypeGroup), []),
     listGroup: types.optional(types.array(TruckTypeGroup), []),
+    listProductType: types.optional(types.array(TruckTypeGroup), []),
     loading: types.boolean,
     mappingLoding: types.boolean,
     listMapping: types.optional(types.array(TruckTypeMapping), []),
@@ -92,6 +94,25 @@ export const VersatileStore = types.model({
         const truckType = self.list.filter(type => type.id === id)
         self.data = JSON.parse(JSON.stringify(truckType))[0]
     },
+
+    findProductType: flow(function* findProductType(filter: any = {}) {
+        yield productTypeApi.setup(i18n.locale)
+        self.loading = true
+        try {
+            const response = yield productTypeApi.findAll(filter)
+            console.log("Response call api get product type : : ", response)
+            if (response.kind === 'ok') {
+                self.listProductType = response.data
+            } else {
+                self.listProductType = cast([])
+            }
+            self.loading = false
+        } catch (error) {
+            console.error("Failed to fetch get product type : ", error)
+            self.loading = false
+            self.error = "error fetch api get product type"
+        }
+    }),
 
 })).views(self => ({
     get getLanguage() {

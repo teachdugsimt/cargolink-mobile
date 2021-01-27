@@ -175,6 +175,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
     }
 
     const _renderSelectedList = (item, section) => {
+        __DEV__ && console.tron.log('Item :: ', item)
         return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name} style={ROOT_FLAT_LIST} onPress={() => {
             if (section == 1) setvisible0(true)
             else if (section == 2) setvisible(true)
@@ -309,7 +310,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
     __DEV__ && console.tron.log("State list vehicle type :: ", vehicleType)
     __DEV__ && console.tron.log("State section list vehicle type :: ", sectionTruckType)
 
-
+    __DEV__ && console.tron.log("List group =>  :: ", list_product_type_all)
 
 
 
@@ -471,7 +472,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                                 <View style={{ width: (width / 1.1), height: '100%', justifyContent: 'flex-start' }}>
                                                     <SafeAreaView style={{ flex: 1 }}>
                                                         <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
-                                                            <Text style={{ color: color.primary }} preset={"topic"} tx={"postJobScreen.selectVehicleType"} />
+                                                            <Text style={{ color: color.primary }} preset={"topic"} tx={"postJobScreen.selectItemType"} />
                                                         </View>
 
                                                         <View style={[PADDING_TOP]}>
@@ -480,7 +481,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                                                 items={list_product_type_all}
                                                                 keyer={"list-item-type-01"}
                                                                 selectedItems={[value]}
-                                                                selectText={translate("postJobScreen.pleaseSelectVehicleType")}
+                                                                selectText={translate("postJobScreen.validateProductType")}
                                                                 onSelectedItemsChange={(val: any) => {
                                                                     onChange(val[0])
                                                                     setvisible(false)
@@ -490,14 +491,14 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                                         </View>
 
                                                         <View>
-                                                            <SectionList
+                                                            {!!list_product_type_all && list_product_type_all.length > 0 && <SectionList
                                                                 sections={list_product_type}
                                                                 keyExtractor={(item, index) => 'section-list-' + item.name + item.id + index}
                                                                 renderItem={({ item, index }) => _renderSectionModal(item, index, onChange, 2)}
                                                                 renderSectionHeader={({ section: { title } }) => (
                                                                     <Text tx={title} style={PADDING_TOP} />
                                                                 )}
-                                                            />
+                                                            />}
                                                         </View>
                                                     </SafeAreaView>
 

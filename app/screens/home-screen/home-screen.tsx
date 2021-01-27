@@ -57,6 +57,7 @@ export const HomeScreen = observer((props) => {
 
         versatileStore.findGroup()
         versatileStore.find()
+        versatileStore.findProductType()
 
         const now = new Date();
         const yesterday = date.addDays(now, -1);
