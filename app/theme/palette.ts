@@ -16,10 +16,10 @@ export const palette = {
   lightGray: "#EEEEEE",
   lightweightGray: "#d29811",
   gray: "#E5E5E5",
-  
+
   pureSnow: "#FFFFFF",
   pureBlack: "#000000",
   darkGrey: "#c4c4c4",
-  mainGrey: "#D8D8D8",
-
+  // mainGrey: "#D8D8D8",
+  mainGrey: "#999",
 }

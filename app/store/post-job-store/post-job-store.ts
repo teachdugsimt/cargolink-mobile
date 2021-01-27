@@ -1,5 +1,4 @@
 import { types, destroy, flow } from "mobx-state-tree"
-import { TextPropTypes } from "react-native"
 import { PostJobAPI } from '../../services/api'
 const postjobAPI = new PostJobAPI()
 
@@ -69,7 +68,14 @@ const PostJobStore = types.model({
                     self.loading = false
                 } else {
                     self.loading = false
-                    self.error = "error fetch create post job"
+                    __DEV__ && console.tron.log("Response ERROR POST JOB :: ", response)
+                    if (response.data && response.data.validMsgList && response.data.validMsgList['from.datetime'] &&
+                        response.data.validMsgList['from.datetime'][0] && response.data.validMsgList['from.datetime'][0]
+                        == "Date of delivery should not be a date before the date of loading") {
+                        __DEV__ && console.tron.log("Error : : Call API post job :: ", response)
+                        self.error = response.data.validMsgList['from.datetime'][0]
+                    } else
+                        self.error = "error fetch create post job"
                 }
             } catch (error) {
                 // ... including try/catch error handling
@@ -82,6 +88,10 @@ const PostJobStore = types.model({
 
         clearDataPostjob() {
             self.data_postjob = null
+            self.error = null
+        },
+        setError(){
+            self.error = null
         }
     }))
     .views((self) => ({

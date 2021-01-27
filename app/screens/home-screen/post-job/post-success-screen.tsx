@@ -14,7 +14,8 @@ const FULL: ViewStyle = {
 }
 
 const TOP_VIEW: ViewStyle = {
-    flex: Platform.OS == "ios" ? 1 : 1.25,
+    paddingTop: Platform.OS == "ios" ? 10 : 0,
+    flex: Platform.OS == "ios" ? 0.65 : 0.85,
     backgroundColor: color.mainTheme,
     justifyContent: 'center',
 }

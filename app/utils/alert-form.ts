@@ -28,3 +28,17 @@ export const AlertFormDate = () => {
     )
     return;
 }
+
+export const AlertMessage = (title = null, text = null) => {
+    Alert.alert(
+        title || translate('common.somethingWrong'),
+        text || translate("postJobScreen.pleaseCheckYourData"),
+        [
+            {
+                text: translate('common.ok'), onPress: () => { }
+            }
+        ]
+        , { cancelable: false }
+    )
+    return;
+}
