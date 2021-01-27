@@ -70,8 +70,8 @@ Podfile.lock
 .vscode
 
 # Configurations
-app/config/env.*.js
-!env.js
+# app/config/env.*.js
+# !env.js
 
 package-lock.json
 yarn.log
