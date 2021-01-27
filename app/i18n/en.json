@@ -79,7 +79,9 @@
     "manageCar": "Manage Car",
     "findJob": "Find Job",
     "postJob": "Post Job",
-    "findCar": "Find Car"
+    "findCar": "Find Car",
+    "carriers": "Carriers",
+    "shippers": "Shippers"
   },
   "postJobScreen": {
     "postjob": "post job",

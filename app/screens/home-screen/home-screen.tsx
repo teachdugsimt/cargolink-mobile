@@ -17,10 +17,12 @@ const { width, height } = Dimensions.get('window')
 const FULL: ViewStyle = { flex: 1 }
 
 const TOP_VIEW: ViewStyle = {
-  flex: Platform.OS == "ios" ? 1 : 1.5,
+  flex: 1.2,
   backgroundColor: color.mainTheme,
-  borderBottomLeftRadius: 15,
-  borderBottomRightRadius: 15,
+  borderBottomLeftRadius: 20,
+  borderBottomRightRadius: 20,
+  justifyContent: 'flex-start',
+  alignItems: 'center'
 }
 const BOTTOM_VIEW: ViewStyle = {
   flex: 2,
@@ -30,7 +32,7 @@ const BOTTOM_VIEW: ViewStyle = {
 const IMAGE_LOGO: ImageStyle = {
   // backgroundColor: 'red',
   width: '100%',
-  marginTop: -25,
+  // marginTop: -spacing[6],
 }
 const IMG_VIEW: ViewStyle = {
   ...FULL,
@@ -128,13 +130,10 @@ export const HomeScreen = observer((props) => {
     <>
       <View testID="HomeScreen" style={ROOT_HOME}>
         <View style={TOP_VIEW}>
-          <View style={IMG_VIEW}>
-            {Platform.OS == "ios" ? <Image style={IMAGE_LOGO} height={(height / 4.5)}
-              resizeMode='stretch'
-              source={images.logoNew} /> : <Image style={IMAGE_LOGO} height={(height / 3.5)}
-                resizeMode='stretch'
-                source={images.logoNew} />}
-          </View>
+          {/* <View style={IMG_VIEW}> */}
+          <Image style={IMAGE_LOGO} width={width / 1.5} height={width / 3.24}
+            resizeMode='stretch'
+            source={images.logoNew} />
         </View>
         <View style={BOTTOM_VIEW}>
           <View style={VIEW_GRID_BOX}>
