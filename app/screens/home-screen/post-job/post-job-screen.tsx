@@ -324,7 +324,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
       </View>
 
       <View style={BOTTOM_VIEW}>
-        <KeyboardAvoidingView behavior={Platform.OS == "ios" ? 'height' : 'padding'} keyboardVerticalOffset={Platform.OS == "ios" ? 100 : 10} style={{ flex: 1 }}>
+        <KeyboardAvoidingView behavior={Platform.OS == "ios" ? 'padding' : 'padding'} keyboardVerticalOffset={Platform.OS == "ios" ? 100 : 10} style={{ flex: 1 }}>
           <ScrollView style={FULL}>
 
             <View style={TOP_VIEW_2}>
