@@ -66,6 +66,7 @@ const AuthStore = types
   .model({
     data: types.maybeNull(SignIn),
     profile: types.maybeNull(OTPVerify),
+    phoneNumber: types.maybeNull(types.string),
     policyData: types.maybeNull(Policy),
     loading: types.boolean,
     error: types.maybeNull(types.string),
@@ -81,7 +82,7 @@ const AuthStore = types
         if (response.kind === 'ok') {
           self.data = response.data || {}
         } else {
-          self.error = response.data.message
+          self.error = response?.data?.message || response?.kind
         }
         self.loading = false
       } catch (error) {
@@ -100,8 +101,10 @@ const AuthStore = types
         if (response.kind === 'ok') {
           self.profile = response.data || {}
           self.policyData = response.data.termOfService || {}
+          self.error = '' // Clear error when signin success
+          self.phoneNumber = null // Clear phoneNumber when signin success
         } else {
-          self.error = response.data.message
+          self.error = response?.data?.message || response?.kind
         }
         self.loading = false
       } catch (error) {
@@ -155,7 +158,11 @@ const AuthStore = types
     clearAuthProfile() {
       self.profile = {}
       self.policyData = {}
-    }
+    },
+
+    setPhoneNumber(phoneNumber: string) {
+      self.phoneNumber = phoneNumber
+    },
 
   }))
   .views((self) => ({
@@ -171,6 +178,7 @@ const AuthStore = types
     data: {},
     profile: {},
     policyData: {},
+    phoneNumber: null,
     loading: false,
     error: "",
   })
