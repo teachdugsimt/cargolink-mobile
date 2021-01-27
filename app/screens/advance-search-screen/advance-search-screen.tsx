@@ -5,7 +5,7 @@ import { Button, Checkbox, HeaderCenter, Text, CollapsibleList, ModalLoading, He
 import { color, spacing } from '../../theme'
 import { useNavigation } from '@react-navigation/native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
-import AdvanceSearchStore from "../../store/shipper-job-store/advance-search-store"
+import AdvanceSearchStore from "../../store/carriers-job-store/advance-search-store"
 import { translate } from '../../i18n'
 
 const deviceWidht = Dimensions.get('window').width / 2
@@ -124,7 +124,6 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
       const arrChildOfSubMenu = []
       const filterSelected = menu.subMenu.filter(subMenu => {
         if (subMenu?.subMenu?.length) {
-          console.log('subMenu.name', subMenu.name)
           const res = subMenu.subMenu.filter(sub => sub.isChecked)
           arrChildOfSubMenu.push(...res)
           return false;
@@ -214,7 +213,6 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
   }
 
   __DEV__ && console.tron.log('truckTypes', truckTypes)
-  console.log('AdvanceSearchStore.loading', AdvanceSearchStore.loading)
 
   return (
     <View style={CONTAINER}>
