@@ -418,6 +418,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                     <TextInputTheme
                                         testID={"car-num"}
                                         placeholder={'คัน'}
+                                        keyboardType="numeric"
                                         inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
                                 )}
                                 key={'text-input-car-num'}
@@ -543,10 +544,12 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                 render={({ onChange, onBlur, value }) => (
                                     <TextInputTheme
                                         testID={"item-weight"}
+                                        keyboardType="numeric"
                                         inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
                                 )}
                                 key={'text-input-item-weight'}
                                 name={"item-weight"}
+                                keyboardType="numeric"
                                 rules={{ pattern: /^[+-]?\d+(\.\d+)?$/ }}
                                 defaultValue=""
                             />
