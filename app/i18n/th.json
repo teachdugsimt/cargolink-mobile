@@ -135,7 +135,7 @@
   },
   "uploadVehicleScreen": {
     "addVehicle": "เพิ่มรถ",
-    "selectVehicleType": "เลือกพาหนะของคุณ",
+    "selectVehicleType": "เลือกรถของคุณ",
     "haveDump": "รถมีที่ดั้มหรือไม่",
     "heightVehicle": "ความสูงของคอกรถ",
     "heightVehicleSelect": "กรุณาเลือกความสูงคอกรถ",

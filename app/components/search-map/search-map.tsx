@@ -9,6 +9,7 @@ import { color, images } from "../../theme";
 import i18n from 'i18n-js'
 import styles from './styles'
 import Geolocation from '@react-native-community/geolocation';
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const latitudeDelta = 0.005;
 const longitudeDelta = 0.005;
@@ -96,7 +97,7 @@ export const LocationPicker = (props) => {
             <MapView
                 ref={(ref) => mapView = ref}
                 onMapReady={() => goToInitialLocation(region)}
-                style={styles.map}
+                style={[styles.map]}
                 provider={PROVIDER_GOOGLE}
                 initialRegion={region}
                 region={region}
@@ -204,18 +205,18 @@ export const LocationPicker = (props) => {
             </View>
 
             <KeyboardAvoidingView style={styles.footer}>
-                <View style={{ flexDirection: "row", margin: 10 }}>
+                <View style={{ flexDirection: "row", marginHorizontal: 10 }}>
                     <Icon name="home" size={24} color={color.primary} style={{ padding: 10 }} />
                     <Text style={styles.addressText} tx={banner} />
                 </View>
                 <TextInput
-                    editable={false}
+                    // editable={false}
                     multiline={true}
                     clearButtonMode="while-editing"
                     style={{
                         marginBottom: 5,
                         width: "90%",
-                        minHeight: 70,
+                        minHeight: 50,
                         alignSelf: "center",
                         borderColor: "lightgrey",
                         borderWidth: 1.5,
@@ -230,7 +231,6 @@ export const LocationPicker = (props) => {
                     value={address}
                 />
                 <TouchableOpacity
-                    // onPress={() => console.log("Submit address :: ", address, currentLat, currentLng)}
                     onPress={() => onSubmitMap(address, region)}
                     style={{
                         width: "30%",

@@ -21,10 +21,11 @@ export default StyleSheet.create({
     },
     footer: {
         backgroundColor: "white",
-        bottom: 0,
+        bottom: 35,
         position: "absolute",
         width: "100%",
-        height: "30%",
+        height: "25%",
+        borderRadius: 5
     },
     panelFill: {
         position: "absolute",
