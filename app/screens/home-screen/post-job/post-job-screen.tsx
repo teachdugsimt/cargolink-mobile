@@ -532,10 +532,10 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                 )}
                                 key={'text-input-item-name'}
                                 name={"item-name"}
-                                rules={{ pattern: /^[a-zA-Z0-9 .!?"-]+$/ }}
+                                // rules={{ pattern: /^[a-zA-Z0-9 .!?"-]+$/ }}
                                 defaultValue=""
                             />
-                            {errors['item-name'] && <Text style={{ color: color.red }} tx={"common.noSign"} />}
+                            {/* {errors['item-name'] && <Text style={{ color: color.red }} tx={"common.noSign"} />} */}
 
                             <Text tx={"postJobScreen.weightNumber"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
                             <Controller
