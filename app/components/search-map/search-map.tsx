@@ -97,15 +97,18 @@ export const LocationPicker = (props) => {
   console.log("Autocomplete Google :: ", searchText)
   return (
     <View style={styles.map}>
-      <MapView
-        ref={(ref) => mapView = ref}
-        onMapReady={() => goToInitialLocation(region)}
-        style={[styles.map]}
-        provider={PROVIDER_GOOGLE}
-        initialRegion={region}
-        region={region}
-        onRegionChangeComplete={onRegionChange}
-      />
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
+          <View style={{ flex: 1 }}>
+            <MapView
+              ref={(ref) => mapView = ref}
+              onMapReady={() => goToInitialLocation(region)}
+              style={[styles.map]}
+              provider={PROVIDER_GOOGLE}
+              initialRegion={region}
+              region={region}
+              onRegionChangeComplete={onRegionChange}
+            />
 
 
 
@@ -114,83 +117,83 @@ export const LocationPicker = (props) => {
 
 
 
-      <View style={styles.panel}>
-        <View style={[styles.panelHeader,
-        listViewDisplayed ? styles.panelFill : styles.panel,]}>
-          <GooglePlacesAutocomplete
-            currentLocation={false}
-            enableHighAccuracyLocation={true}
-            ref={(c) => (searchText = c)}
-            placeholder="Search for a location"
-            minLength={2} // minimum length of text to search
-            autoFocus={false}
-            returnKeyType={"search"}
-            // listViewDisplayed={listViewDisplayed}
-            listViewDisplayed={"auto"}
-            fetchDetails={true}
-            renderDescription={(row) => row.description}
-            enablePoweredByContainer={false}
-            listUnderlayColor="lightgrey"
-            onPress={(data, details) => {
-              __DEV__ && console.tron.log("Data google place autocomplete :: ", data)
-              __DEV__ && console.tron.log("Detail google place autocomplete :: ", details)
-              setState(prevState => ({
-                ...prevState,
-                listViewDisplayed: false,
-                address: data.description,
-                currentLat: details.geometry.location.lat,
-                currentLng: details.geometry.location.lng,
-              }))
-              setregion({
-                latitudeDelta,
-                longitudeDelta,
-                latitude: details.geometry.location.lat,
-                longitude: details.geometry.location.lng,
-              })
-              searchText.setAddressText("");
-              goToInitialLocation(region);
-            }}
-            textInputProps={{
-              onChangeText: (text) => {
-                console.log(text);
-                setState(prev => ({ ...prev, listViewDisplayed: true }));
-              },
-            }}
-            getDefaultValue={() => {
-              return ""; // text input default value
-            }}
-            query={{
-              key: GOOGLE_API_KEY,
-              language: i18n.locale, // language of the results
-              components: i18n.locale == "th" ? "country:tha" : "country:tha",
-            }}
-            styles={{
-              description: {
-                fontFamily: "Kanit-Medium",
-                color: "black",
-                fontSize: 12,
-              },
-              predefinedPlacesDescription: {
-                color: "black",
-              },
-              listView: {
-                position: "absolute",
-                marginTop: 44,
-                backgroundColor: "white",
-                borderBottomEndRadius: 15,
-                elevation: 2,
-              },
-            }}
-            nearbyPlacesAPI="GooglePlacesSearch"
-            GooglePlacesSearchQuery={{
-              rankby: "distance",
-              types: "building",
-            }}
-            filterReverseGeocodingByTypes={[
-              "locality", "administrative_area_level_3",]}
-            debounce={200} />
-        </View>
-      </View>
+            <View style={styles.panel}>
+              <View style={[styles.panelHeader,
+              listViewDisplayed ? styles.panelFill : styles.panel,]}>
+                <GooglePlacesAutocomplete
+                  currentLocation={false}
+                  enableHighAccuracyLocation={true}
+                  ref={(c) => (searchText = c)}
+                  placeholder="Search for a location"
+                  minLength={2} // minimum length of text to search
+                  autoFocus={false}
+                  returnKeyType={"search"}
+                  // listViewDisplayed={listViewDisplayed}
+                  listViewDisplayed={"auto"}
+                  fetchDetails={true}
+                  renderDescription={(row) => row.description}
+                  enablePoweredByContainer={false}
+                  listUnderlayColor="lightgrey"
+                  onPress={(data, details) => {
+                    __DEV__ && console.tron.log("Data google place autocomplete :: ", data)
+                    __DEV__ && console.tron.log("Detail google place autocomplete :: ", details)
+                    setState(prevState => ({
+                      ...prevState,
+                      listViewDisplayed: false,
+                      address: data.description,
+                      currentLat: details.geometry.location.lat,
+                      currentLng: details.geometry.location.lng,
+                    }))
+                    setregion({
+                      latitudeDelta,
+                      longitudeDelta,
+                      latitude: details.geometry.location.lat,
+                      longitude: details.geometry.location.lng,
+                    })
+                    searchText.setAddressText("");
+                    goToInitialLocation(region);
+                  }}
+                  textInputProps={{
+                    onChangeText: (text) => {
+                      console.log(text);
+                      setState(prev => ({ ...prev, listViewDisplayed: true }));
+                    },
+                  }}
+                  getDefaultValue={() => {
+                    return ""; // text input default value
+                  }}
+                  query={{
+                    key: GOOGLE_API_KEY,
+                    language: i18n.locale, // language of the results
+                    components: i18n.locale == "th" ? "country:tha" : "country:tha",
+                  }}
+                  styles={{
+                    description: {
+                      fontFamily: "Kanit-Medium",
+                      color: "black",
+                      fontSize: 12,
+                    },
+                    predefinedPlacesDescription: {
+                      color: "black",
+                    },
+                    listView: {
+                      position: "absolute",
+                      marginTop: 44,
+                      backgroundColor: "white",
+                      borderBottomEndRadius: 15,
+                      elevation: 2,
+                    },
+                  }}
+                  nearbyPlacesAPI="GooglePlacesSearch"
+                  GooglePlacesSearchQuery={{
+                    rankby: "distance",
+                    types: "building",
+                  }}
+                  filterReverseGeocodingByTypes={[
+                    "locality", "administrative_area_level_3",]}
+                  debounce={200} />
+              </View>
+            </View>
 
 
 
@@ -201,18 +204,17 @@ export const LocationPicker = (props) => {
 
 
 
-      <View style={styles.markerFixed}>
-        <Image
-          style={styles.marker}
-          source={images.pinbox} />
-      </View>
+            <View style={styles.markerFixed}>
+              <Image
+                style={styles.marker}
+                source={images.pinbox} />
+            </View>
 
 
 
-      <View style={{ justifyContent: 'flex-end', minHeight: Platform.OS == "ios" ? height / 7 : height / 6 }}>
-        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
-            <View>
+            <View style={{ justifyContent: 'flex-end', minHeight: Platform.OS == "ios" ? height / 6.5 : height / 5 }}>
+
+
               <View style={{ flexDirection: "row", marginHorizontal: 10, justifyContent: 'space-between' }}>
                 <View style={{ flexDirection: "row" }}>
                   <Icon name="home" size={24} color={color.primary} style={{ padding: 10 }} />
@@ -233,11 +235,11 @@ export const LocationPicker = (props) => {
                 value={address}
               />
 
-            </View>
-          </TouchableWithoutFeedback>
 
-        </KeyboardAvoidingView>
-      </View>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
 
 
     </View>
