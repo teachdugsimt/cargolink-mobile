@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from "react-native";
+import { View, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback, Dimensions } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { GOOGLE_API_KEY } from '../../config/env'
@@ -9,7 +9,8 @@ import { color, images } from "../../theme";
 import i18n from 'i18n-js'
 import styles from './styles'
 import Geolocation from '@react-native-community/geolocation';
-import { SafeAreaView } from "react-native-safe-area-context";
+
+const { height } = Dimensions.get('window')
 
 const latitudeDelta = 0.005;
 const longitudeDelta = 0.005;
@@ -42,7 +43,7 @@ export const LocationPicker = (props) => {
 
   const getAddress = () => {
     //function to get address using current lat and lng
-    fetch("https://maps.googleapis.com/maps/api/geocode/json?address=" + region.latitude + "," + region.longitude + "&key=" + GOOGLE_API_KEY)
+    fetch("https://maps.googleapis.com/maps/api/geocode/json?address=" + region.latitude + "," + region.longitude + "&key=" + GOOGLE_API_KEY + "&language=" + i18n.locale)
       .then((response) => response.json())
       .then((responseJson) => {
         console.log("ADDRESS GEOCODE is BACK!! => " + JSON.stringify(responseJson));
@@ -57,6 +58,8 @@ export const LocationPicker = (props) => {
     getAddress()
     return () => {
       Geolocation.stopObserving()
+      setState(initialState)
+      setregion(initialData)
     }
   }, [])
 
@@ -203,57 +206,33 @@ export const LocationPicker = (props) => {
           style={styles.marker}
           source={images.pinbox} />
       </View>
-      <View style={{ justifyContent: 'flex-end', minHeight: Platform.OS == "ios" ? "17.5%" : "20%" }}>
 
-        <KeyboardAvoidingView
-          // style={styles.footer} 
-          style={{ flex: 1 }}
-          behavior={Platform.OS === "ios" ? "height" : "height"}>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+
+
+      <View style={{ justifyContent: 'flex-end', minHeight: Platform.OS == "ios" ? height / 7 : height / 6 }}>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
             <View>
-              <View style={{ flexDirection: "row", marginHorizontal: 10 }}>
-                <Icon name="home" size={24} color={color.primary} style={{ padding: 10 }} />
-                <Text style={styles.addressText} tx={banner} />
+              <View style={{ flexDirection: "row", marginHorizontal: 10, justifyContent: 'space-between' }}>
+                <View style={{ flexDirection: "row" }}>
+                  <Icon name="home" size={24} color={color.primary} style={{ padding: 10 }} />
+                  <Text style={styles.addressText} tx={banner} />
+                </View>
+                <TouchableOpacity
+                  onPress={() => onSubmitMap(address, region)}
+                  style={styles.buttonSubmit}>
+                  <Text style={{ paddingVertical: 2.5 }} tx={"common.confirm"} />
+                </TouchableOpacity>
               </View>
 
               <TextInput
-                // editable={false}
                 multiline={true}
                 clearButtonMode="while-editing"
-                style={{
-                  marginBottom: 5,
-                  width: "90%",
-                  minHeight: 60,
-                  alignSelf: "center",
-                  borderColor: "lightgrey",
-                  borderWidth: 1.5,
-                  fontSize: 12,
-                  borderRadius: 5,
-                  flex: 0.5,
-                  alignContent: "flex-start",
-                  textAlignVertical: "top",
-                  fontFamily: "Kanit-Medium",
-                }}
+                style={styles.inputAddressFinal}
                 onChangeText={(text) => setState(prev => ({ ...prev, address: text }))}
                 value={address}
               />
 
-              <TouchableOpacity
-                onPress={() => onSubmitMap(address, region)}
-                style={{
-                  width: "30%",
-                  alignSelf: "center",
-                  alignItems: "center",
-                  backgroundColor: color.primary,
-                  borderRadius: 16.5,
-                  shadowColor: "rgba(0,0,0, .4)", // IOS
-                  shadowOffset: { height: 1, width: 1 }, // IOS
-                  shadowOpacity: 1, // IOS
-                  shadowRadius: 1, //IOS
-                  elevation: 2, // Android 
-                }}>
-                <Text style={{ paddingVertical: 2.5 }} tx={"common.confirm"} />
-              </TouchableOpacity>
             </View>
           </TouchableWithoutFeedback>
 
