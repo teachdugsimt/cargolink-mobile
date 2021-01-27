@@ -74,10 +74,12 @@
   },
   "homeScreen": {
     "logout": "ออกจากระบบ",
-    "manageCar": "จัดการรถ",
+    "manageCar": "เพิ่มรถ",
     "findJob": "หางาน",
     "postJob": "โพสงาน",
-    "findCar": "หารถ"
+    "findCar": "หารถ",
+    "carriers": "ผู้ให้บริการขนส่ง / Carriers",
+    "shippers": "เจ้าของสินค้า / Shippers"
   },
   "postJobScreen": {
     "postjob": "เพิ่มงาน",
@@ -128,7 +130,6 @@
     "validateShippingName": "กรุณาตรวจสอบชื่อผู้ส่งสินค้า",
     "validateReceiveTel": "กรุณาตรวจสอบเบอร์ติดต่อ",
     "receiveDateMoreThan": "วันรับสินค้าต้องมากกว่าวันปัจจุบัน 2 วัน"
-
   },
   "uploadVehicleScreen": {
     "addVehicle": "เพิ่มรถ",
