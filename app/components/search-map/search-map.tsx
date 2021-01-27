@@ -43,7 +43,7 @@ export const LocationPicker = (props) => {
 
   const getAddress = () => {
     //function to get address using current lat and lng
-    fetch("https://maps.googleapis.com/maps/api/geocode/json?address=" + region.latitude + "," + region.longitude + "&key=" + GOOGLE_API_KEY)
+    fetch("https://maps.googleapis.com/maps/api/geocode/json?address=" + region.latitude + "," + region.longitude + "&key=" + GOOGLE_API_KEY + "&language=" + i18n.locale)
       .then((response) => response.json())
       .then((responseJson) => {
         console.log("ADDRESS GEOCODE is BACK!! => " + JSON.stringify(responseJson));
