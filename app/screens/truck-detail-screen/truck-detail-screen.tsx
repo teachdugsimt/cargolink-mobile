@@ -4,6 +4,7 @@ import {
     Dimensions,
     Image,
     ImageBackground,
+    ImageSourcePropType,
     ImageStyle,
     Modal,
     ScrollView,
@@ -15,7 +16,6 @@ import { Button, ModalLoading, PostingBy, Text } from "../../components"
 import { translate } from "../../i18n"
 import { color, images as imageComponent, spacing } from "../../theme"
 import { useNavigation } from "@react-navigation/native"
-import ImageViewer from 'react-native-image-zoom-viewer';
 import { TouchableOpacity } from "react-native-gesture-handler"
 import ShipperTruckStore from '../../store/shipper-truck-store/shipper-truck-store'
 import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
@@ -24,6 +24,14 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import FavoriteTruckStore from "../../store/shipper-truck-store/favorite-truck-store"
 import { GetTruckType } from "../../utils/get-truck-type"
 import { MapTruckImageName } from "../../utils/map-truck-image-name"
+import ImageView from 'react-native-image-view';
+
+interface ImageInfo {
+    width: number
+    height: number
+    title: string
+    source?: ImageSourcePropType
+}
 
 const deviceWidht = Dimensions.get("window").width
 
@@ -175,13 +183,23 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
     const transformImage = truckPhotos &&
         Object.keys(truckPhotos).length ?
         Object.entries(truckPhotos).map(img => {
-            let imgObj = {
-                url: img[1] || '',
-                props: {
-                    source: !img[1] ? imageComponent['noImageAvailable'] : undefined
-                }
+            let imageInfo: ImageInfo = {
+                width: 1024,
+                height: 720,
+                title: `img-${img[0]}`
             }
-            return JSON.parse(JSON.stringify(imgObj))
+            if (img[1]) {
+                imageInfo.source = {
+                    uri: img[1],
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${tokenStore.token.accessToken}`
+                    }
+                }
+            } else {
+                imageInfo.source = imageComponent['noImageAvailable']
+            }
+            return imageInfo
         }) : []
 
     return (
@@ -198,25 +216,18 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
                                 transformImage.map((image, index) => {
                                     return (
                                         <TouchableOpacity style={TOUCHABLE} key={index} onPress={(attr) => onViewer(index)}>
-                                            <Image style={IMAGE} source={ShipperTruckStore.data.id && image.url ? {
-                                                uri: image.url,
-                                                method: 'GET',
-                                                headers: {
-                                                    Authorization: `Bearer ${tokenStore.token.accessToken}`
-                                                },
-                                            } : imageComponent['noImageAvailable']} key={index} />
+                                            <Image style={IMAGE} source={ShipperTruckStore.data.id && image?.source ? image.source : imageComponent['noImageAvailable']} key={index} />
                                         </TouchableOpacity>
                                     )
                                 })}
-                            <Modal visible={openViewer} transparent={true}>
-                                <ImageViewer
-                                    imageUrls={transformImage}
-                                    index={indexOfImage}
-                                    onCancel={onCancel}
-                                    enableSwipeDown={true}
-                                    pageAnimateTime={transformImage ? transformImage.length : 0}
-                                />
-                            </Modal>
+                            {/* <Modal visible={openViewer} transparent={true}> */}
+                            <ImageView
+                                images={transformImage}
+                                imageIndex={indexOfImage}
+                                isVisible={openViewer}
+                                onClose={onCancel}
+                            />
+                            {/* </Modal> */}
                         </View>
                     </View>
                 </View>
