@@ -50,6 +50,7 @@ const ShipperJobStore = types
         list: types.maybeNull(types.array(types.maybeNull(ShipperJob))),
         data: types.maybeNull(ShipperJob),
         favoriteList: types.maybeNull(ShipperJob),
+        previousListLength: types.optional(types.number, 0),
         directions: types.optional(types.array(types.array(Directions)), []),
         loading: types.boolean,
         mapLoading: types.boolean,
@@ -60,6 +61,7 @@ const ShipperJobStore = types
             yield apiShipperJob.setup()
             self.loading = true
             try {
+                self.previousListLength = self.list.length
                 const response = yield apiShipperJob.find(filter)
                 console.log("Response call api get shipper jobs : : ", response)
                 if (response.kind === 'ok') {
@@ -252,6 +254,7 @@ const ShipperJobStore = types
         // IMPORTANT !!
         list: [],
         data: {},
+        previousListLength: 0,
         loading: false,
         mapLoading: false,
         error: "",

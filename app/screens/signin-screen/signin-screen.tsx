@@ -14,7 +14,7 @@ import { observer } from "mobx-react-lite"
 import { Button, Icon, ModalAlert, Text } from "../../components"
 import { useNavigation } from '@react-navigation/native'
 // import CountryPicker, { Country, CountryCode, DEFAULT_THEME } from 'react-native-country-picker-modal'
-import { color, spacing } from '../../theme'
+import { color, spacing, images } from '../../theme'
 import { translate } from '../../i18n'
 import i18n from 'i18n-js'
 import AuthStore from '../../store/auth-store/auth-store'
@@ -22,7 +22,6 @@ import AuthStore from '../../store/auth-store/auth-store'
 i18n.defaultLocale = 'th'
 i18n.locale = 'th'
 i18n.fallbacks = true
-const logo = require('./logo.png')
 
 const CONTENT_CENTER: ViewStyle = {
   justifyContent: "center",
@@ -166,7 +165,9 @@ export const SigninScreen = observer(function SigninScreen() {
   }
 
   const onPress = (mobileNo: string) => {
-    AuthStore.signInRequest({ phoneNumber: normalizeMobileNo(mobileNo), userType: 7 })
+    const phoneNumber = normalizeMobileNo(mobileNo)
+    AuthStore.setPhoneNumber(phoneNumber)
+    AuthStore.signInRequest({ phoneNumber: phoneNumber, userType: 7 })
     setState(initialState)
     navigation.navigate("confirmCode")
   }
@@ -191,7 +192,7 @@ export const SigninScreen = observer(function SigninScreen() {
   return (
     <View testID="SigninScreen" style={FULL}>
       <View testID="Logo" style={LOGO_PART}>
-        <Image source={logo} style={LOGO} resizeMode={"contain"} />
+        <Image source={images.logoNewYellow} style={LOGO} resizeMode={"contain"} />
       </View>
       <View testID="MobileForm" style={MOBILE_FORM_PART}>
         <Text style={LABEL} text={translate("signinScreen.enterYourPhoneNumber")} />

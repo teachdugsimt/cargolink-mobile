@@ -336,7 +336,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                     </MapView>
                 }
 
-                <TouchableOpacity activeOpacity={1} onPress={onOpen} style={CONTENT_SMALL}>
+                <TouchableOpacity activeOpacity={1} onPress={onOpen} onPressOut={onOpen} style={CONTENT_SMALL}>
                     <View>
                         <Text text={translate('jobDetailScreen.pickUpPoint')} style={{ ...TEXT_SMALL, color: color.line, }} />
                     </View>

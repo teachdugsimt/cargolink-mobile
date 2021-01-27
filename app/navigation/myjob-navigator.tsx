@@ -7,7 +7,9 @@
 import React from "react"
 
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
-import { MyJobScreen } from "../screens"
+import { HeaderCenter, HeaderLeft } from "../components"
+import { JobDetailScreen, MyJobScreen } from "../screens"
+import { color } from "../theme"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
  * as well as what properties (if any) they might take when navigating to them.
@@ -22,6 +24,7 @@ import { MyJobScreen } from "../screens"
  */
 export type PrimaryMyJobParamList = {
     myjob: undefined
+    myJobDetail: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -34,15 +37,29 @@ export function MyJobNavigator() {
             screenOptions={{
                 headerShown: true,
                 gestureEnabled: true,
-                title: 'Realtime',
-                headerTintColor: 'black',
                 headerStyle: {
-                    backgroundColor: 'red'
-                }
+                    backgroundColor: color.mainTheme,
+                },
+                headerTitleStyle: {
+                    fontFamily: 'Kanit-Medium',
+                    fontSize: 20
+                },
             }}
         >
-            <Stack.Screen name="myjob" component={MyJobScreen} />
-            {/* <Stack.Screen name="detail" component={DetailScreen} /> */}
+            <Stack.Screen name="myjob" component={MyJobScreen}
+                options={({ navigation, route }) => ({
+                    headerCenter: () => <HeaderCenter tx={"myJobScreen.myJob"} />,
+                    headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+                    headerHideShadow: true
+                })}
+            />
+
+            <Stack.Screen name="myJobDetail" component={JobDetailScreen}
+                options={({ navigation, route }) => ({
+                    headerCenter: () => <HeaderCenter tx={"jobDetailScreen.jobDetail"} />,
+                    headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+                })} />
+
         </Stack.Navigator>
     )
 }
