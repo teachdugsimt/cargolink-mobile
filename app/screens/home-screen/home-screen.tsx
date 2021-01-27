@@ -106,18 +106,30 @@ export const HomeScreen = observer((props) => {
     const dataTest: List[] = [
         {
             title: "ผู้ให้บริการขนส่ง / Carriers",
-            data: [{
-                id: 1, name: "homeScreen.manageCar", onPressButton: () => {
-                    MyVehicleStore.findRequest({})
-                    navigation.navigate("myVehicle")
-                }, img: images.truck1
-            },
-            { id: 2, name: "homeScreen.findJob", onPressButton: () => navigation.navigate("searchJob"), img: images.pinbox }]
+            data: [
+                {
+                    id: 1, name: "homeScreen.manageCar",
+                    onPressButton: () => {
+                        MyVehicleStore.findRequest({})
+                        navigation.navigate("myVehicle")
+                    }, img: images.truck1
+                },
+                {
+                    id: 2, name: "homeScreen.findJob",
+                    onPressButton: () => navigation.navigate("searchJob"), img: images.pinbox
+                }]
         },
         {
             title: "เจ้าของสินค้า / Shippers",
-            data: [{ id: 3, name: "homeScreen.postJob", onPressButton: () => navigation.navigate("postjob"), img: images.sheet1 },
-            { id: 4, name: "homeScreen.findCar", onPressButton: () => navigation.navigate("searchTruck"), img: images.word1 }]
+            data: [
+                {
+                    id: 3, name: "homeScreen.postJob",
+                    onPressButton: () => navigation.navigate("postjob"), img: images.sheet1
+                },
+                {
+                    id: 4, name: "homeScreen.findCar",
+                    onPressButton: () => navigation.navigate("searchTruck"), img: images.word1
+                }]
         }
     ]
     return (

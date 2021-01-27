@@ -11993,6 +11993,11 @@ react-native-image-resizer@^1.4.1:
   resolved "https://registry.yarnpkg.com/react-native-image-resizer/-/react-native-image-resizer-1.4.1.tgz#b808a4d1d9a910167e11bf666ad793e94e3f423d"
   integrity sha512-70xTt2wS/pT37nH0WdzW8L1X5z2sZuFQpFTDrVyqnA9V/ff8vFq0p0vQIYzO3zSBCm3JJP6IUzZRtEtG2eCl4A==
 
+react-native-image-view@^2.1.9:
+  version "2.1.9"
+  resolved "https://registry.yarnpkg.com/react-native-image-view/-/react-native-image-view-2.1.9.tgz#635306360c42ad2479f364161c47d2557f9240fd"
+  integrity sha512-+DA/+tLM7KHaLs41Hdd+m5UpGX2qtEdMamMZCsXCsJ5J6RwWrqBXQrGVB9Op7dIkZW2DDRVKZTP/FuSNEGtzJg==
+
 react-native-image-zoom-viewer@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/react-native-image-zoom-viewer/-/react-native-image-zoom-viewer-3.0.1.tgz#a2bd5fb3bda15e0686ce88fcde8576726495d7fb"
