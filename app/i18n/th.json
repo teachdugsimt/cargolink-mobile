@@ -210,7 +210,9 @@
     "codeWillExpire": "รหัสจะหมดอายุใน",
     "codeExpired": "รหัสหมดอายุแล้ว",
     "requestNewOTP": "ขอรับรหัส OTP ใหม่",
-    "confirmOTP": "ยืนยันรหัส OTP"
+    "confirmOTP": "ยืนยันรหัส OTP",
+    "codeExpiredOrIncorrect": "รหัส OTP ของคุณหมดอายุ \n หรือไม่ถูกต้อง",
+    "confirmOTPAgianOrRequestNewOTP": "กรุณากรอกรหัส OTP อีกครั้งหากไม่สำเร็จให้เลือกขอรหัส OTP ใหม่อีกครั้ง"
   },
   "myVehicleScreen": {
     "informationAt": "ข้อมูล ณ วันที่",
@@ -316,5 +318,10 @@
     "lastestContact": "ที่ติดต่อล่าสุด",
     "job": "งาน",
     "vehicle": "รถ"
+  },
+  "myJobScreen": {
+    "myJob": "งานของฉัน",
+    "workInProgress": "งานที่กำลังดำเนินการ",
+    "workDone": "งานที่จบแล้ว"
   }
 }

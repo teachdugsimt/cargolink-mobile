@@ -1,89 +1,49 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-
+import React, { useEffect, useState } from 'react';
 import {
-  StyleSheet,
   View,
-  Text,
   TouchableOpacity,
-  AppState
+  ViewStyle,
+  TextStyle
 } from 'react-native';
 import { CountDownProps } from './count-down.props';
 import { sprintf } from 'sprintf-js';
+import { Text } from "../text/text";
 
-const DEFAULT_DIGIT_STYLE = { backgroundColor: '#FAB913' };
-const DEFAULT_DIGIT_TXT_STYLE = { color: '#000' };
-const DEFAULT_TIME_LABEL_STYLE = { color: '#000' };
-const DEFAULT_SEPARATOR_STYLE = { color: '#000' };
-const DEFAULT_TIME_TO_SHOW = ['DD', 'HH', 'MM', 'SS'];
-const DEFAULT_TIME_LABELS = {
-  d: 'Days',
-  h: 'Hours',
-  m: 'Minutes',
-  s: 'Seconds',
-};
+const TIME_COUNT: ViewStyle = {
+  flexDirection: 'row',
+  justifyContent: 'center',
+}
+const TIME_TXT: TextStyle = {
+  backgroundColor: 'transparent',
+}
+const TIME_INNER_COUNT: ViewStyle = {
+  flexDirection: 'row',
+  justifyContent: 'center',
+  alignItems: 'center',
+}
+const DIGIT_COUNT: ViewStyle = {
+  alignItems: 'center',
+  justifyContent: 'center',
+}
+const DOUBLE_DIGIT_COUNT: ViewStyle = {
+  justifyContent: 'center',
+  alignItems: 'center',
+}
+const DIGIT_TXT: TextStyle = {
+  color: '#000',
+  fontVariant: ['tabular-nums']
+}
+const SEPARATOR_TXT: TextStyle = {
+  backgroundColor: 'transparent',
+}
 
-class CountDown extends React.Component<CountDownProps> {
-  static propTypes = {
-    id: PropTypes.string,
-    digitStyle: PropTypes.object,
-    digitTxtStyle: PropTypes.object,
-    timeLabelStyle: PropTypes.object,
-    separatorStyle: PropTypes.object,
-    timeToShow: PropTypes.array,
-    showSeparator: PropTypes.bool,
-    size: PropTypes.number,
-    until: PropTypes.number,
-    onChange: PropTypes.func,
-    onPress: PropTypes.func,
-    onFinish: PropTypes.func,
-  };
+let clockCall = null
 
-  state = {
-    until: Math.max(this.props.until, 0),
-    lastUntil: null,
-    wentBackgroundAt: null,
-  };
+export function CountDown(props: CountDownProps) {
 
-  constructor(props) {
-    super(props);
-    this.timer = setInterval(this.updateTimer, 1000);
-  }
+  const [until, setUntil] = useState(Math.max(props.until, 0))
 
-  componentDidMount() {
-    AppState.addEventListener('change', this._handleAppStateChange);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.timer);
-    AppState.removeEventListener('change', this._handleAppStateChange);
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props.until !== prevProps.until || this.props.id !== prevProps.id) {
-      this.setState({
-        lastUntil: prevState.until,
-        until: Math.max(prevProps.until, 0)
-      });
-    }
-  }
-
-  _handleAppStateChange = currentAppState => {
-    const { until, wentBackgroundAt } = this.state;
-    if (currentAppState === 'active' && wentBackgroundAt && this.props.running) {
-      const diff = (Date.now() - wentBackgroundAt) / 1000.0;
-      this.setState({
-        lastUntil: until,
-        until: Math.max(0, until - diff)
-      });
-    }
-    if (currentAppState === 'background') {
-      this.setState({ wentBackgroundAt: Date.now() });
-    }
-  }
-
-  getTimeLeft = () => {
-    const { until } = this.state;
+  const getTimeLeft = () => {
     return {
       seconds: until % 60,
       minutes: (until / 60) % 60,
@@ -92,61 +52,28 @@ class CountDown extends React.Component<CountDownProps> {
     };
   };
 
-  updateTimer = () => {
-    // Don't fetch these values here, because their value might be changed
-    // in another thread
-    // const {lastUntil, until} = this.state;
-
-    if (this.state.lastUntil === this.state.until || !this.props.running) {
-      return;
-    }
-    if (this.state.until === 1 || (this.state.until === 0 && this.state.lastUntil !== 1)) {
-      if (this.props.onFinish) {
-        this.props.onFinish();
-      }
-      if (this.props.onChange) {
-        this.props.onChange(this.state.until);
-      }
-    }
-
-    if (this.state.until === 0) {
-      this.setState({ lastUntil: 0, until: 0 });
-    } else {
-      if (this.props.onChange) {
-        this.props.onChange(this.state.until);
-      }
-      this.setState({
-        lastUntil: this.state.until,
-        until: Math.max(0, this.state.until - 1)
-      });
-    }
-  };
-
-  renderDigit = (d) => {
-    const { digitStyle, digitTxtStyle, size } = this.props;
+  const renderDigit = (digit: Array<string>) => {
+    const { digitStyle, digitTxtStyle, size } = props;
+    const style = { ...DIGIT_COUNT, ...digitStyle }
     return (
-      <View style={[
-        styles.digitCont,
-        // { width: size * 2, height: size * 2 },
-        digitStyle,
-      ]}>
+      <View style={style}>
         <Text style={[
-          styles.digitTxt,
+          DIGIT_TXT,
           { fontSize: size },
           digitTxtStyle,
         ]}>
-          {d}
+          {digit}
         </Text>
       </View>
     );
   };
 
-  renderLabel = label => {
-    const { timeLabelStyle, size } = this.props;
+  const renderLabel = (label: string) => {
+    const { timeLabelStyle, size } = props;
     if (label) {
       return (
         <Text style={[
-          styles.timeTxt,
+          TIME_TXT,
           { fontSize: size / 1.8 },
           timeLabelStyle,
         ]}>
@@ -156,23 +83,23 @@ class CountDown extends React.Component<CountDownProps> {
     }
   };
 
-  renderDoubleDigits = (label, digits) => {
+  const renderDoubleDigits = (label: string, digits: Array<string>) => {
     return (
-      <View style={styles.doubleDigitCont}>
-        <View style={styles.timeInnerCont}>
-          {this.renderDigit(digits)}
+      <View style={DOUBLE_DIGIT_COUNT}>
+        <View style={TIME_INNER_COUNT}>
+          {renderDigit(digits)}
         </View>
-        {this.renderLabel(label)}
+        {renderLabel(label)}
       </View>
     );
   };
 
-  renderSeparator = () => {
-    const { separatorStyle, size } = this.props;
+  const renderSeparator = () => {
+    const { separatorStyle } = props;
     return (
       <View style={{ justifyContent: 'center', alignItems: 'center' }}>
         <Text style={[
-          styles.separatorTxt,
+          SEPARATOR_TXT,
           { fontWeight: "bold" },
           separatorStyle,
         ]}>
@@ -182,93 +109,58 @@ class CountDown extends React.Component<CountDownProps> {
     );
   };
 
-  getDigitTime = (digit, timeNeedded) => {
-    // timeNeeded => days, hours, minutes, seconds
-    const timeRef = this.getTimeLeft();
+  const getDigitTime = (digit: number, timeNeedded: string) => {
+    const timeRef = getTimeLeft();
     const newTime = sprintf(`%0${digit}d`, timeRef[timeNeedded]).split(':');
-    return newTime
+    const resultTime = newTime[0] && Number(newTime[0]) ? newTime : '00'
+    return resultTime
   }
 
-  renderCountDown = () => {
-    const { timeToShow, timeLabels, showSeparator } = this.props;
-    const Component = this.props.onPress ? TouchableOpacity : View;
+  const renderCountDown = () => {
+    const { timeToShow, timeLabels, showSeparator } = props;
     const digitOfDay = timeToShow.includes('DD') ? 2 : (timeToShow.includes('D') ? 1 : null)
     const digitOfHour = timeToShow.includes('HH') ? 2 : (timeToShow.includes('H') ? 1 : null)
     const digitOfMin = timeToShow.includes('MM') ? 2 : (timeToShow.includes('M') ? 1 : null)
     const digitOfSec = timeToShow.includes('SS') ? 2 : (timeToShow.includes('S') ? 1 : null)
     return (
-      <Component
-        style={styles.timeCont}
-        onPress={this.props.onPress}
+      <TouchableOpacity
+        style={TIME_COUNT}
+        onPress={props.onPress}
       >
-        {digitOfDay ? this.renderDoubleDigits(timeLabels.d, this.getDigitTime(digitOfDay, 'days')) : null}
-        {showSeparator && digitOfDay && digitOfHour ? this.renderSeparator() : null}
-        {digitOfHour ? this.renderDoubleDigits(timeLabels.h, this.getDigitTime(digitOfHour, 'hours')) : null}
-        {showSeparator && digitOfHour && digitOfMin ? this.renderSeparator() : null}
-        {digitOfMin ? this.renderDoubleDigits(timeLabels.m, this.getDigitTime(digitOfMin, 'minutes')) : null}
-        {showSeparator && digitOfMin && digitOfSec ? this.renderSeparator() : null}
-        {digitOfSec ? this.renderDoubleDigits(timeLabels.s, this.getDigitTime(digitOfSec, 'seconds')) : null}
-      </Component>
+        {digitOfDay ? renderDoubleDigits(timeLabels.d, getDigitTime(digitOfDay, 'days')) : null}
+        {showSeparator && digitOfDay && digitOfHour ? renderSeparator() : null}
+        {digitOfHour ? renderDoubleDigits(timeLabels.h, getDigitTime(digitOfHour, 'hours')) : null}
+        {showSeparator && digitOfHour && digitOfMin ? renderSeparator() : null}
+        {digitOfMin ? renderDoubleDigits(timeLabels.m, getDigitTime(digitOfMin, 'minutes')) : null}
+        {showSeparator && digitOfMin && digitOfSec ? renderSeparator() : null}
+        {digitOfSec ? renderDoubleDigits(timeLabels.s, getDigitTime(digitOfSec, 'seconds')) : null}
+      </TouchableOpacity>
     );
   };
 
-  render() {
-    return (
-      <View style={this.props.style}>
-        {this.renderCountDown()}
-      </View>
-    );
+  useEffect(() => {
+    startTimer()
+    return () => {
+      clearInterval(clockCall)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (until === 0) {
+      clearInterval(clockCall)
+      props.onFinish()
+    }
+  }, [until])
+
+  const startTimer = () => {
+    clockCall = setInterval(() => {
+      setUntil(prevTime => prevTime - 1)
+    }, 1000);
   }
+
+  return (
+    <View style={props.style}>
+      {renderCountDown()}
+    </View>
+  );
 }
-
-CountDown.defaultProps = {
-  digitStyle: DEFAULT_DIGIT_STYLE,
-  digitTxtStyle: DEFAULT_DIGIT_TXT_STYLE,
-  timeLabelStyle: DEFAULT_TIME_LABEL_STYLE,
-  timeLabels: DEFAULT_TIME_LABELS,
-  separatorStyle: DEFAULT_SEPARATOR_STYLE,
-  timeToShow: DEFAULT_TIME_TO_SHOW,
-  showSeparator: false,
-  until: 0,
-  size: 15,
-  running: true,
-};
-
-const styles = StyleSheet.create({
-  timeCont: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  timeTxt: {
-    color: '#000',
-    // marginVertical: 2,
-    backgroundColor: 'transparent',
-  },
-  timeInnerCont: {
-    // flexDirection: 'row',
-    // justifyContent: 'center',
-    // alignItems: 'center',
-  },
-  digitCont: {
-    // borderRadius: 5,
-    // marginHorizontal: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  doubleDigitCont: {
-    // justifyContent: 'center',
-    // alignItems: 'center',
-  },
-  digitTxt: {
-    color: '#000',
-    // fontWeight: 'bold',
-    fontVariant: ['tabular-nums']
-  },
-  separatorTxt: {
-    backgroundColor: 'transparent',
-    // fontWeight: 'bold',
-  },
-});
-
-export default CountDown;
-export { CountDown };

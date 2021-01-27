@@ -208,7 +208,9 @@
     "codeWillExpire": "The code will expire",
     "codeExpired": "The code has expired",
     "requestNewOTP": "Request a new OTP",
-    "confirmOTP": "Confirm OTP"
+    "confirmOTP": "Confirm OTP",
+    "codeExpiredOrIncorrect": "Your OTP has expired or is incorrect.",
+    "confirmOTPAgianOrRequestNewOTP": "Please enter OTP again, if not successful, choose to request new OTP again."
   },
   "myVehicleScreen": {
     "informationAt": "Information at",
@@ -314,5 +316,10 @@
     "lastestContact": "Lastest Contact",
     "job": "Job",
     "vehicle": "Vehicle"
+  },
+  "myJobScreen": {
+    "myJob": "My job",
+    "workInProgress": "Work in progress",
+    "workDone": "Work done"
   }
 }

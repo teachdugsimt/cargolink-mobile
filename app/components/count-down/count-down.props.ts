@@ -1,13 +1,15 @@
+import { TextStyle, ViewStyle } from "react-native";
+
 export interface CountDownProps {
   id?: string
 
-  digitStyle?: object
+  digitStyle?: ViewStyle
 
-  digitTxtStyle?: object
+  digitTxtStyle?: TextStyle
 
-  timeLabelStyle?: object
+  timeLabelStyle?: TextStyle
 
-  separatorStyle?: object
+  separatorStyle?: ViewStyle
 
   timeToShow?: Array<string>
 
@@ -15,7 +17,7 @@ export interface CountDownProps {
 
   size?: number
 
-  style?: object
+  style?: ViewStyle
 
   until?: number
 
