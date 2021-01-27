@@ -176,8 +176,8 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
         }}>
             <View style={{ ...BORDER_BOTTOM }}>
                 <View style={VIEW_LIST_IMAGE}>
-                    {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images.bell} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
-                        <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images.bell} style={IMAGE_LIST} height={60} width={60} />}
+                    {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images.greyMock} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
+                        <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images.greyMock} style={IMAGE_LIST} height={60} width={60} />}
                 </View>
                 <View style={{ flexDirection: 'row', flex: 1, width: '100%', justifyContent: 'space-between' }}>
                     <View style={{ width: '80%', alignItems: 'center' }}>
@@ -371,9 +371,9 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
     const list_product_type = [
         {
             title: 'postJobScreen.popular',
-            data: [{ id: 1, name: 'วัสดุก่อสร้าง', image: 'bell' },
-            { id: 2, name: 'สินค้าเกษตร', image: 'bell' },
-            { id: 3, name: 'อาหาร และสินค้าบริโภค', image: 'bell' }]
+            data: [{ id: 1, name: 'วัสดุก่อสร้าง', image: 'greyMock' },
+            { id: 2, name: 'สินค้าเกษตร', image: 'greyMock' },
+            { id: 3, name: 'อาหาร และสินค้าบริโภค', image: 'greyMock' }]
         }
     ]
     let list_vehicle = JSON.parse(JSON.stringify(TruckTypeStore.data))
