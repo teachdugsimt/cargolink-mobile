@@ -38,6 +38,10 @@ const SEARCH_BAR: ViewStyle = {
   paddingTop: spacing[6],
   paddingBottom: spacing[4],
   marginBottom: spacing[2],
+  shadowColor: color.line,
+  shadowOffset: { width: 0, height: 1 },
+  shadowOpacity: 0.2,
+  elevation: 5,
 }
 const SEARCH_BAR_ROW: ViewStyle = {
   ...ROW_ALIGN_CENTER,
@@ -252,8 +256,10 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
   }, [isFocused])
 
   useEffect(() => {
+    if (!TruckTypeStore.list.length) {
+      TruckTypeStore.find()
+    }
     ShipperTruckStore.find()
-    TruckTypeStore.find()
     let newZone = null
     if (i18n.locale === 'th') {
       const ascZones = sortArray(regionListTh)

@@ -10,6 +10,8 @@ import BookStore from '../../store/test-store/book-store'
 import { GridView } from '../../components/home-element/home-element'
 import i18n from 'i18n-js'
 import MyVehicleStore from "../../store/my-vehicle-store/my-vehicle-store"
+import TruckTypeStore from "../../store/truck-type-store/truck-type-store"
+import ProductTypeStore from "../../store/product-type-store/product-type-store"
 import date from 'date-and-time';
 // import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
 
@@ -103,6 +105,24 @@ export const HomeScreen = observer((props) => {
     console.log('readBooks:', BookStore.readBooks)
     console.log('booksByErnestCline: ', BookStore.booksByAuthor('Author john'))
   }, [])
+
+  useEffect(() => {
+    if (versatileStore.list.length && !TruckTypeStore.list.length) {
+      TruckTypeStore.setList(JSON.parse(JSON.stringify(versatileStore.list)))
+    }
+  }, [versatileStore.list.length])
+
+  useEffect(() => {
+    if (versatileStore.listGroup.length && !TruckTypeStore.listGroup.length) {
+      TruckTypeStore.setGroupList(JSON.parse(JSON.stringify(versatileStore.listGroup)))
+    }
+  }, [versatileStore.listGroup.length])
+
+  useEffect(() => {
+    if (versatileStore.listProductType.length && !ProductTypeStore.list.length) {
+      ProductTypeStore.setList(JSON.parse(JSON.stringify(versatileStore.listProductType)))
+    }
+  }, [versatileStore.listProductType.length])
 
   __DEV__ && console.tron.log('hello rendering world')
   interface List {

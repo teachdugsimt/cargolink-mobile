@@ -43,7 +43,8 @@
     "medium": "Medium Stall",
     "height": "Height Stall",
     "somethingWrong": "something went wrong",
-    "pleaseCheckYourData": "please check your data"
+    "pleaseCheckYourData": "please check your data",
+    "bookAJob": "Book a job"
   },
   "bottomTab": {
     "home": "Home",
@@ -203,7 +204,9 @@
     "productType": "Product Type",
     "productName": "Product Name",
     "pickUpPoint": "Pick up point",
-    "product": "Product"
+    "product": "Product",
+    "confirmJob": "Confirm booking of this job.",
+    "confirmVehicleForThisJob": "Confirm car reservations for this event."
   },
   "acceptPolicyScreen": {
     "termAndCondition": "Term and condition",

@@ -1,8 +1,8 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { Dimensions, ImageStyle, ScrollView, TextStyle, View, ViewStyle, TouchableOpacity } from 'react-native'
-import { Button, Icon, ModalLoading, PostingBy, Text } from '../../components'
-import { useNavigation } from '@react-navigation/native'
+import { Button, Icon, ModalAlert, ModalLoading, PostingBy, Text } from '../../components'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { color, spacing } from '../../theme'
 import { translate } from '../../i18n'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -119,13 +119,14 @@ const TEXT_SMALL: TextStyle = {
 }
 const BOTTOM_ROOT: ViewStyle = {
   backgroundColor: color.backgroundWhite,
+  flexDirection: 'row',
   alignItems: 'center',
-  padding: spacing[5]
+  paddingVertical: spacing[4]
 }
-const CALL_BUTTON: ViewStyle = {
-  width: '100%',
+const BTN_STYLE: ViewStyle = {
+  flex: 1,
   borderRadius: Dimensions.get('window').width / 2,
-  backgroundColor: color.success,
+  marginHorizontal: spacing[3]
 }
 const CALL_TEXT: TextStyle = {
   color: color.textWhite,
@@ -229,6 +230,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   const modalizeRef = useRef<Modalize>(null);
   const [coordinates, setCoordinates] = useState([])
   const [liked, setLiked] = useState<boolean>(false)
+  const [visibleModal, setVisibleModal] = useState<boolean>(false)
 
   const {
     id,
@@ -241,6 +243,8 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     isLiked,
     weight
   } = JSON.parse(JSON.stringify(CarriersJobStore.data))
+
+  const route = useRoute()
 
   const { versatileStore } = useStores()
 
@@ -299,6 +303,41 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     modalizeRef.current?.open();
   };
 
+  const confirmBookAJob = () => {
+    setVisibleModal(true)
+  }
+
+  const onCloseModal = () => {
+    setVisibleModal(false)
+  }
+
+  const onConfirmJob = () => {
+    onCloseModal()
+  }
+
+  const RenderButtonAlert = () => {
+    const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.line, backgroundColor: color.transparent }
+    const btnConfirmStyle = { ...BTN_STYLE, backgroundColor: color.success }
+    return (
+      <View style={{ ...BOTTOM_ROOT, paddingVertical: spacing[2] }}>
+        <Button
+          testID="btn-cancel"
+          style={btnCancleStyle}
+          textStyle={{ ...CALL_TEXT, color: color.line }}
+          text={translate("common.cancel")}
+          onPress={() => onCloseModal()}
+        />
+        <Button
+          testID="btn-ok"
+          style={btnConfirmStyle}
+          textStyle={{ ...CALL_TEXT, color: color.textWhite }}
+          text={translate("common.confirm")}
+          onPress={() => onConfirmJob()}
+        />
+      </View>
+    )
+  }
+
   const truckTypeList = versatileStore.list
   const txtTruckType = productTypeId && truckTypeList.length
     ? (truckTypeList.filter(({ id }) => id === +truckType)?.[0]?.name || translate('common.notSpecified'))
@@ -354,19 +393,12 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             <View style={FLOAT_LINE} />
           </View>
           <View>
-            <Text text={translate('jobDetailScreen.pickUpPoint')} style={{ ...TEXT_SMALL, color: color.line, }} />
+            <Text tx={'jobDetailScreen.pickUpPoint'} style={{ ...TEXT_SMALL, color: color.line, }} />
           </View>
           <PickUpPoint from={from} to={to} />
         </TouchableOpacity>
 
       </View>
-
-      {/* <TouchableOpacity activeOpacity={1} onPress={onOpen} style={{ ...CONTENT_SMALL, top: -spacing[6] }}>
-                <View>
-                    <Text text={translate('jobDetailScreen.pickUpPoint')} style={{ ...TEXT_SMALL, color: color.line, }} />
-                </View>
-                <PickUpPoint from={from} to={to} />
-            </TouchableOpacity> */}
 
       <Modalize
         ref={modalizeRef}
@@ -389,14 +421,14 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
           <View style={TOP_ROOT}>
             <View>
-              <Text text={translate('jobDetailScreen.pickUpPoint')} style={{ ...TEXT_SMALL, color: color.line, }} />
+              <Text tx={'jobDetailScreen.pickUpPoint'} style={{ ...TEXT_SMALL, color: color.line, }} />
             </View>
             <PickUpPoint from={from} to={to} containerStyle={{ paddingBottom: spacing[4], ...BOTTOM_LINE }} />
           </View>
 
           <View style={PRODUCT_ROOT}>
             <View>
-              <Text text={translate('jobDetailScreen.jobDetail')} preset={'topic'} style={{ color: color.primary }} />
+              <Text tx={'jobDetailScreen.jobDetail'} preset={'topic'} style={{ color: color.primary }} />
             </View>
             <View style={PRODUCT_ROW}>
               <View style={ICON_BOX}>
@@ -433,16 +465,44 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
       <View style={BOTTOM_ROOT}>
         <Button
           testID="call-with-owner"
-          style={CALL_BUTTON}
+          style={[BTN_STYLE, { backgroundColor: color.line }]}
           children={
             <View style={{ alignItems: 'center', flexDirection: 'row' }}>
               <MaterialCommunityIcons name={'phone'} size={24} color={color.textWhite} style={{ paddingRight: spacing[2] }} />
-              <Text style={CALL_TEXT} text={translate('jobDetailScreen.call')} />
+              <Text style={CALL_TEXT} tx={'jobDetailScreen.call'} />
             </View>
           }
-          onPress={() => navigation.navigate('feedback')}
+          onPress={() => route.name === 'jobDetail' ? navigation.navigate('feedback') : navigation.navigate('myFeedback')}
+        />
+        <Button
+          testID="book-a-job"
+          style={[BTN_STYLE, { backgroundColor: color.primary }]}
+          children={
+            <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+              <MaterialCommunityIcons name={'download-circle-outline'} size={24} color={color.textWhite} style={{ paddingRight: spacing[2] }} />
+              <Text style={CALL_TEXT} tx={'common.bookAJob'} />
+            </View>
+          }
+          onPress={confirmBookAJob}
         />
       </View>
+
+      <ModalAlert
+        containerStyle={{ paddingTop: spacing[5], paddingBottom: spacing[2] }}
+        iconName={'dropbox'}
+        iconStyle={{
+          color: color.textBlack,
+          size: 100
+        }}
+        header={translate('jobDetailScreen.confirmJob')}
+        headerStyle={{ paddingTop: spacing[3], color: color.textBlack }}
+        content={translate('jobDetailScreen.confirmVehicleForThisJob')}
+        contentStyle={{ paddingTop: spacing[1], paddingBottom: spacing[5], paddingHorizontal: spacing[7], color: color.line }}
+        buttonContainerStyle={{ width: '90%' }}
+        buttonComponent={RenderButtonAlert}
+        visible={visibleModal}
+      />
+
     </View>
   )
 })
