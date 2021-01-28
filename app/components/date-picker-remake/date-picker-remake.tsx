@@ -26,10 +26,10 @@ const ROW_TEXT: ViewStyle = {
     flexDirection: 'row',
 }
 const SPACE_BETWEEN: ViewStyle = { justifyContent: 'space-between' }
-
+const showing = Platform.OS == "ios" ? true : false
 export const DatePickerRemake = (props) => {
 
-    const [show, setShow] = useState(false);
+    const [show, setShow] = useState(showing);
 
     const _openDatePicker = () => setShow(true)
 
@@ -52,7 +52,7 @@ export const DatePickerRemake = (props) => {
                 </View>
             </TouchableOpacity>
 
-            <View>{show && (
+           {!!value&& <View>{show && (
                 <>
                     <DateTimePicker
                         testID={testID}
@@ -73,7 +73,7 @@ export const DatePickerRemake = (props) => {
                     />
                 </>
             )}
-            </View>
+            </View>}
         </View>
     );
 };
