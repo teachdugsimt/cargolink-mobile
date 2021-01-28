@@ -105,7 +105,7 @@ const RED_DOT: TextStyle = {
   color: color.red,
   paddingTop: 10, paddingLeft: 7.5
 }
-const PADDING_CHEVRON: ViewStyle = { paddingTop: 7.5, paddingRight: 5 }
+const PADDING_CHEVRON: ViewStyle = { paddingTop: Platform.OS == "ios" ? 2.5 : 7.5, paddingRight: 5 }
 const PADDING_TOP: ViewStyle = { marginTop: 10 }
 
 const ROOT_FLAT_LIST: ViewStyle = {
@@ -337,7 +337,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
 
                   <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible0(true)}>
-                    {!dropdown_vehicle_type && <><Text style={{ padding: 10 }} tx={"postJobScreen.pleaseSelectVehicleType"} />
+                    {!dropdown_vehicle_type && <><Text style={{ padding: Platform.OS == "ios" ? 5 : 10 }} tx={"postJobScreen.pleaseSelectVehicleType"} />
                       <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} /></>}
                     {dropdown_vehicle_type && !!versatileStore.list && _renderSelectedList(JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == dropdown_vehicle_type), 1)}
 
@@ -452,7 +452,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                 <View style={[PADDING_TOP, !dropdown_item_type ? { ...WRAP_DROPDOWN } : { ...WRAP_DROPDOWN_VALUE }]}>
 
                   <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible(true)}>
-                    {!dropdown_item_type && <><Text style={{ padding: 10 }} tx={"postJobScreen.selectItemType"} />
+                    {!dropdown_item_type && <><Text style={{ padding: Platform.OS == "ios" ? 5 : 10 }} tx={"postJobScreen.selectItemType"} />
                       <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} />
                     </>}
                     {dropdown_item_type && !!list_product_type_all && _renderSelectedList(list_product_type_all.find(e => e.id == dropdown_item_type), 2)}
