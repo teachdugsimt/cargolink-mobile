@@ -10,6 +10,7 @@ import { NavigationContainer, NavigationContainerRef } from "@react-navigation/n
 
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import { PrimaryNavigator } from "./primary-navigator"
+
 // import BottomNavigator from './bottom-navigator'
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -56,8 +57,8 @@ const RootStack = () => {
       <Stack.Navigator
         screenOptions={{
           headerShown: false,
-          gestureEnabled: true,
-          stackPresentation: "modal",
+          gestureEnabled: false,
+          // stackPresentation: "modal",
         }}
       >
         <Stack.Screen
