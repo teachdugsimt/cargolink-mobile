@@ -76,10 +76,10 @@
   },
   "homeScreen": {
     "logout": "Log out",
-    "manageCar": "Manage Car",
-    "findJob": "Find Job",
-    "postJob": "Post Job",
-    "findCar": "Find Car",
+    "manageCar": "Post Trucks",
+    "findJob": "Find Jobs",
+    "postJob": "Post Jobs",
+    "findCar": "Find Trucks",
     "carriers": "Carriers",
     "shippers": "Shippers"
   },
