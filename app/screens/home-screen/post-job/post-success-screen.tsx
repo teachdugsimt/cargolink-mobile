@@ -6,9 +6,9 @@ import { Text, RoundedButton, AddJobElement } from "../../../components"
 import { color, images } from "../../../theme"
 import PostJobStore from "../../../store/post-job-store/post-job-store";
 import LottieView from 'lottie-react-native';
-const { height } = Dimensions.get("window")
+
 const SuccessAnimmation = () => {
-  return <LottieView source={require('./order-packed.json')}
+  return <LottieView source={require('../../../AnimationJson/order-packed.json')}
     autoPlay loop style={{ height: '100%' }} />
 }
 

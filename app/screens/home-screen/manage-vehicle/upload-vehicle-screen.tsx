@@ -93,7 +93,7 @@ const TITLE_TOPIC: TextStyle = {
 const CONTENT_TEXT: TextStyle = {
   fontFamily: 'Kanit-Medium',
   color: color.black,
-  fontSize: typography.title
+  fontSize: typography.content
 }
 const HAVE_DUMP_VIEW: ViewStyle = {
   flexDirection: 'row',
@@ -163,7 +163,7 @@ const JUSTIFY_BETWEEN: ViewStyle = {
   justifyContent: 'space-between',
 }
 const PADDING_TOP: ViewStyle = { marginTop: 10 }
-const PADDING_CHEVRON: ViewStyle = { paddingRight: 5 }
+const PADDING_CHEVRON: ViewStyle = { paddingRight: Platform.OS == "ios" ? 0 : 5 }
 const ROOT_FLAT_LIST: ViewStyle = {
   width: '100%',
   height: 100,
@@ -1035,10 +1035,10 @@ export const UploadVehicleScreen = observer((props) => {
 
 
 
-              <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible0(true)}>
-                {!dropdown_vehicle_type && <Text style={{ padding: 10 }} tx={"postJobScreen.pleaseSelectVehicleType"} />}
-                {dropdown_vehicle_type && versatileStore.list && <Text style={{ padding: 10 }}>{JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == dropdown_vehicle_type).name}</Text>}
-                <Ionicons name="chevron-down" size={24} style={[PADDING_CHEVRON, { paddingTop: Platform.OS == "android" ? 7.5 : 0 }]} />
+              <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN, { alignItems: 'center' }]} onPress={() => setvisible0(true)}>
+                {!dropdown_vehicle_type && <Text style={{ padding: Platform.OS == "android" ? 12.5 : 0 }} tx={"postJobScreen.pleaseSelectVehicleType"} />}
+                {dropdown_vehicle_type && versatileStore.list && <Text style={{ padding: Platform.OS == "android" ? 12.5 : 0 }}>{JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == dropdown_vehicle_type).name}</Text>}
+                <Ionicons name="chevron-down" size={20} style={[PADDING_CHEVRON, { paddingTop: Platform.OS == "android" ? 2.5 : 0 }]} />
               </TouchableOpacity>
 
               <Controller
@@ -1430,7 +1430,7 @@ export const UploadVehicleScreen = observer((props) => {
 
                 }
                 {index == ddRegion.length - 1 && <TouchableOpacity key={'icon-add-circle-' + index} style={[ADD_DROPDOWN_REGION]} onPress={() => _addRowDropdown()}>
-                  <Ionicons size={22} color={color.darkGreen} name={"add-circle-outline"} />
+                  <Ionicons size={20} color={color.darkGreen} name={"add-circle-outline"} />
                 </TouchableOpacity>}
               </View>
 
