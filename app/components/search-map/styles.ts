@@ -18,6 +18,7 @@ export default StyleSheet.create({
     color: "black",
     marginLeft: 3,
     marginTop: 12,
+    fontSize: 18,
     fontFamily: "Kanit-Medium",
   },
   footer: {
@@ -61,12 +62,13 @@ export default StyleSheet.create({
   },
   inputAddressFinal: {
     marginBottom: 5,
+    padding: 10,
     width: "90%",
     minHeight: 80,
     alignSelf: "center",
     borderColor: "lightgrey",
     borderWidth: 1.5,
-    fontSize: 12,
+    fontSize: 15,
     borderRadius: 5,
     flex: 0.5,
     alignContent: "flex-start",
