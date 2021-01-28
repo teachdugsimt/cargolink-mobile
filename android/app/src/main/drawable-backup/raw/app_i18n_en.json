@@ -67,10 +67,12 @@
   },
   "homeScreen": {
     "logout": "Log out",
-    "manageCar": "Manage Car",
-    "findJob": "Find Job",
-    "postJob": "Post Job",
-    "findCar": "Find Car"
+    "manageCar": "Post Trucks",
+    "findJob": "Find Jobs",
+    "postJob": "Post Jobs",
+    "findCar": "Find Trucks",
+    "carriers": "Carriers",
+    "shippers": "Shippers"
   },
   "postJobScreen": {
     "postjob": "post job",
@@ -87,8 +89,6 @@
     "weightNumber": "Weight (T)",
     "popular": "popular",
     "4maxType": "4 wheels type",
-
-
     "acceptPointProduct": "receive point",
     "inputLocationReceive": "input receive location",
     "dateReceive": "receive date",
@@ -96,7 +96,6 @@
     "receiverInfo": "receiver information",
     "receiverName": "receiver name",
     "receiverTel": "tel no",
-
     "shipingPoint": "shipping location ",
     "shippingAddr": "input shipping address",
     "dateShipping": "shipping date",
@@ -104,7 +103,6 @@
     "shipperInfo": "shipper information",
     "shipperName": "shipper name",
     "shipperTel": "tel no",
-
     "addShippingPoint": "add ship point",
     "postJobSuccess": "welcome your post job was success"
   },
