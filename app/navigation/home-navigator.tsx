@@ -87,6 +87,7 @@ export function HomeNavigator() {
             <Stack.Screen name="home" component={HomeScreen}
                 options={({ navigation, route }) => {
                     return { // title: route.params.name,
+                        gestureEnabled: false,
                         headerRight: () => (
                             <Ionicons
                                 onPress={() => console.log("++ Press notofication icon ++")}

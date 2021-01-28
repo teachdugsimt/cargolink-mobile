@@ -225,7 +225,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
       </View>
 
       <View style={BOTTOM_VIEW}>
-        <KeyboardAvoidingView behavior={Platform.OS == "ios" ? 'height' : 'padding'} keyboardVerticalOffset={Platform.OS == "ios" ? 100 : 10} style={{ flex: 1 }}>
+        <KeyboardAvoidingView behavior={Platform.OS == "ios" ? 'height' : 'padding'} keyboardVerticalOffset={Platform.OS == "ios" ? 100 : 0} style={{ flex: 1 }}>
           <ScrollView style={FULL}>
 
 
