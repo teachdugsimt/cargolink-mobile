@@ -6,10 +6,11 @@ import { images, color } from '../../theme'
 import { Header, Text, Button } from "../../components"
 import { spacing } from "../../theme"
 import { useStores } from "../../models/root-store/root-store-context";
-import BookStore from '../../store/test-store/book-store'
 import { GridView } from '../../components/home-element/home-element'
 import i18n from 'i18n-js'
 import MyVehicleStore from "../../store/my-vehicle-store/my-vehicle-store"
+import TruckTypeStore from "../../store/truck-type-store/truck-type-store"
+import ProductTypeStore from "../../store/product-type-store/product-type-store"
 import date from 'date-and-time';
 // import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
 
@@ -55,56 +56,35 @@ const ROOT_HOME: ViewStyle = {
 }
 
 export const HomeScreen = observer((props) => {
-  const { books } = BookStore
-  const { signinStore, tokenStore, versatileStore } = useStores()
+  const { tokenStore, versatileStore } = useStores()
 
   const navigation = useNavigation()
 
   useEffect(() => {
-
     versatileStore.findGroup()
     versatileStore.find()
     versatileStore.findProductType()
 
-    const now = new Date();
-    const yesterday = date.addDays(now, -1);
-    __DEV__ && console.tron.log("Test -1 Date :: => ", yesterday)
-
-
-
-    signinStore.addCartItem({
-      name: "test 1",
-      price: 60
-    });
-    BookStore.addBook({
-      title: "Title 1",
-      author: "Author john",
-      read: false
-    })
     console.log("TOKEN STORE :: => ", JSON.parse(JSON.stringify(tokenStore.token)))
-    console.log("Props useeffect :: ", props)
-    console.log("Store signin store :: ", signinStore)
-    console.log("All books 111 : ", JSON.parse(JSON.stringify(BookStore.allBooks)))
   }, [])
 
   useEffect(() => {
-    let tmp: Array<any> = JSON.parse(JSON.stringify(BookStore.allBooks))
-    if (tmp.length) {
-      console.log("All books 222 : ", tmp)
+    if (versatileStore.list.length && !TruckTypeStore.list.length) {
+      TruckTypeStore.setList(JSON.parse(JSON.stringify(versatileStore.list)))
     }
-  }, [BookStore.allBooks.length])
+  }, [versatileStore.list.length])
 
   useEffect(() => {
-    if (signinStore.totalItems) console.log("Total Item : ", signinStore.totalItems)
-    if (signinStore.totalPrice) console.log("Total price : ", signinStore.totalPrice)
-  }, [signinStore])
+    if (versatileStore.listGroup.length && !TruckTypeStore.listGroup.length) {
+      TruckTypeStore.setGroupList(JSON.parse(JSON.stringify(versatileStore.listGroup)))
+    }
+  }, [versatileStore.listGroup.length])
 
   useEffect(() => {
-    console.log("Pure books :: ", books)
-    console.log('BookStore: ', BookStore)
-    console.log('readBooks:', BookStore.readBooks)
-    console.log('booksByErnestCline: ', BookStore.booksByAuthor('Author john'))
-  }, [])
+    if (versatileStore.listProductType.length && !ProductTypeStore.list.length) {
+      ProductTypeStore.setList(JSON.parse(JSON.stringify(versatileStore.listProductType)))
+    }
+  }, [versatileStore.listProductType.length])
 
   __DEV__ && console.tron.log('hello rendering world')
   interface List {

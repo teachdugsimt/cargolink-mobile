@@ -43,7 +43,13 @@
     "medium": "Medium Stall",
     "height": "Height Stall",
     "somethingWrong": "something went wrong",
-    "pleaseCheckYourData": "please check your data"
+    "pleaseCheckYourData": "please check your data",
+    "bookAJob": "Book a job",
+    "HH": "Hours",
+    "mm": "minute",
+    "ss": "second",
+    "ms": "millisecond",
+    "summary": "Summary"
   },
   "bottomTab": {
     "home": "Home",
@@ -171,7 +177,16 @@
     "workZone": "work zone",
     "allVehicle": " all vehicle",
     "unit": "คัน",
-    "allProvinceSouth": "all south province"
+    "allProvinceSouth": "all south province",
+    "resultWork": "Jobs Summary",
+    "carAndWorkZone": "Trucks and Zones",
+
+    "allPostJob": "All Jobs",
+    "workInProgress": "In progress",
+    "workDone": "Done",
+
+    "allCar": "All Car",
+    "allWorkZone": "All work zones"
   },
   "storybook": {
     "placeholder": "Placeholder",
@@ -203,7 +218,9 @@
     "productType": "Product Type",
     "productName": "Product Name",
     "pickUpPoint": "Pick up point",
-    "product": "Product"
+    "product": "Product",
+    "confirmJob": "Confirm booking of this job.",
+    "confirmVehicleForThisJob": "Confirm car reservations for this event."
   },
   "acceptPolicyScreen": {
     "termAndCondition": "Term and condition",

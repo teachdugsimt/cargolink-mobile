@@ -94,13 +94,6 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
     })
   }, [navigation]);
 
-  useEffect(() => {
-    console.log('AdvanceSearchStore.menu?.length', AdvanceSearchStore.menu?.length)
-    if (!AdvanceSearchStore.loading && AdvanceSearchStore.menu?.length) {
-      console.log('useEffect')
-    }
-  }, [AdvanceSearchStore.loading, AdvanceSearchStore.menu])
-
   const onClick = (id: number, isChecked: boolean) => {
     const newMenu = AdvanceSearchStore.menu.map(menu => {
       if (menu.id !== id || !menu.isMultiSelect) return menu

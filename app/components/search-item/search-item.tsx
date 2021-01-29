@@ -24,7 +24,7 @@ const CONTAINER: ViewStyle = {
   position: "relative",
   backgroundColor: color.backgroundWhite,
   borderWidth: 1,
-  borderColor: color.line,
+  borderColor: color.disable,
   marginTop: spacing[1],
   marginBottom: spacing[1],
 }
@@ -40,7 +40,7 @@ const TOP_ROOT: ViewStyle = {
   flexDirection: "row",
   paddingBottom: spacing[2],
   borderBottomWidth: 1,
-  borderBottomColor: color.line,
+  borderBottomColor: color.disable,
   marginLeft: spacing[1],
   marginRight: spacing[1],
   ...PADDING_LEFT,
@@ -169,9 +169,9 @@ export function SearchItem(props: SearchItemProps) {
             <Icon icon="pinDropYellow" style={PIN_ICON} />
             <Text
               text={`${translate('common.from')}`} // จาก
-              style={[LOCATION_TEXT, { width: 40 }]}
+              style={[LOCATION_TEXT, { width: 50 }]}
             />
-            <Text style={{ paddingRight: spacing[2] }} text={':'} />
+            <Text style={{ paddingRight: spacing[1] }} text={':'} />
             <Text text={fromText} style={[LOCATION_TEXT, { paddingRight: spacing[7] }]} numberOfLines={1} />
             <Icon />
           </View>
@@ -179,10 +179,10 @@ export function SearchItem(props: SearchItemProps) {
             <Icon icon="pinDropGreen" style={PIN_ICON} />
             <Text
               text={`${translate('common.to')}`} // ถึง
-              style={[LOCATION_TEXT, { width: 40 }]}
+              style={[LOCATION_TEXT, { width: 50 }]}
               numberOfLines={1}
             />
-            <Text style={{ paddingRight: spacing[2] }} text={':'} />
+            <Text style={{ paddingRight: spacing[1] }} text={':'} />
             <Text text={toText} style={[LOCATION_TEXT, { paddingRight: spacing[7] }]} numberOfLines={1} />
           </View>
           <View style={CAR_DETAIL_ROOT}>

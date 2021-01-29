@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { observer } from "mobx-react-lite"
 import {
   CodeField,
@@ -9,7 +9,7 @@ import {
 import { Dimensions, SafeAreaView, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { Button, CountDown, ModalAlert, ModalLoading, Text } from '../../components';
 import { color, spacing } from '../../theme';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { translate } from '../../i18n';
 import AuthStore from '../../store/auth-store/auth-store'
 import OTPInputView from '@twotalltotems/react-native-otp-input'
@@ -107,7 +107,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
   const [isShow, setIsShow] = useState(true)
 
   const clearState = () => {
-    setState({ ...initialState })
+    setState(initialState)
   }
 
   const onChangeText = (code: string) => {
@@ -130,7 +130,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
 
   const onResendCode = () => {
     AuthStore.signInRequest({ phoneNumber: AuthStore.phoneNumber, userType: 7 })
-    setState({ ...initialState })
+    clearState()
     setValue('')
   }
 
@@ -198,8 +198,12 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
   />)
 
   useEffect(() => {
+    setState(prevState => ({
+      ...prevState,
+      isExpired: false
+    }))
     return () => {
-      setState(initialState)
+      clearState()
     }
   }, [])
 
@@ -262,7 +266,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
         <View style={RESEND_CODE_ROOT}>
           {/* {showMessageError && <Text style={TEXT_EXPIRE} text={AuthStore.error} />}
           {isExpired && <Text style={TEXT_EXPIRE} text={translate('confirmCodeScreen.codeExpired')} />} */}
-          {(isExpired || !!AuthStore.error) && <ModalAlert // !!isError
+          {!tokenStore.token && (isExpired || !!AuthStore.error) && <ModalAlert // !!isError
             containerStyle={{ paddingVertical: spacing[5] }}
             iconName={'bell-alert-outline'}
             iconStyle={{

@@ -1,7 +1,7 @@
 {
   "common": {
     "ok": "ตกลง",
-    "cancel": "Cancel",
+    "cancel": "ยกเลิก",
     "back": "กลับ",
     "next": "ต่อไป",
     "from": "จาก",
@@ -43,7 +43,13 @@
     "medium": "คอกธรรมดา",
     "height": "คอกสูง",
     "somethingWrong": "มีบางอย่างผิดพลาด",
-    "pleaseCheckYourData": "กรุณาตรวจสอบข้อมูล"
+    "pleaseCheckYourData": "กรุณาตรวจสอบข้อมูล",
+    "bookAJob": "จองงาน",
+    "HH": "ชั่วโมง",
+    "mm": "นาที",
+    "ss": "วินาที",
+    "ms": "มิลลิวินาที",
+    "summary": "รวม"
   },
   "bottomTab": {
     "home": "หน้าแรก",
@@ -171,7 +177,16 @@
     "workZone": "โซนที่วิ่งงาน",
     "allVehicle": "จำนวนรถทั้งหมด",
     "unit": "คัน",
-    "allProvinceSouth": "จังหวัดทั้งหมดในภาคใต้"
+    "allProvinceSouth": "จังหวัดทั้งหมดในภาคใต้",
+    "resultWork": "สรุปงาน",
+    "carAndWorkZone": "รถและโซนวิ่งงาน",
+
+    "allPostJob": "จำนวนงานที่โพสทั้งหมด",
+    "workInProgress": "งานที่ยังดำเนินการไม่เสร็จ",
+    "workDone": "งานที่ดำเนินการเสร็จแล้ว",
+
+    "allCar": "สรุปประเภทรถทั้งหมดของคุณ",
+    "allWorkZone": "สรุปโซนที่วิ่งงานทั้งหมดของคุณ"
   },
   "storybook": {
     "placeholder": "แทนที่ข้อความ",
@@ -204,7 +219,9 @@
     "productType": "ประเภทสินค้า",
     "productName": "ชื่อสินค้า",
     "pickUpPoint": "จุดรับส่งสินค้า",
-    "product": "สินค้า"
+    "product": "สินค้า",
+    "confirmJob": "ยืนยันการจองงานนี้",
+    "confirmVehicleForThisJob": "ยืนยันการจองรถสำหรับงานนี้"
   },
   "acceptPolicyScreen": {
     "termAndCondition": "ข้อกำหนดและเงื่อนไข",

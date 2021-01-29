@@ -8,7 +8,7 @@ import React from "react"
 
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import { HeaderCenter, HeaderLeft } from "../components"
-import { JobDetailScreen, MyJobScreen } from "../screens"
+import { FeedbackScreen, JobDetailScreen, MyJobScreen } from "../screens"
 import { color } from "../theme"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -23,8 +23,9 @@ import { color } from "../theme"
  *   https://reactnavigation.org/docs/typescript#type-checking-the-navigator
  */
 export type PrimaryMyJobParamList = {
-    myjob: undefined
-    myJobDetail: undefined
+  myjob: undefined
+  myJobDetail: undefined
+  myFeedback: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -32,36 +33,48 @@ const Stack = createNativeStackNavigator<PrimaryMyJobParamList>()
 
 export function MyJobNavigator() {
 
-    return (
-        <Stack.Navigator
-            screenOptions={{
-                headerShown: true,
-                gestureEnabled: true,
-                headerStyle: {
-                    backgroundColor: color.mainTheme,
-                },
-                headerTitleStyle: {
-                    fontFamily: 'Kanit-Medium',
-                    fontSize: 20
-                },
-            }}
-        >
-            <Stack.Screen name="myjob" component={MyJobScreen}
-                options={({ navigation, route }) => ({
-                    headerCenter: () => <HeaderCenter tx={"myJobScreen.myJob"} />,
-                    headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
-                    headerHideShadow: true
-                })}
-            />
+  const passParams = () => {
 
-            <Stack.Screen name="myJobDetail" component={JobDetailScreen}
-                options={({ navigation, route }) => ({
-                    headerCenter: () => <HeaderCenter tx={"jobDetailScreen.jobDetail"} />,
-                    headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
-                })} />
+  }
 
-        </Stack.Navigator>
-    )
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: true,
+        gestureEnabled: true,
+        headerStyle: {
+          backgroundColor: color.mainTheme,
+        },
+        headerTitleStyle: {
+          fontFamily: 'Kanit-Medium',
+          fontSize: 20
+        },
+      }}
+    >
+      <Stack.Screen name="myjob" component={MyJobScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"myJobScreen.myJob"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+          headerHideShadow: true
+        })}
+      />
+
+      <Stack.Screen name="myJobDetail" component={JobDetailScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"jobDetailScreen.jobDetail"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+
+      <Stack.Screen name="myFeedback" component={FeedbackScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"feedbackScreen.yourOpinion"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+
+    </Stack.Navigator>
+  )
 }
 
 /**
