@@ -42,12 +42,12 @@ export const presets = {
   /**
    * A bold version of the default text.
    */
-  bold: { ...BASE, fontWeight: "bold" } as TextStyle,
+  bold: { ...BASE } as TextStyle,
 
   /**
    * Large headers.
    */
-  header: { ...BASE, fontSize: 24, fontWeight: "bold" } as TextStyle,
+  header: { ...BASE, fontSize: 24 } as TextStyle,
 
   /**
    * Field labels that appear on forms above the inputs.
