@@ -4,8 +4,7 @@ import { useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
 import { Button, Header, Screen, Text, Wallpaper } from "../../components"
 import { color, spacing, typography } from "../../theme"
-// const bowserLogo = require("./bowser.png")
-// import BookStore from "../../models/book-store"
+
 const FULL: ViewStyle = { flex: 1 }
 const CONTAINER: ViewStyle = {
     backgroundColor: color.transparent,
@@ -51,7 +50,6 @@ const FOOTER_CONTENT: ViewStyle = {
 
 export const SigninScreen = observer(function SigninScreen() {
     const navigation = useNavigation()
-    // const { books } = BookStore
     const goBack = () => navigation.goBack()
     __DEV__ && console.tron.log('hello rendering world')
 
@@ -77,17 +75,6 @@ export const SigninScreen = observer(function SigninScreen() {
                     textStyle={CONTINUE_TEXT}
                     tx="goHome"
                     onPress={() => {
-                        // BookStore.addBook({
-                        //     title: "book1",
-                        //     author: "tester",
-                        //     read: false
-                        // })
-                        // console.log("BOOKS :: ", books[0])
-                        // console.log("BOOKS :: ", books[0])
-                        // console.log("BOOKS :: ", books[0])
-                        // console.log("BOOKS :: ", books[0])
-                        // console.log("BOOKS :: ", books[0])
-                        // console.log("BOOKS :: ", books[0])
                         navigation.navigate("home")
                     }}
                 />

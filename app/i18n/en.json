@@ -171,7 +171,16 @@
     "workZone": "work zone",
     "allVehicle": " all vehicle",
     "unit": "คัน",
-    "allProvinceSouth": "all south province"
+    "allProvinceSouth": "all south province",
+    "resultWork": "Jobs Summary",
+    "carAndWorkZone": "Trucks and Zones",
+
+    "allPostJob": "All Jobs",
+    "workInProgress": "In progress",
+    "workDone": "Done",
+
+    "allCar": "All Car",
+    "allWorkZone": "All work zones"
   },
   "storybook": {
     "placeholder": "Placeholder",
