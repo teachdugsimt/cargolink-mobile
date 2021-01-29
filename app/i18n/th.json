@@ -44,7 +44,12 @@
     "height": "คอกสูง",
     "somethingWrong": "มีบางอย่างผิดพลาด",
     "pleaseCheckYourData": "กรุณาตรวจสอบข้อมูล",
-    "bookAJob": "จองงาน"
+    "bookAJob": "จองงาน",
+    "HH": "ชั่วโมง",
+    "mm": "นาที",
+    "ss": "วินาที",
+    "ms": "มิลลิวินาที",
+    "summary": "รวม"
   },
   "bottomTab": {
     "home": "หน้าแรก",

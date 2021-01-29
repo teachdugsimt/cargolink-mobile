@@ -468,7 +468,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
                     })}
                   </ScrollView>
                   <TouchableOpacity onPress={() => setVisible(!visible)} style={CIRCLE_VISIBLE_BUTTON}>
-                    <MaterialCommunityIcons name={'close-thick'} color={color.textWhite} size={30} />
+                    <MaterialCommunityIcons name={'check'} color={color.textWhite} size={30} />
                   </TouchableOpacity>
                 </SafeAreaView>
               </View>

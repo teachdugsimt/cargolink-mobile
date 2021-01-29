@@ -20,6 +20,8 @@ import MapView, {
 import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
 import FavoriteJobStore from '../../store/carriers-job-store/favorite-job-store'
 import { useStores } from "../../models/root-store/root-store-context";
+import { ConverTimeFormat } from "../../utils/convert-time-format";
+import LottieView from 'lottie-react-native';
 
 const deviceWidht = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('window').height
@@ -59,10 +61,10 @@ const LOCATION_CONTAINER: ViewStyle = {
   flexDirection: 'row',
 }
 const LOCATION_BOX: ViewStyle = {
-  flex: 3,
-  borderRightWidth: 1,
-  borderRightColor: color.disable,
-  paddingRight: spacing[4]
+  flex: 1,
+  // borderRightWidth: 1,
+  // borderRightColor: color.disable,
+  paddingRight: spacing[3]
 }
 const PRODUCT_ROOT: ViewStyle = {
   flexDirection: 'column',
@@ -148,6 +150,13 @@ const CONTENT_SMALL: ViewStyle = {
   overflow: 'hidden',
   marginHorizontal: spacing[3],
   paddingVertical: spacing[4],
+  shadowColor: 'rgba(0, 0, 0, 0.7)',
+  shadowOffset: {
+    width: 0,
+    height: 1
+  },
+  shadowRadius: 3,
+  shadowOpacity: 10
 }
 const FLOAT_CONTAINER: ViewStyle = {
   width: '100%',
@@ -186,42 +195,74 @@ const DATA = { // [Mocking]
   logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
 }
 
-const PickUpPoint = ({ to, from, containerStyle = {} }) => (
-  <View style={{ ...LOCATION_CONTAINER, ...containerStyle }}>
-    <View style={LOCATION_BOX}>
-      <View style={LOCATION}>
-        <Icon icon="pinDropYellow" style={PIN_ICON} />
-        <Text
-          text={`${translate('common.from')}  :`}
-          style={{ ...LOCATION_TEXT, width: 45, justifyContent: 'flex-end' }}
-        />
-        <Text
-          text={from && from.name}
-          style={{ ...LOCATION_TEXT, flexShrink: 1 }}
-        />
-      </View>
-      {to?.length && to.map((attr, index) => (
-        <View key={index} style={LOCATION}>
-          <Icon icon="pinDropGreen" style={PIN_ICON} />
+// const distances = [{
+//   "from": "13.7884902,100.6079443",
+//   "to": "13.2773405,100.9410782",
+//   "distance": 99623,
+//   "duration": 4572
+// }, {
+//   "from": "13.2773405,100.9410782",
+//   "to": "12.6004546,101.9276771",
+//   "distance": 154882,
+//   "duration": 8373
+// }]
+
+const GreenDot = ({ color }) => {
+  return <LottieView
+    source={require('../../AnimationJson/dot.json')}
+    style={{ height: 32 }}
+    colorFilters={[{ keypath: 'palette 01', color: color }, { keypath: 'palette 02', color: color }]}
+    autoPlay
+    loop
+  />
+}
+
+const PickUpPoint = ({ to, from, distances, containerStyle = {} }) => {
+  console.log('JSON.parse(JSON.stringify(distances))', JSON.parse(JSON.stringify(distances)))
+  return (
+    <View style={{ ...LOCATION_CONTAINER, ...containerStyle }}>
+      <View style={LOCATION_BOX}>
+        <View style={LOCATION}>
+          <GreenDot color={color.primary} />
+          {/* <Icon icon="pinDropYellow" style={PIN_ICON} /> */}
           <Text
-            text={`${translate('common.to')}  :`}
-            style={{ ...LOCATION_TEXT, width: 45 }}
+            text={`${translate('common.from')}  :`}
+            style={{ ...LOCATION_TEXT, width: 45, justifyContent: 'flex-end' }}
           />
           <Text
-            text={attr.name}
+            text={from && from.name}
             style={{ ...LOCATION_TEXT, flexShrink: 1 }}
           />
         </View>
-      ))}
-    </View>
-    <View style={DISTANCE_BOX}>
-      <View style={{ alignItems: 'center' }}>
-        <Text style={{ paddingVertical: spacing[1] }} >{`${DATA.distance} `}<Text text={'KM'} style={TEXT_SMALL} /></Text>
-        <Text text={`${DATA.period}`} style={{ ...TEXT_SMALL, paddingVertical: spacing[1], }} />
+        {to?.length && to.map((attr, index) => {
+          const latLng = `${attr.lat},${attr.lng}`
+          const distance = JSON.parse(JSON.stringify(distances)).filter(dist => dist.to === latLng)[0]
+          const distanceKM = distance ? (distance.distance / 1000).toFixed(2) : '0'
+          const time = distance ? ConverTimeFormat(distance.duration * 1000, 'HHmm') : '0'
+          return (
+            <View key={index} style={{ flexDirection: 'row' }}>
+              <View style={LOCATION}>
+                <GreenDot color={color.success} />
+                <Text
+                  text={`${translate('common.to')}  :`}
+                  style={{ ...LOCATION_TEXT, width: 45 }}
+                />
+                <Text
+                  text={attr.name}
+                  style={{ ...LOCATION_TEXT, flexShrink: 1 }}
+                />
+              </View>
+              <View style={{ alignItems: 'center', marginLeft: 'auto' }}>
+                <Text style={{ paddingVertical: spacing[1] }} >{distanceKM}<Text text={' KM'} style={TEXT_SMALL} /></Text>
+                <Text text={time} style={{ ...TEXT_SMALL, paddingVertical: spacing[1], }} />
+              </View>
+            </View>
+          )
+        })}
       </View>
     </View>
-  </View>
-)
+  )
+}
 
 export const JobDetailScreen = observer(function JobDetailScreen() {
 
@@ -243,6 +284,19 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     isLiked,
     weight
   } = JSON.parse(JSON.stringify(CarriersJobStore.data))
+
+  // const data = { "id": "K1NXGEQL", "productTypeId": 21, "productName": "รถยนต์", "truckType": "21", "weight": 200, "requiredTruckAmount": 2, "from": { "name": "กรุงเทพมหานคร", "dateTime": "28-01-2021 16:27", "contactName": "Onelink Space", "contactMobileNo": "0998999988", "lat": "13.7884902", "lng": "100.6079443" }, "to": [{ "name": "ชลบุรี", "dateTime": "29-01-2021 11:54", "contactName": "หมู่บ้านบางแสนวิลล์ ตำบล ห้วยกะปิ อำเภอเมืองชลบุรี ชลบุรี", "contactMobileNo": "0899388403", "lat": "13.2773405", "lng": "100.9410782" }, { "name": "จันทบุรี", "dateTime": "30-01-2021 18:14", "contactName": "ศูนย์ศึกษาธรรมชาติป่าชายเลนอ่าวคุ้งกระเบน", "contactMobileNo": "0990999811", "lat": "12.6004546", "lng": "101.9276771" }], "owner": { "id": 611, "companyName": "Fast Delivery", "fullName": "Fast Delivery", "mobileNo": "0926270468", "email": "mymail.example@mail.com" }, "isLiked": false }
+  // const {
+  //   id,
+  //   from,
+  //   to,
+  //   productName,
+  //   productTypeId,
+  //   requiredTruckAmount,
+  //   truckType,
+  //   isLiked,
+  //   weight
+  // } = data
 
   const route = useRoute()
 
@@ -350,10 +404,13 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     ? (productTypeList.filter(({ id }) => id === +productTypeId)?.[0]?.name || translate('common.notSpecified'))
     : translate('common.notSpecified')
 
+  const summaryDistances = ((CarriersJobStore.summaryDistances?.distance || 0) / 1000).toFixed(2)
+  const summaryTime = ConverTimeFormat((CarriersJobStore.summaryDistances?.duration) * 1000, 'HHmm')
+
   return (
     <View style={CONTAINER}>
       <ModalLoading size={'large'} color={color.primary} visible={CarriersJobStore.mapLoading} />
-      <View style={{ ...MAP_CONTAINER }}>
+      <View style={MAP_CONTAINER}>
         {from && !!from.lat && !!from.lng && !!CarriersJobStore.directions.length &&
           <MapView
             style={{ flex: 1 }}
@@ -395,7 +452,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           <View>
             <Text tx={'jobDetailScreen.pickUpPoint'} style={{ ...TEXT_SMALL, color: color.line, }} />
           </View>
-          <PickUpPoint from={from} to={to} />
+          <PickUpPoint from={from} to={to} distances={CarriersJobStore.distances} />
         </TouchableOpacity>
 
       </View>
@@ -423,7 +480,17 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             <View>
               <Text tx={'jobDetailScreen.pickUpPoint'} style={{ ...TEXT_SMALL, color: color.line, }} />
             </View>
-            <PickUpPoint from={from} to={to} containerStyle={{ paddingBottom: spacing[4], ...BOTTOM_LINE }} />
+            <PickUpPoint from={from} to={to} containerStyle={{ paddingBottom: spacing[4] }} distances={CarriersJobStore.distances} />
+            <View style={{ ...BOTTOM_LINE, flexDirection: 'row', justifyContent: 'center', paddingBottom: spacing[3] }}>
+              <View style={{ alignItems: 'center', flexDirection: 'row', paddingRight: spacing[3] }}>
+                <Text tx={'common.summary'} />
+                <Text text={':'} />
+              </View>
+              <View style={{ alignItems: 'center' }}>
+                <Text style={{ paddingVertical: spacing[1] }} >{summaryDistances}<Text text={' KM'} style={TEXT_SMALL} /></Text>
+                <Text text={summaryTime} style={{ ...TEXT_SMALL, paddingVertical: spacing[1], }} />
+              </View>
+            </View>
           </View>
 
           <View style={PRODUCT_ROOT}>
