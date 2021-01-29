@@ -17,12 +17,14 @@ const { width, height } = Dimensions.get('window')
 const FULL: ViewStyle = { flex: 1 }
 
 const TOP_VIEW: ViewStyle = {
-  flex: 1.2,
+  // flex: 1,
+  height: 230,
   backgroundColor: color.mainTheme,
   borderBottomLeftRadius: 20,
   borderBottomRightRadius: 20,
   justifyContent: 'flex-start',
-  alignItems: 'center'
+  alignItems: 'center',
+  // marginBottom: 20,
 }
 const BOTTOM_VIEW: ViewStyle = {
   flex: 2,
