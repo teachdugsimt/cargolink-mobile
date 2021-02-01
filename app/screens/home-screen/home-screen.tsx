@@ -9,6 +9,8 @@ import { useStores } from "../../models/root-store/root-store-context";
 import { GridView } from '../../components/home-element/home-element'
 import i18n from 'i18n-js'
 import MyVehicleStore from "../../store/my-vehicle-store/my-vehicle-store"
+import TruckTypeStore from "../../store/truck-type-store/truck-type-store"
+import ProductTypeStore from "../../store/product-type-store/product-type-store"
 import date from 'date-and-time';
 // import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
 
@@ -16,12 +18,14 @@ const { width, height } = Dimensions.get('window')
 const FULL: ViewStyle = { flex: 1 }
 
 const TOP_VIEW: ViewStyle = {
-  flex: 1.2,
+  // flex: 1,
+  height: 230,
   backgroundColor: color.mainTheme,
   borderBottomLeftRadius: 20,
   borderBottomRightRadius: 20,
   justifyContent: 'flex-start',
-  alignItems: 'center'
+  alignItems: 'center',
+  // marginBottom: 20,
 }
 const BOTTOM_VIEW: ViewStyle = {
   flex: 2,
@@ -70,6 +74,23 @@ export const HomeScreen = observer((props) => {
       setlang(versatileStore.language)
     }
   }, [versatileStore.language])
+  useEffect(() => {
+    if (versatileStore.list.length && !TruckTypeStore.list.length) {
+      TruckTypeStore.setList(JSON.parse(JSON.stringify(versatileStore.list)))
+    }
+  }, [versatileStore.list.length])
+
+  useEffect(() => {
+    if (versatileStore.listGroup.length && !TruckTypeStore.listGroup.length) {
+      TruckTypeStore.setGroupList(JSON.parse(JSON.stringify(versatileStore.listGroup)))
+    }
+  }, [versatileStore.listGroup.length])
+
+  useEffect(() => {
+    if (versatileStore.listProductType.length && !ProductTypeStore.list.length) {
+      ProductTypeStore.setList(JSON.parse(JSON.stringify(versatileStore.listProductType)))
+    }
+  }, [versatileStore.listProductType.length])
 
   __DEV__ && console.tron.log('hello rendering world')
   interface List {

@@ -1,7 +1,7 @@
 {
   "common": {
     "ok": "ตกลง",
-    "cancel": "Cancel",
+    "cancel": "ยกเลิก",
     "back": "กลับ",
     "next": "ต่อไป",
     "from": "จาก",
@@ -43,7 +43,13 @@
     "medium": "คอกธรรมดา",
     "height": "คอกสูง",
     "somethingWrong": "มีบางอย่างผิดพลาด",
-    "pleaseCheckYourData": "กรุณาตรวจสอบข้อมูล"
+    "pleaseCheckYourData": "กรุณาตรวจสอบข้อมูล",
+    "bookAJob": "จองงาน",
+    "HH": "ชั่วโมง",
+    "mm": "นาที",
+    "ss": "วินาที",
+    "ms": "มิลลิวินาที",
+    "summary": "รวม"
   },
   "bottomTab": {
     "home": "หน้าแรก",
@@ -213,7 +219,9 @@
     "productType": "ประเภทสินค้า",
     "productName": "ชื่อสินค้า",
     "pickUpPoint": "จุดรับส่งสินค้า",
-    "product": "สินค้า"
+    "product": "สินค้า",
+    "confirmJob": "ยืนยันการจองงานนี้",
+    "confirmVehicleForThisJob": "ยืนยันการจองรถสำหรับงานนี้"
   },
   "acceptPolicyScreen": {
     "termAndCondition": "ข้อกำหนดและเงื่อนไข",

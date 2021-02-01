@@ -178,7 +178,9 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
 
   useEffect(() => {
     // CarriersJobStore.find()
-    TruckTypeStore.find()
+    if (!TruckTypeStore.list.length) {
+      TruckTypeStore.find()
+    }
 
     return () => {
       PAGE = 0
@@ -260,7 +262,9 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
 
   const onAdvanceSeach = () => {
     // AdvanceSearchStore.getProductTypes()
-    TruckTypeStore.find(i18n.locale)
+    if (!TruckTypeStore.list.length) {
+      TruckTypeStore.find(i18n.locale)
+    }
     navigation.navigate('advanceSearch')
   }
 

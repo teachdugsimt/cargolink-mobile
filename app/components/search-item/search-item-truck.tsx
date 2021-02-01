@@ -22,7 +22,7 @@ const CONTAINER: ViewStyle = {
   position: "relative",
   backgroundColor: color.backgroundWhite,
   borderWidth: 1,
-  borderColor: color.line,
+  borderColor: color.disable,
   marginTop: spacing[1],
   marginBottom: spacing[1],
 }
@@ -46,7 +46,7 @@ const TOP_ROOT: ViewStyle = {
   flexDirection: "row",
   paddingBottom: spacing[2],
   borderBottomWidth: 1,
-  borderBottomColor: color.line,
+  borderBottomColor: color.disable,
   marginLeft: spacing[1],
   marginRight: spacing[1],
   ...PADDING_LEFT,
