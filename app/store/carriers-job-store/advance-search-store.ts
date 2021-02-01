@@ -4,6 +4,7 @@ import * as Types from "../../services/api/api.types"
 import TruckTypeStore from "../truck-type-store/truck-type-store"
 import ProductTypeStore from "../product-type-store/product-type-store"
 import { translate } from "../../i18n"
+import i18n from 'i18n-js'
 
 const SubMenu = {
   id: (types.number),
@@ -50,7 +51,7 @@ let MENUS: Array<Types.AdvanceSearchMenu> = [
   {
     id: 1,
     type: 'truckType',
-    topic: translate('common.vehicleTypeField'),
+    topic: translate('jobDetailScreen.truckType'),
     showSubColumn: 3,
     isChecked: false,
     isMultiSelect: true,
@@ -59,7 +60,7 @@ let MENUS: Array<Types.AdvanceSearchMenu> = [
   {
     id: 2,
     type: 'truckAmount',
-    topic: 'จำนวนรถ',
+    topic: translate('common.amount'),
     showSubColumn: 3,
     isChecked: false,
     isMultiSelect: false,
@@ -87,7 +88,7 @@ let MENUS: Array<Types.AdvanceSearchMenu> = [
   {
     id: 3,
     type: 'productType',
-    topic: 'ประเภทสินค้า',
+    topic: translate('jobDetailScreen.productType'),
     showSubColumn: 2,
     isChecked: false,
     isMultiSelect: true,
@@ -95,7 +96,7 @@ let MENUS: Array<Types.AdvanceSearchMenu> = [
   },
   {
     id: 4,
-    type: 'weight',
+    type: translate('jobDetailScreen.weightTon'),
     topic: 'น้ำหนัก',
     showSubColumn: 2,
     isChecked: false,
@@ -122,6 +123,7 @@ const AdvanceSearchStore = types
     filter: Filter,
     menu: types.array(Menu),
     productTypes: types.array(ProductType),
+    locale: types.string,
     loading: types.boolean,
     error: types.string
   })
@@ -212,6 +214,10 @@ const AdvanceSearchStore = types
         self.error = "error fetch api get product types"
       }
     }),
+
+    setLocale: function setLocale(locale) {
+      self.locale = locale
+    }
   }))
   .views((self) => ({
     get getFilter() {
@@ -223,6 +229,7 @@ const AdvanceSearchStore = types
     filter: {},
     menu: [],
     productTypes: [],
+    locale: i18n.locale,
     loading: false,
     error: ''
   })

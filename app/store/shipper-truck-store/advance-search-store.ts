@@ -51,7 +51,7 @@ const MENUS: Array<Types.AdvanceSearchMenu> = [
   {
     id: 1,
     type: 'truckType',
-    topic: translate('common.vehicleTypeField'),
+    topic: translate('jobDetailScreen.truckType'),
     showSubColumn: 3,
     isChecked: false,
     isMultiSelect: true,

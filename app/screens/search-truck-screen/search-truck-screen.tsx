@@ -152,7 +152,7 @@ const Item = (data) => {
 
   const workingZoneStr = workingZones?.length ? workingZones.map(zone => {
     let reg = GetRegion(zone.region, i18n.locale)
-    return reg.label
+    return reg?.label || ''
   }).join(', ') : translate('common.notSpecified')
 
   return (

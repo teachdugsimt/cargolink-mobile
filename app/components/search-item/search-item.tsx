@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { ImageBackground, ImageStyle, TextStyle, View, ViewStyle, TouchableOpacity } from 'react-native';
+import { ImageBackground, ImageStyle, TextStyle, View, ViewStyle, TouchableOpacity, Dimensions } from 'react-native';
 import { SearchItemProps } from './search-item.props';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { color, spacing } from '../../theme';
@@ -62,6 +62,7 @@ const PIN_ICON: ImageStyle = {
 }
 const LOCATION_TEXT: TextStyle = {
   fontSize: FONT_SIZE_SMALL,
+  width: Dimensions.get('window').width - 100,
   ...PADDING_LEFT
 }
 const TEXT: TextStyle = {
@@ -168,7 +169,7 @@ export function SearchItem(props: SearchItemProps) {
           <View style={LOCATION}>
             <Icon icon="pinDropYellow" style={PIN_ICON} />
             <Text
-              text={`${translate('common.from')}`} // จาก
+              text={`${translate('common.from')}`}
               style={[LOCATION_TEXT, { width: 50 }]}
             />
             <Text style={{ paddingRight: spacing[1] }} text={':'} />
@@ -178,7 +179,7 @@ export function SearchItem(props: SearchItemProps) {
           <View style={LOCATION}>
             <Icon icon="pinDropGreen" style={PIN_ICON} />
             <Text
-              text={`${translate('common.to')}`} // ถึง
+              text={`${translate('common.to')}`}
               style={[LOCATION_TEXT, { width: 50 }]}
               numberOfLines={1}
             />
@@ -189,7 +190,7 @@ export function SearchItem(props: SearchItemProps) {
             <View style={CAR_DETAIL}>
               <Text
                 style={TEXT}
-                text={`${translate('jobDetailScreen.product')} : `} // จำนวนรถบรรทุก
+                text={`${translate('jobDetailScreen.product')} : `}
               />
               <Text style={TEXT} text={productName} />
             </View>
@@ -201,7 +202,7 @@ export function SearchItem(props: SearchItemProps) {
             <View style={CAR_DETAIL}>
               <Text
                 style={TEXT}
-                text={`${translate('common.count')} : `} // บรรจุภัณฑ์
+                text={`${translate('common.amount')} : `}
               />
               <Text style={TEXT} text={count.toString()} />
             </View>
@@ -215,7 +216,7 @@ export function SearchItem(props: SearchItemProps) {
             <View style={RECOMMENED_ROOT}>
               <Text
                 style={RECOMMENED}
-                text={translate('jobDetailScreen.jobRecommend')} // งานแนะนำ
+                text={translate('jobDetailScreen.jobRecommend')}
               />
             </View>}
         </View>

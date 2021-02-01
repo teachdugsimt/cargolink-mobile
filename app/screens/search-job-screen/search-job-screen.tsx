@@ -72,7 +72,7 @@ const Item = (data) => {
     CarriersJobStore.updateFavoriteInList(data.id, data.isLike)
   }
 
-  const typeOfTruck = GetTruckType(+truckType)?.name || translate('common.notSpecified')
+  const typeOfTruck = GetTruckType(+truckType)?.name || `${translate('jobDetailScreen.truckType')} : ${translate('common.notSpecified')}`
 
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
@@ -89,14 +89,14 @@ const Item = (data) => {
           // detail,
           viewDetail: true,
           postBy: owner.companyName,
-          isVerified: true,
+          isVerified: false,
           isLike: isLiked,
           backgroundImage: imageComponent[MapTruckImageName(+truckType) || 'truck'],
-          // rating,
+          rating: '0',
           // ratingCount,
           // isCrown,
           logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-          isRecommened: true,
+          // isRecommened: true,s
           containerStyle: {
             paddingTop: spacing[2],
             borderRadius: 6
