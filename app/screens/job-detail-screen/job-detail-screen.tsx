@@ -210,6 +210,7 @@ const SwipeUpArrows = (data) => (<LottieView
   colorFilters={[{ keypath: 'Path 1', color: data.color }, { keypath: 'Path 2', color: data.color }]}
   autoPlay
   loop={false}
+  speed={0.8}
 />)
 
 const PickUpPoint = ({ to, from, distances, containerStyle = {} }) => {

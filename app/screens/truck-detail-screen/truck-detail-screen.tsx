@@ -207,6 +207,8 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
       return imageInfo
     }) : []
 
+  const truckImage = MapTruckImageName(+truckType)
+
   return (
     <View style={CONTAINER}>
       {ShipperTruckStore.loading && <ModalLoading size={'large'} color={color.primary} visible={ShipperTruckStore.loading} />}
@@ -255,7 +257,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
           </View>
 
           <View style={BACKGROUND_CONTAINER}>
-            <ImageBackground source={imageComponent[MapTruckImageName(+truckType) || '']} style={BACKGROUND} resizeMode={'contain'} />
+            <ImageBackground source={imageComponent[truckImage && truckImage !== 'greyMock' ? truckImage : '']} style={BACKGROUND} resizeMode={'contain'} />
           </View>
 
         </View>

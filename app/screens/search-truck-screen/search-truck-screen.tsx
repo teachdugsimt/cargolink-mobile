@@ -153,6 +153,8 @@ const Item = (data) => {
     return reg?.label || ''
   }).join(', ') : translate('common.notSpecified')
 
+  const truckImage = MapTruckImageName(+truckType)
+
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
       <SearchItemTruck
@@ -166,7 +168,7 @@ const Item = (data) => {
           postBy: 'CargoLink',
           isVerified: true,
           isLike: isLiked,
-          backgroundImage: imageComponent[MapTruckImageName(+truckType) || 'truck'],
+          backgroundImage: imageComponent[truckImage && truckImage !== 'greyMock' ? truckImage : ''],
           // rating,
           // ratingCount,
           isCrown: true,

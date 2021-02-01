@@ -143,8 +143,8 @@ export function SearchBar(props: SearchBarProps) {
     style={{ height: 25, width: 25 }}
     colorFilters={[
       { keypath: 'bac/arrow_finish_22 Outlines', color: color.disable },
-      { keypath: 'w', color: color.success },
-      { keypath: 'g', color: color.primary }
+      { keypath: 'w', color: color.textWhite },
+      { keypath: 'g', color: color.textWhite }
     ]}
     autoPlay={!!(autoPlay && isSwitching)}
     loop={false}
