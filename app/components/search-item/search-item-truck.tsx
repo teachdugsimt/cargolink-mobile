@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { ImageBackground, ImageStyle, TextStyle, View, ViewStyle, TouchableOpacity } from 'react-native';
 import { SearchItemProps } from './search-item.props';
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { color, spacing } from '../../theme';
 import { Icon } from '../icon/icon';
 import { PostingBy } from '../posting-by/posting-by';
@@ -166,7 +167,7 @@ export function SearchItemTruck(props: SearchItemProps) {
         </View>
         <View style={CONTENT}>
           <View style={LOCATION}>
-            <Icon icon="pinDropYellow" style={PIN_ICON} />
+            <MaterialIcons name={'pin-drop'} color={color.primary} size={22} />
             <Text
               text={`${translate('searchTruckScreen.workingZone')}`}
               style={LOCATION_TEXT}

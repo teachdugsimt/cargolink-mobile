@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react'
-import { Dimensions, ImageStyle, Platform, TextStyle, TouchableHighlight, View, ViewStyle } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react'
+import { Dimensions, ImageStyle, Platform, TextStyle, TouchableHighlight, View, ViewStyle, Animated, Easing } from 'react-native';
 import { color, spacing } from '../../theme';
 import { Button } from '../button/button';
 import { Icon } from '../icon/icon';
@@ -11,10 +11,13 @@ import { translate } from '../../i18n';
 import RNPickerSelect from 'react-native-picker-select';
 import i18n from 'i18n-js'
 import { provinceListEn, provinceListTh } from '../../screens/home-screen/manage-vehicle/datasource'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import LottieView from 'lottie-react-native';
 
 interface Input {
   firstLocation: string
   secondLocation: string
+  progress: any
 }
 
 const ROOT: ViewStyle = {
@@ -39,10 +42,6 @@ const SWITCHING: ViewStyle = {
   flexBasis: '10%',
   alignItems: 'center',
   paddingHorizontal: spacing[2]
-}
-const PIN_ICON: ImageStyle = {
-  width: 25,
-  height: 25,
 }
 const ARROW_ICON: ImageStyle = {
   width: 26,
@@ -75,11 +74,14 @@ const SEARCH_TEXT: TextStyle = {
 const initialState = {
   firstLocation: '',
   secondLocation: '',
+  progress: new Animated.Value(0),
 }
 
 export function SearchBar(props: SearchBarProps) {
   const navigation = useNavigation()
-  const [{ firstLocation, secondLocation }, setState] = useState<Input>(initialState)
+  const [{ firstLocation, secondLocation, progress }, setState] = useState<Input>(initialState)
+  const [isSwitching, setIsSwitching] = useState(false)
+  const [autoPlay, setAutoPlay] = useState(false)
 
   const {
     fromText,
@@ -92,24 +94,63 @@ export function SearchBar(props: SearchBarProps) {
     onSearch
   } = props
 
+  useEffect(() => {
+    if (isSwitching) {
+      setAutoPlay(true)
+    }
+  }, [isSwitching])
+
   const switching = () => {
-    setState({
+    setState(prevState => ({
+      ...prevState,
       firstLocation: secondLocation,
       secondLocation: firstLocation,
-    })
+    }))
+    setIsSwitching(true)
+    runAnimation()
   }
 
   const onChangeValue = (value: object) => {
-    console.log('onChangeValue province', value)
     setState(prevState => ({
       ...prevState,
       ...value
     }))
   }
 
+  const runAnimation = () => {
+    Animated.timing(progress, {
+      toValue: 1,
+      duration: 1200,
+      // easing: Easing.linear,
+      useNativeDriver: true
+    }).start();
+    setState(prevState => ({
+      ...prevState,
+      progress: new Animated.Value(0)
+    }))
+  }
+
+  const onAnimationFinish = () => {
+    setIsSwitching(false)
+  }
+
   useEffect(() => {
     onToggle(firstLocation || undefined, secondLocation || undefined)
   }, [firstLocation, secondLocation])
+
+  const ReverseArrows = () => (<LottieView
+    source={require('../../AnimationJson/reverse-arrows.json')}
+    style={{ height: 25, width: 25 }}
+    colorFilters={[
+      { keypath: 'bac/arrow_finish_22 Outlines', color: color.disable },
+      { keypath: 'w', color: color.success },
+      { keypath: 'g', color: color.primary }
+    ]}
+    autoPlay={!!(autoPlay && isSwitching)}
+    loop={false}
+    progress={progress}
+    onAnimationFinish={onAnimationFinish}
+  />)
 
   const textStyleContainer = { ...LOCATION_TEXT, ...textStyle }
 
@@ -117,11 +158,8 @@ export function SearchBar(props: SearchBarProps) {
     <View style={{ ...ROOT, ...style }}>
 
       <View style={LOCATION}>
-        <Icon icon="pinDropYellow" style={PIN_ICON} />
-        <Text
-          text={`${fromText}  :`} // จาก
-          style={textStyleContainer}
-        />
+        <MaterialIcons name={'pin-drop'} color={color.primary} size={25} />
+        <Text text={`${fromText}  :`} style={textStyleContainer} />
         <RNPickerSelect
           // testID={"picker_vehicle_type"}
           value={firstLocation}
@@ -153,18 +191,16 @@ export function SearchBar(props: SearchBarProps) {
 
       <View style={SWITCHING}>
         <TouchableHighlight onPress={switching}>
-          <View>
-            <Icon icon="arrowUpDown" style={ARROW_ICON} containerStyle={{ width: 26, height: 26, transform: [{ rotate: '90deg' }] }} />
-          </View>
+          {/* <View style={{}}> */}
+          {/* <Icon icon="arrowUpDown" style={ARROW_ICON} containerStyle={{ width: 26, height: 26, transform: [{ rotate: '90deg' }] }} /> */}
+          <ReverseArrows />
+          {/* </View> */}
         </TouchableHighlight>
       </View>
 
       <View style={LOCATION}>
-        <Icon icon="pinDropGreen" style={PIN_ICON} />
-        <Text
-          text={`${toText}  :`} // ถึง
-          style={textStyleContainer}
-        />
+        <MaterialIcons name={'pin-drop'} color={color.success} size={22} />
+        <Text text={`${toText}  :`} style={textStyleContainer} />
         <RNPickerSelect
           // testID={"picker_vehicle_type"}
           value={secondLocation}

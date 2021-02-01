@@ -23,5 +23,5 @@ export const palette = {
   // mainGrey: "#D8D8D8",
   mainGrey: "#999",
 
-  sky: '4EBDAE',
+  sky: '#4EBDAE',
 }

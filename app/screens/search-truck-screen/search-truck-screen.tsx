@@ -58,8 +58,6 @@ const BUTTON_CONTAINER: ViewStyle = {
   marginVertical: spacing[2],
 }
 const PIN_ICON: ImageStyle = {
-  width: 25,
-  height: 25,
   marginRight: spacing[5],
 }
 const DROPDOWN_TEXT: TextStyle = {
@@ -301,7 +299,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
       const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), zoneIds }
       AdvanceSearchStore.setFilter(advSearch)
       ShipperTruckStore.find(advSearch)
-      ShipperTruckStore.setDefaultOfList()
+      // ShipperTruckStore.setDefaultOfList()
       PAGE = 0
     }
   }, [visible])
@@ -408,12 +406,12 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
     const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), zoneIds }
     AdvanceSearchStore.setFilter(advSearch)
     ShipperTruckStore.find(advSearch)
-    ShipperTruckStore.setDefaultOfList()
+    // ShipperTruckStore.setDefaultOfList()
     PAGE = 0
   }
 
   const onRefresh = () => {
-    ShipperTruckStore.setDefaultOfList()
+    // ShipperTruckStore.setDefaultOfList()
     ShipperTruckStore.find(AdvanceSearchStore.filter)
     PAGE = 0
   }
@@ -425,7 +423,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
       {/* <ModalLoading size={'large'} color={color.primary} visible={loading} /> */}
       <View style={SEARCH_BAR}>
         <View style={SEARCH_BAR_ROW}>
-          <Icon icon="pinDropYellow" style={PIN_ICON} />
+          <MaterialIcons name={'pin-drop'} color={color.primary} size={25} style={PIN_ICON} />
           <Text
             text={isSelected ? translate('searchTruckScreen.selected') : translate("searchTruckScreen.selectWorkingZone")}
             onPress={() => setVisible(!visible)} style={DROPDOWN_TEXT}

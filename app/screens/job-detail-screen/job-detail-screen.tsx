@@ -22,6 +22,7 @@ import { useStores } from "../../models/root-store/root-store-context";
 import { ConverTimeFormat } from "../../utils/convert-time-format";
 import LottieView from 'lottie-react-native';
 
+const deviceWidht = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('window').height
 
 const PADDING_TOP = { paddingTop: spacing[1] }
@@ -57,7 +58,7 @@ const LOCATION_CONTAINER: ViewStyle = {
 }
 const LOCATION_BOX: ViewStyle = {
   flex: 1,
-  paddingRight: spacing[3]
+  paddingRight: spacing[0]
 }
 const PRODUCT_ROOT: ViewStyle = {
   flexDirection: 'column',
@@ -203,6 +204,14 @@ const Dot = (data) => (<LottieView
   loop
 />)
 
+const SwipeUpArrows = (data) => (<LottieView
+  source={require('../../AnimationJson/swipe-up-arrows.json')}
+  style={{ height: 100, width: 100, }}
+  colorFilters={[{ keypath: 'Path 1', color: data.color }, { keypath: 'Path 2', color: data.color }]}
+  autoPlay
+  loop={false}
+/>)
+
 const PickUpPoint = ({ to, from, distances, containerStyle = {} }) => {
   const [height, setHeight] = useState(0)
 
@@ -221,7 +230,7 @@ const PickUpPoint = ({ to, from, distances, containerStyle = {} }) => {
           <Dot color={color.primary} />
           <Text
             text={`${translate('common.from')}  :`}
-            style={{ ...LOCATION_TEXT, width: 45, justifyContent: 'flex-end' }}
+            style={{ ...LOCATION_TEXT, width: 48, justifyContent: 'flex-end' }}
           />
           <Text
             text={from && from.name}
@@ -239,7 +248,7 @@ const PickUpPoint = ({ to, from, distances, containerStyle = {} }) => {
                 <Dot color={color.success} />
                 <Text
                   text={`${translate('common.to')}  :`}
-                  style={{ ...LOCATION_TEXT, width: 45 }}
+                  style={{ ...LOCATION_TEXT, width: 48 }}
                 />
                 <Text
                   text={attr.name}
@@ -428,7 +437,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                 coordinate={{ latitude: +attr.lat, longitude: +attr.lng }}
               >
                 <Ionicons name={'location-sharp'} color={!index ? color.primary : color.success} size={48} />
-                <Callout>
+                <Callout style={{ minWidth: deviceWidht - 50 }}>
                   <Text text={attr.name} />
                 </Callout>
               </Marker>
@@ -447,6 +456,11 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             <Text tx={'jobDetailScreen.pickUpPoint'} style={{ ...TEXT_SMALL, color: color.line, }} />
           </View> */}
           <PickUpPoint from={from} to={to} distances={CarriersJobStore.distances} containerStyle={{ overflow: 'hidden' }} />
+
+          <View style={{ position: 'absolute', right: -spacing[5], top: -spacing[4] }}>
+            <SwipeUpArrows color={color.disable} />
+          </View>
+
         </TouchableOpacity>
 
       </View>

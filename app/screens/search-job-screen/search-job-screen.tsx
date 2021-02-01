@@ -80,15 +80,15 @@ const Item = (data) => {
         {
         ...{
           id,
-          fromText: from.name,
-          toText: to.map(location => location.name).join(', '),
-          count: requiredTruckAmount,
+          fromText: from?.name || '',
+          toText: to?.map(location => location.name).join(', ') || '',
+          count: requiredTruckAmount || '',
           productName: productName,
           truckType: typeOfTruck,
           // packaging: productName,
           // detail,
           viewDetail: true,
-          postBy: owner.companyName,
+          postBy: owner?.companyName || '',
           isVerified: false,
           isLike: isLiked,
           backgroundImage: imageComponent[MapTruckImageName(+truckType) || 'truck'],
@@ -257,7 +257,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
   const onSearch = () => {
     const filter = AdvanceSearchStore.filter
     CarriersJobStore.find(filter)
-    CarriersJobStore.setDefaultOfList()
+    // CarriersJobStore.setDefaultOfList()
   }
 
   const onAdvanceSeach = () => {
@@ -269,7 +269,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
   }
 
   const onRefresh = () => {
-    CarriersJobStore.setDefaultOfList()
+    // CarriersJobStore.setDefaultOfList()
     CarriersJobStore.find(AdvanceSearchStore.filter)
     PAGE = 0
   }

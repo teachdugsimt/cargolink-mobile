@@ -80,7 +80,13 @@ const CarriersJobStore = types
         console.log("Response call api get shipper jobs : : ", response)
         if (response.kind === 'ok') {
           yield FavoriteJobStore.find()
-          let arrMerge = [...self.list, ...response.data] || []
+          let arrMerge = []
+          if (!filter.page) {
+            arrMerge = [...response.data]
+          } else {
+            arrMerge = [...self.list, ...response.data]
+          }
+          // let arrMerge = [...self.list, ...response.data] || []
           const favoriteList = JSON.parse(JSON.stringify(FavoriteJobStore.list))
 
           if (favoriteList && favoriteList.length) {

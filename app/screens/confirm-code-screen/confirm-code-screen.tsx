@@ -274,7 +274,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
               size: 100
             }}
             header={translate('confirmCodeScreen.codeExpiredOrIncorrect')}
-            headerStyle={{ paddingVertical: spacing[3], color: color.primary }}
+            headerStyle={{ padding: spacing[3], color: color.primary }}
             content={translate('confirmCodeScreen.confirmOTPAgianOrRequestNewOTP')}
             contentStyle={{ paddingTop: spacing[3], paddingBottom: spacing[5], paddingHorizontal: spacing[7], color: color.line }}
             buttonContainerStyle={{ width: '90%' }}

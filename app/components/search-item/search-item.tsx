@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { ImageBackground, ImageStyle, TextStyle, View, ViewStyle, TouchableOpacity, Dimensions } from 'react-native';
 import { SearchItemProps } from './search-item.props';
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { color, spacing } from '../../theme';
 import { Icon } from '../icon/icon';
 import { PostingBy } from '../posting-by/posting-by';
@@ -55,10 +56,6 @@ const LOCATION: ViewStyle = {
   alignItems: "center",
   ...PADDING_TOP,
   ...PADDING_BOTTOM
-}
-const PIN_ICON: ImageStyle = {
-  width: 22,
-  height: 22,
 }
 const LOCATION_TEXT: TextStyle = {
   fontSize: FONT_SIZE_SMALL,
@@ -167,7 +164,7 @@ export function SearchItem(props: SearchItemProps) {
         <ImageBackground source={truckBackImage} style={BACKGROUND} ></ImageBackground>
         <View style={CONTENT}>
           <View style={LOCATION}>
-            <Icon icon="pinDropYellow" style={PIN_ICON} />
+            <MaterialIcons name={'pin-drop'} color={color.primary} size={22} />
             <Text
               text={`${translate('common.from')}`}
               style={[LOCATION_TEXT, { width: 50 }]}
@@ -177,7 +174,7 @@ export function SearchItem(props: SearchItemProps) {
             <Icon />
           </View>
           <View style={LOCATION}>
-            <Icon icon="pinDropGreen" style={PIN_ICON} />
+            <MaterialIcons name={'pin-drop'} color={color.success} size={22} />
             <Text
               text={`${translate('common.to')}`}
               style={[LOCATION_TEXT, { width: 50 }]}
