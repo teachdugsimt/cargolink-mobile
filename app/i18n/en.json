@@ -38,7 +38,7 @@
     "noSign": "no input special character",
     "noSignAndCharacter": "please check special sign or character",
     "acceptOnlyCharacter": "accept only character",
-    "notSpecified": "Not specified",
+    "notSpecified": "-",
     "low": "Low Stall",
     "medium": "Medium Stall",
     "height": "Height Stall",
@@ -49,7 +49,8 @@
     "mm": "minute",
     "ss": "second",
     "ms": "millisecond",
-    "summary": "Summary"
+    "summary": "Summary",
+    "amount": "Amount"
   },
   "bottomTab": {
     "home": "Home",
@@ -220,7 +221,9 @@
     "pickUpPoint": "Pick up point",
     "product": "Product",
     "confirmJob": "Confirm booking of this job.",
-    "confirmVehicleForThisJob": "Confirm car reservations for this event."
+    "confirmVehicleForThisJob": "Confirm car reservations for this event.",
+    "truckType": "Truck type",
+    "unit": ""
   },
   "acceptPolicyScreen": {
     "termAndCondition": "Term and condition",

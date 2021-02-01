@@ -1,11 +1,12 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { observer } from 'mobx-react-lite'
-import { Dimensions, ImageStyle, ScrollView, TextStyle, View, ViewStyle, TouchableOpacity } from 'react-native'
+import { Dimensions, ImageStyle, ScrollView, TextStyle, View, ViewStyle, TouchableOpacity, LayoutChangeEvent } from 'react-native'
 import { Button, Icon, ModalAlert, ModalLoading, PostingBy, Text } from '../../components'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { color, spacing } from '../../theme'
 import { translate } from '../../i18n'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import CarriersJobStore from '../../store/carriers-job-store/carriers-job-store'
 import { GetTruckType } from '../../utils/get-truck-type'
@@ -59,11 +60,10 @@ const MAP: ImageStyle = {
 const LOCATION_CONTAINER: ViewStyle = {
   flex: 1,
   flexDirection: 'row',
+  position: 'relative',
 }
 const LOCATION_BOX: ViewStyle = {
   flex: 1,
-  // borderRightWidth: 1,
-  // borderRightColor: color.disable,
   paddingRight: spacing[3]
 }
 const PRODUCT_ROOT: ViewStyle = {
@@ -101,11 +101,14 @@ const ONWER_ROOT: ViewStyle = {
   paddingRight: spacing[4] + spacing[2],
   marginBottom: spacing[6],
 }
+const TO_LOCATION: ViewStyle = {
+  flexDirection: 'row',
+  ...PADDING_TOP,
+  ...PADDING_BOTTOM,
+}
 const LOCATION: ViewStyle = {
   flexDirection: "row",
   // alignItems: "center",
-  ...PADDING_TOP,
-  ...PADDING_BOTTOM
 }
 const PIN_ICON: ImageStyle = {
   width: 22,
@@ -150,13 +153,6 @@ const CONTENT_SMALL: ViewStyle = {
   overflow: 'hidden',
   marginHorizontal: spacing[3],
   paddingVertical: spacing[4],
-  shadowColor: 'rgba(0, 0, 0, 0.7)',
-  shadowOffset: {
-    width: 0,
-    height: 1
-  },
-  shadowRadius: 3,
-  shadowOpacity: 10
 }
 const FLOAT_CONTAINER: ViewStyle = {
   width: '100%',
@@ -171,6 +167,13 @@ const FLOAT_LINE: ViewStyle = {
   position: 'absolute',
   borderRadius: Math.floor(deviceHeight / 2)
 }
+const LINE: ViewStyle = {
+  position: 'absolute',
+  zIndex: -1,
+  left: 15.5,
+  borderLeftWidth: 1,
+  borderLeftColor: color.disable,
+}
 
 const DATA = { // [Mocking]
   id: 9,
@@ -181,11 +184,11 @@ const DATA = { // [Mocking]
   truckType: 'รถ 6 ล้อตู้คอก',
   viewDetail: true,
   postBy: 'Cargolink',
-  isVerified: true,
+  isVerified: false,
   isLike: true,
-  rating: '4.9',
-  ratingCount: '122',
-  isCrown: true,
+  rating: '0',
+  ratingCount: '0',
+  isCrown: false,
   isRecommened: true,
   weigh: 20,
   productType: 'สินค้าเกษตร',
@@ -195,36 +198,50 @@ const DATA = { // [Mocking]
   logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
 }
 
-// const distances = [{
-//   "from": "13.7884902,100.6079443",
-//   "to": "13.2773405,100.9410782",
-//   "distance": 99623,
-//   "duration": 4572
-// }, {
-//   "from": "13.2773405,100.9410782",
-//   "to": "12.6004546,101.9276771",
-//   "distance": 154882,
-//   "duration": 8373
-// }]
+const distances = [{
+  "from": "13.7884902,100.6079443",
+  "to": "13.2773405,100.9410782",
+  "distance": 99623,
+  "duration": 4572
+}, {
+  "from": "13.2773405,100.9410782",
+  "to": "12.6004546,101.9276771",
+  "distance": 154882,
+  "duration": 8373
+}]
 
-const GreenDot = ({ color }) => {
-  return <LottieView
-    source={require('../../AnimationJson/dot.json')}
-    style={{ height: 32 }}
-    colorFilters={[{ keypath: 'palette 01', color: color }, { keypath: 'palette 02', color: color }]}
-    autoPlay
-    loop
-  />
-}
+const Dot = (data) => (<LottieView
+  source={require('../../AnimationJson/dot.json')}
+  style={{ height: 32, width: 32, backgroundColor: color.backgroundWhite }}
+  colorFilters={[{ keypath: 'palette 01', color: data.color }, { keypath: 'palette 02', color: data.color }]}
+  autoPlay
+  loop
+/>)
 
-const PickUpPoint = ({ to, from, distances, containerStyle = {} }) => {
-  console.log('JSON.parse(JSON.stringify(distances))', JSON.parse(JSON.stringify(distances)))
+const Pin = (data) => (<LottieView
+  source={require('../../AnimationJson/pin.json')}
+  style={{ height: 100 }}
+  colorFilters={[{ keypath: 'Path 2', color: data.color }, { keypath: 'Ellipse 3', color: color.transparent }]}
+  autoPlay
+  loop={false}
+/>)
+
+const PickUpPoint = ({ to, from, containerStyle = {} }) => {
+  const [height, setHeight] = useState(0)
+
+  const onLayout = (event: LayoutChangeEvent) => {
+    const { height } = event.nativeEvent.layout
+    setHeight(height)
+  }
+
   return (
-    <View style={{ ...LOCATION_CONTAINER, ...containerStyle }}>
+    <View style={{ ...LOCATION_CONTAINER, ...containerStyle }} onLayout={(e) => onLayout(e)}>
+
+      <View style={{ ...LINE, height }} />
+
       <View style={LOCATION_BOX}>
-        <View style={LOCATION}>
-          <GreenDot color={color.primary} />
-          {/* <Icon icon="pinDropYellow" style={PIN_ICON} /> */}
+        <View style={{ ...LOCATION, paddingBottom: spacing[3] }}>
+          <Dot color={color.primary} />
           <Text
             text={`${translate('common.from')}  :`}
             style={{ ...LOCATION_TEXT, width: 45, justifyContent: 'flex-end' }}
@@ -240,9 +257,9 @@ const PickUpPoint = ({ to, from, distances, containerStyle = {} }) => {
           const distanceKM = distance ? (distance.distance / 1000).toFixed(2) : '0'
           const time = distance ? ConverTimeFormat(distance.duration * 1000, 'HHmm') : '0'
           return (
-            <View key={index} style={{ flexDirection: 'row' }}>
+            <View key={index} style={TO_LOCATION}>
               <View style={LOCATION}>
-                <GreenDot color={color.success} />
+                <Dot color={color.success} />
                 <Text
                   text={`${translate('common.to')}  :`}
                   style={{ ...LOCATION_TEXT, width: 45 }}
@@ -254,7 +271,7 @@ const PickUpPoint = ({ to, from, distances, containerStyle = {} }) => {
               </View>
               <View style={{ alignItems: 'center', marginLeft: 'auto' }}>
                 <Text style={{ paddingVertical: spacing[1] }} >{distanceKM}<Text text={' KM'} style={TEXT_SMALL} /></Text>
-                <Text text={time} style={{ ...TEXT_SMALL, paddingVertical: spacing[1], }} />
+                <Text text={time} style={{ ...TEXT_SMALL, paddingBottom: spacing[1], color: color.line }} />
               </View>
             </View>
           )
@@ -273,19 +290,6 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   const [liked, setLiked] = useState<boolean>(false)
   const [visibleModal, setVisibleModal] = useState<boolean>(false)
 
-  const {
-    id,
-    from,
-    to,
-    productName,
-    productTypeId,
-    requiredTruckAmount,
-    truckType,
-    isLiked,
-    weight
-  } = JSON.parse(JSON.stringify(CarriersJobStore.data))
-
-  // const data = { "id": "K1NXGEQL", "productTypeId": 21, "productName": "รถยนต์", "truckType": "21", "weight": 200, "requiredTruckAmount": 2, "from": { "name": "กรุงเทพมหานคร", "dateTime": "28-01-2021 16:27", "contactName": "Onelink Space", "contactMobileNo": "0998999988", "lat": "13.7884902", "lng": "100.6079443" }, "to": [{ "name": "ชลบุรี", "dateTime": "29-01-2021 11:54", "contactName": "หมู่บ้านบางแสนวิลล์ ตำบล ห้วยกะปิ อำเภอเมืองชลบุรี ชลบุรี", "contactMobileNo": "0899388403", "lat": "13.2773405", "lng": "100.9410782" }, { "name": "จันทบุรี", "dateTime": "30-01-2021 18:14", "contactName": "ศูนย์ศึกษาธรรมชาติป่าชายเลนอ่าวคุ้งกระเบน", "contactMobileNo": "0990999811", "lat": "12.6004546", "lng": "101.9276771" }], "owner": { "id": 611, "companyName": "Fast Delivery", "fullName": "Fast Delivery", "mobileNo": "0926270468", "email": "mymail.example@mail.com" }, "isLiked": false }
   // const {
   //   id,
   //   from,
@@ -296,7 +300,20 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   //   truckType,
   //   isLiked,
   //   weight
-  // } = data
+  // } = JSON.parse(JSON.stringify(CarriersJobStore.data))
+
+  const data = { "id": "K1NXGEQL", "productTypeId": 21, "productName": "รถยนต์", "truckType": "21", "weight": 200, "requiredTruckAmount": 2, "from": { "name": "กรุงเทพมหานคร", "dateTime": "28-01-2021 16:27", "contactName": "Onelink Space", "contactMobileNo": "0998999988", "lat": "13.7884902", "lng": "100.6079443" }, "to": [{ "name": "ชลบุรี", "dateTime": "29-01-2021 11:54", "contactName": "หมู่บ้านบางแสนวิลล์ ตำบล ห้วยกะปิ อำเภอเมืองชลบุรี ชลบุรี", "contactMobileNo": "0899388403", "lat": "13.2773405", "lng": "100.9410782" }, { "name": "จันทบุรี", "dateTime": "30-01-2021 18:14", "contactName": "ศูนย์ศึกษาธรรมชาติป่าชายเลนอ่าวคุ้งกระเบน", "contactMobileNo": "0990999811", "lat": "12.6004546", "lng": "101.9276771" }], "owner": { "id": 611, "companyName": "Fast Delivery", "fullName": "Fast Delivery", "mobileNo": "0926270468", "email": "mymail.example@mail.com" }, "isLiked": false }
+  const {
+    id,
+    from,
+    to,
+    productName,
+    productTypeId,
+    requiredTruckAmount,
+    truckType,
+    isLiked,
+    weight
+  } = data
 
   const route = useRoute()
 
@@ -430,12 +447,12 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           >
             {!!coordinates.length && coordinates.map((attr, index) => (
               <Marker
-                key={index}
+                key={`${index}-${!index ? 'yellow' : 'green'}`}
                 coordinate={{ latitude: +attr.lat, longitude: +attr.lng }}
-                pinColor="green"
               >
+                <Ionicons name={'location-sharp'} color={!index ? color.primary : color.success} size={48} />
                 <Callout>
-                  <Text>{attr.contactName}</Text>
+                  <Text text={attr.name} />
                 </Callout>
               </Marker>
             ))}
@@ -449,10 +466,13 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           <View style={FLOAT_CONTAINER}>
             <View style={FLOAT_LINE} />
           </View>
-          <View>
+          {/* <View>
             <Text tx={'jobDetailScreen.pickUpPoint'} style={{ ...TEXT_SMALL, color: color.line, }} />
-          </View>
-          <PickUpPoint from={from} to={to} distances={CarriersJobStore.distances} />
+          </View> */}
+          <PickUpPoint from={from} to={to}
+            // distances={CarriersJobStore.distances}
+            containerStyle={{ overflow: 'hidden' }}
+          />
         </TouchableOpacity>
 
       </View>
@@ -480,15 +500,17 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             <View>
               <Text tx={'jobDetailScreen.pickUpPoint'} style={{ ...TEXT_SMALL, color: color.line, }} />
             </View>
-            <PickUpPoint from={from} to={to} containerStyle={{ paddingBottom: spacing[4] }} distances={CarriersJobStore.distances} />
-            <View style={{ ...BOTTOM_LINE, flexDirection: 'row', justifyContent: 'center', paddingBottom: spacing[3] }}>
-              <View style={{ alignItems: 'center', flexDirection: 'row', paddingRight: spacing[3] }}>
-                <Text tx={'common.summary'} />
-                <Text text={':'} />
+            <PickUpPoint from={from} to={to} containerStyle={{ paddingBottom: spacing[4] }}
+            // distances={CarriersJobStore.distances}
+            />
+            <View style={{ ...BOTTOM_LINE, ...LOCATION_BOX, flexDirection: 'row', paddingBottom: spacing[3] }}>
+              <View style={LOCATION}>
+                <Dot color={color.sky} />
+                <Text text={`${translate('common.summary')}  :`} style={{ ...LOCATION_TEXT, justifyContent: 'flex-end' }} />
               </View>
-              <View style={{ alignItems: 'center' }}>
+              <View style={{ alignItems: 'center', marginLeft: 'auto' }}>
                 <Text style={{ paddingVertical: spacing[1] }} >{summaryDistances}<Text text={' KM'} style={TEXT_SMALL} /></Text>
-                <Text text={summaryTime} style={{ ...TEXT_SMALL, paddingVertical: spacing[1], }} />
+                <Text text={summaryTime} style={{ ...TEXT_SMALL, paddingBottom: spacing[1], color: color.line }} />
               </View>
             </View>
           </View>
@@ -502,8 +524,8 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                 <MaterialCommunityIcons name={'truck-outline'} size={24} color={color.primary} />
               </View>
               <View style={DETAIL_BOX}>
-                <Text text={`${translate('common.vehicleTypeField')} : ${txtTruckType}`} style={TEXT} />
-                <Text text={`${translate('common.count')} : ${requiredTruckAmount} คัน`} style={TEXT} />
+                <Text text={`${translate('jobDetailScreen.truckType')} : ${txtTruckType}`} style={TEXT} />
+                <Text text={`${translate('common.amount')} : ${requiredTruckAmount} ${translate('jobDetailScreen.unit')}`} style={TEXT} />
               </View>
             </View>
             <View style={PRODUCT_ROW}>

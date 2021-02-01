@@ -1,8 +1,9 @@
 import React from 'react'
-import { Dimensions, ImageStyle, TextStyle, View, ViewStyle, Text, Image, TouchableOpacity } from 'react-native'
+import { Dimensions, ImageStyle, TextStyle, View, ViewStyle, Image, TouchableOpacity } from 'react-native'
 import { PostingByProps } from './posting-by.props'
 import { color, spacing } from '../../theme';
 import { Icon } from '../icon/icon';
+import { Text } from '../text/text';
 
 const PADDING_LEFT = { paddingLeft: spacing[1] }
 const PADDING_RIGHT = { paddingRight: spacing[1] }
@@ -18,6 +19,7 @@ const ACCOUNT_VIEW: ViewStyle = {
 const ACCOUNT_DETAIL: ViewStyle = {
   flexDirection: 'row',
   justifyContent: 'flex-end',
+  alignItems: 'center'
 }
 const LOGO_ROOT: ViewStyle = {
   flexDirection: 'row',
@@ -60,14 +62,14 @@ export function PostingBy(props: PostingByProps) {
       <View style={FILL}>
         <View style={ACCOUNT_VIEW}>
           <View style={ACCOUNT_DETAIL}>
-            <Text style={{ ...PADDING_RIGHT }}>{postBy}</Text>
+            <Text style={{ ...PADDING_RIGHT }} text={postBy} />
             <Icon icon={isVerified ? "checkActive" : "checkInactive"} style={SMALL_ICON} containerStyle={{ ...PADDING_RIGHT }} />
             {isCrown && <Icon icon="crown" style={SMALL_ICON} containerStyle={{ ...PADDING_RIGHT }} />}
           </View>
           <View style={ACCOUNT_DETAIL}>
             <Icon icon="star" style={STAR} containerStyle={{ ...PADDING_RIGHT }} />
-            <Text style={TEXT_RATING}>{rating || '0.0'}</Text>
-            <Text style={TEXT_RATING}>({ratingCount || '0'})</Text>
+            <Text style={TEXT_RATING} text={rating || '0.0'} />
+            <Text style={TEXT_RATING} text={`(${ratingCount || '0'})`} />
           </View>
         </View>
         <View style={LOGO_ROOT}>

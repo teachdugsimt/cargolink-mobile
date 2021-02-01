@@ -38,7 +38,7 @@
     "noSign": "กรุณาตรวจสอบอักขระพิเศษ",
     "noSignAndCharacter": "กรุณาตรวจสอบอักขระพิเศษและตัวอักษร",
     "acceptOnlyCharacter": "ยอมรับแค่ตัวอักษร",
-    "notSpecified": "ไม่ระบุ",
+    "notSpecified": "-",
     "low": "คอกเตี้ย",
     "medium": "คอกธรรมดา",
     "height": "คอกสูง",
@@ -49,7 +49,8 @@
     "mm": "นาที",
     "ss": "วินาที",
     "ms": "มิลลิวินาที",
-    "summary": "รวม"
+    "summary": "รวม",
+    "amount": "จำนวน"
   },
   "bottomTab": {
     "home": "หน้าแรก",
@@ -221,7 +222,9 @@
     "pickUpPoint": "จุดรับส่งสินค้า",
     "product": "สินค้า",
     "confirmJob": "ยืนยันการจองงานนี้",
-    "confirmVehicleForThisJob": "ยืนยันการจองรถสำหรับงานนี้"
+    "confirmVehicleForThisJob": "ยืนยันการจองรถสำหรับงานนี้",
+    "truckType": "ประเภทรถ",
+    "unit": "คัน"
   },
   "acceptPolicyScreen": {
     "termAndCondition": "ข้อกำหนดและเงื่อนไข",

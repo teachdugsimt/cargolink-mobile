@@ -77,4 +77,6 @@ export const color = {
   black: palette.pureBlack,
   darkGreen: palette.darkGreen,
   darkGrey: palette.darkGrey,
+
+  sky: palette.sky,
 }
