@@ -32,8 +32,8 @@ const TEXT_ADD: TextStyle = {
   color: color.textWhite,
   fontSize: 16,
 }
-
-let count = 1
+let initCount = 0
+let count = 0
 
 export const MyVehicle = observer(function MyVehicle() {
   const navigation = useNavigation()
@@ -47,7 +47,7 @@ export const MyVehicle = observer(function MyVehicle() {
   useEffect(() => {
     MyVehicleStore.findRequest({ page: count })
     return () => {
-      count = 1
+      count = initCount
       MyVehicleStore.clearListData()
     }
   }, [])
@@ -62,7 +62,7 @@ export const MyVehicle = observer(function MyVehicle() {
   }
 
   const onRefresh = () => {
-    count = 1
+    count = initCount
     MyVehicleStore.findRequest({ page: count })
   }
 

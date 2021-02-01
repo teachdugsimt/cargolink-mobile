@@ -55,8 +55,8 @@ const MyVehicleStore = types
         console.log("Response call api find My Vehicle Request ::  ", response)
         const parseResponse = response.data || []
         let tmp
-        
-        if (filter.page == 1) {
+
+        if (filter.page == 0) {
           tmp = parseResponse
         } else tmp = _.unionBy(self.list, parseResponse, 'id')
 
