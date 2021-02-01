@@ -54,7 +54,7 @@ export function FavoriteNavigator() {
         options={({ navigation, route }) => ({
           // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
           headerCenter: () => <HeaderCenter tx={"favoriteScreen.favoriteList"} />,
-          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+          // headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
           headerHideShadow: true
         })}
       />

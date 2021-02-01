@@ -2,43 +2,22 @@ import React, { useEffect, useState } from "react"
 import { View, ViewStyle, TextStyle, Dimensions, Platform, ImageStyle, Image, SectionList, TouchableOpacity, ScrollView, KeyboardAvoidingView } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { useForm, Controller } from "react-hook-form";
-import RNPickerSelect from 'react-native-picker-select';
 import { observer } from "mobx-react-lite"
 import { translate } from "../../../i18n"
-import { Text, AddJobElement, TextInputTheme, RoundedButton, MultiSelector } from '../../../components'
-import i18n from 'i18n-js'
+import { Text, AddJobElement, TextInputTheme, RoundedButton, MultiSelector, ModalTruckType } from '../../../components'
 import PostJobStore from '../../../store/post-job-store/post-job-store'
 import AdvanceSearchStore from '../../../store/shipper-job-store/advance-search-store'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { spacing, color, typography, images } from "../../../theme"
-import { Modal, ModalContent, ModalPortal } from 'react-native-modals';
+import { color, typography, images } from "../../../theme"
+import { Modal, ModalContent } from 'react-native-modals';
 import { MapTruckImageName } from '../../../utils/map-truck-image-name'
 import { AlertForm } from '../../../utils/alert-form'
-import { FlatGrid } from 'react-native-super-grid';
 import { useStores } from "../../../models/root-store/root-store-context";
 
 import { SafeAreaView } from "react-native-safe-area-context";
-const items = [{ id: '92iijs7yta', name: 'Ondo', value: 'dd' }, { id: 'a0s0a8ssbsd', name: 'Ogun' }, { id: '16hbajsabsd', name: 'Calabar' }, { id: 'nahs75a5sg', name: 'Lagos' }, { id: '667atsas', name: 'Maiduguri' }, { id: 'hsyasajs', name: 'Anambra' }, { id: 'djsjudksjd', name: 'Benue' }, { id: 'sdhyaysdj', name: 'Kaduna' }, { id: 'suudydjsjd', name: 'Abuja' }];
 
-const { width, height } = Dimensions.get("window")
+const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
-
-const BOLD: TextStyle = { fontWeight: "bold" }
-
-const HEADER: TextStyle = {
-  paddingTop: spacing[3],
-  paddingBottom: spacing[5] - 1,
-  paddingHorizontal: 0,
-  backgroundColor: color.mainTheme
-}
-const HEADER_TITLE: TextStyle = {
-  ...BOLD,
-  fontSize: 12,
-  lineHeight: 15,
-  textAlign: "center",
-  letterSpacing: 1.5,
-  color: color.black
-}
 
 const TOP_VIEW: ViewStyle = {
   paddingTop: Platform.OS == "ios" ? 10 : 0,
@@ -78,9 +57,7 @@ const CONTENT_TEXT: TextStyle = {
   fontSize: typography.title
 }
 const MARGIN_TOP: ViewStyle = { marginTop: 5 }
-const DROPDOWN_ICON_CONTAINER: ViewStyle = {
-  paddingTop: 12.5, paddingRight: 5
-}
+
 const MARGIN_TOP_BIG: ViewStyle = { marginTop: 10 }
 const MARGIN_TOP_EXTRA: ViewStyle = { marginTop: 20 }
 const LAYOUT_REGISTRATION_FIELD: TextStyle = {
@@ -131,15 +108,11 @@ const IMAGE_LIST: ImageStyle = {
   borderRadius: 30,
   borderColor: color.primary, borderWidth: 2,
 }
-let check_load_truck_type = 0
 
 export const PostJobScreen = observer(function PostJobScreen() {
   const { versatileStore } = useStores()
   const navigation = useNavigation()
 
-  // const [listProductState, setlistProductState] = useState(null)
-
-  const [swipe, setswipe] = useState(false)
   const { control, handleSubmit, errors } = useForm({
     // defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : MyVehicleStore.MappingData
   });
@@ -149,7 +122,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
   }, [])
 
   const onSubmit = (data) => {
-    __DEV__ && console.tron.log("Data Form Post job : ", data)
+    __DEV__ && console.tron.log("Data Form Post job 1 : ", data)
 
     if (!data['vehicle-type']) { AlertForm("postJobScreen.truckType"); return; }
     else if (!data['item-type']) { AlertForm("postJobScreen.productType"); return; }
@@ -199,75 +172,6 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
 
 
-  const [vehicleType, setvehicleType] = useState([])
-  const [sectionTruckType, setsectionTruckType] = useState([])
-  const [initSection, setinitSection] = useState([])
-  useEffect(() => {
-    let grouping = JSON.parse(JSON.stringify(versatileStore.listGroup))
-    let truckTyping = JSON.parse(JSON.stringify(versatileStore.list))
-    __DEV__ && console.tron.log('Grouping useEffect :: ', grouping)
-    __DEV__ && console.tron.log('Truck type useEffect:: ', truckTyping)
-    if (grouping && truckTyping && grouping.length > 0 && truckTyping.length > 0) {
-      let tmp_section = []
-      grouping.map((gr, igr) => {
-        tmp_section.push({
-          title: gr.name,
-          id: gr.id,
-          image: gr.image,
-          data: truckTyping.filter(e => e.groupId == gr.id)
-        })
-      })
-      __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
-      __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
-      __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
-      __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
-      __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
-      setsectionTruckType(tmp_section)
-      setinitSection(tmp_section)
-    }
-
-  }, [versatileStore.list, versatileStore.listGroup])
-  const _closeTruckType = () => {
-    setvisible0(false)
-    const list_all_real = JSON.parse(JSON.stringify(versatileStore.list))
-    setsectionTruckType(initSection)
-    setvehicleType(list_all_real)
-  }
-  const _filterGroupTruck = (item) => {
-    const list_all_real = JSON.parse(JSON.stringify(versatileStore.list))
-
-    let tmp_list, tmp_section_list
-    tmp_list = list_all_real.filter(e => e.groupId == item.id)
-    tmp_section_list = initSection.filter(e => e.id == item.id)
-
-    setsectionTruckType(tmp_section_list)
-    setvehicleType(tmp_list)
-  }
-  useEffect(() => {
-    let tmpProductList = JSON.parse(JSON.stringify(versatileStore.list))
-    if (tmpProductList && tmpProductList.length > 0) {
-      setvehicleType(tmpProductList)
-    }
-  }, [versatileStore.list])
-  const _renderGroupTruck = (list) => {
-    return <FlatGrid
-      itemDimension={100}
-      data={list}
-      // fixed={true}
-      renderItem={({ item }) => (<TouchableOpacity
-        style={{ flex: 1, borderColor: color.primary, borderRadius: 15, borderWidth: 1 }}
-        onPress={() => _filterGroupTruck(item)}>
-        <View style={{ flex: 1, width: '100%', height: 30, justifyContent: 'center' }}>
-          <Text style={{ alignSelf: 'center' }}>{item.name}</Text>
-        </View>
-      </TouchableOpacity>)}
-    />
-  }
-
-
-
-
-
   const [visible, setvisible] = useState(false)
   const [visible0, setvisible0] = useState(false)
   const list_status = [
@@ -300,16 +204,9 @@ export const PostJobScreen = observer(function PostJobScreen() {
   if (formControllerValue['vehicle-type']) {
     dropdown_vehicle_type = formControllerValue['vehicle-type']
   }
-  // let list_vehicle = JSON.parse(JSON.stringify(versatileStore.data))
-  let defaultVehicleType = JSON.parse(JSON.stringify(versatileStore.list))
+
   let list_product_type_all = JSON.parse(JSON.stringify(AdvanceSearchStore.productTypes))
-
-
-  const listGroup = JSON.parse(JSON.stringify(versatileStore.listGroup))
-  __DEV__ && console.tron.log("State list vehicle type :: ", vehicleType)
-  __DEV__ && console.tron.log("State section list vehicle type :: ", sectionTruckType)
-
-  __DEV__ && console.tron.log("List group =>  :: ", list_product_type_all)
+  __DEV__ && console.tron.log("Form Value :: ", formControllerValue)
 
 
 
@@ -346,60 +243,12 @@ export const PostJobScreen = observer(function PostJobScreen() {
                   <Controller
                     control={control}
                     render={({ onChange, onBlur, value }) => (
-                      <Modal
-                        id="modal-truck-type"
+                      <ModalTruckType
                         visible={visible0}
-                        onTouchOutside={() => _closeTruckType()}
-                        onSwipeOut={() => _closeTruckType()}
-                        swipeDirection={['up', 'down']} // can be string or an array
-                        swipeThreshold={200} // default 100
-                      >
-                        <ModalContent >
-                          <View style={{ width: (width / 1.1), height: '100%', justifyContent: 'flex-start' }}>
-                            <SafeAreaView style={{ flex: 1 }}>
-                              <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
-                                <Text style={{ color: color.primary }} preset={"topic"} tx={"postJobScreen.selectVehicleType"} />
-                              </View>
-
-
-                              <View style={PADDING_TOP}>
-                                {!!defaultVehicleType && defaultVehicleType.length > 0 && <MultiSelector
-                                  items={vehicleType && vehicleType.length > 0 ? vehicleType : defaultVehicleType}
-                                  selectedItems={[value]}
-                                  selectText={translate("postJobScreen.pleaseSelectVehicleType")}
-                                  onSelectedItemsChange={(val: any) => {
-                                    onChange(val[0])
-                                    _closeTruckType()
-                                  }}
-                                />}
-                              </View>
-
-                              {listGroup && listGroup.length > 1 && <View>
-                                {_renderGroupTruck(listGroup)}
-                              </View>}
-
-                              <View style={{ flex: 1 }}>
-
-                                <SectionList
-                                  sections={sectionTruckType}
-                                  keyExtractor={(item, index) => 'section-list-' + (item.name || item.title) + index}
-                                  renderItem={({ item, index }) => _renderSectionModal(item, index, onChange, 1)}
-                                  renderSectionHeader={({ section: { title } }) => (
-                                    <Text style={PADDING_TOP} >{title}</Text>
-                                  )}
-                                  ListFooterComponent={
-                                    <View style={{ height: 50 }}></View>
-                                  }
-                                />
-
-                              </View>
-
-                            </SafeAreaView>
-
-                          </View>
-                        </ModalContent>
-                      </Modal>
-
+                        onTouchOutside={() => setvisible0(false)}
+                        selectedItems={[value]}
+                        onChange={onChange}
+                      />
                     )}
                     key={'controller-dropdown-vehicle-type'}
                     name={"vehicle-type"}
@@ -533,10 +382,8 @@ export const PostJobScreen = observer(function PostJobScreen() {
                   )}
                   key={'text-input-item-name'}
                   name={"item-name"}
-                  // rules={{ pattern: /^[a-zA-Z0-9 .!?"-]+$/ }}
                   defaultValue=""
                 />
-                {/* {errors['item-name'] && <Text style={{ color: color.red }} tx={"common.noSign"} />} */}
 
                 <Text tx={"postJobScreen.weightNumber"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
                 <Controller
