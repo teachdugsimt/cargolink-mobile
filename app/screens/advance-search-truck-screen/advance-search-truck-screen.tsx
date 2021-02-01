@@ -1,7 +1,7 @@
 import React, { useState, ReactElement, useLayoutEffect, useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
 import { Dimensions, TextStyle, View, ViewStyle } from 'react-native'
-import { Button, Checkbox, HeaderCenter, Text, CollapsibleList, ModalLoading, HeaderLeft } from '../../components'
+import { Button, Checkbox, HeaderCenter, Text, CollapsibleList, ModalLoading, HeaderLeft, RoundedButton } from '../../components'
 import { color, spacing } from '../../theme'
 import { useNavigation } from '@react-navigation/native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
@@ -64,15 +64,13 @@ const BUTTON_CONFIRM: ViewStyle = {
   backgroundColor: color.primary,
   width: '90%',
   borderRadius: deviceWidht,
-
   marginVertical: spacing[3],
   paddingVertical: spacing[1],
 }
 const BUTTON_CONFIRM_TEXT: TextStyle = {
   color: color.textWhite,
   fontSize: 18,
-  paddingTop: 5,
-  paddingBottom: 5
+  paddingVertical: spacing[1]
 }
 
 const initialState = {
@@ -265,12 +263,12 @@ export const AdvanceSearchTruckScreen = observer(function AdvanceSearchTruckScre
       </View>
 
       <View style={BUTTON_ROOT}>
-        <Button
-          testID="setting-search-confirm"
-          style={BUTTON_CONFIRM}
-          textStyle={BUTTON_CONFIRM_TEXT}
-          text={'ยืนยัน'}
+        <RoundedButton
+          testID={"setting-search-confirm"}
           onPress={onConfirm}
+          containerStyle={BUTTON_CONFIRM}
+          textStyle={BUTTON_CONFIRM_TEXT}
+          text={'common.confirm'}
         />
       </View>
     </View>

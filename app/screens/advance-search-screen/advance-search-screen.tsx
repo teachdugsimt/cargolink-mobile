@@ -22,7 +22,7 @@ const SEARCH_ITEM_ROOT: ViewStyle = {
   // borderColor: color.line,
 }
 const ITEM: ViewStyle = {
-  borderBottomColor: color.line,
+  borderBottomColor: color.disable,
   borderBottomWidth: 1,
   paddingTop: spacing[2],
 }
@@ -52,7 +52,7 @@ const ROW: ViewStyle = {
 const BUTTON_ROOT: ViewStyle = {
   // flex: 1,
   // backgroundColor: 'lightgreen',
-  borderTopWidth: 0.2,
+  borderTopWidth: 0.5,
   borderTopColor: color.line,
 
   justifyContent: "center",
@@ -68,8 +68,7 @@ const BUTTON_CONFIRM: ViewStyle = {
 const BUTTON_CONFIRM_TEXT: TextStyle = {
   color: color.textWhite,
   fontSize: 18,
-  paddingTop: 5,
-  paddingBottom: 5
+  paddingVertical: spacing[1]
 }
 
 const initialState = {
