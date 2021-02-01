@@ -18,8 +18,8 @@ const CONTAINER: ViewStyle = {
 const SEARCH_ITEM_ROOT: ViewStyle = {
   flex: 5,
   // backgroundColor: "lightblue",
-  borderWidth: 1,
-  borderColor: color.line,
+  // borderBottomWidth: 1,
+  // borderColor: color.line,
 }
 const ITEM: ViewStyle = {
   borderBottomColor: color.line,
@@ -50,8 +50,11 @@ const ROW: ViewStyle = {
   flexDirection: 'row',
 }
 const BUTTON_ROOT: ViewStyle = {
-  flex: 1,
+  // flex: 1,
   // backgroundColor: 'lightgreen',
+  borderTopWidth: 0.2,
+  borderTopColor: color.line,
+
   justifyContent: "center",
   alignItems: 'center'
 }
@@ -59,6 +62,8 @@ const BUTTON_CONFIRM: ViewStyle = {
   backgroundColor: color.primary,
   width: '90%',
   borderRadius: deviceWidht,
+  marginVertical: spacing[3],
+  paddingVertical: spacing[1],
 }
 const BUTTON_CONFIRM_TEXT: TextStyle = {
   color: color.textWhite,
@@ -194,12 +199,14 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
       text={label}
       style={{
         ...ITEM_SUB_MENU,
-        borderColor: isChecked === true ? color.primary : color.line,
+        borderColor: isChecked === true ? color.primary : color.disable,
+        borderWidth: isChecked === true ? 2 : 1,
         flexBasis: `${percentWidth}%`,
       }}
       textStyle={{
         color: color.textBlack,
-        fontSize: 12
+        fontSize: 12,
+        textAlign: 'center'
       }}
       onPress={() => onSelect(id, mainIndex, isChecked, isMultiSelect)}
     />)
