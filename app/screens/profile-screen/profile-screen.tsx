@@ -4,15 +4,17 @@ import {
   SectionList, Dimensions, Image, ImageStyle, FlatList, Platform, LayoutAnimation,
 } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Text, Icon } from "../../components"
+import { Text, Icon, HeaderCenter } from "../../components"
 import { color, images, typography } from "../../theme"
 import ProfileStore from '../../store/profile-store/profile-store'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { MapTruckImageName } from '../../utils/map-truck-image-name'
+import { useStores } from "../../models/root-store/root-store-context";
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
-
+const COLOR_PRIMARY: TextStyle = { color: color.primary }
 const TOP_VIEW: ViewStyle = {
   flex: Platform.OS == "ios" ? 0.8 : 1.1, backgroundColor: color.mainTheme,
   borderBottomRightRadius: 15, borderBottomLeftRadius: 15
@@ -79,11 +81,11 @@ const IMAGE_LIST: ImageStyle = {
   borderRadius: 30,
   borderColor: color.primary, borderWidth: 2,
 }
-
+const BORDER_BOTTOM: ViewStyle = { borderBottomColor: color.line }
 const NORMAL_WRAPPER_LIST: ViewStyle = {
   ...ROOT_FLAT_LIST,
   marginHorizontal: 10,
-  borderBottomWidth: 1, borderBottomColor: color.line,
+  borderBottomWidth: 1, ...BORDER_BOTTOM,
 }
 
 const ROW_TOPIC_REPORT: ViewStyle = {
@@ -98,11 +100,33 @@ const LINE_COLOR: TextStyle = {
   color: color.line
 }
 
+const MIN_HEIGHT_LIST: ViewStyle = { minHeight: 40 }
+const PROVINCE_BUTTON: ViewStyle = {
+  ...MIN_HEIGHT_LIST,
+  ...FULL, ...FLEX_ROW, ...JUSTIFY_BETWEEN,
+  alignItems: 'center', marginHorizontal: 20,
+  ...BORDER_BOTTOM,
+}
+const WRAP_PROVINCE: ViewStyle = { ...FLEX_ROW, paddingRight: 20 }
+const VIEW_LIST_PROVINCE: ViewStyle = { ...FLEX_ROW, justifyContent: 'space-evenly' }
+const SUB_LIST_VIEW: ViewStyle = { marginHorizontal: 20, ...BORDER_BOTTOM, }
+const TEXT_LIST_PROVINCE: ViewStyle = { padding: 5, paddingBottom: 7.5 }
+
+const SUB_VIEW_VEHICLE: ViewStyle = {
+  ...FULL, ...FLEX_ROW, alignItems: 'center', paddingVertical: 10, marginHorizontal: 20,
+  ...BORDER_BOTTOM, borderBottomWidth: 1
+}
+const MAIN_VIEW_LIST: ViewStyle = { height: 80, ...FULL, marginBottom: 1 }
+const VEHICLE_TEXT_VIEW: ViewStyle = { ...FULL, width: '100%' }
+const SUB_VEHICLE_TEXT: ViewStyle = { ...FLEX_ROW, justifyContent: 'space-around' }
+const IMAGE_LAYOUT: ViewStyle = { width: 60, height: 60 }
+const WIDTH_70: ViewStyle = { width: '70%' }
+
 export const ProfileScreen = observer(function ProfileScreen() {
   // console.tron.log('hello rendering world')
+  const navigation = useNavigation()
   const [menu1, setmenu1] = useState(true)
   const [menu2, setmenu2] = useState(false)
-  const [swipe, setswipe] = useState(false)
 
   useEffect(() => {
     ProfileStore.getProfileRequest()
@@ -122,6 +146,25 @@ export const ProfileScreen = observer(function ProfileScreen() {
     { id: 1, name: 'profileScreen.workDonePassApp', value: 78 },
     { id: 1, name: 'profileScreen.useWorkPassApp', value: 54 },
   ]
+
+
+  const { versatileStore } = useStores()
+  const [lang, setlang] = useState(null)
+  const [swipe, setswipe] = useState(false)
+  useEffect(() => {
+    if (lang != versatileStore.language) {
+      setlang(versatileStore.language)
+      setswipe(!swipe)
+    }
+  }, [versatileStore.language])
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerCenter: () => (
+        <HeaderCenter tx={"myJobScreen.myJob"} />
+      ),
+    });
+  }, [lang])
 
   const _onPressMenu = (menu) => {
     if (menu == "menu1") {
@@ -164,19 +207,16 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
   const _renderSectionList = (item, index) => {
     if (!item.province_number) {
-      return <View style={{ height: 80, flex: 1, marginBottom: 1 }}>
-        <View style={{
-          flex: 1, flexDirection: 'row', alignItems: 'center', paddingVertical: 10, marginHorizontal: 20,
-          borderBottomColor: color.line, borderBottomWidth: 1
-        }}>
-          <View style={{ width: 60, height: 60 }}>
+      return <View style={MAIN_VIEW_LIST}>
+        <View style={SUB_VIEW_VEHICLE}>
+          <View style={IMAGE_LAYOUT}>
             {Platform.OS == "ios" ? <Image source={images[MapTruckImageName(item.id)]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
               <Image source={images[MapTruckImageName(item.id)]} style={IMAGE_LIST} height={60} width={60} />}
           </View>
 
-          <View style={{ flex: 1, width: '100%' }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-              <Text style={{ width: '70%' }}>{item.name}</Text>
+          <View style={VEHICLE_TEXT_VIEW}>
+            <View style={SUB_VEHICLE_TEXT}>
+              <Text style={WIDTH_70}>{item.name}</Text>
               <Text>{item.number}</Text>
               <Text tx={"profileScreen.unit"} />
 
@@ -188,17 +228,12 @@ export const ProfileScreen = observer(function ProfileScreen() {
       </View>
     } else {
       let checker_view = provinceTmp ? provinceTmp.split('-')[0] : null
-      __DEV__ && console.tron.log("Checker View :: ", checker_view)
-      return <View style={{ minHeight: 40 }} >
-        <TouchableOpacity style={{
-          minHeight: 40,
-          flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 20,
-          borderBottomColor: color.line, borderBottomWidth: checker_view == item.id ? 0 : 1
-        }} onPress={() => onChangeLayout(`${item.id}-${item.name}`)}>
-          <View><Text style={{ color: color.primary }} tx={item.name} /></View>
+      return (<View style={MIN_HEIGHT_LIST} >
+        <TouchableOpacity style={[PROVINCE_BUTTON, { borderBottomWidth: checker_view == item.id ? 0 : 1 }]} onPress={() => onChangeLayout(`${item.id}-${item.name}`)}>
+          <View><Text style={COLOR_PRIMARY} tx={item.name} /></View>
 
-          <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
-            <View style={{ flexDirection: 'row', paddingRight: 20 }}>
+          <View style={VIEW_LIST_PROVINCE}>
+            <View style={WRAP_PROVINCE}>
               <Text>{item.province_number + "   "}</Text>
               <Text tx={"common.provinceField"} />
             </View>
@@ -209,15 +244,12 @@ export const ProfileScreen = observer(function ProfileScreen() {
         </TouchableOpacity>
 
         {checker_view && checker_view == item.id &&
-          <View style={{
-            marginHorizontal: 20, borderBottomColor: color.line,
-            borderBottomWidth: checker_view == item.id ? 1 : 0
-          }}>
+          <View style={[SUB_LIST_VIEW, { borderBottomWidth: checker_view == item.id ? 1 : 0 }]}>
             {item.province_list.map((e, i) => {
-              return <Text style={{ padding: 5, paddingBottom: 7.5 }}>{(i + 1) + ". " + e.toString()}</Text>
+              return <Text style={TEXT_LIST_PROVINCE}>{(i + 1) + ". " + e.toString()}</Text>
             })}
           </View>}
-      </View>
+      </View>)
     }
   }
 

@@ -68,6 +68,12 @@ export const HomeScreen = observer((props) => {
     console.log("TOKEN STORE :: => ", JSON.parse(JSON.stringify(tokenStore.token)))
   }, [])
 
+  const [lang, setlang] = useState(null)
+  useEffect(() => {
+    if (lang != versatileStore.language) {
+      setlang(versatileStore.language)
+    }
+  }, [versatileStore.language])
   useEffect(() => {
     if (versatileStore.list.length && !TruckTypeStore.list.length) {
       TruckTypeStore.setList(JSON.parse(JSON.stringify(versatileStore.list)))
@@ -96,7 +102,7 @@ export const HomeScreen = observer((props) => {
       title: "homeScreen.carriers",
       data: [{
         id: 1, name: "homeScreen.manageCar", onPressButton: () => {
-          MyVehicleStore.findRequest({})
+          MyVehicleStore.findRequest({ page: 1 })
           navigation.navigate("myVehicle")
         }, img: images.truck1
       },
@@ -119,7 +125,7 @@ export const HomeScreen = observer((props) => {
         </View>
         <View style={BOTTOM_VIEW}>
           <View style={VIEW_GRID_BOX}>
-            <GridView data={dataTest} />
+            {!!lang && <GridView data={dataTest} />}
           </View>
         </View>
       </View>

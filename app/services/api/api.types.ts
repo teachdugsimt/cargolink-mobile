@@ -38,15 +38,14 @@ export interface OTPVerifyResponse {
 }
 
 export interface VehicleFilterRequest {
-  filter?: {
-    where?: {
-      from?: string
-      to?: string
-      start_time?: string
-      end_time?: string
-      car_type?: string
-    } | {}
-  } | {}
+  page?: number | {}
+  // where?: {
+  //   from?: string
+  //   to?: string
+  //   start_time?: string
+  //   end_time?: string
+  //   car_type?: string
+  // } | {}
 }
 
 export interface TermAndService {

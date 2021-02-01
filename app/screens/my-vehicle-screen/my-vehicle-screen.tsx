@@ -8,9 +8,7 @@ import { useNavigation } from "@react-navigation/native"
 import MyVehicleStore from '../../store/my-vehicle-store/my-vehicle-store'
 import StatusStore from '../../store/my-vehicle-store/status-vehicle-store'
 import { GetTruckType } from "../../utils/get-truck-type";
-import i18n from 'i18n-js';
 import date from 'date-and-time';
-import TruckTypeStore from "../../store/truck-type-store/truck-type-store"
 
 const CONTAINER: ViewStyle = {
   flex: 1,
@@ -34,6 +32,8 @@ const TEXT_ADD: TextStyle = {
   color: color.textWhite,
   fontSize: 16,
 }
+let initCount = 0
+let count = 0
 
 export const MyVehicle = observer(function MyVehicle() {
   const navigation = useNavigation()
@@ -41,25 +41,38 @@ export const MyVehicle = observer(function MyVehicle() {
     MyVehicleStore.findOneRequest(id)
     navigation.navigate("vehicleDetail")
   }
+  const [swipe, setswipe] = useState(false)
+  const [list_state, setlist_state] = useState(null)
 
   useEffect(() => {
-    TruckTypeStore.find()
+    MyVehicleStore.findRequest({ page: count })
+    return () => {
+      count = initCount
+      MyVehicleStore.clearListData()
+    }
   }, [])
 
-  useEffect(() => {
-    if (MyVehicleStore.list && MyVehicleStore.list.length) {
-      console.log('MyVehicleStore.list :>> ', JSON.parse(JSON.stringify(MyVehicleStore.list)));
-    }
-  }, [MyVehicleStore.list])
-
   const onScrollList = () => {
-    // console.log('scroll down')
+    let tmp_list = JSON.parse(JSON.stringify(MyVehicleStore.list))
+    __DEV__ && console.tron.log("Tmmp list On scroll END :: >> ", tmp_list)
+    if (MyVehicleStore.loading == false && tmp_list.length % 10 == 0) {
+      count++
+      MyVehicleStore.findRequest({ page: count })
+    }
   }
 
   const onRefresh = () => {
-    console.log('On refresh')
-    MyVehicleStore.findRequest()
+    count = initCount
+    MyVehicleStore.findRequest({ page: count })
   }
+
+  useEffect(() => {
+    let tmp = JSON.parse(JSON.stringify(MyVehicleStore.list))
+    if (tmp && tmp != list_state) {
+      setlist_state(tmp)
+      setswipe(!swipe)
+    }
+  }, [MyVehicleStore.list])
 
   const renderItem = ({ item }) => {
     const statusText = item.approveStatus === 'Approve' ? translate('myVehicleScreen.verified') : translate('myVehicleScreen.pending')
@@ -84,18 +97,18 @@ export const MyVehicle = observer(function MyVehicle() {
     )
   }
 
+  const my_vehicle_list = JSON.parse(JSON.stringify(MyVehicleStore.list))
+
   return (
     <View style={CONTAINER}>
 
       <FlatList
         style={SCROLL}
-        data={MyVehicleStore.list ? JSON.parse(JSON.stringify(MyVehicleStore.list)) : []}
+        data={my_vehicle_list}
         renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
         onEndReached={() => onScrollList()}
         onEndReachedThreshold={0.5}
-        // onRefresh={onRefresh}
-        // refreshing={state.isRequest}
         refreshControl={
           <RefreshControl
             refreshing={MyVehicleStore.loading}

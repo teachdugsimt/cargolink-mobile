@@ -62,9 +62,9 @@ export class MyVehicleAPI {
   async find(filter?: Types.VehicleFilterRequest | {}): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.get('api/v1/mobile/carriers/truck', filter)
+      const response: ApiResponse<any> = await this.apisauce.post('api/v1/mobile/carriers/truck/list', filter)
       // the typical ways to die when calling an api
-      console.log("Response call api get user (MOCK) : ", response)
+      console.log("Response call api list my truck : ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
         if (problem) return problem
@@ -72,7 +72,7 @@ export class MyVehicleAPI {
       return { kind: "ok", data: response.data }
       // transform the data into the format we are expecting
     } catch (error) {
-      console.log("Error call api get user (MOCK): ", error)
+      console.log("Error call api list my truck: ", error)
       return error
     }
   }

@@ -10,6 +10,7 @@ import {
 import { VehicleItemProps } from "./vehicle-item.prop"
 import { color, images, spacing } from "../../theme"
 import { Text } from ".."
+import { MapTruckImageName } from '../../utils/map-truck-image-name'
 
 const BORDER_RADIUS = { borderRadius: 4 }
 const CONTAINER: ViewStyle = {
@@ -87,7 +88,8 @@ export function VehicleItem(props: VehicleItemProps) {
             text={updatedDate}
           />
         </View>
-        <ImageBackground source={images[`truck${image}`]} resizeMode={'contain'} style={{ ...IMAGE, ...imageStyle }} />
+        {/* <ImageBackground source={images[`truck${image}`]} resizeMode={'contain'} style={{ ...IMAGE, ...imageStyle }} /> */}
+        <ImageBackground source={images[MapTruckImageName(image)]} resizeMode={'contain'} style={{ ...IMAGE, ...imageStyle }} />
       </View>
     </TouchableOpacity>
   )
