@@ -45,6 +45,7 @@ export function FavoriteNavigator() {
           fontFamily: 'Kanit-Medium',
           fontSize: 20
         },
+        stackAnimation: 'slide_from_right',
       }}
     >
       {/* <Stack.Screen name="favorite" component={FavoriteScreen} /> */}

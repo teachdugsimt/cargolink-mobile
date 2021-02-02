@@ -38,6 +38,7 @@ export function PrimaryNavigator() {
       screenOptions={{
         headerShown: false,
         gestureEnabled: false,
+        stackAnimation: 'slide_from_right',
       }}
       initialRouteName={'signin'}
     >

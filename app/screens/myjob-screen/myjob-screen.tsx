@@ -102,6 +102,7 @@ const Item = (data) => {
 export const MyJobScreen = observer(function MyJobScreen() {
   const navigation = useNavigation()
   const [isFirstHeaderSelected, setIsFirstHeaderSelected] = useState<boolean>(true)
+  const [activeTab, setActiveTab] = useState<number>(0)
   const [isActivitySwitch, setIsActivitySwitch] = useState<boolean>(false)
   const [data, setData] = useState([])
   const [loading, setLoading] = useState<boolean>(true)
@@ -144,7 +145,7 @@ export const MyJobScreen = observer(function MyJobScreen() {
     }
   }, [versatileStore.language])
 
- 
+
 
   useEffect(() => {
     navigation.setOptions({
@@ -159,18 +160,28 @@ export const MyJobScreen = observer(function MyJobScreen() {
     paddingTop: spacing[2],
     paddingBottom: spacing[4],
   }
-  const favoriteHeaderStyle: ViewStyle = { ...touchableHeaderStyle, ...(isFirstHeaderSelected && HEADER_ACTIVE) }
-  const lastestContactHeaderStyle: ViewStyle = { ...touchableHeaderStyle, ...(!isFirstHeaderSelected && HEADER_ACTIVE) }
+  // const favoriteHeaderStyle: ViewStyle = { ...touchableHeaderStyle, ...(isFirstHeaderSelected && HEADER_ACTIVE) }
+  // const lastestContactHeaderStyle: ViewStyle = { ...touchableHeaderStyle, ...(!isFirstHeaderSelected && HEADER_ACTIVE) }
+
+  const firstTabStyle: ViewStyle = { ...touchableHeaderStyle, ...(activeTab === 0 && HEADER_ACTIVE) }
+  const secondTabStyle: ViewStyle = { ...touchableHeaderStyle, ...(activeTab === 1 && HEADER_ACTIVE) }
+  const thirdTabStyle: ViewStyle = { ...touchableHeaderStyle, ...(activeTab === 2 && HEADER_ACTIVE) }
 
   return (
     <View testID="MyJobScreen" style={FULL}>
 
       <View style={HEADER}>
-        <TouchableOpacity activeOpacity={1} style={favoriteHeaderStyle} onPress={() => setIsFirstHeaderSelected(!isFirstHeaderSelected)} >
-          <Text tx={'myJobScreen.workInProgress'} style={{ ...TEXT, color: isFirstHeaderSelected ? color.textBlack : color.textWhite }} />
+        <TouchableOpacity activeOpacity={1} style={firstTabStyle}
+          onPress={() => setActiveTab(0)} >
+          <Text tx={'myJobScreen.workOpen'} style={{ ...TEXT, color: activeTab === 0 ? color.textBlack : color.textWhite }} />
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={1} style={lastestContactHeaderStyle} onPress={() => setIsFirstHeaderSelected(!isFirstHeaderSelected)} >
-          <Text tx={'myJobScreen.workDone'} style={{ ...TEXT, color: !isFirstHeaderSelected ? color.textBlack : color.textWhite }} />
+        <TouchableOpacity activeOpacity={1} style={secondTabStyle}
+          onPress={() => setActiveTab(1)} >
+          <Text tx={'myJobScreen.workInProgress'} style={{ ...TEXT, color: activeTab === 1 ? color.textBlack : color.textWhite }} />
+        </TouchableOpacity>
+        <TouchableOpacity activeOpacity={1} style={thirdTabStyle}
+          onPress={() => setActiveTab(2)} >
+          <Text tx={'myJobScreen.workDone'} style={{ ...TEXT, color: activeTab === 2 ? color.textBlack : color.textWhite }} />
         </TouchableOpacity>
       </View>
 

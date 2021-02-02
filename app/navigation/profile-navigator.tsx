@@ -22,8 +22,8 @@ import { HeaderCenter, HeaderLeft } from "../components"
  *   https://reactnavigation.org/docs/typescript#type-checking-the-navigator
  */
 export type PrimaryProfileParamList = {
-    profile: undefined
-    updateProfile: undefined
+  profile: undefined
+  updateProfile: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -31,34 +31,35 @@ const Stack = createNativeStackNavigator<PrimaryProfileParamList>()
 
 export function ProfileNavigator() {
 
-    return (
-        <Stack.Navigator
-            screenOptions={{
-                headerShown: true,
-                gestureEnabled: true,
-                headerStyle: {
-                    backgroundColor: color.mainTheme,
-                },
-            }}
-        >
-            <Stack.Screen name="profile" component={ProfileScreen}
-                options={({ navigation, route }) => ({
-                    // headerRight: () => <HeaderRight iconName={"ios-create-outline"} iconSize={24} iconColor={color.black} onRightPress={() => console.log("Right press:::")}/>,
-                    headerCenter: () => <HeaderCenter tx={"profileScreen.profile"} />,
-                    headerHideShadow: true,
-                    // headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
-                })}
-            />
-            <Stack.Screen name="updateProfile" component={UpdateProfileScreen}
-                options={({ navigation, route }) => ({
-                    headerCenter: () => <HeaderCenter tx={"profileScreen.profile"} />,
-                    headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
-                    headerHideShadow: true,
-                })}
-            />
-            {/* <Stack.Screen name="detail" component={DetailScreen} /> */}
-        </Stack.Navigator>
-    )
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: true,
+        gestureEnabled: true,
+        headerStyle: {
+          backgroundColor: color.mainTheme,
+        },
+        stackAnimation: 'slide_from_right',
+      }}
+    >
+      <Stack.Screen name="profile" component={ProfileScreen}
+        options={({ navigation, route }) => ({
+          // headerRight: () => <HeaderRight iconName={"ios-create-outline"} iconSize={24} iconColor={color.black} onRightPress={() => console.log("Right press:::")}/>,
+          headerCenter: () => <HeaderCenter tx={"profileScreen.profile"} />,
+          headerHideShadow: true,
+          // headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+      <Stack.Screen name="updateProfile" component={UpdateProfileScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"profileScreen.profile"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+          headerHideShadow: true,
+        })}
+      />
+      {/* <Stack.Screen name="detail" component={DetailScreen} /> */}
+    </Stack.Navigator>
+  )
 }
 
 /**

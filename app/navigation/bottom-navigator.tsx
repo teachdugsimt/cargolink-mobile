@@ -53,19 +53,19 @@ export default function BottomNavigator() {
       }}
     >
       <Tab.Screen name={"Home"} component={HomeNavigator}
-        options={{ tabBarLabel: translate("bottomTab.home") }} 
-        />
-      <Tab.Screen name={"My Job"} component={MyJobNavigator} 
-      options={{ tabBarLabel: translate("bottomTab.myJob") }} 
+        options={{ tabBarLabel: translate("bottomTab.home") }}
       />
-      <Tab.Screen name={"Favorite"} component={FavoriteNavigator} 
-      options={{ tabBarLabel: translate("bottomTab.favorite") }} 
+      <Tab.Screen name={"My Job"} component={MyJobNavigator}
+        options={{ tabBarLabel: translate("bottomTab.myJob") }}
       />
-      <Tab.Screen name={"Profile"} component={ProfileNavigator} 
-      options={{ tabBarLabel: translate("bottomTab.profile") }} 
+      <Tab.Screen name={"Favorite"} component={FavoriteNavigator}
+        options={{ tabBarLabel: translate("bottomTab.favorite") }}
       />
-      <Tab.Screen name={"More"} component={MoreNavigator} 
-      options={{ tabBarLabel: translate("bottomTab.more") }} 
+      <Tab.Screen name={"Profile"} component={ProfileNavigator}
+        options={{ tabBarLabel: translate("bottomTab.profile") }}
+      />
+      <Tab.Screen name={"More"} component={MoreNavigator}
+        options={{ tabBarLabel: translate("bottomTab.more") }}
       />
 
     </Tab.Navigator>

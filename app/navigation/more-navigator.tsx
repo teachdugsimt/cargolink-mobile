@@ -23,7 +23,7 @@ import { color } from '../theme'
  *   https://reactnavigation.org/docs/typescript#type-checking-the-navigator
  */
 export type PrimaryMoreParamList = {
-    more: undefined
+  more: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -31,28 +31,29 @@ const Stack = createNativeStackNavigator<PrimaryMoreParamList>()
 
 export function MoreNavigator() {
 
-    return (
-        <Stack.Navigator
-            screenOptions={{
-                headerShown: true,
-                gestureEnabled: true,
-                headerStyle: {
-                    backgroundColor: color.mainTheme,
-                },
-                headerTitleStyle: {
-                    fontFamily: 'Kanit-Medium',
-                    fontSize: 20
-                },
-            }}
-        >
-            <Stack.Screen name="more" component={MoreScreen}
-                options={({ navigation, route }) => ({
-                    headerCenter: () => <HeaderCenter tx={"moreScreen.moreMenu"} />,
-                })}
-            />
-            {/* <Stack.Screen name="detail" component={DetailScreen} /> */}
-        </Stack.Navigator>
-    )
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: true,
+        gestureEnabled: true,
+        headerStyle: {
+          backgroundColor: color.mainTheme,
+        },
+        headerTitleStyle: {
+          fontFamily: 'Kanit-Medium',
+          fontSize: 20
+        },
+        stackAnimation: 'slide_from_right',
+      }}
+    >
+      <Stack.Screen name="more" component={MoreScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"moreScreen.moreMenu"} />,
+        })}
+      />
+      {/* <Stack.Screen name="detail" component={DetailScreen} /> */}
+    </Stack.Navigator>
+  )
 }
 
 /**
