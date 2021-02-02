@@ -223,7 +223,9 @@
     "confirmJob": "Confirm booking of this job.",
     "confirmVehicleForThisJob": "Confirm car reservations for this event.",
     "truckType": "Truck type",
-    "unit": ""
+    "unit": "",
+    "callbackForOwner": "When the owner presses to accept, there will be a response.",
+    "bookedSuccess": "You have successfully booked the job."
   },
   "acceptPolicyScreen": {
     "termAndCondition": "Term and condition",

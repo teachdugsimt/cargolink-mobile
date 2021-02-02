@@ -53,6 +53,8 @@ export const images = {
   noImageAvailable: require("../images/no-image-available.jpg"),
   greyMock: require("../images/just_grey_light_grey.jpg"),
   // clearLogo: require('../Images/top_logo.png'),
+  workYellowIcon: require('../images/work-yellow-icon.png'),
+  truckYellowIcon: require('../images/truck-yellow-icon.png'),
 }
 
 // export default images

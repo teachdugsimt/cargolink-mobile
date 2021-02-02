@@ -201,5 +201,13 @@ export interface ProductType {
   groupId?: number
 }
 
+export interface CarriersHistoryCallAdd {
+  jobId: string
+}
+
+export interface ShippersHistoryCallAdd {
+  truckId: string
+}
+
 export type GetUsersResult = { kind: "ok"; users: User[] } | GeneralApiProblem
 export type GetUserResult = { kind: "ok"; user: User } | GeneralApiProblem

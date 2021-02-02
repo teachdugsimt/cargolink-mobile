@@ -32,16 +32,16 @@ export class CarriersJobAPI {
    * Be as quick as possible in here.
    */
 
-  async getToken() {
-    let data: any = await storage.load('root')
-    return data
-  }
+  // async getToken() {
+  //   let data: any = await storage.load('root')
+  //   return data
+  // }
 
-  async setup() {
-    let to = await this.getToken()
-      .then(val => {
-        return val.tokenStore.token.accessToken || ''
-      })
+  setup() {
+    // let to = await this.getToken()
+    //   .then(val => {
+    //     return val.tokenStore.token.accessToken || ''
+    //   })
 
     // construct the apisauce instance
     this.apisauce = create({
@@ -49,7 +49,7 @@ export class CarriersJobAPI {
       timeout: this.config.timeout,
       headers: {
         Accept: "application/json",
-        Authorization: `Bearer ${to}`
+        // Authorization: `Bearer ${to}`
       },
     })
   }
@@ -59,7 +59,7 @@ export class CarriersJobAPI {
   async find(filter: Types.ShipperJobRequest | {} = {}): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/carriers/job', filter)
+      const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/job/list', filter)
       console.log("Carriers job api [find] : ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
@@ -75,7 +75,7 @@ export class CarriersJobAPI {
 
   async findOne(id: string): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/carriers/job/${id}`)
+      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/job/${id}`)
       console.log("Carriers job api [findOne] : ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)

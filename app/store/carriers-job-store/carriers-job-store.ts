@@ -72,7 +72,7 @@ const CarriersJobStore = types
   })
   .actions((self) => ({
     find: flow(function* find(filter: Types.CarriersJobRequest = {}) {
-      yield apiCarriersJob.setup()
+      apiCarriersJob.setup()
       self.loading = true
       try {
         self.previousListLength = self.list.length
@@ -112,7 +112,7 @@ const CarriersJobStore = types
     }),
 
     findOne: flow(function* findOne(id: string) {
-      yield apiCarriersJob.setup()
+      apiCarriersJob.setup()
       self.loading = true
       try {
         yield FavoriteJobStore.find()

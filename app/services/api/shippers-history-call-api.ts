@@ -7,7 +7,7 @@ import * as storage from "../../utils/storage"
 /**
  * Manages all requests to the API.
  */
-export class ShipperTruckAPI {
+export class ShippersHistoryCallAPI {
   /**
    * The underlying apisauce instance which performs the requests.
    */
@@ -32,16 +32,16 @@ export class ShipperTruckAPI {
    * Be as quick as possible in here.
    */
 
-  // async getToken() {
-  //     let data: any = await storage.load('root')
-  //     return data
-  // }
+  async getToken() {
+    let data: any = await storage.load('root')
+    return data
+  }
 
-  setup() {
-    // let to = await this.getToken()
-    //     .then(val => {
-    //         return val.tokenStore.token.accessToken || ''
-    //     })
+  async setup() {
+    let to = await this.getToken()
+      .then(val => {
+        return val.tokenStore.token.accessToken || ''
+      })
 
     // construct the apisauce instance
     this.apisauce = create({
@@ -49,42 +49,37 @@ export class ShipperTruckAPI {
       timeout: this.config.timeout,
       headers: {
         Accept: "application/json",
-        // Authorization: `Bearer ${to}`
+        Authorization: `Bearer ${to}`
       },
     })
   }
-  /**
-   * Gets a list of users.
-   */
-  async find(filter: Types.ShipperTruckFilter | {} = {}): Promise<any> {
-    // make the api call
+
+  async find(filter: any = {}): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/truck/list', filter)
-      console.log("Shipper truck api [find] : ", response)
+      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/mobile/shippers/history/call', filter)
+      console.log("Shippers history api [find] : ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
         if (problem) return problem
       }
       return { kind: "ok", data: response.data }
-      // transform the data into the format we are expecting
     } catch (error) {
-      console.log("Error call api find all shipper truck : ", error)
+      console.log("Error call api find all shippers history : ", error)
       return error
     }
   }
 
-  async findOne(id: string): Promise<any> {
+  async add(data: Types.ShippersHistoryCallAdd): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/truck/${id}`)
-      console.log("Shipper truck api [findOne] : ", response)
+      const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/shippers/history/call/add', data)
+      console.log("Shippers history api [Add] : ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
         if (problem) return problem
       }
       return { kind: "ok", data: response.data }
-      // transform the data into the format we are expecting
     } catch (error) {
-      console.log("Error call api find one shipper truck : ", error)
+      console.log("Error call api add shippers history : ", error)
       return error
     }
   }

@@ -212,7 +212,8 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
     if (!onEndReachedCalledDuringMomentum
       && CarriersJobStore.list.length >= 10
       && !CarriersJobStore.loading
-      && CarriersJobStore.previousListLength !== listLength) {
+      // && CarriersJobStore.previousListLength !== listLength
+    ) {
       PAGE = CarriersJobStore.list.length === listLength ? listLength : PAGE + CarriersJobStore.list.length
       const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE }
       CarriersJobStore.find(advSearch)
@@ -307,7 +308,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
             data={CarriersJobStore.list}
             renderItem={renderItem}
             keyExtractor={item => item.id}
-            onEndReached={() => onScrollList()}
+            onEndReached={onScrollList}
             onEndReachedThreshold={0.1}
             contentContainerStyle={{ flexGrow: 1 }}
             ListEmptyComponent={<EmptyListMessage />}

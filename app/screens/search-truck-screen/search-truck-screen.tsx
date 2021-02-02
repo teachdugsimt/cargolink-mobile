@@ -314,7 +314,8 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
     if (!onEndReachedCalledDuringMomentum
       && ShipperTruckStore.list.length >= AdvanceSearchStore.filter.rowsPerPage
       && !ShipperTruckStore.loading
-      && ShipperTruckStore.previousListLength !== listLength) {
+      // && ShipperTruckStore.previousListLength !== listLength
+    ) {
       PAGE += 1
       const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE }
       ShipperTruckStore.find(advSearch)

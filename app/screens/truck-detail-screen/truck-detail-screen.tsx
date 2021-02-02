@@ -1,12 +1,15 @@
 import React, { useEffect, useLayoutEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
 import {
+  Alert,
   Dimensions,
   Image,
   ImageBackground,
   ImageSourcePropType,
   ImageStyle,
+  Linking,
   Modal,
+  Platform,
   ScrollView,
   TextStyle,
   View,
@@ -25,6 +28,7 @@ import FavoriteTruckStore from "../../store/shipper-truck-store/favorite-truck-s
 import { GetTruckType } from "../../utils/get-truck-type"
 import { MapTruckImageName } from "../../utils/map-truck-image-name"
 import ImageView from 'react-native-image-view';
+import ShippersHistoryCallStore from '../../store/shippers-history-call-store/shippers-history-call-store'
 
 interface ImageInfo {
   width: number
@@ -72,17 +76,11 @@ const TOUCHABLE: ViewStyle = {
 }
 const BOTTOM_ROOT: ViewStyle = {
   backgroundColor: color.backgroundWhite,
+  flexDirection: 'row',
   alignItems: 'center',
-  // padding: spacing[5]
+  paddingVertical: spacing[3],
   borderTopWidth: 0.5,
   borderTopColor: color.line,
-}
-const CALL_BUTTON: ViewStyle = {
-  width: '90%',
-  borderRadius: deviceWidht / 2,
-  marginVertical: spacing[3],
-  paddingVertical: spacing[1],
-  backgroundColor: color.success,
 }
 const CALL_TEXT: TextStyle = {
   color: color.textWhite,
@@ -113,6 +111,11 @@ const BACKGROUND: ImageStyle = {
   right: -100,
   opacity: 0.3
 }
+const BTN_STYLE: ViewStyle = {
+  flex: 1,
+  borderRadius: Dimensions.get('window').width / 2,
+  marginHorizontal: spacing[3]
+}
 
 const initialState = {
   openViewer: false,
@@ -133,6 +136,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
     tipper,
     isLiked,
     truckPhotos,
+    phoneNumber,
   } = ShipperTruckStore.data
 
   useLayoutEffect(() => {
@@ -173,6 +177,32 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
       ...prevState,
       liked: !prevState.liked,
     }))
+  }
+
+  const onCall = (id: string, phoneNumber: string) => {
+    callNumber(id, phoneNumber)
+    // route.name === 'jobDetail' ? navigation.navigate('feedback') : navigation.navigate('myFeedback')
+  }
+
+  const callNumber = (truckId: string, phone: string) => {
+    let phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
+    __DEV__ && console.tron.log('phoneNumber', phoneNumber)
+    Linking.canOpenURL(phoneNumber)
+      .then(supported => {
+        if (!supported) {
+          __DEV__ && console.tron.log('Phone number is not available');
+          Alert.alert('Phone number is not available')
+          return false;
+        } else {
+          ShippersHistoryCallStore.add({ truckId })
+          return Linking.openURL(phoneNumber);
+        }
+      })
+      .catch(err => __DEV__ && console.tron.log('err', err));
+  };
+
+  const confirmBookAJob = () => {
+
   }
 
   useEffect(() => {
@@ -279,7 +309,8 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
         </View>
 
       </ScrollView>
-      <View style={BOTTOM_ROOT}>
+
+      {/* <View style={BOTTOM_ROOT}>
         <Button
           testID="call-with-owner"
           style={CALL_BUTTON}
@@ -290,6 +321,31 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
             </View>
           }
           onPress={() => navigation.navigate('feedback')}
+        />
+      </View> */}
+
+      <View style={BOTTOM_ROOT}>
+        <Button
+          testID="call-with-owner"
+          style={[BTN_STYLE, { backgroundColor: color.line }]}
+          children={
+            <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+              <MaterialCommunityIcons name={'phone'} size={24} color={color.textWhite} style={{ paddingRight: spacing[2] }} />
+              <Text style={CALL_TEXT} tx={'jobDetailScreen.call'} />
+            </View>
+          }
+          onPress={() => onCall(id, phoneNumber)}
+        />
+        <Button
+          testID="book-a-job"
+          style={[BTN_STYLE, { backgroundColor: color.primary }]}
+          children={
+            <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+              <MaterialCommunityIcons name={'download-circle-outline'} size={24} color={color.textWhite} style={{ paddingRight: spacing[2] }} />
+              <Text style={CALL_TEXT} tx={'common.bookAJob'} />
+            </View>
+          }
+          onPress={confirmBookAJob}
         />
       </View>
     </View>

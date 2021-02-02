@@ -15,6 +15,7 @@ const defaultModel = {
   approveStatus: types.maybeNull(types.string),
   registrationNumber: types.maybeNull(types.array(types.string)),
   tipper: types.maybeNull(types.boolean),
+  phoneNumber: types.maybeNull(types.string),
   isLiked: types.optional(types.boolean, false),
   workingZones: types.optional(types.array(types.model({
     region: types.maybeNull(types.number),
@@ -46,7 +47,7 @@ const ShipperTruckStore = types
   })
   .actions((self) => ({
     find: flow(function* find(filter: Types.ShipperJobRequest = {}) {
-      yield shipperTruckApi.setup()
+      shipperTruckApi.setup()
       self.loading = true
       try {
         self.previousListLength = self.list.length
@@ -86,7 +87,7 @@ const ShipperTruckStore = types
     }),
 
     findOne: flow(function* findOne(id: string) {
-      yield shipperTruckApi.setup()
+      shipperTruckApi.setup()
       self.loading = true
       try {
         yield FavoriteTruckStore.find()
@@ -127,6 +128,7 @@ const ShipperTruckStore = types
         createdAt: '',
         updatedAt: '',
         approveStatus: '',
+        phoneNumber: '',
         registrationNumber: cast([
           ''
         ]),

@@ -224,7 +224,9 @@
     "confirmJob": "ยืนยันการจองงานนี้",
     "confirmVehicleForThisJob": "ยืนยันการจองรถสำหรับงานนี้",
     "truckType": "ประเภทรถ",
-    "unit": "คัน"
+    "unit": "คัน",
+    "callbackForOwner": "เมื่อเจ้าของงานกดตอบรับจะมีการติดต่อกลับ",
+    "bookedSuccess": "คุณจองงานสำเร็จ"
   },
   "acceptPolicyScreen": {
     "termAndCondition": "ข้อกำหนดและเงื่อนไข",

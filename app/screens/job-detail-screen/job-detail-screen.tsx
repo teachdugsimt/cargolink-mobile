@@ -1,9 +1,9 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { observer } from 'mobx-react-lite'
-import { Dimensions, ScrollView, TextStyle, View, ViewStyle, TouchableOpacity, LayoutChangeEvent } from 'react-native'
+import { Dimensions, ScrollView, TextStyle, View, ViewStyle, TouchableOpacity, LayoutChangeEvent, Linking, Platform, Alert, Image } from 'react-native'
 import { Button, ModalAlert, ModalLoading, PostingBy, Text } from '../../components'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import { color, spacing } from '../../theme'
+import { color, spacing, images } from '../../theme'
 import { translate } from '../../i18n'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -21,6 +21,7 @@ import FavoriteJobStore from '../../store/carriers-job-store/favorite-job-store'
 import { useStores } from "../../models/root-store/root-store-context";
 import { ConverTimeFormat } from "../../utils/convert-time-format";
 import LottieView from 'lottie-react-native';
+import CarriersHistoryCallStore from '../../store/carriers-history-call-store/carriers-history-call-store'
 
 const deviceWidht = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('window').height
@@ -111,8 +112,8 @@ const BOTTOM_ROOT: ViewStyle = {
   flexDirection: 'row',
   alignItems: 'center',
   paddingVertical: spacing[3],
-  borderTopWidth: 0.5,
-  borderTopColor: color.line,
+  // borderTopWidth: 0.5,
+  // borderTopColor: color.line,
 }
 const BTN_STYLE: ViewStyle = {
   flex: 1,
@@ -213,6 +214,15 @@ const SwipeUpArrows = (data) => (<LottieView
   speed={0.8}
 />)
 
+const CheckMark = (data) => (<LottieView
+  source={require('../../AnimationJson/check-mark.json')}
+  style={{ height: 100, width: 100, }}
+  autoPlay={data.autoPlay}
+  loop={false}
+  speed={0.7}
+  onAnimationFinish={data.onAnimationFinish()}
+/>)
+
 const PickUpPoint = ({ to, from, distances, containerStyle = {} }) => {
   const [height, setHeight] = useState(0)
 
@@ -276,6 +286,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   const [coordinates, setCoordinates] = useState([])
   const [liked, setLiked] = useState<boolean>(false)
   const [visibleModal, setVisibleModal] = useState<boolean>(false)
+  const [isBokking, setIsBooking] = useState<boolean>(false)
 
   const {
     id,
@@ -286,7 +297,8 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     requiredTruckAmount,
     truckType,
     isLiked,
-    weight
+    weight,
+    owner,
   } = JSON.parse(JSON.stringify(CarriersJobStore.data))
 
   // const data = { "id": "K1NXGEQL", "productTypeId": 21, "productName": "รถยนต์", "truckType": "21", "weight": 200, "requiredTruckAmount": 2, "from": { "name": "กรุงเทพมหานคร", "dateTime": "28-01-2021 16:27", "contactName": "Onelink Space", "contactMobileNo": "0998999988", "lat": "13.7884902", "lng": "100.6079443" }, "to": [{ "name": "ชลบุรี", "dateTime": "29-01-2021 11:54", "contactName": "หมู่บ้านบางแสนวิลล์ ตำบล ห้วยกะปิ อำเภอเมืองชลบุรี ชลบุรี", "contactMobileNo": "0899388403", "lat": "13.2773405", "lng": "100.9410782" }, { "name": "จันทบุรี", "dateTime": "30-01-2021 18:14", "contactName": "ศูนย์ศึกษาธรรมชาติป่าชายเลนอ่าวคุ้งกระเบน", "contactMobileNo": "0990999811", "lat": "12.6004546", "lng": "101.9276771" }], "owner": { "id": 611, "companyName": "Fast Delivery", "fullName": "Fast Delivery", "mobileNo": "0926270468", "email": "mymail.example@mail.com" }, "isLiked": false }
@@ -370,12 +382,40 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   }
 
   const onConfirmJob = () => {
+    setIsBooking(true)
+    // onCloseModal()
+  }
+
+  const onCall = (id: string, phoneNumber: string) => {
+    callNumber(id, phoneNumber)
+    // route.name === 'jobDetail' ? navigation.navigate('feedback') : navigation.navigate('myFeedback')
+  }
+
+  const onAnimationFinish = () => {
+    setIsBooking(false)
     onCloseModal()
   }
 
+  const callNumber = (jobId: string, phone: string) => {
+    let phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
+    __DEV__ && console.tron.log('phoneNumber', phoneNumber)
+    Linking.canOpenURL(phoneNumber)
+      .then(supported => {
+        if (!supported) {
+          __DEV__ && console.tron.log('Phone number is not available');
+          Alert.alert('Phone number is not available')
+          return false;
+        } else {
+          CarriersHistoryCallStore.add({ jobId })
+          return Linking.openURL(phoneNumber);
+        }
+      })
+      .catch(err => __DEV__ && console.tron.log('err', err));
+  };
+
   const RenderButtonAlert = () => {
     const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.line, backgroundColor: color.transparent }
-    const btnConfirmStyle = { ...BTN_STYLE, backgroundColor: color.success }
+    const btnConfirmStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.primary, backgroundColor: color.primary }
     return (
       <View style={{ ...BOTTOM_ROOT, paddingVertical: spacing[2] }}>
         <Button
@@ -396,6 +436,8 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     )
   }
 
+  const RenderImageAlert = () => (<Image source={images['workYellowIcon']} width={75} height={75} />)
+
   const truckTypeList = versatileStore.list
   const txtTruckType = productTypeId && truckTypeList.length
     ? (truckTypeList.filter(({ id }) => id === +truckType)?.[0]?.name || translate('common.notSpecified'))
@@ -411,9 +453,32 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   const summaryDistances = ((CarriersJobStore.summaryDistances?.distance || 0) / 1000).toFixed(2)
   const summaryTime = ConverTimeFormat((CarriersJobStore.summaryDistances?.duration) * 1000, 'HHmm')
 
+  const modalProps = {
+    containerStyle: {
+      paddingTop: spacing[5],
+      paddingBottom: spacing[2]
+    },
+    imageComponent: !isBokking ? RenderImageAlert : () => CheckMark({ autoPlay: isBokking, onAnimationFinish: () => onAnimationFinish }),
+    header: !isBokking ? translate('jobDetailScreen.confirmJob') : translate('jobDetailScreen.bookedSuccess'),
+    headerStyle: {
+      paddingTop: spacing[3],
+      color: color.primary
+    },
+    content: translate('jobDetailScreen.callbackForOwner'),
+    contentStyle: {
+      paddingTop: spacing[1],
+      paddingBottom: spacing[5],
+      paddingHorizontal: spacing[7],
+      color: color.line
+    },
+    buttonContainerStyle: !isBokking ? { width: '90%' } : {},
+    buttonComponent: !isBokking ? RenderButtonAlert : null,
+    visible: visibleModal,
+  }
+
   return (
     <View style={CONTAINER}>
-      <ModalLoading size={'large'} color={color.primary} visible={CarriersJobStore.mapLoading} />
+      <ModalLoading size={'large'} color={color.primary} visible={CarriersJobStore.mapLoading || CarriersJobStore.loading} />
       <View style={MAP_CONTAINER}>
         {from && !!from.lat && !!from.lng && !!CarriersJobStore.directions.length &&
           <MapView
@@ -438,7 +503,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                 coordinate={{ latitude: +attr.lat, longitude: +attr.lng }}
               >
                 <Ionicons name={'location-sharp'} color={!index ? color.primary : color.success} size={48} />
-                <Callout style={{ minWidth: deviceWidht - 50 }}>
+                <Callout style={{ width: deviceWidht - 80 }}>
                   <Text text={attr.name} />
                 </Callout>
               </Marker>
@@ -548,7 +613,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
               <Text style={CALL_TEXT} tx={'jobDetailScreen.call'} />
             </View>
           }
-          onPress={() => route.name === 'jobDetail' ? navigation.navigate('feedback') : navigation.navigate('myFeedback')}
+          onPress={() => onCall(id, owner.phoneNumber)}
         />
         <Button
           testID="book-a-job"
@@ -563,21 +628,19 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         />
       </View>
 
-      <ModalAlert
+      {/* <ModalAlert
         containerStyle={{ paddingTop: spacing[5], paddingBottom: spacing[2] }}
-        iconName={'dropbox'}
-        iconStyle={{
-          color: color.textBlack,
-          size: 100
-        }}
+        imageComponent={RenderImageAlert}
         header={translate('jobDetailScreen.confirmJob')}
-        headerStyle={{ paddingTop: spacing[3], color: color.textBlack }}
-        content={translate('jobDetailScreen.confirmVehicleForThisJob')}
+        headerStyle={{ paddingTop: spacing[3], color: color.primary }}
+        content={translate('jobDetailScreen.callbackForOwner')}
         contentStyle={{ paddingTop: spacing[1], paddingBottom: spacing[5], paddingHorizontal: spacing[7], color: color.line }}
         buttonContainerStyle={{ width: '90%' }}
         buttonComponent={RenderButtonAlert}
         visible={visibleModal}
-      />
+      /> */}
+
+      <ModalAlert {...modalProps} />
 
     </View>
   )

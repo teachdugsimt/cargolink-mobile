@@ -1,36 +1,39 @@
-import { ImageStyle, TextStyle, ViewStyle } from "react-native";
+import { ReactNode } from "react";
+import { TextStyle, ViewStyle } from "react-native";
 
 export interface ModalAlertProps {
 
-    containerStyle?: ViewStyle
+  containerStyle?: ViewStyle
 
-    iconStyle?: {
-        color?: string
-        size?: number
-    }
+  iconStyle?: {
+    color?: string
+    size?: number
+  }
 
-    headerStyle?: TextStyle
+  headerStyle?: TextStyle
 
-    contentStyle?: TextStyle
+  contentStyle?: TextStyle
 
-    iconName?: string
+  iconName?: string
 
-    header?: string
+  header?: string
 
-    content?: string
+  content?: string
 
-    headerTranslate?: string
+  headerTranslate?: string
 
-    contentTranslate?: string
+  contentTranslate?: string
 
-    headerTranslateOptions?: object
+  headerTranslateOptions?: object
 
-    contentTranslateOptions?: object
+  contentTranslateOptions?: object
 
-    visible?: boolean
+  visible?: boolean
 
-    buttonContainerStyle?: ViewStyle
+  buttonContainerStyle?: ViewStyle
 
-    buttonComponent?: (props) => React.ReactNode
+  buttonComponent?: (props) => ReactNode
+
+  imageComponent?: (props) => ReactNode
 
 }
