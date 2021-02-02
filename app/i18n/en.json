@@ -166,6 +166,8 @@
     "pleaseCheckRegistration": "please check registration number"
   },
   "profileScreen": {
+    "nophone": "none specified",
+    "noname": "none specified",
     "profile": "Profile",
     "accountType": "Premium Account",
     "telNo": "Tel No. : ",
@@ -181,13 +183,28 @@
     "allProvinceSouth": "all south province",
     "resultWork": "Jobs Summary",
     "carAndWorkZone": "Trucks and Zones",
-
     "allPostJob": "All Jobs",
     "workInProgress": "In progress",
     "workDone": "Done",
-
     "allCar": "All Car",
-    "allWorkZone": "All work zones"
+    "allWorkZone": "All work zones",
+    "noEnoughWork": "Work data was not enough. You can add",
+    "fromAddWorkScreen": "work from add work menu.",
+    "goAddWorkScreen": "Go to add work menu",
+    "noEnoughCar": "Vehicle data was not enough. You can add car",
+    "fromManageCar": "from manage car menu.",
+    "goManageCar": "Go to manage car menu",
+
+    "weSuggest": "We suggest",
+    "fullSuggestText": "Actually filling in information will make your profile more reliable and affect to get a better job.",
+    "suggestTextUpdate": "Actually filling in information will make your profile",
+    "suggestTextUpdate2": "more reliable and affect to get a better job.",
+    "uploadYourPic": "Upload your picture",
+
+    "inputMoreDetail": "Fill out the information that will make us get to know you better.",
+    "nameLastName": "name - lastname",
+    "phoneNumber": "phone number",
+    "email": "email"
   },
   "storybook": {
     "placeholder": "Placeholder",
