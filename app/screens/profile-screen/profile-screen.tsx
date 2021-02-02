@@ -4,7 +4,7 @@ import {
   SectionList, Dimensions, Image, ImageStyle, FlatList, Platform, LayoutAnimation,
 } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Text, Icon, HeaderCenter } from "../../components"
+import { Text, Icon, HeaderCenter, HeaderRight } from "../../components"
 import { color, images, typography } from "../../theme"
 import ProfileStore from '../../store/profile-store/profile-store'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -12,7 +12,7 @@ import { MapTruckImageName } from '../../utils/map-truck-image-name'
 import { useStores } from "../../models/root-store/root-store-context";
 import { useFocusEffect, useNavigation } from "@react-navigation/native"
 
-const { width } = Dimensions.get("window")
+const { width, height } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
 const COLOR_PRIMARY: TextStyle = { color: color.primary }
 const TOP_VIEW: ViewStyle = {
@@ -121,6 +121,7 @@ const VEHICLE_TEXT_VIEW: ViewStyle = { ...FULL, width: '100%' }
 const SUB_VEHICLE_TEXT: ViewStyle = { ...FLEX_ROW, justifyContent: 'space-around' }
 const IMAGE_LAYOUT: ViewStyle = { width: 60, height: 60 }
 const WIDTH_70: ViewStyle = { width: '70%' }
+const EMPTY_VIEW: ViewStyle = { ...FULL, alignItems: 'center', justifyContent: 'center', marginTop: (height / 4) - 20 }
 
 export const ProfileScreen = observer(function ProfileScreen() {
   // console.tron.log('hello rendering world')
@@ -129,6 +130,11 @@ export const ProfileScreen = observer(function ProfileScreen() {
   const [menu2, setmenu2] = useState(false)
 
   useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <HeaderRight onRightPress={() => navigation.navigate("updateProfile")} iconName={"ios-create-outline"} iconSize={24} iconColor={color.black} />
+      ),
+    });
     ProfileStore.getProfileRequest()
     ProfileStore.getTruckSummary()
   }, [])
@@ -254,10 +260,23 @@ export const ProfileScreen = observer(function ProfileScreen() {
   }
 
 
+  const _renderEmptyList = (s1, s2, s3, link) => {
+    return <View style={EMPTY_VIEW}>
+      <View>
+        <Text tx={s1} />
+      </View>
+      <View>
+        <Text tx={s2} />
+      </View>
 
+      <TouchableOpacity style={{ paddingTop: 20 }} onPress={() => navigation.navigate('Home', { screen: link })}>
+        <Text tx={s3} preset={'topic'} style={{ color: color.primary }} />
+      </TouchableOpacity>
+    </View>
+  }
 
-  const full_name = ProfileStore.data?.fullName ? JSON.parse(JSON.stringify(ProfileStore.data.fullName)) : null
-  const phone_number = ProfileStore.data?.phoneNumber ? JSON.parse(JSON.stringify(ProfileStore.data.phoneNumber)) : null
+  const { fullName, phoneNumber } = JSON.parse(JSON.stringify(ProfileStore.data)) || {}
+  __DEV__ && console.tron.log("Profile data :: ", JSON.parse(JSON.stringify(ProfileStore.data)))
 
   const report_mock = [
     { id: 1, title: "profileScreen.allPostJob", content: "*เราเปิดโอกาสให้ผู้ใช้ทั้ง Carriers และ Shippers สามารถโพสงานหรือหารถได้หากผู้ใช้สนใจโพสงานสามารถเลือกได้จากหน้าแรก", number: 21 },
@@ -291,20 +310,20 @@ export const ProfileScreen = observer(function ProfileScreen() {
     <View testID="ProfileScreen" style={FULL}>
       <View style={TOP_VIEW}>
         <View style={VIEW_PROFILE}>
-          <Image source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/3/33/Reuni%C3%A3o_com_o_ator_norte-americano_Keanu_Reeves_%2846806576944%29_%28cropped%29.jpg' }} style={PROFILE_IMG} />
+          {<Image source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/3/33/Reuni%C3%A3o_com_o_ator_norte-americano_Keanu_Reeves_%2846806576944%29_%28cropped%29.jpg' }} style={PROFILE_IMG} />}
           <View style={VIEW_NAME_NAD_PHONE}>
 
-            {!!full_name && <View style={ROW_LAYOUT}>
+            {<View style={ROW_LAYOUT}>
               <Ionicons name={"person-outline"} size={typography.mediumIcon} />
-              <Text preset={"default"} style={PADDING_LEFT_SMALL}>
-                {full_name}
+              <Text preset={"default"} style={PADDING_LEFT_SMALL} tx={fullName ? '' : 'profileScreen.nophone'}>
+                {fullName || ""}
               </Text>
-              <Icon icon={'checkActive'} style={ICON_STYLE} />
+              {fullName && <Icon icon={'checkActive'} style={ICON_STYLE} />}
             </View>}
 
-            {!!phone_number && <View style={ROW_LAYOUT}>
+            {<View style={ROW_LAYOUT}>
               <Ionicons name={"call-outline"} size={typography.mediumIcon} />
-              <Text preset="default" style={PADDING_LEFT_SMALL}>{phone_number}</Text>
+              <Text preset="default" style={PADDING_LEFT_SMALL} tx={phoneNumber ? '' : 'profileScreen.nophone'}>{phoneNumber || ''}</Text>
             </View>}
 
           </View>
@@ -334,6 +353,8 @@ export const ProfileScreen = observer(function ProfileScreen() {
           data={report_mock}
           renderItem={({ item, index }) => _renderVehice(item, index)}
           keyExtractor={(item, index) => 'key-' + index.toString()}
+          ListEmptyComponent={() => _renderEmptyList("profileScreen.noEnoughWork", "profileScreen.fromAddWorkScreen",
+            "profileScreen.goAddWorkScreen", "postjob")}
         />}
 
 
@@ -367,6 +388,8 @@ export const ProfileScreen = observer(function ProfileScreen() {
             ListFooterComponent={
               <View style={{ height: 50 }}></View>
             }
+            ListEmptyComponent={() => _renderEmptyList("profileScreen.noEnoughCar", "profileScreen.fromManageCar",
+              "profileScreen.goManageCar", "myVehicle")}
           />
 
 

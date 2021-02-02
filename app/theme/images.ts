@@ -52,6 +52,7 @@ export const images = {
   postJobSuccess: require("../images/post-job-success.png"),
   noImageAvailable: require("../images/no-image-available.jpg"),
   greyMock: require("../images/just_grey_light_grey.jpg"),
+  addProfilePic: require("../images/profileaddpic.png"),
   // clearLogo: require('../Images/top_logo.png'),
   workYellowIcon: require('../images/work-yellow-icon.png'),
   truckYellowIcon: require('../images/truck-yellow-icon.png'),
