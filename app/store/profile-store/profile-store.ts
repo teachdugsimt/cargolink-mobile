@@ -22,6 +22,13 @@ const TruckSummary = types.model({
   zones: types.maybeNull(types.number)
 })
 
+const DataUpdateProfile = types.model({
+  "fullName": types.maybeNull(types.string),
+  "phoneNumber": types.maybeNull(types.string),
+  "approveStatus": types.maybeNull(types.string),
+  "avatar": types.maybeNull(types.string)
+})
+
 const ProfileStore = types.model({
   data: types.maybeNull(Profile),
   loading: types.boolean,
@@ -29,7 +36,10 @@ const ProfileStore = types.model({
 
   data_truck_summary: types.maybeNull(TruckSummary),
   loading_truck_summary: types.boolean,
-  error_truck_summary: types.maybeNull(types.string)
+  error_truck_summary: types.maybeNull(types.string),
+
+  data_update_profile: types.maybeNull(DataUpdateProfile),
+  
 }).actions(self => ({
   getProfileRequest: flow(function* getProfileRequest() { // <- note the star, this a generator function!
     yield apiUsers.setup()
