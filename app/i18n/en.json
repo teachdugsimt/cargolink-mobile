@@ -50,7 +50,9 @@
     "ss": "sec",
     "ms": "millsec",
     "summary": "Summary",
-    "amount": "Amount"
+    "amount": "Amount",
+    "new": "New",
+    "done": "Done"
   },
   "bottomTab": {
     "home": "Home",
@@ -364,6 +366,8 @@
     "myJob": "My job",
     "workOpen": "New",
     "workInProgress": "In progress",
-    "workDone": "Done"
+    "workDone": "Done",
+    "editJob": "Edit job",
+    "bookerWaiting": "The reservation awaits acceptance"
   }
 }
