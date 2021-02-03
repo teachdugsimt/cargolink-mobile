@@ -82,6 +82,15 @@ const MENUS: Array<MenuProps> = [
         }]
     },
     {
+      key: 'problemReport',
+      topic: 'moreScreen.problemReport', // 'ความปลอดภัย'
+      subMenu: [{
+          key: 'report',
+          label: 'moreScreen.report', // 'ตั้งค่ารหัสผ่านของคุณ'
+          icon: 'chevron-forward'
+      }]
+  },
+    {
         key: 'contact-us',
         topic: 'moreScreen.contactUs', // 'ติดต่อเรา'
         subMenu: [

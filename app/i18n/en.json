@@ -221,7 +221,9 @@
     "language": "Language",
     "English": "EN",
     "Thai": "TH",
-    "Japan": "JA"
+    "Japan": "JA",
+    "problemReport": "Report user",
+    "report": "report"
   },
   "jobDetailScreen": {
     "truckCount": "Truck count",

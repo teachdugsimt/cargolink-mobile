@@ -68,10 +68,12 @@ export const HomeScreen = observer((props) => {
     console.log("TOKEN STORE :: => ", JSON.parse(JSON.stringify(tokenStore.token)))
   }, [])
 
-  const [lang, setlang] = useState('th')
+  const [swipe, setswipe] = useState(false)
+  const [lang, setlang] = useState(null)
   useEffect(() => {
     if (lang != versatileStore.language) {
       setlang(versatileStore.language)
+      setswipe(!swipe)
     }
   }, [versatileStore.language])
   useEffect(() => {
@@ -125,7 +127,7 @@ export const HomeScreen = observer((props) => {
         </View>
         <View style={BOTTOM_VIEW}>
           <View style={VIEW_GRID_BOX}>
-            {!!lang && <GridView data={dataTest} />}
+            {swipe ? <GridView data={dataTest} /> : <GridView data={dataTest} />}
           </View>
         </View>
       </View>

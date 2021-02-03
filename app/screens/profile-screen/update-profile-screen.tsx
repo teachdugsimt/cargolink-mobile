@@ -319,10 +319,7 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
               </View>
 
               <View style={PADDING_TOP_10}>
-                <View style={{ flexDirection: 'row' }}>
-                  <Text tx={"profileScreen.phoneNumber"} />
-                  <Text style={{ color: color.error }}> *</Text>
-                </View>
+                <Text tx={"profileScreen.phoneNumber"} />
                 <Controller
                   control={control}
                   render={({ onChange, onBlur, value }) => (
@@ -342,10 +339,7 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
               </View>
 
               <View style={PADDING_TOP_10}>
-                <View style={{ flexDirection: 'row' }}>
-                  <Text tx={"profileScreen.email"} />
-                  <Text style={{ color: color.error }}> *</Text>
-                </View>
+                <Text tx={"profileScreen.email"} />
                 <Controller
                   control={control}
                   render={({ onChange, onBlur, value }) => (
