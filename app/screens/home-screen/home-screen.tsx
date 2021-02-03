@@ -68,7 +68,7 @@ export const HomeScreen = observer((props) => {
     console.log("TOKEN STORE :: => ", JSON.parse(JSON.stringify(tokenStore.token)))
   }, [])
 
-  const [lang, setlang] = useState(null)
+  const [lang, setlang] = useState('th')
   useEffect(() => {
     if (lang != versatileStore.language) {
       setlang(versatileStore.language)
