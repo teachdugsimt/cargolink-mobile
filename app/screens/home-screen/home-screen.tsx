@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react"
-import { View, ViewStyle, TextStyle, Image, ImageStyle, Dimensions, Platform } from "react-native"
+import { View, ViewStyle, TouchableOpacity, Image, ImageStyle, Dimensions, Platform } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
 import { images, color } from '../../theme'
-import { Header, Text, Button } from "../../components"
+import { Header, Text, ModalNormal } from "../../components"
 import { spacing } from "../../theme"
 import { useStores } from "../../models/root-store/root-store-context";
 import { GridView } from '../../components/home-element/home-element'
@@ -59,7 +59,7 @@ export const HomeScreen = observer((props) => {
   const { tokenStore, versatileStore } = useStores()
 
   const navigation = useNavigation()
-
+  const [visible, setvisible] = useState(false)
   useEffect(() => {
     versatileStore.findGroup()
     versatileStore.find()
@@ -68,10 +68,12 @@ export const HomeScreen = observer((props) => {
     console.log("TOKEN STORE :: => ", JSON.parse(JSON.stringify(tokenStore.token)))
   }, [])
 
+  const [swipe, setswipe] = useState(false)
   const [lang, setlang] = useState(null)
   useEffect(() => {
     if (lang != versatileStore.language) {
       setlang(versatileStore.language)
+      setswipe(!swipe)
     }
   }, [versatileStore.language])
   useEffect(() => {
@@ -125,9 +127,24 @@ export const HomeScreen = observer((props) => {
         </View>
         <View style={BOTTOM_VIEW}>
           <View style={VIEW_GRID_BOX}>
-            {!!lang && <GridView data={dataTest} />}
+            {swipe ? <GridView data={dataTest} /> : <GridView data={dataTest} />}
           </View>
         </View>
+
+        {/* <ModalNormal
+          visible={visible}
+          onTouchOutside={() => setvisible(false)}
+          onSwipeOut={() => setvisible(true)}
+          title={"profileScreen.profile"}
+          subTitle={"profileScreen.fullSuggestText"}
+          onPressLeft={() => setvisible(false)}
+          onPressRight={() => console.log("confirm right")}
+        /> */}
+        {/* <TouchableOpacity onPress={() => setvisible(true)}>
+          <Text>Click Me!!</Text>
+        </TouchableOpacity> */}
+
+
       </View>
     </>
   )

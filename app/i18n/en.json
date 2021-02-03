@@ -204,7 +204,8 @@
     "inputMoreDetail": "Fill out the information that will make us get to know you better.",
     "nameLastName": "name - lastname",
     "phoneNumber": "phone number",
-    "email": "email"
+    "email": "email",
+    "inputName": "please input name - lastname"
   },
   "storybook": {
     "placeholder": "Placeholder",
@@ -218,10 +219,16 @@
     "lineOfficialAccount": "Line Official Account",
     "callCenter": "Call Center",
     "moreMenu": "More menu",
-    "language": "Language",
+    "language": "Change language",
     "English": "EN",
     "Thai": "TH",
-    "Japan": "JA"
+    "Japan": "JA",
+    "problemReport": "Report user",
+    "report": "report",
+    "reportUser": "report user",
+    "explanText": "The system will only show jobs or users that you have booked through in the app, if it is a job that you contact with the owner, recommend our service center. ",
+    "reportTopic": "Select the user or task you want to complain about.",
+    "moreDetail": "more details"
   },
   "jobDetailScreen": {
     "truckCount": "Truck count",
@@ -268,7 +275,9 @@
     "addVehicleSuccess": "Add vehicle success",
     "editVehicleSuccess": "Edit vehicle success",
     "pendingVehicleDetail": "We are reviewing the information. Soon ",
-    "pendingVehicleDetail2": "your car will be able to accept the job."
+    "pendingVehicleDetail2": "your car will be able to accept the job.",
+    "editCar": "edit",
+    "pendingWork": "pending work"
   },
   "vehicleType": {
     "Others": "Others",

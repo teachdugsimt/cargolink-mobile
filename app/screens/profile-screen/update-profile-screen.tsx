@@ -12,6 +12,8 @@ import { useNavigation } from "@react-navigation/native"
 import { color, images, typography } from "../../theme"
 import { Modal } from 'react-native-modals';
 import { ScrollView } from "react-native-gesture-handler"
+import ProfileStore from '../../store/profile-store/profile-store'
+import { useStores } from "../../models/root-store/root-store-context";
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -101,12 +103,24 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
   const navigation = useNavigation()
   const [selectCapture, setSelectCapture] = useState(false)
   const [imageProfile, setImageProfile] = useState(null)
-
+  const { tokenStore } = useStores()
 
   const _uploadFile = (response) => {
     __DEV__ && console.tron.log("Response File before upload :: ", response)
     // UploadFileStore.uploadImage(file, position)
+    ProfileStore.uploadPicture(response)
   }
+
+  useEffect(() => {
+    let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
+    if (tmp_profile && tmp_profile.avatar) setImageProfile({
+      uri: tmp_profile.avatar,
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${tokenStore.token.accessToken}`
+      },
+    })
+  }, [ProfileStore.data])
 
   const requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
@@ -219,15 +233,34 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
   };
 
   const { control, handleSubmit, errors } = useForm({
-    // defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : MyVehicleStore.MappingData
+    defaultValues: ProfileStore.ProfileData
   });
   const onSubmit = (data) => {
     __DEV__ && console.tron.log("Raw data :: ", data)
+    let tmp_profile_store = JSON.parse(JSON.stringify(ProfileStore.data))
+    let finalData = {
+      "fullName": data["name-lastname"],
+      "phoneNumber": data["phone-number"],
+      "avatar": null,
+      "email": data["email"]
+    }
+    if (imageProfile) finalData['avatar'] = ProfileStore?.data_upload_picture?.fileUrl || tmp_profile_store.avatar
+    ProfileStore.updateProfile(finalData)
   }
+
+  useEffect(() => {
+    return () => {
+      ProfileStore.clearData()
+      ProfileStore.getProfileRequest()
+    }
+  }, [])
 
 
   let formControllerValue = control.getValues()
   __DEV__ && console.tron.logImportant("Form in render :: ", formControllerValue)
+
+  let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
+  __DEV__ && console.tron.logImportant("Profile Data :: ", tmp_profile)
   return (
     <View testID="UpdateProfileScreen" style={FULL}>
       <ScrollView style={FULL}>
@@ -279,7 +312,8 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
                     {!!imageProfile && <TouchableOpacity style={{ alignItems: 'flex-end', position: 'absolute', top: 0, right: 0, zIndex: 2 }} onPress={() => setImageProfile(null)}>
                       <Ionicons name={"close"} size={22} color={color.error} />
                     </TouchableOpacity>}
-                    <Image source={imageProfile ? imageProfile : images.addProfilePic} resizeMode="stretch" style={{ maxHeight: 120, maxWidth: 120 }} />
+                    {/* <Image source={imageProfile ? imageProfile : images.addProfilePic} resizeMode="stretch" style={{ maxHeight: 120, maxWidth: 120 }} /> */}
+                    <Image source={(imageProfile ? imageProfile : images.addProfilePic)} resizeMode="stretch" style={{ width: 120, height: 120 }} />
                   </View>
                 </TouchableOpacity>
               </View>
@@ -317,12 +351,10 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
                   defaultValue=""
                 />
               </View>
+              {errors['name-lastname'] && <Text style={{ color: color.red }} tx={"profileScreen.inputName"} />}
 
               <View style={PADDING_TOP_10}>
-                <View style={{ flexDirection: 'row' }}>
-                  <Text tx={"profileScreen.phoneNumber"} />
-                  <Text style={{ color: color.error }}> *</Text>
-                </View>
+                <Text tx={"profileScreen.phoneNumber"} />
                 <Controller
                   control={control}
                   render={({ onChange, onBlur, value }) => (
@@ -336,16 +368,12 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
                   )}
                   key={"key-phone-number"}
                   name={"phone-number"}
-                  rules={{ required: true }}
                   defaultValue=""
                 />
               </View>
 
               <View style={PADDING_TOP_10}>
-                <View style={{ flexDirection: 'row' }}>
-                  <Text tx={"profileScreen.email"} />
-                  <Text style={{ color: color.error }}> *</Text>
-                </View>
+                <Text tx={"profileScreen.email"} />
                 <Controller
                   control={control}
                   render={({ onChange, onBlur, value }) => (
@@ -359,7 +387,6 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
                   )}
                   key={"key-email"}
                   name={"email"}
-                  rules={{ required: true }}
                   defaultValue=""
                 />
               </View>
