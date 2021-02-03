@@ -368,6 +368,8 @@
     "workInProgress": "In progress",
     "workDone": "Done",
     "editJob": "Edit job",
-    "bookerWaiting": "The reservation awaits acceptance"
+    "bookerWaiting": "The reservation awaits acceptance",
+    "accept": "Accept",
+    "listOfBookingJob": "Applicants for booking this job"
   }
 }

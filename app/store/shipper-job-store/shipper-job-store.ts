@@ -65,26 +65,27 @@ const ShipperJobStore = types
         const response = yield apiShipperJob.find(filter)
         console.log("Response call api get shipper jobs : : ", response)
         if (response.kind === 'ok') {
-          yield FavoriteJobStore.find()
+          // yield FavoriteJobStore.find()
           let arrMerge = []
           if (!filter.page) {
             arrMerge = [...response.data]
           } else {
             arrMerge = [...self.list, ...response.data]
           }
-          const favoriteList = JSON.parse(JSON.stringify(FavoriteJobStore.list))
+          // const favoriteList = JSON.parse(JSON.stringify(FavoriteJobStore.list))
 
-          if (favoriteList && favoriteList.length) {
-            const result = yield Promise.all(arrMerge.map(attr => {
-              return {
-                ...attr,
-                isLiked: favoriteList.some(val => val.id === attr.id)
-              }
-            }))
-            self.list = JSON.parse(JSON.stringify(result))
-          } else {
-            self.list = cast(arrMerge)
-          }
+          // if (favoriteList && favoriteList.length) {
+          //   const result = yield Promise.all(arrMerge.map(attr => {
+          //     return {
+          //       ...attr,
+          //       isLiked: favoriteList.some(val => val.id === attr.id)
+          //     }
+          //   }))
+          //   self.list = JSON.parse(JSON.stringify(result))
+          // } else {
+          //   self.list = cast(arrMerge)
+          // }
+          self.list = JSON.parse(JSON.stringify(arrMerge))
           self.loading = false
         } else {
           self.loading = false

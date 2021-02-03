@@ -369,6 +369,8 @@
     "workInProgress": "กำลังดำเนินการ",
     "workDone": "เสร็จสิ้น",
     "editJob": "แก้ไขข้อมูลงาน",
-    "bookerWaiting": "ผู้จองรอตอบรับ"
+    "bookerWaiting": "ผู้จองรอตอบรับ",
+    "accept": "ตอบรับ",
+    "listOfBookingJob": "ผู้ขอจองงานนี้"
   }
 }

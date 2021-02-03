@@ -182,6 +182,10 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
       TruckTypeStore.find()
     }
 
+    if (!AdvanceSearchStore.menu || !AdvanceSearchStore.menu.length) {
+      AdvanceSearchStore.mapMenu()
+    }
+
     return () => {
       PAGE = 0
       AdvanceSearchStore.clearMenu()
@@ -192,16 +196,27 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
   }, [])
 
   useEffect(() => {
+    if (AdvanceSearchStore.menu.length) {
+      const productType = AdvanceSearchStore.menu.filter(menu => menu.type === 'productType')
+      const topMenu = productType[0].subMenu?.map(subMenu => {
+        if (subMenu.id === 1 || subMenu.id === 2) {
+          return { ...subMenu, label: subMenu.name }
+        }
+        return null
+      }).filter(Boolean)
+
+      setState(prevState => ({
+        ...prevState,
+        subButtons: topMenu
+      }))
+    }
+  }, [AdvanceSearchStore.menu.length])
+
+  useEffect(() => {
     setState(prevState => ({
       ...prevState,
       listLength: CarriersJobStore.list.length,
     }))
-    // if (!CarriersJobStore.loading && CarriersJobStore.list && CarriersJobStore.list.length) {
-    //   setState(prevState => ({
-    //     ...prevState,
-    //     data: CarriersJobStore.list,
-    //   }))
-    // }
   }, [CarriersJobStore.loading])
 
   const renderItem = ({ item }) => (
@@ -222,6 +237,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
   }
 
   const onPress = (id: number) => {
+    console.log('id', id)
     const newButtonSearch = subButtons.map(button => {
       if (button.id !== id) return button
       return { ...button, isChecked: !button.isChecked }
