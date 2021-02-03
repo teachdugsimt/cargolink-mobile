@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import { ImageSourcePropType, ViewStyle } from "react-native"
 
 export interface SearchItemProps {
@@ -25,6 +26,8 @@ export interface SearchItemProps {
 
   isLike?: boolean
 
+  showFavoriteIcon?: boolean
+
   iconOnBottom?: boolean
 
   isRecommened?: boolean
@@ -44,6 +47,8 @@ export interface SearchItemProps {
   logo?: string
 
   containerStyle?: ViewStyle
+
+  bottomComponent?: (props) => ReactNode
 
   onToggleHeart?: (data: object) => void
 

@@ -133,6 +133,7 @@ export function SearchItem(props: SearchItemProps) {
     viewDetailToRight,
     backgroundImage,
     isLike: like = false,
+    showFavoriteIcon = true,
     iconOnBottom,
     isRecommened,
     rexommenedOnTop,
@@ -143,6 +144,7 @@ export function SearchItem(props: SearchItemProps) {
     isCrown,
     logo,
     containerStyle,
+    bottomComponent,
     onPress,
     onToggleHeart
   } = props
@@ -157,6 +159,8 @@ export function SearchItem(props: SearchItemProps) {
     setIsLike(!isLike)
     onToggleHeart({ id, isLike: !isLike })
   }
+
+  const renderButtom = bottomComponent ? bottomComponent((comp) => comp) : null
 
   return (
     <TouchableOpacity style={{ ...CONTAINER, ...containerStyle }} activeOpacity={1} onPress={onPress}>
@@ -206,9 +210,9 @@ export function SearchItem(props: SearchItemProps) {
           </View>
         </View>
         <View style={CONTENT_RIGHT}>
-          <TouchableOpacity onPress={onSelectedHeart}>
+          {showFavoriteIcon && <TouchableOpacity onPress={onSelectedHeart}>
             <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} size={24} color={isLike ? color.red : color.line} />
-          </TouchableOpacity>
+          </TouchableOpacity>}
           {isRecommened &&
             <View style={RECOMMENED_ROOT}>
               <Text
@@ -218,7 +222,7 @@ export function SearchItem(props: SearchItemProps) {
             </View>}
         </View>
       </View>
-      <View style={BUTTOM_ROOT}>
+      {renderButtom || (<View style={BUTTOM_ROOT}>
         <View style={VIEW_DETAIL_ROOT}>
           <Text text={translate('jobDetailScreen.seeDetail')} style={TEXT_VIEW} />
           <AntDesign name="right" size={spacing[5]} color={color.line} />
@@ -235,7 +239,8 @@ export function SearchItem(props: SearchItemProps) {
             }
           } />
         </View>
-      </View>
+      </View>)
+      }
     </TouchableOpacity>
   )
 }

@@ -6,6 +6,7 @@ import { color, spacing, images as imageComponent } from "../../theme"
 import ShipperJobStore from '../../store/shipper-job-store/shipper-job-store'
 import CarriersJobStore from '../../store/carriers-job-store/carriers-job-store'
 import FavoriteJobStore from '../../store/carriers-job-store/favorite-job-store'
+import AdvanceSearchStore from '../../store/shipper-job-store/advance-search-store'
 import { useNavigation } from "@react-navigation/native"
 import { GetTruckType } from "../../utils/get-truck-type"
 import { translate } from "../../i18n"
@@ -32,6 +33,18 @@ const CONTENT: ViewStyle = {
   flex: 1,
   paddingTop: spacing[2],
 }
+const BOTTOM_ROOT: ViewStyle = {
+  flexDirection: 'row',
+  paddingVertical: spacing[1]
+}
+const BTN_COLUMN: ViewStyle = {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  paddingVertical: spacing[2]
+}
+
+let PAGE = 0
 
 const Item = (data) => {
   const {
@@ -61,6 +74,17 @@ const Item = (data) => {
     FavoriteJobStore.add(data.id)
   }
 
+  const RenderBottom = () => (
+    <View style={BOTTOM_ROOT}>
+      <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={onPress}>
+        <Text tx={'myJobScreen.editJob'} style={{ color: color.line }} />
+      </TouchableOpacity>
+      <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onPress}>
+        <Text tx={'myJobScreen.bookerWaiting'} style={{ color: color.primary }} />
+      </TouchableOpacity>
+    </View>
+  )
+
   const typeOfTruck = GetTruckType(+truckType)?.name || translate('common.notSpecified')
 
   return (
@@ -78,20 +102,22 @@ const Item = (data) => {
           // detail,
           viewDetail: true,
           postBy: owner.companyName,
-          isVerified: true,
-          isLike: isLiked,
+          isVerified: false,
+          // isLike: isLiked,
+          showFavoriteIcon: false,
           backgroundImage: imageComponent[MapTruckImageName(+truckType) || 'truck'],
           // rating,
           // ratingCount,
           // isCrown,
           logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-          isRecommened: true,
+          isRecommened: false,
           containerStyle: {
             paddingTop: spacing[2],
             borderRadius: 6
           },
           onPress,
-          onToggleHeart
+          onToggleHeart,
+          bottomComponent: () => <RenderBottom />
         }
         }
       />
@@ -111,21 +137,25 @@ export const MyJobScreen = observer(function MyJobScreen() {
 
   useEffect(() => {
     ShipperJobStore.find()
+    return () => {
+      ShipperJobStore.setDefaultOfList()
+    }
   }, [])
 
   const renderItem = ({ item }) => <Item {...item} />
 
   const onScrollList = () => {
-    // if (!onEndReachedCalledDuringMomentum
-    //   && ShipperJobStore.list.length >= 10
-    //   && !ShipperJobStore.loading
-    //   && ShipperJobStore.previousListLength !== listLength) {
-    //   PAGE = ShipperJobStore.list.length === listLength ? listLength : PAGE + ShipperJobStore.list.length
-    //   const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE }
-    //   ShipperJobStore.find(advSearch)
-    //   setOnEndReachedCalledDuringMomentum(true)
-    // }
-    console.log('ooonScrollList')
+    console.log('onScrollList')
+    if (!onEndReachedCalledDuringMomentum
+      // && ShipperJobStore.list.length >= 10
+      && !ShipperJobStore.loading
+      // && ShipperJobStore.previousListLength !== listLength
+    ) {
+      PAGE = ShipperJobStore.list.length === listLength ? listLength : PAGE + ShipperJobStore.list.length
+      const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE }
+      ShipperJobStore.find(advSearch)
+      setOnEndReachedCalledDuringMomentum(true)
+    }
   }
 
   const onRefresh = () => {
@@ -144,8 +174,6 @@ export const MyJobScreen = observer(function MyJobScreen() {
       setlang(versatileStore.language)
     }
   }, [versatileStore.language])
-
-
 
   useEffect(() => {
     navigation.setOptions({
