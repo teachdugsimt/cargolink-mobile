@@ -56,6 +56,8 @@ export const images = {
   // clearLogo: require('../Images/top_logo.png'),
   workYellowIcon: require('../images/work-yellow-icon.png'),
   truckYellowIcon: require('../images/truck-yellow-icon.png'),
+  th: require("../images/flag/th-flag.png"),
+  en: require("../images/flag/us-flag.jpg"),
 }
 
 // export default images
