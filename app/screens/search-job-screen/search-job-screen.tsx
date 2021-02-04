@@ -4,7 +4,7 @@ import { FlatList, RefreshControl, TextStyle, View, ViewStyle } from 'react-nati
 import { AdvanceSearchTab, EmptyListMessage, ModalLoading, SearchBar, Text } from '../../components';
 import { color, spacing, images as imageComponent } from '../../theme';
 import { SearchItem } from '../../components/search-item/search-item';
-import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { translate } from '../../i18n';
 import CarriersJobStore from "../../store/carriers-job-store/carriers-job-store";
 import { GetTruckType } from '../../utils/get-truck-type'
@@ -16,12 +16,6 @@ import { provinceListEn, provinceListTh } from '../../screens/home-screen/manage
 import Feather from 'react-native-vector-icons/Feather'
 import FavoriteJobStore from "../../store/carriers-job-store/favorite-job-store"
 import { MapTruckImageName } from '../../utils/map-truck-image-name';
-
-interface SubButtonSearch {
-  id?: number
-  label?: string
-  isChecked?: boolean
-}
 
 const SEARCH_BAR: ViewStyle = {
   marginBottom: spacing[1],
@@ -35,15 +29,6 @@ const BUTTON_CONTAINER: ViewStyle = {
   alignItems: 'center',
   marginVertical: spacing[2],
   justifyContent: 'center',
-}
-const CONTEXT_NOT_FOUND: ViewStyle = {
-  flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-  top: -spacing[5],
-}
-const NOT_FOUND_TEXT: TextStyle = {
-  color: color.line,
 }
 
 const Item = (data) => {
@@ -110,36 +95,20 @@ const Item = (data) => {
   )
 }
 
-const SUB_BUTTON: Array<SubButtonSearch> = [
-  {
-    id: 1,
-    label: 'สินค้าเกษตร',
-    isChecked: false,
-  },
-  {
-    id: 2,
-    label: 'อุสาหกรรม',
-    isChecked: false,
-  },
-]
-
 const initialState = {
-  subButtons: SUB_BUTTON,
   listLength: 0,
-  data: [],
   filterLength: 0,
   arrayFilter: [],
-  loading: true,
 }
 
 let PAGE = 0;
 
 export const SearchJobScreen = observer(function SearchJobScreen() {
   const navigation = useNavigation()
-  const isFocused = useIsFocused()
 
-  const [{ subButtons, data, listLength, filterLength, loading, arrayFilter }, setState] = useState(initialState)
+  const [{ listLength, filterLength, arrayFilter }, setState] = useState(initialState)
   const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState<boolean>(true)
+  const [selectSearch, setSelectSearch] = useState({})
 
   useFocusEffect(
     useCallback(() => {
@@ -170,14 +139,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
     }
   }, [JSON.stringify(arrayFilter)])
 
-  // useEffect(() => {
-  //   if (FavoriteJobStore.id) {
-  //     FavoriteJobStore.keepLiked('', false)
-  //   }
-  // }, [isFocused])
-
   useEffect(() => {
-    // CarriersJobStore.find()
     if (!TruckTypeStore.list.length) {
       TruckTypeStore.find()
     }
@@ -196,21 +158,24 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
   }, [])
 
   useEffect(() => {
-    if (AdvanceSearchStore.menu.length) {
-      const productType = AdvanceSearchStore.menu.filter(menu => menu.type === 'productType')
-      const topMenu = productType[0].subMenu?.map(subMenu => {
-        if (subMenu.id === 1 || subMenu.id === 2) {
-          return { ...subMenu, label: subMenu.name }
-        }
-        return null
-      }).filter(Boolean)
+    if (Object.keys(selectSearch)) {
+      const { productType, truckAmountMax, truckAmountMin, truckType, weight } = JSON.parse(JSON.stringify(AdvanceSearchStore.filter))
+      const arrayFilter = [
+        ...[...productType || []],
+        ...[...truckType || []],
+        weight,
+        truckAmountMax || truckAmountMin
+      ].filter(Boolean)
+
+      const length = arrayFilter.length
 
       setState(prevState => ({
         ...prevState,
-        subButtons: topMenu
+        filterLength: length,
+        arrayFilter: arrayFilter
       }))
     }
-  }, [AdvanceSearchStore.menu.length])
+  }, [selectSearch])
 
   useEffect(() => {
     setState(prevState => ({
@@ -237,16 +202,25 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
   }
 
   const onPress = (id: number) => {
-    console.log('id', id)
-    const newButtonSearch = subButtons.map(button => {
-      if (button.id !== id) return button
-      return { ...button, isChecked: !button.isChecked }
-    })
+    const newMenu = JSON.parse(JSON.stringify(AdvanceSearchStore.menu))
+    const indexMenu = newMenu.findIndex(({ type }) => type === 'productType')
+    const indexSubmenu = newMenu[indexMenu]?.subMenu.findIndex(({ id: idx }) => idx === id)
+    const mainSelect = newMenu[indexMenu].subMenu[indexSubmenu]
+    newMenu[indexMenu].subMenu.splice(indexSubmenu, 1, { ...mainSelect, isChecked: !mainSelect.isChecked })
 
-    setState(prevState => ({
-      ...prevState,
-      subButtons: newButtonSearch,
-    }))
+    AdvanceSearchStore.mapMenu(newMenu)
+
+    let productTypes = JSON.parse(JSON.stringify(AdvanceSearchStore.filter))?.productType || []
+
+    if (newMenu[indexMenu].subMenu[indexSubmenu].isChecked) {
+      productTypes = [...productTypes, mainSelect.value]
+    } else {
+      productTypes = productTypes.filter(type => type !== mainSelect.value)
+    }
+
+    AdvanceSearchStore.setFilter({ ...AdvanceSearchStore.filter, productType: productTypes })
+
+    setSelectSearch({ ...selectSearch, [id]: !mainSelect.isChecked })
   }
 
   const onSelectDropdown = (fLocale, sLocale) => {
@@ -274,11 +248,9 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
   const onSearch = () => {
     const filter = AdvanceSearchStore.filter
     CarriersJobStore.find(filter)
-    // CarriersJobStore.setDefaultOfList()
   }
 
   const onAdvanceSeach = () => {
-    // AdvanceSearchStore.getProductTypes()
     if (!TruckTypeStore.list.length) {
       TruckTypeStore.find(i18n.locale)
     }
@@ -286,14 +258,12 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
   }
 
   const onRefresh = () => {
-    // CarriersJobStore.setDefaultOfList()
     CarriersJobStore.find(AdvanceSearchStore.filter)
     PAGE = 0
   }
 
   return (
     <View style={{ flex: 1 }}>
-      {/* <ModalLoading size={'large'} color={color.primary} visible={loading} /> */}
       <View>
         <SearchBar
           {...{
@@ -311,7 +281,14 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
       <View style={BUTTON_CONTAINER}>
         <AdvanceSearchTab
           mainText={translate('searchJobScreen.fullSearch')}
-          subButtons={subButtons.length ? subButtons : []}
+          subButtons={
+            AdvanceSearchStore.menu?.filter(({ type }) => type === 'productType')[0]?.subMenu?.map((subMenu, index) => {
+              if (index === 1 || index === 2) {
+                return { ...subMenu, label: subMenu.name }
+              }
+              return null
+            })?.filter(Boolean) || []
+          }
           onPress={(id) => onPress(id)}
           onAdvanceSeach={onAdvanceSeach}
           count={filterLength}

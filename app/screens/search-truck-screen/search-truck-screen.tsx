@@ -1,17 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite';
 import { Dimensions, FlatList, ImageStyle, TextStyle, View, ViewStyle, SafeAreaView, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
-import { AdvanceSearchTab, Text, SearchItemTruck, Icon, ModalLoading, EmptyListMessage } from '../../components';
+import { AdvanceSearchTab, Text, SearchItemTruck, EmptyListMessage } from '../../components';
 import { color, spacing, images as imageComponent } from '../../theme';
 import { useFocusEffect, useNavigation, useIsFocused } from '@react-navigation/native';
 import { translate } from '../../i18n';
 import { provinceListEn, provinceListTh, regionListEn, regionListTh } from '../../screens/home-screen/manage-vehicle/datasource'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import Feather from 'react-native-vector-icons/Feather'
 import { Modal, ModalContent } from 'react-native-modals';
 import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
-// import SearchTruckTypeStore from '../../store/truck-type-store/search-truck-type-store'
 import ShipperTruckStore from '../../store/shipper-truck-store/shipper-truck-store'
 import AdvanceSearchTruckStore from '../../store/shipper-truck-store/advance-search-store'
 import i18n from 'i18n-js'
@@ -22,11 +20,6 @@ import { MapTruckImageName } from '../../utils/map-truck-image-name';
 import { GetTruckType } from '../../utils/get-truck-type';
 
 const width = Dimensions.get('window').width
-interface SubButtonSearch {
-  id?: number
-  label?: string
-  isChecked?: boolean
-}
 
 const ROW_ALIGN_CENTER: ViewStyle = {
   flexDirection: 'row',
@@ -187,26 +180,9 @@ const Item = (data) => {
   )
 }
 
-const SUB_BUTTON: Array<SubButtonSearch> = [
-  {
-    id: 1,
-    label: 'รถ 4 ล้อ',
-    isChecked: false,
-  },
-  {
-    id: 2,
-    label: 'รถ 6 ล้อ',
-    isChecked: false,
-  },
-]
-
 const initialState = {
-  subButtons: SUB_BUTTON,
-  data: [],
-  listLength: 0,
   zones: [],
   filterLength: 0,
-  // loading: true,
 }
 
 const sortArray = (list) => list.sort((a, b) => (a.value > b.value) ? 1 : -1)
@@ -229,10 +205,10 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
   const navigation = useNavigation()
   const isFocused = useIsFocused()
 
-  const [{ subButtons, data, zones, filterLength, listLength }, setState] = useState(initialState)
+  const [{ zones, filterLength }, setState] = useState(initialState)
   const [visible, setVisible] = useState<boolean>(false)
-  const [loading, setLoading] = useState<boolean>(true)
   const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState<boolean>(true)
+  const [selectSearch, setSelectSearch] = useState({})
 
   useFocusEffect(
     useCallback(() => {
@@ -259,6 +235,9 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
     if (!TruckTypeStore.list.length) {
       TruckTypeStore.find()
     }
+    if (!AdvanceSearchStore.menu || !AdvanceSearchStore.menu.length) {
+      AdvanceSearchStore.mapMenu()
+    }
     ShipperTruckStore.find()
     let newZone = null
     if (i18n.locale === 'th') {
@@ -282,17 +261,24 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
   }, [])
 
   useEffect(() => {
+    if (Object.keys(selectSearch)) {
+      const { truckType } = JSON.parse(JSON.stringify(AdvanceSearchTruckStore.filter))
+      const length = [
+        ...[...truckType || []],
+      ].filter(Boolean).length
+
+      setState(prevState => ({
+        ...prevState,
+        filterLength: length,
+      }))
+    }
+  }, [selectSearch])
+
+  useEffect(() => {
     setState(prevState => ({
       ...prevState,
       listLength: ShipperTruckStore.list.length,
     }))
-    // if (!ShipperTruckStore.loading && !data.length && ShipperTruckStore.list && ShipperTruckStore.list.length && !TruckTypeStore.loading) {
-    //   setState(prevState => ({
-    //     ...prevState,
-    //     data: ShipperTruckStore.list,
-    //   }))
-    //   setLoading(false)
-    // }
   }, [ShipperTruckStore.loading, TruckTypeStore.loading, ShipperTruckStore.list])
 
   useEffect(() => {
@@ -324,15 +310,30 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
   }
 
   const onPress = (id: number) => {
-    const newButtonSearch = subButtons.map(button => {
-      if (button.id !== id) return button
-      return { ...button, isChecked: !button.isChecked }
+    let idx = []
+    const newMenu = JSON.parse(JSON.stringify(AdvanceSearchStore.menu))
+    const indexMenu = newMenu.findIndex(({ type }) => type === 'truckType')
+    const indexSubmenu = newMenu[indexMenu]?.subMenu.findIndex(({ id: idx }) => idx === id)
+    const mainSelect = newMenu[indexMenu].subMenu[indexSubmenu]
+    const activeMenu = newMenu[indexMenu].subMenu[indexSubmenu].subMenu.map(data => {
+      idx.push(data.value)
+      return { ...data, isChecked: !selectSearch[id] }
     })
+    newMenu[indexMenu].subMenu.splice(indexSubmenu, 1, { ...mainSelect, isChecked: !mainSelect.isChecked, subMenu: activeMenu })
 
-    setState(prevState => ({
-      ...prevState,
-      subButtons: newButtonSearch,
-    }))
+    AdvanceSearchStore.mapMenu(newMenu)
+
+    let truckTypes = JSON.parse(JSON.stringify(AdvanceSearchStore.filter))?.truckType || []
+
+    if (newMenu[indexMenu].subMenu[indexSubmenu].isChecked) {
+      truckTypes = [...truckTypes, ...mainSelect.subMenu.map(menu => menu.value)]
+    } else {
+      truckTypes = truckTypes.filter(type => !idx.includes(type))
+    }
+
+    AdvanceSearchStore.setFilter({ ...AdvanceSearchStore.filter, truckType: truckTypes })
+
+    setSelectSearch({ ...selectSearch, [id]: !mainSelect.isChecked })
   }
 
   const onAdvanceSeach = () => {
@@ -509,7 +510,15 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
       <View style={BUTTON_CONTAINER}>
         <AdvanceSearchTab
           mainText={translate('searchJobScreen.fullSearch')}
-          subButtons={subButtons?.length ? subButtons : []}
+          // subButtons={subButtons?.length ? subButtons : []}
+          subButtons={
+            AdvanceSearchStore.menu?.filter(({ type }) => type === 'truckType')[0]?.subMenu?.map(subMenu => {
+              if (subMenu.id === 1 || subMenu.id === 2) {
+                return { ...subMenu, label: subMenu.name }
+              }
+              return null
+            })?.filter(Boolean) || []
+          }
           onPress={(id) => onPress(id)}
           onAdvanceSeach={onAdvanceSeach}
           count={filterLength}

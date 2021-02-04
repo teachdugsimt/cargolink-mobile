@@ -342,7 +342,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
           children={
             <View style={{ alignItems: 'center', flexDirection: 'row' }}>
               <MaterialCommunityIcons name={'download-circle-outline'} size={24} color={color.textWhite} style={{ paddingRight: spacing[2] }} />
-              <Text style={CALL_TEXT} tx={'common.bookAJob'} />
+              <Text style={CALL_TEXT} tx={'jobDetailScreen.bookATruck'} />
             </View>
           }
           onPress={confirmBookAJob}
