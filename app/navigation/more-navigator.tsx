@@ -8,7 +8,7 @@ import React from "react"
 
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import { Icon, Text, HeaderCenter, HeaderLeft, HeaderRight } from "../components"
-import { MoreScreen } from "../screens"
+import { MoreScreen, ReportScreen } from "../screens"
 import { color } from '../theme'
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -24,6 +24,7 @@ import { color } from '../theme'
  */
 export type PrimaryMoreParamList = {
   more: undefined
+  report: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -51,7 +52,14 @@ export function MoreNavigator() {
           headerCenter: () => <HeaderCenter tx={"moreScreen.moreMenu"} />,
         })}
       />
-      {/* <Stack.Screen name="detail" component={DetailScreen} /> */}
+      <Stack.Screen name="report" component={ReportScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"moreScreen.reportUser"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+          headerHideShadow: true,
+        })}
+      />
+
     </Stack.Navigator>
   )
 }

@@ -1,12 +1,12 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { Dimensions, ScrollView, TextStyle, View, ViewStyle, TouchableOpacity, LayoutChangeEvent, Linking, Platform, Alert, Image } from 'react-native'
-import { Button, ModalAlert, ModalLoading, PostingBy, Text } from '../../components'
-import { useNavigation, useRoute } from '@react-navigation/native'
+import { BookerItem, Button, ModalAlert, ModalLoading, PostingBy, Text } from '../../components'
+import { getFocusedRouteNameFromRoute, useNavigation, useRoute } from '@react-navigation/native'
 import { color, spacing, images } from '../../theme'
 import { translate } from '../../i18n'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import Ionicons from 'react-native-vector-icons/Ionicons'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import CarriersJobStore from '../../store/carriers-job-store/carriers-job-store'
 import { Modalize } from 'react-native-modalize';
@@ -22,6 +22,11 @@ import { useStores } from "../../models/root-store/root-store-context";
 import { ConverTimeFormat } from "../../utils/convert-time-format";
 import LottieView from 'lottie-react-native';
 import CarriersHistoryCallStore from '../../store/carriers-history-call-store/carriers-history-call-store'
+
+interface JobDetailProps {
+  booker?: Array<any>
+  showOwnerAccount?: boolean
+}
 
 const deviceWidht = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('window').height
@@ -160,6 +165,10 @@ const LINE: ViewStyle = {
   left: 15.5,
   borderLeftWidth: 1,
   borderLeftColor: color.disable,
+}
+const TOPIC: TextStyle = {
+  color: color.primary,
+  paddingBottom: spacing[2],
 }
 
 const DATA = { // [Mocking]
@@ -315,6 +324,11 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   // } = data
 
   const route = useRoute()
+
+  const {
+    showOwnerAccount = true,
+    booker = []
+  }: JobDetailProps = route?.params || {}
 
   const { versatileStore } = useStores()
 
@@ -502,7 +516,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                 key={`${index}-${!index ? 'yellow' : 'green'}`}
                 coordinate={{ latitude: +attr.lat, longitude: +attr.lng }}
               >
-                <Ionicons name={'location-sharp'} color={!index ? color.primary : color.success} size={48} />
+                <MaterialIcons name={'location-pin'} color={!index ? color.primary : color.success} size={48} />
                 <Callout style={{ width: deviceWidht - 80 }}>
                   <Text text={attr.name} />
                 </Callout>
@@ -518,9 +532,6 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           <View style={FLOAT_CONTAINER}>
             <View style={FLOAT_LINE} />
           </View>
-          {/* <View>
-            <Text tx={'jobDetailScreen.pickUpPoint'} style={{ ...TEXT_SMALL, color: color.line, }} />
-          </View> */}
           <PickUpPoint from={from} to={to} distances={CarriersJobStore.distances} containerStyle={{ overflow: 'hidden' }} />
 
           <View style={{ position: 'absolute', right: -spacing[5], top: -spacing[4] }}>
@@ -569,7 +580,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
           <View style={PRODUCT_ROOT}>
             <View>
-              <Text tx={'jobDetailScreen.jobDetail'} preset={'topic'} style={{ color: color.primary }} />
+              <Text tx={'jobDetailScreen.jobDetail'} preset={'topic'} style={TOPIC} />
             </View>
             <View style={PRODUCT_ROW}>
               <View style={ICON_BOX}>
@@ -594,12 +605,30 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
         </ScrollView>
 
-        <View style={ONWER_ROOT}>
-          <View style={ROW}>
-            <Text style={{ color: color.line }}>{translate('jobDetailScreen.postBy')}</Text>
-            <PostingBy {...DATA} onToggle={() => onPress()} />
+        {showOwnerAccount &&
+          <View style={ONWER_ROOT}>
+            <View style={ROW}>
+              <Text style={{ color: color.line }}>{translate('jobDetailScreen.postBy')}</Text>
+              <PostingBy {...DATA} onToggle={() => onPress()} />
+            </View>
           </View>
-        </View>
+        }
+
+        {booker.length > 0 && <View style={ONWER_ROOT}>
+          <Text tx={'myJobScreen.listOfBookingJob'} preset={'topic'} style={TOPIC} />
+          {booker.map((booker, index) => <BookerItem
+            key={index}
+            imageUrl={booker.image}
+            topic={booker.name}
+            detail={booker.date}
+            btnTxt={translate('myJobScreen.accept')}
+            containerStyle={{ paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.disable }}
+            topicStyle={{ fontSize: 14, paddingBottom: spacing[1] }}
+            detailStyle={{ color: color.line }}
+            btnStyle={{ paddingVertical: 2, paddingHorizontal: spacing[2] }}
+            btnTextStyle={{ fontSize: 12, paddingLeft: spacing[1] }}
+          />)}
+        </View>}
 
       </Modalize>
 

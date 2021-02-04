@@ -10,7 +10,7 @@ import ProfileStore from '../../store/profile-store/profile-store'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { MapTruckImageName } from '../../utils/map-truck-image-name'
 import { useStores } from "../../models/root-store/root-store-context";
-import { useFocusEffect, useNavigation } from "@react-navigation/native"
+import { useNavigation } from "@react-navigation/native"
 
 const { width, height } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -125,9 +125,12 @@ const EMPTY_VIEW: ViewStyle = { ...FULL, alignItems: 'center', justifyContent: '
 
 export const ProfileScreen = observer(function ProfileScreen() {
   // console.tron.log('hello rendering world')
+  const { tokenStore } = useStores()
   const navigation = useNavigation()
   const [menu1, setmenu1] = useState(true)
   const [menu2, setmenu2] = useState(false)
+  const [renderNewProfile, setrenderNewProfile] = useState(false)
+  const [profileState, setprofileState] = useState(null)
 
   useEffect(() => {
     navigation.setOptions({
@@ -141,9 +144,9 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
   useEffect(() => {
     let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
-    if (tmp_profile && Object.keys(tmp_profile).length) {
-      console.log("Profile screen => Profile data :: => ", tmp_profile)
-      console.log("Profile screen => Profile data :: => ", tmp_profile)
+    if (tmp_profile && tmp_profile != profileState) {
+      setprofileState(tmp_profile)
+      setrenderNewProfile(!renderNewProfile)
     }
   }, [ProfileStore.data])
 
@@ -167,7 +170,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
   useEffect(() => {
     navigation.setOptions({
       headerCenter: () => (
-        <HeaderCenter tx={"myJobScreen.myJob"} />
+        <HeaderCenter tx={"profileScreen.profile"} />
       ),
     });
   }, [lang])
@@ -259,6 +262,9 @@ export const ProfileScreen = observer(function ProfileScreen() {
     }
   }
 
+  const _renderTextProfile = (text) => {
+    return <Text preset="default" style={PADDING_LEFT_SMALL} tx={text ? '' : 'profileScreen.nophone'}>{text || ''}</Text>
+  }
 
   const _renderEmptyList = (s1, s2, s3, link) => {
     return <View style={EMPTY_VIEW}>
@@ -275,7 +281,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
     </View>
   }
 
-  const { fullName, phoneNumber } = JSON.parse(JSON.stringify(ProfileStore.data)) || {}
+  const { fullName, phoneNumber, avatar } = JSON.parse(JSON.stringify(ProfileStore.data)) || {}
   __DEV__ && console.tron.log("Profile data :: ", JSON.parse(JSON.stringify(ProfileStore.data)))
 
   const report_mock = [
@@ -310,20 +316,24 @@ export const ProfileScreen = observer(function ProfileScreen() {
     <View testID="ProfileScreen" style={FULL}>
       <View style={TOP_VIEW}>
         <View style={VIEW_PROFILE}>
-          {<Image source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/3/33/Reuni%C3%A3o_com_o_ator_norte-americano_Keanu_Reeves_%2846806576944%29_%28cropped%29.jpg' }} style={PROFILE_IMG} />}
+          {<Image source={avatar ? {
+            uri: avatar,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${tokenStore.token.accessToken}`
+            },
+          } : images.greyMock} style={PROFILE_IMG} />}
           <View style={VIEW_NAME_NAD_PHONE}>
 
             {<View style={ROW_LAYOUT}>
               <Ionicons name={"person-outline"} size={typography.mediumIcon} />
-              <Text preset={"default"} style={PADDING_LEFT_SMALL} tx={fullName ? '' : 'profileScreen.nophone'}>
-                {fullName || ""}
-              </Text>
+              {setrenderNewProfile ? _renderTextProfile(fullName) : _renderTextProfile(fullName)}
               {fullName && <Icon icon={'checkActive'} style={ICON_STYLE} />}
             </View>}
 
             {<View style={ROW_LAYOUT}>
               <Ionicons name={"call-outline"} size={typography.mediumIcon} />
-              <Text preset="default" style={PADDING_LEFT_SMALL} tx={phoneNumber ? '' : 'profileScreen.nophone'}>{phoneNumber || ''}</Text>
+              {setrenderNewProfile ? _renderTextProfile(phoneNumber) : _renderTextProfile(phoneNumber)}
             </View>}
 
           </View>

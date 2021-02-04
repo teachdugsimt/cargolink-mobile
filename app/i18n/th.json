@@ -204,7 +204,8 @@
     "inputMoreDetail": "กรอกข้อมูลที่จะทำให้เรารู้จักคุณมากยิ่งขึ้น",
     "nameLastName": "ชื่อ - นามสกุล",
     "phoneNumber": "เบอร์ติดต่อ",
-    "email": "อีเมล"
+    "email": "อีเมล",
+    "inputName": "กรุณาใส่ชื่อ - นามสกุล"
   },
   "storybook": {
     "placeholder": "แทนที่ข้อความ",
@@ -219,12 +220,16 @@
     "lineOfficialAccount": "Line Official Account",
     "callCenter": "Call Center",
     "moreMenu": "เมนูเพิ่มเติม",
-    "language": "ภาษา",
+    "language": "เปลี่ยนภาษา",
     "English": "EN",
     "Thai": "TH",
     "Japan": "JA",
     "problemReport": "ร้องเรียนผู้ใช้งาน",
-    "report": "ร้องเรียน"
+    "report": "ร้องเรียน",
+    "reportUser": "ร้องเรียนผู้ใช้งาน",
+    "explanText": "ระบบจะแสดงเฉพาะงานหรือผู้ใช้ที่คุณจองงานเข้ามาผ่านในแอปเท่านั้น หากเป็นงานที่คุณติดต่อกับเจ้าของโดยตรงแนะนำให้ติดต่อศูนย์บริการของเรา",
+    "reportTopic": "เลือกผู้ใช้หรืองานที่ต้องการร้องเรียน",
+    "moreDetail": "รายละเอียดเพิ่มเติม"
   },
   "jobDetailScreen": {
     "truckCount": "จำนวนรถบรรทุก",
@@ -271,7 +276,9 @@
     "addVehicleSuccess": "เพิ่มรถสำเร็จ",
     "editVehicleSuccess": "แก้ไขข้อมูลรถสำเร็จ",
     "pendingVehicleDetail": "เรากำลังตรวจสอบข้อมูล อีกไม่นานรถของ",
-    "pendingVehicleDetail2": "คุณก็จะสามารถรับงานได้แล้ว"
+    "pendingVehicleDetail2": "คุณก็จะสามารถรับงานได้แล้ว",
+    "editCar": "แก้ไขข้อมูลรถ",
+    "pendingWork": "งานรอตอบรับ"
   },
   "vehicleType": {
     "Others": "อื่นๆ",
@@ -371,6 +378,8 @@
     "workInProgress": "กำลังดำเนินการ",
     "workDone": "เสร็จสิ้น",
     "editJob": "แก้ไขข้อมูลงาน",
-    "bookerWaiting": "ผู้จองรอตอบรับ"
+    "bookerWaiting": "ผู้จองรอตอบรับ",
+    "accept": "ตอบรับ",
+    "listOfBookingJob": "ผู้ขอจองงานนี้"
   }
 }
