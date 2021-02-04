@@ -202,7 +202,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
   };
 
   const confirmBookAJob = () => {
-
+    navigation.navigate('myJobList')
   }
 
   useEffect(() => {
@@ -280,7 +280,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
             </View>
             <View style={DETAIL_BOX}>
               <Text text={`${translate('common.vehicleTypeField')} : ${GetTruckType(+truckType)?.name || translate('common.notSpecified')}`} style={TEXT} />
-              <Text text={`${translate('common.count')} : ${2} คัน`} style={TEXT} />
+              <Text text={`${translate('common.count')} : ${2} ${translate('jobDetailScreen.unit')}`} style={TEXT} />
               <Text text={`${translate('vehicleDetailScreen.carHaveDum')} : ${tipper ? translate('common.have') : translate('common.notHave')}`} style={TEXT} />
               <Text text={`${translate('truckDetailScreen.heighttOfTheCarStall')} : ${stallHeight || '-'} ${translate('common.M')}`} style={TEXT} />
             </View>
@@ -297,12 +297,10 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
             <Text style={{ color: color.line }}>{translate('jobDetailScreen.postBy')}</Text>
             <PostingBy {...{
               postBy: 'CargoLink',
-              isVerified: true,
-              isLike: true,
-              rating: '4.9',
-              ratingCount: '122',
-              isCrown: true,
-              isRecommened: true,
+              isVerified: false,
+              rating: '0',
+              ratingCount: '0',
+              isCrown: false,
               logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
             }} onToggle={() => navigation.navigate('shipperProfile')} />
           </View>
@@ -342,7 +340,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
           children={
             <View style={{ alignItems: 'center', flexDirection: 'row' }}>
               <MaterialCommunityIcons name={'download-circle-outline'} size={24} color={color.textWhite} style={{ paddingRight: spacing[2] }} />
-              <Text style={CALL_TEXT} tx={'common.bookAJob'} />
+              <Text style={CALL_TEXT} tx={'jobDetailScreen.bookATruck'} />
             </View>
           }
           onPress={confirmBookAJob}

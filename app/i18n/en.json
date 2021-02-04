@@ -260,7 +260,8 @@
     "truckType": "Truck type",
     "unit": "",
     "callbackForOwner": "When the owner presses to accept, there will be a response.",
-    "bookedSuccess": "You have successfully booked the job."
+    "bookedSuccess": "You have successfully booked the job.",
+    "bookATruck": "Book a truck"
   },
   "acceptPolicyScreen": {
     "termAndCondition": "Term and condition",
@@ -393,5 +394,9 @@
     "bookerWaiting": "The reservation awaits acceptance",
     "accept": "Accept",
     "listOfBookingJob": "Applicants for booking this job"
+  },
+  "selectJobScreen": {
+    "selectBooking": "Select your event for this booking.",
+    "addNewJob": "Add new job"
   }
 }

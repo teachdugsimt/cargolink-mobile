@@ -15,7 +15,7 @@ import {
   UploadVehicleScreen, SuccessUpload,
   VehicleDetailScreen, CheckInformationScreen,
   ShipperProfileScreen, ReceivePointScreen, FeedbackScreen, SearchTruckScreen,
-  PostSuccessScreen, AdvanceSearchTruckScreen, TruckDetailScreen, CommentScreen
+  PostSuccessScreen, AdvanceSearchTruckScreen, TruckDetailScreen, SelectJobScreen, CommentScreen
 } from "../screens"
 import { translate } from "../i18n"
 /**
@@ -45,11 +45,12 @@ export type PrimaryHomeParamList = {
   shipperProfile: undefined
   receivePoint: undefined
   feedback: undefined
-  advanceSearchJob: undefined,
+  advanceSearchJob: undefined
   truckDetail: undefined,
   checkInformation: undefined
   postSuccess: undefined
   comment: undefined
+  myJobList: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -237,6 +238,14 @@ export function HomeNavigator() {
         component={TruckDetailScreen}
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"truckDetailScreen.truckDetail"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+      <Stack.Screen
+        name="myJobList"
+        component={SelectJobScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"myJobScreen.myJob"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
       />

@@ -261,7 +261,8 @@
     "truckType": "ประเภทรถ",
     "unit": "คัน",
     "callbackForOwner": "เมื่อเจ้าของงานกดตอบรับจะมีการติดต่อกลับ",
-    "bookedSuccess": "คุณจองงานสำเร็จ"
+    "bookedSuccess": "คุณจองงานสำเร็จ",
+    "bookATruck": "จองรถ"
   },
   "acceptPolicyScreen": {
     "termAndCondition": "ข้อกำหนดและเงื่อนไข",
@@ -394,5 +395,9 @@
     "bookerWaiting": "ผู้จองรอตอบรับ",
     "accept": "ตอบรับ",
     "listOfBookingJob": "ผู้ขอจองงานนี้"
+  },
+  "selectJobScreen": {
+    "selectBooking": "เลือกงานของคุณสำหรับการจองนี้",
+    "addNewJob": "เพิ่มงานใหม่"
   }
 }
