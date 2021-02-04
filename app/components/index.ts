@@ -36,6 +36,7 @@ export * from "./search-item/search-item"
 export * from "./search-item/search-item-truck"
 export * from "./search-map/search-map"
 export * from "./empty-list-message/empty-list-message"
+export * from "./booker-item/booker-item"
 export * from './normal-dropdown/normal-dropdown'
 export * from './modal-normal/modal-normal'
 export * from './book-list/book-list'

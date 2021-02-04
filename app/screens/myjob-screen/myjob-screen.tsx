@@ -7,6 +7,7 @@ import ShipperJobStore from '../../store/shipper-job-store/shipper-job-store'
 import CarriersJobStore from '../../store/carriers-job-store/carriers-job-store'
 import FavoriteJobStore from '../../store/carriers-job-store/favorite-job-store'
 import AdvanceSearchStore from '../../store/shipper-job-store/advance-search-store'
+import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
 import { useNavigation } from "@react-navigation/native"
 import { GetTruckType } from "../../utils/get-truck-type"
 import { translate } from "../../i18n"
@@ -44,7 +45,19 @@ const BTN_COLUMN: ViewStyle = {
   paddingVertical: spacing[2]
 }
 
-let PAGE = 0
+const bookerList = [{
+  image: 'https://img.cinemablend.com/filter:scale/quill/f/6/0/5/4/7/f60547eb6c012791e9a6e360989779224b947d31.jpg?mw=600',
+  name: 'Mr. John Wick',
+  date: 'จองเมื่อ 29/01/2564 11:11 น.'
+}, {
+  image: 'https://img.cinemablend.com/filter:scale/quill/f/6/0/5/4/7/f60547eb6c012791e9a6e360989779224b947d31.jpg?mw=600',
+  name: 'Mr. John Wick',
+  date: 'จองเมื่อ 30/01/2564 12:12 น.'
+}, {
+  image: 'https://img.cinemablend.com/filter:scale/quill/f/6/0/5/4/7/f60547eb6c012791e9a6e360989779224b947d31.jpg?mw=600',
+  name: 'Mr. John Wick',
+  date: 'จองเมื่อ 31/01/2564 13:13 น.'
+}]
 
 const Item = (data) => {
   const {
@@ -65,7 +78,10 @@ const Item = (data) => {
 
   const onPress = () => {
     CarriersJobStore.findOne(id)
-    navigation.navigate('myJobDetail')
+    navigation.navigate('myJobDetail', {
+      showOwnerAccount: false,
+      booker: bookerList
+    })
   }
 
   const onToggleHeart = (data) => {
@@ -85,7 +101,7 @@ const Item = (data) => {
     </View>
   )
 
-  const typeOfTruck = GetTruckType(+truckType)?.name || translate('common.notSpecified')
+  const typeOfTruck = GetTruckType(+truckType)?.name || `${translate('jobDetailScreen.truckType')} : ${translate('common.notSpecified')}`
 
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
@@ -125,6 +141,8 @@ const Item = (data) => {
   )
 }
 
+let PAGE = 0
+
 export const MyJobScreen = observer(function MyJobScreen() {
   const navigation = useNavigation()
   const [isFirstHeaderSelected, setIsFirstHeaderSelected] = useState<boolean>(true)
@@ -136,6 +154,9 @@ export const MyJobScreen = observer(function MyJobScreen() {
   const [listLength, setListLength] = useState<number>(0)
 
   useEffect(() => {
+    if (!TruckTypeStore.list.length) {
+      TruckTypeStore.find()
+    }
     ShipperJobStore.find()
     return () => {
       ShipperJobStore.setDefaultOfList()
