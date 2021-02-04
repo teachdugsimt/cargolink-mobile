@@ -479,7 +479,7 @@ export const UploadVehicleScreen = observer((props) => {
       carrierId: editStatus == "add" ? tokenStore.profile.id : MyVehicleStore.data.id,
       truckType: data['vehicle-type'],
 
-      // loadingWeight: 2.5,
+      loadingWeight: 1,
       // stallHeight: Number(parseFloat(data['vehicle-height']).toFixed(1)),
       stallHeight: data['vehicle-height'].toUpperCase(),
 
@@ -768,7 +768,7 @@ export const UploadVehicleScreen = observer((props) => {
       initForm = 1
       if (editStatus && editStatus == "edit") {
         console.log("Initt data :: => ", initData)
-        if (initData && initData.registrationNumber.length) {
+        if (initData && initData.registrationNumber && initData.registrationNumber.length) {
           initData.registrationNumber.map((e, i) => {
             addTextInput(i)
           })

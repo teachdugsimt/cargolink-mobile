@@ -12,6 +12,9 @@ export interface VehicleItemProps {
   /**
    * string of status on top right
    */
+
+  onEdit?: (value: any) => void
+  
   status?: string
   /**
    * name of image

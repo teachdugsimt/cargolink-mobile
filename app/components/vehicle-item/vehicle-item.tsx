@@ -47,11 +47,18 @@ const INFORMATION_DATE: TextStyle = {
 }
 const IMAGE: ImageStyle = {
   position: "absolute",
-  height: 85,
+  height: 90,
   right: spacing[2],
-  bottom: spacing[1],
+  bottom: -10,
   aspectRatio: 4 / 2,
 }
+
+const BOTTOM_LIST_VIEW: ViewStyle = { width: '100%', height: 50, paddingTop: 10 }
+const BOTTOM_SUB_LIST_VIEW: ViewStyle = { flex: 1, borderTopColor: color.line, borderTopWidth: 1 }
+const FLEX_ROW_BOTTOM: ViewStyle = { ...ROW, flex: 1 }
+const TEXT_LEFT_BOTTOM: TextStyle = { flex: 1, borderRightColor: color.line, borderRightWidth: 1, justifyContent: 'center', alignItems: 'center' }
+const TEXT_RIGHT_BOTTOM: TextStyle = { flex: 1, justifyContent: 'center', alignItems: 'center' }
+const PRIMARY_COLOR: TextStyle = { color: color.primary }
 
 export function VehicleItem(props: VehicleItemProps) {
   const {
@@ -66,30 +73,47 @@ export function VehicleItem(props: VehicleItemProps) {
     statusStyle,
     imageStyle,
     onPress,
+    onEdit,
     ...rest
   } = props
 
   return (
-    <TouchableOpacity testID={"list-vehicle"} {...rest} onPress={onPress || null} style={{ height: 150, flex: 1 }}>
+    <TouchableOpacity testID={"list-vehicle"} {...rest} onPress={onPress || null} style={{ height: 200 }}>
       <View style={{ ...CONTAINER, ...containerStyle }}>
-        <View style={{ ...ROW, justifyContent: "space-between" }}>
-          <Text style={{ ...topicStyle }} text={topic} preset={'topicExtra'} numberOfLines={1} />
-          <Text style={{ ...STATUS_TEXT, ...statusStyle }} text={status} />
+        <View style={{ flex: 1 }}>
+          <View style={{ ...ROW, justifyContent: "space-between" }}>
+            <Text style={{ ...topicStyle }} text={topic} preset={'topicExtra'} numberOfLines={1} />
+            <Text style={{ ...STATUS_TEXT, ...statusStyle }} text={status} />
+          </View>
+          <View style={ROW}>
+            <Text
+              style={{ ...SUB_TOPIC, ...subTopicStyle }}
+              text={subTopic}
+            />
+          </View>
+          <View style={{ ...ROW, flex: 3, alignItems: "flex-end" }}>
+            <Text
+              style={INFORMATION_DATE}
+              text={updatedDate}
+            />
+          </View>
+          <ImageBackground source={images[MapTruckImageName(image)]} resizeMode={'contain'} style={{ ...IMAGE, ...imageStyle }} />
+
         </View>
-        <View style={ROW}>
-          <Text
-            style={{ ...SUB_TOPIC, ...subTopicStyle }}
-            text={subTopic}
-          />
+
+        <View style={BOTTOM_LIST_VIEW}>
+          <View style={BOTTOM_SUB_LIST_VIEW}>
+            <View style={FLEX_ROW_BOTTOM}>
+              <TouchableOpacity style={TEXT_LEFT_BOTTOM} onPress={onEdit || null}>
+                <Text style={PRIMARY_COLOR} tx={"myVehicleScreen.editCar"} />
+              </TouchableOpacity>
+              <TouchableOpacity style={TEXT_RIGHT_BOTTOM} onPress={onPress|| null}>
+                <Text style={PRIMARY_COLOR} tx={"myVehicleScreen.pendingWork"} />
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
-        <View style={{ ...ROW, flex: 3, alignItems: "flex-end" }}>
-          <Text
-            style={INFORMATION_DATE}
-            text={updatedDate}
-          />
-        </View>
-        {/* <ImageBackground source={images[`truck${image}`]} resizeMode={'contain'} style={{ ...IMAGE, ...imageStyle }} /> */}
-        <ImageBackground source={images[MapTruckImageName(image)]} resizeMode={'contain'} style={{ ...IMAGE, ...imageStyle }} />
+
       </View>
     </TouchableOpacity>
   )
