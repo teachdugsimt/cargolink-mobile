@@ -11,7 +11,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { Modal, ModalContent } from 'react-native-modals';
 import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
 import ShipperTruckStore from '../../store/shipper-truck-store/shipper-truck-store'
-import AdvanceSearchTruckStore from '../../store/shipper-truck-store/advance-search-store'
 import i18n from 'i18n-js'
 import { GetRegion } from "../../utils/get-region";
 import AdvanceSearchStore from '../../store/shipper-truck-store/advance-search-store';
@@ -212,7 +211,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      const { truckType } = JSON.parse(JSON.stringify(AdvanceSearchTruckStore.filter))
+      const { truckType } = JSON.parse(JSON.stringify(AdvanceSearchStore.filter))
       const length = [
         ...[...truckType || []],
       ].filter(Boolean).length
@@ -262,7 +261,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
 
   useEffect(() => {
     if (Object.keys(selectSearch)) {
-      const { truckType } = JSON.parse(JSON.stringify(AdvanceSearchTruckStore.filter))
+      const { truckType } = JSON.parse(JSON.stringify(AdvanceSearchStore.filter))
       const length = [
         ...[...truckType || []],
       ].filter(Boolean).length
@@ -271,6 +270,8 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
         ...prevState,
         filterLength: length,
       }))
+
+      ShipperTruckStore.find(AdvanceSearchStore.filter)
     }
   }, [selectSearch])
 

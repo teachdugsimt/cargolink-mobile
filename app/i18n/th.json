@@ -382,5 +382,9 @@
     "bookerWaiting": "ผู้จองรอตอบรับ",
     "accept": "ตอบรับ",
     "listOfBookingJob": "ผู้ขอจองงานนี้"
+  },
+  "selectJobScreen": {
+    "selectBooking": "เลือกงานของคุณสำหรับการจองนี้",
+    "addNewJob": "เพิ่มงานใหม่"
   }
 }

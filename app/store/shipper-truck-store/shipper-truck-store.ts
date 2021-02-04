@@ -34,6 +34,13 @@ const ShipperJobFull = types.model({
     right: types.maybeNull(types.string),
   })),
   truckTypeName: types.maybeNull(types.string),
+  owner: types.maybeNull(types.model({
+    id: types.maybeNull(types.number),
+    companyName: types.maybeNull(types.string),
+    fullName: types.maybeNull(types.string),
+    mobileNo: types.maybeNull(types.string),
+    email: types.maybeNull(types.string)
+  })),
 })
 
 const ShipperTruckStore = types
@@ -144,6 +151,13 @@ const ShipperTruckStore = types
             province: null
           }
         ]),
+        owner: {
+          id: 0,
+          companyName: null,
+          fullName: null,
+          mobileNo: '',
+          email: null
+        },
         tipper: false,
         isLiked: false,
         truckTypeName: null,
