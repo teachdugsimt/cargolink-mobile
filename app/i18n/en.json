@@ -54,6 +54,17 @@
     "new": "New",
     "done": "Done"
   },
+  "commentScreen":{
+    "yourComment": "Your Comment",
+    "canDealInApp": "Can you agree to work through our app ?",
+    "canPassApp": "Right from the app ",
+    "notPassApp":"Not from the app",
+    "howMuchDeal": "Can you tell us how much you agree on the price?",
+    "rateUs": "Help rate your satisfaction with this service in",
+    "star": "Level 1 - 5 stars",
+    "moreSuggest": "More advice",
+    "fastFindCar": "Find the car quickly"
+  },
   "bottomTab": {
     "home": "Home",
     "myJob": "My Job",

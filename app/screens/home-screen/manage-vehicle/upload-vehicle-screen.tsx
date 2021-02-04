@@ -8,7 +8,7 @@ import { useForm, Controller } from "react-hook-form";
 import { observer } from "mobx-react-lite"
 import {
   Text, TextInputTheme, Button, UploadVehicle, RoundedButton, HeaderCenter, MultiSelector, ModalLoading,
-  ModalTruckType
+  ModalTruckType, NormalDropdown
 } from "../../../components"
 import { spacing, color, typography, images } from "../../../theme"
 
@@ -150,7 +150,7 @@ const LAYOUT_REGISTRATION_FIELD: TextStyle = {
 const ADD_DROPDOWN_REGION: ViewStyle = {
   alignSelf: 'flex-end',
   paddingLeft: 10,
-  justifyContent: 'center', height: 50
+  justifyContent: 'center', height: 40,
   // paddingTop: Platform.OS == "ios" ? 8 : 12
 }
 
@@ -969,18 +969,9 @@ export const UploadVehicleScreen = observer((props) => {
             <Text tx={"uploadVehicleScreen.selectVehicleType"} style={{ ...TITLE_TOPIC, ...MARGIN_TOP_BIG }} />
             <View style={WRAP_DROPDOWN}>
 
-
-
-
-              {/* <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN, { alignItems: 'center' }]} onPress={() => setvisible0(true)}>
-                {!dropdown_vehicle_type && <Text style={{ padding: Platform.OS == "android" ? 12.5 : 0 }} tx={"postJobScreen.pleaseSelectVehicleType"} />}
-                {dropdown_vehicle_type && versatileStore.list && <Text style={{ padding: Platform.OS == "android" ? 12.5 : 0 }}>{JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == dropdown_vehicle_type).name}</Text>}
-                <Ionicons name="chevron-down" size={20} style={[PADDING_CHEVRON, { paddingTop: Platform.OS == "android" ? 2.5 : 0 }]} />
-              </TouchableOpacity> */}
-
               <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN, { alignItems: 'center' }]} onPress={() => setvisible0(true)}>
-                {!dropdown_vehicle_type && <Text style={{ padding: Platform.OS == "android" ? 12.5 : 0 }} tx={"postJobScreen.pleaseSelectVehicleType"} />}
-                {dropdown_vehicle_type && versatileStore.list && <Text style={{ padding: Platform.OS == "android" ? 12.5 : 0 }}>{JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == dropdown_vehicle_type).name}</Text>}
+                {!dropdown_vehicle_type && <Text style={{ padding: Platform.OS == "android" ? 9 : 0 }} tx={"postJobScreen.pleaseSelectVehicleType"} />}
+                {dropdown_vehicle_type && versatileStore.list && <Text style={{ padding: Platform.OS == "android" ? 9 : 0 }}>{JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == dropdown_vehicle_type).name}</Text>}
                 <Ionicons name="chevron-down" size={20} style={[PADDING_CHEVRON, { paddingTop: Platform.OS == "android" ? 2.5 : 0 }]} />
               </TouchableOpacity>
 
@@ -1015,40 +1006,25 @@ export const UploadVehicleScreen = observer((props) => {
               />
             </View>
             <Text tx={"uploadVehicleScreen.heightVehicle"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
-            <View style={{ ...WRAP_DROPDOWN }} key={'view-dropdown-vehicle-height'}>
-              <Controller
-                control={control}
-                render={({ onChange, onBlur, value }) => (
-                  <>
-                    <RNPickerSelect
-                      value={value}
-                      onValueChange={(value) => onChange(value)}
-                      items={dropdown_vehicle_type ? _getStallHeightList(dropdown_vehicle_type) : default_stallHeightList}
-                      placeholder={{
-                        label: translate("uploadVehicleScreen.heightVehicleSelect"),
-                        color: color.black
-                      }}
-                      useNativeAndroidPickerStyle={false}
-                      style={{
-                        inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
-                        iconContainer: Platform.OS == "ios" ? {} : { ...DROPDOWN_ICON_CONTAINER },
-                        placeholder: { color: color.black }
-                      }}
-                      Icon={() => {
-                        return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
-                      }}
-                    />
-                  </>
-                  // <TextInputTheme
-                  //   testID={"upload-vehicle-height"}
-                  //   inputStyle={{ ...CONTENT_TEXT, ...MARGIN_TOP_BIG }} value={value} onChangeText={(text) => onChange(text)} />
-                )}
-                key={'text-input-vehicle-height'}
-                name={"vehicle-height"}
-                rules={{ pattern: /^[a-zA-Z]+$/ }}
-                defaultValue=""
-              />
-            </View>
+            {/* <View style={{ ...WRAP_DROPDOWN }} key={'view-dropdown-vehicle-height'}> */}
+            <Controller
+              control={control}
+              render={({ onChange, onBlur, value }) => (
+                <>
+                  <NormalDropdown
+                    value={value}
+                    onValueChange={onChange}
+                    items={dropdown_vehicle_type ? _getStallHeightList(dropdown_vehicle_type) : default_stallHeightList}
+                    placeholder={"uploadVehicleScreen.heightVehicleSelect"}
+                  />
+                </>
+              )}
+              key={'text-input-vehicle-height'}
+              name={"vehicle-height"}
+              rules={{ pattern: /^[a-zA-Z]+$/ }}
+              defaultValue=""
+            />
+            {/* </View> */}
             {errors['vehicle-height'] && <Text style={{ color: color.red }} tx={"common.acceptOnlyCharacter"} />}
           </View>
         </View>
@@ -1158,16 +1134,16 @@ export const UploadVehicleScreen = observer((props) => {
 
             {/* ********************** DROPDOWN ZONE ********************** */}
             {ddRegion.length && AddressStore.region && AddressStore.region.length ? ddRegion.map((e, index) => {
-              return <View key={'view-dropdown-region-' + index} style={WRAPPER_REGION_DROPDOWN}>
-                <View style={{ ...WRAP_DROPDOWN, marginLeft: 5 }} key={'view-dropdown-province-' + index}>
+              return <View key={'view-dropdown-region-' + index} style={[WRAPPER_REGION_DROPDOWN, { height: 40 }]}>
+                <View style={{ ...FULL, marginLeft: 5 }} key={'view-dropdown-province-' + index}>
                   <Controller
                     control={control}
                     render={({ onChange, onBlur, value }) => {
                       return (
-                        <RNPickerSelect
+                        <NormalDropdown
                           value={value}
-                          onValueChange={(value) => {
-                            onChange(value)
+                          onValueChange={(val) => {
+                            onChange(val)
 
                             console.log("Select Value Drpodown Regions : ", value)
 
@@ -1186,21 +1162,8 @@ export const UploadVehicleScreen = observer((props) => {
                             setrenderProvince(!renderProvince)
 
                           }}
-                          // items={i18n.locale == "en" ? regionListEn : regionListTh}
                           items={JSON.parse(JSON.stringify(AddressStore.region))}
-                          placeholder={{
-                            label: translate("uploadVehicleScreen.region"),
-                            color: color.black
-                          }}
-                          useNativeAndroidPickerStyle={false}
-                          style={{
-                            inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
-                            iconContainer: Platform.OS == "ios" ? {} : { ...DROPDOWN_ICON_CONTAINER },
-                            placeholder: { color: color.black }
-                          }}
-                          Icon={() => {
-                            return <Ionicons size={20} color={color.black} name={"chevron-down"} />;
-                          }}
+                          placeholder={"uploadVehicleScreen.heightVehicleSelect"}
                         />
                       )
                     }}
@@ -1231,16 +1194,14 @@ export const UploadVehicleScreen = observer((props) => {
 
 
                       <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN, Platform.OS == "ios" ? {} : {
-                        alignItems: 'center', height: 50
+                        alignItems: 'center', height: 40
                       }]} onPress={async () => {
-                        __DEV__ && console.tron.log("REGION :: ", index)
                         await AddressStore.getProvince({ regionId: valRegion[index] }, i18n.locale)
                         _updateVisibleModal(true, index)
-                        // setvisible(true)
                       }}>
                         {!formControllerValue["controller-province-" + index] && <Text style={CONTENT_TEXT} tx={"uploadVehicleScreen.pleaseSelectProvince"} />}
 
-                        {!!formControllerValue["controller-province-" + index] && <Text style={CONTENT_TEXT} >{
+                        {!!formControllerValue["controller-province-" + index] && <Text style={[CONTENT_TEXT, { paddingLeft: Platform.OS == "android" ? 5: 0 }]} >{
                           i18n.locale == 'th' ?
                             provinceListTh.find(e => e.value == formControllerValue["controller-province-" + index]).label :
                             provinceListEn.find(e => e.value == formControllerValue["controller-province-" + index]).label

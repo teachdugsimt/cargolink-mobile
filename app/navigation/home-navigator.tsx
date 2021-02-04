@@ -15,7 +15,7 @@ import {
   UploadVehicleScreen, SuccessUpload,
   VehicleDetailScreen, CheckInformationScreen,
   ShipperProfileScreen, ReceivePointScreen, FeedbackScreen, SearchTruckScreen,
-  PostSuccessScreen, AdvanceSearchTruckScreen, TruckDetailScreen
+  PostSuccessScreen, AdvanceSearchTruckScreen, TruckDetailScreen, CommentScreen
 } from "../screens"
 import { translate } from "../i18n"
 /**
@@ -49,6 +49,7 @@ export type PrimaryHomeParamList = {
   truckDetail: undefined,
   checkInformation: undefined
   postSuccess: undefined
+  comment: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -103,7 +104,14 @@ export function HomeNavigator() {
         }}
       />
       <Stack.Screen name="detail" component={DetailScreen} />
-
+      <Stack.Screen name="comment" component={CommentScreen}
+        options={({ navigation, route }) => ({
+          // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
+          headerCenter: () => <HeaderCenter tx={"commentScreen.yourComment"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+          headerHideShadow: true
+        })}
+      />
 
 
 
