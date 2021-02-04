@@ -74,6 +74,12 @@ export const MyVehicle = observer(function MyVehicle() {
     }
   }, [MyVehicleStore.list])
 
+  const _gotoEditScreen = async (id) => {
+    await MyVehicleStore.findOneRequest(id)
+    StatusStore.setStatusScreen('edit')
+    navigation.navigate("uploadVehicle")
+  }
+
   const renderItem = ({ item }) => {
     const statusText = item.approveStatus === 'Approve' ? translate('myVehicleScreen.verified') : translate('myVehicleScreen.pending')
     const statusColor = item.approveStatus === 'Approve' ? color.success : color.primary
@@ -93,6 +99,7 @@ export const MyVehicle = observer(function MyVehicle() {
         imageStyle={{ marginBottom: spacing[1] }}
         statusStyle={{ color: statusColor }}
         onPress={() => onPress(item.id)}
+        onEdit={() => _gotoEditScreen(item.id)}
       />
     )
   }

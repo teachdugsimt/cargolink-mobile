@@ -277,7 +277,9 @@
     "pendingVehicleDetail": "We are reviewing the information. Soon ",
     "pendingVehicleDetail2": "your car will be able to accept the job.",
     "editCar": "edit",
-    "pendingWork": "pending work"
+    "pendingWork": "pending work",
+    "userRequestQueue": "user requested to book this car",
+    "queueTime": "book time"
   },
   "vehicleType": {
     "Others": "Others",

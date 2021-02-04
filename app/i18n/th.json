@@ -278,7 +278,9 @@
     "pendingVehicleDetail": "เรากำลังตรวจสอบข้อมูล อีกไม่นานรถของ",
     "pendingVehicleDetail2": "คุณก็จะสามารถรับงานได้แล้ว",
     "editCar": "แก้ไขข้อมูลรถ",
-    "pendingWork": "งานรอตอบรับ"
+    "pendingWork": "งานรอตอบรับ",
+    "userRequestQueue": "ผู้ขอจองรถคันนี้",
+    "queueTime": "จองเมื่อ"
   },
   "vehicleType": {
     "Others": "อื่นๆ",

@@ -60,7 +60,6 @@ const MyVehicleStore = types
           tmp = parseResponse
         } else tmp = _.unionBy(self.list, parseResponse, 'id')
 
-        __DEV__ && console.tron.log("Parse list response >>>> :: ", tmp)
         self.list = tmp
         self.loading = false
       } catch (error) {

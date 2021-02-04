@@ -61,7 +61,7 @@ const CreateVehicleStore = types.model({
     loading: types.boolean,
     error: types.maybeNull(types.string),
 
-    patchMyVehicle: types.maybeNull(types.number),
+    patchMyVehicle: types.maybeNull(types.string),
     loadingPatchMyVehicle: types.boolean,
     errorPatchMyVehicle: types.maybeNull(types.string)
 
@@ -96,7 +96,9 @@ const CreateVehicleStore = types.model({
         try {
             const response = yield apiMyVehicle.patchMyVehicle(params)
             console.log("Response call api patch my vehicle : : ", response)
-            self.patchMyVehicle = response.data || {}
+            if(response.ok) self.patchMyVehicle = "success"
+            else self.patchMyVehicle = null
+            
             self.loadingPatchMyVehicle = false
         } catch (error) {
             // ... including try/catch error handling
