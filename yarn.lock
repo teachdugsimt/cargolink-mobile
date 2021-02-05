@@ -11920,6 +11920,11 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
+react-native-call-detection@^1.9.0:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/react-native-call-detection/-/react-native-call-detection-1.9.0.tgz#2477690158768e01842f0bd5c2544e4a3247e616"
+  integrity sha512-UaF/I1cp2UnIbdCh3UmrFIA4an8El1gIBM6uIbM+OYCrfe5btIj7DYtjqtNoeKOtF7fap32m37v6lafQ9SZHpg==
+
 react-native-collapsible-list@^2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/react-native-collapsible-list/-/react-native-collapsible-list-2.2.2.tgz#b3b65d9b03896e954c6566d05c477b29c21f8a8a"
