@@ -9,7 +9,10 @@
   },
   "scripts": {
     "android": "react-native run-android",
+    "android:shake": "$ANDROID_HOME/platform-tools/adb devices | grep '\\t' | awk '{print $1}' | sed 's/\\s//g' | xargs -I {} $ANDROID_HOME/platform-tools/adb -s {} shell input keyevent 82",
+    "android:beta": "fastlane android beta",
     "ios": "react-native run-ios",
+    "ios:beta": "fastlane ios beta",
     "start": "react-native start",
     "test": "jest --coverage",
     "lint": "eslint index.js app storybook test --fix --ext .js,.ts,.tsx",
@@ -43,9 +46,7 @@
     "prepare": "npm-run-all patch hack:*",
     "storybook": "start-storybook -p 9001 -c ./storybook",
     "adb": "adb reverse tcp:9090 tcp:9090 && adb reverse tcp:3000 tcp:3000 && adb reverse tcp:9001 tcp:9001 && adb reverse tcp:8081 tcp:8081",
-    "test:CI": "set CI=true && react-scripts test --env=jsdom --testResultsProcessor=./node_modules/jest-html-reporter",
-    "ios:beta": "fastlane ios beta",
-    "android:beta": "fastlane android beta"
+    "test:CI": "set CI=true && react-scripts test --env=jsdom --testResultsProcessor=./node_modules/jest-html-reporter"
   },
   "dependencies": {
     "@mapbox/polyline": "^1.1.1",
@@ -97,6 +98,7 @@
     "react-native-multiple-select": "^0.5.6",
     "react-native-picker-select": "^8.0.4",
     "react-native-pie": "^1.1.2",
+    "react-native-ratings": "^7.3.0",
     "react-native-reanimated": "^1.13.2",
     "react-native-safe-area-context": "0.7.3",
     "react-native-safe-area-view": "1.1.1",
