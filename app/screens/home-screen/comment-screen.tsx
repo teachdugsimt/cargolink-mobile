@@ -1,10 +1,12 @@
 import React from "react"
-import { View, ViewStyle, TextStyle, TouchableOpacity, TextInput } from "react-native"
+import { View, ViewStyle, TextStyle, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
-import { TextInputTheme, Text, RoundedButton } from "../../components"
-import { typography, color } from "../../theme"
+import { TextInputTheme, Text, RoundedButton, RatingStart } from "../../components"
+import { typography, color, spacing } from "../../theme"
 import { useForm, Controller } from "react-hook-form";
+// import { Rating, AirbnbRating } from 'react-native-ratings';
+import { ScrollView } from "react-native-gesture-handler"
 // const bowserLogo = require("./bowser.png")
 
 const FULL: ViewStyle = { flex: 1 }
@@ -29,17 +31,20 @@ const CONTENT_TEXT: TextStyle = {
   color: color.black,
   fontSize: typography.title
 }
+
 const MARGIN_TOP_5: ViewStyle = { marginTop: 5 }
+const MARGIN_TOP_10: ViewStyle = { marginTop: 10 }
 const MARGIN_TOP_20: ViewStyle = { marginTop: 20 }
+const MARGIN_TOP_40: ViewStyle = { marginTop: 40 }
 const VIEW_TEXT_INPUT2: ViewStyle = { marginHorizontal: 20, width: '100%' }
 const TEXT_INPUT: ViewStyle = { height: 80, width: '90%', borderWidth: 1, borderRadius: 2.5, borderColor: color.line, padding: 10 }
 const WRAPPER_BUTTON2: ViewStyle = { flexDirection: 'row', justifyContent: 'space-evenly', width: '90%' }
 
 const TOP_VIEW_2: ViewStyle = { backgroundColor: color.textWhite, }
-const ROUND_BUTTON_CONTAINER: ViewStyle = { backgroundColor: color.primary, borderColor: color.transparent }
+const ROUND_BUTTON_CONTAINER: ViewStyle = { backgroundColor: color.success, borderColor: color.transparent }
 const ROUND_BUTTON_TEXT: TextStyle = { color: color.textWhite }
 const WRAPPER_TOP: ViewStyle = { padding: 10 }
-
+const RATE_STAR: ViewStyle = { marginHorizontal: 20 }
 
 export const CommentScreen = observer(function CommentScreen() {
   const { control, handleSubmit, errors } = useForm({
@@ -52,84 +57,104 @@ export const CommentScreen = observer(function CommentScreen() {
     </TouchableOpacity>
   }
   let formControllerValue = control.getValues()
+  __DEV__ && console.tron.log("Form in render :: ", formControllerValue)
 
   return (
     <View testID="CommentScreen" style={FULL}>
-      <View style={{ flex: 1, backgroundColor: color.textWhite }}>
-        <View style={[CENTER, MARGIN_TOP_20]}>
-          <Text tx={"commentScreen.canDealInApp"} />
+      <ScrollView style={FULL}>
+        <View style={{ flex: 1, backgroundColor: color.textWhite }}>
+          <View style={[CENTER, MARGIN_TOP_40]}>
+            <Text tx={"commentScreen.canDealInApp"} />
+          </View>
+
+          <View style={[CENTER, MARGIN_TOP_20]}>
+            <View style={WRAPPER_BUTTON}>
+              {_renderButton("commentScreen.canPassApp", "primary")}
+              {_renderButton("commentScreen.notPassApp", "line")}
+            </View>
+          </View>
+
+          <View style={[CENTER, MARGIN_TOP_20]}>
+            <Text tx={"commentScreen.howMuchDeal"} />
+          </View>
+
+          <View style={[CENTER, MARGIN_TOP_10]}>
+            <View style={VIEW_TEXT_INPUT}>
+              <Controller
+                control={control}
+                render={({ onChange, onBlur, value }) => (
+                  <TextInputTheme
+                    testID={"deal-price"}
+                    keyboardType="numeric"
+                    inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                )}
+                key={'text-input-deal-price'}
+                name={"deal-price"}
+                rules={{ pattern: /^[0-9]+$/ }}
+                defaultValue=""
+              />
+            </View>
+          </View>
+
+          <View style={[CENTER, MARGIN_TOP_10]}>
+            <Text tx={"commentScreen.rateUs"} />
+            <Text tx={"commentScreen.star"} />
+            <View style={[FULL, MARGIN_TOP_10]}>
+              <RatingStart
+                size={36}
+                colorActive={color.primary}
+                colorInActive={color.line}
+                countIcon={5}
+                isHorizontal={true}
+                space={spacing[1]}
+                onToggle={(count) => console.log(count)}
+              />
+            </View>
+          </View>
+
+
+          <KeyboardAvoidingView behavior={Platform.OS == "ios" ? 'padding' : 'padding'} keyboardVerticalOffset={Platform.OS == "ios" ? 100 : 20} style={{ flex: 1 }}>
+            <View style={[CENTER, MARGIN_TOP_20]}>
+              <Text tx={"commentScreen.moreSuggest"} />
+              <View style={[VIEW_TEXT_INPUT2, MARGIN_TOP_20, { alignItems: 'center' }]}>
+                <Controller
+                  control={control}
+                  render={({ onChange, onBlur, value }) => {
+                    return (<TextInput
+                      multiline={true}
+                      clearButtonMode="while-editing"
+                      style={TEXT_INPUT}
+                      onChangeText={(text) => onChange(text)}
+                      value={value}
+                    />)
+                  }}
+                  key={'controller-dropdown-detail'}
+                  name={"controller-detail"}
+                  defaultValue=""
+                />
+              </View>
+            </View>
+          </KeyboardAvoidingView>
+
+
+          <View style={CENTER}>
+            <View style={WRAPPER_BUTTON2}>
+              {_renderButton("commentScreen.fastFindCar", "primary")}
+              {_renderButton("commentScreen.fastFindCar", "line")}
+              {_renderButton("commentScreen.fastFindCar", "line")}
+            </View>
+          </View>
+
+
         </View>
 
-        <View style={CENTER}>
-          <View style={WRAPPER_BUTTON}>
-            {_renderButton("commentScreen.canPassApp", "primary")}
-            {_renderButton("commentScreen.notPassApp", "line")}
+        <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_5 }}>
+          <View style={WRAPPER_TOP}>
+            <RoundedButton onPress={() => console.log("Press")} text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
           </View>
         </View>
 
-        <View style={CENTER}>
-          <Text tx={"commentScreen.howMuchDeal"} />
-        </View>
-
-        <View style={CENTER}>
-          <View style={VIEW_TEXT_INPUT}>
-            <Controller
-              control={control}
-              render={({ onChange, onBlur, value }) => (
-                <TextInputTheme
-                  testID={"deal-price"}
-                  keyboardType="numeric"
-                  inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
-              )}
-              key={'text-input-deal-price'}
-              name={"deal-price"}
-              rules={{ pattern: /^[0-9]+$/ }}
-              defaultValue=""
-            />
-          </View>
-        </View>
-
-        <View style={CENTER}>
-          <Text tx={"commentScreen.rateUs"} />
-          <Text tx={"commentScreen.star"} />
-        </View>
-
-        <View style={CENTER}>
-          <View style={[VIEW_TEXT_INPUT2, { alignItems: 'center' }]}>
-            <Controller
-              control={control}
-              render={({ onChange, onBlur, value }) => {
-                return (<TextInput
-                  multiline={true}
-                  clearButtonMode="while-editing"
-                  style={TEXT_INPUT}
-                  onChangeText={(text) => onChange(text)}
-                  value={value}
-                />)
-              }}
-              key={'controller-dropdown-detail'}
-              name={"controller-detail"}
-              defaultValue=""
-            />
-          </View>
-        </View>
-
-        <View style={CENTER}>
-          <View style={WRAPPER_BUTTON2}>
-            {_renderButton("commentScreen.fastFindCar", "primary")}
-            {_renderButton("commentScreen.fastFindCar", "line")}
-            {_renderButton("commentScreen.fastFindCar", "line")}
-          </View>
-        </View>
-
-
-      </View>
-
-      <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_5 }}>
-        <View style={WRAPPER_TOP}>
-          <RoundedButton onPress={() => console.log("Press")} text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
-        </View>
-      </View>
+      </ScrollView>
     </View>
   )
 })

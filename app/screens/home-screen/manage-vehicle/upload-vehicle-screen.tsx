@@ -853,8 +853,8 @@ export const UploadVehicleScreen = observer((props) => {
 
     if (slotTruck) {
       let tmpTruckType = slotTruck.name.replace(/\s+/g, '').toLowerCase();
-      if (tmpTruckType.includes("trailer") || tmpTruckType.includes("เทรเลอร์") || tmpTruckType.includes("18ล้อพื้นเรียบ")
-        || tmpTruckType.includes("หัวลาก")) {
+      if (tmpTruckType.includes("trailer") || tmpTruckType.includes("เทรเลอร์") || tmpTruckType.includes("18ล้อ")
+        || tmpTruckType.includes("หัวลาก") || tmpTruckType.includes("รถพ่วง")) {
         let lowTrailer = " (1.50 - 1.80 m)"
         let mediumTrailer = " (1.80 - 2.00 m)"
         let heightTrailer = " (2.20 - 2.50 m)"
@@ -1163,7 +1163,7 @@ export const UploadVehicleScreen = observer((props) => {
 
                           }}
                           items={JSON.parse(JSON.stringify(AddressStore.region))}
-                          placeholder={"uploadVehicleScreen.heightVehicleSelect"}
+                          placeholder={"uploadVehicleScreen.pleaseSelectRegion"}
                         />
                       )
                     }}
