@@ -73,7 +73,7 @@ export function PostingBy(props: PostingByProps) {
           </View>
         </View>
         <View style={LOGO_ROOT}>
-          <Image source={{ uri: logo }} style={LOGO} resizeMode={'contain'} />
+          {logo ? <Image source={{ uri: logo }} style={LOGO} resizeMode={'contain'} /> : <View style={{ ...LOGO, backgroundColor: color.disable }} />}
         </View>
       </View>
     </TouchableOpacity>

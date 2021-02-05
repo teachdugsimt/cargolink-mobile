@@ -168,7 +168,7 @@ export const MyJobScreen = observer(function MyJobScreen() {
   const onScrollList = () => {
     console.log('onScrollList')
     if (!onEndReachedCalledDuringMomentum
-      // && ShipperJobStore.list.length >= 10
+      && ShipperJobStore.list.length >= 10
       && !ShipperJobStore.loading
       // && ShipperJobStore.previousListLength !== listLength
     ) {
@@ -180,12 +180,7 @@ export const MyJobScreen = observer(function MyJobScreen() {
   }
 
   const onRefresh = () => {
-    setLoading(true)
-    // if (!isActivitySwitch) { // job
-    //     FavoriteJobStore.find();
-    // } else {
-    //     FavoriteTruckStore.find()
-    // }
+    ShipperJobStore.find()
   }
 
   const { versatileStore } = useStores()

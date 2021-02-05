@@ -2,6 +2,7 @@ import { types, flow, cast } from "mobx-state-tree"
 import { ShipperTruckAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
 import FavoriteTruckStore from "./favorite-truck-store"
+import * as storage from "../../utils/storage"
 
 const shipperTruckApi = new ShipperTruckAPI()
 
@@ -43,6 +44,11 @@ const ShipperJobFull = types.model({
   })),
 })
 
+const isAutenticated = async () => {
+  const profile = await storage.load('root')
+  return !!profile.tokenStore.token.accessToken
+}
+
 const ShipperTruckStore = types
   .model({
     list: types.maybeNull(types.array(ShipperJob)),
@@ -61,27 +67,34 @@ const ShipperTruckStore = types
         const response = yield shipperTruckApi.find(filter)
         console.log("Response call api get shipper jobs : : ", response)
         if (response.kind === 'ok') {
-          yield FavoriteTruckStore.find()
+
           let arrMerge = []
           if (!filter.page) {
             arrMerge = [...response.data]
           } else {
             arrMerge = [...self.list, ...response.data]
           }
-          // let arrMerge = [...self.list, ...response.data] || []
-          const favoriteList = JSON.parse(JSON.stringify(FavoriteTruckStore.list))
 
-          if (favoriteList?.length) {
-            const result = yield Promise.all(arrMerge.map(attr => {
-              return {
-                ...attr,
-                isLiked: favoriteList.some(val => val.id === attr.id)
-              }
-            }))
-            self.list = JSON.parse(JSON.stringify(result))
-          } else {
+          if (!(yield isAutenticated())) {
             self.list = cast(arrMerge)
+          } else {
+            yield FavoriteTruckStore.find()
+
+            const favoriteList = JSON.parse(JSON.stringify(FavoriteTruckStore.list))
+
+            if (favoriteList?.length) {
+              const result = yield Promise.all(arrMerge.map(attr => {
+                return {
+                  ...attr,
+                  isLiked: favoriteList.some(val => val.id === attr.id)
+                }
+              }))
+              self.list = JSON.parse(JSON.stringify(result))
+            } else {
+              self.list = cast(arrMerge)
+            }
           }
+
           self.loading = false
         } else {
           self.loading = false
