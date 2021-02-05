@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { observer } from 'mobx-react-lite'
-import { Dimensions, ScrollView, TextStyle, View, ViewStyle, TouchableOpacity, LayoutChangeEvent, Linking, Platform, Alert, Image } from 'react-native'
+import { Dimensions, ScrollView, TextStyle, View, ViewStyle, TouchableOpacity, LayoutChangeEvent, Linking, Platform, Alert, Image, AppState } from 'react-native'
 import { BookerItem, Button, ModalAlert, ModalLoading, PostingBy, Text } from '../../components'
 import { getFocusedRouteNameFromRoute, useNavigation, useRoute } from '@react-navigation/native'
 import { color, spacing, images } from '../../theme'
@@ -22,6 +22,7 @@ import { useStores } from "../../models/root-store/root-store-context";
 import { ConverTimeFormat } from "../../utils/convert-time-format";
 import LottieView from 'lottie-react-native';
 import CarriersHistoryCallStore from '../../store/carriers-history-call-store/carriers-history-call-store'
+import CallDetectorManager from 'react-native-call-detection'
 
 interface JobDetailProps {
   booker?: Array<any>
@@ -287,6 +288,8 @@ const PickUpPoint = ({ to, from, distances, containerStyle = {} }) => {
   )
 }
 
+let callDetector = undefined
+
 export const JobDetailScreen = observer(function JobDetailScreen() {
 
   const navigation = useNavigation()
@@ -296,6 +299,9 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   const [liked, setLiked] = useState<boolean>(false)
   const [visibleModal, setVisibleModal] = useState<boolean>(false)
   const [isBokking, setIsBooking] = useState<boolean>(false)
+  const [appState, setAppState] = useState(AppState.currentState)
+  // const [callDetector, setCallDetector] = useState(null)
+  const [isCalling, setIsCalling] = useState<boolean>(false)
 
   const {
     id,
@@ -336,9 +342,11 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     if (!TruckTypeStore.list?.length) {
       TruckTypeStore.find()
     }
+    AppState.addEventListener('change', handleAppStateChange)
     return () => {
       CarriersJobStore.setDefaultOfData()
       CarriersJobStore.updateFavoriteInList(FavoriteJobStore.id, FavoriteJobStore.liked)
+      AppState.addEventListener('change', handleAppStateChange)
     }
   }, [])
 
@@ -348,6 +356,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     }
     return () => {
       CarriersJobStore.setDefaultOfData()
+      __DEV__ && console.tron.log('stopListenerTapped()')
     }
   }, [])
 
@@ -371,6 +380,15 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
       CarriersJobStore.getDirections(coordinates)
     }
   }, [CarriersJobStore.loading, CarriersJobStore.data])
+
+  const handleAppStateChange = (nextAppState) => {
+    console.log('appState', appState)
+    if (appState.match(/active|background/) && nextAppState === 'active') {
+      console.log('App has come to the foreground!')
+    }
+    // setAppState(nextAppState)
+    console.log('nextAppState', nextAppState)
+  }
 
   const onSelectedHeart = (id: string) => {
     FavoriteJobStore.keepLiked(id, !liked)
@@ -400,17 +418,68 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     // onCloseModal()
   }
 
-  const onCall = (id: string, phoneNumber: string) => {
-    callNumber(id, phoneNumber)
-    // route.name === 'jobDetail' ? navigation.navigate('feedback') : navigation.navigate('myFeedback')
-  }
+  // const onCall = (id: string, phoneNumber: string) => {
+  //   // callFriendTapped(phoneNumber)
+  //   // startListenerTapped()
+  //   callPhone(id, phoneNumber)
+  //   // route.name === 'jobDetail' ? navigation.navigate('feedback') : navigation.navigate('myFeedback')
+  // }
 
   const onAnimationFinish = () => {
     setIsBooking(false)
     onCloseModal()
   }
 
-  const callNumber = (jobId: string, phone: string) => {
+  const startListenerTapped = (jobId: string) => {
+    __DEV__ && console.tron.log('startListenerTapped')
+    callDetector = new CallDetectorManager((event, phoneNumber) => {
+      __DEV__ && console.tron.log('phoneNumber', phoneNumber)
+      if (event === 'Disconnected') {
+        __DEV__ && console.tron.log('Disconnected')
+        stopListenerTapped()
+        CarriersHistoryCallStore.add({ jobId })
+        setIsCalling(false)
+        route.name === 'jobDetail' ? navigation.navigate('feedback') : navigation.navigate('myFeedback')
+        // setTimeout(() => {
+        //   setIsCalling(false)
+        //   route.name === 'jobDetail' ? navigation.navigate('feedback') : navigation.navigate('myFeedback')
+        // }, 800)
+      }
+      else if (event === 'Connected') { //  for iOS
+        __DEV__ && console.tron.log('Connected')
+      }
+      else if (event === 'Incoming') {
+        __DEV__ && console.tron.log('Incoming')
+      }
+      else if (event === 'Dialing') { //  for iOS
+        __DEV__ && console.tron.log('Dialing')
+        setIsCalling(true)
+      }
+      else if (event === 'Offhook') { // for Android
+        __DEV__ && console.tron.log('Offhook')
+        setIsCalling(true)
+      }
+      else if (event === 'Missed') { // for Android
+        __DEV__ && console.tron.log('Missed')
+      }
+    },
+      false,
+      () => { },
+      {
+        title: 'Phone State Permission',
+        message: 'This app needs access to your phone state in order to react and/or to adapt to incoming calls.'
+      }
+    )
+
+    // setCallDetector(call)
+  }
+
+  const stopListenerTapped = () => {
+    __DEV__ && console.tron.log('stopListenerTapped')
+    callDetector && callDetector.dispose();
+  }
+
+  const onCall = (jobId: string, phone: string) => {
     let phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
     __DEV__ && console.tron.log('phoneNumber', phoneNumber)
     Linking.canOpenURL(phoneNumber)
@@ -420,9 +489,11 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           Alert.alert('Phone number is not available')
           return false;
         } else {
-          CarriersHistoryCallStore.add({ jobId })
-          return Linking.openURL(phoneNumber);
+          return startListenerTapped(jobId)
         }
+      })
+      .then(() => {
+        return Linking.openURL(phoneNumber);
       })
       .catch(err => __DEV__ && console.tron.log('err', err));
   };
@@ -492,7 +563,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
   return (
     <View style={CONTAINER}>
-      <ModalLoading size={'large'} color={color.primary} visible={CarriersJobStore.mapLoading || CarriersJobStore.loading} />
+      <ModalLoading size={'large'} color={color.primary} visible={!!(CarriersJobStore.mapLoading || CarriersJobStore.loading || isCalling)} />
       <View style={MAP_CONTAINER}>
         {from && !!from.lat && !!from.lng && !!CarriersJobStore.directions.length &&
           <MapView
@@ -554,12 +625,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         withHandle={true}
       // tapGestureEnabled={true}
       >
-        <ScrollView
-          onScroll={({ nativeEvent }) => {
-          }}
-          style={SCROLL_VIEW}
-          scrollEventThrottle={400}
-        >
+        <View style={SCROLL_VIEW}>
 
           <View style={TOP_ROOT}>
             <View>
@@ -603,7 +669,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             </View>
           </View>
 
-        </ScrollView>
+        </View>
 
         {showOwnerAccount &&
           <View style={ONWER_ROOT}>
@@ -642,7 +708,8 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
               <Text style={CALL_TEXT} tx={'jobDetailScreen.call'} />
             </View>
           }
-          onPress={() => onCall(id, owner.phoneNumber)}
+          onPress={() => onCall(id, owner.mobileNo)}
+        // onPress={() => callFriendTapped()}
         />
         <Button
           testID="book-a-job"

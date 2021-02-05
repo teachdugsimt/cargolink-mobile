@@ -3,6 +3,7 @@ import { CarriersJobAPI, GoogleMapAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
 import { decode } from "@mapbox/polyline";
 import FavoriteJobStore from "./favorite-job-store";
+import * as storage from "../../utils/storage"
 
 const apiCarriersJob = new CarriersJobAPI()
 const apiGoogleMap = new GoogleMapAPI()
@@ -57,6 +58,11 @@ const SummaryDistances = types.model({
   duration: types.optional(types.number, 0),
 })
 
+const isAutenticated = async () => {
+  const profile = await storage.load('root')
+  return !!profile.tokenStore.token.accessToken
+}
+
 const CarriersJobStore = types
   .model({
     list: types.maybeNull(types.array(types.maybeNull(CarriersJob))),
@@ -79,26 +85,31 @@ const CarriersJobStore = types
         const response = yield apiCarriersJob.find(filter)
         console.log("Response call api get shipper jobs : : ", response)
         if (response.kind === 'ok') {
-          yield FavoriteJobStore.find()
+
           let arrMerge = []
           if (!filter.page) {
             arrMerge = [...response.data]
           } else {
             arrMerge = [...self.list, ...response.data]
           }
-          // let arrMerge = [...self.list, ...response.data] || []
-          const favoriteList = JSON.parse(JSON.stringify(FavoriteJobStore.list))
 
-          if (favoriteList && favoriteList.length) {
-            const result = yield Promise.all(arrMerge.map(attr => {
-              return {
-                ...attr,
-                isLiked: favoriteList.some(val => val.id === attr.id)
-              }
-            }))
-            self.list = JSON.parse(JSON.stringify(result))
-          } else {
+          if (!(yield isAutenticated())) {
             self.list = cast(arrMerge)
+          } else {
+            yield FavoriteJobStore.find()
+            const favoriteList = JSON.parse(JSON.stringify(FavoriteJobStore.list))
+
+            if (favoriteList && favoriteList.length) {
+              const result = yield Promise.all(arrMerge.map(attr => {
+                return {
+                  ...attr,
+                  isLiked: favoriteList.some(val => val.id === attr.id)
+                }
+              }))
+              self.list = JSON.parse(JSON.stringify(result))
+            } else {
+              self.list = cast(arrMerge)
+            }
           }
           self.loading = false
         } else {

@@ -13,7 +13,6 @@ import AdvanceSearchStore from "../../store/carriers-job-store/advance-search-st
 // import TruckTypeStore from "../../store/my-vehicle-store/truck-type-store"
 import TruckTypeStore from "../../store/truck-type-store/truck-type-store"
 import { provinceListEn, provinceListTh } from '../../screens/home-screen/manage-vehicle/datasource'
-import Feather from 'react-native-vector-icons/Feather'
 import FavoriteJobStore from "../../store/carriers-job-store/favorite-job-store"
 import { MapTruckImageName } from '../../utils/map-truck-image-name';
 

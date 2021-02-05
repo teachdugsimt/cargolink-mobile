@@ -158,12 +158,12 @@ const Item = (data) => {
           truckType: `${translate('common.vehicleTypeField')} : ${GetTruckType(+truckType)?.name || translate('common.notSpecified')}`,
           // viewDetail,
           postBy: 'CargoLink',
-          isVerified: true,
+          isVerified: false,
           isLike: isLiked,
           backgroundImage: imageComponent[truckImage && truckImage !== 'greyMock' ? truckImage : ''],
           // rating,
           // ratingCount,
-          isCrown: true,
+          isCrown: false,
           logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
           // isRecommened,
           containerStyle: {
@@ -238,6 +238,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
       AdvanceSearchStore.mapMenu()
     }
     ShipperTruckStore.find()
+    console.log('ShipperTruckStore.find()')
     let newZone = null
     if (i18n.locale === 'th') {
       const ascZones = sortArray(regionListTh)
@@ -260,7 +261,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
   }, [])
 
   useEffect(() => {
-    if (Object.keys(selectSearch)) {
+    if (Object.keys(selectSearch).length) {
       const { truckType } = JSON.parse(JSON.stringify(AdvanceSearchStore.filter))
       const length = [
         ...[...truckType || []],
@@ -288,6 +289,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
       const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), zoneIds }
       AdvanceSearchStore.setFilter(advSearch)
       ShipperTruckStore.find(advSearch)
+      console.log('ShipperTruckStore.find(advSearch)')
       // ShipperTruckStore.setDefaultOfList()
       PAGE = 0
     }
@@ -306,6 +308,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
       PAGE += 1
       const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE }
       ShipperTruckStore.find(advSearch)
+      console.log('onScrollList ShipperTruckStore.find(advSearch)')
       setOnEndReachedCalledDuringMomentum(true)
     }
   }
