@@ -42,9 +42,8 @@ const ROW: ViewStyle = {
   flexDirection: "row",
 }
 const TOPIC: TextStyle = {
-  fontFamily: 'Kanit-Bold',
-  fontSize: 16,
   marginBottom: spacing[3],
+  color: color.primary
 }
 const IMAGES: ViewStyle = {
   flexDirection: "row",
@@ -305,7 +304,7 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
 
         <View style={[COLUMN, {}]}>
           <View>
-            <Text style={TOPIC} text={translate("myVehicleScreen.userRequestQueue")} />
+            <Text style={TOPIC} preset="topic" text={translate("myVehicleScreen.userRequestQueue")} />
           </View>
           <View>
             <FlatList

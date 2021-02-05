@@ -86,10 +86,15 @@ const ICON_PIN_YELLOW: ImageStyle = {
 const PADDING_RIGHT_SMALL: ViewStyle = { paddingRight: 5 }
 const PADDING_LEFT_SMALL: ViewStyle = { paddingLeft: 5 }
 const BUTTON_MAP: ViewStyle = { padding: 10, borderWidth: 1, borderRadius: 2.5, borderColor: color.line }
+const initField = [{
+  id: 1,
+  showDate: false,
+  showTime: false,
+}]
 
 export const ReceivePointScreen = observer(function ReceivePointScreen() {
   const navigation = useNavigation()
-  const [fieldShipping, setfieldShipping] = useState([])
+  const [fieldShipping, setfieldShipping] = useState(initField)
 
   const [rerender, setrerender] = useState(false)
   const [rerenderTime, setrerenderTime] = useState(false)
@@ -125,7 +130,8 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
   }
 
   useEffect(() => {
-    _addFieldInputShipping()
+    // _addFieldInputShipping()
+    setswipe(!swipe)
   }, [])
 
   const addDays = (date, days) => {

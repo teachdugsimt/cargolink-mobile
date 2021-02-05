@@ -141,9 +141,9 @@ export const HomeScreen = observer((props) => {
           onPressRight={() => console.log("confirm right")}
         /> */}
 
-        <TouchableOpacity onPress={() => navigation.navigate("comment")}>
+        {/* <TouchableOpacity onPress={() => navigation.navigate("comment")}>
           <Text>Click Me!!</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
 
       </View>
