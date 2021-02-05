@@ -374,6 +374,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                   render={({ onChange, onBlur, value }) => (
                     <TextInputTheme
                       testID={"receive-tel-no"}
+                      keyboardType="numeric"
                       inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
                   )}
                   key={'text-input-receive-tel-no'}
@@ -518,6 +519,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                     render={({ onChange, onBlur, value }) => (
                       <TextInputTheme
                         testID={"shipping-tel-no-" + e.id}
+                        keyboardType="numeric"
                         inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
                     )}
                     key={'text-input-shipping-tel-no-' + e.id}
