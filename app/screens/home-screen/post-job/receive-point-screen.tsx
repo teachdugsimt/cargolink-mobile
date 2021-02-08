@@ -113,8 +113,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
     let tmp = object
     Object.keys(object).forEach(key => {
       if (key.includes('-date') || key.includes("-time")) {
-          tmp[key] = new Date(object[key])
-          // tmp[key] = new Date()
+        tmp[key] = new Date(object[key])
       }
     })
     return tmp
@@ -141,6 +140,16 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
   useEffect(() => {
     // _addFieldInputShipping()
     setswipe(!swipe)
+    let status_action = JSON.parse(JSON.stringify(StatusStore.status))
+    let data_post2 = JSON.parse(JSON.stringify(PostJobStore.postjob2))
+    if (status_action && status_action == "edit") {
+      if (data_post2 && data_post2 != null && data_post2['shipping-information'] && data_post2['shipping-information'].length > 0) {
+        data_post2['shipping-information'].map((e, i) => {
+          _addFieldInputShipping()
+        })
+      }
+    }
+
   }, [])
 
   const addDays = (date, days) => {

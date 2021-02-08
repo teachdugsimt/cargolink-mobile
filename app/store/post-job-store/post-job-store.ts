@@ -45,7 +45,7 @@ const PostJobStore = types.model({
 
   loading: types.maybeNull(types.boolean),
   error: types.maybeNull(types.string),
-  data_postjob: types.maybeNull(types.number),
+  data_postjob: types.maybeNull(types.string),
 
   job_id: types.maybeNull(types.string),
 })
@@ -67,7 +67,7 @@ const PostJobStore = types.model({
         __DEV__ && console.tron.log("Response call create post job : : ", response)
         console.log("Response call create post job : : ", response)
         if (response.ok) {
-          self.data_postjob = response.data || {}
+          self.data_postjob = response.data || "success"
           self.loading = false
         } else {
           self.loading = false
@@ -98,7 +98,7 @@ const PostJobStore = types.model({
         __DEV__ && console.tron.log("Response call update post job : : ", response)
         console.log("Response call update post job : : ", response)
         if (response.ok) {
-          self.data_postjob = response.data || {}
+          self.data_postjob = response.data || "success"
           self.loading = false
         } else {
           self.loading = false
@@ -122,6 +122,7 @@ const PostJobStore = types.model({
 
     clearDataPostjob() {
       self.data_postjob = null
+      self.job_id = null
       self.error = null
       self.postjob1 = null
       self.postjob2 = null
