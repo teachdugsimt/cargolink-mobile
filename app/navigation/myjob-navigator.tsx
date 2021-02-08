@@ -90,6 +90,7 @@ export function MyJobNavigator() {
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"feedbackScreen.yourOpinion"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+          headerHideShadow: true
         })}
       />
 

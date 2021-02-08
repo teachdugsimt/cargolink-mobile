@@ -113,7 +113,8 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
     let tmp = object
     Object.keys(object).forEach(key => {
       if (key.includes('-date') || key.includes("-time")) {
-        tmp[key] = new Date(object[key])
+          // tmp[key] = new Date(object[key])
+          tmp[key] = new Date()
       }
     })
     return tmp
@@ -196,11 +197,11 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
     })
 
     PostJobStore.setPostJob(2, final)
-    
+
     let status_action = JSON.parse(JSON.stringify(StatusStore.status))
     if (status_action == "add")
       navigation.navigate("checkInformation")
-    else navigation.navigate("MyJob", { screen: "receivePoint" })
+    else navigation.navigate("MyJob", { screen: "checkInformation" })
   }
 
   const _addFieldInputShipping = () => {

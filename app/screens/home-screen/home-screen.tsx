@@ -64,10 +64,10 @@ export const HomeScreen = observer((props) => {
     versatileStore.find()
     versatileStore.findProductType()
 
-    let d1 = { "vehicle-type": 8, "car-num": "2", "item-type": 8, "item-name": "เครื่องจักรสำหรับบรรทุกรถ", "item-weight": "4300" }
-    let d2 = { "receive-region": { "latitude": 13.7884902, "longitude": 100.6079443, "latitudeDelta": 0.005878748388420618, "longitudeDelta": 0.004999972879886627 }, "receive-location": "กรุงเทพมหานคร", "receive-date": "2021-02-08T15:33:00:000Z", "receive-time": "2021-02-08T15:33:00:000Z", "receive-name": "Onelink Space", "receive-tel-no": "0998999988", "shipping-information": [{ "shipping-address": "ชลบุรี", "shipping-date": "2021-02-10T11:00:00:000Z", "shipping-time": "2021-02-10T11:00:00:000Z", "shipping-name": "หมู่บ้านบางแสนวิลล์ ตำบล ห้วยกะปิ อำเภอเมืองชลบุรี ชลบุรี", "shipping-tel-no": "0899388403", "shipping-region": { "latitude": 13.2773405, "longitude": 100.9410782, "latitudeDelta": 0.0058863476810167015, "longitudeDelta": 0.005000643432154561 } }, { "shipping-address": "จันทบุรี", "shipping-date": "2021-02-10T17:20:00:000Z", "shipping-time": "2021-02-10T17:20:00:000Z", "shipping-name": "ศูนย์ศึกษาธรรมชาติป่าชายเลนอ่าวคุ้งกระเบน", "shipping-tel-no": "0990999811", "shipping-region": { "latitude": 12.6004546, "longitude": 101.9276771, "latitudeDelta": 0.0058863476810167015, "longitudeDelta": 0.005000643432154561 } }] }
-    PostJobStore.setPostJob(1, d1)
-    PostJobStore.setPostJob(2, d2)
+    // let d1 = { "vehicle-type": 8, "car-num": "2", "item-type": 8, "item-name": "เครื่องจักรสำหรับบรรทุกรถ", "item-weight": "4300" }
+    // let d2 = { "receive-region": { "latitude": 13.7884902, "longitude": 100.6079443, "latitudeDelta": 0.005878748388420618, "longitudeDelta": 0.004999972879886627 }, "receive-location": "กรุงเทพมหานคร", "receive-date": "2021-02-08T15:33:00:000Z", "receive-time": "2021-02-08T15:33:00:000Z", "receive-name": "Onelink Space", "receive-tel-no": "0998999988", "shipping-information": [{ "shipping-address": "ชลบุรี", "shipping-date": "2021-02-10T11:00:00:000Z", "shipping-time": "2021-02-10T11:00:00:000Z", "shipping-name": "หมู่บ้านบางแสนวิลล์ ตำบล ห้วยกะปิ อำเภอเมืองชลบุรี ชลบุรี", "shipping-tel-no": "0899388403", "shipping-region": { "latitude": 13.2773405, "longitude": 100.9410782, "latitudeDelta": 0.0058863476810167015, "longitudeDelta": 0.005000643432154561 } }, { "shipping-address": "จันทบุรี", "shipping-date": "2021-02-10T17:20:00:000Z", "shipping-time": "2021-02-10T17:20:00:000Z", "shipping-name": "ศูนย์ศึกษาธรรมชาติป่าชายเลนอ่าวคุ้งกระเบน", "shipping-tel-no": "0990999811", "shipping-region": { "latitude": 12.6004546, "longitude": 101.9276771, "latitudeDelta": 0.0058863476810167015, "longitudeDelta": 0.005000643432154561 } }] }
+    // PostJobStore.setPostJob(1, d1)
+    // PostJobStore.setPostJob(2, d2)
 
     console.log("TOKEN STORE :: => ", JSON.parse(JSON.stringify(tokenStore.token)))
   }, [])
@@ -118,10 +118,10 @@ export const HomeScreen = observer((props) => {
       title: "homeScreen.shippers",
       data: [{
         id: 3, name: "homeScreen.postJob", onPressButton: () => {
-          // StatusStore.setStatusScreen('add')
-          StatusStore.setStatusScreen('edit')
-          // navigation.navigate("postjob")
-          navigation.navigate("MyJob", { screen: 'postjob' })
+          StatusStore.setStatusScreen('add')
+          // StatusStore.setStatusScreen('edit')
+          navigation.navigate("postjob")
+          // navigation.navigate("MyJob", { screen: 'postjob' })
         }, img: images.sheet1
       },
       { id: 4, name: "homeScreen.findCar", onPressButton: () => navigation.navigate("searchTruck"), img: images.word1 }]

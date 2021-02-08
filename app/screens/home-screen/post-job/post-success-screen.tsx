@@ -95,7 +95,12 @@ export const PostSuccessScreen = observer(function PostSuccessScreen() {
         </View>
 
         <View style={VIEW_BUTTON}>
-          <RoundedButton testID={"success-vehicle-detail"} onPress={() => navigation.navigate("home")} text={"common.ok"} containerStyle={BUTTON_CONTAINER} textStyle={TEXT_BUTTTON_STYLE} />
+          <RoundedButton testID={"success-vehicle-detail"} onPress={() => {
+            let status_action = JSON.parse(JSON.stringify(StatusStore.status))
+            if (status_action == "add")
+              navigation.navigate("home")
+            else navigation.navigate("MyJob", { screen: "myjob" })
+          }} text={"common.ok"} containerStyle={BUTTON_CONTAINER} textStyle={TEXT_BUTTTON_STYLE} />
         </View>
       </View>
     </View>
