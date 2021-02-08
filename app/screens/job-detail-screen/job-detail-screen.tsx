@@ -604,7 +604,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           //   y: scrollY
           // }
         }}
-        snapPoint={!showOwnerAccount ? null : 300}
+        // snapPoint={!showOwnerAccount ? null : 300}
         // HeaderComponent={}
         modalStyle={{
           flex: 1,

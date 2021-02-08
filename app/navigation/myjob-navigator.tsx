@@ -11,7 +11,8 @@ import { HeaderCenter, HeaderLeft } from "../components"
 import {
   FeedbackScreen, JobDetailScreen, MyJobScreen, ReceivePointScreen, PostJobScreen,
   CheckInformationScreen,
-  PostSuccessScreen
+  PostSuccessScreen,
+  ShipperProfileScreen
 } from "../screens"
 import { color } from "../theme"
 /**
@@ -34,6 +35,7 @@ export type PrimaryMyJobParamList = {
   postjob: undefined
   checkInformation: undefined
   postSuccess: undefined
+  bookerProfile: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -96,7 +98,6 @@ export function MyJobNavigator() {
 
       <Stack.Screen name="checkInformation" component={CheckInformationScreen}
         options={({ navigation, route }) => ({
-          // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
           headerCenter: () => <HeaderCenter tx={"postJobScreen.postjob"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
           headerHideShadow: true
@@ -104,10 +105,16 @@ export function MyJobNavigator() {
       />
       <Stack.Screen name="postSuccess" component={PostSuccessScreen}
         options={({ navigation, route }) => ({
-          // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
           headerCenter: () => <HeaderCenter tx={"postJobScreen.postjob"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
           headerHideShadow: true
+        })}
+      />
+
+      <Stack.Screen name="bookerProfile" component={ShipperProfileScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"feedbackScreen.yourOpinion"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
       />
 
