@@ -46,6 +46,8 @@ const PostJobStore = types.model({
   loading: types.maybeNull(types.boolean),
   error: types.maybeNull(types.string),
   data_postjob: types.maybeNull(types.number),
+
+  job_id: types.maybeNull(types.string),
 })
   .actions(self => ({
     setPostJob(params: number, data: any) {
@@ -92,7 +94,7 @@ const PostJobStore = types.model({
       self.loading = true
       try {
         // ... yield can be used in async/await style
-        const response = yield postjobAPI.updateJob(params)
+        const response = yield postjobAPI.updateJob(self.job_id, params)
         __DEV__ && console.tron.log("Response call update post job : : ", response)
         console.log("Response call update post job : : ", response)
         if (response.ok) {
@@ -126,6 +128,10 @@ const PostJobStore = types.model({
     },
     setError() {
       self.error = null
+    },
+
+    setJobId(param) {
+      self.job_id = param
     }
   }))
   .views((self) => ({
