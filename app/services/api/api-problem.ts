@@ -1,5 +1,7 @@
 import { ApiResponse } from "apisauce"
 
+import HandleTokenStore from '../../store/token-store/handle-token-store'
+
 export type GeneralApiProblem =
   /**
    * Times up.
@@ -58,17 +60,21 @@ export function getGeneralApiProblem(response: ApiResponse<any>): GeneralApiProb
     case "CLIENT_ERROR":
       switch (response.status) {
         case 401:
+          // HandleTokenStore.setResponseUnauthorize(response)
           return { kind: "unauthorized" }
         case 403:
           return { kind: "forbidden" }
         case 404:
           return { kind: "not-found" }
+        case 409:
+          // HandleTokenStore.setResponseUnauthorize(response)
+          return { kind: "unauthorized" }
         default:
           return { kind: "rejected" }
       }
     case "CANCEL_ERROR":
       return null
+    default:
+      return null
   }
-
-  return null
 }

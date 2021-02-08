@@ -28,29 +28,6 @@ export type RootParamList = {
 
 const Stack = createNativeStackNavigator<RootParamList>()
 
-// const RootStack = () => {
-//   const isSignin = true
-//   return (
-//     <>
-//       {isSignin == true ? <BottomNavigator /> : <Stack.Navigator
-//         screenOptions={{
-//           headerShown: false,
-//           gestureEnabled: true,
-//           stackPresentation: "modal",
-//         }}
-//       >
-//         <Stack.Screen
-//           name="primaryStack"
-//           component={PrimaryNavigator}
-//           options={{
-//             headerShown: false,
-//           }}
-//         />
-//       </Stack.Navigator>}
-//     </>
-//   )
-// }
-
 const RootStack = () => {
   return (
     <>

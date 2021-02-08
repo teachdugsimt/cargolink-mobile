@@ -39,7 +39,7 @@ export class AddressApi {
         // let to
         let to = await this.getToken()
             .then(val => {
-                return val.tokenStore.token.accessToken || ''
+                return val?.tokenStore?.token?.accessToken || ''
             })
 
 

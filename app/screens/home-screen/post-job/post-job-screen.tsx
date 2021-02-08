@@ -13,7 +13,7 @@ import { Modal, ModalContent } from 'react-native-modals';
 import { MapTruckImageName } from '../../../utils/map-truck-image-name'
 import { AlertForm } from '../../../utils/alert-form'
 import { useStores } from "../../../models/root-store/root-store-context";
-
+import StatusStore from '../../../store/post-job-store/job-status-store'
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width } = Dimensions.get("window")
@@ -110,15 +110,17 @@ const IMAGE_LIST: ImageStyle = {
 }
 
 export const PostJobScreen = observer(function PostJobScreen() {
-  const { versatileStore } = useStores()
+  const { versatileStore, tokenStore } = useStores()
   const navigation = useNavigation()
 
   const { control, handleSubmit, errors } = useForm({
-    // defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : MyVehicleStore.MappingData
+    defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : {}
   });
 
   useEffect(() => {
-    AdvanceSearchStore.getProductTypes()
+    let token = tokenStore?.token?.accessToken || null
+    if (!token) navigation.navigate("signin")
+    else AdvanceSearchStore.getProductTypes()
   }, [])
 
   const onSubmit = (data) => {

@@ -3,15 +3,13 @@ import { View, ViewStyle, TouchableOpacity, Image, ImageStyle, Dimensions, Platf
 import { useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
 import { images, color } from '../../theme'
-import { Header, Text, ModalNormal } from "../../components"
-import { spacing } from "../../theme"
 import { useStores } from "../../models/root-store/root-store-context";
 import { GridView } from '../../components/home-element/home-element'
-import i18n from 'i18n-js'
 import MyVehicleStore from "../../store/my-vehicle-store/my-vehicle-store"
 import TruckTypeStore from "../../store/truck-type-store/truck-type-store"
 import ProductTypeStore from "../../store/product-type-store/product-type-store"
-import date from 'date-and-time';
+import StatusStore from '../../store/post-job-store/job-status-store'
+
 // import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
 
 const { width, height } = Dimensions.get('window')
@@ -112,10 +110,20 @@ export const HomeScreen = observer((props) => {
     },
     {
       title: "homeScreen.shippers",
-      data: [{ id: 3, name: "homeScreen.postJob", onPressButton: () => navigation.navigate("postjob"), img: images.sheet1 },
+      data: [{
+        id: 3, name: "homeScreen.postJob", onPressButton: () => {
+          StatusStore.setStatusScreen('add')
+          navigation.navigate("postjob")
+        }, img: images.sheet1
+      },
       { id: 4, name: "homeScreen.findCar", onPressButton: () => navigation.navigate("searchTruck"), img: images.word1 }]
     }
   ]
+
+  __DEV__ && console.tron.log("List (render) home screen :: ", versatileStore.list)
+  __DEV__ && console.tron.log("List Group (render) home screen :: ", versatileStore.listGroup)
+
+
   return (
     <>
       <View testID="HomeScreen" style={ROOT_HOME}>
