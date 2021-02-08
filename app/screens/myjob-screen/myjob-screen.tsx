@@ -93,10 +93,10 @@ const Item = (data) => {
   const onEdit = () => {
     const jobInfoFirstTab = {
       "vehicle-type": +truckType,
-      "car-num": requiredTruckAmount,
+      "car-num": requiredTruckAmount.toString(),
       "item-type": productTypeId,
       "item-name": productName,
-      "item-weight": weight,
+      "item-weight": weight.toString(),
     }
 
     const shippings = to?.map(shipping => {
@@ -107,8 +107,8 @@ const Item = (data) => {
         "shipping-name": shipping?.contactName || '',
         "shipping-tel-no": shipping?.contactMobileNo || '',
         "shipping-region": {
-          "latitude": shipping?.lat || 0,
-          "longitude": shipping?.lng || 0,
+          "latitude": +shipping?.lat || 0,
+          "longitude": +shipping?.lng || 0,
           "latitudeDelta": 0.0058863476810167015,
           "longitudeDelta": 0.005000643432154561,
         }

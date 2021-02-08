@@ -284,6 +284,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   const [isBokking, setIsBooking] = useState<boolean>(false)
   const [isCalling, setIsCalling] = useState<boolean>(false)
   const [region, setRegion] = useState(null)
+  const [scrollY, setScrollY] = useState<number>(0)
 
   const {
     id,
@@ -322,6 +323,11 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     if (!TruckTypeStore.list?.length) {
       TruckTypeStore.find()
     }
+
+    if (!showOwnerAccount) {
+      modalizeRef.current?.open();
+    }
+
     return () => {
       CarriersJobStore.setDefaultOfData()
     }
@@ -465,6 +471,17 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     modalizeRef.current?.close()
   }
 
+  const visibleProfile = () => {
+    navigation.navigate('bookerProfile', {
+      isBooker: true
+    })
+  }
+
+  const onLayoutDetail = (e: LayoutChangeEvent) => {
+    const { height } = e.nativeEvent.layout
+    setScrollY(height)
+  }
+
   const RenderButtonAlert = () => {
     const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.line, backgroundColor: color.transparent }
     const btnConfirmStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.primary, backgroundColor: color.primary }
@@ -569,9 +586,9 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           <TouchableOpacity activeOpacity={1} onPress={onOpenModalize} onPressOut={onOpenModalize} style={CONTENT_SMALL}>
             <PickUpPoint from={from} to={to} distances={CarriersJobStore.distances} containerStyle={{ overflow: 'hidden' }} onPress={null} />
 
-            <View style={{ position: 'absolute', right: -spacing[5], top: -spacing[4] }}>
+            {/* <View style={{ position: 'absolute', right: -spacing[5], top: -spacing[4] }}>
               <SwipeUpArrows color={color.disable} />
-            </View>
+            </View> */}
 
           </TouchableOpacity>
         </View>
@@ -580,8 +597,14 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
       <Modalize
         ref={modalizeRef}
-        scrollViewProps={{ showsVerticalScrollIndicator: true }}
-        snapPoint={300}
+        scrollViewProps={{
+          showsVerticalScrollIndicator: true,
+          // contentOffset: {
+          //   x: 0,
+          //   y: scrollY
+          // }
+        }}
+        snapPoint={!showOwnerAccount ? null : 300}
         // HeaderComponent={}
         modalStyle={{
           flex: 1,
@@ -590,7 +613,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         withHandle={true}
       // tapGestureEnabled={true}
       >
-        <View style={SCROLL_VIEW}>
+        <View style={SCROLL_VIEW} onLayout={(e) => onLayoutDetail(e)}>
 
           <View style={TOP_ROOT}>
             <View>
@@ -664,12 +687,13 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             detailStyle={{ color: color.line }}
             btnStyle={{ paddingVertical: 2, paddingHorizontal: spacing[2] }}
             btnTextStyle={{ fontSize: 12, paddingLeft: spacing[1] }}
+            onToggle={() => visibleProfile()}
           />)}
         </View>}
 
       </Modalize>
 
-      <View style={BOTTOM_ROOT}>
+      {showOwnerAccount && (<View style={BOTTOM_ROOT}>
         <Button
           testID="call-with-owner"
           style={[BTN_STYLE, { backgroundColor: color.line }]}
@@ -692,7 +716,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           }
           onPress={confirmBookAJob}
         />
-      </View>
+      </View>)}
 
       <ModalAlert {...modalProps} />
 

@@ -8,7 +8,7 @@ import React from "react"
 
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import { HeaderCenter, HeaderLeft } from "../components"
-import { FeedbackScreen, JobDetailScreen, MyJobScreen, PostJobScreen } from "../screens"
+import { FeedbackScreen, JobDetailScreen, MyJobScreen, PostJobScreen, ShipperProfileScreen } from "../screens"
 import { color } from "../theme"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -27,6 +27,7 @@ export type PrimaryMyJobParamList = {
   myJobDetail: undefined
   myFeedback: undefined
   myJobEdit: undefined
+  bookerProfile: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -72,6 +73,13 @@ export function MyJobNavigator() {
       />
 
       <Stack.Screen name="myJobEdit" component={PostJobScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"feedbackScreen.yourOpinion"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+
+      <Stack.Screen name="bookerProfile" component={ShipperProfileScreen}
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"feedbackScreen.yourOpinion"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
