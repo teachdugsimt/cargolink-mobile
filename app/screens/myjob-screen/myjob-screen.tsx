@@ -63,8 +63,8 @@ const bookerList = [{
 const dateFormat = (date: string) => {
   if (!date) return ''
   const newDate = DateAndTime.parse(date, 'DD-MM-YYYY HH:mm')
-  const dateFormat = DateAndTime.format(newDate, 'YYYY-MM-DDTHH:mm:ss:SSS')
-  return dateFormat + 'Z'
+  const dateFormat = DateAndTime.format(newDate, 'YYYY-MM-DDTHH:mm:ss')
+  return dateFormat
 }
 
 const Item = (data) => {
@@ -136,7 +136,7 @@ const Item = (data) => {
     PostJobStore.setPostJob(1, jobInfoFirstTab)
     PostJobStore.setPostJob(2, jobInfoSecondTab)
 
-    navigation.navigate('myJobEdit')
+    navigation.navigate('MyJob', { screen: 'postjob' })
   }
 
   const RenderBottom = () => (

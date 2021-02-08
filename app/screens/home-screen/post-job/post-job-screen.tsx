@@ -129,7 +129,10 @@ export const PostJobScreen = observer(function PostJobScreen() {
     if (!data['vehicle-type']) { AlertForm("postJobScreen.truckType"); return; }
     else if (!data['item-type']) { AlertForm("postJobScreen.productType"); return; }
     PostJobStore.setPostJob(1, data)
-    navigation.navigate("receivePoint")
+    let status_action = JSON.parse(JSON.stringify(StatusStore.status))
+    if (status_action == "add")
+      navigation.navigate("receivePoint")
+    else navigation.navigate("MyJob", { screen: "receivePoint" })
   }
 
   const _renderSectionModal = (item: any, index: any, onChange: any, section: any) => {

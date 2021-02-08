@@ -27,6 +27,7 @@ const Shipping = types.model({
 })
 
 const PostJob2 = types.model({
+  id: types.maybeNull(types.string),
   "receive-location": types.maybeNull(types.string),
   "receive-region": types.maybeNull(RegionMap),
   "receive-date": types.maybeNull(types.string),

@@ -26,7 +26,7 @@ export default function BottomNavigator() {
               iconName = focused
                 ? (Platform.OS === 'ios' ? 'home' : "home")
                 : (Platform.OS === 'ios' ? 'home-outline' : "home-outline");
-            } else if (route.name === 'My Job' || route.name == "งานของฉัน") {
+            } else if (route.name === 'MyJob' || route.name == "งานของฉัน") {
               iconName = focused
                 ? (Platform.OS === 'ios' ? 'clipboard' : "clipboard")
                 : (Platform.OS === 'ios' ? 'clipboard-outline' : "clipboard-outline");
@@ -55,7 +55,7 @@ export default function BottomNavigator() {
       <Tab.Screen name={"Home"} component={HomeNavigator}
         options={{ tabBarLabel: translate("bottomTab.home") }}
       />
-      <Tab.Screen name={"My Job"} component={MyJobNavigator}
+      <Tab.Screen name={"MyJob"} component={MyJobNavigator}
         options={{ tabBarLabel: translate("bottomTab.myJob") }}
       />
       <Tab.Screen name={"Favorite"} component={FavoriteNavigator}

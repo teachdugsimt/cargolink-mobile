@@ -8,7 +8,11 @@ import React from "react"
 
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import { HeaderCenter, HeaderLeft } from "../components"
-import { FeedbackScreen, JobDetailScreen, MyJobScreen, PostJobScreen, ShipperProfileScreen } from "../screens"
+import {
+  FeedbackScreen, JobDetailScreen, MyJobScreen, ReceivePointScreen, PostJobScreen,
+  CheckInformationScreen,
+  PostSuccessScreen
+} from "../screens"
 import { color } from "../theme"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -26,8 +30,10 @@ export type PrimaryMyJobParamList = {
   myjob: undefined
   myJobDetail: undefined
   myFeedback: undefined
-  myJobEdit: undefined
-  bookerProfile: undefined
+  receivePoint: undefined
+  postjob: undefined
+  checkInformation: undefined
+  postSuccess: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -72,19 +78,39 @@ export function MyJobNavigator() {
         })}
       />
 
-      <Stack.Screen name="myJobEdit" component={PostJobScreen}
+      <Stack.Screen name="postjob" component={PostJobScreen}
         options={({ navigation, route }) => ({
-          headerCenter: () => <HeaderCenter tx={"feedbackScreen.yourOpinion"} />,
+          headerCenter: () => <HeaderCenter tx={"postJobScreen.postjob"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+          headerHideShadow: true
         })}
       />
 
-      <Stack.Screen name="bookerProfile" component={ShipperProfileScreen}
+      <Stack.Screen name="receivePoint" component={ReceivePointScreen}
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"feedbackScreen.yourOpinion"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+          headerHideShadow: true
         })}
       />
+
+      <Stack.Screen name="checkInformation" component={CheckInformationScreen}
+        options={({ navigation, route }) => ({
+          // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
+          headerCenter: () => <HeaderCenter tx={"postJobScreen.postjob"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+          headerHideShadow: true
+        })}
+      />
+      <Stack.Screen name="postSuccess" component={PostSuccessScreen}
+        options={({ navigation, route }) => ({
+          // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
+          headerCenter: () => <HeaderCenter tx={"postJobScreen.postjob"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+          headerHideShadow: true
+        })}
+      />
+
 
     </Stack.Navigator>
   )
