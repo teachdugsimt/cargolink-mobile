@@ -76,9 +76,9 @@ export class PostJobAPI {
     }
   }
 
-  async updateJob(id: string, data?: Types.ShipperJobCreate): Promise<any> {
+  async updateJob(data?: any): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.put(`/api/v1/mobile/shippers/jobs/${id}`, data)
+      const response: ApiResponse<any> = await this.apisauce.put(`/api/v1/mobile/shippers/jobs/${data.id}`, data)
 
       console.log("Shipper job api [update] : ", JSON.stringify(response))
       // if (!response.ok) {
