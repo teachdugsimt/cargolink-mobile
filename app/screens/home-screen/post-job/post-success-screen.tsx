@@ -6,7 +6,7 @@ import { Text, RoundedButton, AddJobElement } from "../../../components"
 import { color, images } from "../../../theme"
 import PostJobStore from "../../../store/post-job-store/post-job-store";
 import LottieView from 'lottie-react-native';
-
+import StatusStore from '../../../store/post-job-store/job-status-store'
 const SuccessAnimmation = () => {
   return <LottieView source={require('../../../AnimationJson/order-packed.json')}
     autoPlay loop style={{ height: '100%' }} />
