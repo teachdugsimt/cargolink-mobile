@@ -10,10 +10,10 @@ const RegionMap = types.model({
 })
 
 const PostJob1 = types.model({
-  "car-num": types.maybeNull(types.number),
+  "car-num": types.maybeNull(types.string),
   "item-name": types.maybeNull(types.string),
   "item-type": types.maybeNull(types.number),
-  "item-weight": types.maybeNull(types.number),
+  "item-weight": types.maybeNull(types.string),
   "vehicle-type": types.maybeNull(types.number)
 })
 
@@ -120,6 +120,8 @@ const PostJobStore = types.model({
     clearDataPostjob() {
       self.data_postjob = null
       self.error = null
+      self.postjob1 = null
+      self.postjob2 = null
     },
     setError() {
       self.error = null
@@ -177,7 +179,10 @@ const PostJobStore = types.model({
   }))
   .create({
     postjob1: null,
-    postjob2: null
+    postjob2: null,
+    loading: false,
+    error: '',
+    data_postjob: null,
   })
 
 export default PostJobStore

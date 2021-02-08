@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { TextStyle, View, ViewStyle, FlatList, RefreshControl } from "react-native"
-import { Button, VehicleItem } from "../../components/"
+import { Button, VehicleItem, EmptyListMessage } from "../../components/"
 import { color, spacing } from "../../theme"
 import { translate } from "../../i18n"
 import { useNavigation } from "@react-navigation/native"
@@ -126,6 +126,7 @@ export const MyVehicle = observer(function MyVehicle() {
             onRefresh={onRefresh}
           />
         }
+        ListEmptyComponent={<EmptyListMessage containerStyle={{ top: spacing[4] }} />}
       />
 
       <View>

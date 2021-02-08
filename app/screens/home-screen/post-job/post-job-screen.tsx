@@ -125,7 +125,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
   const onSubmit = (data) => {
     __DEV__ && console.tron.log("Data Form Post job 1 : ", data)
-    
+
     if (!data['vehicle-type']) { AlertForm("postJobScreen.truckType"); return; }
     else if (!data['item-type']) { AlertForm("postJobScreen.productType"); return; }
     PostJobStore.setPostJob(1, data)
@@ -151,7 +151,6 @@ export const PostJobScreen = observer(function PostJobScreen() {
   }
 
   const _renderSelectedList = (item, section) => {
-    __DEV__ && console.tron.log('Item :: ', item)
     return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name} style={ROOT_FLAT_LIST} onPress={() => {
       if (section == 1) setvisible0(true)
       else if (section == 2) setvisible(true)
@@ -208,7 +207,6 @@ export const PostJobScreen = observer(function PostJobScreen() {
   }
 
   let list_product_type_all = JSON.parse(JSON.stringify(AdvanceSearchStore.productTypes))
-  __DEV__ && console.tron.log("Form Value :: ", formControllerValue)
 
 
 
@@ -269,7 +267,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                       testID={"car-num"}
                       placeholder={'คัน'}
                       keyboardType="numeric"
-                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(Number(text))} />
+                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
                   )}
                   key={'text-input-car-num'}
                   name={"car-num"}
@@ -394,7 +392,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                     <TextInputTheme
                       testID={"item-weight"}
                       keyboardType="numeric"
-                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(Number(text))} />
+                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
                   )}
                   key={'text-input-item-weight'}
                   name={"item-weight"}
