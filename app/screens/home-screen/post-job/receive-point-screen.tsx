@@ -107,8 +107,20 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
 
   const [statusMap, setstatusMap] = useState(null)
 
+
+  
+  const _mappingObject = (object) => {
+    let tmp = object
+    Object.keys(object).forEach(key => {
+      if (key.includes('-date') || key.includes("-time")) {
+        tmp[key] = new Date(object[key])
+      }
+    })
+    return tmp
+  }
+  const initialData = _mappingObject(PostJobStore.MappingPostjob2) || {}
   const { control, handleSubmit, errors } = useForm({
-    defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : {}
+    defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : initialData
   });
 
   const _submitLocation = (addr, region) => {

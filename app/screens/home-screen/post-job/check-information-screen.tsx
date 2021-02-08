@@ -26,7 +26,7 @@ import PostJobStore from "../../../store/post-job-store/post-job-store";
 import _ from 'lodash'
 import { MapTruckImageName } from '../../../utils/map-truck-image-name'
 import AdvanceSearchStore from "../../../store/shipper-job-store/advance-search-store";
-// const bowserLogo = require("./bowser.png")
+import StatusStore from '../../../store/post-job-store/job-status-store'
 import { useStores } from "../../../models/root-store/root-store-context";
 import { FlatGrid } from 'react-native-super-grid';
 
@@ -260,6 +260,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
   }
 
   const onSubmit = (data) => {
+    let status_action = JSON.parse(JSON.stringify(StatusStore.status))
     __DEV__ && console.tron.log("Raw Data Form Post job 3 : ", data)
     console.log("Raw data post job 3 :: ", data)
     const expirationDate = compareDateTime(date.format(date.addDays(data['receive-date'], -1), "DD-MM-YYYY hh:mm:ss")
@@ -327,7 +328,8 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
     }
     __DEV__ && console.tron.log("Final data Post job 3 :: ", request_data)
     console.log("Position 3 :: ", request_data)
-    PostJobStore.createPostJobRequest(request_data)
+    if(status_action == "add") PostJobStore.createPostJobRequest(request_data)
+    else PostJobStore.updateJob(request_data)
   }
 
 

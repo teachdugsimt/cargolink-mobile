@@ -114,7 +114,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
   const navigation = useNavigation()
 
   const { control, handleSubmit, errors } = useForm({
-    defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : {}
+    defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : PostJobStore.postjob1
   });
 
   useEffect(() => {
@@ -125,7 +125,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
   const onSubmit = (data) => {
     __DEV__ && console.tron.log("Data Form Post job 1 : ", data)
-
+    
     if (!data['vehicle-type']) { AlertForm("postJobScreen.truckType"); return; }
     else if (!data['item-type']) { AlertForm("postJobScreen.productType"); return; }
     PostJobStore.setPostJob(1, data)
@@ -269,7 +269,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                       testID={"car-num"}
                       placeholder={'คัน'}
                       keyboardType="numeric"
-                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(Number(text))} />
                   )}
                   key={'text-input-car-num'}
                   name={"car-num"}
@@ -394,7 +394,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                     <TextInputTheme
                       testID={"item-weight"}
                       keyboardType="numeric"
-                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(Number(text))} />
                   )}
                   key={'text-input-item-weight'}
                   name={"item-weight"}

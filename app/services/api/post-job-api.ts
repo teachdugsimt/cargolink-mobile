@@ -75,4 +75,21 @@ export class PostJobAPI {
       return error
     }
   }
+
+  async updateJob(id: string, data?: Types.ShipperJobCreate): Promise<any> {
+    try {
+      const response: ApiResponse<any> = await this.apisauce.put(`/api/v1/mobile/shippers/jobs/${id}`, data)
+
+      console.log("Shipper job api [update] : ", JSON.stringify(response))
+      // if (!response.ok) {
+      //   const problem = getGeneralApiProblem(response)
+      //   if (problem) return problem
+      // }
+      return response
+      // transform the data into the format we are expecting
+    } catch (error) {
+      console.log("Error call api update shipper job : ", error)
+      return error
+    }
+  }
 }
