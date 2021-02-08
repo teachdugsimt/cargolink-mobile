@@ -5,7 +5,7 @@ import { EmptyListMessage, SearchItem, Text, HeaderCenter } from "../../componen
 import { color, spacing, images as imageComponent } from "../../theme"
 import ShipperJobStore from '../../store/shipper-job-store/shipper-job-store'
 import CarriersJobStore from '../../store/carriers-job-store/carriers-job-store'
-import FavoriteJobStore from '../../store/carriers-job-store/favorite-job-store'
+import PostJobStore from '../../store/post-job-store/post-job-store'
 import AdvanceSearchStore from '../../store/shipper-job-store/advance-search-store'
 import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
 import { useNavigation } from "@react-navigation/native"
@@ -13,6 +13,7 @@ import { GetTruckType } from "../../utils/get-truck-type"
 import { translate } from "../../i18n"
 import { MapTruckImageName } from "../../utils/map-truck-image-name"
 import { useStores } from "../../models/root-store/root-store-context";
+import DateAndTime from 'date-and-time';
 
 const FULL: ViewStyle = { flex: 1 }
 const HEADER: ViewStyle = {
@@ -59,6 +60,13 @@ const bookerList = [{
   date: 'จองเมื่อ 31/01/2564 13:13 น.'
 }]
 
+const dateFormat = (date: string) => {
+  if (!date) return ''
+  const newDate = DateAndTime.parse(date, 'DD-MM-YYYY HH:mm')
+  const dateFormat = DateAndTime.format(newDate, 'YYYY-MM-DDTHH:mm:ss:SSS')
+  return dateFormat + 'Z'
+}
+
 const Item = (data) => {
   const {
     id,
@@ -66,17 +74,15 @@ const Item = (data) => {
     productName,
     truckType,
     requiredTruckAmount,
+    weight,
     from,
     to,
     owner,
-    isLiked,
-    list,
-    setUnFollow
-  } = data
+  } = JSON.parse(JSON.stringify(data))
 
   const navigation = useNavigation()
 
-  const onPress = () => {
+  const onVisible = () => {
     CarriersJobStore.findOne(id)
     navigation.navigate('myJobDetail', {
       showOwnerAccount: false,
@@ -84,18 +90,61 @@ const Item = (data) => {
     })
   }
 
-  const onToggleHeart = (data) => {
-    const newData = [...JSON.parse(JSON.stringify(list))].filter(({ id }) => id !== data.id)
-    setUnFollow(newData)
-    FavoriteJobStore.add(data.id)
+  const onEdit = () => {
+    const jobInfoFirstTab = {
+      "vehicle-type": +truckType,
+      "car-num": requiredTruckAmount,
+      "item-type": productTypeId,
+      "item-name": productName,
+      "item-weight": weight,
+    }
+
+    const shippings = to?.map(shipping => {
+      return {
+        "shipping-address": shipping?.name || '',
+        "shipping-date": dateFormat(shipping?.dateTime || ''),
+        "shipping-time": dateFormat(shipping?.dateTime || ''),
+        "shipping-name": shipping?.contactName || '',
+        "shipping-tel-no": shipping?.contactMobileNo || '',
+        "shipping-region": {
+          "latitude": shipping?.lat || 0,
+          "longitude": shipping?.lng || 0,
+          "latitudeDelta": 0.0058863476810167015,
+          "longitudeDelta": 0.005000643432154561,
+        }
+      }
+    }) || []
+
+    const jobInfoSecondTab = {
+      "receive-region": {
+        "latitude": +from?.lat || 0,
+        "longitude": +from?.lng || 0,
+        "latitudeDelta": 0.005878748388420618,
+        "longitudeDelta": 0.004999972879886627,
+      },
+      "receive-location": from?.name || '',
+      "receive-date": dateFormat(from?.dateTime || ''),
+      "receive-time": dateFormat(from?.dateTime || ''),
+      "receive-name": from?.contactName || '',
+      "receive-tel-no": from?.contactMobileNo || '',
+      "shipping-information": shippings
+    }
+
+    console.log('jobInfoFirstTab', jobInfoFirstTab)
+    console.log('jobInfoSecondTab', jobInfoSecondTab)
+
+    PostJobStore.setPostJob(1, jobInfoFirstTab)
+    PostJobStore.setPostJob(2, jobInfoSecondTab)
+
+    navigation.navigate('myJobEdit')
   }
 
   const RenderBottom = () => (
     <View style={BOTTOM_ROOT}>
-      <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={onPress}>
+      <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={onEdit}>
         <Text tx={'myJobScreen.editJob'} style={{ color: color.line }} />
       </TouchableOpacity>
-      <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onPress}>
+      <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onVisible}>
         <Text tx={'myJobScreen.bookerWaiting'} style={{ color: color.primary }} />
       </TouchableOpacity>
     </View>
@@ -131,8 +180,8 @@ const Item = (data) => {
             paddingTop: spacing[2],
             borderRadius: 6
           },
-          onPress,
-          onToggleHeart,
+          onPress: () => onVisible(),
+          // onToggleHeart,
           bottomComponent: () => <RenderBottom />
         }
         }
