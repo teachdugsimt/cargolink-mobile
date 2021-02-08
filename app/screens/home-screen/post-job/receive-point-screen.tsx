@@ -124,9 +124,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
   });
 
   const _submitLocation = (addr, region) => {
-    __DEV__ && console.tron.log("By : ", statusMap)
     if (statusMap.includes('receive')) {
-      __DEV__ && console.tron.log("__________________ Receive Addr __________________")
       control.setValue("receive-location", addr)
       control.setValue("receive-region", region)
       setvisibleMap(false)
@@ -136,9 +134,6 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
       control.setValue(statusMap, addr)
       control.setValue(path, region)
       setvisibleMap(false)
-      __DEV__ && console.tron.log('__________________ Shipping Addr __________________')
-      __DEV__ && console.tron.log("Addr shipping : ", addr)
-      __DEV__ && console.tron.log("Region shipping : ", region)
     }
   }
 
@@ -154,14 +149,12 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
   }
 
   const onSubmit = (data) => {
-    __DEV__ && console.tron.log("Raw Data Form Post job : ", data)
     console.log("Raw Data Form Post job : ", data)
     const a = new Date()
     const expiredDate = addDays(a, 2)
     const tmpCheckDate = data['receive-date']
     const receiveDateForCheck = date.addHours(tmpCheckDate, 7)
 
-    __DEV__ && console.tron.log("Expire date :: ", expiredDate, " : ", receiveDateForCheck)
     if (receiveDateForCheck < expiredDate) { AlertFormDate(); return; }
     if (!data['receive-location']) { AlertForm("postJobScreen.receiveLocation"); return; }
     else if (!data['receive-date']) { AlertForm("postJobScreen.receiveDate"); return; }
@@ -204,7 +197,6 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
 
     PostJobStore.setPostJob(2, final)
 
-    __DEV__ && console.tron.log("Final object postjob screen 2 :: => ", final)
     navigation.navigate("checkInformation")
   }
 
@@ -235,7 +227,6 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
   let formControllerValue = control.getValues()
 
 
-  __DEV__ && console.tron.log("show date format : ", formControllerValue)
   // const { longitude, latitude } = position?.coords || {}
   return (
     <View testID="ReceivePointScreen" style={FULL}>

@@ -162,11 +162,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
     return tmp
   }
   const initialData = _mappingObject(PostJobStore.MappingInitValue) || {}
-  __DEV__ && console.tron.log("Initial Data Check Informationm :: ", initialData)
-  __DEV__ && console.tron.log('Type of props date :: ', typeof initialData['shipping-date-1'])
 
-  __DEV__ && console.tron.log("Receive Date from mobx  :: ", initialData['receive-date'])
-  __DEV__ && console.tron.log("Receive Date types from mobx  :: ", typeof initialData['receive-date'])
 
   const { control, handleSubmit, errors } = useForm({
     defaultValues: initialData
@@ -203,7 +199,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
         <View style={VIEW_LIST_IMAGE}>
           {/* {Platform.OS == "ios" ? <Image source={images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
             <Image source={images[item.image]} style={IMAGE_LIST} height={60} width={60} />} */}
-             {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
+          {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
             <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} />}
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
@@ -219,7 +215,6 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
     let postjob2_data = JSON.parse(JSON.stringify(PostJobStore.postjob2)) || null
 
     if (postjob2_data) {
-      __DEV__ && console.tron.log("UseEffect postjob data :: ", postjob2_data)
       postjob2_data['shipping-information'].forEach((e, i) => {
         tmp_field.push({
           id: i + 1,
@@ -228,7 +223,6 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
         })
       })
       setfieldShippingCheck(tmp_field)
-      __DEV__ && console.tron.log("State field array list :: ", tmp_field)
       setswipe2(true)
       setTimeout(() => {
         setswipe(!swipe)
@@ -246,7 +240,6 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
 
   const _submitLocation = (addr, region) => {
     if (statusMap.includes('receive')) {
-      __DEV__ && console.tron.log("__________________ Receive Addr __________________")
       control.setValue("receive-location", addr)
       control.setValue("receive-region", region)
       setvisibleMap(false)
@@ -261,7 +254,6 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
 
   const onSubmit = (data) => {
     let status_action = JSON.parse(JSON.stringify(StatusStore.status))
-    __DEV__ && console.tron.log("Raw Data Form Post job 3 : ", data)
     console.log("Raw data post job 3 :: ", data)
     const expirationDate = compareDateTime(date.format(date.addDays(data['receive-date'], -1), "DD-MM-YYYY hh:mm:ss")
       , date.format(data['receive-time'], "DD-MM-YYYY hh:mm:ss"))
@@ -326,9 +318,10 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
       },
       "to": shippingLocation
     }
-    __DEV__ && console.tron.log("Final data Post job 3 :: ", request_data)
     console.log("Position 3 :: ", request_data)
-    if(status_action == "add") PostJobStore.createPostJobRequest(request_data)
+    if (status_action == "add") {
+      PostJobStore.createPostJobRequest(request_data)
+    }
     else PostJobStore.updateJob(request_data)
   }
 
@@ -363,8 +356,6 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
   useEffect(() => {
     let grouping = JSON.parse(JSON.stringify(versatileStore.listGroup))
     let truckTyping = JSON.parse(JSON.stringify(versatileStore.list))
-    __DEV__ && console.tron.log('Grouping useEffect :: ', grouping)
-    __DEV__ && console.tron.log('Truck type useEffect:: ', truckTyping)
     if (grouping && truckTyping && grouping.length > 0 && truckTyping.length > 0) {
       let tmp_section = []
       grouping.map((gr, igr) => {
@@ -375,11 +366,6 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
           data: truckTyping.filter(e => e.groupId == gr.id)
         })
       })
-      __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
-      __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
-      __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
-      __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
-      __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
       setsectionTruckType(tmp_section)
       setinitSection(tmp_section)
     }
@@ -468,10 +454,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
   }
   const defaultVehicleType = JSON.parse(JSON.stringify(versatileStore.list))
   const listGroup = JSON.parse(JSON.stringify(versatileStore.listGroup))
-  __DEV__ && console.tron.log("Form control Check Information Screen : ", formControllerValue)
 
-  __DEV__ && console.tron.log("Field shipping level :: ", fieldShippingCheck)
-  __DEV__ && console.tron.log("List Product Type post job 3 :: ", listProductState)
   return (
     <View testID="CheckInformationScreen" style={FULL}>
       <View style={TOP_VIEW}>
