@@ -135,6 +135,7 @@ const Item = (data) => {
 
     PostJobStore.setPostJob(1, jobInfoFirstTab)
     PostJobStore.setPostJob(2, jobInfoSecondTab)
+    PostJobStore.setJobId(id)
 
     navigation.navigate('MyJob', { screen: 'postjob' })
   }
