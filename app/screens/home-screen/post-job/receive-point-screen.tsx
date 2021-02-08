@@ -113,8 +113,8 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
     let tmp = object
     Object.keys(object).forEach(key => {
       if (key.includes('-date') || key.includes("-time")) {
-          // tmp[key] = new Date(object[key])
-          tmp[key] = new Date()
+          tmp[key] = new Date(object[key])
+          // tmp[key] = new Date()
       }
     })
     return tmp
