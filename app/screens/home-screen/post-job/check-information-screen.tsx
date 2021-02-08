@@ -335,7 +335,12 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
       seterrorPostJob(null)
       PostJobStore.setError()
     } else {
-      if (data_postjob) navigation.navigate("postSuccess")
+      if (data_postjob) {
+        let status_action = JSON.parse(JSON.stringify(StatusStore.status))
+        if (status_action == "add")
+          navigation.navigate("postSuccess")
+        else navigation.navigate("MyJob", { screen: "postSuccess" })
+      }
     }
 
   }, [PostJobStore.data_postjob, PostJobStore.error])
