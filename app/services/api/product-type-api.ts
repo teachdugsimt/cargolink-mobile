@@ -39,7 +39,7 @@ export class ProductTypeAPI {
   async setup(params = i18n.locale) {
     let to = await this.getToken()
       .then(val => {
-        return val.tokenStore.token.accessToken || ''
+        return val?.tokenStore?.token?.accessToken || ''
       })
 
     this.apisauce = create({

@@ -40,7 +40,7 @@ export class ShippersHistoryCallAPI {
   async setup() {
     let to = await this.getToken()
       .then(val => {
-        return val.tokenStore.token.accessToken || ''
+        return val?.tokenStore?.token?.accessToken || ''
       })
 
     // construct the apisauce instance

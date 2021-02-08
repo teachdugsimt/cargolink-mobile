@@ -13,7 +13,7 @@ import { Modal, ModalContent } from 'react-native-modals';
 import { MapTruckImageName } from '../../../utils/map-truck-image-name'
 import { AlertForm } from '../../../utils/alert-form'
 import { useStores } from "../../../models/root-store/root-store-context";
-
+import StatusStore from '../../../store/post-job-store/job-status-store'
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width } = Dimensions.get("window")
@@ -110,20 +110,22 @@ const IMAGE_LIST: ImageStyle = {
 }
 
 export const PostJobScreen = observer(function PostJobScreen() {
-  const { versatileStore } = useStores()
+  const { versatileStore, tokenStore } = useStores()
   const navigation = useNavigation()
 
   const { control, handleSubmit, errors } = useForm({
-    // defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : MyVehicleStore.MappingData
+    defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : PostJobStore.postjob1
   });
 
   useEffect(() => {
-    AdvanceSearchStore.getProductTypes()
+    let token = tokenStore?.token?.accessToken || null
+    if (!token) navigation.navigate("signin")
+    else AdvanceSearchStore.getProductTypes()
   }, [])
 
   const onSubmit = (data) => {
     __DEV__ && console.tron.log("Data Form Post job 1 : ", data)
-
+    
     if (!data['vehicle-type']) { AlertForm("postJobScreen.truckType"); return; }
     else if (!data['item-type']) { AlertForm("postJobScreen.productType"); return; }
     PostJobStore.setPostJob(1, data)
@@ -219,7 +221,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
       </View>
 
       <View style={BOTTOM_VIEW}>
-        <KeyboardAvoidingView behavior={Platform.OS == "ios" ? 'padding' : 'padding'} keyboardVerticalOffset={Platform.OS == "ios" ? 100 : 10} style={{ flex: 1 }}>
+        <KeyboardAvoidingView behavior={Platform.OS == "ios" ? 'padding' : 'padding'} keyboardVerticalOffset={Platform.OS == "ios" ? 100 : 0} style={{ flex: 1 }}>
           <ScrollView style={FULL}>
 
             <View style={TOP_VIEW_2}>
@@ -267,7 +269,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                       testID={"car-num"}
                       placeholder={'คัน'}
                       keyboardType="numeric"
-                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(Number(text))} />
                   )}
                   key={'text-input-car-num'}
                   name={"car-num"}
@@ -392,7 +394,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                     <TextInputTheme
                       testID={"item-weight"}
                       keyboardType="numeric"
-                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(Number(text))} />
                   )}
                   key={'text-input-item-weight'}
                   name={"item-weight"}

@@ -40,7 +40,7 @@ export function PrimaryNavigator() {
         gestureEnabled: false,
         stackAnimation: 'slide_from_right',
       }}
-      initialRouteName={'signin'}
+      initialRouteName={'home'}
     >
       <Stack.Screen name="signin" component={SigninScreen} />
       <Stack.Screen name="confirmCode" component={ConfirmCodeScreen} />

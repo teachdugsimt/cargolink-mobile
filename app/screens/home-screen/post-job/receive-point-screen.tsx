@@ -17,6 +17,7 @@ import _ from 'lodash'
 import { Modal, ModalContent } from 'react-native-modals';
 import date from 'date-and-time'
 import { AlertForm, AlertFormDate } from "../../../utils/alert-form";
+import StatusStore from '../../../store/post-job-store/job-status-store'
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -106,8 +107,20 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
 
   const [statusMap, setstatusMap] = useState(null)
 
+
+  
+  const _mappingObject = (object) => {
+    let tmp = object
+    Object.keys(object).forEach(key => {
+      if (key.includes('-date') || key.includes("-time")) {
+        tmp[key] = new Date(object[key])
+      }
+    })
+    return tmp
+  }
+  const initialData = _mappingObject(PostJobStore.MappingPostjob2) || {}
   const { control, handleSubmit, errors } = useForm({
-    defaultValues: {}
+    defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : initialData
   });
 
   const _submitLocation = (addr, region) => {

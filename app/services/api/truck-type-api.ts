@@ -39,7 +39,7 @@ export class TruckTypeApi {
     // let to
     let to = await this.getToken()
       .then(val => {
-        return val.tokenStore.token.accessToken || ''
+        return val?.tokenStore?.token?.accessToken || ''
       })
 
 
@@ -71,16 +71,6 @@ export class TruckTypeApi {
         const problem = getGeneralApiProblem(response)
         if (problem) return problem
       }
-
-      // let tmp = JSON.parse(JSON.stringify(response.data))
-      // if (response.data && response.data.length) {
-      //     tmp.map(e => {
-      //         e.label = e.name
-      //         e.value = e.id
-      //         e.ID = e.id
-      //     })
-      //     return tmp
-      // } else return []
 
       return response
 

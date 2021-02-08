@@ -41,7 +41,7 @@ export class FileUploadApi {
     // construct the apisauce instance
     let to = await this.getToken()
       .then(val => {
-        return val.tokenStore.token.accessToken || ''
+        return val?.tokenStore?.token?.accessToken || ''
       })
 
     this.apisauce = create({

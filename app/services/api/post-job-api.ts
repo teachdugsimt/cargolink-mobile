@@ -40,7 +40,7 @@ export class PostJobAPI {
   async setup() {
     let to = await this.getToken()
     .then(val => {
-        return val.tokenStore.token.accessToken || ''
+        return val?.tokenStore?.token?.accessToken || ''
     })
     // console.log("Setup header token my-vehicle-api :: ", token)
     // construct the apisauce instance
@@ -72,6 +72,23 @@ export class PostJobAPI {
       // transform the data into the format we are expecting
     } catch (error) {
       console.log("Error call api create POSTJOB : ", error)
+      return error
+    }
+  }
+
+  async updateJob(id: string, data?: Types.ShipperJobCreate): Promise<any> {
+    try {
+      const response: ApiResponse<any> = await this.apisauce.put(`/api/v1/mobile/shippers/jobs/${id}`, data)
+
+      console.log("Shipper job api [update] : ", JSON.stringify(response))
+      // if (!response.ok) {
+      //   const problem = getGeneralApiProblem(response)
+      //   if (problem) return problem
+      // }
+      return response
+      // transform the data into the format we are expecting
+    } catch (error) {
+      console.log("Error call api update shipper job : ", error)
       return error
     }
   }
