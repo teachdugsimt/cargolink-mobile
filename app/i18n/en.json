@@ -26,6 +26,8 @@
     "ภาคตะวันตก": "west",
     "ภาคกลาง": "center",
     "ภาคตะวันออก": "east",
+    "ทั่วประเทศ": "nationwide",
+    "allRegion": "nationwide",
     "count": "Count",
     "search": "Search ...",
     "requireField": "require field",
@@ -52,7 +54,8 @@
     "summary": "Summary",
     "amount": "Amount",
     "new": "New",
-    "done": "Done"
+    "done": "Done",
+    "totalJobText": "*We enable users, both transporters and transporters, to post jobs or find cars if users can choose from the homepage. "
   },
   "commentScreen":{
     "yourComment": "Your Comment",

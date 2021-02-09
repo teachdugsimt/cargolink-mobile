@@ -5,7 +5,7 @@
  * You'll likely spend most of your time in this file.
  */
 import React from "react"
-
+import { View } from 'react-native'
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import { HeaderCenter, HeaderLeft } from "../components"
 import {
@@ -62,7 +62,7 @@ export function MyJobNavigator() {
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"myJobScreen.myJob"} />,
           // headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
-          headerHideShadow: true
+          headerHideShadow: true,
         })}
       />
 
@@ -83,7 +83,7 @@ export function MyJobNavigator() {
       <Stack.Screen name="postjob" component={PostJobScreen}
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"postJobScreen.postjob"} />,
-          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.navigate("MyJob", { screen: "myjob" })} />),
           headerHideShadow: true
         })}
       />
@@ -91,7 +91,7 @@ export function MyJobNavigator() {
       <Stack.Screen name="receivePoint" component={ReceivePointScreen}
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"feedbackScreen.yourOpinion"} />,
-          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.navigate("MyJob", { screen: "postjob" })} />),
           headerHideShadow: true
         })}
       />
@@ -99,14 +99,14 @@ export function MyJobNavigator() {
       <Stack.Screen name="checkInformation" component={CheckInformationScreen}
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"postJobScreen.postjob"} />,
-          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.navigate("MyJob", { screen: "receivePoint" })} />),
           headerHideShadow: true
         })}
       />
       <Stack.Screen name="postSuccess" component={PostSuccessScreen}
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"postJobScreen.postjob"} />,
-          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.navigate("MyJob", { screen: "checkInformation" })} />),
           headerHideShadow: true
         })}
       />

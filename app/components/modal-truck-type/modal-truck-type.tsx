@@ -161,6 +161,7 @@ export const ModalTruckType = (props: ModalTruckProps) => {
 
             <SectionList
               sections={sectionTruckType}
+              stickySectionHeadersEnabled={false}
               keyExtractor={(item, index) => 'section-list-' + (item.name || item.title) + index}
               renderItem={({ item, index }) => _renderSectionModal(item, index, onChange, 1)}
               renderSectionHeader={({ section: { title } }) => (
