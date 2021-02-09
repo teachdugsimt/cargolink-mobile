@@ -4,6 +4,7 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import <GoogleMaps/GoogleMaps.h>
+#import "RNSplashScreen.h"
 @import Firebase;
 
 #ifdef FB_SONARKIT_ENABLED
@@ -46,6 +47,7 @@ static void InitializeFlipper(UIApplication *application) {
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  [RNSplashScreen show];
   return YES;
 }
 

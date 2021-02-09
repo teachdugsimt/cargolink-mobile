@@ -15,6 +15,7 @@ import { ModalPortal } from 'react-native-modals';
 import React, { useState, useEffect, useRef } from "react"
 import { NavigationContainerRef } from "@react-navigation/native"
 import { SafeAreaProvider, initialWindowSafeAreaInsets } from "react-native-safe-area-context"
+import SplashScreen from 'react-native-splash-screen'
 import * as storage from "./utils/storage"
 import {
   useBackButtonHandler,
@@ -52,6 +53,7 @@ function App(props: any) {
     ; (async () => {
       setupRootStore().then(setRootStore)
     })()
+    SplashScreen.hide()
   }, [])
 
   // Before we show the app, we have to wait for our state to be ready.
