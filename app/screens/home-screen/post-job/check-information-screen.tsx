@@ -331,8 +331,13 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
     let data_postjob = JSON.parse(JSON.stringify(PostJobStore.data_postjob))
     let error = JSON.parse(JSON.stringify(PostJobStore.error))
     if (error && error != errorPostJob) {
+      const dateErrorMessage: string = "Date of delivery should not be a date before the date of loading"
+      let messageTitle = error && error == dateErrorMessage ?
+        "postJobScreen.checkShippingDate" : "common.somethingWrong"
+      let messageContent = error && error == dateErrorMessage ?
+        "postJobScreen.shippingDateMoreThan" : "common.pleaseCheckYourData"
       seterrorPostJob(error)
-      AlertMessage(translate("postJobScreen.checkShippingDate"), translate("postJobScreen.shippingDateMoreThan"))
+      AlertMessage(translate(messageTitle), translate(messageContent))
       seterrorPostJob(null)
       PostJobStore.setError()
     } else {
