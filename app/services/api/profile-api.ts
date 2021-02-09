@@ -108,4 +108,23 @@ export class ProfileApi {
 
   }
 
+  async getUserReport(id: string | number): Promise<any> {
+    // make the api call
+    try {
+      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/user/profile/${id}`)
+      console.log("Response call api get getUserReport : ", response)
+      // if (!response.ok) {
+      //   const problem = getGeneralApiProblem(response)
+      //   if (problem) return problem
+      // }
+      return response
+    } catch (error) {
+      console.log("Error call api get getUserReport: ", error)
+      return error
+    }
+
+  }
+
+
+
 }

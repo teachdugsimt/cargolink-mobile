@@ -4,18 +4,14 @@ import { Platform } from "react-native"
 const apiUsers = new ProfileApi()
 const fileUploadApi = new FileUploadApi()
 
-const Vehicle = types.model({
-  id: types.number,
-  type: types.string,
-  status: types.string,
-  number: types.number
-})
-
 const Profile = types.model({
   "fullName": types.maybeNull(types.string),
   "phoneNumber": types.maybeNull(types.string),
+  "email": types.maybeNull(types.string),
   "approveStatus": types.maybeNull(types.string),
-  "avatar": types.maybeNull(types.string)
+  "avatar": types.maybeNull(types.string),
+  "id": types.maybeNull(types.number),
+  "userId": types.maybeNull(types.string)
 })
 
 const TruckSummary = types.model({
@@ -38,6 +34,28 @@ const PictureProfile = types.model({
   uploadedDate: types.maybeNull(types.string),
 })
 
+const TotalTruck = types.model({
+  "total": types.maybeNull(types.number),
+  "truckType": types.maybeNull(types.number)
+})
+
+const TotalRegion = types.model({
+  "province": types.maybeNull(types.number),
+  "region": types.maybeNull(types.number),
+})
+
+const ReportProfile = types.model({
+  "avatar": types.model({
+    "object": types.maybeNull(types.string), //url
+    "token": types.maybeNull(types.string)
+  }),
+  "fullName": types.maybeNull(types.string),
+  "phoneNumber": types.maybeNull(types.string),
+  "totalJob": types.maybeNull(types.number),
+  "trucks": types.maybeNull(types.array(TotalTruck)),
+  "workingZones": types.maybeNull(types.array(TotalRegion))
+})
+
 const ProfileStore = types.model({
   data: types.maybeNull(Profile),
   loading: types.boolean,
@@ -54,6 +72,10 @@ const ProfileStore = types.model({
   data_upload_picture: types.maybeNull(PictureProfile),
   loading_update_picture: types.boolean,
   error_update_picture: types.maybeNull(types.string),
+
+  data_report_profile: types.maybeNull(ReportProfile),
+  loading_report_profile: types.boolean,
+  error_report_profile: types.maybeNull(types.string),
 
 
 }).actions(self => ({
@@ -74,6 +96,26 @@ const ProfileStore = types.model({
       console.error("Failed to store value get profile : ", error)
       self.loading = false
       self.error = "set up state mobx error"
+    }
+  }),
+
+  getProfileReporter: flow(function* getProfileReporter(id) { // <- note the star, this a generator function!
+    yield apiUsers.setup()
+    self.loading_report_profile = true
+    try {
+      const response = yield apiUsers.getUserReport(id)
+      __DEV__ && console.tron.log("Response call getProfileReporter : : ", response)
+      if (response.ok) {
+        self.data_report_profile = response.data || null
+        self.loading_report_profile = false
+      } else {
+        self.loading_report_profile = false
+        self.error_report_profile = "error fetch getProfileReporters"
+      }
+    } catch (error) {
+      console.error("Failed to store value get profile : ", error)
+      self.loading_report_profile = false
+      self.error_report_profile = "set up state mobx error"
     }
   }),
 
@@ -159,7 +201,7 @@ const ProfileStore = types.model({
     let data_profile = {}
     data_profile['name-lastname'] = self.data?.fullName || ''
     data_profile['phone-number'] = self.data?.phoneNumber || ''
-    // data_profile['email'] = self.data.email || ''
+    data_profile['email'] = self.data.email || ''
     data_profile['avatar'] = self.data?.avatar || ''
     return data_profile
   }
@@ -181,6 +223,10 @@ const ProfileStore = types.model({
     data_upload_picture: null,
     loading_update_picture: false,
     error_update_picture: null,
+
+    data_report_profile: null,
+    loading_report_profile: false,
+    error_report_profile: null,
   })
 
 
