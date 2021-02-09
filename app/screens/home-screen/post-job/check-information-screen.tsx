@@ -303,7 +303,8 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
       "truckType": final['vehicle-type'],
       "truckAmount": final['car-num'],
       "productTypeId": final['item-type'],
-      "productName": "string",
+      // "productName": "string",
+      "productName": final["item-name"],
       "weight": final['item-weight'],
       "price": 0, // No need now 
       "expiredTime": expirationDate, // No need now

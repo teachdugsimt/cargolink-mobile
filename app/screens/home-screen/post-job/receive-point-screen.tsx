@@ -139,7 +139,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
 
   useEffect(() => {
     // _addFieldInputShipping()
-    setswipe(!swipe)
+    // setswipe(!swipe)
     let status_action = JSON.parse(JSON.stringify(StatusStore.status))
     let data_post2 = JSON.parse(JSON.stringify(PostJobStore.postjob2))
     console.log("Postjob 2 data :: => ", data_post2)
@@ -156,7 +156,10 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
           })
         })
         setfieldShipping(tmp_field_level)
-        setswipe(!swipe)
+        // setswipe(!swipe)
+        setTimeout(() => {
+          setswipe(!swipe)
+        }, 500);
       }
     }
 
