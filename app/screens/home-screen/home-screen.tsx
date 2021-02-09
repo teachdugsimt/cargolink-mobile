@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { View, ViewStyle, TouchableOpacity, Image, ImageStyle, Dimensions, Platform } from "react-native"
+import { View, ViewStyle, TouchableOpacity, Image, ImageStyle, Dimensions, Platform, Linking, Alert } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
 import { images, color } from '../../theme'
@@ -9,51 +9,41 @@ import MyVehicleStore from "../../store/my-vehicle-store/my-vehicle-store"
 import TruckTypeStore from "../../store/truck-type-store/truck-type-store"
 import ProductTypeStore from "../../store/product-type-store/product-type-store"
 import StatusStore from '../../store/post-job-store/job-status-store'
-import PostJobStore from '../../store/post-job-store/post-job-store'
-
-// import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import FontIcon from 'react-native-vector-icons/FontAwesome5'
 
 const { width, height } = Dimensions.get('window')
 const FULL: ViewStyle = { flex: 1 }
+const ROW: ViewStyle = { flexDirection: 'row' }
+const ALL_CENTER: ViewStyle = { justifyContent: 'center', alignItems: 'center' }
 
 const TOP_VIEW: ViewStyle = {
-  // flex: 1,
   height: 230,
   backgroundColor: color.mainTheme,
   borderBottomLeftRadius: 20,
   borderBottomRightRadius: 20,
   justifyContent: 'flex-start',
   alignItems: 'center',
-  // marginBottom: 20,
 }
 const BOTTOM_VIEW: ViewStyle = {
   flex: 2,
-  // backgroundColor: 'green'
 }
 
 const IMAGE_LOGO: ImageStyle = {
-  // backgroundColor: 'red',
   width: '100%',
-  // marginTop: -spacing[6],
-}
-const IMG_VIEW: ViewStyle = {
-  ...FULL,
-  width: width - 40,
-  alignSelf: 'center',
-  justifyContent: 'flex-start'
 }
 
 const VIEW_GRID_BOX: ViewStyle = {
-  // backgroundColor: 'red',
   flex: 1,
   marginTop: Platform.OS == "ios" ? ((height / 2) - (height / 1.69)) : ((height / 2) - (height / 1.6))
 }
 
 const ROOT_HOME: ViewStyle = {
   ...FULL,
-  // backgroundColor: color.dim
 }
+const VIEW_ICON: ViewStyle = { borderRadius: 20, height: 40, width: 40, justifyContent: 'center', alignItems: 'center', backgroundColor: color.line, marginHorizontal: 15 }
 
+const CONTACT_VIEW: ViewStyle = { flex: Platform.OS == "android" ? 0.4 : 0.3 }
 export const HomeScreen = observer((props) => {
   const { tokenStore, versatileStore } = useStores()
 
@@ -74,12 +64,14 @@ export const HomeScreen = observer((props) => {
 
   const [swipe, setswipe] = useState(false)
   const [lang, setlang] = useState(null)
+
   useEffect(() => {
     if (lang != versatileStore.language) {
       setlang(versatileStore.language)
       setswipe(!swipe)
     }
   }, [versatileStore.language])
+
   useEffect(() => {
     if (versatileStore.list.length && !TruckTypeStore.list.length) {
       TruckTypeStore.setList(JSON.parse(JSON.stringify(versatileStore.list)))
@@ -97,6 +89,23 @@ export const HomeScreen = observer((props) => {
       ProductTypeStore.setList(JSON.parse(JSON.stringify(versatileStore.listProductType)))
     }
   }, [versatileStore.listProductType.length])
+
+  const onCall = (phone: string) => {
+    let phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
+    __DEV__ && console.tron.log('phoneNumber', phoneNumber)
+    Linking.canOpenURL(phoneNumber)
+      .then(supported => {
+        if (!supported) {
+          __DEV__ && console.tron.log('Phone number is not available');
+          Alert.alert('Phone number is not available')
+          return false;
+        }
+      })
+      .then(() => {
+        return Linking.openURL(phoneNumber);
+      })
+      .catch(err => __DEV__ && console.tron.log('err', err));
+  };
 
   __DEV__ && console.tron.log('hello rendering world')
   interface List {
@@ -147,15 +156,20 @@ export const HomeScreen = observer((props) => {
           </View>
         </View>
 
-        {/* <ModalNormal
-          visible={visible}
-          onTouchOutside={() => setvisible(false)}
-          onSwipeOut={() => setvisible(true)}
-          title={"profileScreen.profile"}
-          subTitle={"profileScreen.fullSuggestText"}
-          onPressLeft={() => setvisible(false)}
-          onPressRight={() => console.log("confirm right")}
-        /> */}
+
+        <View style={CONTACT_VIEW}>
+          <View style={[ROW, ALL_CENTER, FULL]}>
+            <TouchableOpacity style={VIEW_ICON} onPress={() => Linking.openURL(versatileStore.fblink)}>
+              <FontIcon name={"facebook"} size={24} />
+            </TouchableOpacity>
+            <TouchableOpacity style={VIEW_ICON} onPress={() => console.log("LINE PRESS")}>
+              <FontIcon name={"line"} size={24} />
+            </TouchableOpacity>
+            <TouchableOpacity style={VIEW_ICON} onPress={() => onCall(versatileStore.phoneNumber)}>
+              <Ionicons name={"call"} size={22} />
+            </TouchableOpacity>
+          </View>
+        </View>
 
         {/* <TouchableOpacity onPress={() => navigation.navigate("comment")}>
           <Text>Click Me!!</Text>
