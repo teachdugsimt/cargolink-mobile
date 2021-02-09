@@ -114,13 +114,13 @@ export const PostJobScreen = observer(function PostJobScreen() {
   const navigation = useNavigation()
 
   const { control, handleSubmit, errors } = useForm({
-    defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : PostJobStore.postjob1
+    defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : (PostJobStore.postjob1 || {})
   });
 
   useEffect(() => {
+    AdvanceSearchStore.getProductTypes()
     let token = tokenStore?.token?.accessToken || null
     if (!token) navigation.navigate("signin")
-    else AdvanceSearchStore.getProductTypes()
   }, [])
 
   const onSubmit = (data) => {

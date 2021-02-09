@@ -584,6 +584,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                   <TextInputTheme
                     testID={"car-num"}
                     placeholder={'คัน'}
+                    keyboardType="numeric"
                     inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
                 )}
                 key={'text-input-car-num'}
@@ -691,6 +692,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                 render={({ onChange, onBlur, value }) => (
                   <TextInputTheme
                     testID={"item-weight"}
+                    keyboardType="numeric"
                     inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
                 )}
                 key={'text-input-item-weight'}
@@ -820,6 +822,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                 render={({ onChange, onBlur, value }) => (
                   <TextInputTheme
                     testID={"receive-tel-no"}
+                    keyboardType="numeric"
                     inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
                 )}
                 key={'text-input-receive-tel-no'}
@@ -947,6 +950,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                   render={({ onChange, onBlur, value }) => (
                     <TextInputTheme
                       testID={"shipping-tel-no-" + e.id}
+                      keyboardType="numeric"
                       inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
                   )}
                   key={'text-input-shipping-tel-no-' + e.id}
@@ -972,7 +976,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                 <RoundedButton style={[FULL, BORDER_RADIUS_20, GREY_TEXT]} onPress={() => navigation.goBack()} text={"common.back"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
               </View>
               <View style={[WRAPPER_TOP, FULL]}>
-                <RoundedButton style={[FULL, BORDER_RADIUS_20]} onPress={handleSubmit(onSubmit)} text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER_CONFIRM} textStyle={ROUND_BUTTON_TEXT} />
+                <RoundedButton style={[FULL, BORDER_RADIUS_20, ROUND_BUTTON_CONTAINER_CONFIRM]} onPress={handleSubmit(onSubmit)} text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER_CONFIRM} textStyle={ROUND_BUTTON_TEXT} />
               </View>
             </View>
           </View>

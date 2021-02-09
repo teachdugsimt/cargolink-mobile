@@ -14,6 +14,7 @@ import { translate } from "../../i18n"
 import { MapTruckImageName } from "../../utils/map-truck-image-name"
 import { useStores } from "../../models/root-store/root-store-context";
 import DateAndTime from 'date-and-time';
+import StatusStore from '../../store/post-job-store/job-status-store'
 
 const FULL: ViewStyle = { flex: 1 }
 const HEADER: ViewStyle = {
@@ -137,6 +138,7 @@ const Item = (data) => {
     PostJobStore.setPostJob(2, jobInfoSecondTab)
     PostJobStore.setJobId(id)
 
+    StatusStore.setStatusScreen('edit')
     navigation.navigate('MyJob', { screen: 'postjob' })
   }
 

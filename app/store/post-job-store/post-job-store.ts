@@ -45,7 +45,7 @@ const PostJobStore = types.model({
 
   loading: types.maybeNull(types.boolean),
   error: types.maybeNull(types.string),
-  data_postjob: types.maybeNull(types.string),
+  data_postjob: types.maybeNull(types.union(types.string, types.number)),
 
   job_id: types.maybeNull(types.string),
 })

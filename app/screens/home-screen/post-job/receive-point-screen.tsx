@@ -142,11 +142,21 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
     setswipe(!swipe)
     let status_action = JSON.parse(JSON.stringify(StatusStore.status))
     let data_post2 = JSON.parse(JSON.stringify(PostJobStore.postjob2))
+    console.log("Postjob 2 data :: => ", data_post2)
+    console.log("Actions status 2 data :: => ", status_action)
     if (status_action && status_action == "edit") {
       if (data_post2 && data_post2 != null && data_post2['shipping-information'] && data_post2['shipping-information'].length > 0) {
+
+        let tmp_field_level = []
         data_post2['shipping-information'].map((e, i) => {
-          _addFieldInputShipping()
+          tmp_field_level.push({
+            id: tmp_field_level.length + 1,
+            showDate: false,
+            showTime: false,
+          })
         })
+        setfieldShipping(tmp_field_level)
+        setswipe(!swipe)
       }
     }
 
