@@ -13,5 +13,6 @@ export interface RoundedButtonProps {
   rightIconSize?: number
   leftIconSize?: number
   onPress?: () => void
+  style?: Object
 
 }

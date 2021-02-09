@@ -17,6 +17,7 @@ import _ from 'lodash'
 import { Modal, ModalContent } from 'react-native-modals';
 import date from 'date-and-time'
 import { AlertForm, AlertFormDate } from "../../../utils/alert-form";
+import StatusStore from '../../../store/post-job-store/job-status-store'
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -106,14 +107,24 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
 
   const [statusMap, setstatusMap] = useState(null)
 
+
+
+  const _mappingObject = (object) => {
+    let tmp = object
+    Object.keys(object).forEach(key => {
+      if (key.includes('-date') || key.includes("-time")) {
+        tmp[key] = new Date(object[key])
+      }
+    })
+    return tmp
+  }
+  const initialData = _mappingObject(PostJobStore.MappingPostjob2) || {}
   const { control, handleSubmit, errors } = useForm({
-    defaultValues: {}
+    defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : initialData
   });
 
   const _submitLocation = (addr, region) => {
-    __DEV__ && console.tron.log("By : ", statusMap)
     if (statusMap.includes('receive')) {
-      __DEV__ && console.tron.log("__________________ Receive Addr __________________")
       control.setValue("receive-location", addr)
       control.setValue("receive-region", region)
       setvisibleMap(false)
@@ -123,15 +134,34 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
       control.setValue(statusMap, addr)
       control.setValue(path, region)
       setvisibleMap(false)
-      __DEV__ && console.tron.log('__________________ Shipping Addr __________________')
-      __DEV__ && console.tron.log("Addr shipping : ", addr)
-      __DEV__ && console.tron.log("Region shipping : ", region)
     }
   }
 
   useEffect(() => {
     // _addFieldInputShipping()
-    setswipe(!swipe)
+    // setswipe(!swipe)
+    let status_action = JSON.parse(JSON.stringify(StatusStore.status))
+    let data_post2 = JSON.parse(JSON.stringify(PostJobStore.postjob2))
+    console.log("Postjob 2 data :: => ", data_post2)
+    console.log("Actions status 2 data :: => ", status_action)
+    if (status_action && status_action == "edit") {
+      if (data_post2 && data_post2 != null && data_post2['shipping-information'] && data_post2['shipping-information'].length > 0) {
+
+        let tmp_field_level = []
+        data_post2['shipping-information'].map((e, i) => {
+          tmp_field_level.push({
+            id: tmp_field_level.length + 1,
+            showDate: false,
+            showTime: false,
+          })
+        })
+        setfieldShipping(tmp_field_level)
+        setTimeout(() => {
+          setswipe(!swipe)
+        }, 500);
+      }
+    }
+
   }, [])
 
   const addDays = (date, days) => {
@@ -141,14 +171,12 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
   }
 
   const onSubmit = (data) => {
-    __DEV__ && console.tron.log("Raw Data Form Post job : ", data)
     console.log("Raw Data Form Post job : ", data)
     const a = new Date()
     const expiredDate = addDays(a, 2)
     const tmpCheckDate = data['receive-date']
     const receiveDateForCheck = date.addHours(tmpCheckDate, 7)
 
-    __DEV__ && console.tron.log("Expire date :: ", expiredDate, " : ", receiveDateForCheck)
     if (receiveDateForCheck < expiredDate) { AlertFormDate(); return; }
     if (!data['receive-location']) { AlertForm("postJobScreen.receiveLocation"); return; }
     else if (!data['receive-date']) { AlertForm("postJobScreen.receiveDate"); return; }
@@ -191,8 +219,10 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
 
     PostJobStore.setPostJob(2, final)
 
-    __DEV__ && console.tron.log("Final object postjob screen 2 :: => ", final)
-    navigation.navigate("checkInformation")
+    let status_action = JSON.parse(JSON.stringify(StatusStore.status))
+    if (status_action == "add")
+      navigation.navigate("checkInformation")
+    else navigation.navigate("MyJob", { screen: "checkInformation" })
   }
 
   const _addFieldInputShipping = () => {
@@ -222,7 +252,6 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
   let formControllerValue = control.getValues()
 
 
-  __DEV__ && console.tron.log("show date format : ", formControllerValue)
   // const { longitude, latitude } = position?.coords || {}
   return (
     <View testID="ReceivePointScreen" style={FULL}>

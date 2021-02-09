@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { TextStyle, View, ViewStyle, FlatList, RefreshControl } from "react-native"
-import { Button, VehicleItem } from "../../components/"
+import { Button, VehicleItem, EmptyListMessage } from "../../components/"
 import { color, spacing } from "../../theme"
 import { translate } from "../../i18n"
 import { useNavigation } from "@react-navigation/native"
 import MyVehicleStore from '../../store/my-vehicle-store/my-vehicle-store'
 import StatusStore from '../../store/my-vehicle-store/status-vehicle-store'
 import { GetTruckType } from "../../utils/get-truck-type";
+import { useStores } from "../../models/root-store/root-store-context";
 import date from 'date-and-time';
 
 const CONTAINER: ViewStyle = {
@@ -37,6 +38,7 @@ let count = 0
 
 export const MyVehicle = observer(function MyVehicle() {
   const navigation = useNavigation()
+  const { tokenStore } = useStores()
   const onPress = (id: string) => {
     MyVehicleStore.findOneRequest(id)
     navigation.navigate("vehicleDetail")
@@ -45,7 +47,9 @@ export const MyVehicle = observer(function MyVehicle() {
   const [list_state, setlist_state] = useState(null)
 
   useEffect(() => {
-    MyVehicleStore.findRequest({ page: count })
+    let token = tokenStore?.token?.accessToken || null
+    if (!token) navigation.navigate("signin")
+    else MyVehicleStore.findRequest({ page: count })
     return () => {
       count = initCount
       MyVehicleStore.clearListData()
@@ -122,6 +126,7 @@ export const MyVehicle = observer(function MyVehicle() {
             onRefresh={onRefresh}
           />
         }
+        ListEmptyComponent={<EmptyListMessage containerStyle={{ top: spacing[4] }} />}
       />
 
       <View>

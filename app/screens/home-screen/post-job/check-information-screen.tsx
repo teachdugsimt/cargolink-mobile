@@ -26,7 +26,7 @@ import PostJobStore from "../../../store/post-job-store/post-job-store";
 import _ from 'lodash'
 import { MapTruckImageName } from '../../../utils/map-truck-image-name'
 import AdvanceSearchStore from "../../../store/shipper-job-store/advance-search-store";
-// const bowserLogo = require("./bowser.png")
+import StatusStore from '../../../store/post-job-store/job-status-store'
 import { useStores } from "../../../models/root-store/root-store-context";
 import { FlatGrid } from 'react-native-super-grid';
 
@@ -162,11 +162,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
     return tmp
   }
   const initialData = _mappingObject(PostJobStore.MappingInitValue) || {}
-  __DEV__ && console.tron.log("Initial Data Check Informationm :: ", initialData)
-  __DEV__ && console.tron.log('Type of props date :: ', typeof initialData['shipping-date-1'])
 
-  __DEV__ && console.tron.log("Receive Date from mobx  :: ", initialData['receive-date'])
-  __DEV__ && console.tron.log("Receive Date types from mobx  :: ", typeof initialData['receive-date'])
 
   const { control, handleSubmit, errors } = useForm({
     defaultValues: initialData
@@ -203,7 +199,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
         <View style={VIEW_LIST_IMAGE}>
           {/* {Platform.OS == "ios" ? <Image source={images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
             <Image source={images[item.image]} style={IMAGE_LIST} height={60} width={60} />} */}
-             {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
+          {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
             <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} />}
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
@@ -219,7 +215,6 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
     let postjob2_data = JSON.parse(JSON.stringify(PostJobStore.postjob2)) || null
 
     if (postjob2_data) {
-      __DEV__ && console.tron.log("UseEffect postjob data :: ", postjob2_data)
       postjob2_data['shipping-information'].forEach((e, i) => {
         tmp_field.push({
           id: i + 1,
@@ -228,7 +223,6 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
         })
       })
       setfieldShippingCheck(tmp_field)
-      __DEV__ && console.tron.log("State field array list :: ", tmp_field)
       setswipe2(true)
       setTimeout(() => {
         setswipe(!swipe)
@@ -246,7 +240,6 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
 
   const _submitLocation = (addr, region) => {
     if (statusMap.includes('receive')) {
-      __DEV__ && console.tron.log("__________________ Receive Addr __________________")
       control.setValue("receive-location", addr)
       control.setValue("receive-region", region)
       setvisibleMap(false)
@@ -260,7 +253,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
   }
 
   const onSubmit = (data) => {
-    __DEV__ && console.tron.log("Raw Data Form Post job 3 : ", data)
+    let status_action = JSON.parse(JSON.stringify(StatusStore.status))
     console.log("Raw data post job 3 :: ", data)
     const expirationDate = compareDateTime(date.format(date.addDays(data['receive-date'], -1), "DD-MM-YYYY hh:mm:ss")
       , date.format(data['receive-time'], "DD-MM-YYYY hh:mm:ss"))
@@ -310,7 +303,8 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
       "truckType": final['vehicle-type'],
       "truckAmount": final['car-num'],
       "productTypeId": final['item-type'],
-      "productName": "string",
+      // "productName": "string",
+      "productName": final["item-name"],
       "weight": final['item-weight'],
       "price": 0, // No need now 
       "expiredTime": expirationDate, // No need now
@@ -325,9 +319,11 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
       },
       "to": shippingLocation
     }
-    __DEV__ && console.tron.log("Final data Post job 3 :: ", request_data)
     console.log("Position 3 :: ", request_data)
-    PostJobStore.createPostJobRequest(request_data)
+    if (status_action == "add") {
+      PostJobStore.createPostJobRequest(request_data)
+    }
+    else PostJobStore.updateJob(request_data)
   }
 
 
@@ -335,12 +331,22 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
     let data_postjob = JSON.parse(JSON.stringify(PostJobStore.data_postjob))
     let error = JSON.parse(JSON.stringify(PostJobStore.error))
     if (error && error != errorPostJob) {
+      const dateErrorMessage: string = "Date of delivery should not be a date before the date of loading"
+      let messageTitle = error && error == dateErrorMessage ?
+        "postJobScreen.checkShippingDate" : "common.somethingWrong"
+      let messageContent = error && error == dateErrorMessage ?
+        "postJobScreen.shippingDateMoreThan" : "common.pleaseCheckYourData"
       seterrorPostJob(error)
-      AlertMessage(translate("postJobScreen.checkShippingDate"), translate("postJobScreen.shippingDateMoreThan"))
+      AlertMessage(translate(messageTitle), translate(messageContent))
       seterrorPostJob(null)
       PostJobStore.setError()
     } else {
-      if (data_postjob) navigation.navigate("postSuccess")
+      if (data_postjob) {
+        let status_action = JSON.parse(JSON.stringify(StatusStore.status))
+        if (status_action == "add")
+          navigation.navigate("postSuccess")
+        else navigation.navigate("MyJob", { screen: "postSuccess" })
+      }
     }
 
   }, [PostJobStore.data_postjob, PostJobStore.error])
@@ -361,8 +367,6 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
   useEffect(() => {
     let grouping = JSON.parse(JSON.stringify(versatileStore.listGroup))
     let truckTyping = JSON.parse(JSON.stringify(versatileStore.list))
-    __DEV__ && console.tron.log('Grouping useEffect :: ', grouping)
-    __DEV__ && console.tron.log('Truck type useEffect:: ', truckTyping)
     if (grouping && truckTyping && grouping.length > 0 && truckTyping.length > 0) {
       let tmp_section = []
       grouping.map((gr, igr) => {
@@ -373,11 +377,6 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
           data: truckTyping.filter(e => e.groupId == gr.id)
         })
       })
-      __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
-      __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
-      __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
-      __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
-      __DEV__ && console.tron.log("Origin section tmp :: ", tmp_section)
       setsectionTruckType(tmp_section)
       setinitSection(tmp_section)
     }
@@ -466,10 +465,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
   }
   const defaultVehicleType = JSON.parse(JSON.stringify(versatileStore.list))
   const listGroup = JSON.parse(JSON.stringify(versatileStore.listGroup))
-  __DEV__ && console.tron.log("Form control Check Information Screen : ", formControllerValue)
 
-  __DEV__ && console.tron.log("Field shipping level :: ", fieldShippingCheck)
-  __DEV__ && console.tron.log("List Product Type post job 3 :: ", listProductState)
   return (
     <View testID="CheckInformationScreen" style={FULL}>
       <View style={TOP_VIEW}>
@@ -594,6 +590,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                   <TextInputTheme
                     testID={"car-num"}
                     placeholder={'คัน'}
+                    keyboardType="numeric"
                     inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
                 )}
                 key={'text-input-car-num'}
@@ -701,6 +698,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                 render={({ onChange, onBlur, value }) => (
                   <TextInputTheme
                     testID={"item-weight"}
+                    keyboardType="numeric"
                     inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
                 )}
                 key={'text-input-item-weight'}
@@ -830,6 +828,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                 render={({ onChange, onBlur, value }) => (
                   <TextInputTheme
                     testID={"receive-tel-no"}
+                    keyboardType="numeric"
                     inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
                 )}
                 key={'text-input-receive-tel-no'}
@@ -957,6 +956,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                   render={({ onChange, onBlur, value }) => (
                     <TextInputTheme
                       testID={"shipping-tel-no-" + e.id}
+                      keyboardType="numeric"
                       inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
                   )}
                   key={'text-input-shipping-tel-no-' + e.id}
@@ -982,7 +982,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                 <RoundedButton style={[FULL, BORDER_RADIUS_20, GREY_TEXT]} onPress={() => navigation.goBack()} text={"common.back"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
               </View>
               <View style={[WRAPPER_TOP, FULL]}>
-                <RoundedButton style={[FULL, BORDER_RADIUS_20]} onPress={handleSubmit(onSubmit)} text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER_CONFIRM} textStyle={ROUND_BUTTON_TEXT} />
+                <RoundedButton style={[FULL, BORDER_RADIUS_20, ROUND_BUTTON_CONTAINER_CONFIRM]} onPress={handleSubmit(onSubmit)} text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER_CONFIRM} textStyle={ROUND_BUTTON_TEXT} />
               </View>
             </View>
           </View>

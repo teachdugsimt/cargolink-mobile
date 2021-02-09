@@ -8,7 +8,12 @@ import React from "react"
 
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import { HeaderCenter, HeaderLeft } from "../components"
-import { FeedbackScreen, JobDetailScreen, MyJobScreen } from "../screens"
+import {
+  FeedbackScreen, JobDetailScreen, MyJobScreen, ReceivePointScreen, PostJobScreen,
+  CheckInformationScreen,
+  PostSuccessScreen,
+  ShipperProfileScreen
+} from "../screens"
 import { color } from "../theme"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -26,6 +31,11 @@ export type PrimaryMyJobParamList = {
   myjob: undefined
   myJobDetail: undefined
   myFeedback: undefined
+  receivePoint: undefined
+  postjob: undefined
+  checkInformation: undefined
+  postSuccess: undefined
+  bookerProfile: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -69,6 +79,45 @@ export function MyJobNavigator() {
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
       />
+
+      <Stack.Screen name="postjob" component={PostJobScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"postJobScreen.postjob"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+          headerHideShadow: true
+        })}
+      />
+
+      <Stack.Screen name="receivePoint" component={ReceivePointScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"feedbackScreen.yourOpinion"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+          headerHideShadow: true
+        })}
+      />
+
+      <Stack.Screen name="checkInformation" component={CheckInformationScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"postJobScreen.postjob"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+          headerHideShadow: true
+        })}
+      />
+      <Stack.Screen name="postSuccess" component={PostSuccessScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"postJobScreen.postjob"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+          headerHideShadow: true
+        })}
+      />
+
+      <Stack.Screen name="bookerProfile" component={ShipperProfileScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"feedbackScreen.yourOpinion"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+
 
     </Stack.Navigator>
   )

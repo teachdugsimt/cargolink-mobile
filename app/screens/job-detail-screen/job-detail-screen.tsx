@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState, createRef } from 'react'
 import { observer } from 'mobx-react-lite'
 import { Dimensions, ScrollView, TextStyle, View, ViewStyle, TouchableOpacity, LayoutChangeEvent, Linking, Platform, Alert, Image, AppState } from 'react-native'
 import { BookerItem, Button, ModalAlert, ModalLoading, PostingBy, Text } from '../../components'
@@ -136,26 +136,42 @@ const TEXT: TextStyle = {
 const SCROLL_VIEW: ViewStyle = {
   marginTop: spacing[5],
 }
-const CONTENT_SMALL: ViewStyle = {
+const CONTEXT_SMALL_CONTAINER: ViewStyle = {
   ...TOP_ROOT,
   position: 'absolute',
   left: 0,
   right: 0,
   bottom: spacing[6],
+}
+const CONTENT_SMALL: ViewStyle = {
   height: 105,
   overflow: 'hidden',
   marginHorizontal: spacing[3],
   paddingVertical: spacing[4],
 }
 const FLOAT_CONTAINER: ViewStyle = {
-  width: '100%',
+  width: Math.floor(Dimensions.get('window').width * (3 / 4)),
+  position: 'absolute',
   justifyContent: 'center',
   alignItems: 'center',
+  top: -18,
+  left: '50%',
+  transform: [{
+    translateX: -Math.floor(Dimensions.get('window').width / 3),
+  }],
+  height: 0,
+  borderBottomWidth: 100,
+  borderBottomColor: color.backgroundWhite,
+  borderLeftWidth: 50,
+  borderLeftColor: "transparent",
+  borderRightWidth: 50,
+  borderRightColor: "transparent",
+  borderStyle: "solid",
 }
 const FLOAT_LINE: ViewStyle = {
-  width: '15%',
+  width: '35%',
   height: spacing[1] + 2,
-  top: -spacing[2],
+  top: spacing[2],
   backgroundColor: color.disable,
   position: 'absolute',
   borderRadius: Math.floor(deviceHeight / 2)
@@ -171,41 +187,6 @@ const TOPIC: TextStyle = {
   color: color.primary,
   paddingBottom: spacing[2],
 }
-
-const DATA = { // [Mocking]
-  id: 9,
-  fromText: 'กรุงเทพมหานคร',
-  toText: 'นครศรีธรรมราช',
-  count: '2',
-  packaging: 'อื่นๆ',
-  truckType: 'รถ 6 ล้อตู้คอก',
-  viewDetail: true,
-  postBy: 'Cargolink',
-  isVerified: false,
-  isLike: true,
-  rating: '0',
-  ratingCount: '0',
-  isCrown: false,
-  isRecommened: true,
-  weigh: 20,
-  productType: 'สินค้าเกษตร',
-  productName: 'ข้าวโพด',
-  distance: '435.35',
-  period: '3 ชั่วโมง 45 นาที',
-  logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-}
-
-// const distances = [{
-//   "from": "13.7884902,100.6079443",
-//   "to": "13.2773405,100.9410782",
-//   "distance": 99623,
-//   "duration": 4572
-// }, {
-//   "from": "13.2773405,100.9410782",
-//   "to": "12.6004546,101.9276771",
-//   "distance": 154882,
-//   "duration": 8373
-// }]
 
 const Dot = (data) => (<LottieView
   source={require('../../AnimationJson/dot.json')}
@@ -233,7 +214,7 @@ const CheckMark = (data) => (<LottieView
   onAnimationFinish={data.onAnimationFinish()}
 />)
 
-const PickUpPoint = ({ to, from, distances, containerStyle = {} }) => {
+const PickUpPoint = ({ to, from, distances, onPress, containerStyle = {} }) => {
   const [height, setHeight] = useState(0)
 
   const onLayout = (event: LayoutChangeEvent) => {
@@ -241,13 +222,15 @@ const PickUpPoint = ({ to, from, distances, containerStyle = {} }) => {
     setHeight(height)
   }
 
+  // const onMove = onPress ? (lat: string, lng: string) => onPress(lat, lng) : null
+
   return (
     <View style={{ ...LOCATION_CONTAINER, ...containerStyle }} onLayout={(e) => onLayout(e)}>
 
       <View style={{ ...LINE, height }} />
 
       <View style={LOCATION_BOX}>
-        <View style={{ ...LOCATION, paddingBottom: spacing[3] }}>
+        <TouchableOpacity activeOpacity={1} style={{ ...LOCATION, paddingBottom: spacing[3] }} onPress={() => onPress ? onPress(from.lat, from.lng) : null}>
           <Dot color={color.primary} />
           <Text
             text={`${translate('common.from')}  :`}
@@ -257,7 +240,7 @@ const PickUpPoint = ({ to, from, distances, containerStyle = {} }) => {
             text={from && from.name}
             style={{ ...LOCATION_TEXT, flexShrink: 1 }}
           />
-        </View>
+        </TouchableOpacity>
         {to?.length && to.map((attr, index) => {
           const latLng = `${attr.lat},${attr.lng}`
           const distance = JSON.parse(JSON.stringify(distances)).filter(dist => dist.to === latLng)[0]
@@ -265,7 +248,7 @@ const PickUpPoint = ({ to, from, distances, containerStyle = {} }) => {
           const time = distance ? ConverTimeFormat(distance.duration * 1000, 'HHmm') : '0'
           return (
             <View key={index} style={TO_LOCATION}>
-              <View style={{ ...LOCATION, flex: 3 }}>
+              <TouchableOpacity activeOpacity={1} style={{ ...LOCATION, flex: 3 }} onPress={() => onPress ? onPress(attr.lat, attr.lng) : null}>
                 <Dot color={color.success} />
                 <Text
                   text={`${translate('common.to')}  :`}
@@ -275,7 +258,7 @@ const PickUpPoint = ({ to, from, distances, containerStyle = {} }) => {
                   text={attr.name}
                   style={{ ...LOCATION_TEXT, flexShrink: 1 }}
                 />
-              </View>
+              </TouchableOpacity>
               <View style={{ alignItems: 'center', flex: 1 }}>
                 <Text style={{ paddingVertical: spacing[1] }} >{distanceKM}<Text text={' KM'} style={TEXT_SMALL} /></Text>
                 <Text text={time} style={{ ...TEXT_SMALL, paddingBottom: spacing[1], color: color.line }} />
@@ -299,9 +282,9 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   const [liked, setLiked] = useState<boolean>(false)
   const [visibleModal, setVisibleModal] = useState<boolean>(false)
   const [isBokking, setIsBooking] = useState<boolean>(false)
-  const [appState, setAppState] = useState(AppState.currentState)
-  // const [callDetector, setCallDetector] = useState(null)
   const [isCalling, setIsCalling] = useState<boolean>(false)
+  const [region, setRegion] = useState(null)
+  const [scrollY, setScrollY] = useState<number>(0)
 
   const {
     id,
@@ -316,20 +299,8 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     owner,
   } = JSON.parse(JSON.stringify(CarriersJobStore.data))
 
-  // const data = { "id": "K1NXGEQL", "productTypeId": 21, "productName": "รถยนต์", "truckType": "21", "weight": 200, "requiredTruckAmount": 2, "from": { "name": "กรุงเทพมหานคร", "dateTime": "28-01-2021 16:27", "contactName": "Onelink Space", "contactMobileNo": "0998999988", "lat": "13.7884902", "lng": "100.6079443" }, "to": [{ "name": "ชลบุรี", "dateTime": "29-01-2021 11:54", "contactName": "หมู่บ้านบางแสนวิลล์ ตำบล ห้วยกะปิ อำเภอเมืองชลบุรี ชลบุรี", "contactMobileNo": "0899388403", "lat": "13.2773405", "lng": "100.9410782" }, { "name": "จันทบุรี", "dateTime": "30-01-2021 18:14", "contactName": "ศูนย์ศึกษาธรรมชาติป่าชายเลนอ่าวคุ้งกระเบน", "contactMobileNo": "0990999811", "lat": "12.6004546", "lng": "101.9276771" }], "owner": { "id": 611, "companyName": "Fast Delivery", "fullName": "Fast Delivery", "mobileNo": "0926270468", "email": "mymail.example@mail.com" }, "isLiked": false }
-  // const {
-  //   id,
-  //   from,
-  //   to,
-  //   productName,
-  //   productTypeId,
-  //   requiredTruckAmount,
-  //   truckType,
-  //   isLiked,
-  //   weight
-  // } = data
-
   const route = useRoute()
+  const mapRef = useRef(null)
 
   const {
     showOwnerAccount = true,
@@ -338,25 +309,27 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
   const { versatileStore } = useStores()
 
-  useEffect(() => {
-    if (!TruckTypeStore.list?.length) {
-      TruckTypeStore.find()
-    }
-    AppState.addEventListener('change', handleAppStateChange)
-    return () => {
-      CarriersJobStore.setDefaultOfData()
-      CarriersJobStore.updateFavoriteInList(FavoriteJobStore.id, FavoriteJobStore.liked)
-      AppState.addEventListener('change', handleAppStateChange)
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (!TruckTypeStore.list?.length) {
+  //     TruckTypeStore.find()
+  //   }
+  //   return () => {
+  //     CarriersJobStore.setDefaultOfData()
+  //     CarriersJobStore.updateFavoriteInList(FavoriteJobStore.id, FavoriteJobStore.liked)
+  //   }
+  // }, [])
 
   useEffect(() => {
     if (!TruckTypeStore.list?.length) {
       TruckTypeStore.find()
     }
+
+    // if (!showOwnerAccount) {
+    //   modalizeRef.current?.open();
+    // }
+
     return () => {
       CarriersJobStore.setDefaultOfData()
-      __DEV__ && console.tron.log('stopListenerTapped()')
     }
   }, [])
 
@@ -378,17 +351,14 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
       const coordinates = [CarriersJobStore.data.from, ...CarriersJobStore.data.to]
       setCoordinates(coordinates)
       CarriersJobStore.getDirections(coordinates)
+      setRegion({
+        latitude: +from.lat - 0.01,
+        longitude: +from.lng,
+        latitudeDelta: 0.05,
+        longitudeDelta: 0.05
+      })
     }
   }, [CarriersJobStore.loading, CarriersJobStore.data])
-
-  const handleAppStateChange = (nextAppState) => {
-    console.log('appState', appState)
-    if (appState.match(/active|background/) && nextAppState === 'active') {
-      console.log('App has come to the foreground!')
-    }
-    // setAppState(nextAppState)
-    console.log('nextAppState', nextAppState)
-  }
 
   const onSelectedHeart = (id: string) => {
     FavoriteJobStore.keepLiked(id, !liked)
@@ -401,7 +371,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     navigation.navigate('shipperProfile')
   }
 
-  const onOpen = () => {
+  const onOpenModalize = () => {
     modalizeRef.current?.open();
   };
 
@@ -418,13 +388,6 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     // onCloseModal()
   }
 
-  // const onCall = (id: string, phoneNumber: string) => {
-  //   // callFriendTapped(phoneNumber)
-  //   // startListenerTapped()
-  //   callPhone(id, phoneNumber)
-  //   // route.name === 'jobDetail' ? navigation.navigate('feedback') : navigation.navigate('myFeedback')
-  // }
-
   const onAnimationFinish = () => {
     setIsBooking(false)
     onCloseModal()
@@ -439,27 +402,22 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         stopListenerTapped()
         CarriersHistoryCallStore.add({ jobId })
         setIsCalling(false)
-        route.name === 'jobDetail' ? navigation.navigate('feedback') : navigation.navigate('myFeedback')
+        // route.name === 'jobDetail' ? navigation.navigate('feedback') : navigation.navigate('myFeedback')
         // setTimeout(() => {
         //   setIsCalling(false)
         //   route.name === 'jobDetail' ? navigation.navigate('feedback') : navigation.navigate('myFeedback')
         // }, 800)
-      }
-      else if (event === 'Connected') { //  for iOS
+      } else if (event === 'Connected') { //  for iOS
         __DEV__ && console.tron.log('Connected')
-      }
-      else if (event === 'Incoming') {
+      } else if (event === 'Incoming') {
         __DEV__ && console.tron.log('Incoming')
-      }
-      else if (event === 'Dialing') { //  for iOS
+      } else if (event === 'Dialing') { //  for iOS
         __DEV__ && console.tron.log('Dialing')
         setIsCalling(true)
-      }
-      else if (event === 'Offhook') { // for Android
+      } else if (event === 'Offhook') { // for Android
         __DEV__ && console.tron.log('Offhook')
         setIsCalling(true)
-      }
-      else if (event === 'Missed') { // for Android
+      } else if (event === 'Missed') { // for Android
         __DEV__ && console.tron.log('Missed')
       }
     },
@@ -470,8 +428,6 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         message: 'This app needs access to your phone state in order to react and/or to adapt to incoming calls.'
       }
     )
-
-    // setCallDetector(call)
   }
 
   const stopListenerTapped = () => {
@@ -497,6 +453,34 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
       })
       .catch(err => __DEV__ && console.tron.log('err', err));
   };
+
+  const changeRegion = (lat: string, lng: string) => {
+    setRegion(prevState => ({
+      ...prevState,
+      latitude: (+lat) - 0.01,
+      longitude: +lng,
+    }))
+
+    mapRef.current.animateToRegion({
+      latitude: (+lat) - 0.01,
+      longitude: +lng,
+      latitudeDelta: 0.05,
+      longitudeDelta: 0.05
+    })
+
+    modalizeRef.current?.close()
+  }
+
+  const visibleProfile = () => {
+    navigation.navigate('bookerProfile', {
+      isBooker: true
+    })
+  }
+
+  const onLayoutDetail = (e: LayoutChangeEvent) => {
+    const { height } = e.nativeEvent.layout
+    setScrollY(height)
+  }
 
   const RenderButtonAlert = () => {
     const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.line, backgroundColor: color.transparent }
@@ -527,8 +511,6 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   const txtTruckType = productTypeId && truckTypeList.length
     ? (truckTypeList.filter(({ id }) => id === +truckType)?.[0]?.name || translate('common.notSpecified'))
     : translate('common.notSpecified')
-
-  // const txtTruckType = GetTruckType(+truckType)
 
   const productTypeList = versatileStore.listProductType
   const productType = productTypeId && productTypeList.length
@@ -561,26 +543,24 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     visible: visibleModal,
   }
 
+  const ownerProfile = {
+    id: id,
+    postBy: owner?.companyName || '',
+    rating: '0',
+    ratingCount: '0',
+    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
+  }
+
   return (
     <View style={CONTAINER}>
-      <ModalLoading size={'large'} color={color.primary} visible={!!(CarriersJobStore.mapLoading || CarriersJobStore.loading || isCalling)} />
+      <ModalLoading size={'large'} color={color.primary} visible={CarriersJobStore.mapLoading || CarriersJobStore.loading || isCalling} />
       <View style={MAP_CONTAINER}>
         {from && !!from.lat && !!from.lng && !!CarriersJobStore.directions.length &&
           <MapView
             style={{ flex: 1 }}
             provider={PROVIDER_GOOGLE}
-            initialRegion={{
-              latitude: +from.lat - 0.01,
-              longitude: +from.lng,
-              latitudeDelta: 0.05,
-              longitudeDelta: 0.05
-            }}
-            region={{
-              latitude: +from.lat - 0.01,
-              longitude: +from.lng,
-              latitudeDelta: 0.05,
-              longitudeDelta: 0.05
-            }}
+            initialRegion={region}
+            ref={mapRef}
           >
             {!!coordinates.length && coordinates.map((attr, index) => (
               <Marker
@@ -588,7 +568,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                 coordinate={{ latitude: +attr.lat, longitude: +attr.lng }}
               >
                 <MaterialIcons name={'location-pin'} color={!index ? color.primary : color.success} size={48} />
-                <Callout style={{ width: deviceWidht - 80 }}>
+                <Callout style={{ width: deviceWidht - 80, padding: spacing[2] }}>
                   <Text text={attr.name} />
                 </Callout>
               </Marker>
@@ -599,24 +579,32 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           </MapView>
         }
 
-        <TouchableOpacity activeOpacity={1} onPress={onOpen} onPressOut={onOpen} style={CONTENT_SMALL}>
-          <View style={FLOAT_CONTAINER}>
+        <View style={CONTEXT_SMALL_CONTAINER}>
+          <TouchableOpacity activeOpacity={1} style={FLOAT_CONTAINER} onPress={onOpenModalize} onPressOut={onOpenModalize}>
             <View style={FLOAT_LINE} />
-          </View>
-          <PickUpPoint from={from} to={to} distances={CarriersJobStore.distances} containerStyle={{ overflow: 'hidden' }} />
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={1} onPress={onOpenModalize} onPressOut={onOpenModalize} style={CONTENT_SMALL}>
+            <PickUpPoint from={from} to={to} distances={CarriersJobStore.distances} containerStyle={{ overflow: 'hidden' }} onPress={null} />
 
-          <View style={{ position: 'absolute', right: -spacing[5], top: -spacing[4] }}>
-            <SwipeUpArrows color={color.disable} />
-          </View>
+            {/* <View style={{ position: 'absolute', right: -spacing[5], top: -spacing[4] }}>
+              <SwipeUpArrows color={color.disable} />
+            </View> */}
 
-        </TouchableOpacity>
+          </TouchableOpacity>
+        </View>
 
       </View>
 
       <Modalize
         ref={modalizeRef}
-        scrollViewProps={{ showsVerticalScrollIndicator: true }}
-        snapPoint={300}
+        scrollViewProps={{
+          showsVerticalScrollIndicator: true,
+          // contentOffset: {
+          //   x: 0,
+          //   y: scrollY
+          // }
+        }}
+        // snapPoint={!showOwnerAccount ? null : 300}
         // HeaderComponent={}
         modalStyle={{
           flex: 1,
@@ -625,13 +613,19 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         withHandle={true}
       // tapGestureEnabled={true}
       >
-        <View style={SCROLL_VIEW}>
+        <View style={SCROLL_VIEW} onLayout={(e) => onLayoutDetail(e)}>
 
           <View style={TOP_ROOT}>
             <View>
               <Text tx={'jobDetailScreen.pickUpPoint'} style={{ ...TEXT_SMALL, color: color.line, }} />
             </View>
-            <PickUpPoint from={from} to={to} containerStyle={{ paddingBottom: spacing[4] }} distances={CarriersJobStore.distances} />
+            <PickUpPoint
+              from={from}
+              to={to}
+              containerStyle={{ paddingBottom: spacing[4] }}
+              distances={CarriersJobStore.distances}
+              onPress={(lat, lng) => changeRegion(lat, lng)}
+            />
             <View style={{ ...BOTTOM_LINE, ...LOCATION_BOX, flexDirection: 'row', paddingBottom: spacing[3] }}>
               <View style={{ ...LOCATION, flex: 3 }}>
                 <Dot color={color.sky} />
@@ -675,7 +669,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           <View style={ONWER_ROOT}>
             <View style={ROW}>
               <Text style={{ color: color.line }}>{translate('jobDetailScreen.postBy')}</Text>
-              <PostingBy {...DATA} onToggle={() => onPress()} />
+              <PostingBy {...ownerProfile} onToggle={() => onPress()} />
             </View>
           </View>
         }
@@ -693,12 +687,13 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             detailStyle={{ color: color.line }}
             btnStyle={{ paddingVertical: 2, paddingHorizontal: spacing[2] }}
             btnTextStyle={{ fontSize: 12, paddingLeft: spacing[1] }}
+            onToggle={() => visibleProfile()}
           />)}
         </View>}
 
       </Modalize>
 
-      <View style={BOTTOM_ROOT}>
+      {showOwnerAccount && (<View style={BOTTOM_ROOT}>
         <Button
           testID="call-with-owner"
           style={[BTN_STYLE, { backgroundColor: color.line }]}
@@ -709,9 +704,8 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             </View>
           }
           onPress={() => onCall(id, owner.mobileNo)}
-        // onPress={() => callFriendTapped()}
         />
-        <Button
+        {/* <Button
           testID="book-a-job"
           style={[BTN_STYLE, { backgroundColor: color.primary }]}
           children={
@@ -721,20 +715,8 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             </View>
           }
           onPress={confirmBookAJob}
-        />
-      </View>
-
-      {/* <ModalAlert
-        containerStyle={{ paddingTop: spacing[5], paddingBottom: spacing[2] }}
-        imageComponent={RenderImageAlert}
-        header={translate('jobDetailScreen.confirmJob')}
-        headerStyle={{ paddingTop: spacing[3], color: color.primary }}
-        content={translate('jobDetailScreen.callbackForOwner')}
-        contentStyle={{ paddingTop: spacing[1], paddingBottom: spacing[5], paddingHorizontal: spacing[7], color: color.line }}
-        buttonContainerStyle={{ width: '90%' }}
-        buttonComponent={RenderButtonAlert}
-        visible={visibleModal}
-      /> */}
+        /> */}
+      </View>)}
 
       <ModalAlert {...modalProps} />
 

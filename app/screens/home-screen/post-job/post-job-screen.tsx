@@ -13,7 +13,7 @@ import { Modal, ModalContent } from 'react-native-modals';
 import { MapTruckImageName } from '../../../utils/map-truck-image-name'
 import { AlertForm } from '../../../utils/alert-form'
 import { useStores } from "../../../models/root-store/root-store-context";
-
+import StatusStore from '../../../store/post-job-store/job-status-store'
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width } = Dimensions.get("window")
@@ -110,15 +110,17 @@ const IMAGE_LIST: ImageStyle = {
 }
 
 export const PostJobScreen = observer(function PostJobScreen() {
-  const { versatileStore } = useStores()
+  const { versatileStore, tokenStore } = useStores()
   const navigation = useNavigation()
 
   const { control, handleSubmit, errors } = useForm({
-    // defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : MyVehicleStore.MappingData
+    defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : (PostJobStore.postjob1 || {})
   });
 
   useEffect(() => {
     AdvanceSearchStore.getProductTypes()
+    let token = tokenStore?.token?.accessToken || null
+    if (!token) navigation.navigate("signin")
   }, [])
 
   const onSubmit = (data) => {
@@ -127,9 +129,13 @@ export const PostJobScreen = observer(function PostJobScreen() {
     if (!data['vehicle-type']) { AlertForm("postJobScreen.truckType"); return; }
     else if (!data['item-type']) { AlertForm("postJobScreen.productType"); return; }
     PostJobStore.setPostJob(1, data)
-    navigation.navigate("receivePoint")
+    let status_action = JSON.parse(JSON.stringify(StatusStore.status))
+    if (status_action == "add")
+      navigation.navigate("receivePoint")
+    else navigation.navigate("MyJob", { screen: "receivePoint" })
   }
 
+  
   const _renderSectionModal = (item: any, index: any, onChange: any, section: any) => {
     return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name + index} style={ROOT_FLAT_LIST} onPress={() => {
       if (section == 1) setvisible0(false)
@@ -149,7 +155,6 @@ export const PostJobScreen = observer(function PostJobScreen() {
   }
 
   const _renderSelectedList = (item, section) => {
-    __DEV__ && console.tron.log('Item :: ', item)
     return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name} style={ROOT_FLAT_LIST} onPress={() => {
       if (section == 1) setvisible0(true)
       else if (section == 2) setvisible(true)
@@ -206,7 +211,6 @@ export const PostJobScreen = observer(function PostJobScreen() {
   }
 
   let list_product_type_all = JSON.parse(JSON.stringify(AdvanceSearchStore.productTypes))
-  __DEV__ && console.tron.log("Form Value :: ", formControllerValue)
 
 
 

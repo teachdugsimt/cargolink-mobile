@@ -153,7 +153,9 @@
     "validateReceiveTel": "please check receive tel no",
     "receiveDateMoreThan": "receive date must be more 2 days from now",
     "checkShippingDate": "please check date",
-    "shippingDateMoreThan": "Date of delivery should not be a date before the date of loading"
+    "shippingDateMoreThan": "Date of delivery should not be a date before the date of loading",
+    "updateJob": "update job",
+    "updateJobSucess": "update job success"
   },
   "uploadVehicleScreen": {
     "addVehicle": "Add Vehicle",

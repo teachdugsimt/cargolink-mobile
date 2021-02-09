@@ -153,7 +153,9 @@
     "validateReceiveTel": "กรุณาตรวจสอบเบอร์ติดต่อ",
     "receiveDateMoreThan": "วันรับสินค้าต้องมากกว่าวันปัจจุบัน 2 วัน",
     "checkShippingDate": "กรุตรวจสอบวันที่",
-    "shippingDateMoreThan": " วันส่งสินค้าต้องมากกว่าวันรับสินค้า"
+    "shippingDateMoreThan": " วันส่งสินค้าต้องมากกว่าวันรับสินค้า",
+    "updateJob": "แก้ไขงาน",
+    "updateJobSucess": "แก้ไขงานสำเร็จ"
   },
   "uploadVehicleScreen": {
     "addVehicle": "เพิ่มรถ",

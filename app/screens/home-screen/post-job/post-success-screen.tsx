@@ -2,11 +2,11 @@ import React, { useEffect } from "react"
 import { View, ViewStyle, TextStyle, Platform, StyleSheet, Dimensions } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
-import { Text, RoundedButton, AddJobElement } from "../../../components"
+import { Text, RoundedButton, AddJobElement, HeaderCenter } from "../../../components"
 import { color, images } from "../../../theme"
 import PostJobStore from "../../../store/post-job-store/post-job-store";
 import LottieView from 'lottie-react-native';
-
+import StatusStore from '../../../store/post-job-store/job-status-store'
 const SuccessAnimmation = () => {
   return <LottieView source={require('../../../AnimationJson/order-packed.json')}
     autoPlay loop style={{ height: '100%' }} />
@@ -67,11 +67,16 @@ export const PostSuccessScreen = observer(function PostSuccessScreen() {
   const id_post = (JSON.parse(JSON.stringify(PostJobStore.data_postjob))) || ''
 
   useEffect(() => {
+    navigation.setOptions({
+      headerCenter: () => (
+        <HeaderCenter tx={"postJobScreen.updateJob"} />
+      ),
+    });
     return () => {
       PostJobStore.clearDataPostjob()
     }
   }, [])
-
+  let status_action = JSON.parse(JSON.stringify(StatusStore.status))
   return (
     <View testID="PostSuccessScreen" style={FULL}>
       <View style={TOP_VIEW}>
@@ -85,7 +90,7 @@ export const PostSuccessScreen = observer(function PostSuccessScreen() {
           </View>
 
           <View style={{ flex: 2, marginTop: -75 }}>
-            <Text tx={"postJobScreen.postJobSuccess"} preset={'topic'} style={TEXT_TOPIC} />
+            <Text tx={status_action && status_action == "add" ? "postJobScreen.postJobSuccess" : "postJobScreen.updateJobSucess"} preset={'topic'} style={TEXT_TOPIC} />
             <View style={ROW_TEXT}>
               <Text tx={"common.id"} preset={'topicExtra'} style={TEXT_SUB_TITLE} />
               {!!id_post && <Text preset={'topicExtra'} style={TEXT_SUB_TITLE}>{" " + id_post}</Text>}
@@ -95,7 +100,11 @@ export const PostSuccessScreen = observer(function PostSuccessScreen() {
         </View>
 
         <View style={VIEW_BUTTON}>
-          <RoundedButton testID={"success-vehicle-detail"} onPress={() => navigation.navigate("home")} text={"common.ok"} containerStyle={BUTTON_CONTAINER} textStyle={TEXT_BUTTTON_STYLE} />
+          <RoundedButton testID={"success-vehicle-detail"} onPress={() => {
+            if (status_action == "add")
+              navigation.navigate("home")
+            else navigation.navigate("MyJob", { screen: "myjob" })
+          }} text={"common.ok"} containerStyle={BUTTON_CONTAINER} textStyle={TEXT_BUTTTON_STYLE} />
         </View>
       </View>
     </View>
