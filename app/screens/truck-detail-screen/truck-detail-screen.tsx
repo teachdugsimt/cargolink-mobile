@@ -85,7 +85,6 @@ const BOTTOM_ROOT: ViewStyle = {
 const CALL_TEXT: TextStyle = {
   color: color.textWhite,
   fontSize: 18,
-  paddingVertical: spacing[1]
 }
 const ICON_BOX: ViewStyle = {
   paddingTop: spacing[2]
@@ -334,7 +333,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
           }
           onPress={() => onCall(id, phoneNumber)}
         />
-        <Button
+        {/* <Button
           testID="book-a-job"
           style={[BTN_STYLE, { backgroundColor: color.primary }]}
           children={
@@ -344,7 +343,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
             </View>
           }
           onPress={confirmBookAJob}
-        />
+        /> */}
       </View>
     </View>
   )

@@ -309,24 +309,24 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
   const { versatileStore } = useStores()
 
-  useEffect(() => {
-    if (!TruckTypeStore.list?.length) {
-      TruckTypeStore.find()
-    }
-    return () => {
-      CarriersJobStore.setDefaultOfData()
-      CarriersJobStore.updateFavoriteInList(FavoriteJobStore.id, FavoriteJobStore.liked)
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (!TruckTypeStore.list?.length) {
+  //     TruckTypeStore.find()
+  //   }
+  //   return () => {
+  //     CarriersJobStore.setDefaultOfData()
+  //     CarriersJobStore.updateFavoriteInList(FavoriteJobStore.id, FavoriteJobStore.liked)
+  //   }
+  // }, [])
 
   useEffect(() => {
     if (!TruckTypeStore.list?.length) {
       TruckTypeStore.find()
     }
 
-    if (!showOwnerAccount) {
-      modalizeRef.current?.open();
-    }
+    // if (!showOwnerAccount) {
+    //   modalizeRef.current?.open();
+    // }
 
     return () => {
       CarriersJobStore.setDefaultOfData()
@@ -402,7 +402,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         stopListenerTapped()
         CarriersHistoryCallStore.add({ jobId })
         setIsCalling(false)
-        route.name === 'jobDetail' ? navigation.navigate('feedback') : navigation.navigate('myFeedback')
+        // route.name === 'jobDetail' ? navigation.navigate('feedback') : navigation.navigate('myFeedback')
         // setTimeout(() => {
         //   setIsCalling(false)
         //   route.name === 'jobDetail' ? navigation.navigate('feedback') : navigation.navigate('myFeedback')
@@ -705,7 +705,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           }
           onPress={() => onCall(id, owner.mobileNo)}
         />
-        <Button
+        {/* <Button
           testID="book-a-job"
           style={[BTN_STYLE, { backgroundColor: color.primary }]}
           children={
@@ -715,7 +715,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             </View>
           }
           onPress={confirmBookAJob}
-        />
+        /> */}
       </View>)}
 
       <ModalAlert {...modalProps} />
