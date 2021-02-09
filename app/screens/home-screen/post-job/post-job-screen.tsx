@@ -135,6 +135,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
     else navigation.navigate("MyJob", { screen: "receivePoint" })
   }
 
+  
   const _renderSectionModal = (item: any, index: any, onChange: any, section: any) => {
     return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name + index} style={ROOT_FLAT_LIST} onPress={() => {
       if (section == 1) setvisible0(false)
