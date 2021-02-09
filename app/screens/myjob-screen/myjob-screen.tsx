@@ -147,9 +147,9 @@ const Item = (data) => {
       <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={onEdit}>
         <Text tx={'myJobScreen.editJob'} style={{ color: color.line }} />
       </TouchableOpacity>
-      <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onVisible}>
+      {/* <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onVisible}>
         <Text tx={'myJobScreen.bookerWaiting'} style={{ color: color.primary }} />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   )
 
@@ -266,7 +266,7 @@ export const MyJobScreen = observer(function MyJobScreen() {
   return (
     <View testID="MyJobScreen" style={FULL}>
 
-      <View style={HEADER}>
+      {/* <View style={HEADER}>
         <TouchableOpacity activeOpacity={1} style={firstTabStyle}
           onPress={() => setActiveTab(0)} >
           <Text tx={'myJobScreen.workOpen'} style={{ ...TEXT, color: activeTab === 0 ? color.textBlack : color.textWhite }} />
@@ -279,7 +279,7 @@ export const MyJobScreen = observer(function MyJobScreen() {
           onPress={() => setActiveTab(2)} >
           <Text tx={'myJobScreen.workDone'} style={{ ...TEXT, color: activeTab === 2 ? color.textBlack : color.textWhite }} />
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       <View style={CONTENT}>
         <FlatList
