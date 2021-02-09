@@ -2,6 +2,7 @@ import { types, destroy, flow } from "mobx-state-tree"
 import { PostJobAPI } from '../../services/api'
 const postjobAPI = new PostJobAPI()
 
+const dateError: string = "Date of delivery should not be a date before the date of loading"
 const RegionMap = types.model({
   longitudeDelta: types.maybeNull(types.number),
   longitude: types.maybeNull(types.number),
@@ -74,7 +75,7 @@ const PostJobStore = types.model({
           __DEV__ && console.tron.log("Response ERROR POST JOB :: ", response)
           if (response.data && response.data.validMsgList && response.data.validMsgList['from.datetime'] &&
             response.data.validMsgList['from.datetime'][0] && response.data.validMsgList['from.datetime'][0]
-            == "Date of delivery should not be a date before the date of loading") {
+            == dateError) {
             __DEV__ && console.tron.log("Error : : Call API post job :: ", response)
             self.error = response.data.validMsgList['from.datetime'][0]
           } else
@@ -105,7 +106,7 @@ const PostJobStore = types.model({
           __DEV__ && console.tron.log("Response ERROR POST JOB :: ", response)
           if (response.data && response.data.validMsgList && response.data.validMsgList['from.datetime'] &&
             response.data.validMsgList['from.datetime'][0] && response.data.validMsgList['from.datetime'][0]
-            == "Date of delivery should not be a date before the date of loading") {
+            == dateError) {
             __DEV__ && console.tron.log("Error : : Call API post job :: ", response)
             self.error = response.data.validMsgList['from.datetime'][0]
           } else
