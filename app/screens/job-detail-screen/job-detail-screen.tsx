@@ -674,7 +674,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           </View>
         }
 
-        {booker.length > 0 && <View style={ONWER_ROOT}>
+        {/* {booker.length > 0 && <View style={ONWER_ROOT}>
           <Text tx={'myJobScreen.listOfBookingJob'} preset={'topic'} style={TOPIC} />
           {booker.map((booker, index) => <BookerItem
             key={index}
@@ -689,7 +689,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             btnTextStyle={{ fontSize: 12, paddingLeft: spacing[1] }}
             onToggle={() => visibleProfile()}
           />)}
-        </View>}
+        </View>} */}
 
       </Modalize>
 
