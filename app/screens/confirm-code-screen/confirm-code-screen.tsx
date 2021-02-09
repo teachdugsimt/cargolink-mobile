@@ -71,8 +71,8 @@ const CODE_INPUT_FILED_STYLE: TextStyle = {
   borderColor: color.transparent,
   borderBottomWidth: 2,
   borderBottomColor: color.line,
-  fontSize: 25,
-  color: color.dim,
+  fontSize: 24,
+  color: color.dim
 }
 const CODE_INPUT_HIGHTLIGHT_STYLE: ViewStyle = {
   borderColor: color.transparent,
