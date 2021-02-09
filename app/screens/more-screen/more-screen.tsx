@@ -36,26 +36,29 @@ const HEADER_TITLE: TextStyle = {
 }
 const CONTAINER: ViewStyle = {
   flex: 1,
-  justifyContent: 'center',
+  // justifyContent: 'center',
   // alignItems: 'center',
+  paddingTop: spacing[5],
   paddingLeft: spacing[4] + spacing[1],
   paddingRight: spacing[4] + spacing[1]
 }
-const COLUMN: ViewStyle = {
-  flex: 1,
-  justifyContent: 'center'
+const GROUP: ViewStyle = {
+  // flex: 1,
+  // justifyContent: 'center'
+  marginBottom: spacing[5]
 }
 const TOPIC: TextStyle = {
-  ...BOLD,
+  // ...BOLD,
+  fontFamily: 'Kanit-Bold',
   paddingBottom: spacing[2],
 }
 const MENU: ViewStyle = {
   flexDirection: 'row',
   justifyContent: 'space-between',
   paddingTop: spacing[2],
-  paddingBottom: spacing[2],
+  marginBottom: spacing[2],
   borderBottomWidth: 1,
-  borderColor: color.line,
+  borderColor: color.line
 }
 const BUTTON: ViewStyle = {
   backgroundColor: color.line,
@@ -72,23 +75,39 @@ const ROUND_BUTTON_TEXT: TextStyle = {
   color: color.textWhite
 }
 const MENUS: Array<MenuProps> = [
+  // {
+  //   key: 'security',
+  //   topic: 'moreScreen.security', // 'ความปลอดภัย'
+  //   subMenu: [{
+  //     key: 'set-password',
+  //     label: 'moreScreen.setYourPassword', // 'ตั้งค่ารหัสผ่านของคุณ'
+  //     icon: 'chevron-forward'
+  //   }]
+  // },
+  // {
+  //   key: 'problemReport',
+  //   topic: 'moreScreen.problemReport', // 'ความปลอดภัย'
+  //   subMenu: [{
+  //     key: 'report',
+  //     label: 'moreScreen.report', // 'ตั้งค่ารหัสผ่านของคุณ'
+  //     icon: 'chevron-forward'
+  //   }]
+  // },
   {
-    key: 'security',
-    topic: 'moreScreen.security', // 'ความปลอดภัย'
-    subMenu: [{
-      key: 'set-password',
-      label: 'moreScreen.setYourPassword', // 'ตั้งค่ารหัสผ่านของคุณ'
-      icon: 'chevron-forward'
-    }]
-  },
-  {
-    key: 'problemReport',
-    topic: 'moreScreen.problemReport', // 'ความปลอดภัย'
-    subMenu: [{
-      key: 'report',
-      label: 'moreScreen.report', // 'ตั้งค่ารหัสผ่านของคุณ'
-      icon: 'chevron-forward'
-    }]
+    key: 'language',
+    topic: 'moreScreen.language',
+    subMenu: [
+      {
+        key: 'thai',
+        label: 'moreScreen.thai',
+        icon: 'chevron-forward'
+      },
+      {
+        key: 'english',
+        label: 'moreScreen.english',
+        icon: 'chevron-forward'
+      },
+    ]
   },
   {
     key: 'contact-us',
@@ -102,22 +121,6 @@ const MENUS: Array<MenuProps> = [
       {
         key: 'call-center',
         label: 'moreScreen.callCenter', // 'Call Center'
-        icon: 'chevron-forward'
-      },
-    ]
-  },
-  {
-    key: 'language',
-    topic: 'moreScreen.language',
-    subMenu: [
-      {
-        key: 'thai',
-        label: 'moreScreen.thai',
-        icon: 'chevron-forward'
-      },
-      {
-        key: 'english',
-        label: 'moreScreen.english',
         icon: 'chevron-forward'
       },
     ]
@@ -178,32 +181,36 @@ export const MoreScreen = observer(function MoreScreen() {
     <View testID="MoreScreen" style={FULL}>
 
       <View style={CONTAINER}>
+        <View style={{ flex: 1 }}>
+          {MENUS.map(menu => {
+            return (
+              <View key={menu.key} style={GROUP}>
+                <Text
+                  tx={menu.topic}
+                  style={TOPIC}
+                />
+                {menu.key && menu.key != "language" && menu.subMenu && menu.subMenu.map(item => {
+                  return (
+                    <TouchableOpacity key={item.key} style={MENU} onPress={() => _pressMenu(item)}>
+                      <Text tx={item.label} style={{ color: color.line }} />
+                      <Icon name={item.icon} size={24} color={color.line} />
+                    </TouchableOpacity>
+                  )
+                })}
 
-        {MENUS.map(menu => {
-          return (
-            <View key={menu.key} style={COLUMN}>
-              <Text
-                tx={menu.topic}
-                style={TOPIC}
-              />
-              {menu.key && menu.key != "language" && menu.subMenu && menu.subMenu.map(item => {
-                return (
-                  <TouchableOpacity key={item.key} style={MENU} onPress={() => _pressMenu(item)}>
-                    <Text tx={item.label} style={{ color: color.line }} />
-                    <Icon name={item.icon} size={24} color={color.line} />
-                  </TouchableOpacity>
-                )
-              })}
+                <View style={RADIO_VIEW}>
+                  {menu.key && menu.key == "language" && (list.map((e, i) => _renderFlag(e, i)))}
+                </View>
 
-              <View style={RADIO_VIEW}>
-                {menu.key && menu.key == "language" && (list.map((e, i) => _renderFlag(e, i)))}
               </View>
+            )
+          })}
+        </View>
 
-            </View>
-          )
-        })}
-
-        <View style={{ ...COLUMN, justifyContent: 'flex-end', paddingVertical: 10 }}>
+        <View style={{
+          // ...GROUP, justifyContent: 'flex-end',
+          paddingVertical: 10
+        }}>
           <RoundedButton onPress={() => {
             tokenStore.clearToken()
             AuthStore.clearAuthProfile()
