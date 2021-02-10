@@ -3,7 +3,7 @@ const sleep = duration =>
 describe("CargoLinkMobile", () => {
 
   beforeAll(async () => {
-    // await device.reloadReactNative()
+    await device.reloadReactNative()
   })
 
   describe("Aithentication flow ", () => {
