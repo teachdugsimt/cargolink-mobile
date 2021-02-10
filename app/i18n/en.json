@@ -44,6 +44,7 @@
     "low": "Low Stall",
     "medium": "Medium Stall",
     "height": "Height Stall",
+    "high": "Height Stall",
     "somethingWrong": "something went wrong",
     "pleaseCheckYourData": "please check your data",
     "bookAJob": "Book a job",

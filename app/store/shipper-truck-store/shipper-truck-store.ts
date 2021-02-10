@@ -26,13 +26,18 @@ const defaultModel = {
 
 const ShipperJob = types.model(defaultModel)
 
+const ImageModel = types.model({
+  object: types.maybeNull(types.string),
+  token: types.maybeNull(types.string),
+})
+
 const ShipperJobFull = types.model({
   ...defaultModel,
   truckPhotos: types.maybeNull(types.model({
-    front: types.maybeNull(types.string),
-    back: types.maybeNull(types.string),
-    left: types.maybeNull(types.string),
-    right: types.maybeNull(types.string),
+    front: types.maybeNull(ImageModel),
+    back: types.maybeNull(ImageModel),
+    left: types.maybeNull(ImageModel),
+    right: types.maybeNull(ImageModel),
   })),
   truckTypeName: types.maybeNull(types.string),
   owner: types.maybeNull(types.model({
