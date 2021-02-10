@@ -3,11 +3,20 @@ package th.co.cargolink.mobile;
 
 import com.facebook.react.ReactActivity;
 
-        import com.facebook.react.ReactActivityDelegate;
-        import com.facebook.react.ReactRootView;
-        import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
+import com.facebook.react.ReactActivityDelegate;
+import com.facebook.react.ReactRootView;
+import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
+
+import org.devio.rn.splashscreen.SplashScreen; // Import this.
+import android.os.Bundle; // Import this.
 
 public class MainActivity extends ReactActivity {
+  // Add this method.
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+      SplashScreen.show(this);
+      super.onCreate(savedInstanceState);
+  }
 
   @Override
   protected ReactActivityDelegate createReactActivityDelegate() {
