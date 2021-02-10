@@ -235,17 +235,19 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
   const transformImage = truckPhotos &&
     Object.keys(truckPhotos).length ?
     Object.entries(truckPhotos).map(img => {
+      //  __DEV__ &&  console.tron.log("Image MAPPING RAW :: ", img)
       let imageInfo: ImageInfo = {
         width: 1024,
         height: 720,
         title: `img-${img[0]}`
       }
-      if (img[1]) {
+      if (img[1] && img[1].object) {
         imageInfo.source = {
-          uri: img[1],
+          uri: img[1].object,
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${tokenStore.token.accessToken}`
+            Authorization: img[1].token,
+            adminAuth: img[1].token
           }
         }
       } else {
@@ -253,7 +255,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
       }
       return imageInfo
     }) : []
-
+  __DEV__ && console.tron.log("Transform Image :: ", transformImage)
   const truckImage = MapTruckImageName(+truckType)
 
   return (
@@ -268,8 +270,12 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
             <View style={IMAGES}>
               {!!transformImage &&
                 transformImage.map((image, index) => {
+                  // __DEV__ && console.tron.log("Image index : ", image)
                   return (
-                    <TouchableOpacity style={TOUCHABLE} key={index} onPress={(attr) => onViewer(index)}>
+                    <TouchableOpacity style={TOUCHABLE} key={index} onPress={(attr) => {
+                      if (ShipperTruckStore.data.id && image && image.source && image.source != 51) onViewer(index)
+                    }
+                    }>
                       <Image style={IMAGE} source={ShipperTruckStore.data.id && image?.source ? image.source : imageComponent['noImageAvailable']} key={index} />
                     </TouchableOpacity>
                   )
@@ -299,7 +305,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
               <Text text={`${translate('common.vehicleTypeField')} : ${GetTruckType(+truckType)?.name || translate('common.notSpecified')}`} style={TEXT} />
               <Text text={`${translate('common.count')} : ${2} ${translate('jobDetailScreen.unit')}`} style={TEXT} />
               <Text text={`${translate('vehicleDetailScreen.carHaveDum')} : ${tipper ? translate('common.have') : translate('common.notHave')}`} style={TEXT} />
-              <Text text={`${translate('truckDetailScreen.heighttOfTheCarStall')} : ${stallHeight || '-'} ${translate('common.M')}`} style={TEXT} />
+              <Text text={`${translate('truckDetailScreen.heighttOfTheCarStall')} : ${stallHeight ? translate(`common.${stallHeight.toLowerCase()}`) : '-'} `} style={TEXT} />
             </View>
           </View>
 

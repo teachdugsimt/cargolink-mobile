@@ -44,6 +44,7 @@
     "low": "Low Stall",
     "medium": "Medium Stall",
     "height": "Height Stall",
+    "high": "Height Stall",
     "somethingWrong": "something went wrong",
     "pleaseCheckYourData": "please check your data",
     "bookAJob": "Book a job",
@@ -55,7 +56,8 @@
     "amount": "Amount",
     "new": "New",
     "done": "Done",
-    "totalJobText": "*We enable users, both transporters and transporters, to post jobs or find cars if users can choose from the homepage. "
+    "totalJobText": "*We enable users, both transporters and transporters, to post jobs or find cars if users can choose from the homepage. ",
+    "pleaseLogin": "please login before update profile"   
   },
   "commentScreen":{
     "yourComment": "Your Comment",
