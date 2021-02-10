@@ -15,7 +15,7 @@ import FontIcon from 'react-native-vector-icons/FontAwesome5'
 const { width, height } = Dimensions.get('window')
 const FULL: ViewStyle = { flex: 1 }
 const ROW: ViewStyle = { flexDirection: 'row' }
-const ALL_CENTER: ViewStyle = { justifyContent: 'center', alignItems: 'center' }
+const ALL_CENTER: ViewStyle = { justifyContent: 'center', alignItems: Platform.OS == "android" ? 'flex-start' : 'center' }
 
 const TOP_VIEW: ViewStyle = {
   height: 230,
@@ -43,7 +43,7 @@ const ROOT_HOME: ViewStyle = {
 }
 const VIEW_ICON: ViewStyle = { borderRadius: 20, height: 40, width: 40, justifyContent: 'center', alignItems: 'center', backgroundColor: color.line, marginHorizontal: 15 }
 
-const CONTACT_VIEW: ViewStyle = { flex: Platform.OS == "android" ? 0.4 : 0.3 }
+const CONTACT_VIEW: ViewStyle = { flex: Platform.OS == "android" ? 0.5 : 0.6 }
 export const HomeScreen = observer((props) => {
   const { tokenStore, versatileStore } = useStores()
 
@@ -162,9 +162,9 @@ export const HomeScreen = observer((props) => {
             <TouchableOpacity style={VIEW_ICON} onPress={() => Linking.openURL(versatileStore.fblink)}>
               <FontIcon name={"facebook"} size={24} />
             </TouchableOpacity>
-            <TouchableOpacity style={VIEW_ICON} onPress={() => console.log("LINE PRESS")}>
+            {/* <TouchableOpacity style={VIEW_ICON} onPress={() => console.log("LINE PRESS")}>
               <FontIcon name={"line"} size={24} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity style={VIEW_ICON} onPress={() => onCall(versatileStore.phoneNumber)}>
               <Ionicons name={"call"} size={22} />
             </TouchableOpacity>
