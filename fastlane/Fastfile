@@ -36,7 +36,7 @@ platform :ios do
 
   after_all do |lane|
     clean_build_artifacts
-    tag_string = "v" + version + " build " + build_number
+    tag_string = "v" + version + "-b" + build_number
     commit_version_bump(message: 'Bump build (ios) ' + tag_string, xcodeproj: './ios/CargoLinkMobile.xcodeproj')
     add_git_tag(tag: tag_string)
   end
