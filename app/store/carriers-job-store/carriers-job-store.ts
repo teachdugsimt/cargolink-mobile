@@ -37,13 +37,13 @@ const CarriersJob = types.model({
     companyName: types.maybeNull(types.string),
     fullName: types.maybeNull(types.string),
     mobileNo: types.maybeNull(types.string),
-    email: types.maybeNull(types.string)
+    email: types.maybeNull(types.string),
+    avatar: types.maybeNull(types.model({
+      object: types.maybeNull(types.string),
+      token: types.maybeNull(types.string),
+    }))
   })),
   isLiked: types.maybeNull(types.optional(types.boolean, false)),
-  avatar: types.maybeNull(types.model({
-    object: types.maybeNull(types.string),
-    token: types.maybeNull(types.string),
-  }))
 })
 
 const Directions = types.model({
@@ -63,6 +63,20 @@ const SummaryDistances = types.model({
   duration: types.optional(types.number, 0),
 })
 
+const Profile = {
+  id: types.maybeNull(types.number),
+  userId: types.maybeNull(types.string),
+  companyName: types.maybeNull(types.string),
+  fullName: types.maybeNull(types.string),
+  mobileNo: types.maybeNull(types.string),
+  email: types.maybeNull(types.string),
+  avatar: types.maybeNull(types.model({
+    object: types.maybeNull(types.string),
+    token: types.maybeNull(types.string),
+  })),
+  imageProps: types.maybeNull(types.string)
+}
+
 const isAutenticated = async () => {
   const profile = await storage.load('root')
   return !!profile?.tokenStore?.token?.accessToken
@@ -72,6 +86,7 @@ const CarriersJobStore = types
   .model({
     list: types.maybeNull(types.array(types.maybeNull(CarriersJob))),
     data: types.maybeNull(CarriersJob),
+    profile: types.model(Profile),
     previousListLength: types.optional(types.number, 0),
     favoriteList: types.maybeNull(CarriersJob),
     directions: types.optional(types.array(types.array(Directions)), []),
@@ -260,6 +275,23 @@ const CarriersJobStore = types
       })
     },
 
+    setProfile: function setProfile(data) {
+      self.profile = JSON.parse(JSON.stringify(data))
+    },
+
+    setDefaultOfProfile: function setDefaultOfProfile() {
+      self.profile = {
+        id: 0,
+        userId: '',
+        companyName: '',
+        fullName: '',
+        mobileNo: '',
+        email: '',
+        avatar: null,
+        imageProps: null
+      }
+    },
+
     setDefaultOfList: function setDefaultOfList() {
       self.list = cast([])
     }
@@ -276,6 +308,7 @@ const CarriersJobStore = types
     // IMPORTANT !!
     list: [],
     data: {},
+    profile: {},
     previousListLength: 0,
     loading: false,
     mapLoading: false,

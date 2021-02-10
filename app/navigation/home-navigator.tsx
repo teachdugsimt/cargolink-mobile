@@ -14,7 +14,8 @@ import {
   UploadVehicleScreen, SuccessUpload,
   VehicleDetailScreen, CheckInformationScreen,
   ShipperProfileScreen, ReceivePointScreen, FeedbackScreen, SearchTruckScreen,
-  PostSuccessScreen, AdvanceSearchTruckScreen, TruckDetailScreen, SelectJobScreen, CommentScreen
+  PostSuccessScreen, AdvanceSearchTruckScreen, TruckDetailScreen, SelectJobScreen, CommentScreen,
+  CarrierProfileScreen
 } from "../screens"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -49,6 +50,9 @@ export type PrimaryHomeParamList = {
   postSuccess: undefined
   comment: undefined
   myJobList: undefined
+  carrierProfile: undefined
+  jobDetailOwner: undefined
+  truckDetailOwner: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -156,6 +160,11 @@ export function HomeNavigator() {
           headerCenter: () => <HeaderCenter tx={"jobDetailScreen.jobDetail"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })} />
+      <Stack.Screen name="jobDetailOwner" component={JobDetailScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"jobDetailScreen.jobDetail"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })} />
       <Stack.Screen name="searchTruck" component={SearchTruckScreen}
         options={({ navigation, route }) => ({
           // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
@@ -205,6 +214,14 @@ export function HomeNavigator() {
         })}
       />
       <Stack.Screen
+        name="carrierProfile"
+        component={CarrierProfileScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"profileScreen.profile"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+      <Stack.Screen
         name="feedback"
         component={FeedbackScreen}
         options={({ navigation, route }) => ({
@@ -220,6 +237,14 @@ export function HomeNavigator() {
         })} />
       <Stack.Screen
         name="truckDetail"
+        component={TruckDetailScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"truckDetailScreen.truckDetail"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+      <Stack.Screen
+        name="truckDetailOwner"
         component={TruckDetailScreen}
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"truckDetailScreen.truckDetail"} />,

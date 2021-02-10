@@ -16,7 +16,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const Item = (data) => {
   const {
     id,
-    productTypeId,
     productName,
     truckType,
     weight,

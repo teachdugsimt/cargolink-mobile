@@ -4,7 +4,6 @@ import { Dimensions, FlatList, Image, ImageProps, ImageStyle, RefreshControl, Sc
 import { Button, EmptyListMessage, Icon, ModalAlert, ModalLoading, RatingStart, SearchItem, Text } from '../../components'
 import { translate } from '../../i18n'
 import { spacing, images as imageComponent, color, images } from '../../theme'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { TabBarNavigation } from './tab-bar-navigation'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import LottieView from 'lottie-react-native';

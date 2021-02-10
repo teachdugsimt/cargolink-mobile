@@ -1,6 +1,8 @@
-import { types, flow } from "mobx-state-tree"
+import { types, flow, cast } from "mobx-state-tree"
 import { UserJobAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
+import FavoriteJobStore from '../carriers-job-store/favorite-job-store'
+import * as storage from "../../utils/storage"
 
 const userJobApi = new UserJobAPI()
 
@@ -37,6 +39,11 @@ const CarriersJob = types.model({
   isLiked: types.maybeNull(types.optional(types.boolean, false))
 })
 
+const isAutenticated = async () => {
+  const profile = await storage.load('root')
+  return !!profile?.tokenStore?.token?.accessToken
+}
+
 const UserJobStore = types
   .model({
     list: types.maybeNull(types.array(types.maybeNull(CarriersJob))),
@@ -51,7 +58,35 @@ const UserJobStore = types
         const response = yield userJobApi.find(filter)
         console.log("Response call api get list job of user : : ", response)
         if (response.kind === 'ok') {
-          self.list = response.data
+          // self.list = response.data
+
+          let arrMerge = []
+          if (!filter.page) {
+            arrMerge = [...response.data]
+          } else {
+            arrMerge = [...self.list, ...response.data]
+          }
+
+          if (!(yield isAutenticated())) {
+            self.list = cast(arrMerge)
+          } else {
+            yield FavoriteJobStore.find()
+
+            const favoriteList = JSON.parse(JSON.stringify(FavoriteJobStore.list))
+
+            if (favoriteList?.length) {
+              const result = yield Promise.all(arrMerge.map(attr => {
+                return {
+                  ...attr,
+                  isLiked: favoriteList.some(val => val.id === attr.id)
+                }
+              }))
+              self.list = JSON.parse(JSON.stringify(result))
+            } else {
+              self.list = cast(arrMerge)
+            }
+          }
+
         } else {
           self.error = response?.data?.message || response.kind
         }

@@ -365,7 +365,8 @@
     "verified": "Verified",
     "notVerified": "Not Verified",
     "workInProgress": "Work in progress",
-    "pastWork": "Past work"
+    "pastWork": "Past work",
+    "feedbackScore": "Satisfaction score"
   },
   "feedbackScreen": {
     "yourOpinion": "Your opinion",

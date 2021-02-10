@@ -1,41 +1,45 @@
-import { types, flow } from "mobx-state-tree"
+import { types, flow, cast } from "mobx-state-tree"
 import { UserTruckAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
+import FavoriteJobStore from '../shipper-truck-store/shipper-truck-store'
+import * as storage from "../../utils/storage"
 
-const userJobApi = new UserTruckAPI()
+const userTruckApi = new UserTruckAPI()
 
 const CarriersJob = types.model({
   id: types.maybeNull(types.string),
-  productTypeId: types.maybeNull(types.number),
-  productName: types.maybeNull(types.string),
-  truckType: types.maybeNull(types.string),
-  weight: types.maybeNull(types.number),
-  requiredTruckAmount: types.maybeNull(types.number),
-  from: types.maybeNull(types.model({
-    name: types.maybeNull(types.string),
-    dateTime: types.maybeNull(types.string),
-    contactName: types.maybeNull(types.string),
-    contactMobileNo: types.maybeNull(types.string),
-    lat: types.maybeNull(types.string),
-    lng: types.maybeNull(types.string),
-  })),
-  to: types.maybeNull(types.array(types.model({
-    name: types.maybeNull(types.string),
-    dateTime: types.maybeNull(types.string),
-    contactName: types.maybeNull(types.string),
-    contactMobileNo: types.maybeNull(types.string),
-    lat: types.maybeNull(types.string),
-    lng: types.maybeNull(types.string),
-  }))),
+  truckType: types.maybeNull(types.number),
+  loadingWeight: types.maybeNull(types.number),
+  stallHeight: types.maybeNull(types.string),
+  createdAt: types.maybeNull(types.string),
+  updatedAt: types.maybeNull(types.string),
+  approveStatus: types.maybeNull(types.string),
+  registrationNumber: types.maybeNull(types.array(types.string)),
+  tipper: types.maybeNull(types.boolean),
+  phoneNumber: types.maybeNull(types.string),
+  isLiked: types.optional(types.boolean, false),
+  workingZones: types.optional(types.array(types.model({
+    region: types.maybeNull(types.number),
+    province: types.maybeNull(types.number),
+  })), []),
   owner: types.maybeNull(types.model({
     id: types.maybeNull(types.number),
+    userId: types.maybeNull(types.string),
     companyName: types.maybeNull(types.string),
     fullName: types.maybeNull(types.string),
     mobileNo: types.maybeNull(types.string),
-    email: types.maybeNull(types.string)
+    email: types.maybeNull(types.string),
+    avatar: types.maybeNull(types.model({
+      object: types.maybeNull(types.string),
+      token: types.maybeNull(types.string),
+    }))
   })),
-  isLiked: types.maybeNull(types.optional(types.boolean, false))
 })
+
+const isAutenticated = async () => {
+  const profile = await storage.load('root')
+  return !!profile?.tokenStore?.token?.accessToken
+}
 
 const UserTruckStore = types
   .model({
@@ -44,22 +48,50 @@ const UserTruckStore = types
     error: types.maybeNull(types.string),
   })
   .actions((self) => ({
-    find: flow(function* find(filter: Types.UserTruckFilter = {}) {
-      userJobApi.setup()
+    find: flow(function* find(filter: Types.UserJobFilter = {}) {
+      userTruckApi.setup()
       self.loading = true
       try {
-        const response = yield userJobApi.find(filter)
+        const response = yield userTruckApi.find(filter)
         console.log("Response call api get list truck of user : : ", response)
         if (response.kind === 'ok') {
-          self.list = response.data
+          // self.list = response.data
+
+          let arrMerge = []
+          if (!filter.page) {
+            arrMerge = [...response.data]
+          } else {
+            arrMerge = [...self.list, ...response.data]
+          }
+
+          if (!(yield isAutenticated())) {
+            self.list = cast(arrMerge)
+          } else {
+            yield FavoriteJobStore.find()
+
+            const favoriteList = JSON.parse(JSON.stringify(FavoriteJobStore.list))
+
+            if (favoriteList?.length) {
+              const result = yield Promise.all(arrMerge.map(attr => {
+                return {
+                  ...attr,
+                  isLiked: favoriteList.some(val => val.id === attr.id)
+                }
+              }))
+              self.list = JSON.parse(JSON.stringify(result))
+            } else {
+              self.list = cast(arrMerge)
+            }
+          }
+
         } else {
           self.error = response?.data?.message || response.kind
         }
         self.loading = false
       } catch (error) {
-        console.error("Failed to fetch get list truck of user :", error)
+        console.error("Failed to fetch get list job of user :", error)
         self.loading = false
-        self.error = "error fetch api get list truck of user"
+        self.error = "error fetch api get list job of user"
       }
     }),
 

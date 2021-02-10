@@ -31,24 +31,12 @@ export class UserJobAPI {
    * Be as quick as possible in here.
    */
 
-  async getToken() {
-    let data: any = await storage.load('root')
-    return data
-  }
-
-  async setup() {
-    // let to
-    let to = await this.getToken()
-      .then(val => {
-        return val?.tokenStore?.token?.accessToken || ''
-      })
-
+  setup() {
     this.apisauce = create({
       baseURL: this.config.url,
       timeout: this.config.timeout,
       headers: {
         Accept: "application/json",
-        Authorization: `Bearer ${to}`
       },
     })
   }

@@ -45,10 +45,10 @@ const TotalRegion = types.model({
 })
 
 const ReportProfile = types.model({
-  "avatar": types.model({
+  "avatar": types.maybeNull(types.model({
     "object": types.maybeNull(types.string), //url
     "token": types.maybeNull(types.string)
-  }),
+  })),
   "fullName": types.maybeNull(types.string),
   "phoneNumber": types.maybeNull(types.string),
   "totalJob": types.maybeNull(types.number),

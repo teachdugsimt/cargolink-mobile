@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite';
-import { Dimensions, FlatList, ImageStyle, TextStyle, View, ViewStyle, SafeAreaView, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
+import { Dimensions, FlatList, ImageStyle, TextStyle, View, ViewStyle, SafeAreaView, ScrollView, TouchableOpacity, RefreshControl, ImageProps } from 'react-native';
 import { AdvanceSearchTab, Text, SearchItemTruck, EmptyListMessage } from '../../components';
 import { color, spacing, images as imageComponent } from '../../theme';
 import { useFocusEffect, useNavigation, useIsFocused } from '@react-navigation/native';
@@ -119,13 +119,14 @@ const Item = (data) => {
     id,
     truckType,
     // loadingWeight,
-    // stallHeight,
+    stallHeight,
     // createdAt,
     // updatedAt,
     // approveStatus,
     // registrationNumber,
-    // tipper,
+    tipper,
     isLiked,
+    owner,
     workingZones,
   } = data
 
@@ -134,6 +135,18 @@ const Item = (data) => {
   const navigation = useNavigation()
 
   const onPress = () => {
+    const imageSource = owner?.avatar?.object && owner?.avatar?.token ? {
+      source: {
+        uri: owner?.avatar?.object || '',
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+          adminAuth: owner?.avatar?.token
+        },
+      },
+      resizeMode: 'cover'
+    } : null
+    ShipperTruckStore.setProfile({ ...owner, imageProps: JSON.stringify(imageSource) })
     ShipperTruckStore.findOne(id)
     navigation.navigate('truckDetail')
   }
@@ -147,12 +160,33 @@ const Item = (data) => {
     }
   }
 
+  const renderContent = () => (<View style={{ flexDirection: 'column', paddingLeft: spacing[2] }}>
+    <View style={{ paddingVertical: spacing[1] }}>
+      {/* <Text text={`${translate('truckDetailScreen.heighttOfTheCarStall')} : ${stallHeight ? translate(`common.${stallHeight.toLowerCase()}`) : '-'} (${tipper ? translate('truckDetailScreen.haveDump') : translate('truckDetailScreen.haveNotDump')})`} /> */}
+      <Text text={`${translate('truckDetailScreen.heighttOfTheCarStall')} : ${stallHeight ? translate(`common.${stallHeight.toLowerCase()}`) : '-'}`} />
+    </View>
+    <View style={{ paddingVertical: spacing[1] }}>
+      <Text text={`${tipper ? translate('truckDetailScreen.haveDump') : translate('truckDetailScreen.haveNotDump')}`} />
+    </View>
+  </View>)
+
   const workingZoneStr = workingZones?.length ? workingZones.map(zone => {
     let reg = GetRegion(zone.region, i18n.locale)
     return reg?.label || ''
   }).join(', ') : translate('common.notSpecified')
 
   const truckImage = MapTruckImageName(+truckType)
+  const imageSource: ImageProps = owner?.avatar?.object && owner?.avatar?.token ? {
+    source: {
+      uri: owner?.avatar?.object || '',
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+        adminAuth: owner?.avatar?.token
+      },
+    },
+    resizeMode: 'cover'
+  } : null
 
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
@@ -161,17 +195,18 @@ const Item = (data) => {
         ...{
           id,
           fromText: workingZoneStr,
-          count: 2,
+          // count: 2,
+          customCoutent: renderContent,
           truckType: `${translate('common.vehicleTypeField')} : ${GetTruckType(+truckType)?.name || translate('common.notSpecified')}`,
           // viewDetail,
-          postBy: 'CargoLink',
+          postBy: owner?.companyName || '',
           isVerified: false,
           isLike: isLiked,
           backgroundImage: imageComponent[truckImage && truckImage !== 'greyMock' ? truckImage : ''],
           // rating,
           // ratingCount,
           isCrown: false,
-          logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
+          image: imageSource,
           // isRecommened,
           containerStyle: {
             paddingTop: spacing[2],

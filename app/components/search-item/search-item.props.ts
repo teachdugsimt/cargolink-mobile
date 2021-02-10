@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { ImageSourcePropType, ViewStyle } from "react-native"
+import { ImageProps, ImageSourcePropType, ViewStyle } from "react-native"
 
 export interface SearchItemProps {
   id?: number | string
@@ -44,9 +44,11 @@ export interface SearchItemProps {
 
   isCrown?: boolean
 
-  logo?: string
+  image?: string | ImageProps
 
   containerStyle?: ViewStyle
+
+  customCoutent?: (props) => ReactNode
 
   bottomComponent?: (props) => ReactNode
 

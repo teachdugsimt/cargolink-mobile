@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dimensions, ImageStyle, TextStyle, View, ViewStyle, Image, TouchableOpacity } from 'react-native'
+import { Dimensions, ImageStyle, TextStyle, View, ViewStyle, Image, TouchableOpacity, ImageProps } from 'react-native'
 import { PostingByProps } from './posting-by.props'
 import { color, spacing } from '../../theme';
 import { Icon } from '../icon/icon';
@@ -51,11 +51,22 @@ export function PostingBy(props: PostingByProps) {
     isCrown,
     rating,
     ratingCount,
-    logo,
+    image,
     onToggle
   } = props
 
   const onPress = onToggle ? () => onToggle && onToggle() : null
+  const imageProps: ImageProps = typeof image === 'string' ? {
+    style: LOGO,
+    resizeMode: 'contain',
+    source: {
+      uri: image
+    }
+  } : {
+      style: LOGO,
+      resizeMode: 'contain',
+      ...image
+    }
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={1}>
@@ -73,7 +84,7 @@ export function PostingBy(props: PostingByProps) {
           </View>
         </View>
         <View style={LOGO_ROOT}>
-          {logo ? <Image source={{ uri: logo }} style={LOGO} resizeMode={'contain'} /> : <View style={{ ...LOGO, backgroundColor: color.disable }} />}
+          {image ? <Image {...imageProps} /> : <View style={{ ...LOGO, backgroundColor: color.disable }} />}
         </View>
       </View>
     </TouchableOpacity>

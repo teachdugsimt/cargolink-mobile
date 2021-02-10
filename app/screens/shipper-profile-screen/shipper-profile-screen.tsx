@@ -1,15 +1,24 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
-import { Dimensions, Image, ImageStyle, ScrollView, TextStyle, View, ViewStyle } from 'react-native'
-import { Button, Icon, ModalAlert, Text } from '../../components'
+import { Dimensions, FlatList, Image, ImageProps, ImageStyle, RefreshControl, ScrollView, TextStyle, View, ViewStyle } from 'react-native'
+import { Button, EmptyListMessage, Icon, ModalAlert, ModalLoading, RatingStart, SearchItemTruck, Text } from '../../components'
 import { translate } from '../../i18n'
 import { spacing, images as imageComponent, color, images } from '../../theme'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { TabBarNavigation } from './tab-bar-navigation'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import LottieView from 'lottie-react-native';
+import ProfileStore from '../../store/profile-store/profile-store'
+import UserTruckStore from '../../store//user-truck-store/user-truck-store'
+import ShipperTruckStore from '../../store/shipper-truck-store/shipper-truck-store'
+import { GetTruckType } from "../../utils/get-truck-type"
+import { MapTruckImageName } from '../../utils/map-truck-image-name'
+import FavoriteTruckStore from '../../store/shipper-truck-store/favorite-truck-store'
+import { useStores } from '../../models'
+import { GetRegion } from '../../utils/get-region'
+import i18n from 'i18n-js'
 
-interface ShipperProfileProps {
+interface ShipperTruckProps {
   isBooker?: boolean
 }
 
@@ -31,6 +40,7 @@ const PROFILE_IMAGE: ImageStyle = {
   width: 70,
   height: 70,
   borderRadius: Math.round(deviceWidht + deviceHeight) / 2,
+  backgroundColor: color.disable,
 }
 const SMALL_ICON: ImageStyle = {
   width: 13,
@@ -106,143 +116,26 @@ const CALL_TEXT: TextStyle = {
   paddingVertical: spacing[1]
 }
 
-const PROFILE_DATA = {
-  name: 'Cargolink',
-  isVerified: true,
-  vehicles: [
-    {
-      id: 1,
-      vehicleType: 'รถบรรทุกของเหลว 6 ล้อ',
-      imageType: 'truck13',
-      vehicleCount: 4,
-    },
-    {
-      id: 2,
-      vehicleType: 'รถกระบะ 4 ล้อคอกสูง',
-      imageType: 'truck2',
-      vehicleCount: 9,
-    },
-    {
-      id: 3,
-      vehicleType: 'รถกระบะห้องเย็น 4 ล้อตู้ทึบ',
-      imageType: 'truck3',
-      vehicleCount: 18,
-    },
-    {
-      id: 4,
-      vehicleType: 'รถพ่วงคอก 40 ฟุต',
-      imageType: 'truck33',
-      vehicleCount: 2,
-    },
-  ]
-}
-
 const STAR = [
   {
     show: 5,
-    count: 34
+    count: 0
   },
   {
     show: 4,
-    count: 7
+    count: 0
   },
   {
     show: 3,
-    count: 2
+    count: 0
   },
   {
     show: 2,
-    count: 1
+    count: 0
   },
   {
     show: 1,
     count: 0
-  },
-]
-
-const DATA_JOB = [
-  {
-    id: 1,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: true,
-    isLike: true,
-    rating: '4.9',
-    ratingCount: '122',
-    isCrown: true,
-    isRecommened: true,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-  {
-    id: 2,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: false,
-    isLike: false,
-    rating: '1.9',
-    ratingCount: '3',
-    isCrown: false,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-  {
-    id: 3,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: true,
-    isLike: true,
-    rating: '4.9',
-    ratingCount: '122',
-    isCrown: true,
-    isRecommened: true,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-  {
-    id: 4,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: true,
-    isLike: true,
-    rating: '4.5',
-    ratingCount: '69',
-    isCrown: false,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-  },
-  {
-    id: 5,
-    fromText: 'ภาคกลาง',
-    toText: 'ภาคกลาง',
-    count: '2',
-    packaging: 'อื่นๆ',
-    detail: 'รถ 6 ล้อตู้คอก',
-    viewDetail: true,
-    postBy: 'Cargolink',
-    isVerified: true,
-    isLike: true,
-    rating: '4.9',
-    ratingCount: '122',
-    isCrown: true,
-    isRecommened: true,
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
   },
 ]
 
@@ -266,32 +159,35 @@ const Verified = ({ isVerified }) => {
   )
 }
 
-const Truck = ({ id, vehicleType, vehicleCount, imageType }) => (
-  <View style={{ ...ROW, paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.disable }}>
+const Truck = ({ truckType, total }) => {
+  const truckTypeName = GetTruckType(+truckType)?.name || translate('common.notSpecified')
+  const truckImage = MapTruckImageName(+truckType)
+
+  return (<View style={{ ...ROW, paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.disable }}>
     <View style={{ flex: 2 }}>
       <View style={OUTER_CIRCLE}>
-        <Image source={imageComponent[imageType ? imageType : "truck17"]} style={TRUCK_IMAGE} />
+        <Image source={imageComponent[truckImage && truckImage !== 'greyMock' ? truckImage : '']} style={TRUCK_IMAGE} />
       </View>
     </View>
     <View style={{ flex: 5 }}>
-      <Text text={vehicleType} />
+      <Text text={truckTypeName} />
     </View>
     <View style={{ flex: 1, alignItems: 'flex-end' }}>
-      <Text text={vehicleCount} />
+      <Text text={total} />
     </View>
     <View style={{ flex: 1, alignItems: 'flex-end' }}>
-      <Text text={'คัน'} />
+      <Text tx={'jobDetailScreen.unit'} />
     </View>
-  </View>
-)
+  </View>)
+}
 
-const Star = ({ show, count }) => (
+const Rating = ({ show, count }) => (
   <View style={RATING_CONTAINER}>
     <View style={START_CONTAINER}>
-      {Array(5).fill(show).map((_, index) => <MaterialCommunityIcons key={index} name={'star'} size={16} color={index < show ? color.primary : color.disable} style={{ paddingHorizontal: 2 }} />)}
+      <RatingStart size={16} colorInActive={color.disable} colorActive={color.primary} indexActive={show} isHorizontal disabled />
     </View>
     <View style={RATING_BAR_CONTAINER}>
-      <View style={{ flex: 1, width: '50%', backgroundColor: color.primary, borderRadius: 3 }} />
+      <View style={{ flex: 1, width: '0%', backgroundColor: color.primary, borderRadius: 3 }} />
     </View>
     <View style={COUNT_CONTAINER}>
       <Text text={`(${count})`} style={{ color: count ? color.textBlack : color.disable }} />
@@ -325,15 +221,119 @@ const RenderButtonAlert = ({ onCloseModal, onConfirmJob }) => {
 
 const RenderImageAlert = () => (<Image source={images['workYellowIcon']} width={75} height={75} />)
 
+const Item = (data) => {
+  const {
+    id,
+    truckType,
+    stallHeight,
+    tipper,
+    isLiked,
+    owner,
+    workingZones,
+  } = data
+
+  const { tokenStore } = useStores()
+
+  const navigation = useNavigation()
+
+  const onPress = () => {
+    const imageSource = owner?.avatar?.object && owner?.avatar?.token ? {
+      source: {
+        uri: owner?.avatar?.object || '',
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+          adminAuth: owner?.avatar?.token
+        },
+      },
+      resizeMode: 'cover'
+    } : null
+    ShipperTruckStore.setProfile({ ...owner, imageProps: JSON.stringify(imageSource) })
+    ShipperTruckStore.findOne(id)
+    navigation.navigate('truckDetailOwner')
+  }
+
+  const onToggleHeart = (data) => { // id, isLike
+    if (tokenStore?.token?.accessToken) {
+      FavoriteTruckStore.add(data.id)
+      ShipperTruckStore.updateFavoriteInList(data.id, data.isLike)
+    } else {
+      navigation.navigate('signin')
+    }
+  }
+
+  const renderContent = () => (<View style={{ flexDirection: 'row', paddingLeft: spacing[2], paddingVertical: spacing[2] }}>
+    <View style={{ flex: 3 }}>
+      <Text text={`${translate('truckDetailScreen.heighttOfTheCarStall')} : ${stallHeight ? translate(`common.${stallHeight.toLowerCase()}`) : '-'}`} />
+    </View>
+    <View style={{ flex: 2 }}>
+      <Text text={`${tipper ? translate('truckDetailScreen.haveDump') : translate('truckDetailScreen.haveNotDump')}`} />
+    </View>
+  </View>)
+
+  const workingZoneStr = workingZones?.length ? workingZones.map(zone => {
+    let reg = GetRegion(zone.region, i18n.locale)
+    return reg?.label || ''
+  }).join(', ') : translate('common.notSpecified')
+
+  const truckImage = MapTruckImageName(+truckType)
+  const imageSource: ImageProps = owner?.avatar?.object && owner?.avatar?.token ? {
+    source: {
+      uri: owner?.avatar?.object || '',
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+        adminAuth: owner?.avatar?.token
+      },
+    },
+    resizeMode: 'cover'
+  } : null
+
+  return (
+    <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
+      <SearchItemTruck
+        {
+        ...{
+          id,
+          fromText: workingZoneStr,
+          // count: 2,
+          customCoutent: renderContent,
+          truckType: `${translate('common.vehicleTypeField')} : ${GetTruckType(+truckType)?.name || translate('common.notSpecified')}`,
+          // viewDetail,
+          postBy: owner?.companyName || '',
+          isVerified: false,
+          isLike: isLiked,
+          backgroundImage: imageComponent[truckImage && truckImage !== 'greyMock' ? truckImage : ''],
+          // rating,
+          // ratingCount,
+          isCrown: false,
+          image: imageSource,
+          // isRecommened,
+          containerStyle: {
+            paddingTop: spacing[2],
+            borderRadius: 6
+          },
+          onPress,
+          onToggleHeart
+        }
+        }
+      />
+    </View>
+  )
+}
+
+let PAGE = 0
+
 export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
   const navigation = useNavigation()
 
   const [visibleModal, setVisibleModal] = useState<boolean>(false)
   const [isBokking, setIsBooking] = useState<boolean>(false)
+  const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState<boolean>(true)
 
   const route = useRoute()
 
-  const { isBooker }: ShipperProfileProps = route?.params || {}
+  const { isBooker }: ShipperTruckProps = route?.params || {}
 
   const confirmBookAJob = () => {
     setVisibleModal(true)
@@ -357,7 +357,17 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
     setIsBooking(true)
   }
 
-  const profileImage = 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg'
+  const onScrollList = () => {
+    if (!onEndReachedCalledDuringMomentum
+      && UserTruckStore.list.length >= 10
+      && !UserTruckStore.loading
+    ) {
+      PAGE += 1
+      const filter = { userId: ShipperTruckStore.profile?.userId, page: PAGE }
+      UserTruckStore.find(filter)
+      setOnEndReachedCalledDuringMomentum(true)
+    }
+  }
 
   const modalProps = {
     containerStyle: {
@@ -382,20 +392,62 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
     visible: visibleModal,
   }
 
-  const vehicleCount = PROFILE_DATA.vehicles.reduce((prev, curr) => { return prev + curr.vehicleCount }, 0)
+  const renderItem = ({ item }) => (<Item {...item} owner={ShipperTruckStore.profile} />)
+
+  const imageProps = ShipperTruckStore.profile?.imageProps ? JSON.parse(ShipperTruckStore.profile.imageProps) : ''
+
+  console.log('JSON.parse(JSON.stringify(ProfileStore.data_report_profile))', JSON.parse(JSON.stringify(ProfileStore.data_report_profile)))
+  console.log('JSON.parse(JSON.stringify(UserTruckStore.list))', JSON.parse(JSON.stringify(UserTruckStore.list)))
+  console.log('JSON.parse(JSON.stringify(ShipperTruckStore.profile))', JSON.parse(JSON.stringify(ShipperTruckStore.profile)))
+
+  const profile = ProfileStore.data_report_profile
+  const truckCountAll = profile?.trucks.reduce((curr, next) => (curr + next.total), 0) || 0
+
+  const HeaderComponent = () => (<>
+    <View style={SECTION}>
+      <View style={TOPIC}>
+        <Text text={translate('profileScreen.allVehicle')} />
+        <Text text={`${truckCountAll.toString()}  ${translate('jobDetailScreen.unit')}`} />
+      </View>
+      {profile?.trucks?.map((vehicle, index) => {
+        return <Truck key={index} {...vehicle} />
+      })}
+    </View>
+
+    <View style={SECTION}>
+      <View style={TOPIC}>
+        <Text tx={'shipperProfileScreen.feedbackScore'} />
+      </View>
+      <View>
+        {STAR.map(val => <Rating key={val.show} {...val} />)}
+      </View>
+    </View>
+
+    <View style={[SECTION, {
+      justifyContent: 'center',
+      borderBottomWidth: 3,
+      borderBottomColor: color.dim,
+    }]}>
+      <Text tx={'shipperProfileScreen.workInProgress'} preset={'topic'} />
+    </View>
+  </>)
 
   return (
     <View style={CONTAINER}>
+
+      <ModalLoading size={'large'} color={color.primary} visible={ProfileStore.loading_report_profile} />
+
       <View style={[ROW, { padding: spacing[5], ...SPACE_BOTTOM }]}>
         <View style={{ flex: 1 }} >
-          <Image source={{ uri: profileImage }} style={PROFILE_IMAGE} resizeMode={'contain'} />
+          <Image {...imageProps} style={PROFILE_IMAGE} resizeMode={'cover'} />
         </View>
         <View style={{ flex: 3 }}>
-          <Text text={PROFILE_DATA.name} style={TEXT} />
-          <Verified isVerified={PROFILE_DATA.isVerified} />
+          <Text text={ShipperTruckStore.profile?.companyName || ''} style={TEXT} />
+          <Verified isVerified={false} />
         </View>
       </View>
-      <ScrollView
+
+      {/* <ScrollView
         onScroll={({ nativeEvent }) => {
         }}
         style={{}}
@@ -404,16 +456,16 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
         <View style={SECTION}>
           <View style={TOPIC}>
             <Text text={translate('profileScreen.allVehicle')} />
-            <Text text={`${vehicleCount.toString()}  คัน`} />
+            <Text text={`${truckCountAll.toString()}  ${translate('jobDetailScreen.unit')}`} />
           </View>
-          {PROFILE_DATA.vehicles.map((vehicle, index) => {
+          {profile?.trucks?.map((vehicle, index) => {
             return <Truck key={index} {...vehicle} />
           })}
         </View>
 
         <View style={SECTION}>
           <View style={TOPIC}>
-            <Text text={'คะแนนความพึงพอใจ'} />
+            <Text tx={'shipperProfileScreen.feedbackScore'} />
           </View>
           <View>
             {STAR.map(val => <Star key={val.show} {...val} />)}
@@ -421,9 +473,27 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
         </View>
 
         <View style={{}}>
-          <TabBarNavigation data={DATA_JOB} />
+          <TabBarNavigation data={UserTruckStore.list} />
         </View>
-      </ScrollView>
+      </ScrollView> */}
+
+      <FlatList
+        data={UserTruckStore.list || []}
+        renderItem={renderItem}
+        keyExtractor={item => item.id}
+        onEndReached={onScrollList}
+        onEndReachedThreshold={0.1}
+        contentContainerStyle={{ flexGrow: 1 }}
+        ListEmptyComponent={<EmptyListMessage containerStyle={{ top: 0 }} />}
+        ListHeaderComponent={HeaderComponent}
+        onMomentumScrollBegin={() => setOnEndReachedCalledDuringMomentum(false)}
+        refreshControl={
+          <RefreshControl
+            refreshing={ShipperTruckStore.loading}
+            onRefresh={() => console.log('onRefresh')}
+          />
+        }
+      />
 
       {isBooker && (<>
         <View style={BOTTOM_ROOT}>

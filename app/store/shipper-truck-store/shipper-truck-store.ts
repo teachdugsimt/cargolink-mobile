@@ -22,10 +22,18 @@ const defaultModel = {
     region: types.maybeNull(types.number),
     province: types.maybeNull(types.number),
   })), []),
-  avatar: types.maybeNull(types.model({
-    object: types.maybeNull(types.string),
-    token: types.maybeNull(types.string),
-  }))
+  owner: types.maybeNull(types.model({
+    id: types.maybeNull(types.number),
+    userId: types.maybeNull(types.string),
+    companyName: types.maybeNull(types.string),
+    fullName: types.maybeNull(types.string),
+    mobileNo: types.maybeNull(types.string),
+    email: types.maybeNull(types.string),
+    avatar: types.maybeNull(types.model({
+      object: types.maybeNull(types.string),
+      token: types.maybeNull(types.string),
+    }))
+  })),
 }
 
 const ShipperJob = types.model(defaultModel)
@@ -44,15 +52,21 @@ const ShipperJobFull = types.model({
     right: types.maybeNull(ImageModel),
   })),
   truckTypeName: types.maybeNull(types.string),
-  owner: types.maybeNull(types.model({
-    id: types.maybeNull(types.number),
-    userId: types.maybeNull(types.string),
-    companyName: types.maybeNull(types.string),
-    fullName: types.maybeNull(types.string),
-    mobileNo: types.maybeNull(types.string),
-    email: types.maybeNull(types.string)
-  })),
 })
+
+const Profile = {
+  id: types.maybeNull(types.number),
+  userId: types.maybeNull(types.string),
+  companyName: types.maybeNull(types.string),
+  fullName: types.maybeNull(types.string),
+  mobileNo: types.maybeNull(types.string),
+  email: types.maybeNull(types.string),
+  avatar: types.maybeNull(types.model({
+    object: types.maybeNull(types.string),
+    token: types.maybeNull(types.string),
+  })),
+  imageProps: types.maybeNull(types.string)
+}
 
 const isAutenticated = async () => {
   const profile = await storage.load('root')
@@ -63,6 +77,7 @@ const ShipperTruckStore = types
   .model({
     list: types.maybeNull(types.array(ShipperJob)),
     data: types.maybeNull(ShipperJobFull),
+    profile: types.model(Profile),
     previousListLength: types.optional(types.number, 0),
     truckTypeName: types.maybeNull(types.string),
     loading: types.boolean,
@@ -180,12 +195,29 @@ const ShipperTruckStore = types
           companyName: null,
           fullName: null,
           mobileNo: '',
-          email: null
+          email: null,
+          avatar: null,
         },
         tipper: false,
         isLiked: false,
         truckTypeName: null,
-        avatar: null
+      }
+    },
+
+    setProfile: function setProfile(data) {
+      self.profile = JSON.parse(JSON.stringify(data))
+    },
+
+    setDefaultOfProfile: function setDefaultOfProfile() {
+      self.profile = {
+        id: 0,
+        userId: '',
+        companyName: '',
+        fullName: '',
+        mobileNo: '',
+        email: '',
+        avatar: null,
+        imageProps: null
       }
     },
 
@@ -205,6 +237,7 @@ const ShipperTruckStore = types
   .create({
     list: [],
     data: {},
+    profile: {},
     previousListLength: 0,
     loading: false,
     error: "",
