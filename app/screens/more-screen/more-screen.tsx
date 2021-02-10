@@ -223,7 +223,7 @@ export const MoreScreen = observer(function MoreScreen() {
             navigation.navigate("signin")
             console.log("Token after logout :: ", tokenStore.token)
           }}
-            text={"homeScreen.logout"}
+            text={tokenStore?.token?.accessToken ? "homeScreen.logout" : "signinScreen.signin"}
             containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT}
           />
         </View>

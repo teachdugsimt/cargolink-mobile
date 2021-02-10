@@ -307,7 +307,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     booker = []
   }: JobDetailProps = route?.params || {}
 
-  const { versatileStore } = useStores()
+  const { versatileStore, tokenStore } = useStores()
 
   // useEffect(() => {
   //   if (!TruckTypeStore.list?.length) {
@@ -361,9 +361,13 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   }, [CarriersJobStore.loading, CarriersJobStore.data])
 
   const onSelectedHeart = (id: string) => {
-    FavoriteJobStore.keepLiked(id, !liked)
-    FavoriteJobStore.add(id)
-    setLiked(!liked)
+    if (tokenStore?.token?.accessToken) {
+      FavoriteJobStore.keepLiked(id, !liked)
+      FavoriteJobStore.add(id)
+      setLiked(!liked)
+    } else {
+      navigation.navigate('signin')
+    }
   }
 
   const onPress = () => {
@@ -436,22 +440,26 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   }
 
   const onCall = (jobId: string, phone: string) => {
-    let phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
-    __DEV__ && console.tron.log('phoneNumber', phoneNumber)
-    Linking.canOpenURL(phoneNumber)
-      .then(supported => {
-        if (!supported) {
-          __DEV__ && console.tron.log('Phone number is not available');
-          Alert.alert('Phone number is not available')
-          return false;
-        } else {
-          return startListenerTapped(jobId)
-        }
-      })
-      .then(() => {
-        return Linking.openURL(phoneNumber);
-      })
-      .catch(err => __DEV__ && console.tron.log('err', err));
+    if (tokenStore?.token?.accessToken) {
+      const phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
+      __DEV__ && console.tron.log('phoneNumber', phoneNumber)
+      Linking.canOpenURL(phoneNumber)
+        .then(supported => {
+          if (!supported) {
+            __DEV__ && console.tron.log('Phone number is not available');
+            Alert.alert('Phone number is not available')
+            return false;
+          } else {
+            return startListenerTapped(jobId)
+          }
+        })
+        .then(() => {
+          return Linking.openURL(phoneNumber);
+        })
+        .catch(err => __DEV__ && console.tron.log('err', err));
+    } else {
+      navigation.navigate('signin')
+    }
   };
 
   const changeRegion = (lat: string, lng: string) => {

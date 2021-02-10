@@ -58,14 +58,14 @@ export class UserJobAPI {
   async find(filter: Types.UserJobFilter = {}): Promise<any> {
     try {
       const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/job/list/user', filter)
-      console.log("User job list api [find] : ", response)
+      console.log("User job list api [find] :", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
         if (problem) return problem
       }
       return { kind: "ok", data: response.data }
     } catch (error) {
-      console.log("Error call api find all user job list : ", error)
+      console.log("Error call api find all user job list :", error)
       return error
     }
   }

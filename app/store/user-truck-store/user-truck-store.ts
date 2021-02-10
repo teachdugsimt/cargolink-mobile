@@ -57,7 +57,7 @@ const UserTruckStore = types
         }
         self.loading = false
       } catch (error) {
-        console.error("Failed to fetch get list truck of user : ", error)
+        console.error("Failed to fetch get list truck of user :", error)
         self.loading = false
         self.error = "error fetch api get list truck of user"
       }

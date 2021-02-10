@@ -33,12 +33,17 @@ const CarriersJob = types.model({
   }))),
   owner: types.maybeNull(types.model({
     id: types.maybeNull(types.number),
+    userId: types.maybeNull(types.string),
     companyName: types.maybeNull(types.string),
     fullName: types.maybeNull(types.string),
     mobileNo: types.maybeNull(types.string),
     email: types.maybeNull(types.string)
   })),
-  isLiked: types.maybeNull(types.optional(types.boolean, false))
+  isLiked: types.maybeNull(types.optional(types.boolean, false)),
+  avatar: types.maybeNull(types.model({
+    object: types.maybeNull(types.string),
+    token: types.maybeNull(types.string),
+  }))
 })
 
 const Directions = types.model({
@@ -60,7 +65,7 @@ const SummaryDistances = types.model({
 
 const isAutenticated = async () => {
   const profile = await storage.load('root')
-  return !!profile.tokenStore.token.accessToken
+  return !!profile?.tokenStore?.token?.accessToken
 }
 
 const CarriersJobStore = types
@@ -126,13 +131,17 @@ const CarriersJobStore = types
       apiCarriersJob.setup()
       self.loading = true
       try {
-        yield FavoriteJobStore.find()
         const response = yield apiCarriersJob.findOne(id)
         console.log("Response call api get shipper job : : ", JSON.stringify(response))
         if (response.kind === 'ok') {
           const result = response.data || {}
-          const isLiked = FavoriteJobStore.list.find(({ id }) => id === result.id)?.isLiked
-          self.data = { ...result, isLiked: isLiked || false }
+          if (!(yield isAutenticated())) {
+            self.data = response.data
+          } else {
+            yield FavoriteJobStore.find()
+            const isLiked = FavoriteJobStore.list.find(({ id }) => id === result.id)?.isLiked
+            self.data = { ...result, isLiked: isLiked || false }
+          }
         } else {
           self.error = response?.data?.message || response.kind
         }
@@ -247,7 +256,7 @@ const CarriersJobStore = types
           fullName: null,
           mobileNo: '',
           email: null
-        }
+        },
       })
     },
 

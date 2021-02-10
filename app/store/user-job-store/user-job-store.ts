@@ -57,7 +57,7 @@ const UserJobStore = types
         }
         self.loading = false
       } catch (error) {
-        console.error("Failed to fetch get list job of user : ", error)
+        console.error("Failed to fetch get list job of user :", error)
         self.loading = false
         self.error = "error fetch api get list job of user"
       }

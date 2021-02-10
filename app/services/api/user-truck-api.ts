@@ -58,14 +58,14 @@ export class UserTruckAPI {
   async find(filter: Types.UserTruckFilter = {}): Promise<any> {
     try {
       const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/truck/list/user', filter)
-      console.log("User truck list api [find] : ", response)
+      console.log("User truck list api [find] :", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
         if (problem) return problem
       }
       return { kind: "ok", data: response.data }
     } catch (error) {
-      console.log("Error call api find all user truck list : ", error)
+      console.log("Error call api find all user truck list :", error)
       return error
     }
   }

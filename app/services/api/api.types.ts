@@ -209,5 +209,28 @@ export interface ShippersHistoryCallAdd {
   truckId: string
 }
 
+export interface UserJobFilter {
+  from?: string
+  productType?: number[]
+  to?: string
+  truckAmountMax?: number
+  truckAmountMin?: number
+  truckType?: number[]
+  type?: number
+  userId?: string
+  weight?: number
+  page?: number
+  rowsPerPage?: number
+}
+
+export interface UserTruckFilter {
+  truckAmount?: number
+  truckTypes?: number[]
+  userId?: string
+  zoneIds?: number[]
+  page?: number
+  rowsPerPage?: number
+}
+
 export type GetUsersResult = { kind: "ok"; users: User[] } | GeneralApiProblem
 export type GetUserResult = { kind: "ok"; user: User } | GeneralApiProblem

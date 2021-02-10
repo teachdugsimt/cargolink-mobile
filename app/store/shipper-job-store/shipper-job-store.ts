@@ -3,6 +3,7 @@ import { ShipperJobAPI, GoogleMapAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
 import { decode } from "@mapbox/polyline";
 import FavoriteJobStore from "./favorite-job-store";
+import * as storage from "../../utils/storage"
 
 const apiShipperJob = new ShipperJobAPI()
 const apiGoogleMap = new GoogleMapAPI()
@@ -32,18 +33,28 @@ const ShipperJob = types.model({
   }))),
   owner: types.maybeNull(types.model({
     id: types.maybeNull(types.number),
+    userId: types.maybeNull(types.string),
     companyName: types.maybeNull(types.string),
     fullName: types.maybeNull(types.string),
     mobileNo: types.maybeNull(types.string),
     email: types.maybeNull(types.string)
   })),
-  isLiked: types.maybeNull(types.optional(types.boolean, false))
+  isLiked: types.maybeNull(types.optional(types.boolean, false)),
+  avatar: types.maybeNull(types.model({
+    object: types.maybeNull(types.string),
+    token: types.maybeNull(types.string),
+  }))
 })
 
 const Directions = types.model({
   latitude: types.number,
   longitude: types.number,
 })
+
+const isAutenticated = async () => {
+  const profile = await storage.load('root')
+  return !!profile?.tokenStore?.token?.accessToken
+}
 
 const ShipperJobStore = types
   .model({
@@ -58,42 +69,47 @@ const ShipperJobStore = types
   })
   .actions((self) => ({
     find: flow(function* find(filter: Types.ShipperJobRequest = {}) {
-      yield apiShipperJob.setup()
-      self.loading = true
-      try {
-        self.previousListLength = self.list.length
-        const response = yield apiShipperJob.find(filter)
-        console.log("Response call api get shipper jobs : : ", response)
-        if (response.kind === 'ok') {
-          // yield FavoriteJobStore.find()
-          let arrMerge = []
-          if (!filter.page) {
-            arrMerge = [...response.data]
-          } else {
-            arrMerge = [...self.list, ...response.data]
-          }
-          // const favoriteList = JSON.parse(JSON.stringify(FavoriteJobStore.list))
 
-          // if (favoriteList && favoriteList.length) {
-          //   const result = yield Promise.all(arrMerge.map(attr => {
-          //     return {
-          //       ...attr,
-          //       isLiked: favoriteList.some(val => val.id === attr.id)
-          //     }
-          //   }))
-          //   self.list = JSON.parse(JSON.stringify(result))
-          // } else {
-          //   self.list = cast(arrMerge)
-          // }
-          self.list = JSON.parse(JSON.stringify(arrMerge))
+      if (!(yield isAutenticated())) {
+        self.list = cast([])
+      } else {
+        yield apiShipperJob.setup()
+        self.loading = true
+        try {
+          self.previousListLength = self.list.length
+          const response = yield apiShipperJob.find(filter)
+          console.log("Response call api get shipper jobs : : ", response)
+          if (response.kind === 'ok') {
+            // yield FavoriteJobStore.find()
+            let arrMerge = []
+            if (!filter.page) {
+              arrMerge = [...response.data]
+            } else {
+              arrMerge = [...self.list, ...response.data]
+            }
+            // const favoriteList = JSON.parse(JSON.stringify(FavoriteJobStore.list))
+
+            // if (favoriteList && favoriteList.length) {
+            //   const result = yield Promise.all(arrMerge.map(attr => {
+            //     return {
+            //       ...attr,
+            //       isLiked: favoriteList.some(val => val.id === attr.id)
+            //     }
+            //   }))
+            //   self.list = JSON.parse(JSON.stringify(result))
+            // } else {
+            //   self.list = cast(arrMerge)
+            // }
+            self.list = JSON.parse(JSON.stringify(arrMerge))
+            self.loading = false
+          } else {
+            self.loading = false
+          }
+        } catch (error) {
+          console.error("Failed to fetch get shipper jobs : ", error)
           self.loading = false
-        } else {
-          self.loading = false
+          self.error = "error fetch api get shipper jobs"
         }
-      } catch (error) {
-        console.error("Failed to fetch get shipper jobs : ", error)
-        self.loading = false
-        self.error = "error fetch api get shipper jobs"
       }
     }),
 

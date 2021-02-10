@@ -273,7 +273,7 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
 
       <View style={BUTTON_ROOT}>
         <RoundedButton
-          testID={"setting-search-confirm"}
+          // testID={"setting-search-confirm"}
           onPress={onConfirm}
           containerStyle={BUTTON_CONFIRM}
           textStyle={BUTTON_CONFIRM_TEXT}
