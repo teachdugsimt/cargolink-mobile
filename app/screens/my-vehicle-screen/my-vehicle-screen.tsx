@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { TextStyle, View, ViewStyle, FlatList, RefreshControl } from "react-native"
-import { Button, VehicleItem, EmptyListMessage } from "../../components/"
+import { TextStyle, View, ViewStyle, FlatList, RefreshControl, Platform } from "react-native"
+import { Button, VehicleItem, Text } from "../../components/"
 import { color, spacing } from "../../theme"
 import { translate } from "../../i18n"
 import { useNavigation } from "@react-navigation/native"
@@ -10,6 +10,7 @@ import StatusStore from '../../store/my-vehicle-store/status-vehicle-store'
 import { GetTruckType } from "../../utils/get-truck-type";
 import { useStores } from "../../models/root-store/root-store-context";
 import date from 'date-and-time';
+import Feather from 'react-native-vector-icons/Feather'
 
 const CONTAINER: ViewStyle = {
   flex: 1,
@@ -32,6 +33,15 @@ const BUTTON_ADD: ViewStyle = {
 const TEXT_ADD: TextStyle = {
   color: color.textWhite,
   fontSize: 16,
+}
+const EMPTY_CONTAINER_STYLE: ViewStyle = {
+  flex: Platform.OS == "ios" ? 1 : 1.5,
+  top: spacing[2], paddingVertical: 20,
+  justifyContent: 'center',
+  alignItems: 'center',
+}
+const EMPTY_TEXT_STYLE: TextStyle = {
+  color: color.line,
 }
 let initCount = 0
 let count = 0
@@ -108,6 +118,13 @@ export const MyVehicle = observer(function MyVehicle() {
     )
   }
 
+  const _renderEmptyText = (text) => {
+    return <View style={[EMPTY_CONTAINER_STYLE]}>
+      <Text tx={"common.notFound"} style={EMPTY_TEXT_STYLE} preset={"topicExtra"} />
+      <Feather name={"inbox"} size={50} color={color.line} />
+    </View>
+  }
+
   const my_vehicle_list = JSON.parse(JSON.stringify(MyVehicleStore.list))
 
   return (
@@ -126,7 +143,7 @@ export const MyVehicle = observer(function MyVehicle() {
             onRefresh={onRefresh}
           />
         }
-        ListEmptyComponent={<EmptyListMessage containerStyle={{ top: spacing[4] }} />}
+        ListEmptyComponent={_renderEmptyText()}
       />
 
       <View>

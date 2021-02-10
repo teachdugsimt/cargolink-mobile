@@ -112,14 +112,19 @@ export const HomeScreen = observer((props) => {
     title: string;
     data: any
   }
+  let token = tokenStore?.token?.accessToken || null
   const dataTest: List[] = [
     {
       title: "homeScreen.carriers",
       data: [{
         id: 1, name: "homeScreen.manageCar", onPressButton: () => {
-          MyVehicleStore.findRequest({ page: 1 })
-          navigation.navigate("myVehicle")
-        }, img: images.truck1
+          if (!token) navigation.navigate("signin")
+          else {
+            MyVehicleStore.findRequest({ page: 1 })
+            navigation.navigate("myVehicle")
+          }
+        },
+        img: images.truck1
       },
       { id: 2, name: "homeScreen.findJob", onPressButton: () => navigation.navigate("searchJob"), img: images.pinbox }]
     },
@@ -127,11 +132,13 @@ export const HomeScreen = observer((props) => {
       title: "homeScreen.shippers",
       data: [{
         id: 3, name: "homeScreen.postJob", onPressButton: () => {
-          StatusStore.setStatusScreen('add')
-          // StatusStore.setStatusScreen('edit')
-          navigation.navigate("postjob")
-          // navigation.navigate("MyJob", { screen: 'postjob' })
-        }, img: images.sheet1
+          if (!token) navigation.navigate("signin")
+          else {
+            StatusStore.setStatusScreen('add')
+            navigation.navigate("postjob")
+          }
+        },
+        img: images.sheet1
       },
       { id: 4, name: "homeScreen.findCar", onPressButton: () => navigation.navigate("searchTruck"), img: images.word1 }]
     }
