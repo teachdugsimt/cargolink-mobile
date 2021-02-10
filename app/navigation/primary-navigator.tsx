@@ -37,7 +37,7 @@ export function PrimaryNavigator() {
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
-        gestureEnabled: false,
+        gestureEnabled: true,
         stackAnimation: 'slide_from_right',
       }}
       initialRouteName={'home'}
