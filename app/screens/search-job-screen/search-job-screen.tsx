@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite';
-import { FlatList, RefreshControl, TextStyle, View, ViewStyle } from 'react-native';
+import { FlatList, ImageProps, RefreshControl, TextStyle, View, ViewStyle } from 'react-native';
 import { AdvanceSearchTab, EmptyListMessage, ModalLoading, SearchBar, Text } from '../../components';
-import { color, spacing, images as imageComponent } from '../../theme';
+import { color, spacing, images as imageComponent, images } from '../../theme';
 import { SearchItem } from '../../components/search-item/search-item';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { translate } from '../../i18n';
@@ -50,6 +50,18 @@ const Item = (data) => {
   const navigation = useNavigation()
 
   const onPress = () => {
+    const imageSource = owner?.avatar?.object && owner?.avatar?.token ? {
+      source: {
+        uri: owner?.avatar?.object || '',
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+          adminAuth: owner?.avatar?.token
+        },
+      },
+      resizeMode: 'cover'
+    } : null
+    CarriersJobStore.setProfile({ ...owner, imageProps: JSON.stringify(imageSource) })
     CarriersJobStore.findOne(id)
     navigation.navigate('jobDetail')
   }
@@ -64,6 +76,17 @@ const Item = (data) => {
   }
 
   const typeOfTruck = GetTruckType(+truckType)?.name || `${translate('jobDetailScreen.truckType')} : ${translate('common.notSpecified')}`
+  const imageSource: ImageProps = owner?.avatar?.object && owner?.avatar?.token ? {
+    source: {
+      uri: owner?.avatar?.object || '',
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+        adminAuth: owner?.avatar?.token
+      },
+    },
+    resizeMode: 'cover'
+  } : null
 
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
@@ -76,8 +99,6 @@ const Item = (data) => {
           count: requiredTruckAmount || '',
           productName: productName,
           truckType: typeOfTruck,
-          // packaging: productName,
-          // detail,
           viewDetail: true,
           postBy: owner?.companyName || '',
           isVerified: false,
@@ -86,13 +107,13 @@ const Item = (data) => {
           rating: '0',
           // ratingCount,
           // isCrown,
-          logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
           // isRecommened: true,s
+          image: imageSource,
           containerStyle: {
             paddingTop: spacing[2],
             borderRadius: 6
           },
-          onPress,
+          onPress: () => onPress(),
           onToggleHeart
         }
         }

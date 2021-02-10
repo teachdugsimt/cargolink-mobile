@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { TextStyle, View, ViewStyle, FlatList, RefreshControl } from "react-native"
-import { Button, VehicleItem, EmptyListMessage } from "../../components/"
+import { TextStyle, View, ViewStyle, FlatList, RefreshControl, Platform } from "react-native"
+import { Button, VehicleItem, Text } from "../../components/"
 import { color, spacing } from "../../theme"
 import { translate } from "../../i18n"
 import { useNavigation } from "@react-navigation/native"
@@ -10,6 +10,8 @@ import StatusStore from '../../store/my-vehicle-store/status-vehicle-store'
 import { GetTruckType } from "../../utils/get-truck-type";
 import { useStores } from "../../models/root-store/root-store-context";
 import date from 'date-and-time';
+import Feather from 'react-native-vector-icons/Feather'
+import i18n from 'i18n-js'
 
 const CONTAINER: ViewStyle = {
   flex: 1,
@@ -33,12 +35,21 @@ const TEXT_ADD: TextStyle = {
   color: color.textWhite,
   fontSize: 16,
 }
+const EMPTY_CONTAINER_STYLE: ViewStyle = {
+  flex: Platform.OS == "ios" ? 1 : 1.5,
+  top: spacing[2], paddingVertical: 20,
+  justifyContent: 'center',
+  alignItems: 'center',
+}
+const EMPTY_TEXT_STYLE: TextStyle = {
+  color: color.line,
+}
 let initCount = 0
 let count = 0
 
 export const MyVehicle = observer(function MyVehicle() {
   const navigation = useNavigation()
-  const { tokenStore } = useStores()
+  const { tokenStore, versatileStore } = useStores()
   const onPress = (id: string) => {
     MyVehicleStore.findOneRequest(id)
     navigation.navigate("vehicleDetail")
@@ -89,7 +100,9 @@ export const MyVehicle = observer(function MyVehicle() {
     const statusColor = item.approveStatus === 'Approve' ? color.success : color.primary
     // const registrationNumber = item.registrationNumber.map((n: string) => `ทะเบียน ${n}`)
     const registrationNumber = item.registrationNumber.join(', ')
-    const txtTruckType = `${translate("myVehicleScreen.type")}  ${GetTruckType(+item.truckType)?.name || translate('common.notSpecified')}`
+    let list_all_truck = JSON.parse(JSON.stringify(versatileStore.list))
+    let name = list_all_truck.find(e => item.truckType == e.id)
+    const txtTruckType = `${translate("myVehicleScreen.type")}  ${name?.name || translate('common.notSpecified')}`
     const txtDateTime = `${translate("myVehicleScreen.informationAt")} ${date.format(new Date(item.updatedAt), 'DD/MM/YY')}`
 
     return (
@@ -108,6 +121,13 @@ export const MyVehicle = observer(function MyVehicle() {
     )
   }
 
+  const _renderEmptyText = (text) => {
+    return <View style={[EMPTY_CONTAINER_STYLE]}>
+      <Text tx={"common.notFound"} style={EMPTY_TEXT_STYLE} preset={"topicExtra"} />
+      <Feather name={"inbox"} size={50} color={color.line} />
+    </View>
+  }
+
   const my_vehicle_list = JSON.parse(JSON.stringify(MyVehicleStore.list))
 
   return (
@@ -116,7 +136,7 @@ export const MyVehicle = observer(function MyVehicle() {
       <FlatList
         style={SCROLL}
         data={my_vehicle_list}
-        renderItem={renderItem}
+        renderItem={i18n.locale == "th" ? renderItem : renderItem}
         keyExtractor={item => item.id.toString()}
         onEndReached={() => onScrollList()}
         onEndReachedThreshold={0.5}
@@ -126,7 +146,7 @@ export const MyVehicle = observer(function MyVehicle() {
             onRefresh={onRefresh}
           />
         }
-        ListEmptyComponent={<EmptyListMessage containerStyle={{ top: spacing[4] }} />}
+        ListEmptyComponent={_renderEmptyText()}
       />
 
       <View>

@@ -44,6 +44,7 @@
     "low": "คอกเตี้ย",
     "medium": "คอกธรรมดา",
     "height": "คอกสูง",
+    "high": "คอกสูง",
     "somethingWrong": "มีบางอย่างผิดพลาด",
     "pleaseCheckYourData": "กรุณาตรวจสอบข้อมูล",
     "bookAJob": "จองงาน",
@@ -365,7 +366,8 @@
     "verified": "ผู้ใช้ผ่านการตรวจสอบ",
     "notVerified": "ยังไม่ผ่านการตรวจสอบ",
     "workInProgress": "งานที่กำลังดำเนินการ",
-    "pastWork": "งานที่ผ่านมา"
+    "pastWork": "งานที่ผ่านมา",
+    "feedbackScore": "คะแนนความพึงพอใจ"
   },
   "feedbackScreen": {
     "yourOpinion": "ความคิดเห็นของคุณ",
@@ -385,7 +387,9 @@
   },
   "truckDetailScreen": {
     "truckDetail": "รายละเอียดรถ",
-    "heighttOfTheCarStall": "ความสูงของคอกรถ"
+    "heighttOfTheCarStall": "ความสูงของคอกรถ",
+    "haveDump": "รถมีที่ดั้ม",
+    "haveNotDump": "รถไม่มีที่ดั้ม"
   },
   "favoriteScreen": {
     "favoriteList": "รายการโปรด",

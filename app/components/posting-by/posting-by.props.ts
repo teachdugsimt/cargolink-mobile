@@ -1,3 +1,5 @@
+import { ImageProps } from "react-native";
+
 export interface PostingByProps {
   postBy?: string
 
@@ -9,7 +11,7 @@ export interface PostingByProps {
 
   ratingCount?: string
 
-  logo?: string
+  image?: string | ImageProps
 
   onToggle?: (newValue?: any) => void
 }

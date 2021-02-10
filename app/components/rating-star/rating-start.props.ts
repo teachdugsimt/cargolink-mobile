@@ -1,17 +1,21 @@
 export interface RatingStartProps {
 
-    size?: number
+  size?: number
 
-    colorActive?: string
+  colorActive?: string
 
-    colorInActive?: string
+  colorInActive?: string
 
-    space?: number
+  space?: number
 
-    countIcon?: number
+  countIcon?: number
 
-    isHorizontal?: boolean
+  isHorizontal?: boolean
 
-    onToggle: (count: number) => void
+  disabled?: boolean
+
+  indexActive?: number
+
+  onToggle?: (count: number) => void
 
 }

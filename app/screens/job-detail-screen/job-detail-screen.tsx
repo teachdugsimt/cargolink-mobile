@@ -23,6 +23,8 @@ import { ConverTimeFormat } from "../../utils/convert-time-format";
 import LottieView from 'lottie-react-native';
 import CarriersHistoryCallStore from '../../store/carriers-history-call-store/carriers-history-call-store'
 import CallDetectorManager from 'react-native-call-detection'
+import UserJobStore from "../../store/user-job-store/user-job-store"
+import ProfileStore from "../../store/profile-store/profile-store"
 
 interface JobDetailProps {
   booker?: Array<any>
@@ -329,7 +331,10 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     // }
 
     return () => {
-      CarriersJobStore.setDefaultOfData()
+      if (route.name === 'jobDetail') {
+        CarriersJobStore.setDefaultOfProfile()
+        CarriersJobStore.setDefaultOfData()
+      }
     }
   }, [])
 
@@ -371,8 +376,14 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   }
 
   const onPress = () => {
+    const userId = CarriersJobStore.profile.userId
+    ProfileStore.getProfileReporter(userId)
+    UserJobStore.find({
+      userId: userId,
+      page: 0,
+    })
     modalizeRef.current?.close();
-    navigation.navigate('shipperProfile')
+    navigation.navigate('carrierProfile')
   }
 
   const onOpenModalize = () => {
@@ -556,12 +567,12 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     postBy: owner?.companyName || '',
     rating: '0',
     ratingCount: '0',
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
+    image: JSON.parse(CarriersJobStore.profile.imageProps),
   }
 
   return (
     <View style={CONTAINER}>
-      <ModalLoading size={'large'} color={color.primary} visible={CarriersJobStore.mapLoading || CarriersJobStore.loading || isCalling} />
+      <ModalLoading size={'large'} color={color.primary} visible={CarriersJobStore.mapLoading || CarriersJobStore.loading} />
       <View style={MAP_CONTAINER}>
         {from && !!from.lat && !!from.lng && !!CarriersJobStore.directions.length &&
           <MapView

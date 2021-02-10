@@ -18,7 +18,7 @@ import {
 import { Button, ModalLoading, PostingBy, Text } from "../../components"
 import { translate } from "../../i18n"
 import { color, images as imageComponent, spacing } from "../../theme"
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation, useRoute } from "@react-navigation/native"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import ShipperTruckStore from '../../store/shipper-truck-store/shipper-truck-store'
 import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
@@ -29,7 +29,8 @@ import { GetTruckType } from "../../utils/get-truck-type"
 import { MapTruckImageName } from "../../utils/map-truck-image-name"
 import ImageView from 'react-native-image-view';
 import ShippersHistoryCallStore from '../../store/shippers-history-call-store/shippers-history-call-store'
-import UserJobStore from '../../store/user-job-store/user-job-store'
+import UserTruckStore from '../../store/user-truck-store/user-truck-store'
+import ProfileStore from '../../store/profile-store/profile-store'
 
 interface ImageInfo {
   width: number
@@ -140,6 +141,8 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
     owner
   } = ShipperTruckStore.data
 
+  const route = useRoute()
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (<TouchableOpacity onPress={() => onSelectedHeart(id)}>
@@ -215,10 +218,19 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
   }
 
   const onVisiblePorfile = () => {
-    UserJobStore.find({
-      userId: owner.userId,
+    // UserTruckStore.find({
+    //   userId: ShipperTruckStore.profile.userId,
+    //   page: 0,
+    // })
+    // navigation.navigate('shipperProfile')
+
+    const userId = ShipperTruckStore.profile.userId
+    ProfileStore.getProfileReporter(userId)
+    UserTruckStore.find({
+      userId: userId,
       page: 0,
     })
+    console.log('JSON.parse(JSON.stringify(ShipperTruckStore.profile))', JSON.parse(JSON.stringify(ShipperTruckStore.profile)))
     navigation.navigate('shipperProfile')
   }
 
@@ -227,25 +239,30 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
       TruckTypeStore.find()
     }
     return () => {
-      ShipperTruckStore.setDefaultOfData()
-      ShipperTruckStore.updateFavoriteInList(FavoriteTruckStore.id, FavoriteTruckStore.liked)
+      if (route.name === 'truckDetail') {
+        ShipperTruckStore.setDefaultOfData()
+        ShipperTruckStore.setDefaultOfProfile()
+        ShipperTruckStore.updateFavoriteInList(FavoriteTruckStore.id, FavoriteTruckStore.liked)
+      }
     }
   }, [])
 
   const transformImage = truckPhotos &&
     Object.keys(truckPhotos).length ?
     Object.entries(truckPhotos).map(img => {
+      //  __DEV__ &&  console.tron.log("Image MAPPING RAW :: ", img)
       let imageInfo: ImageInfo = {
         width: 1024,
         height: 720,
         title: `img-${img[0]}`
       }
-      if (img[1]) {
+      if (img[1] && img[1].object) {
         imageInfo.source = {
-          uri: img[1],
+          uri: img[1].object,
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${tokenStore.token.accessToken}`
+            Authorization: img[1].token,
+            adminAuth: img[1].token
           }
         }
       } else {
@@ -253,8 +270,17 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
       }
       return imageInfo
     }) : []
-
+  __DEV__ && console.tron.log("Transform Image :: ", transformImage)
   const truckImage = MapTruckImageName(+truckType)
+
+  const ownerProfile = {
+    postBy: ShipperTruckStore.profile?.companyName || '',
+    isVerified: false,
+    rating: '0',
+    ratingCount: '0',
+    isCrown: false,
+    image: JSON.parse(ShipperTruckStore.profile.imageProps),
+  }
 
   return (
     <View style={CONTAINER}>
@@ -268,8 +294,13 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
             <View style={IMAGES}>
               {!!transformImage &&
                 transformImage.map((image, index) => {
+                  // __DEV__ && console.tron.log("Image index : ", image)
                   return (
-                    <TouchableOpacity style={TOUCHABLE} key={index} onPress={(attr) => onViewer(index)}>
+                    <TouchableOpacity style={TOUCHABLE} key={index} onPress={(attr) => {
+                      if (ShipperTruckStore.data.id && image && image.source && image.source != 51)
+                        onViewer(index)
+                    }
+                    }>
                       <Image style={IMAGE} source={ShipperTruckStore.data.id && image?.source ? image.source : imageComponent['noImageAvailable']} key={index} />
                     </TouchableOpacity>
                   )
@@ -280,6 +311,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
                 imageIndex={indexOfImage}
                 isVisible={openViewer}
                 onClose={onCancel}
+                useNativeDriver={true}
               />
               {/* </Modal> */}
             </View>
@@ -296,10 +328,25 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
               <MaterialCommunityIcons name={'truck-outline'} size={24} color={color.primary} />
             </View>
             <View style={DETAIL_BOX}>
-              <Text text={`${translate('common.vehicleTypeField')} : ${GetTruckType(+truckType)?.name || translate('common.notSpecified')}`} style={TEXT} />
-              <Text text={`${translate('common.count')} : ${2} ${translate('jobDetailScreen.unit')}`} style={TEXT} />
-              <Text text={`${translate('vehicleDetailScreen.carHaveDum')} : ${tipper ? translate('common.have') : translate('common.notHave')}`} style={TEXT} />
-              <Text text={`${translate('truckDetailScreen.heighttOfTheCarStall')} : ${stallHeight || '-'} ${translate('common.M')}`} style={TEXT} />
+              <Text style={TEXT}>
+                {translate('common.vehicleTypeField') + ' : '}
+                <Text style={{ fontFamily: 'Kanit-Bold' }}>
+                  {GetTruckType(+truckType)?.name || translate('common.notSpecified')}
+                </Text>
+              </Text>
+              {/* <Text text={`${translate('common.count')} : ${2} ${translate('jobDetailScreen.unit')}`} style={TEXT} /> */}
+              <Text style={TEXT}>
+                {translate('vehicleDetailScreen.carHaveDum') + ' : '}
+                <Text style={{ fontFamily: 'Kanit-Bold' }}>
+                  {tipper ? translate('common.have') : translate('common.notHave')}
+                </Text>
+              </Text>
+              <Text style={TEXT} >
+                {translate('truckDetailScreen.heighttOfTheCarStall') + ' : '}
+                <Text style={{ fontFamily: 'Kanit-Bold' }}>
+                  {stallHeight ? translate(`common.${stallHeight.toLowerCase()}`) : '-'}
+                </Text>
+              </Text>
             </View>
           </View>
 
@@ -312,14 +359,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
         <View style={COLUMN}>
           <View style={[ROW, { justifyContent: 'space-between', alignItems: 'center' }]}>
             <Text style={{ color: color.line }}>{translate('jobDetailScreen.postBy')}</Text>
-            <PostingBy {...{
-              postBy: 'CargoLink',
-              isVerified: false,
-              rating: '0',
-              ratingCount: '0',
-              isCrown: false,
-              logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-            }} onToggle={() => onVisiblePorfile()} />
+            <PostingBy {...ownerProfile} onToggle={() => onVisiblePorfile()} />
           </View>
         </View>
 

@@ -5,19 +5,18 @@
  * You'll likely spend most of your time in this file.
  */
 import React from "react"
-import { ViewStyle, View, Image, Easing } from 'react-native'
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
-import { Icon, Text, HeaderCenter, HeaderLeft, HeaderRight } from "../components"
-import { color, images } from '../theme'
+import { Text, HeaderCenter, HeaderLeft } from "../components"
+import { color } from '../theme'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import {
   DetailScreen, HomeScreen, JobDetailScreen, MyVehicle, PostJobScreen, SearchJobScreen, AdvanceSearchScreen,
   UploadVehicleScreen, SuccessUpload,
   VehicleDetailScreen, CheckInformationScreen,
   ShipperProfileScreen, ReceivePointScreen, FeedbackScreen, SearchTruckScreen,
-  PostSuccessScreen, AdvanceSearchTruckScreen, TruckDetailScreen, SelectJobScreen, CommentScreen
+  PostSuccessScreen, AdvanceSearchTruckScreen, TruckDetailScreen, SelectJobScreen, CommentScreen,
+  CarrierProfileScreen
 } from "../screens"
-import { translate } from "../i18n"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
  * as well as what properties (if any) they might take when navigating to them.
@@ -51,29 +50,19 @@ export type PrimaryHomeParamList = {
   postSuccess: undefined
   comment: undefined
   myJobList: undefined
+  carrierProfile: undefined
+  jobDetailOwner: undefined
+  truckDetailOwner: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
 const Stack = createNativeStackNavigator<PrimaryHomeParamList>()
 
-const SHADOW: ViewStyle = {
-  borderBottomRightRadius: 5,
-  borderBottomLeftRadius: 5,
-  shadowColor: '#000',
-  shadowOffset: { width: 0, height: 1 },
-  shadowOpacity: 0.8,
-  shadowRadius: 2,
-  elevation: 5,
-}
-
-const HEADER_STYLE: ViewStyle = {
-  width: '100%'
-}
-
 export function HomeNavigator() {
 
   return (
     <Stack.Navigator
+      initialRouteName={"home"}
       screenOptions={{
         gestureEnabled: true,
         headerShown: true,
@@ -171,6 +160,11 @@ export function HomeNavigator() {
           headerCenter: () => <HeaderCenter tx={"jobDetailScreen.jobDetail"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })} />
+      <Stack.Screen name="jobDetailOwner" component={JobDetailScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"jobDetailScreen.jobDetail"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })} />
       <Stack.Screen name="searchTruck" component={SearchTruckScreen}
         options={({ navigation, route }) => ({
           // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
@@ -220,6 +214,14 @@ export function HomeNavigator() {
         })}
       />
       <Stack.Screen
+        name="carrierProfile"
+        component={CarrierProfileScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"profileScreen.profile"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+      <Stack.Screen
         name="feedback"
         component={FeedbackScreen}
         options={({ navigation, route }) => ({
@@ -235,6 +237,14 @@ export function HomeNavigator() {
         })} />
       <Stack.Screen
         name="truckDetail"
+        component={TruckDetailScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"truckDetailScreen.truckDetail"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+      <Stack.Screen
+        name="truckDetailOwner"
         component={TruckDetailScreen}
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"truckDetailScreen.truckDetail"} />,

@@ -1,24 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { Dimensions, FlatList, Image, ImageProps, ImageStyle, RefreshControl, ScrollView, TextStyle, View, ViewStyle } from 'react-native'
-import { Button, EmptyListMessage, Icon, ModalAlert, ModalLoading, RatingStart, SearchItemTruck, Text } from '../../components'
+import { Button, EmptyListMessage, Icon, ModalAlert, ModalLoading, RatingStart, SearchItem, Text } from '../../components'
 import { translate } from '../../i18n'
 import { spacing, images as imageComponent, color, images } from '../../theme'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { TabBarNavigation } from './tab-bar-navigation'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import LottieView from 'lottie-react-native';
 import ProfileStore from '../../store/profile-store/profile-store'
-import UserTruckStore from '../../store//user-truck-store/user-truck-store'
-import ShipperTruckStore from '../../store/shipper-truck-store/shipper-truck-store'
+import UserJobStore from '../../store/user-job-store/user-job-store'
+import CarriersJobStore from '../../store/carriers-job-store/carriers-job-store'
 import { GetTruckType } from "../../utils/get-truck-type"
 import { MapTruckImageName } from '../../utils/map-truck-image-name'
-import FavoriteTruckStore from '../../store/shipper-truck-store/favorite-truck-store'
+import FavoriteJobStore from '../../store/carriers-job-store/favorite-job-store'
 import { useStores } from '../../models'
-import { GetRegion } from '../../utils/get-region'
-import i18n from 'i18n-js'
 
-interface ShipperTruckProps {
+interface CarrierProfileProps {
   isBooker?: boolean
 }
 
@@ -40,7 +37,6 @@ const PROFILE_IMAGE: ImageStyle = {
   width: 70,
   height: 70,
   borderRadius: Math.round(deviceWidht + deviceHeight) / 2,
-  backgroundColor: color.disable,
 }
 const SMALL_ICON: ImageStyle = {
   width: 13,
@@ -224,12 +220,13 @@ const RenderImageAlert = () => (<Image source={images['workYellowIcon']} width={
 const Item = (data) => {
   const {
     id,
+    productName,
     truckType,
-    stallHeight,
-    tipper,
-    isLiked,
+    requiredTruckAmount,
+    from,
+    to,
     owner,
-    workingZones,
+    isLiked,
   } = data
 
   const { tokenStore } = useStores()
@@ -237,83 +234,50 @@ const Item = (data) => {
   const navigation = useNavigation()
 
   const onPress = () => {
-    const imageSource = owner?.avatar?.object && owner?.avatar?.token ? {
-      source: {
-        uri: owner?.avatar?.object || '',
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-          adminAuth: owner?.avatar?.token
-        },
-      },
-      resizeMode: 'cover'
-    } : null
-    ShipperTruckStore.setProfile({ ...owner, imageProps: JSON.stringify(imageSource) })
-    ShipperTruckStore.findOne(id)
-    navigation.navigate('truckDetailOwner')
+    // CarriersJobStore.setProfile({ ...owner, imageProps: JSON.stringify(imageSource) })
+    CarriersJobStore.setDefaultOfData()
+    CarriersJobStore.findOne(id)
+    navigation.navigate('jobDetailOwner')
   }
 
-  const onToggleHeart = (data) => { // id, isLike
+  const onToggleHeart = (data) => {
     if (tokenStore?.token?.accessToken) {
-      FavoriteTruckStore.add(data.id)
-      ShipperTruckStore.updateFavoriteInList(data.id, data.isLike)
+      FavoriteJobStore.add(data.id)
+      CarriersJobStore.updateFavoriteInList(data.id, data.isLike)
     } else {
       navigation.navigate('signin')
     }
   }
 
-  const renderContent = () => (<View style={{ flexDirection: 'row', paddingLeft: spacing[2], paddingVertical: spacing[2] }}>
-    <View style={{ flex: 3 }}>
-      <Text text={`${translate('truckDetailScreen.heighttOfTheCarStall')} : ${stallHeight ? translate(`common.${stallHeight.toLowerCase()}`) : '-'}`} />
-    </View>
-    <View style={{ flex: 2 }}>
-      <Text text={`${tipper ? translate('truckDetailScreen.haveDump') : translate('truckDetailScreen.haveNotDump')}`} />
-    </View>
-  </View>)
-
-  const workingZoneStr = workingZones?.length ? workingZones.map(zone => {
-    let reg = GetRegion(zone.region, i18n.locale)
-    return reg?.label || ''
-  }).join(', ') : translate('common.notSpecified')
-
-  const truckImage = MapTruckImageName(+truckType)
-  const imageSource: ImageProps = owner?.avatar?.object && owner?.avatar?.token ? {
-    source: {
-      uri: owner?.avatar?.object || '',
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-        adminAuth: owner?.avatar?.token
-      },
-    },
-    resizeMode: 'cover'
-  } : null
+  const typeOfTruck = GetTruckType(+truckType)?.name || `${translate('jobDetailScreen.truckType')} : ${translate('common.notSpecified')}`
+  const imageProps: ImageProps = JSON.parse(owner?.imageProps)
 
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
-      <SearchItemTruck
+      <SearchItem
         {
         ...{
           id,
-          fromText: workingZoneStr,
-          // count: 2,
-          customContent: renderContent,
-          truckType: `${translate('common.vehicleTypeField')} : ${GetTruckType(+truckType)?.name || translate('common.notSpecified')}`,
-          // viewDetail,
+          fromText: from?.name || '',
+          toText: to?.map(location => location.name).join(', ') || '',
+          count: requiredTruckAmount || '',
+          productName: productName,
+          truckType: typeOfTruck,
+          viewDetail: true,
           postBy: owner?.companyName || '',
           isVerified: false,
           isLike: isLiked,
-          backgroundImage: imageComponent[truckImage && truckImage !== 'greyMock' ? truckImage : ''],
-          // rating,
+          backgroundImage: imageComponent[MapTruckImageName(+truckType) || 'truck'],
+          rating: '0',
           // ratingCount,
-          isCrown: false,
-          image: imageSource,
-          // isRecommened,
+          // isCrown,
+          // isRecommened: true,s
+          image: imageProps,
           containerStyle: {
             paddingTop: spacing[2],
             borderRadius: 6
           },
-          onPress,
+          onPress: () => onPress(),
           onToggleHeart
         }
         }
@@ -324,7 +288,7 @@ const Item = (data) => {
 
 let PAGE = 0
 
-export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
+export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
   const navigation = useNavigation()
 
   const [visibleModal, setVisibleModal] = useState<boolean>(false)
@@ -333,7 +297,7 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
 
   const route = useRoute()
 
-  const { isBooker }: ShipperTruckProps = route?.params || {}
+  const { isBooker }: CarrierProfileProps = route?.params || {}
 
   const confirmBookAJob = () => {
     setVisibleModal(true)
@@ -359,12 +323,12 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
 
   const onScrollList = () => {
     if (!onEndReachedCalledDuringMomentum
-      && UserTruckStore.list.length >= 10
-      && !UserTruckStore.loading
+      && UserJobStore.list.length >= 10
+      && !UserJobStore.loading
     ) {
       PAGE += 1
-      const filter = { userId: ShipperTruckStore.profile?.userId, page: PAGE }
-      UserTruckStore.find(filter)
+      const filter = { userId: CarriersJobStore.profile?.userId, page: PAGE }
+      UserJobStore.find(filter)
       setOnEndReachedCalledDuringMomentum(true)
     }
   }
@@ -392,13 +356,12 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
     visible: visibleModal,
   }
 
-  const renderItem = ({ item }) => (<Item {...item} owner={ShipperTruckStore.profile} />)
+  const renderItem = ({ item }) => (<Item {...item} owner={CarriersJobStore.profile} />)
 
-  const imageProps = ShipperTruckStore.profile?.imageProps ? JSON.parse(ShipperTruckStore.profile.imageProps) : ''
+  const imageProps = CarriersJobStore.profile?.imageProps ? JSON.parse(CarriersJobStore.profile.imageProps) : ''
 
   console.log('JSON.parse(JSON.stringify(ProfileStore.data_report_profile))', JSON.parse(JSON.stringify(ProfileStore.data_report_profile)))
-  console.log('JSON.parse(JSON.stringify(UserTruckStore.list))', JSON.parse(JSON.stringify(UserTruckStore.list)))
-  console.log('JSON.parse(JSON.stringify(ShipperTruckStore.profile))', JSON.parse(JSON.stringify(ShipperTruckStore.profile)))
+  console.log('JSON.parse(JSON.stringify(UserJobStore.list))', JSON.parse(JSON.stringify(UserJobStore.list)))
 
   const profile = ProfileStore.data_report_profile
   const truckCountAll = profile?.trucks.reduce((curr, next) => (curr + next.total), 0) || 0
@@ -442,7 +405,7 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
           <Image {...imageProps} style={PROFILE_IMAGE} resizeMode={'cover'} />
         </View>
         <View style={{ flex: 3 }}>
-          <Text text={ShipperTruckStore.profile?.companyName || ''} style={TEXT} />
+          <Text text={CarriersJobStore.profile?.companyName || ''} style={TEXT} />
           <Verified isVerified={false} />
         </View>
       </View>
@@ -473,12 +436,12 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
         </View>
 
         <View style={{}}>
-          <TabBarNavigation data={UserTruckStore.list} />
+          <TabBarNavigation data={UserJobStore.list} />
         </View>
       </ScrollView> */}
 
       <FlatList
-        data={UserTruckStore.list || []}
+        data={UserJobStore.list || []}
         renderItem={renderItem}
         keyExtractor={item => item.id}
         onEndReached={onScrollList}
@@ -489,7 +452,7 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
         onMomentumScrollBegin={() => setOnEndReachedCalledDuringMomentum(false)}
         refreshControl={
           <RefreshControl
-            refreshing={ShipperTruckStore.loading}
+            refreshing={CarriersJobStore.loading}
             onRefresh={() => console.log('onRefresh')}
           />
         }

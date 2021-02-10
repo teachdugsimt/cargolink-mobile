@@ -141,6 +141,8 @@ const TruckItem = (data) => {
     truckType,
     workingZones,
     isLiked,
+    tipper,
+    stallHeight,
     list,
     setUnFollow
   } = data
@@ -160,6 +162,15 @@ const TruckItem = (data) => {
     // ShipperTruckStore.updateFavoriteInList(data.id, data.isLike)
   }
 
+  const renderContent = () => (<View style={{ paddingLeft: spacing[2] }}>
+    <View style={{ paddingVertical: spacing[1] }}>
+      <Text text={`${translate('truckDetailScreen.heighttOfTheCarStall')} : ${stallHeight ? translate(`common.${stallHeight.toLowerCase()}`) : '-'}`} />
+    </View>
+    <View style={{ paddingVertical: spacing[1] }}>
+      <Text text={`${tipper ? translate('truckDetailScreen.haveDump') : translate('truckDetailScreen.haveNotDump')}`} />
+    </View>
+  </View>)
+
   const workingZoneStr = workingZones?.length ? workingZones.map(zone => {
     let reg = GetRegion(zone.region, i18n.locale)
     return reg.label
@@ -174,7 +185,8 @@ const TruckItem = (data) => {
         ...{
           id,
           fromText: workingZoneStr,
-          count: 2,
+          // count: 2,
+          customContent: renderContent,
           truckType: `${translate('common.vehicleTypeField')} : ${GetTruckType(+truckType)?.name || translate('common.notSpecified')}`,
           // viewDetail,
           postBy: 'CargoLink', // [Mocking]

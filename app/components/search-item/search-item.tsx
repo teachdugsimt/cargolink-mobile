@@ -142,7 +142,7 @@ export function SearchItem(props: SearchItemProps) {
     rating,
     ratingCount,
     isCrown,
-    logo,
+    image,
     containerStyle,
     bottomComponent,
     onPress,
@@ -235,7 +235,7 @@ export function SearchItem(props: SearchItemProps) {
               isCrown,
               rating,
               ratingCount,
-              logo,
+              image,
             }
           } />
         </View>
