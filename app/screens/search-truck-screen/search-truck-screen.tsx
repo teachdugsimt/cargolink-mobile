@@ -160,7 +160,7 @@ const Item = (data) => {
     }
   }
 
-  const renderContent = () => (<View style={{ flexDirection: 'column', paddingLeft: spacing[2] }}>
+  const renderContent = () => (<View style={{ paddingLeft: spacing[2] }}>
     <View style={{ paddingVertical: spacing[1] }}>
       {/* <Text text={`${translate('truckDetailScreen.heighttOfTheCarStall')} : ${stallHeight ? translate(`common.${stallHeight.toLowerCase()}`) : '-'} (${tipper ? translate('truckDetailScreen.haveDump') : translate('truckDetailScreen.haveNotDump')})`} /> */}
       <Text text={`${translate('truckDetailScreen.heighttOfTheCarStall')} : ${stallHeight ? translate(`common.${stallHeight.toLowerCase()}`) : '-'}`} />
