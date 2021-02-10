@@ -21,7 +21,11 @@ const defaultModel = {
   workingZones: types.optional(types.array(types.model({
     region: types.maybeNull(types.number),
     province: types.maybeNull(types.number),
-  })), [])
+  })), []),
+  avatar: types.maybeNull(types.model({
+    object: types.maybeNull(types.string),
+    token: types.maybeNull(types.string),
+  }))
 }
 
 const ShipperJob = types.model(defaultModel)
@@ -37,6 +41,7 @@ const ShipperJobFull = types.model({
   truckTypeName: types.maybeNull(types.string),
   owner: types.maybeNull(types.model({
     id: types.maybeNull(types.number),
+    userId: types.maybeNull(types.string),
     companyName: types.maybeNull(types.string),
     fullName: types.maybeNull(types.string),
     mobileNo: types.maybeNull(types.string),
@@ -46,7 +51,7 @@ const ShipperJobFull = types.model({
 
 const isAutenticated = async () => {
   const profile = await storage.load('root')
-  return !!profile.tokenStore.token.accessToken
+  return !!profile?.tokenStore?.token?.accessToken
 }
 
 const ShipperTruckStore = types
@@ -166,6 +171,7 @@ const ShipperTruckStore = types
         ]),
         owner: {
           id: 0,
+          userId: '',
           companyName: null,
           fullName: null,
           mobileNo: '',
@@ -174,6 +180,7 @@ const ShipperTruckStore = types
         tipper: false,
         isLiked: false,
         truckTypeName: null,
+        avatar: null
       }
     },
 

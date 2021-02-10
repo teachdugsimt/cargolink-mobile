@@ -29,6 +29,7 @@ import { GetTruckType } from "../../utils/get-truck-type"
 import { MapTruckImageName } from "../../utils/map-truck-image-name"
 import ImageView from 'react-native-image-view';
 import ShippersHistoryCallStore from '../../store/shippers-history-call-store/shippers-history-call-store'
+import UserJobStore from '../../store/user-job-store/user-job-store'
 
 interface ImageInfo {
   width: number
@@ -136,6 +137,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
     isLiked,
     truckPhotos,
     phoneNumber,
+    owner
   } = ShipperTruckStore.data
 
   useLayoutEffect(() => {
@@ -170,12 +172,16 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
   }
 
   const onSelectedHeart = (id: string) => {
-    FavoriteTruckStore.keepLiked(id, !liked)
-    FavoriteTruckStore.add(id)
-    setState(prevState => ({
-      ...prevState,
-      liked: !prevState.liked,
-    }))
+    if (tokenStore?.token?.accessToken) {
+      FavoriteTruckStore.keepLiked(id, !liked)
+      FavoriteTruckStore.add(id)
+      setState(prevState => ({
+        ...prevState,
+        liked: !prevState.liked,
+      }))
+    } else {
+      navigation.navigate('signin')
+    }
   }
 
   const onCall = (id: string, phoneNumber: string) => {
@@ -184,24 +190,36 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
   }
 
   const callNumber = (truckId: string, phone: string) => {
-    let phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
-    __DEV__ && console.tron.log('phoneNumber', phoneNumber)
-    Linking.canOpenURL(phoneNumber)
-      .then(supported => {
-        if (!supported) {
-          __DEV__ && console.tron.log('Phone number is not available');
-          Alert.alert('Phone number is not available')
-          return false;
-        } else {
-          ShippersHistoryCallStore.add({ truckId })
-          return Linking.openURL(phoneNumber);
-        }
-      })
-      .catch(err => __DEV__ && console.tron.log('err', err));
+    if (tokenStore?.token?.accessToken) {
+      const phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
+      __DEV__ && console.tron.log('phoneNumber', phoneNumber)
+      Linking.canOpenURL(phoneNumber)
+        .then(supported => {
+          if (!supported) {
+            __DEV__ && console.tron.log('Phone number is not available');
+            Alert.alert('Phone number is not available')
+            return false;
+          } else {
+            ShippersHistoryCallStore.add({ truckId })
+            return Linking.openURL(phoneNumber);
+          }
+        })
+        .catch(err => __DEV__ && console.tron.log('err', err));
+    } else {
+      navigation.navigate('signin')
+    }
   };
 
   const confirmBookAJob = () => {
     navigation.navigate('myJobList')
+  }
+
+  const onVisiblePorfile = () => {
+    UserJobStore.find({
+      userId: owner.userId,
+      page: 0,
+    })
+    navigation.navigate('shipperProfile')
   }
 
   useEffect(() => {
@@ -301,7 +319,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
               ratingCount: '0',
               isCrown: false,
               logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-            }} onToggle={() => navigation.navigate('shipperProfile')} />
+            }} onToggle={() => onVisiblePorfile()} />
           </View>
         </View>
 

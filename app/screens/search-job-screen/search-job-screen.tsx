@@ -15,6 +15,7 @@ import TruckTypeStore from "../../store/truck-type-store/truck-type-store"
 import { provinceListEn, provinceListTh } from '../../screens/home-screen/manage-vehicle/datasource'
 import FavoriteJobStore from "../../store/carriers-job-store/favorite-job-store"
 import { MapTruckImageName } from '../../utils/map-truck-image-name';
+import { useStores } from "../../models/root-store/root-store-context";
 
 const SEARCH_BAR: ViewStyle = {
   marginBottom: spacing[1],
@@ -44,6 +45,8 @@ const Item = (data) => {
     isLiked,
   } = data
 
+  const { tokenStore } = useStores()
+
   const navigation = useNavigation()
 
   const onPress = () => {
@@ -52,8 +55,12 @@ const Item = (data) => {
   }
 
   const onToggleHeart = (data) => {
-    FavoriteJobStore.add(data.id)
-    CarriersJobStore.updateFavoriteInList(data.id, data.isLike)
+    if (tokenStore?.token?.accessToken) {
+      FavoriteJobStore.add(data.id)
+      CarriersJobStore.updateFavoriteInList(data.id, data.isLike)
+    } else {
+      navigation.navigate('signin')
+    }
   }
 
   const typeOfTruck = GetTruckType(+truckType)?.name || `${translate('jobDetailScreen.truckType')} : ${translate('common.notSpecified')}`

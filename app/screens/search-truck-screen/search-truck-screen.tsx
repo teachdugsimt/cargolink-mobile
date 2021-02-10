@@ -17,6 +17,7 @@ import AdvanceSearchStore from '../../store/shipper-truck-store/advance-search-s
 import FavoriteTruckStore from '../../store/shipper-truck-store/favorite-truck-store';
 import { MapTruckImageName } from '../../utils/map-truck-image-name';
 import { GetTruckType } from '../../utils/get-truck-type';
+import { useStores } from "../../models/root-store/root-store-context";
 
 const width = Dimensions.get('window').width
 
@@ -128,6 +129,8 @@ const Item = (data) => {
     workingZones,
   } = data
 
+  const { tokenStore } = useStores()
+
   const navigation = useNavigation()
 
   const onPress = () => {
@@ -136,8 +139,12 @@ const Item = (data) => {
   }
 
   const onToggleHeart = (data) => { // id, isLike
-    FavoriteTruckStore.add(data.id)
-    ShipperTruckStore.updateFavoriteInList(data.id, data.isLike)
+    if (tokenStore?.token?.accessToken) {
+      FavoriteTruckStore.add(data.id)
+      ShipperTruckStore.updateFavoriteInList(data.id, data.isLike)
+    } else {
+      navigation.navigate('signin')
+    }
   }
 
   const workingZoneStr = workingZones?.length ? workingZones.map(zone => {
@@ -220,7 +227,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
         ...prevState,
         filterLength: length,
       }))
-      PAGE = 0
+      // PAGE = 0
     }, [])
   );
 

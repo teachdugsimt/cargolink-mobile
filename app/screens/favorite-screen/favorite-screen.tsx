@@ -114,16 +114,14 @@ const JobItem = (data) => {
           productName: productName,
           truckType: typeOfTruck,
           // packaging: productName,
-          // detail,
-          viewDetail: true,
           postBy: owner?.companyName || 'CargoLink', // [Mocking]
-          isVerified: true,
+          isVerified: false,
           isLike: isLiked,
-          rating: '4.8', // [Mocking]
-          ratingCount: '81', // [Mocking]
-          isCrown: true, // [Mocking]
+          rating: '0', // [Mocking]
+          ratingCount: '0', // [Mocking]
+          isCrown: false, // [Mocking]
           logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg', // [Mocking]
-          isRecommened: true,
+          isRecommened: false,
           containerStyle: {
             paddingTop: spacing[2],
             borderRadius: 6
@@ -180,12 +178,12 @@ const TruckItem = (data) => {
           truckType: `${translate('common.vehicleTypeField')} : ${GetTruckType(+truckType)?.name || translate('common.notSpecified')}`,
           // viewDetail,
           postBy: 'CargoLink', // [Mocking]
-          isVerified: true,
+          isVerified: false,
           isLike: isLiked,
           backgroundImage: imageComponent[truckImage && truckImage !== 'greyMock' ? truckImage : ''],
-          rating: '4.8', // [Mocking]
-          ratingCount: '81', // [Mocking]
-          isCrown: true,
+          rating: '0', // [Mocking]
+          ratingCount: '0', // [Mocking]
+          isCrown: false,
           logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg', // [Mocking]
           // isRecommened,
           containerStyle: {

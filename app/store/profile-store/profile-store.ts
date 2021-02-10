@@ -201,7 +201,7 @@ const ProfileStore = types.model({
     let data_profile = {}
     data_profile['name-lastname'] = self.data?.fullName || ''
     data_profile['phone-number'] = self.data?.phoneNumber || ''
-    data_profile['email'] = self.data.email || ''
+    data_profile['email'] = self.data?.email || ''
     data_profile['avatar'] = self.data?.avatar || ''
     return data_profile
   }

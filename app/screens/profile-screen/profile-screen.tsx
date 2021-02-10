@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import {
   View, ViewStyle, TextStyle, TouchableOpacity,
-  SectionList, Dimensions, Image, ImageStyle, FlatList, Platform, LayoutAnimation,
+  SectionList, Dimensions, Image, ImageStyle, FlatList, Platform, LayoutAnimation, Alert,
 } from "react-native"
 import { observer } from "mobx-react-lite"
 import { Text, Icon, HeaderCenter, HeaderRight } from "../../components"
@@ -156,12 +156,18 @@ export const ProfileScreen = observer(function ProfileScreen() {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <HeaderRight onRightPress={() => navigation.navigate("updateProfile")} iconName={"ios-create-outline"} iconSize={24} iconColor={color.black} />
+        <HeaderRight onRightPress={() => _pressEditProfiel()} iconName={"ios-create-outline"} iconSize={24} iconColor={color.black} />
       ),
     });
     ProfileStore.getProfileRequest()
     ProfileStore.getTruckSummary()
   }, [])
+
+  const _pressEditProfiel = () => {
+    let token = tokenStore?.token?.accessToken || null
+    if (!token) Alert.alert(translate("common.pleaseLogin"))
+    else navigation.navigate("updateProfile")
+  }
 
   useEffect(() => {
     let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
@@ -208,7 +214,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
           <Text style={PRIMARY} preset={"header"}>{item.number}</Text>
         </View>
         <View style={FLEX_14}>
-          <Text style={LINE_COLOR} tx={item.content}/>
+          <Text style={LINE_COLOR} tx={item.content} />
         </View>
 
       </View>
@@ -380,7 +386,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
   const { fullName, phoneNumber, avatar } = JSON.parse(JSON.stringify(ProfileStore.data)) || {}
   __DEV__ && console.tron.log("Profile data :: ", JSON.parse(JSON.stringify(ProfileStore.data)))
 
- 
+
 
   return (
     <View testID="ProfileScreen" style={FULL}>

@@ -28,13 +28,13 @@ const CODE_FIELD_ROOT: TextStyle = {
 }
 const CODE_INFORMATION_ROOT: ViewStyle = {
   flex: 1,
+  flexDirection: 'row',
+  justifyContent: 'space-between',
   marginLeft: spacing[5],
   marginRight: spacing[5],
 }
 const CODE_INFORMATION: ViewStyle = {
   flexDirection: 'row',
-  // justifyContent: "center",
-  alignItems: 'center'
 }
 const RESEND_CODE_ROOT: ViewStyle = {
   marginVertical: spacing[3],
@@ -71,8 +71,8 @@ const CODE_INPUT_FILED_STYLE: TextStyle = {
   borderColor: color.transparent,
   borderBottomWidth: 2,
   borderBottomColor: color.line,
-  fontSize: 25,
-  color: color.dim,
+  fontSize: 24,
+  color: color.dim
 }
 const CODE_INPUT_HIGHTLIGHT_STYLE: ViewStyle = {
   borderColor: color.transparent,
@@ -261,34 +261,29 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
             />
             : <Text style={COUNT_DOWN}>00:00</Text>
           }
-          {/* <Text style={CODE_REF}>(Ref: {'ABCD'})</Text> */}
         </View>
-        <View style={RESEND_CODE_ROOT}>
-          {/* {showMessageError && <Text style={TEXT_EXPIRE} text={AuthStore.error} />}
-          {isExpired && <Text style={TEXT_EXPIRE} text={translate('confirmCodeScreen.codeExpired')} />} */}
-          {!tokenStore.token && (isExpired || !!AuthStore.error) && <ModalAlert // !!isError
-            containerStyle={{ paddingVertical: spacing[5] }}
-            iconName={'bell-alert-outline'}
-            iconStyle={{
-              color: color.line,
-              size: 100
-            }}
-            header={translate('confirmCodeScreen.codeExpiredOrIncorrect')}
-            headerStyle={{ padding: spacing[3], color: color.primary }}
-            content={translate('confirmCodeScreen.confirmOTPAgianOrRequestNewOTP')}
-            contentStyle={{ paddingTop: spacing[3], paddingBottom: spacing[5], paddingHorizontal: spacing[7], color: color.line }}
-            buttonContainerStyle={{ width: '90%' }}
-            buttonComponent={RenderButtonAlert}
-            visible={visibleModal}
-          />
-          }
-        </View>
-        <View style={RESEND_CODE_ROOT}>
-          <TouchableOpacity disabled={!isExpired} onPress={onResendCode}>
-            <Text style={RESEND_CODE_TEXT} text={translate('confirmCodeScreen.requestNewOTP')} />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity disabled={!isExpired} onPress={onResendCode}>
+          <Text style={RESEND_CODE_TEXT} text={translate('confirmCodeScreen.requestNewOTP')} />
+        </TouchableOpacity>
       </View>
+
+      {!tokenStore.token && (isExpired || !!AuthStore.error) && <ModalAlert // !!isError
+        containerStyle={{ paddingVertical: spacing[5] }}
+        iconName={'bell-alert-outline'}
+        iconStyle={{
+          color: color.line,
+          size: 100
+        }}
+        header={translate('confirmCodeScreen.codeExpiredOrIncorrect')}
+        headerStyle={{ padding: spacing[3], color: color.primary }}
+        content={translate('confirmCodeScreen.confirmOTPAgianOrRequestNewOTP')}
+        contentStyle={{ paddingTop: spacing[3], paddingBottom: spacing[5], paddingHorizontal: spacing[7], color: color.line }}
+        buttonContainerStyle={{ width: '90%' }}
+        buttonComponent={RenderButtonAlert}
+        visible={visibleModal}
+      />
+      }
+
       <View testID="ConfirmCodeRoot" style={CONFIRM_CODE_ROOT}>
         <Button
           testID="continue-with-otp"

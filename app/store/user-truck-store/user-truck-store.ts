@@ -1,11 +1,10 @@
-import { types, flow, cast } from "mobx-state-tree"
-import { FavoriteJobAPI } from "../../services/api"
+import { types, flow } from "mobx-state-tree"
+import { UserTruckAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
-import * as storage from "../../utils/storage"
 
-const favoriteJobApi = new FavoriteJobAPI()
+const userJobApi = new UserTruckAPI()
 
-const ShipperJob = types.model({
+const CarriersJob = types.model({
   id: types.maybeNull(types.string),
   productTypeId: types.maybeNull(types.number),
   productName: types.maybeNull(types.string),
@@ -35,54 +34,32 @@ const ShipperJob = types.model({
     mobileNo: types.maybeNull(types.string),
     email: types.maybeNull(types.string)
   })),
-  isLiked: types.maybeNull(types.optional(types.boolean, true)),
+  isLiked: types.maybeNull(types.optional(types.boolean, false))
 })
 
-const isAutenticated = async () => {
-  const profile = await storage.load('root')
-  return !!profile?.tokenStore?.token?.accessToken
-}
-
-const FavoriteJobStore = types
+const UserTruckStore = types
   .model({
-    list: types.maybeNull(types.array(types.maybeNull(ShipperJob))),
+    list: types.maybeNull(types.array(types.maybeNull(CarriersJob))),
     loading: types.boolean,
     error: types.maybeNull(types.string),
   })
   .actions((self) => ({
-    find: flow(function* find(filter: Types.ShipperJobRequest = {}) {
-      if (!(yield isAutenticated())) {
-        self.list = cast([])
-      } else {
-        yield favoriteJobApi.setup()
-        self.loading = true
-        try {
-          const response = yield favoriteJobApi.find(filter)
-          console.log("Response call api get favorite jobs : : ", response)
-          self.list = response.data || []
-          self.loading = false
-        } catch (error) {
-          console.error("Failed to fetch get favorite jobs : ", error)
-          self.loading = false
-          self.error = "error fetch api get favorite jobs"
-        }
-      }
-    }),
-
-    add: flow(function* add(id: string) {
-      yield favoriteJobApi.setup()
+    find: flow(function* find(filter: Types.UserTruckFilter = {}) {
+      userJobApi.setup()
       self.loading = true
       try {
-        const response = yield favoriteJobApi.create({ id })
-        console.log("Response call api add favorite job : : ", response)
-        if (response.kind !== 'ok') {
+        const response = yield userJobApi.find(filter)
+        console.log("Response call api get list truck of user : : ", response)
+        if (response.kind === 'ok') {
+          self.list = response.data
+        } else {
           self.error = response?.data?.message || response.kind
         }
         self.loading = false
       } catch (error) {
-        console.error("Failed to fetch get favorite job : ", error)
+        console.error("Failed to fetch get list truck of user :", error)
         self.loading = false
-        self.error = "error fetch api get favorite job"
+        self.error = "error fetch api get list truck of user"
       }
     }),
 
@@ -98,4 +75,4 @@ const FavoriteJobStore = types
     error: "",
   })
 
-export default FavoriteJobStore
+export default UserTruckStore
