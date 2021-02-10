@@ -228,7 +228,9 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
                 transformImage.map((image, index) => {
                   __DEV__ && console.tron.log("Each Image render ::  ", image) // undefined || {url: "xxxxx"}
                   return (
-                    <TouchableOpacity style={TOUCHABLE} key={index} onPress={(attr) => onViewer(index)}>
+                    <TouchableOpacity style={TOUCHABLE} key={index} onPress={(attr) => {
+                      if (MyVehicleStore.data.id && image && !!image.url) onViewer(index)
+                    }}>
                       <Image style={IMAGE} source={MyVehicleStore.data.id && image && !!image.url ? {
                         uri: image.url,
                         method: 'GET',

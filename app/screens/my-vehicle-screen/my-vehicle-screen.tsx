@@ -11,6 +11,7 @@ import { GetTruckType } from "../../utils/get-truck-type";
 import { useStores } from "../../models/root-store/root-store-context";
 import date from 'date-and-time';
 import Feather from 'react-native-vector-icons/Feather'
+import i18n from 'i18n-js'
 
 const CONTAINER: ViewStyle = {
   flex: 1,
@@ -48,7 +49,7 @@ let count = 0
 
 export const MyVehicle = observer(function MyVehicle() {
   const navigation = useNavigation()
-  const { tokenStore } = useStores()
+  const { tokenStore, versatileStore } = useStores()
   const onPress = (id: string) => {
     MyVehicleStore.findOneRequest(id)
     navigation.navigate("vehicleDetail")
@@ -99,7 +100,9 @@ export const MyVehicle = observer(function MyVehicle() {
     const statusColor = item.approveStatus === 'Approve' ? color.success : color.primary
     // const registrationNumber = item.registrationNumber.map((n: string) => `ทะเบียน ${n}`)
     const registrationNumber = item.registrationNumber.join(', ')
-    const txtTruckType = `${translate("myVehicleScreen.type")}  ${GetTruckType(+item.truckType)?.name || translate('common.notSpecified')}`
+    let list_all_truck = JSON.parse(JSON.stringify(versatileStore.list))
+    let name = list_all_truck.find(e => item.truckType == e.id)
+    const txtTruckType = `${translate("myVehicleScreen.type")}  ${name?.name || translate('common.notSpecified')}`
     const txtDateTime = `${translate("myVehicleScreen.informationAt")} ${date.format(new Date(item.updatedAt), 'DD/MM/YY')}`
 
     return (
@@ -133,7 +136,7 @@ export const MyVehicle = observer(function MyVehicle() {
       <FlatList
         style={SCROLL}
         data={my_vehicle_list}
-        renderItem={renderItem}
+        renderItem={i18n.locale == "th" ? renderItem : renderItem}
         keyExtractor={item => item.id.toString()}
         onEndReached={() => onScrollList()}
         onEndReachedThreshold={0.5}
