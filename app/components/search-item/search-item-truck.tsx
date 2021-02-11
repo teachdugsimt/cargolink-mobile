@@ -144,7 +144,7 @@ export function SearchItemTruck(props: SearchItemProps) {
     image,
     containerStyle,
     backgroundImage,
-    customCoutent = null,
+    customContent = null,
     onPress,
     onToggleHeart
   } = props
@@ -160,7 +160,7 @@ export function SearchItemTruck(props: SearchItemProps) {
     onToggleHeart({ id, isLike: !isLike })
   }
 
-  const renderContent = customCoutent ? customCoutent((comp) => comp) : null
+  const renderContent = customContent ? customContent((comp) => comp) : null
 
   return (
     <TouchableOpacity style={{ ...CONTAINER, ...containerStyle }} activeOpacity={1} onPress={onPress}>
@@ -187,12 +187,13 @@ export function SearchItemTruck(props: SearchItemProps) {
               <Text style={TEXT} text={count.toString()} />
             </View>}
           </View>
-          {renderContent}
-          <View style={{ ...CAR_DETAIL_ROOT, paddingBottom: spacing[1] }}>
+          <View style={{ ...CAR_DETAIL_ROOT }}>
             <View style={CAR_DETAIL}>
               <Text style={TEXT} text={truckType} numberOfLines={1} />
             </View>
           </View>
+          {renderContent}
+
         </View>
         <View style={CONTENT_RIGHT}>
           <TouchableOpacity onPress={onSelectedHeart}>

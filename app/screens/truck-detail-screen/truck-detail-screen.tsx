@@ -297,7 +297,8 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
                   // __DEV__ && console.tron.log("Image index : ", image)
                   return (
                     <TouchableOpacity style={TOUCHABLE} key={index} onPress={(attr) => {
-                      if (ShipperTruckStore.data.id && image && image.source && image.source != 51) onViewer(index)
+                      if (ShipperTruckStore.data.id && image && image.source && image.source != 51)
+                        onViewer(index)
                     }
                     }>
                       <Image style={IMAGE} source={ShipperTruckStore.data.id && image?.source ? image.source : imageComponent['noImageAvailable']} key={index} />
@@ -310,6 +311,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
                 imageIndex={indexOfImage}
                 isVisible={openViewer}
                 onClose={onCancel}
+                useNativeDriver={true}
               />
               {/* </Modal> */}
             </View>
@@ -326,10 +328,25 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
               <MaterialCommunityIcons name={'truck-outline'} size={24} color={color.primary} />
             </View>
             <View style={DETAIL_BOX}>
-              <Text text={`${translate('common.vehicleTypeField')} : ${GetTruckType(+truckType)?.name || translate('common.notSpecified')}`} style={TEXT} />
-              <Text text={`${translate('common.count')} : ${2} ${translate('jobDetailScreen.unit')}`} style={TEXT} />
-              <Text text={`${translate('vehicleDetailScreen.carHaveDum')} : ${tipper ? translate('common.have') : translate('common.notHave')}`} style={TEXT} />
-              <Text text={`${translate('truckDetailScreen.heighttOfTheCarStall')} : ${stallHeight ? translate(`common.${stallHeight.toLowerCase()}`) : '-'} `} style={TEXT} />
+              <Text style={TEXT}>
+                {translate('common.vehicleTypeField') + ' : '}
+                <Text style={{ fontFamily: 'Kanit-Bold' }}>
+                  {GetTruckType(+truckType)?.name || translate('common.notSpecified')}
+                </Text>
+              </Text>
+              {/* <Text text={`${translate('common.count')} : ${2} ${translate('jobDetailScreen.unit')}`} style={TEXT} /> */}
+              <Text style={TEXT}>
+                {translate('vehicleDetailScreen.carHaveDum') + ' : '}
+                <Text style={{ fontFamily: 'Kanit-Bold' }}>
+                  {tipper ? translate('common.have') : translate('common.notHave')}
+                </Text>
+              </Text>
+              <Text style={TEXT} >
+                {translate('truckDetailScreen.heighttOfTheCarStall') + ' : '}
+                <Text style={{ fontFamily: 'Kanit-Bold' }}>
+                  {stallHeight ? translate(`common.${stallHeight.toLowerCase()}`) : '-'}
+                </Text>
+              </Text>
             </View>
           </View>
 

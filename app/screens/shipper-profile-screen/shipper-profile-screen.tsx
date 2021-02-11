@@ -297,7 +297,7 @@ const Item = (data) => {
           id,
           fromText: workingZoneStr,
           // count: 2,
-          customCoutent: renderContent,
+          customContent: renderContent,
           truckType: `${translate('common.vehicleTypeField')} : ${GetTruckType(+truckType)?.name || translate('common.notSpecified')}`,
           // viewDetail,
           postBy: owner?.companyName || '',

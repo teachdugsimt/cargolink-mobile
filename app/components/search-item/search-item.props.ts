@@ -48,7 +48,7 @@ export interface SearchItemProps {
 
   containerStyle?: ViewStyle
 
-  customCoutent?: (props) => ReactNode
+  customContent?: (props) => ReactNode
 
   bottomComponent?: (props) => ReactNode
 
