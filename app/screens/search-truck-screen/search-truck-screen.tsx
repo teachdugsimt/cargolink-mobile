@@ -249,6 +249,8 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
   const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState<boolean>(true)
   const [selectSearch, setSelectSearch] = useState({})
 
+  const { versatileStore } = useStores()
+
   useFocusEffect(
     useCallback(() => {
       const { truckType } = JSON.parse(JSON.stringify(AdvanceSearchStore.filter))
@@ -271,12 +273,6 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
   }, [isFocused])
 
   useEffect(() => {
-    if (!TruckTypeStore.list.length) {
-      TruckTypeStore.find()
-    }
-    if (!AdvanceSearchStore.menu || !AdvanceSearchStore.menu.length) {
-      AdvanceSearchStore.mapMenu()
-    }
     ShipperTruckStore.find()
     console.log('ShipperTruckStore.find()')
     let newZone = null
@@ -299,6 +295,12 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
       setState(initialState)
     }
   }, [])
+
+  useEffect(() => {
+    if (versatileStore.list.length) {
+      AdvanceSearchStore.mapMenu()
+    }
+  }, [JSON.stringify(versatileStore.list)])
 
   useEffect(() => {
     if (Object.keys(selectSearch).length) {

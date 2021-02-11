@@ -73,22 +73,22 @@ export const HomeScreen = observer((props) => {
   }, [versatileStore.language])
 
   useEffect(() => {
-    if (versatileStore.list.length && !TruckTypeStore.list.length) {
+    if (versatileStore.list.length) {
       TruckTypeStore.setList(JSON.parse(JSON.stringify(versatileStore.list)))
     }
-  }, [versatileStore.list.length])
+  }, [JSON.stringify(versatileStore.list)])
 
   useEffect(() => {
-    if (versatileStore.listGroup.length && !TruckTypeStore.listGroup.length) {
+    if (versatileStore.listGroup.length) {
       TruckTypeStore.setGroupList(JSON.parse(JSON.stringify(versatileStore.listGroup)))
     }
-  }, [versatileStore.listGroup.length])
+  }, [JSON.stringify(versatileStore.listGroup)])
 
   useEffect(() => {
-    if (versatileStore.listProductType.length && !ProductTypeStore.list.length) {
+    if (versatileStore.listProductType.length) {
       ProductTypeStore.setList(JSON.parse(JSON.stringify(versatileStore.listProductType)))
     }
-  }, [versatileStore.listProductType.length])
+  }, [JSON.stringify(versatileStore.listProductType)])
 
   const onCall = (phone: string) => {
     let phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`

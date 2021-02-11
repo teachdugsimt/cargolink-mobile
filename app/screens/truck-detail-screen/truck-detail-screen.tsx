@@ -33,6 +33,7 @@ import UserTruckStore from '../../store/user-truck-store/user-truck-store'
 import ProfileStore from '../../store/profile-store/profile-store'
 import i18n from 'i18n-js'
 import { GetRegion } from "../../utils/get-region"
+import CallDetectorManager from 'react-native-call-detection'
 
 interface ImageInfo {
   width: number
@@ -126,6 +127,8 @@ const initialState = {
   liked: false,
 }
 
+let callDetector = undefined
+
 export const TruckDetailScreen = observer(function TruckDetailScreen() {
   const navigation = useNavigation()
 
@@ -190,12 +193,41 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
     }
   }
 
-  const onCall = (id: string, phoneNumber: string) => {
-    callNumber(id, phoneNumber)
-    // route.name === 'jobDetail' ? navigation.navigate('feedback') : navigation.navigate('myFeedback')
+  const startListenerTapped = (truckId: string) => {
+    __DEV__ && console.tron.log('startListenerTapped')
+    callDetector = new CallDetectorManager((event, phoneNumber) => {
+      __DEV__ && console.tron.log('phoneNumber', phoneNumber)
+      if (event === 'Disconnected') {
+        __DEV__ && console.tron.log('Disconnected')
+        stopListenerTapped()
+      } else if (event === 'Connected') { //  for iOS
+        __DEV__ && console.tron.log('Connected')
+      } else if (event === 'Incoming') {
+        __DEV__ && console.tron.log('Incoming')
+      } else if (event === 'Dialing') { //  for iOS
+        __DEV__ && console.tron.log('Dialing')
+      } else if (event === 'Offhook') { // for Android
+        __DEV__ && console.tron.log('Offhook')
+        ShippersHistoryCallStore.add({ truckId })
+      } else if (event === 'Missed') { // for Android
+        __DEV__ && console.tron.log('Missed')
+      }
+    },
+      false,
+      () => { },
+      {
+        title: 'Phone State Permission',
+        message: 'This app needs access to your phone state in order to react and/or to adapt to incoming calls.'
+      }
+    )
   }
 
-  const callNumber = (truckId: string, phone: string) => {
+  const stopListenerTapped = () => {
+    __DEV__ && console.tron.log('stopListenerTapped')
+    callDetector && callDetector.dispose();
+  }
+
+  const onCall = (truckId: string, phone: string) => {
     if (tokenStore?.token?.accessToken) {
       const phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
       __DEV__ && console.tron.log('phoneNumber', phoneNumber)
@@ -206,9 +238,11 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
             Alert.alert('Phone number is not available')
             return false;
           } else {
-            ShippersHistoryCallStore.add({ truckId })
-            return Linking.openURL(phoneNumber);
+            return startListenerTapped(truckId)
           }
+        })
+        .then(() => {
+          return Linking.openURL(phoneNumber);
         })
         .catch(err => __DEV__ && console.tron.log('err', err));
     } else {

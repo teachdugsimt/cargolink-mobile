@@ -214,7 +214,7 @@ export const AdvanceSearchTruckScreen = observer(function AdvanceSearchTruckScre
 
   return (
     <View style={CONTAINER}>
-      {AdvanceSearchJobStore.loading && <ModalLoading size={'large'} color={color.primary} visible={AdvanceSearchJobStore.loading} />}
+      {/* {AdvanceSearchJobStore.loading && <ModalLoading size={'large'} color={color.primary} visible={AdvanceSearchJobStore.loading} />} */}
       <View style={SEARCH_ITEM_ROOT}>
         <ScrollView style={{ padding: spacing[3] }}>
 

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react"
-import { View, ViewStyle, TextStyle, TouchableOpacity, FlatList, RefreshControl, ImageProps } from "react-native"
+import { View, ViewStyle, TextStyle, TouchableOpacity, FlatList, RefreshControl, ImageProps, Dimensions } from "react-native"
 import { observer } from "mobx-react-lite"
 import { ModalLoading, SearchItem, SearchItemTruck, Text, EmptyListMessage, HeaderCenter } from "../../components"
 import { color, spacing, images as imageComponent, images } from "../../theme"
@@ -16,6 +16,10 @@ import { GetRegion } from "../../utils/get-region"
 import i18n from "i18n-js"
 import { MapTruckImageName } from "../../utils/map-truck-image-name"
 import { useStores } from "../../models/root-store/root-store-context";
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import { JobList } from "./favorite/job-list";
+import { TruckList } from "./favorite/truck-list";
+import { HistoryCall } from "./history-call";
 // interface STATE {
 //     isHeaderSwitch: boolean
 
@@ -55,217 +59,43 @@ const ACTIVITY_TEXT_VIEW: TextStyle = {
   ...TEXT,
   paddingVertical: spacing[2],
 }
-const RESULT_CONTAINER: ViewStyle = {
-  flex: 1,
-}
-const CONTEXT_NOT_FOUND: ViewStyle = {
-  flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-  top: -spacing[5],
-}
-const NOT_FOUND_TEXT: TextStyle = {
-  color: color.line,
-}
 
-// const initialState = {
-//     isHeaderSwitch: false
-// }
+const FavoriteRoute = () => {
 
-const JobItem = (data) => {
-  const {
-    id,
-    productTypeId,
-    productName,
-    truckType,
-    requiredTruckAmount,
-    from,
-    to,
-    owner,
-    isLiked,
-    list,
-    setUnFollow
-  } = data
+  const [isActivitySwitch, setIsActivitySwitch] = useState<boolean>(false)
 
-  const navigation = useNavigation()
+  useEffect(() => {
+    if (!isActivitySwitch) {
+      FavoriteJobStore.find()
+    } else {
+      FavoriteTruckStore.find()
+    }
+  }, [isActivitySwitch])
 
-  const onPress = () => {
-    const imageSource = owner?.avatar?.object && owner?.avatar?.token ? {
-      source: {
-        uri: owner?.avatar?.object || '',
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-          adminAuth: owner?.avatar?.token
-        },
-      },
-      resizeMode: 'cover'
-    } : null
-    CarriersJobStore.setProfile({ ...owner, imageProps: JSON.stringify(imageSource) })
-    CarriersJobStore.findOne(id)
-    navigation.navigate('favoriteJobDetail')
-  }
+  return (<View testID="FavoriteScreen" style={FULL}>
 
-  const onToggleHeart = (data) => {
-    const newData = [...JSON.parse(JSON.stringify(list))].filter(({ id }) => id !== data.id)
-    setUnFollow(newData)
-    FavoriteJobStore.add(data.id)
-  }
-
-  const typeOfTruck = GetTruckType(+truckType)?.name || translate('common.notSpecified')
-  const imageSource: ImageProps = owner?.avatar?.object && owner?.avatar?.token ? {
-    source: {
-      uri: owner?.avatar?.object || '',
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-        adminAuth: owner?.avatar?.token
-      },
-    },
-    resizeMode: 'cover'
-  } : null
-
-
-  return (
-    <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
-      <SearchItem
-        {
-        ...{
-          id,
-          fromText: from?.name || translate('common.notSpecified'),
-          toText: to?.map(location => location.name).join(', ') || translate('common.notSpecified'),
-          count: requiredTruckAmount || 0,
-          productName: productName,
-          truckType: typeOfTruck,
-          // packaging: productName,
-          postBy: owner?.companyName || '', // [Mocking]
-          isVerified: false,
-          isLike: isLiked,
-          rating: '0', // [Mocking]
-          ratingCount: '0', // [Mocking]
-          isCrown: false, // [Mocking]
-          image: imageSource,
-          isRecommened: false,
-          containerStyle: {
-            paddingTop: spacing[2],
-            borderRadius: 6
-          },
-          onPress,
-          onToggleHeart
-        }
-        }
-      />
+    <View style={ACTIVITY}>
+      <TouchableOpacity activeOpacity={1} style={{ ...TOUCHABLE_VIEW, ...BORDER_RADIUS_LEFT, backgroundColor: !isActivitySwitch ? color.primary : color.disable }} onPress={() => setIsActivitySwitch(!isActivitySwitch)}>
+        <Text tx={'favoriteScreen.job'} style={ACTIVITY_TEXT_VIEW} />
+      </TouchableOpacity>
+      <TouchableOpacity activeOpacity={1} style={{ ...TOUCHABLE_VIEW, ...BORDER_RADIUS_RIGHT, backgroundColor: isActivitySwitch ? color.primary : color.disable }} onPress={() => setIsActivitySwitch(!isActivitySwitch)}>
+        <Text tx={'favoriteScreen.vehicle'} style={ACTIVITY_TEXT_VIEW} />
+      </TouchableOpacity>
     </View>
-  )
-}
 
-const TruckItem = (data) => {
-  const {
-    id,
-    truckType,
-    workingZones,
-    isLiked,
-    tipper,
-    stallHeight,
-    list,
-    setUnFollow,
-    owner,
-  } = data
+    {!isActivitySwitch ? <JobList /> : <TruckList />}
 
-  const navigation = useNavigation()
-
-  const onPress = () => {
-    const imageSource = owner?.avatar?.object && owner?.avatar?.token ? {
-      source: {
-        uri: owner?.avatar?.object || '',
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-          adminAuth: owner?.avatar?.token
-        },
-      },
-      resizeMode: 'cover'
-    } : null
-    ShipperTruckStore.setProfile({ ...owner, imageProps: JSON.stringify(imageSource) })
-    ShipperTruckStore.findOne(id)
-    navigation.navigate('favoriteTruckDetail')
-  }
-
-  const onToggleHeart = (data) => { // id, isLike
-    const newData = [...JSON.parse(JSON.stringify(list))].filter(({ id }) => id !== data.id)
-    setUnFollow(newData)
-    FavoriteTruckStore.add(data.id)
-    // ShipperTruckStore.updateFavoriteInList(data.id, data.isLike)
-  }
-
-  const renderContent = () => (<View style={{ paddingLeft: spacing[2] }}>
-    <View style={{ paddingVertical: spacing[1] }}>
-      <Text text={`${translate('truckDetailScreen.heighttOfTheCarStall')} : ${stallHeight ? translate(`common.${stallHeight.toLowerCase()}`) : '-'}`} />
-    </View>
-    <View style={{ paddingVertical: spacing[1] }}>
-      <Text text={`${tipper ? translate('truckDetailScreen.haveDump') : translate('truckDetailScreen.haveNotDump')}`} />
-    </View>
   </View>)
-
-  const workingZoneStr = workingZones?.length ? workingZones.map(zone => {
-    let reg = GetRegion(zone.region, i18n.locale)
-    return reg.label
-  }).join(', ') : translate('common.notSpecified')
-
-  const truckImage = MapTruckImageName(+truckType)
-  const imageSource: ImageProps = owner?.avatar?.object && owner?.avatar?.token ? {
-    source: {
-      uri: owner?.avatar?.object || '',
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-        adminAuth: owner?.avatar?.token
-      },
-    },
-    resizeMode: 'cover'
-  } : null
-
-  return (
-    <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
-      <SearchItemTruck
-        {
-        ...{
-          id,
-          fromText: workingZoneStr,
-          // count: 2,
-          customContent: renderContent,
-          truckType: `${translate('common.vehicleTypeField')} : ${GetTruckType(+truckType)?.name || translate('common.notSpecified')}`,
-          // viewDetail,
-          postBy: owner?.companyName || '', // [Mocking]
-          isVerified: false,
-          isLike: isLiked,
-          backgroundImage: imageComponent[truckImage && truckImage !== 'greyMock' ? truckImage : ''],
-          rating: '0', // [Mocking]
-          ratingCount: '0', // [Mocking]
-          isCrown: false,
-          image: imageSource,
-          // isRecommened,
-          containerStyle: {
-            paddingTop: spacing[2],
-            borderRadius: 6
-          },
-          onPress,
-          onToggleHeart
-        }
-        }
-      />
-    </View>
-  )
 }
 
 export const FavoriteScreen = observer(function FavoriteScreen() {
   const navigation = useNavigation()
-  // const [state, setState] = useState<STATE>(initialState)
-  const [isFirstHeaderSelected, setIsFirstHeaderSelected] = useState<boolean>(true)
-  const [isActivitySwitch, setIsActivitySwitch] = useState<boolean>(false)
-  const [data, setData] = useState([])
-  const [loading, setLoading] = useState<boolean>(true)
 
+  const [index, setIndex] = useState<number>(0);
+  const [routes] = useState([
+    { key: 'favorite', title: translate('favoriteScreen.favoriteList') },
+    { key: 'historyCall', title: translate('favoriteScreen.lastestContact') },
+  ]);
 
   const { versatileStore } = useStores()
   const [lang, setlang] = useState(null)
@@ -307,63 +137,36 @@ export const FavoriteScreen = observer(function FavoriteScreen() {
     }
   }, [])
 
-  useEffect(() => {
-    setLoading(true)
-    if (!FavoriteJobStore.loading) {
-      setData(FavoriteJobStore.list)
-      setLoading(false)
-    }
-  }, [FavoriteJobStore.loading])
+  const renderScene = SceneMap({
+    favorite: () => <FavoriteRoute />,
+    historyCall: () => <HistoryCall />,
+  });
 
-  useEffect(() => {
-    setLoading(true)
-    if (!FavoriteTruckStore.loading) {
-      setData(FavoriteTruckStore.list)
-      setLoading(false)
-    }
-  }, [FavoriteTruckStore.loading])
-
-  useEffect(() => {
-    console.log('isActivitySwitch', isActivitySwitch)
-    if (isActivitySwitch) { // truck
-      FavoriteTruckStore.find()
-    } else {
-      FavoriteJobStore.find()
-    }
-  }, [isActivitySwitch])
-
-  const renderItem = ({ item }) => {
-    if (!isActivitySwitch) { // job
-      return <JobItem {...item} list={data} setUnFollow={setData} />
-    }
-    return <TruckItem {...item} list={data} setUnFollow={setData} />
-  }
-
-  const onScrollList = () => {
-    console.log('scroll end')
-  }
-
-  const onRefresh = () => {
-    setLoading(true)
-    if (!isActivitySwitch) { // job
-      FavoriteJobStore.find();
-    } else {
-      FavoriteTruckStore.find()
-    }
-  }
-
-  const touchableHeaderStyle: ViewStyle = {
-    ...TOUCHABLE_VIEW,
-    paddingTop: spacing[2],
-    paddingBottom: spacing[4],
-  }
-  const favoriteHeaderStyle: ViewStyle = { ...touchableHeaderStyle, ...(isFirstHeaderSelected && HEADER_ACTIVE) }
-  const lastestContactHeaderStyle: ViewStyle = { ...touchableHeaderStyle, ...(!isFirstHeaderSelected && HEADER_ACTIVE) }
+  const renderTabBar = props => (
+    <TabBar
+      {...props}
+      indicatorStyle={{ backgroundColor: color.dim }}
+      style={{ backgroundColor: color.primary }}
+      renderLabel={({ route, focused, color: colorText }) => (
+        <Text style={{ color: color.textBlack }} text={route.title} />
+      )}
+    />
+  );
 
   return (
-    <View testID="FavoriteScreen" style={FULL}>
+    <TabView
+      navigationState={{ index, routes }}
+      renderTabBar={renderTabBar}
+      renderScene={renderScene}
+      onIndexChange={setIndex}
+      initialLayout={{ width: Dimensions.get('window').width }}
+    />
+  )
+})
 
-      {/* <ModalLoading size={'large'} color={color.primary} visible={loading} /> */}
+
+/**
+<View testID="FavoriteScreen" style={FULL}>
 
       <View style={HEADER}>
         <TouchableOpacity activeOpacity={1} style={favoriteHeaderStyle} onPress={() => setIsFirstHeaderSelected(!isFirstHeaderSelected)} >
@@ -404,5 +207,4 @@ export const FavoriteScreen = observer(function FavoriteScreen() {
       </View>
 
     </View>
-  )
-})
+ */

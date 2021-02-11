@@ -137,6 +137,8 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
   const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState<boolean>(true)
   const [selectSearch, setSelectSearch] = useState({})
 
+  const { versatileStore } = useStores()
+
   useFocusEffect(
     useCallback(() => {
       const { productType, truckAmountMax, truckAmountMin, truckType, weight } = JSON.parse(JSON.stringify(AdvanceSearchStore.filter))
@@ -167,13 +169,6 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
   }, [JSON.stringify(arrayFilter)])
 
   useEffect(() => {
-    if (!TruckTypeStore.list.length) {
-      TruckTypeStore.find()
-    }
-
-    if (!AdvanceSearchStore.menu || !AdvanceSearchStore.menu.length) {
-      AdvanceSearchStore.mapMenu()
-    }
 
     return () => {
       PAGE = 0
@@ -183,6 +178,14 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
       setState(initialState)
     }
   }, [])
+
+  useEffect(() => {
+    if (versatileStore.list.length) {
+      AdvanceSearchStore.mapMenu()
+    }
+  }, [JSON.stringify(versatileStore.list)])
+
+  // console.log(i18n.locale)
 
   useEffect(() => {
     if (Object.keys(selectSearch)) {

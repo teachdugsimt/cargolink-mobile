@@ -87,12 +87,6 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
   const [{ truckTypes, truckAmount, productType, truckWeight, loading }, setState] = useState(initialState)
 
   useEffect(() => {
-    // if (!AdvanceSearchStore.menu || !AdvanceSearchStore.menu.length || AdvanceSearchStore.locale !== i18n.locale) {
-    //   console.log('AdvanceSearchStore.locale', AdvanceSearchStore.locale)
-    //   console.log('i18n.locale', i18n.locale)
-    //   AdvanceSearchStore.setLocale(i18n.locale)
-    //   AdvanceSearchStore.mapMenu()
-    // }
     if (!AdvanceSearchStore.menu || !AdvanceSearchStore.menu.length) {
       AdvanceSearchStore.mapMenu()
     }

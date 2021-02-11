@@ -92,6 +92,7 @@ const CarriersJobStore = types
     directions: types.optional(types.array(types.array(Directions)), []),
     distances: types.optional(types.array(Distances), []),
     summaryDistances: types.maybeNull(SummaryDistances),
+    provinces: types.maybeNull(types.string),
     loading: types.boolean,
     mapLoading: types.boolean,
     error: types.maybeNull(types.string),
@@ -178,6 +179,8 @@ const CarriersJobStore = types
         let arrDistances = []
         let summaryDistance = 0
         let summaryDuration = 0
+        let province = {}
+        CarriersJobStore.clearProvince()
         for (let index = 0; index < coordinates.length; index++) {
           if (index + 1 < coordinates.length) {
             const startLoc = `${coordinates[index].lat},${coordinates[index].lng}`
@@ -186,11 +189,17 @@ const CarriersJobStore = types
 
             if (response.kind === 'ok') {
               const mapData = response.data.routes[0]
-              const distanceValue = mapData.legs[0].distance.value
-              const durationValue = mapData.legs[0].duration.value
+              const distanceValue = mapData?.legs[0]?.distance?.value || 0
+              const durationValue = mapData?.legs[0]?.duration?.value || 0
 
               summaryDistance += distanceValue
               summaryDuration += durationValue
+
+              province = {
+                ...province,
+                [startLoc]: mapData?.legs[0]?.start_address || '',
+                [destinationLoc]: mapData?.legs[0]?.end_address || ''
+              }
 
               arrDistances.push({
                 from: startLoc,
@@ -199,14 +208,16 @@ const CarriersJobStore = types
                 duration: durationValue,
               })
 
-              const points = decode(mapData.overview_polyline.points);
-              const coords = points.map(point => {
-                return {
-                  latitude: point[0],
-                  longitude: point[1]
-                };
-              });
-              arrDirections[index] = coords
+              if (mapData?.overview_polyline) {
+                const points = decode(mapData.overview_polyline.points);
+                const coords = points.map(point => {
+                  return {
+                    latitude: point[0],
+                    longitude: point[1]
+                  };
+                });
+                arrDirections[index] = coords
+              }
             } else {
               self.error = response.data.message
             }
@@ -217,6 +228,7 @@ const CarriersJobStore = types
           distance: summaryDistance,
           duration: summaryDuration
         }
+        self.provinces = JSON.stringify(province)
         // console.log('arrDirections', JSON.stringify(arrDirections))
         self.directions = cast(arrDirections)
         // const result = coordinates.reduce((prev, curr) => yield callApiMap(prev, curr))
@@ -294,7 +306,12 @@ const CarriersJobStore = types
 
     setDefaultOfList: function setDefaultOfList() {
       self.list = cast([])
+    },
+
+    clearProvince: function clearProvince() {
+      self.provinces = ''
     }
+
   }))
   .views((self) => ({
     get getList() {
@@ -309,6 +326,7 @@ const CarriersJobStore = types
     list: [],
     data: {},
     profile: {},
+    provinces: '',
     previousListLength: 0,
     loading: false,
     mapLoading: false,

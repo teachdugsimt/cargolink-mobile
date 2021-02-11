@@ -13,6 +13,7 @@ import i18n from 'i18n-js'
 import { provinceListEn, provinceListTh } from '../../screens/home-screen/manage-vehicle/datasource'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import LottieView from 'lottie-react-native';
+import { flow } from 'mobx';
 
 interface Input {
   firstLocation: string
@@ -79,9 +80,11 @@ const initialState = {
 
 export function SearchBar(props: SearchBarProps) {
   const navigation = useNavigation()
+
   const [{ firstLocation, secondLocation, progress }, setState] = useState<Input>(initialState)
-  const [isSwitching, setIsSwitching] = useState(false)
-  const [autoPlay, setAutoPlay] = useState(false)
+  const [isSwitching, setIsSwitching] = useState<boolean>(false)
+  const [autoPlay, setAutoPlay] = useState<boolean>(false)
+  const [placeholder, setPlaceholder] = useState<string>(translate("uploadVehicleScreen.province"))
 
   const {
     fromText,
@@ -130,6 +133,11 @@ export function SearchBar(props: SearchBarProps) {
     }))
   }
 
+  // useEffect(() => {
+  //   console.log('i18n.locale', i18n.locale)
+  //   setPlaceholder(translate("uploadVehicleScreen.province"))
+  // }, [i18n.locale])
+
   const onAnimationFinish = () => {
     setIsSwitching(false)
   }
@@ -154,9 +162,10 @@ export function SearchBar(props: SearchBarProps) {
 
   const textStyleContainer = { ...LOCATION_TEXT, ...textStyle }
 
+  const province = i18n.locale === 'th' ? provinceListTh : provinceListEn
+
   return (
     <View style={{ ...ROOT, ...style }}>
-
       <View style={LOCATION}>
         <MaterialIcons name={'pin-drop'} color={color.primary} size={25} />
         <Text text={`${fromText}  :`} style={textStyleContainer} />
@@ -164,7 +173,7 @@ export function SearchBar(props: SearchBarProps) {
           // testID={"picker_vehicle_type"}
           value={firstLocation}
           onValueChange={(value) => onChangeValue({ firstLocation: value })}
-          items={i18n.locale == "en" ? provinceListEn : provinceListTh}
+          items={province}
           placeholder={{
             label: translate("uploadVehicleScreen.province"),
             color: color.black
@@ -206,7 +215,7 @@ export function SearchBar(props: SearchBarProps) {
           value={secondLocation}
           onValueChange={(value) => onChangeValue({ secondLocation: value })}
           onDonePress={() => console.log('Done')}
-          items={i18n.locale == "en" ? provinceListEn : provinceListTh}
+          items={province}
           placeholder={{
             label: translate("uploadVehicleScreen.province"),
             color: color.black

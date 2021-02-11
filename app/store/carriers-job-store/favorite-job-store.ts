@@ -57,8 +57,8 @@ const FavoriteJobStore = types
       if (!(yield isAutenticated())) {
         self.list = cast([])
       } else {
-        yield favoriteJobApi.setup()
         self.loading = true
+        yield favoriteJobApi.setup()
         try {
           const response = yield favoriteJobApi.find(filter)
           console.log("Response call api get favorite jobs : : ", response)
@@ -98,6 +98,10 @@ const FavoriteJobStore = types
       self.id = id
       self.liked = liked
     },
+
+    setList: function setList(list: any) {
+      self.list = list
+    }
 
   }))
   .views((self) => ({
