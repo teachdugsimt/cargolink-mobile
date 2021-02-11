@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react"
-import { View, ViewStyle, TextStyle, TouchableOpacity, FlatList, RefreshControl } from "react-native"
+import { View, ViewStyle, TextStyle, TouchableOpacity, FlatList, RefreshControl, ImageProps } from "react-native"
 import { observer } from "mobx-react-lite"
 import { ModalLoading, SearchItem, SearchItemTruck, Text, EmptyListMessage, HeaderCenter } from "../../components"
-import { color, spacing, images as imageComponent } from "../../theme"
+import { color, spacing, images as imageComponent, images } from "../../theme"
 import FavoriteTruckStore from "../../store/shipper-truck-store/favorite-truck-store"
 import ShipperTruckStore from "../../store/shipper-truck-store/shipper-truck-store"
 import FavoriteJobStore from "../../store/carriers-job-store/favorite-job-store"
@@ -90,6 +90,18 @@ const JobItem = (data) => {
   const navigation = useNavigation()
 
   const onPress = () => {
+    const imageSource = owner?.avatar?.object && owner?.avatar?.token ? {
+      source: {
+        uri: owner?.avatar?.object || '',
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+          adminAuth: owner?.avatar?.token
+        },
+      },
+      resizeMode: 'cover'
+    } : null
+    CarriersJobStore.setProfile({ ...owner, imageProps: JSON.stringify(imageSource) })
     CarriersJobStore.findOne(id)
     navigation.navigate('favoriteJobDetail')
   }
@@ -101,6 +113,18 @@ const JobItem = (data) => {
   }
 
   const typeOfTruck = GetTruckType(+truckType)?.name || translate('common.notSpecified')
+  const imageSource: ImageProps = owner?.avatar?.object && owner?.avatar?.token ? {
+    source: {
+      uri: owner?.avatar?.object || '',
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+        adminAuth: owner?.avatar?.token
+      },
+    },
+    resizeMode: 'cover'
+  } : null
+
 
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
@@ -114,13 +138,13 @@ const JobItem = (data) => {
           productName: productName,
           truckType: typeOfTruck,
           // packaging: productName,
-          postBy: owner?.companyName || 'CargoLink', // [Mocking]
+          postBy: owner?.companyName || '', // [Mocking]
           isVerified: false,
           isLike: isLiked,
           rating: '0', // [Mocking]
           ratingCount: '0', // [Mocking]
           isCrown: false, // [Mocking]
-          logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg', // [Mocking]
+          image: imageSource,
           isRecommened: false,
           containerStyle: {
             paddingTop: spacing[2],
@@ -144,14 +168,26 @@ const TruckItem = (data) => {
     tipper,
     stallHeight,
     list,
-    setUnFollow
+    setUnFollow,
+    owner,
   } = data
 
   const navigation = useNavigation()
 
   const onPress = () => {
+    const imageSource = owner?.avatar?.object && owner?.avatar?.token ? {
+      source: {
+        uri: owner?.avatar?.object || '',
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+          adminAuth: owner?.avatar?.token
+        },
+      },
+      resizeMode: 'cover'
+    } : null
+    ShipperTruckStore.setProfile({ ...owner, imageProps: JSON.stringify(imageSource) })
     ShipperTruckStore.findOne(id)
-    // FavoriteTruckStore.keepPreviousActivityFunc(true)
     navigation.navigate('favoriteTruckDetail')
   }
 
@@ -177,6 +213,17 @@ const TruckItem = (data) => {
   }).join(', ') : translate('common.notSpecified')
 
   const truckImage = MapTruckImageName(+truckType)
+  const imageSource: ImageProps = owner?.avatar?.object && owner?.avatar?.token ? {
+    source: {
+      uri: owner?.avatar?.object || '',
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+        adminAuth: owner?.avatar?.token
+      },
+    },
+    resizeMode: 'cover'
+  } : null
 
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
@@ -189,14 +236,14 @@ const TruckItem = (data) => {
           customCoutent: renderContent,
           truckType: `${translate('common.vehicleTypeField')} : ${GetTruckType(+truckType)?.name || translate('common.notSpecified')}`,
           // viewDetail,
-          postBy: 'CargoLink', // [Mocking]
+          postBy: owner?.companyName || '', // [Mocking]
           isVerified: false,
           isLike: isLiked,
           backgroundImage: imageComponent[truckImage && truckImage !== 'greyMock' ? truckImage : ''],
           rating: '0', // [Mocking]
           ratingCount: '0', // [Mocking]
           isCrown: false,
-          logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg', // [Mocking]
+          image: imageSource,
           // isRecommened,
           containerStyle: {
             paddingTop: spacing[2],
