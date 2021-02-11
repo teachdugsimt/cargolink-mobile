@@ -282,7 +282,7 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
             <View
               style={{
                 ...SUB_TOPIC_ROOT,
-                backgroundColor: "#f8f8f8",
+                backgroundColor: color.registration,
                 paddingLeft: spacing[3],
                 paddingRight: spacing[3],
                 borderRadius: 4,

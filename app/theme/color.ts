@@ -79,4 +79,5 @@ export const color = {
   darkGrey: palette.darkGrey,
 
   sky: palette.sky,
+  registration: palette.regisGrey,
 }

@@ -40,17 +40,22 @@ export const LocationPicker = (props) => {
   const [tmpCurrentRegion, settmpCurrentRegion] = useState(null)
   const [{ address, listViewDisplayed,
     showAddress, search, currentLat, currentLng, forceRefresh }, setState] = useState(initialState)
+  const [status, setstatus] = useState('')
 
   const getAddress = () => {
     //function to get address using current lat and lng
-    fetch("https://maps.googleapis.com/maps/api/geocode/json?address=" + region.latitude + "," + region.longitude + "&key=" + GOOGLE_API_KEY + "&language=" + i18n.locale)
+    fetch("https://maps.googleapis.com/maps/api/geocode/json?address=" + region.latitude + "," + region.longitude + "&region=th" + "&key=" + GOOGLE_API_KEY + "&language=" + i18n.locale)
       .then((response) => response.json())
       .then((responseJson) => {
         console.log("ADDRESS GEOCODE is BACK!! => " + JSON.stringify(responseJson));
-        setState(prevState => ({
-          ...prevState,
-          address: responseJson?.results[0] ? JSON.stringify(responseJson.results[0].formatted_address).replace(/"/g, "") : ""
-        }))
+        if (status && status == "press") {
+        } else {
+          setState(prevState => ({
+            ...prevState,
+            address: responseJson?.results[0] ? JSON.stringify(responseJson.results[0].formatted_address).replace(/"/g, "") : ""
+          }))
+        }
+        setstatus("")
       });
   }
   useEffect(() => {
@@ -137,6 +142,7 @@ export const LocationPicker = (props) => {
                   onPress={(data, details) => {
                     __DEV__ && console.tron.log("Data google place autocomplete :: ", data)
                     __DEV__ && console.tron.log("Detail google place autocomplete :: ", details)
+                    setstatus("press")
                     setState(prevState => ({
                       ...prevState,
                       listViewDisplayed: false,

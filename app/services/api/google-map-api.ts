@@ -1,7 +1,8 @@
 import { ApisauceInstance, create, ApiResponse } from "apisauce"
 import { getGeneralApiProblem } from "./api-problem"
 import { ApiConfig, DEFAULT_API_CONFIG } from "./api-config"
-
+import i18n from 'i18n-js'
+import { GOOGLE_API_KEY } from '../../config/env'
 /**
  * Manages all requests to the API.
  */
@@ -59,6 +60,27 @@ export class GoogleMapAPI {
       return error
     }
   }
+
+  async getLocationMap(latitude: string, longitude: string, language: string = i18n.locale): Promise<any> {
+    try {
+      const response: ApiResponse<any> = await this.apisauce.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${latitude},${longitude}&key=${GOOGLE_API_KEY}&language=${language}`)
+      // const response: ApiResponse<any> = await this.apisauce.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=13.736717,100.523186&radius=50&key=${GOOGLE_API_KEY}&language=${language}`)
+
+      // the typical ways to die when calling an api
+      __DEV__ && console.tron.log("Response call Google New API :: ", response)
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+      return { kind: "ok", data: response.data }
+      // transform the data into the format we are expecting
+    } catch (error) {
+      console.log("Error call api get google map : ", error)
+      return error
+    }
+  }
+
+
 
 }
 // https://maps.googleapis.com/maps/api/directions/json?origin=18.6893087,98.9496379&destination=13.7221565,100.528014&result_type=country&key=AIzaSyD_xZbQQVruH1NWLqCE2kgSWBPoWH7l3Sw
