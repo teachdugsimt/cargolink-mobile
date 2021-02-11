@@ -31,6 +31,8 @@ import ImageView from 'react-native-image-view';
 import ShippersHistoryCallStore from '../../store/shippers-history-call-store/shippers-history-call-store'
 import UserTruckStore from '../../store/user-truck-store/user-truck-store'
 import ProfileStore from '../../store/profile-store/profile-store'
+import i18n from 'i18n-js'
+import { GetRegion } from "../../utils/get-region"
 
 interface ImageInfo {
   width: number
@@ -138,6 +140,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
     isLiked,
     truckPhotos,
     phoneNumber,
+    workingZones,
     owner
   } = ShipperTruckStore.data
 
@@ -282,6 +285,11 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
     image: JSON.parse(ShipperTruckStore.profile.imageProps),
   }
 
+  const workingZoneStr = workingZones?.length ? workingZones.map(zone => {
+    let reg = GetRegion(zone.region, i18n.locale)
+    return reg?.label || ''
+  }).join(', ') : translate('common.notSpecified')
+
   return (
     <View style={CONTAINER}>
       {ShipperTruckStore.loading && <ModalLoading size={'large'} color={color.primary} visible={ShipperTruckStore.loading} />}
@@ -329,23 +337,21 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
             </View>
             <View style={DETAIL_BOX}>
               <Text style={TEXT}>
+                {translate('searchTruckScreen.workingZone') + ' : '}
+                <Text style={{ fontFamily: 'Kanit-Bold' }} text={workingZoneStr} numberOfLines={1} />
+              </Text>
+              <Text style={TEXT}>
                 {translate('common.vehicleTypeField') + ' : '}
-                <Text style={{ fontFamily: 'Kanit-Bold' }}>
-                  {GetTruckType(+truckType)?.name || translate('common.notSpecified')}
-                </Text>
+                <Text style={{ fontFamily: 'Kanit-Bold' }} text={GetTruckType(+truckType)?.name || translate('common.notSpecified')} numberOfLines={1} />
               </Text>
               {/* <Text text={`${translate('common.count')} : ${2} ${translate('jobDetailScreen.unit')}`} style={TEXT} /> */}
               <Text style={TEXT}>
                 {translate('vehicleDetailScreen.carHaveDum') + ' : '}
-                <Text style={{ fontFamily: 'Kanit-Bold' }}>
-                  {tipper ? translate('common.have') : translate('common.notHave')}
-                </Text>
+                <Text style={{ fontFamily: 'Kanit-Bold' }} text={tipper ? translate('common.have') : translate('common.notHave')} />
               </Text>
               <Text style={TEXT} >
                 {translate('truckDetailScreen.heighttOfTheCarStall') + ' : '}
-                <Text style={{ fontFamily: 'Kanit-Bold' }}>
-                  {stallHeight ? translate(`common.${stallHeight.toLowerCase()}`) : '-'}
-                </Text>
+                <Text style={{ fontFamily: 'Kanit-Bold' }} text={stallHeight ? translate(`common.${stallHeight.toLowerCase()}`) : '-'} />
               </Text>
             </View>
           </View>

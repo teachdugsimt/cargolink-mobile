@@ -33,7 +33,7 @@ const BACKGROUND_CONTAINER: ViewStyle = {
   position: 'absolute',
   overflow: 'hidden',
   right: 0,
-  top: 25,
+  top: 22,
 }
 const BACKGROUND: ImageStyle = {
   width: '100%',
