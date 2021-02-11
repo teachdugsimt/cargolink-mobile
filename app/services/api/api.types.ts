@@ -117,6 +117,12 @@ export interface ShipperJobRequest {
   weight?: number
 }
 
+export interface GoogleLocationRequest {
+  latitude?: string
+  longitude?: string
+  language?: string
+}
+
 export interface ShipperJobCreate {
   expiredTime: string
   from: {

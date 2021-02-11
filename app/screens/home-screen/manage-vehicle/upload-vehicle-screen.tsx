@@ -193,7 +193,8 @@ const IMAGE_LIST: ImageStyle = {
   borderRadius: 30,
   borderColor: color.primary, borderWidth: 2,
 }
-
+const DELETE_RERGIS_BUTTON: ViewStyle = { justifyContent: 'center', paddingHorizontal: 5 }
+const VIEW_REGISTRATION: ViewStyle = { backgroundColor: color.registration, paddingHorizontal: 7.5, borderRadius: 2.5 }
 
 
 let initForm = 0
@@ -682,7 +683,7 @@ export const UploadVehicleScreen = observer((props) => {
       render={({ onChange, onBlur, value }) => (
         <TextInputTheme
           testID={"registration-vehicle-input"}
-          inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
+          inputStyle={{ ...FULL, ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
           onBlur={onBlur}
           onChangeText={value => onChange(value)}
           value={value}
@@ -894,6 +895,13 @@ export const UploadVehicleScreen = observer((props) => {
     setvisibleModal(tmp)
   }
 
+  const _deleteRregistration = (index) => {
+    let tmp = textInput
+    tmp.splice(index, 1)
+    settextInput(tmp)
+    setrenderNew(!renderNew)
+  }
+
   const [selectCapture, setSelectCapture] = useState(false)
 
   const list_province_popular = [
@@ -1034,17 +1042,23 @@ export const UploadVehicleScreen = observer((props) => {
             <Text tx={"uploadVehicleScreen.detailVehicle"} style={TITLE_TOPIC} />
             <Text tx={"uploadVehicleScreen.atLeastOneRegister"} style={{ ...CONTENT_TEXT, ...ALIGN_RIGHT }}></Text>
 
-            <Text tx={"uploadVehicleScreen.carRegistration"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_BIG }} />
 
 
 
 
 
 
-            <View>
+
+            <View style={VIEW_REGISTRATION}>
+              <Text tx={"uploadVehicleScreen.carRegistration"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_BIG }} />
               {textInput.map((e, index) => {
                 return (<>
-                  {e}
+                  <View style={[ROW_TEXT, { flex: 1, }]}>
+                    {e}
+                    {index != 0 && index == textInput.length - 1 && <TouchableOpacity style={DELETE_RERGIS_BUTTON} onPress={() => _deleteRregistration(index)}>
+                      <Ionicons name={'remove-circle-outline'} size={20} color={color.red} />
+                    </TouchableOpacity>}
+                  </View>
                   {!!errors["registration-" + index] && <Text style={{ color: color.red }} tx={"uploadVehicleScreen.pleaseCheckRegistration"} />}
                 </>)
               })}
@@ -1201,7 +1215,7 @@ export const UploadVehicleScreen = observer((props) => {
                       }}>
                         {!formControllerValue["controller-province-" + index] && <Text style={CONTENT_TEXT} tx={"uploadVehicleScreen.pleaseSelectProvince"} />}
 
-                        {!!formControllerValue["controller-province-" + index] && <Text style={[CONTENT_TEXT, { paddingLeft: Platform.OS == "android" ? 5: 0 }]} >{
+                        {!!formControllerValue["controller-province-" + index] && <Text style={[CONTENT_TEXT, { paddingLeft: Platform.OS == "android" ? 5 : 0 }]} >{
                           i18n.locale == 'th' ?
                             provinceListTh.find(e => e.value == formControllerValue["controller-province-" + index]).label :
                             provinceListEn.find(e => e.value == formControllerValue["controller-province-" + index]).label
