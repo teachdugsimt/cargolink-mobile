@@ -96,7 +96,7 @@ const Item = (data) => {
           id,
           fromText: from?.name || '',
           toText: to?.map(location => location.name).join(', ') || '',
-          count: requiredTruckAmount || '',
+          count: requiredTruckAmount || '-',
           productName: productName,
           truckType: typeOfTruck,
           viewDetail: true,
@@ -184,8 +184,6 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
       AdvanceSearchStore.mapMenu()
     }
   }, [JSON.stringify(versatileStore.list)])
-
-  // console.log(i18n.locale)
 
   useEffect(() => {
     if (Object.keys(selectSearch)) {

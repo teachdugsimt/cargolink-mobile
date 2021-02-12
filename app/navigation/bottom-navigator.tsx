@@ -10,6 +10,7 @@ import { MoreNavigator } from './more-navigator'
 import { color } from '../theme'
 import Icon22 from 'react-native-vector-icons/Ionicons'
 import { translate } from "../i18n"
+import { BottomTabNavigation } from "../components/bottom-tab-navigation/bottom-tab-navigation";
 
 
 const Tab = createBottomTabNavigator();
@@ -52,6 +53,7 @@ export default function BottomNavigator() {
         activeTintColor: color.mainTheme,
         inactiveTintColor: color.line,
       }}
+      tabBar={props => <BottomTabNavigation {...props} />}
     >
       <Tab.Screen name={"Home"} component={HomeNavigator}
         options={{ tabBarLabel: translate("bottomTab.home") }}
