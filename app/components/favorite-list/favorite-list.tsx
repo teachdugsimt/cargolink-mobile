@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { ImageBackground, ImageStyle, TextStyle, View, ViewStyle, Dimensions, TouchableOpacity } from 'react-native';
-import { SearchItemProps } from './search-item.props';
+import { ImageBackground, ImageStyle, TextStyle, View, ViewStyle, Dimensions } from 'react-native';
+import { SearchItemProps } from '../search-item/search-item.props';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { color, spacing } from '../../theme';
@@ -9,7 +9,7 @@ import { PostingBy } from '../posting-by/posting-by';
 import { Text } from '../text/text';
 import { translate } from '../../i18n';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { TouchableOpacity as TouchableOpacityGesture } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const truckBackImage = require("./truck-back.png")
 
@@ -147,7 +147,6 @@ export function SearchItem(props: SearchItemProps) {
     isCrown,
     image,
     containerStyle,
-    requiredTouchableOpacityGesture = false,
     bottomComponent,
     onPress,
     onToggleHeart
@@ -166,10 +165,8 @@ export function SearchItem(props: SearchItemProps) {
 
   const renderButtom = bottomComponent ? bottomComponent((comp) => comp) : null
 
-  const MainTouchableOpacity = requiredTouchableOpacityGesture ? TouchableOpacityGesture : TouchableOpacity
-
   return (
-    <MainTouchableOpacity style={{ ...CONTAINER, ...containerStyle }} activeOpacity={1} onPress={onPress}>
+    <TouchableOpacity style={{ ...CONTAINER, ...containerStyle }} activeOpacity={1} onPress={onPress}>
       <View style={TOP_ROOT}>
         <ImageBackground source={truckBackImage} style={BACKGROUND} ></ImageBackground>
         <View style={CONTENT}>
@@ -216,9 +213,9 @@ export function SearchItem(props: SearchItemProps) {
           </View>
         </View>
         <View style={CONTENT_RIGHT}>
-          {showFavoriteIcon && <MainTouchableOpacity onPress={onSelectedHeart}>
+          {showFavoriteIcon && <TouchableOpacity onPress={onSelectedHeart}>
             <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} size={24} color={isLike ? color.red : color.line} />
-          </MainTouchableOpacity>}
+          </TouchableOpacity>}
           {isRecommened &&
             <View style={RECOMMENED_ROOT}>
               <Text
@@ -247,6 +244,6 @@ export function SearchItem(props: SearchItemProps) {
         </View>
       </View>)
       }
-    </MainTouchableOpacity>
+    </TouchableOpacity>
   )
 }

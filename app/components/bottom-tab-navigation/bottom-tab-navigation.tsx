@@ -15,9 +15,9 @@ const ROOT_ICON: ViewStyle = {
   alignItems: 'center',
   justifyContent: 'center',
   position: 'absolute',
-  top: -35,
-  width: 60,
-  height: 60,
+  top: -25,
+  width: 50,
+  height: 50,
   borderRadius: Dimensions.get('window').height / 2,
   borderWidth: 5,
   overflow: 'hidden',
@@ -126,6 +126,7 @@ export const BottomTabNavigation = ({ state, descriptors, navigation }) => {
             onLongPress={onLongPress}
             style={{ flex: 1, alignItems: 'center', paddingTop: spacing[2] }}
             key={index}
+            activeOpacity={1}
           >
             {isFocused ? (
               <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
