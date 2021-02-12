@@ -72,16 +72,47 @@ const SEARCH_TEXT: TextStyle = {
   fontSize: 14,
 }
 
-const initialState = {
-  firstLocation: '',
-  secondLocation: '',
-  progress: new Animated.Value(0),
+const DatePicker = ({ value, label, province, onChangeValue }) => {
+
+  const onChange = onChangeValue ? (data: string) => onChangeValue && onChangeValue(data) : null
+
+  return (
+    <RNPickerSelect
+      // testID={"picker_vehicle_type"}
+      value={value}
+      onValueChange={(val) => onChange(val)}
+      items={province}
+      placeholder={{
+        label: label,
+        color: color.black
+      }}
+      useNativeAndroidPickerStyle={false}
+      style={{
+        inputAndroidContainer: {
+          // marginTop: 1,
+        },
+        inputAndroid: {
+          color: color.textBlack,
+        },
+        inputIOSContainer: {
+          marginTop: 1,
+          paddingVertical: spacing[2]
+        },
+        inputIOS: {
+          color: color.textBlack,
+          marginLeft: spacing[1],
+        },
+      }}
+    />
+  )
 }
 
 export function SearchBar(props: SearchBarProps) {
   const navigation = useNavigation()
 
-  const [{ firstLocation, secondLocation, progress }, setState] = useState<Input>(initialState)
+  const [progress, setProgress] = useState(new Animated.Value(0))
+  const [firstLocation, setFirstLocation] = useState<string>('')
+  const [secondLocation, setSecondLocation] = useState<string>('')
   const [isSwitching, setIsSwitching] = useState<boolean>(false)
   const [autoPlay, setAutoPlay] = useState<boolean>(false)
   const [placeholder, setPlaceholder] = useState<string>(translate("uploadVehicleScreen.province"))
@@ -104,20 +135,10 @@ export function SearchBar(props: SearchBarProps) {
   }, [isSwitching])
 
   const switching = () => {
-    setState(prevState => ({
-      ...prevState,
-      firstLocation: secondLocation,
-      secondLocation: firstLocation,
-    }))
+    setFirstLocation(secondLocation || null)
+    setSecondLocation(firstLocation || null)
     setIsSwitching(true)
     runAnimation()
-  }
-
-  const onChangeValue = (value: object) => {
-    setState(prevState => ({
-      ...prevState,
-      ...value
-    }))
   }
 
   const runAnimation = () => {
@@ -127,16 +148,18 @@ export function SearchBar(props: SearchBarProps) {
       // easing: Easing.linear,
       useNativeDriver: true
     }).start();
-    setState(prevState => ({
-      ...prevState,
-      progress: new Animated.Value(0)
-    }))
+    setProgress(new Animated.Value(0))
   }
 
-  // useEffect(() => {
-  //   console.log('i18n.locale', i18n.locale)
-  //   setPlaceholder(translate("uploadVehicleScreen.province"))
-  // }, [i18n.locale])
+  useEffect(() => {
+    if (!firstLocation) {
+      setFirstLocation('')
+    }
+    if (!secondLocation) {
+      setSecondLocation('')
+    }
+    setPlaceholder(translate("uploadVehicleScreen.province"))
+  }, [i18n.locale])
 
   const onAnimationFinish = () => {
     setIsSwitching(false)
@@ -169,75 +192,28 @@ export function SearchBar(props: SearchBarProps) {
       <View style={LOCATION}>
         <MaterialIcons name={'pin-drop'} color={color.primary} size={25} />
         <Text text={`${fromText}  :`} style={textStyleContainer} />
-        <RNPickerSelect
-          // testID={"picker_vehicle_type"}
+        <DatePicker
           value={firstLocation}
-          onValueChange={(value) => onChangeValue({ firstLocation: value })}
-          items={province}
-          placeholder={{
-            label: translate("uploadVehicleScreen.province"),
-            color: color.black
-          }}
-          useNativeAndroidPickerStyle={false}
-          style={{
-            inputAndroidContainer: {
-              // marginTop: 1,
-            },
-            inputAndroid: {
-              color: color.textBlack,
-            },
-            inputIOSContainer: {
-              marginTop: 1,
-              paddingVertical: spacing[2]
-            },
-            inputIOS: {
-              color: color.textBlack,
-              marginLeft: spacing[1],
-            },
-          }}
+          label={placeholder}
+          province={province}
+          onChangeValue={(val) => setFirstLocation(val)}
         />
       </View>
 
       <View style={SWITCHING}>
         <TouchableHighlight onPress={switching}>
-          {/* <View style={{}}> */}
-          {/* <Icon icon="arrowUpDown" style={ARROW_ICON} containerStyle={{ width: 26, height: 26, transform: [{ rotate: '90deg' }] }} /> */}
           <ReverseArrows />
-          {/* </View> */}
         </TouchableHighlight>
       </View>
 
       <View style={LOCATION}>
         <MaterialIcons name={'pin-drop'} color={color.success} size={22} />
         <Text text={`${toText}  :`} style={textStyleContainer} />
-        <RNPickerSelect
-          // testID={"picker_vehicle_type"}
+        <DatePicker
           value={secondLocation}
-          onValueChange={(value) => onChangeValue({ secondLocation: value })}
-          onDonePress={() => console.log('Done')}
-          items={province}
-          placeholder={{
-            label: translate("uploadVehicleScreen.province"),
-            color: color.black
-          }}
-          useNativeAndroidPickerStyle={false}
-          style={{
-            inputAndroidContainer: {
-              // marginTop: 1,
-            },
-            inputAndroid: {
-              color: color.textBlack,
-              // marginLeft: spacing[0],
-            },
-            inputIOSContainer: {
-              marginTop: 1,
-              paddingVertical: spacing[2]
-            },
-            inputIOS: {
-              color: color.textBlack,
-              marginLeft: spacing[1],
-            },
-          }}
+          label={placeholder}
+          province={province}
+          onChangeValue={(val) => setSecondLocation(val)}
         />
       </View>
 
@@ -246,7 +222,7 @@ export function SearchBar(props: SearchBarProps) {
           testID="search-button"
           style={SEARCH_BOTTON}
           textStyle={SEARCH_TEXT}
-          text={buttonText} // ค้นหาโดยละเอียด
+          text={buttonText}
           onPress={onSearch}
         />
       </View>
