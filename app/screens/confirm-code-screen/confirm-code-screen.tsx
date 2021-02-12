@@ -14,6 +14,7 @@ import { translate } from '../../i18n';
 import AuthStore from '../../store/auth-store/auth-store'
 import OTPInputView from '@twotalltotems/react-native-otp-input'
 import { useStores } from "../../models/root-store/root-store-context";
+import ProfileStore from '../../store/profile-store/profile-store'
 
 const ROOT: ViewStyle = {
   height: Dimensions.get("window").height,
@@ -169,6 +170,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
           let screen = 'acceptPolicy'
           if (profile.termOfService.accepted) {
             screen = 'home'
+            ProfileStore.getProfileRequest()
           }
           clearState()
           navigation.navigate(screen)

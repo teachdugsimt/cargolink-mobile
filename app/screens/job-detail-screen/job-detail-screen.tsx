@@ -25,6 +25,7 @@ import CarriersHistoryCallStore from '../../store/carriers-history-call-store/ca
 import CallDetectorManager from 'react-native-call-detection'
 import UserJobStore from "../../store/user-job-store/user-job-store"
 import ProfileStore from "../../store/profile-store/profile-store"
+import { SearchByAddressTh, GetProvinceByEnArress } from "../../utils/search-province";
 
 interface JobDetailProps {
   booker?: Array<any>
@@ -226,6 +227,10 @@ const PickUpPoint = ({ to, from, distances, onPress, containerStyle = {} }) => {
 
   // const onMove = onPress ? (lat: string, lng: string) => onPress(lat, lng) : null
 
+  const fromProvinceName = SearchByAddressTh(from?.name)
+  const province = CarriersJobStore.provinces ? JSON.parse(CarriersJobStore.provinces) : {}
+  const fromProvinceHeader = fromProvinceName || GetProvinceByEnArress(province[`${from?.lat},${from?.lng}`])
+
   return (
     <View style={{ ...LOCATION_CONTAINER, ...containerStyle }} onLayout={(e) => onLayout(e)}>
 
@@ -238,13 +243,16 @@ const PickUpPoint = ({ to, from, distances, onPress, containerStyle = {} }) => {
             text={`${translate('common.from')}  :`}
             style={{ ...LOCATION_TEXT, width: 48, justifyContent: 'flex-end' }}
           />
-          <Text
-            text={from && from.name}
-            style={{ ...LOCATION_TEXT, flexShrink: 1 }}
-          />
+          <View style={{ flexShrink: 1 }}>
+            <Text text={fromProvinceHeader} style={[LOCATION_TEXT, { width: '80%' }]} numberOfLines={1} />
+            <Text text={from && from.name} style={[LOCATION_TEXT, { color: color.line }]} />
+          </View>
         </TouchableOpacity>
         {to?.length && to.map((attr, index) => {
           const latLng = `${attr.lat},${attr.lng}`
+          const fromProvinceName = SearchByAddressTh(attr.name)
+          const province = CarriersJobStore.provinces ? JSON.parse(CarriersJobStore.provinces) : {}
+          const fromProvinceHeader = fromProvinceName || GetProvinceByEnArress(province[latLng])
           const distance = JSON.parse(JSON.stringify(distances)).filter(dist => dist.to === latLng)[0]
           const distanceKM = distance ? (distance.distance / 1000).toFixed(2) : '0'
           const time = distance ? ConverTimeFormat(distance.duration * 1000, 'HHmm') : '0'
@@ -256,10 +264,10 @@ const PickUpPoint = ({ to, from, distances, onPress, containerStyle = {} }) => {
                   text={`${translate('common.to')}  :`}
                   style={{ ...LOCATION_TEXT, width: 48 }}
                 />
-                <Text
-                  text={attr.name}
-                  style={{ ...LOCATION_TEXT, flexShrink: 1 }}
-                />
+                <View style={{ flexShrink: 1 }}>
+                  <Text text={fromProvinceHeader} style={LOCATION_TEXT} numberOfLines={1} />
+                  <Text text={attr.name} style={[LOCATION_TEXT, { color: color.line }]} />
+                </View>
               </TouchableOpacity>
               <View style={{ alignItems: 'center', flex: 1 }}>
                 <Text style={{ paddingVertical: spacing[1] }} >{distanceKM}<Text text={' KM'} style={TEXT_SMALL} /></Text>
@@ -415,7 +423,6 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
       if (event === 'Disconnected') {
         __DEV__ && console.tron.log('Disconnected')
         stopListenerTapped()
-        CarriersHistoryCallStore.add({ jobId })
         setIsCalling(false)
         // route.name === 'jobDetail' ? navigation.navigate('feedback') : navigation.navigate('myFeedback')
         // setTimeout(() => {
@@ -431,6 +438,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         setIsCalling(true)
       } else if (event === 'Offhook') { // for Android
         __DEV__ && console.tron.log('Offhook')
+        CarriersHistoryCallStore.add({ jobId })
         setIsCalling(true)
       } else if (event === 'Missed') { // for Android
         __DEV__ && console.tron.log('Missed')

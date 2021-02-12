@@ -5,6 +5,7 @@ import * as Types from "../../services/api/api.types"
 const shippersHistoryCallApi = new ShippersHistoryCallAPI()
 
 const History = types.model({
+  id: types.maybeNull(types.string),
   callTime: types.maybeNull(types.string),
   loadingWeight: types.maybeNull(types.number),
   registrationNumber: types.array(
@@ -32,7 +33,13 @@ const CarriersHistoryCallStore = types
         const response = yield shippersHistoryCallApi.find(filter)
 
         if (response.kind === 'ok') {
-          self.list = response.data
+          const data = response.data.map((history, index) => {
+            return {
+              id: (index + 1).toString(),
+              ...history,
+            }
+          })
+          self.list = data
         } else {
           self.error = response?.data?.message || response?.kind
         }
@@ -63,7 +70,11 @@ const CarriersHistoryCallStore = types
         self.loading = false
         self.error = "error fetch api add shipper history call"
       }
-    })
+    }),
+
+    setList: function setList(list: any) {
+      self.list = list
+    }
 
   }))
   .views((self) => ({

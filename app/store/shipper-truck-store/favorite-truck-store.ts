@@ -102,6 +102,10 @@ const FavoriteTruckStore = types
     keepPreviousActivityFunc: function keepPreviousActivityFunc(data: boolean) {
       self.keepPreviousActivity = data
       console.log('self.keepPreviousActivity', self.keepPreviousActivity)
+    },
+
+    setList: function setList(list: any) {
+      self.list = list
     }
 
   }))

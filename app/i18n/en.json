@@ -357,9 +357,11 @@
   "searchJobScreen": {
     "settingSearch": "Setting Search",
     "clear": "Clear",
-    "fullSearch": "Full search",
+    "fullSearch": "Advance search",
     "search": "Search",
-    "more": "more.."
+    "more": "more..",
+    "moreThan": "More than",
+    "ton": "TON"
   },
   "shipperProfileScreen": {
     "verified": "Verified",
@@ -392,7 +394,9 @@
     "favoriteList": "Favorite List",
     "lastestContact": "Lastest Contact",
     "job": "Job",
-    "vehicle": "Vehicle"
+    "vehicle": "Vehicle",
+    "shipper": "Shippers",
+    "carrier": "Carriers"
   },
   "myJobScreen": {
     "myJob": "My job",

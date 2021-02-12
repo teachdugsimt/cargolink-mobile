@@ -1,10 +1,9 @@
 import { types, flow, cast } from "mobx-state-tree"
 import * as Types from "../../services/api/api.types"
-// import TruckTypeStore from "../my-vehicle-store/truck-type-store"
 import TruckTypeStore from "../truck-type-store/truck-type-store"
-import ProductTypeStore from "../product-type-store/product-type-store"
 import { translate } from "../../i18n"
 import i18n from 'i18n-js'
+import * as storage from "../../utils/storage"
 
 const SubMenu = {
   id: (types.number),
@@ -47,76 +46,10 @@ const ProductType = types.model({
   image: types.maybeNull(types.string),
 })
 
-let MENUS: Array<Types.AdvanceSearchMenu> = [
-  {
-    id: 1,
-    type: 'truckType',
-    topic: translate('jobDetailScreen.truckType'),
-    showSubColumn: 3,
-    isChecked: false,
-    isMultiSelect: true,
-    subMenu: []
-  },
-  {
-    id: 2,
-    type: 'truckAmount',
-    topic: translate('common.amount'),
-    showSubColumn: 3,
-    isChecked: false,
-    isMultiSelect: false,
-    subMenu: [
-      {
-        id: 21,
-        name: '1-2 คัน',
-        value: [1, 2],
-        isChecked: false,
-      },
-      {
-        id: 22,
-        name: '3-4 คัน',
-        value: [3, 4],
-        isChecked: false,
-      },
-      {
-        id: 23,
-        name: 'มากกว่า 4 คัน',
-        value: [4],
-        isChecked: false,
-      },
-    ]
-  },
-  {
-    id: 3,
-    type: 'productType',
-    topic: translate('jobDetailScreen.productType'),
-    showSubColumn: 2,
-    isChecked: false,
-    isMultiSelect: true,
-    subMenu: []
-  },
-  {
-    id: 4,
-    type: translate('jobDetailScreen.weightTon'),
-    topic: 'น้ำหนัก',
-    showSubColumn: 2,
-    isChecked: false,
-    isMultiSelect: false,
-    subMenu: [
-      {
-        id: 41,
-        name: '1-5 ตัน',
-        value: 1,
-        isChecked: false,
-      },
-      {
-        id: 42,
-        name: '5-10 ตัน',
-        value: 5,
-        isChecked: false,
-      },
-    ]
-  },
-]
+const loadVersatileStore = async (key) => {
+  const root = await storage.load('root')
+  return root?.versatileStore[key]
+}
 
 const AdvanceSearchStore = types
   .model({
@@ -137,26 +70,43 @@ const AdvanceSearchStore = types
         self.menu = cast(menus)
       } else {
         self.loading = true
-        yield AdvanceSearchStore.getProductTypes()
-        if (!TruckTypeStore.list.length) {
-          yield TruckTypeStore.find()
-        }
-        if (!TruckTypeStore.listGroup.length) {
-          yield TruckTypeStore.findGroup()
-        }
-        TruckTypeStore.mappingType()
+        const oldMenu = JSON.parse(JSON.stringify(self.menu))
+        yield TruckTypeStore.mappingType()
+        yield AdvanceSearchStore.getProductTypes(oldMenu)
         if (TruckTypeStore.listMapping && TruckTypeStore.listMapping.length) {
-          MENUS[0].showSubColumn = 2
-          MENUS[0].subMenu = TruckTypeStore.listMapping.map(type => {
-            const subMenu = type.subTypes.map(subType => ({ ...subType, value: subType.id, isChecked: false }))
+          self.menu[0].showSubColumn = 2
+          const data = TruckTypeStore.listMapping.map((type, index) => {
+            const subMenu = type.subTypes.map((subType, indx) => ({
+              ...subType,
+              value: subType.id,
+              isChecked: oldMenu[0]?.subMenu[index]?.subMenu[indx]?.isChecked || false
+            }))
             return {
               ...type,
               value: type.id,
-              isChecked: false,
+              isChecked: oldMenu[0]?.subMenu[index]?.isChecked || false,
               subMenu,
             }
           })
-          self.menu = cast([...self.menu, ...MENUS])
+
+          if (oldMenu.length) {
+            self.menu[0].isChecked = oldMenu.length ? !!oldMenu[0]?.isChecked : false
+
+            if (oldMenu[1].isChecked) {
+              self.menu[1].isChecked = true
+              const indexActive = oldMenu[1].subMenu.findIndex(({ isChecked }) => isChecked)
+              self.menu[1].subMenu[indexActive].isChecked = true
+            }
+
+            if (oldMenu[3].isChecked) {
+              self.menu[3].isChecked = true
+              const indexActive = oldMenu[3].subMenu.findIndex(({ isChecked }) => isChecked)
+              self.menu[3].subMenu[indexActive].isChecked = true
+            }
+          }
+
+          self.menu[0].subMenu = cast(data)
+          self.menu = cast(self.menu)
         }
         self.loading = false
       }
@@ -187,24 +137,24 @@ const AdvanceSearchStore = types
       }
     },
 
-    getProductTypes: flow(function* getProductTypes(filter: object = {}) {
+    getProductTypes: flow(function* getProductTypes(oldMenu: any) {
       self.loading = true
       try {
-        if (!ProductTypeStore.list.length) {
-          yield ProductTypeStore.find()
-        }
-        const productTypes = ProductTypeStore.list
+        const productTypes = yield loadVersatileStore('listProductType')
 
         if (productTypes && productTypes.length) {
-          MENUS[2].showSubColumn = 2
-          MENUS[2].subMenu = productTypes.map(val => {
+          const menu = AdvanceSearchStore.getMenu
+          menu[2].showSubColumn = 2
+          menu[2].isChecked = oldMenu.length ? !!oldMenu[2].isChecked : false
+          const data = productTypes.map((val, index) => {
             return {
               ...val,
               value: val.id,
-              isChecked: false
+              isChecked: oldMenu.length ? !!oldMenu[2]?.subMenu[index].isChecked : false
             }
           })
-          // self.menu = cast([...self.menu, ...MENUS])
+          menu[2].subMenu = data
+          self.menu = cast(menu)
         }
 
         self.loading = false
@@ -223,6 +173,79 @@ const AdvanceSearchStore = types
     get getFilter() {
       return self.filter
     },
+    get getMenu() {
+      let menu: Array<Types.AdvanceSearchMenu> = [
+        {
+          id: 1,
+          type: 'truckType',
+          topic: translate('jobDetailScreen.truckType'),
+          showSubColumn: 3,
+          isChecked: false,
+          isMultiSelect: true,
+          subMenu: []
+        },
+        {
+          id: 2,
+          type: 'truckAmount',
+          topic: translate('common.amount'),
+          showSubColumn: 3,
+          isChecked: false,
+          isMultiSelect: false,
+          subMenu: [
+            {
+              id: 21,
+              name: `1-2 ${translate('jobDetailScreen.unit')}`.trim(),
+              value: [1, 2],
+              isChecked: false,
+            },
+            {
+              id: 22,
+              name: `3-4 ${translate('jobDetailScreen.unit')}`.trim(),
+              value: [3, 4],
+              isChecked: false,
+            },
+            {
+              id: 23,
+              name: `${translate('searchJobScreen.moreThan')} 4 ${translate('jobDetailScreen.unit')}`.trim(),
+              value: [4],
+              isChecked: false,
+            },
+          ]
+        },
+        {
+          id: 3,
+          type: 'productType',
+          topic: translate('jobDetailScreen.productType'),
+          showSubColumn: 2,
+          isChecked: false,
+          isMultiSelect: true,
+          subMenu: []
+        },
+        {
+          id: 4,
+          type: 'weight',
+          topic: translate('jobDetailScreen.weightTon'),
+          showSubColumn: 2,
+          isChecked: false,
+          isMultiSelect: false,
+          subMenu: [
+            {
+              id: 41,
+              name: `1-5 ${translate('searchJobScreen.ton')}`.trim(),
+              value: 1,
+              isChecked: false,
+            },
+            {
+              id: 42,
+              name: `5-10 ${translate('searchJobScreen.ton')}`.trim(),
+              value: 5,
+              isChecked: false,
+            },
+          ]
+        },
+      ]
+      return menu
+    }
   }))
   .create({
     // IMPORTANT !!

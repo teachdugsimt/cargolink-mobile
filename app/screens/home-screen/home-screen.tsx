@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { View, ViewStyle, TouchableOpacity, Image, ImageStyle, Dimensions, Platform, Linking, Alert } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
-import { images, color } from '../../theme'
+import { images, color, spacing } from '../../theme'
 import { useStores } from "../../models/root-store/root-store-context";
 import { GridView } from '../../components/home-element/home-element'
 import MyVehicleStore from "../../store/my-vehicle-store/my-vehicle-store"
@@ -18,7 +18,7 @@ const ROW: ViewStyle = { flexDirection: 'row' }
 const ALL_CENTER: ViewStyle = { justifyContent: 'center', alignItems: Platform.OS == "android" ? 'flex-start' : 'center' }
 
 const TOP_VIEW: ViewStyle = {
-  height: 230,
+  height: 160,
   backgroundColor: color.mainTheme,
   borderBottomLeftRadius: 20,
   borderBottomRightRadius: 20,
@@ -27,6 +27,8 @@ const TOP_VIEW: ViewStyle = {
 }
 const BOTTOM_VIEW: ViewStyle = {
   flex: 2,
+  // backgroundColor: 'red',
+  paddingTop: spacing[5]
 }
 
 const IMAGE_LOGO: ImageStyle = {
@@ -35,7 +37,7 @@ const IMAGE_LOGO: ImageStyle = {
 
 const VIEW_GRID_BOX: ViewStyle = {
   flex: 1,
-  marginTop: Platform.OS == "ios" ? ((height / 2) - (height / 1.69)) : ((height / 2) - (height / 1.6))
+  // marginTop: Platform.OS == "ios" ? ((height / 2) - (height / 1.69)) : ((height / 2) - (height / 1.6))
 }
 
 const ROOT_HOME: ViewStyle = {
@@ -73,22 +75,22 @@ export const HomeScreen = observer((props) => {
   }, [versatileStore.language])
 
   useEffect(() => {
-    if (versatileStore.list.length && !TruckTypeStore.list.length) {
+    if (versatileStore.list.length) {
       TruckTypeStore.setList(JSON.parse(JSON.stringify(versatileStore.list)))
     }
-  }, [versatileStore.list.length])
+  }, [JSON.stringify(versatileStore.list)])
 
   useEffect(() => {
-    if (versatileStore.listGroup.length && !TruckTypeStore.listGroup.length) {
+    if (versatileStore.listGroup.length) {
       TruckTypeStore.setGroupList(JSON.parse(JSON.stringify(versatileStore.listGroup)))
     }
-  }, [versatileStore.listGroup.length])
+  }, [JSON.stringify(versatileStore.listGroup)])
 
   useEffect(() => {
-    if (versatileStore.listProductType.length && !ProductTypeStore.list.length) {
+    if (versatileStore.listProductType.length) {
       ProductTypeStore.setList(JSON.parse(JSON.stringify(versatileStore.listProductType)))
     }
-  }, [versatileStore.listProductType.length])
+  }, [JSON.stringify(versatileStore.listProductType)])
 
   const onCall = (phone: string) => {
     let phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`

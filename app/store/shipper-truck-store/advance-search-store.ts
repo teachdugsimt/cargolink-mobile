@@ -1,11 +1,8 @@
 import { types, flow, cast } from "mobx-state-tree"
 import * as Types from "../../services/api/api.types"
-// import TruckTypeStore from "../my-vehicle-store/truck-type-store"
 import TruckTypeStore from "../truck-type-store/truck-type-store"
 import { translate } from "../../i18n"
-// import { ProductTypeAPI } from "../../services/api"
-
-// const productTypeApi = new ProductTypeAPI()
+import * as storage from "../../utils/storage"
 
 const SubMenu = {
   id: (types.number),
@@ -47,39 +44,10 @@ const ProductType = types.model({
   image: types.maybeNull(types.string),
 })
 
-const MENUS: Array<Types.AdvanceSearchMenu> = [
-  {
-    id: 1,
-    type: 'truckType',
-    topic: translate('jobDetailScreen.truckType'),
-    showSubColumn: 3,
-    isChecked: false,
-    isMultiSelect: true,
-    subMenu: []
-  },
-  // {
-  //     id: 2,
-  //     type: 'weight',
-  //     topic: 'น้ำหนัก',
-  //     showSubColumn: 2,
-  //     isChecked: false,
-  //     isMultiSelect: false,
-  //     subMenu: [
-  //         {
-  //             id: 41,
-  //             name: '1-5 ตัน',
-  //             value: 1,
-  //             isChecked: false,
-  //         },
-  //         {
-  //             id: 42,
-  //             name: '5-10 ตัน',
-  //             value: 5,
-  //             isChecked: false,
-  //         },
-  //     ]
-  // },
-]
+const loadVersatileStore = async (key) => {
+  const root = await storage.load('root')
+  return root?.versatileStore[key]
+}
 
 const AdvanceSearchStore = types
   .model({
@@ -99,25 +67,38 @@ const AdvanceSearchStore = types
         self.menu = cast(menus)
       } else {
         self.loading = true
-        if (!TruckTypeStore.listGroup.length) {
-          yield TruckTypeStore.findGroup()
-        }
-        if (!TruckTypeStore.list.length) {
-          yield TruckTypeStore.find()
-        }
-        TruckTypeStore.mappingType()
+        yield TruckTypeStore.mappingType()
         if (TruckTypeStore.listMapping && TruckTypeStore.listMapping.length) {
-          MENUS[0].showSubColumn = 2
-          MENUS[0].subMenu = TruckTypeStore.listMapping.map(type => {
-            const subMenu = type.subTypes.map(subType => ({ ...subType, showSubColumn: 2, value: subType.id, isChecked: false }))
-            return {
-              ...type,
-              value: type.id,
-              isChecked: false,
-              subMenu,
+          const menu = AdvanceSearchStore.getMenu
+          const oldMenu = JSON.parse(JSON.stringify(self.menu))
+          menu[0].showSubColumn = 2
+          menu[0].isChecked = oldMenu.length ? !!oldMenu[0]?.isChecked : false
+          menu[0].subMenu = TruckTypeStore.listMapping.map((type, index) => {
+            if (self.menu.length) {
+              const subMenu = type.subTypes.map((subType, indx) => ({
+                ...subType,
+                showSubColumn: 2,
+                value: subType.id,
+                isChecked: oldMenu[0]?.subMenu[index]?.subMenu[indx]?.isChecked || false
+              }))
+              return {
+                ...type,
+                value: type.id,
+                isChecked: oldMenu[0]?.subMenu[index]?.isChecked || false,
+                subMenu,
+              }
+            } else {
+              const subMenu = type.subTypes.map(subType => ({ ...subType, showSubColumn: 2, value: subType.id, isChecked: false }))
+              return {
+                ...type,
+                value: type.id,
+                isChecked: false,
+                subMenu,
+              }
             }
           })
-          self.menu = cast([...self.menu, ...MENUS])
+          self.menu = cast(menu)
+          self.loading = false
         }
         self.loading = false
       }
@@ -151,6 +132,20 @@ const AdvanceSearchStore = types
     get getFilter() {
       return self.filter
     },
+    get getMenu() {
+      const menu: Array<Types.AdvanceSearchMenu> = [
+        {
+          id: 1,
+          type: 'truckType',
+          topic: translate('jobDetailScreen.truckType'),
+          showSubColumn: 3,
+          isChecked: false,
+          isMultiSelect: true,
+          subMenu: []
+        },
+      ]
+      return menu
+    }
   }))
   .create({
     filter: {},
