@@ -14,6 +14,7 @@ const FILL: ViewStyle = {
   alignItems: 'center'
 }
 const ACCOUNT_VIEW: ViewStyle = {
+  flex: 1,
   flexDirection: 'column'
 }
 const ACCOUNT_DETAIL: ViewStyle = {
@@ -22,7 +23,8 @@ const ACCOUNT_DETAIL: ViewStyle = {
   alignItems: 'center'
 }
 const LOGO_ROOT: ViewStyle = {
-  flexDirection: 'row',
+  // flexDirection: 'row',
+  width: 40, height: 40,
   ...PADDING_LEFT
 }
 const LOGO: ImageStyle = {
@@ -69,11 +71,11 @@ export function PostingBy(props: PostingByProps) {
     }
 
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={1}>
+    <TouchableOpacity onPress={onPress} activeOpacity={1} style={{ flex: 1 }}>
       <View style={FILL}>
         <View style={ACCOUNT_VIEW}>
           <View style={ACCOUNT_DETAIL}>
-            <Text style={{ ...PADDING_RIGHT }} text={postBy} />
+            <Text numberOfLines={1} ellipsizeMode={'tail'} style={{ ...PADDING_RIGHT, flex: 1, textAlign: 'right' }} text={postBy} />
             <Icon icon={isVerified ? "checkActive" : "checkInactive"} style={SMALL_ICON} containerStyle={{ ...PADDING_RIGHT }} />
             {isCrown && <Icon icon="crown" style={SMALL_ICON} containerStyle={{ ...PADDING_RIGHT }} />}
           </View>

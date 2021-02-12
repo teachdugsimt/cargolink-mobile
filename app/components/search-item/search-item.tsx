@@ -96,6 +96,7 @@ const RECOMMENED: TextStyle = {
 }
 const BUTTOM_ROOT: ViewStyle = {
   flexDirection: 'row',
+  // justifyContent: 'space-between',
   ...PADDING_LEFT,
   ...PADDING_RIGHT,
   marginLeft: spacing[2],
@@ -104,13 +105,15 @@ const BUTTOM_ROOT: ViewStyle = {
   paddingBottom: spacing[2],
 }
 const VIEW_DETAIL_ROOT: ViewStyle = {
-  flex: 1,
+  // flex: 1,
+  width: 100,
   flexDirection: 'row',
-  alignItems: 'center'
+  alignItems: 'center',
 }
 const ACCOUNT_ROOT: ViewStyle = {
+  flex: 1,
   flexDirection: 'row',
-  justifyContent: "flex-end"
+  justifyContent: "flex-end",
 }
 const TEXT_VIEW: TextStyle = {
   color: color.line,
@@ -225,7 +228,7 @@ export function SearchItem(props: SearchItemProps) {
       {renderButtom || (<View style={BUTTOM_ROOT}>
         <View style={VIEW_DETAIL_ROOT}>
           <Text text={translate('jobDetailScreen.seeDetail')} style={TEXT_VIEW} />
-          <AntDesign name="right" size={spacing[5]} color={color.line} />
+          <AntDesign name="right" size={spacing[4] + spacing[1]} color={color.line} />
         </View>
         <View style={ACCOUNT_ROOT}>
           <PostingBy {

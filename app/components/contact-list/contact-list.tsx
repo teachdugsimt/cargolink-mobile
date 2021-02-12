@@ -71,7 +71,7 @@ export function ContactList(props: ContactListProps) {
         </View>
         <View style={CENTER}>
           <View>
-            {!!header && <Text text={header} preset={'topicExtra'} />}
+            {!!header && <Text numberOfLines={1} ellipsizeMode={'tail'} style={{ width: '90%' }} text={header} preset={'topicExtra'} />}
           </View>
           <View>
             {renderContent}

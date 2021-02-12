@@ -19,12 +19,14 @@ const { width, height } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
 const COLOR_PRIMARY: TextStyle = { color: color.primary }
 const TOP_VIEW: ViewStyle = {
-  flex: Platform.OS == "ios" ? 0.8 : 1.1, backgroundColor: color.mainTheme,
+  // flex: Platform.OS == "ios" ? 0.8 : 1.1, 
+  height: 120,
+  backgroundColor: color.mainTheme,
   borderBottomRightRadius: 15, borderBottomLeftRadius: 15
 }
 const BOTTOM_VIEW: ViewStyle = { flex: 4 }
 const PROFILE_IMG: ImageStyle = {
-  width: 75, height: 75, borderRadius: 37.5
+  width: 75, height: 75, borderRadius: 37.5,
 }
 const ICON_STYLE: ImageStyle = {
   width: 15, height: 15, borderRadius: 7.5, alignSelf: 'flex-end', marginLeft: 5, marginTop: 2.5
@@ -37,13 +39,18 @@ const ROW_LAYOUT: ViewStyle = {
   width: '100%'
 }
 const VIEW_PROFILE: ViewStyle = {
-  ...FLEX_ROW, justifyContent: 'center', alignItems: 'center',
-  padding: 10
+  ...FLEX_ROW,
+  justifyContent: 'center', alignItems: 'center',
+  padding: 10,
+  // width: 300,
+  // backgroundColor: 'red',
+  // alignSelf: 'center'
 }
 const VIEW_NAME_NAD_PHONE: ViewStyle = {
   flexDirection: 'column',
   alignItems: 'center',
-  padding: 15
+  padding: 15,
+  // backgroundColor: 'red'
 }
 
 
@@ -365,7 +372,9 @@ export const ProfileScreen = observer(function ProfileScreen() {
   }
 
   const _renderTextProfile = (text) => {
-    return <Text preset="default" style={PADDING_LEFT_SMALL} tx={text ? '' : 'profileScreen.nophone'}>{text || ''}</Text>
+    return <Text preset="default"
+      style={[PADDING_LEFT_SMALL, { lineHeight: 30 }]} tx={text ? '' : 'profileScreen.nophone'}>{text || ''}
+    </Text>
   }
 
   const _renderEmptyList = (s1, s2, s3, link) => {
@@ -402,13 +411,13 @@ export const ProfileScreen = observer(function ProfileScreen() {
           <View style={VIEW_NAME_NAD_PHONE}>
 
             {<View style={ROW_LAYOUT}>
-              <Ionicons name={"person-outline"} size={typography.mediumIcon} />
+              <Ionicons name={"person-outline"} size={typography.mediumIcon} style={{ lineHeight: 30 }} />
               {setrenderNewProfile ? _renderTextProfile(fullName) : _renderTextProfile(fullName)}
-              {fullName && <Icon icon={'checkActive'} style={ICON_STYLE} />}
+              {/* {fullName && <Icon icon={'checkActive'} style={ICON_STYLE} />} */}
             </View>}
 
             {<View style={ROW_LAYOUT}>
-              <Ionicons name={"call-outline"} size={typography.mediumIcon} />
+              <Ionicons name={"call-outline"} size={typography.mediumIcon} style={{ lineHeight: 30 }} />
               {setrenderNewProfile ? _renderTextProfile(phoneNumber) : _renderTextProfile(phoneNumber)}
             </View>}
 
