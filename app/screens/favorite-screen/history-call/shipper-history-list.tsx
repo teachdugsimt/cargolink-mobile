@@ -136,6 +136,7 @@ export const Item = (data) => {
         content={contentRender}
         contentRight={contentRight}
         footer={footer}
+        imageSource={''}
       />
     </View>
   )
