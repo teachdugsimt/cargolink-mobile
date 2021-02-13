@@ -112,12 +112,13 @@ const BUTTOM_ROOT: ViewStyle = {
   paddingBottom: spacing[2],
 }
 const VIEW_DETAIL_ROOT: ViewStyle = {
-  flex: 1,
+  // flex: 1,
+  width: 100,
   flexDirection: 'row',
-  alignItems: 'center'
+  alignItems: 'center',
 }
 const ACCOUNT_ROOT: ViewStyle = {
-  // flex: 1,
+  flex: 1,
   flexDirection: 'row',
   justifyContent: "flex-end"
 }

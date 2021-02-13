@@ -18,7 +18,7 @@ const ROOT_ICON: ViewStyle = {
   top: -25,
   width: 50,
   height: 50,
-  borderRadius: Dimensions.get('window').height / 2,
+  borderRadius: 25,
   borderWidth: 5,
   overflow: 'hidden',
   borderColor: color.backgroundWhite,

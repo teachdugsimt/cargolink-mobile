@@ -42,6 +42,7 @@ const VIEW_PROFILE: ViewStyle = {
   ...FLEX_ROW,
   justifyContent: 'center', alignItems: 'center',
   padding: 10,
+  // paddingHorizontal: 20,
   // width: 300,
   // backgroundColor: 'red',
   // alignSelf: 'center'
@@ -444,13 +445,13 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
 
 
-        {menu1 && <FlatList
+        {menu1 && <View style={{ paddingHorizontal: 10 }}><FlatList
           data={reportWorking}
           renderItem={({ item, index }) => _renderVehice(item, index)}
           keyExtractor={(item, index) => 'key-' + index.toString()}
           ListEmptyComponent={() => _renderEmptyList("profileScreen.noEnoughWork", "profileScreen.fromAddWorkScreen",
             "profileScreen.goAddWorkScreen", "postjob")}
-        />}
+        /></View>}
 
 
         {menu2 && <View style={[FULL, { paddingTop: Platform.OS == "ios" ? 10 : 0 }]}>

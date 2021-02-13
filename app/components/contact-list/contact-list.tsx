@@ -18,9 +18,11 @@ const IMAGE_ROOT: ViewStyle = {
   // flex: 1,
 }
 const CENTER: ViewStyle = {
-  // flex: 3,
+  flex: 1,
   flexDirection: 'column',
   paddingHorizontal: spacing[3],
+  // backgroundColor: 'red',
+  // height: 55
 }
 const IMAGE: ImageStyle = {
   width: 60,
@@ -35,6 +37,7 @@ const RIGHT: ViewStyle = {
 export function ContactList(props: ContactListProps) {
   const {
     header,
+    callTime,
     content,
     contentRight,
     footer,
@@ -65,23 +68,34 @@ export function ContactList(props: ContactListProps) {
   return (
     <View style={mainStyle}>
       <View style={TOP}>
-
         <View style={IMAGE_ROOT}>
           {imageSource ? <Image {...imageProps} /> : <View style={{ ...imgStyle, backgroundColor: color.disable }} />}
         </View>
-        <View style={CENTER}>
-          <View>
-            {!!header && <Text numberOfLines={1} ellipsizeMode={'tail'} style={{ width: '90%' }} text={header} preset={'topicExtra'} />}
+        <View style={{ flex: 1, flexDirection: 'column' }}>
+          <View style={{ flex: 1, flexDirection: 'row' }}>
+
+            <View style={{ flexDirection: 'row', flex: 1 }}>
+              <View style={CENTER}>
+                <View>
+                  {!!header && <Text numberOfLines={1} ellipsizeMode={'tail'} style={{ width: '90%' }} text={header} preset={'topicExtra'} />}
+                </View>
+                <View>
+                  {renderContent}
+                </View>
+              </View>
+
+              <View style={RIGHT}>
+                {renderContentRight}
+              </View>
+            </View>
           </View>
-          <View>
-            {renderContent}
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+            <Text style={{
+              textAlign: 'right', color: color.line, bottom: -spacing[1]
+            }}
+              preset={'fieldLabel'}>{callTime}</Text>
           </View>
         </View>
-
-        <View style={RIGHT}>
-          {renderContentRight}
-        </View>
-
       </View>
 
       <View style={BOTTOM}>

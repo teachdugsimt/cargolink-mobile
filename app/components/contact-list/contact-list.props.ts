@@ -5,6 +5,8 @@ export interface ContactListProps {
 
   header?: string
 
+  callTime?: string
+
   content?: (props) => ReactNode
 
   contentRight?: (props) => ReactNode
