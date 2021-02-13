@@ -48,6 +48,8 @@ export interface SearchItemProps {
 
   containerStyle?: ViewStyle
 
+  requiredTouchableOpacityGesture?: boolean
+
   customContent?: (props) => ReactNode
 
   bottomComponent?: (props) => ReactNode

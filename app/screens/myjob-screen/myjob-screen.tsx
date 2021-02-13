@@ -131,8 +131,8 @@ const Item = (data) => {
       "shipping-information": shippings
     }
 
-    console.log('jobInfoFirstTab', jobInfoFirstTab)
-    console.log('jobInfoSecondTab', jobInfoSecondTab)
+    // console.log('jobInfoFirstTab', jobInfoFirstTab)
+    // console.log('jobInfoSecondTab', jobInfoSecondTab)
 
     PostJobStore.setPostJob(1, jobInfoFirstTab)
     PostJobStore.setPostJob(2, jobInfoSecondTab)

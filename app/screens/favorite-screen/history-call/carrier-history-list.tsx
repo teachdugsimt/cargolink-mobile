@@ -11,6 +11,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import CallDetectorManager from 'react-native-call-detection'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import i18n from 'i18n-js'
+import moment from 'moment'
 
 const CONTAINER_LIST: ViewStyle = {
   marginVertical: spacing[1],
@@ -138,7 +139,11 @@ const Item = (data) => {
       <TouchableOpacity style={RIGHT} onPress={() => onCall(carrierPhone)}>
         <MaterialCommunityIcons name={'phone'} size={20} style={{ textAlign: 'center' }} color={color.textWhite} />
       </TouchableOpacity>
-      <Text text={callTime} style={{ textAlign: 'right', color: color.line, bottom: -spacing[1] }} preset={'fieldLabel'} />
+      {/* <Text text={callTime}
+        style={{
+          textAlign: 'right', color: color.line, bottom: -spacing[1]
+        }}
+        preset={'fieldLabel'} /> */}
     </View>
   )
 
@@ -183,6 +188,7 @@ const Item = (data) => {
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
       <ContactList
         header={carrierName}
+        callTime={callTime}
         containerStyle={CONTAINER_LIST}
         content={contentRender}
         contentRight={contentRight}

@@ -57,13 +57,13 @@
     "new": "New",
     "done": "Done",
     "totalJobText": "*We enable users, both transporters and transporters, to post jobs or find cars if users can choose from the homepage. ",
-    "pleaseLogin": "please login before update profile"   
+    "pleaseLogin": "please login before update profile"
   },
-  "commentScreen":{
+  "commentScreen": {
     "yourComment": "Your Comment",
     "canDealInApp": "Can you agree to work through our app ?",
     "canPassApp": "Right from the app ",
-    "notPassApp":"Not from the app",
+    "notPassApp": "Not from the app",
     "howMuchDeal": "Can you tell us how much you agree on the price?",
     "rateUs": "Help rate your satisfaction with this service in",
     "star": "Level 1 - 5 stars",
@@ -357,7 +357,7 @@
   "searchJobScreen": {
     "settingSearch": "Setting Search",
     "clear": "Clear",
-    "fullSearch": "Advance search",
+    "fullSearch": "Advanced search",
     "search": "Search",
     "more": "more..",
     "moreThan": "More than",

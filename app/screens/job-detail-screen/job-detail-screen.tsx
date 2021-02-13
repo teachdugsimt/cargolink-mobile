@@ -612,11 +612,6 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={1} onPress={onOpenModalize} onPressOut={onOpenModalize} style={CONTENT_SMALL}>
             <PickUpPoint from={from} to={to} distances={CarriersJobStore.distances} containerStyle={{ overflow: 'hidden' }} onPress={null} />
-
-            {/* <View style={{ position: 'absolute', right: -spacing[5], top: -spacing[4] }}>
-              <SwipeUpArrows color={color.disable} />
-            </View> */}
-
           </TouchableOpacity>
         </View>
 
@@ -675,7 +670,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
               </View>
               <View style={DETAIL_BOX}>
                 <Text text={`${translate('jobDetailScreen.truckType')} : ${txtTruckType}`} style={TEXT} />
-                <Text text={`${translate('common.amount')} : ${requiredTruckAmount} ${translate('jobDetailScreen.unit')}`} style={TEXT} />
+                <Text text={`${translate('common.amount')} : ${requiredTruckAmount || '-'} ${translate('jobDetailScreen.unit')}`} style={TEXT} />
               </View>
             </View>
             <View style={PRODUCT_ROW}>

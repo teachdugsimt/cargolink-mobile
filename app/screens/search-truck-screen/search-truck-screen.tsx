@@ -69,15 +69,6 @@ const ZONE: TextStyle = {
 const PROVINCE: TextStyle = {
   color: color.line,
 }
-const CONTEXT_NOT_FOUND: ViewStyle = {
-  flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-  top: -spacing[5],
-}
-const NOT_FOUND_TEXT: TextStyle = {
-  color: color.line,
-}
 const SELECTED: ViewStyle = {
   flexDirection: 'row',
   alignItems: 'center',
@@ -162,7 +153,6 @@ const Item = (data) => {
 
   const renderContent = () => (<View style={{ paddingLeft: spacing[2] }}>
     <View style={{ paddingVertical: spacing[1] }}>
-      {/* <Text text={`${translate('truckDetailScreen.heighttOfTheCarStall')} : ${stallHeight ? translate(`common.${stallHeight.toLowerCase()}`) : '-'} (${tipper ? translate('truckDetailScreen.haveDump') : translate('truckDetailScreen.haveNotDump')})`} /> */}
       <Text text={`${translate('truckDetailScreen.heighttOfTheCarStall')} : ${stallHeight ? translate(`common.${stallHeight.toLowerCase()}`) : '-'}`} />
     </View>
     <View style={{ paddingVertical: spacing[1] }}>
@@ -274,7 +264,6 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
 
   useEffect(() => {
     ShipperTruckStore.find()
-    console.log('ShipperTruckStore.find()')
     let newZone = null
     if (i18n.locale === 'th') {
       const ascZones = sortArray(regionListTh)
@@ -470,7 +459,6 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      {/* <ModalLoading size={'large'} color={color.primary} visible={loading} /> */}
       <View style={SEARCH_BAR}>
         <View style={SEARCH_BAR_ROW}>
           <MaterialIcons name={'pin-drop'} color={color.primary} size={25} style={PIN_ICON} />
@@ -533,7 +521,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
                   <MaterialIcons name={'cancel'} color={color.line} size={18} />
                 </TouchableOpacity>
               )
-            } else if (zone.isSelected) {
+            } else {
               return (
                 <View key={`menu-selected-${index}-${zone.value}`} style={{ flexDirection: 'row' }}>
                   {
@@ -549,7 +537,6 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
                 </View>
               )
             }
-            return null
           })}
         </ScrollView>
       </View>

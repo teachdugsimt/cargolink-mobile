@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { ImageBackground, ImageStyle, TextStyle, View, ViewStyle, Dimensions } from 'react-native';
+import { ImageBackground, ImageStyle, TextStyle, View, ViewStyle, Dimensions, TouchableOpacity } from 'react-native';
 import { SearchItemProps } from './search-item.props';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
@@ -8,8 +8,8 @@ import { Icon } from '../icon/icon';
 import { PostingBy } from '../posting-by/posting-by';
 import { Text } from '../text/text';
 import { translate } from '../../i18n';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { TouchableOpacity as TouchableOpacityGesture } from 'react-native-gesture-handler';
 
 const truckBackImage = require("./truck-back.png")
 
@@ -96,6 +96,7 @@ const RECOMMENED: TextStyle = {
 }
 const BUTTOM_ROOT: ViewStyle = {
   flexDirection: 'row',
+  // justifyContent: 'space-between',
   ...PADDING_LEFT,
   ...PADDING_RIGHT,
   marginLeft: spacing[2],
@@ -104,13 +105,15 @@ const BUTTOM_ROOT: ViewStyle = {
   paddingBottom: spacing[2],
 }
 const VIEW_DETAIL_ROOT: ViewStyle = {
-  flex: 1,
+  // flex: 1,
+  width: 100,
   flexDirection: 'row',
-  alignItems: 'center'
+  alignItems: 'center',
 }
 const ACCOUNT_ROOT: ViewStyle = {
+  flex: 1,
   flexDirection: 'row',
-  justifyContent: "flex-end"
+  justifyContent: "flex-end",
 }
 const TEXT_VIEW: TextStyle = {
   color: color.line,
@@ -144,6 +147,7 @@ export function SearchItem(props: SearchItemProps) {
     isCrown,
     image,
     containerStyle,
+    requiredTouchableOpacityGesture = false,
     bottomComponent,
     onPress,
     onToggleHeart
@@ -162,8 +166,10 @@ export function SearchItem(props: SearchItemProps) {
 
   const renderButtom = bottomComponent ? bottomComponent((comp) => comp) : null
 
+  const MainTouchableOpacity = requiredTouchableOpacityGesture ? TouchableOpacityGesture : TouchableOpacity
+
   return (
-    <TouchableOpacity style={{ ...CONTAINER, ...containerStyle }} activeOpacity={1} onPress={onPress}>
+    <MainTouchableOpacity style={{ ...CONTAINER, ...containerStyle }} activeOpacity={1} onPress={onPress}>
       <View style={TOP_ROOT}>
         <ImageBackground source={truckBackImage} style={BACKGROUND} ></ImageBackground>
         <View style={CONTENT}>
@@ -210,9 +216,9 @@ export function SearchItem(props: SearchItemProps) {
           </View>
         </View>
         <View style={CONTENT_RIGHT}>
-          {showFavoriteIcon && <TouchableOpacity onPress={onSelectedHeart}>
+          {showFavoriteIcon && <MainTouchableOpacity onPress={onSelectedHeart}>
             <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} size={24} color={isLike ? color.red : color.line} />
-          </TouchableOpacity>}
+          </MainTouchableOpacity>}
           {isRecommened &&
             <View style={RECOMMENED_ROOT}>
               <Text
@@ -225,7 +231,7 @@ export function SearchItem(props: SearchItemProps) {
       {renderButtom || (<View style={BUTTOM_ROOT}>
         <View style={VIEW_DETAIL_ROOT}>
           <Text text={translate('jobDetailScreen.seeDetail')} style={TEXT_VIEW} />
-          <AntDesign name="right" size={spacing[5]} color={color.line} />
+          <AntDesign name="right" size={spacing[4] + spacing[1]} color={color.line} />
         </View>
         <View style={ACCOUNT_ROOT}>
           <PostingBy {
@@ -241,6 +247,6 @@ export function SearchItem(props: SearchItemProps) {
         </View>
       </View>)
       }
-    </TouchableOpacity>
+    </MainTouchableOpacity>
   )
 }

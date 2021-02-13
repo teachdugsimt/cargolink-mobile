@@ -104,6 +104,7 @@ const Item = (data: JobProps) => {
             paddingTop: spacing[2],
             borderRadius: 6
           },
+          requiredTouchableOpacityGesture: true,
           onPress,
           onToggleHeart: () => onPressHeart()
         }
