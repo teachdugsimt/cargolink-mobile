@@ -10,12 +10,12 @@ buildscript {
         playServicesVersion = "17.0.0"
         androidMapsUtilsVersion = "0.5+"
 
-        firebaseIidVersion = "21.0.1" // default: "19.0.1"
+        // firebaseIidVersion = "21.0.1" // default: "19.0.1"
 
     }
     repositories {
-        google()
         jcenter()
+        google()
     }
     dependencies {
         classpath("com.android.tools.build:gradle:3.5.3")
@@ -30,7 +30,7 @@ buildscript {
 
         // Add the Crashlytics Gradle plugin (be sure to add version
         // 2.0.0 or later if you built your app with Android Studio 4.1).
-        // classpath 'com.google.firebase:firebase-crashlytics-gradle:2.5.0'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.2.0'
     }
 }
 

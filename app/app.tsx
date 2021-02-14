@@ -25,6 +25,7 @@ import {
   useNavigationPersistence,
 } from "./navigation"
 import { RootStore, RootStoreProvider, setupRootStore } from "./models"
+// import crashlytics from '@react-native-firebase/crashlytics';
 
 // This puts screens in a native ViewController or Activity. If you want fully native
 // stack navigation, use `createNativeStackNavigator` in place of `createStackNavigator`:
@@ -54,6 +55,7 @@ function App(props: any) {
       setupRootStore().then(setRootStore)
     })()
     SplashScreen.hide()
+    // crashlytics().log('iOS App mounted.')
   }, [])
 
   // Before we show the app, we have to wait for our state to be ready.

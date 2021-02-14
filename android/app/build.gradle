@@ -3,7 +3,7 @@ apply plugin: "com.android.application"
 apply plugin: 'com.google.gms.google-services' // Google Services Gradle plugin
 
 // Apply the Crashlytics Gradle plugin
-// apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'com.google.firebase.crashlytics'
 
 import com.android.build.OutputFile
 
@@ -177,6 +177,9 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
+            // firebaseCrashlytics {
+            //     nativeSymbolUploadEnabled true
+            // }
             // Add New : Detox
             minifyEnabled true
 
@@ -193,9 +196,7 @@ android {
             signingConfig signingConfigs.release
             // minifyEnabled enableProguardInReleaseBuilds
             // proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-            // firebaseCrashlytics {
-            //     nativeSymbolUploadEnabled true
-            // }
+
         }
         releaseE2E {
             initWith release
@@ -235,10 +236,10 @@ dependencies {
 
     // // Declare the dependencies for the Crashlytics and Analytics libraries
     // // When using the BoM, you don't specify versions in Firebase library dependencies
-    // implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
 
-    implementation 'androidx.multidex:multidex:2.0.1'
+    // implementation 'androidx.multidex:multidex:2.0.1'
 
     implementation project(':lottie-react-native')
     implementation project(':react-native-maps')

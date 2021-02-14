@@ -1620,6 +1620,11 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/masked-view/-/masked-view-0.1.10.tgz#5dda643e19e587793bc2034dd9bf7398ad43d401"
   integrity sha512-rk4sWFsmtOw8oyx8SD3KSvawwaK7gRBSEIy2TAwURyGt+3TizssXP1r8nx3zY+R7v2vYYHXZ+k2/GULAT/bcaQ==
 
+"@react-native-firebase/analytics@^10.8.0":
+  version "10.8.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/analytics/-/analytics-10.8.0.tgz#38916b9aea07d5fda8504e97e29eb8d33fbd2228"
+  integrity sha512-Vf28RvSKpVDvCFJUsoxtHFUfrjYtx0jkZv/OZ8yHUTQxXKzpGPDDNdDTqIt3n4i/rhPMEUBrHQoy4caHvFUTfA==
+
 "@react-native-firebase/app@^10.8.0":
   version "10.8.0"
   resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-10.8.0.tgz#130dd841183d45ff378e6aab2b6e89a30d7c499d"
@@ -1634,11 +1639,6 @@
   integrity sha512-YpnP+ROOMrnpbc9nV7NX0pt+4sJv2ORQja6G958YLWHRONWvCuEgQT2ELfmIkfPBgrc8MVXztzmOLcL2InbfTg==
   dependencies:
     stacktrace-js "^2.0.0"
-
-"@react-native-firebase/messaging@^10.8.0":
-  version "10.8.0"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-10.8.0.tgz#b306eba8f9c5bd1de153553d65abb23039892230"
-  integrity sha512-93xjjUhp61wIVADONX51Gry4k4luaENrsnbYjwxoUnWcG5vxHIAwPbeXwWIfEs1/oiv7vvXScc11WjE95LLfiw==
 
 "@react-native-picker/picker@^1.8.3", "@react-native-picker/picker@^1.9.4":
   version "1.9.11"
