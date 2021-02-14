@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>575219363673-s6vgs4odqa3rtgg37s1r3p1ekbukhrjr.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.575219363673-s6vgs4odqa3rtgg37s1r3p1ekbukhrjr</string>
+	<key>API_KEY</key>
+	<string>AIzaSyASehP5Edg6sH28Jvyd1b8ZCk4680zVKdY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>575219363673</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>th.co.cargolink.mobile</string>
+	<key>PROJECT_ID</key>
+	<string>cargo-link-mobile</string>
+	<key>STORAGE_BUCKET</key>
+	<string>cargo-link-mobile.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:575219363673:ios:ec1599b72966cfe465a648</string>
+</dict>
+</plist>
