@@ -18,6 +18,7 @@ import FavoriteTruckStore from '../../store/shipper-truck-store/favorite-truck-s
 import { MapTruckImageName } from '../../utils/map-truck-image-name';
 import { GetTruckType } from '../../utils/get-truck-type';
 import { useStores } from "../../models/root-store/root-store-context";
+import analytics from '@react-native-firebase/analytics';
 
 const width = Dimensions.get('window').width
 

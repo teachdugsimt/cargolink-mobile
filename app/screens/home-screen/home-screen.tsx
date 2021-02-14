@@ -128,7 +128,11 @@ export const HomeScreen = observer((props) => {
         },
         img: images.truck1
       },
-      { id: 2, name: "homeScreen.findJob", onPressButton: () => navigation.navigate("searchJob"), img: images.pinbox }]
+      {
+        id: 2, name: "homeScreen.findJob", onPressButton: () => {
+          navigation.navigate("searchJob")
+        }, img: images.pinbox
+      }]
     },
     {
       title: "homeScreen.shippers",
@@ -142,7 +146,11 @@ export const HomeScreen = observer((props) => {
         },
         img: images.sheet1
       },
-      { id: 4, name: "homeScreen.findCar", onPressButton: () => navigation.navigate("searchTruck"), img: images.word1 }]
+      {
+        id: 4, name: "homeScreen.findCar", onPressButton: () => {
+          navigation.navigate("searchTruck")
+        }, img: images.word1
+      }]
     }
   ]
 
@@ -161,7 +169,8 @@ export const HomeScreen = observer((props) => {
         </View>
         <View style={BOTTOM_VIEW}>
           <View style={VIEW_GRID_BOX}>
-            {swipe ? <GridView data={dataTest} /> : <GridView data={dataTest} />}
+            {/* {swipe ? <GridView data={dataTest} /> : <GridView data={dataTest} />} */}
+            <GridView data={dataTest} />
           </View>
         </View>
 
