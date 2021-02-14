@@ -25,6 +25,8 @@ import {
   useNavigationPersistence,
 } from "./navigation"
 import { RootStore, RootStoreProvider, setupRootStore } from "./models"
+import { Linking } from 'react-native';
+import VersionCheck from 'react-native-version-check';
 // import crashlytics from '@react-native-firebase/crashlytics';
 
 // This puts screens in a native ViewController or Activity. If you want fully native
@@ -55,7 +57,8 @@ function App(props: any) {
       setupRootStore().then(setRootStore)
     })()
     SplashScreen.hide()
-    // crashlytics().log('iOS App mounted.')
+    // crashlytics().crash()
+    // crashlytics().log('App mounted.')
   }, [])
 
   // Before we show the app, we have to wait for our state to be ready.
@@ -65,6 +68,29 @@ function App(props: any) {
   if (!rootStore) return null
 
   console.log("App js props : ", props)
+
+
+  console.log(VersionCheck.getPackageName());        // com.reactnative.app
+  console.log(VersionCheck.getCurrentBuildNumber()); // 10
+  console.log(VersionCheck.getCurrentVersion());     // 0.1.1
+  // VersionCheck.getAppStoreUrl({
+  //   appID: "1526170990"
+  // }).then(e => {
+  //   console.log(e)
+  // })
+
+  VersionCheck.needUpdate({
+    forceUpdate: true,
+  }).then(async res => {
+    console.log('Latest Version', res)
+    console.log(res.isNeeded);    // true
+    if (res.isNeeded) {
+      Linking.openURL(res.storeUrl);  // open store if update is needed.
+    }
+  }).catch(async err => {
+    console.log(err)
+  });
+
 
   // otherwise, we're ready to render the app
   return (

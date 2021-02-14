@@ -111,6 +111,7 @@
     "react-native-svg": "^12.1.0",
     "react-native-tab-view": "^2.15.2",
     "react-native-vector-icons": "^7.1.0",
+    "react-native-version-check": "^3.4.2",
     "reactotron-mst": "^3.1.1",
     "reactotron-react-native": "^5.0.0",
     "sprintf-js": "^1.1.2",
