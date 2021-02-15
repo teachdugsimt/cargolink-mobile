@@ -4,7 +4,7 @@ import {
   SafeAreaView, Dimensions, Image, ImageStyle, Alert, Platform, PermissionsAndroid
 } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Text, TextInputTheme, RoundedButton } from "../../components"
+import { Text, TextInputTheme, RoundedButton, ModalLoading } from "../../components"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { useForm, Controller } from "react-hook-form";
@@ -14,6 +14,8 @@ import { Modal } from 'react-native-modals';
 import { ScrollView } from "react-native-gesture-handler"
 import ProfileStore from '../../store/profile-store/profile-store'
 import { useStores } from "../../models/root-store/root-store-context";
+import { AlertMessage } from "../../utils/alert-form";
+import { translate } from "../../i18n"
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -255,6 +257,14 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
     }
   }, [])
 
+  useEffect(() => {
+    let tmp_update = JSON.parse(JSON.stringify(ProfileStore.data_update_profile))
+    if (tmp_update && tmp_update != null) {
+      AlertMessage(translate('common.successTransaction'), translate('common.updateSuccess'))
+      ProfileStore.clearUpdateData('data_update_profile')
+    }
+  }, [ProfileStore.data_update_profile])
+
 
   let formControllerValue = control.getValues()
   __DEV__ && console.tron.logImportant("Form in render :: ", formControllerValue)
@@ -270,6 +280,10 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
             <Text tx={"profileScreen.fullSuggestText"} style={[COLOR_LINE, PADDING_VERTICAL]} />
           </View>
         </View>
+
+        <ModalLoading
+          containerStyle={{ zIndex: 2 }}
+          size={'large'} color={color.primary} visible={ProfileStore.loading_update_profile} />
 
         <Modal
           visible={selectCapture}

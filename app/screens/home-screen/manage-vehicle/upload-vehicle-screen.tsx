@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import {
   View, ViewStyle, TextStyle,
   ScrollView, Switch, Dimensions, Platform, Alert, ImageStyle, PermissionsAndroid,
-  SafeAreaView, SectionList, Image, TouchableOpacity
+  SafeAreaView, Image, TouchableOpacity
 } from "react-native"
 import { useForm, Controller } from "react-hook-form";
 import { observer } from "mobx-react-lite"
@@ -11,8 +11,6 @@ import {
   ModalTruckType, NormalDropdown
 } from "../../../components"
 import { spacing, color, typography, images } from "../../../theme"
-
-import RNPickerSelect from 'react-native-picker-select';
 import { translate } from "../../../i18n"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import CreateVehicleStore from '../../../store/my-vehicle-store/create-vehicle-store'
@@ -27,6 +25,7 @@ import UploadFileStore from '../../../store/my-vehicle-store/upload-file-store'
 import AddressStore from '../../../store/my-vehicle-store/address-store'
 import { Modal, ModalContent } from 'react-native-modals';
 import { useStores } from "../../../models/root-store/root-store-context";
+import { FlatList } from "react-native-gesture-handler";
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -39,6 +38,7 @@ const SAFE_AREA_MODAL: ViewStyle = {
   ...WIDTH_WITH_MARGIN,
   height: 100
 }
+const ALIGN_CENTER: ViewStyle = { alignItems: 'center' }
 const CONTAINER_MODAL: ViewStyle = {
   ...FULL,
   ...WIDTH_WITH_MARGIN
@@ -52,17 +52,19 @@ const BUTTON_MODAL1: ViewStyle = {
   ...BORDER_MODAL_BUTTON,
   height: 50,
   justifyContent: 'center',
-  alignItems: 'center',
+  ...ALIGN_CENTER,
 }
 const BUTTON_MODAL2: ViewStyle = {
   ...WIDTH_WITH_MARGIN,
   height: 50,
   justifyContent: 'center',
-  alignItems: 'center',
+  ...ALIGN_CENTER,
 }
 const TEXT_MODAL_BUTTON: TextStyle = {
   color: color.black, paddingLeft: 20
 }
+const PADDING_TOP_10: ViewStyle = { paddingTop: 10 }
+const PADDING_TOP_5: ViewStyle = { paddingTop: 5 }
 
 const PADDING_LEFT5: TextStyle = {
   paddingLeft: 5
@@ -82,6 +84,7 @@ const ALIGN_RIGHT: TextStyle = {
   alignSelf: 'flex-end',
   color: color.line
 }
+const PRIMARY_COLOR: TextStyle = { color: color.primary }
 const MARGIN_TOP_BIG: ViewStyle = { marginTop: 10 }
 const MARGIN_TOP_MEDIUM: ViewStyle = { marginTop: 15 }
 const MARGIN_TOP_EXTRA: ViewStyle = { marginTop: 20 }
@@ -134,9 +137,6 @@ const WRAP_DROPDOWN: ViewStyle = {
   flex: 1, borderColor: color.line, borderWidth: 1, padding: Platform.OS == "ios" ? 7.5 : 0,
   borderRadius: 2.5
 }
-const DROPDOWN_ICON_CONTAINER: ViewStyle = {
-  paddingTop: 12.5, paddingRight: 5
-}
 const PLACEHOLDER_IMAGE: ImageStyle = {
   width: 50, height: 75
 }
@@ -151,7 +151,6 @@ const ADD_DROPDOWN_REGION: ViewStyle = {
   alignSelf: 'flex-end',
   paddingLeft: 10,
   justifyContent: 'center', height: 40,
-  // paddingTop: Platform.OS == "ios" ? 8 : 12
 }
 
 const WRAPPER_REGION_DROPDOWN: ViewStyle = {
@@ -185,8 +184,8 @@ const BORDER_BOTTOM: ViewStyle = {
   flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
   borderBottomWidth: 1, borderBottomColor: color.line, marginHorizontal: 10,
 }
+const UPLOAD_IMG_STY: ViewStyle = { padding: 5, minHeight: 120 }
 const IMAGE_LIST: ImageStyle = {
-  // width: 50, height: 50,
   backgroundColor: color.line, padding: 10,
   resizeMode: "cover",
   aspectRatio: 2 / 2,
@@ -211,7 +210,6 @@ export const UploadVehicleScreen = observer((props) => {
   useEffect(() => {
 
     AddressStore.getRegion(i18n.locale)
-    // AddressStore.getProvince(i18n.locale)
     versatileStore.find()
 
 
@@ -704,6 +702,8 @@ export const UploadVehicleScreen = observer((props) => {
 
     let initData = JSON.parse(JSON.stringify(MyVehicleStore.data))
     let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
+    if (!editStatus) navigation.goBack()
+
     if (editStatus && editStatus == "edit") {
       settoggleDump(initData.tipper)
       if (initData.truckPhotos) {
@@ -1089,8 +1089,8 @@ export const UploadVehicleScreen = observer((props) => {
                   onPress={() => _chooseFile('front')}
                   viewImageStyle={Object.keys(fileFront).length ? MARGIN_TOP_EXTRA : MARGIN_TOP_MEDIUM}
                   tx={Object.keys(fileFront).length ? '' : "uploadVehicleScreen.exampleImageFront"}
-                  txStyle={Object.keys(fileFront).length ? {} : { paddingTop: 5 }}
-                  uploadStyle={{ padding: 5, minHeight: 120 }}
+                  txStyle={Object.keys(fileFront).length ? {} : { ...PADDING_TOP_5 }}
+                  uploadStyle={UPLOAD_IMG_STY}
                   source={Object.keys(fileFront).length ? fileFront : images.addTruck2B}
                   imageStyle={Object.keys(fileFront).length ? {} : PLACEHOLDER_IMAGE} />
                 <UploadVehicle
@@ -1099,8 +1099,8 @@ export const UploadVehicleScreen = observer((props) => {
                   onPress={() => _chooseFile('back')}
                   viewImageStyle={Object.keys(fileBack).length ? MARGIN_TOP_EXTRA : MARGIN_TOP_MEDIUM}
                   tx={Object.keys(fileBack).length ? '' : "uploadVehicleScreen.exampleImageBack"}
-                  txStyle={Object.keys(fileBack).length ? {} : { paddingTop: 5 }}
-                  uploadStyle={{ padding: 5, minHeight: 120 }}
+                  txStyle={Object.keys(fileBack).length ? {} : { ...PADDING_TOP_5 }}
+                  uploadStyle={UPLOAD_IMG_STY}
                   source={Object.keys(fileBack).length ? fileBack : images.addTruck2F}
                   imageStyle={Object.keys(fileBack).length ? {} : PLACEHOLDER_IMAGE} />
               </View>
@@ -1111,8 +1111,8 @@ export const UploadVehicleScreen = observer((props) => {
                   onPress={() => _chooseFile('left')}
                   tx={Object.keys(fileLeft).length ? '' : "uploadVehicleScreen.exampleImageLeft"}
                   viewImageStyle={Object.keys(fileLeft).length ? MARGIN_TOP_EXTRA : {}}
-                  txStyle={Object.keys(fileLeft).length ? {} : { paddingTop: 5 }}
-                  uploadStyle={{ padding: 5, minHeight: 120 }}
+                  txStyle={Object.keys(fileLeft).length ? {} : { ...PADDING_TOP_5 }}
+                  uploadStyle={UPLOAD_IMG_STY}
                   source={Object.keys(fileLeft).length ? fileLeft : images.addTruck1}
                   imageStyle={Object.keys(fileLeft).length ? {} : PLACEHOLDER_IMAGE2} />
                 <UploadVehicle
@@ -1121,8 +1121,8 @@ export const UploadVehicleScreen = observer((props) => {
                   onPress={() => _chooseFile('right')}
                   tx={Object.keys(fileRight).length ? '' : "uploadVehicleScreen.exampleImageRight"}
                   viewImageStyle={Object.keys(fileRight).length ? MARGIN_TOP_EXTRA : {}}
-                  txStyle={Object.keys(fileRight).length ? {} : { paddingTop: 5 }}
-                  uploadStyle={{ padding: 5, minHeight: 120 }}
+                  txStyle={Object.keys(fileRight).length ? {} : { ...PADDING_TOP_5 }}
+                  uploadStyle={UPLOAD_IMG_STY}
                   source={Object.keys(fileRight).length ? fileRight : images.addTruck2}
                   imageStyle={Object.keys(fileRight).length ? {} : PLACEHOLDER_IMAGE2} />
               </View>
@@ -1134,7 +1134,7 @@ export const UploadVehicleScreen = observer((props) => {
 
         <View style={{ ...TOP_VIEW, ...MARGIN_TOP }}>
           <View style={WRAPPER_TOP}>
-            <Text tx={"uploadVehicleScreen.workZone"} style={TITLE_TOPIC}>Upload Vehicle 15151515</Text>
+            {/* <Text tx={"uploadVehicleScreen.workZone"} style={TITLE_TOPIC}>Upload Vehicle 15151515</Text> */}
 
 
 
@@ -1201,8 +1201,10 @@ export const UploadVehicleScreen = observer((props) => {
 
 
                   if (indexPro == index && valRegion[index] != 7) {
+                    let arrRegion = JSON.parse(JSON.stringify(AddressStore.region)) || []
+                    let objReg = arrRegion.find(e => e.value == formControllerValue[`controller-region-${index}`])
+                    let regionName = objReg ? `common.${objReg.label}` : ''
 
-                    // __DEV__ && console.tron.log("PROVINCE :: ", formControllerValue["controller-province-" + index])
                     return (<View style={{ ...WRAP_DROPDOWN, marginLeft: 5 }} key={'view-dropdown-province-' + index}>
 
 
@@ -1256,14 +1258,21 @@ export const UploadVehicleScreen = observer((props) => {
                                   </View>
 
                                   <View>
-                                    <SectionList
+                                    {/* <SectionList
                                       sections={list_province_popular ? list_province_popular : []}
                                       keyExtractor={(item, indexX) => 'section-list-' + item.name + indexX}
                                       renderItem={(data) => _renderSectionModalProvince(data.item, data.index, onChange, index)}
                                       renderSectionHeader={({ section: { title } }) => (
                                         <Text tx={title} style={PADDING_TOP} />
                                       )}
-                                    />
+                                    /> */}
+                                    {!!formControllerValue[`controller-region-${index}`] && !!AddressStore.region && <FlatList
+                                      ListHeaderComponent={<View style={[PADDING_TOP_10, ALIGN_CENTER]}><Text preset={'topic'} tx={regionName} style={PRIMARY_COLOR}></Text></View>}
+                                      ListFooterComponent={<View style={{ height: Platform.OS == 'ios' ? 100 : 20 }}></View>}
+                                      data={JSON.parse(JSON.stringify(AddressStore.province))}
+                                      keyExtractor={(item, indexX) => 'section-list-' + item.name + indexX}
+                                      renderItem={(data) => _renderSectionModalProvince(data.item, data.index, onChange, index)}
+                                    />}
                                   </View>
                                 </SafeAreaView>
 
