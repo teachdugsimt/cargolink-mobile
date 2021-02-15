@@ -57,7 +57,9 @@
     "new": "New",
     "done": "Done",
     "totalJobText": "*We enable users, both transporters and transporters, to post jobs or find cars if users can choose from the homepage. ",
-    "pleaseLogin": "please login before update profile"   
+    "pleaseLogin": "please login before update profile",
+    "successTransaction": "success transaction",
+    "updateSuccess": "update complete"
   },
   "commentScreen":{
     "yourComment": "Your Comment",
