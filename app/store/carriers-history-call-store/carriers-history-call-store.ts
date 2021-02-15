@@ -1,6 +1,7 @@
 import { types, flow, cast } from "mobx-state-tree"
 import { CarriersHistoryCallAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
+import * as storage from "../../utils/storage"
 
 const carriersHistoryCallApi = new CarriersHistoryCallAPI()
 
@@ -33,6 +34,11 @@ const History = types.model({
   weight: types.maybeNull(types.number)
 })
 
+const isAutenticated = async () => {
+  const profile = await storage.load('root')
+  return !!profile?.tokenStore?.token?.accessToken
+}
+
 const CarriersHistoryCallStore = types
   .model({
     list: types.array(History),
@@ -46,18 +52,22 @@ const CarriersHistoryCallStore = types
       yield carriersHistoryCallApi.setup()
       self.loading = true
       try {
-        const response = yield carriersHistoryCallApi.find(filter)
-
-        if (response.kind === 'ok') {
-          const data = response.data.map((history, index) => {
-            return {
-              id: (index + 1).toString(),
-              ...history,
-            }
-          })
-          self.list = data
+        if (!(yield isAutenticated())) {
+          self.list = cast([])
         } else {
-          self.error = response?.data?.message || response?.kind
+          const response = yield carriersHistoryCallApi.find(filter)
+
+          if (response.kind === 'ok') {
+            const data = response.data.map((history, index) => {
+              return {
+                id: (index + 1).toString(),
+                ...history,
+              }
+            })
+            self.list = data
+          } else {
+            self.error = response?.data?.message || response?.kind
+          }
         }
 
         self.loading = false
@@ -66,6 +76,7 @@ const CarriersHistoryCallStore = types
         self.loading = false
         self.error = "error fetch api get carriers history call"
       }
+
     }),
 
     add: flow(function* add(data: Types.CarriersHistoryCallAdd) {

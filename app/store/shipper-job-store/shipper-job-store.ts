@@ -132,6 +132,9 @@ const ShipperJobStore = types
       yield apiShipperJob.setup()
       self.loading = true
       try {
+        if (Object.keys(self.data).length) {
+          ShipperJobStore.setDefaultOfData()
+        }
         const response = yield apiShipperJob.findOne(id)
         console.log("Response call api get shipper job : : ", JSON.stringify(response))
         if (response.kind === 'ok') {

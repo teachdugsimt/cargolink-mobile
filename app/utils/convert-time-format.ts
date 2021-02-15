@@ -1,4 +1,5 @@
 import { translate } from "../i18n";
+import dateAndTime from 'date-and-time'
 
 export const ConverTimeFormat = (duration: number, format: 'HHmmssms' | 'HHmmss' | 'HHmm' | 'HH' | 'mmssms' | 'mmss' | 'mm' | 'ssms' | 'ss' | 'ms') => {
   const time = {
@@ -16,4 +17,14 @@ export const ConverTimeFormat = (duration: number, format: 'HHmmssms' | 'HHmmss'
   })
 
   return timeStr.trim()
+}
+
+export const convertTime12to24 = (date: string) => {
+  const pattern = dateAndTime.compile('DD-MM-YYYY HH:mm');
+  const tzoffset = (new Date(date)).getTimezoneOffset() * 60000;
+  // const localISOTime = (new Date(1613125980000 + (Math.abs(tzoffset)) * 2)).toISOString().slice(0, -1);
+  const localISOTime = (new Date(Date.parse(date) + Math.abs(tzoffset))).toISOString()
+  const dateWithTimeZone = dateAndTime.format(new Date(localISOTime), pattern);
+
+  return dateWithTimeZone
 }

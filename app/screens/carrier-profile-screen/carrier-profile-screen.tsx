@@ -360,9 +360,6 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
 
   const imageProps = CarriersJobStore.profile?.imageProps ? JSON.parse(CarriersJobStore.profile.imageProps) : ''
 
-  console.log('JSON.parse(JSON.stringify(ProfileStore.data_report_profile))', JSON.parse(JSON.stringify(ProfileStore.data_report_profile)))
-  console.log('JSON.parse(JSON.stringify(UserJobStore.list))', JSON.parse(JSON.stringify(UserJobStore.list)))
-
   const profile = ProfileStore.data_report_profile
   const truckCountAll = profile?.trucks.reduce((curr, next) => (curr + next.total), 0) || 0
 

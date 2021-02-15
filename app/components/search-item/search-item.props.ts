@@ -56,5 +56,5 @@ export interface SearchItemProps {
 
   onToggleHeart?: (data: object) => void
 
-  onPress?: (data: object) => void
+  onPress?: () => void
 }
