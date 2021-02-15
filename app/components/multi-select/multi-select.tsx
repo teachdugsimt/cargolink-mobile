@@ -7,15 +7,17 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { color } from "../../theme"
 
 const { width, height } = Dimensions.get("window")
-let multiSelect
 export const MultiSelector = (props) => {
+  let multiSelect
   const { onSelectedItemsChange, items, searchIcon, selectText, selectedItems,
     searchInputPlaceholderText, uniqueKey, ...rest } = props
+
+    __DEV__ && console.tron.log("multi select data :: ", multiSelect)
 
   return (
     <MultiSelect
       {...rest}
-      // ref={(component) => multiSelect = component}
+      ref={(component) => multiSelect = component}
       // key={keyer}
       hideTags
       items={items}
