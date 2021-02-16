@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { View, ViewStyle, TouchableOpacity, Image, ImageStyle, Dimensions, Platform, Linking, Alert } from "react-native"
+import { View, ViewStyle, TouchableOpacity, Image, ImageStyle, Dimensions, Platform, Linking, Alert, Animated } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
 import { images, color, spacing } from '../../theme'
@@ -17,8 +17,10 @@ const FULL: ViewStyle = { flex: 1 }
 const ROW: ViewStyle = { flexDirection: 'row' }
 const ALL_CENTER: ViewStyle = { justifyContent: 'center', alignItems: Platform.OS == "android" ? 'flex-start' : 'center' }
 
+const backgrounTopHeight = 160
+
 const TOP_VIEW: ViewStyle = {
-  height: 160,
+  height: backgrounTopHeight,
   backgroundColor: color.mainTheme,
   borderBottomLeftRadius: 20,
   borderBottomRightRadius: 20,
@@ -149,16 +151,48 @@ export const HomeScreen = observer((props) => {
   __DEV__ && console.tron.log("List (render) home screen :: ", versatileStore.list)
   __DEV__ && console.tron.log("List Group (render) home screen :: ", versatileStore.listGroup)
 
+  const [topBackgroundValue] = useState(new Animated.Value(-backgrounTopHeight))
+  const [leftValue] = useState(new Animated.Value(-(width / 2)))
+  const [rightValue] = useState(new Animated.Value(width / 2))
+
+  useEffect(() => {
+    Animated.timing(topBackgroundValue, {
+      toValue: 0,
+      duration: 600,
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      console.log('finished', finished)
+    })
+    Animated.timing(leftValue, {
+      toValue: 0,
+      duration: 600,
+      useNativeDriver: true,
+    }).start()
+    Animated.timing(rightValue, {
+      toValue: 0,
+      duration: 600,
+      useNativeDriver: true,
+    }).start()
+  }, [])
+
 
   return (
     <>
       <View testID="HomeScreen" style={ROOT_HOME}>
-        <View style={TOP_VIEW}>
-          {/* <View style={IMG_VIEW}> */}
+        {/* <View style={TOP_VIEW}>
           <Image style={IMAGE_LOGO} width={width / 1.5} height={width / 3.24}
             resizeMode='stretch'
             source={images.logoNew} />
-        </View>
+        </View> */}
+        <Animated.View style={[TOP_VIEW, {
+          transform: [{
+            translateY: topBackgroundValue
+          }]
+        }]}>
+          <Image style={IMAGE_LOGO} width={width / 1.5} height={width / 3.24}
+            resizeMode='stretch'
+            source={images.logoNew} />
+        </Animated.View>
         <View style={BOTTOM_VIEW}>
           <View style={VIEW_GRID_BOX}>
             {swipe ? <GridView data={dataTest} /> : <GridView data={dataTest} />}
@@ -168,22 +202,25 @@ export const HomeScreen = observer((props) => {
 
         <View style={CONTACT_VIEW}>
           <View style={[ROW, ALL_CENTER, FULL]}>
-            <TouchableOpacity style={VIEW_ICON} onPress={() => Linking.openURL(versatileStore.fblink)}>
-              <FontIcon name={"facebook"} size={24} />
-            </TouchableOpacity>
+            <Animated.View style={{ transform: [{ translateX: leftValue }] }} >
+              <TouchableOpacity style={VIEW_ICON} onPress={() => Linking.openURL(versatileStore.fblink)}>
+                <FontIcon name={"facebook"} size={24} />
+              </TouchableOpacity>
+            </Animated.View>
             {/* <TouchableOpacity style={VIEW_ICON} onPress={() => console.log("LINE PRESS")}>
               <FontIcon name={"line"} size={24} />
             </TouchableOpacity> */}
-            <TouchableOpacity style={VIEW_ICON} onPress={() => onCall(versatileStore.phoneNumber)}>
-              <Ionicons name={"call"} size={22} />
-            </TouchableOpacity>
+            <Animated.View style={{ transform: [{ translateX: rightValue }] }} >
+              <TouchableOpacity style={VIEW_ICON} onPress={() => onCall(versatileStore.phoneNumber)}>
+                <Ionicons name={"call"} size={22} />
+              </TouchableOpacity>
+            </Animated.View>
           </View>
         </View>
 
         {/* <TouchableOpacity onPress={() => navigation.navigate("comment")}>
           <Text>Click Me!!</Text>
         </TouchableOpacity> */}
-
 
       </View>
     </>

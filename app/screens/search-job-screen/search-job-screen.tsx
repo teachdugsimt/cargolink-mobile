@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite';
-import { FlatList, ImageProps, RefreshControl, TextStyle, View, ViewStyle } from 'react-native';
+import { ActivityIndicator, FlatList, ImageProps, RefreshControl, TextStyle, View, ViewStyle } from 'react-native';
 import { AdvanceSearchTab, EmptyListMessage, ModalLoading, SearchBar, Text } from '../../components';
 import { color, spacing, images as imageComponent, images } from '../../theme';
 import { SearchItem } from '../../components/search-item/search-item';
@@ -330,7 +330,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
             renderItem={renderItem}
             keyExtractor={item => item.id}
             onEndReached={onScrollList}
-            onEndReachedThreshold={0.1}
+            onEndReachedThreshold={0.4}
             contentContainerStyle={{ flexGrow: 1 }}
             ListEmptyComponent={<EmptyListMessage />}
             onMomentumScrollBegin={() => setOnEndReachedCalledDuringMomentum(false)}

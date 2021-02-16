@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import { View, TouchableOpacity, Platform, SafeAreaView, Dimensions, Animated, ViewStyle } from 'react-native';
+import { View, TouchableOpacity, Platform, SafeAreaView, Animated, ViewStyle } from 'react-native';
 import Icon22 from 'react-native-vector-icons/Ionicons'
 import { color, spacing } from '../../theme';
 import { Text } from '../text/text';
+import ProfileStore from '../../store/profile-store/profile-store'
 
 const CONTAINER: ViewStyle = {
   flexDirection: 'row',
@@ -23,6 +24,19 @@ const ROOT_ICON: ViewStyle = {
   overflow: 'hidden',
   borderColor: color.backgroundWhite,
   // borderColor: '#f2f2f2',
+}
+const DOT: ViewStyle = {
+  position: 'absolute',
+  right: 0,
+  width: 6,
+  height: 6,
+  borderRadius: 3,
+  backgroundColor: color.red,
+}
+const FLOAT_DOT: ViewStyle = {
+  position: 'absolute',
+  top: -16,
+  right: 0,
 }
 
 const Icon = ({ routeName, focused, color }) => {
@@ -129,7 +143,7 @@ export const BottomTabNavigation = ({ state, descriptors, navigation }) => {
             activeOpacity={1}
           >
             {isFocused ? (
-              <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+              <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1, position: 'relative' }}>
                 <Animated.View style={[ROOT_ICON, {
                   backgroundColor: color.primary,
                   transform: [{
@@ -138,12 +152,20 @@ export const BottomTabNavigation = ({ state, descriptors, navigation }) => {
                 }]}>
                   <Icon routeName={route.name} focused={isFocused} color={isFocused ? color.textWhite : color.line} />
                 </Animated.View>
+                {route.name === 'Profile' && !ProfileStore.data?.fullName && (<Animated.View style={[FLOAT_DOT, {
+                  transform: [{
+                    translateY: bottomValue
+                  }],
+                }]}>
+                  <View style={DOT} />
+                </Animated.View>)}
                 <View style={{ flex: 1, justifyContent: 'flex-end' }}>
                   <Text text={label} style={{ color: isColor }} preset={'small'} />
                 </View>
               </View>
             ) : (
-                <View style={{ alignItems: 'center' }}>
+                <View style={{ alignItems: 'center', position: 'relative' }}>
+                  {route.name === 'Profile' && !ProfileStore.data?.fullName && <View style={DOT} />}
                   <Icon routeName={route.name} focused={isFocused} color={isColor} />
                   <Text text={label} style={{ color: isColor }} preset={'small'} />
                 </View>
