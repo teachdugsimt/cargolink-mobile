@@ -14,6 +14,7 @@ import {
   TextStyle,
   View,
   ViewStyle,
+  // TouchableOpacity
 } from "react-native"
 import { Button, ModalLoading, PostingBy, Text } from "../../components"
 import { translate } from "../../i18n"
@@ -338,7 +339,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
                 transformImage.map((image, index) => {
                   // __DEV__ && console.tron.log("Image index : ", image)
                   return (
-                    <TouchableOpacity style={TOUCHABLE} key={index} onPress={(attr) => {
+                    <TouchableOpacity style={TOUCHABLE} key={index} onPress={() => {
                       if (ShipperTruckStore.data.id && image && image.source && image.source != 51)
                         onViewer(index)
                     }

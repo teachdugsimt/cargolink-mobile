@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { View, TouchableOpacity, Platform, SafeAreaView, Animated, ViewStyle } from 'react-native';
 import Icon22 from 'react-native-vector-icons/Ionicons'
 import { color, spacing } from '../../theme';
 import { Text } from '../text/text';
 import ProfileStore from '../../store/profile-store/profile-store'
 import { useStores } from "../../models/root-store/root-store-context";
+import { useFocusEffect } from '@react-navigation/native';
 
 const CONTAINER: ViewStyle = {
   flexDirection: 'row',
@@ -70,8 +71,16 @@ export const BottomTabNavigation = ({ state, descriptors, navigation }) => {
   const focusedOptions = descriptors[state.routes[state.index].key].options;
 
   const [bottomValue] = useState(new Animated.Value(0))
+  const [clearRedDot, setClearRedDot] = useState<boolean>(false)
 
   const { tokenStore } = useStores()
+
+  useFocusEffect(
+    useCallback(() => {
+      // setClearRedDot(true)
+      console.log('useFocusEffect -> useCallback')
+    }, [])
+  );
 
   const onMoveUp = () => {
     Animated.timing(bottomValue, {
@@ -96,11 +105,6 @@ export const BottomTabNavigation = ({ state, descriptors, navigation }) => {
   if (focusedOptions.tabBarVisible === false) {
     return null;
   }
-
-  console.log('ProfileStore.loading', ProfileStore.loading)
-  console.log('ProfileStore.data?.fullName', ProfileStore.data?.fullName)
-  console.log('!!(ProfileStore.data?.fullName && ProfileStore.loading)', !!(ProfileStore.data?.fullName && ProfileStore.loading))
-  console.log('!!(!ProfileStore.data?.fullName && !ProfileStore.loading)', !!(!ProfileStore.data?.fullName && !ProfileStore.loading))
 
   return (
     <SafeAreaView style={CONTAINER}>
@@ -138,7 +142,12 @@ export const BottomTabNavigation = ({ state, descriptors, navigation }) => {
 
         const isColor = isFocused ? color.primary : color.line
 
-        const showRedDot = route.name === 'Profile' && !!(!!!ProfileStore?.data?.fullName && !ProfileStore.loading) && !!tokenStore?.token?.accessToken
+        const showRedDot = route.name === 'Profile'
+          && tokenStore.token
+          && tokenStore.token.accessToken
+          && !ProfileStore.loading
+          && ProfileStore.data
+          && !ProfileStore.data.fullName
 
         return (
           <TouchableOpacity
