@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite';
-import { ActivityIndicator, FlatList, ImageProps, RefreshControl, TextStyle, View, ViewStyle } from 'react-native';
-import { AdvanceSearchTab, EmptyListMessage, ModalLoading, SearchBar, Text } from '../../components';
-import { color, spacing, images as imageComponent, images } from '../../theme';
+import { FlatList, ImageProps, RefreshControl, View, ViewStyle } from 'react-native';
+import { AdvanceSearchTab, EmptyListMessage, SearchBar } from '../../components';
+import { spacing, images as imageComponent } from '../../theme';
 import { SearchItem } from '../../components/search-item/search-item';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { translate } from '../../i18n';

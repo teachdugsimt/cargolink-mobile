@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, TouchableOpacity, Platform, SafeAreaView, Animated, ViewStyle } from 'react-native';
 import Icon22 from 'react-native-vector-icons/Ionicons'
 import { color, spacing } from '../../theme';
 import { Text } from '../text/text';
 import ProfileStore from '../../store/profile-store/profile-store'
+import { useStores } from "../../models/root-store/root-store-context";
 
 const CONTAINER: ViewStyle = {
   flexDirection: 'row',
@@ -70,6 +71,8 @@ export const BottomTabNavigation = ({ state, descriptors, navigation }) => {
 
   const [bottomValue] = useState(new Animated.Value(0))
 
+  const { tokenStore } = useStores()
+
   const onMoveUp = () => {
     Animated.timing(bottomValue, {
       toValue: -5,
@@ -93,6 +96,11 @@ export const BottomTabNavigation = ({ state, descriptors, navigation }) => {
   if (focusedOptions.tabBarVisible === false) {
     return null;
   }
+
+  console.log('ProfileStore.loading', ProfileStore.loading)
+  console.log('ProfileStore.data?.fullName', ProfileStore.data?.fullName)
+  console.log('!!(ProfileStore.data?.fullName && ProfileStore.loading)', !!(ProfileStore.data?.fullName && ProfileStore.loading))
+  console.log('!!(!ProfileStore.data?.fullName && !ProfileStore.loading)', !!(!ProfileStore.data?.fullName && !ProfileStore.loading))
 
   return (
     <SafeAreaView style={CONTAINER}>
@@ -130,6 +138,8 @@ export const BottomTabNavigation = ({ state, descriptors, navigation }) => {
 
         const isColor = isFocused ? color.primary : color.line
 
+        const showRedDot = route.name === 'Profile' && !!(!!!ProfileStore?.data?.fullName && !ProfileStore.loading) && !!tokenStore?.token?.accessToken
+
         return (
           <TouchableOpacity
             accessibilityRole="button"
@@ -152,7 +162,7 @@ export const BottomTabNavigation = ({ state, descriptors, navigation }) => {
                 }]}>
                   <Icon routeName={route.name} focused={isFocused} color={isFocused ? color.textWhite : color.line} />
                 </Animated.View>
-                {route.name === 'Profile' && !ProfileStore.data?.fullName && (<Animated.View style={[FLOAT_DOT, {
+                {showRedDot && (<Animated.View style={[FLOAT_DOT, {
                   transform: [{
                     translateY: bottomValue
                   }],
@@ -165,7 +175,7 @@ export const BottomTabNavigation = ({ state, descriptors, navigation }) => {
               </View>
             ) : (
                 <View style={{ alignItems: 'center', position: 'relative' }}>
-                  {route.name === 'Profile' && !ProfileStore.data?.fullName && <View style={DOT} />}
+                  {showRedDot && <View style={DOT} />}
                   <Icon routeName={route.name} focused={isFocused} color={isColor} />
                   <Text text={label} style={{ color: isColor }} preset={'small'} />
                 </View>

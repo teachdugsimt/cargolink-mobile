@@ -51,6 +51,7 @@ const VIEW_ICON: ViewStyle = { borderRadius: 20, height: 40, width: 40, justifyC
 const CONTACT_VIEW: ViewStyle = { flex: Platform.OS == "android" ? 0.5 : 0.6 }
 export const HomeScreen = observer((props) => {
   const { tokenStore, versatileStore } = useStores()
+  const [isName, setIsName] = useState<boolean>(false)
 
   const navigation = useNavigation()
   const [visible, setvisible] = useState(false)
@@ -95,6 +96,12 @@ export const HomeScreen = observer((props) => {
       ProductTypeStore.setList(JSON.parse(JSON.stringify(versatileStore.listProductType)))
     }
   }, [JSON.stringify(versatileStore.listProductType)])
+
+  useEffect(() => {
+    if (ProfileStore.data) {
+      navigation.navigate('home')
+    }
+  }, [ProfileStore.data])
 
   const onCall = (phone: string) => {
     let phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
