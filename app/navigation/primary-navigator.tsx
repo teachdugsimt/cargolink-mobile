@@ -40,7 +40,7 @@ export function PrimaryNavigator() {
         gestureEnabled: true,
         stackAnimation: 'slide_from_right',
       }}
-      initialRouteName={'home'}
+      // initialRouteName={'home'}
     >
       <Stack.Screen name="signin" component={SigninScreen} />
       <Stack.Screen name="confirmCode" component={ConfirmCodeScreen} />
@@ -59,5 +59,5 @@ export function PrimaryNavigator() {
  *
  * `canExit` is used in ./app/app.tsx in the `useBackButtonHandler` hook.
  */
-const exitRoutes = ["welcome", 'signin']
+const exitRoutes = ["welcome"]
 export const canExit = (routeName: string) => exitRoutes.includes(routeName)
