@@ -246,6 +246,10 @@ const ShipperJobStore = types
 
     setDefaultOfList: function setDefaultOfList() {
       self.list = cast([])
+    },
+    clearDataByName(name) {
+      // __DEV__ && console.tron.log('types of list :: ', typeof self[name]) // list => object 
+      self[name] = []
     }
   }))
   .views((self) => ({

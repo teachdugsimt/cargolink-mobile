@@ -368,6 +368,14 @@ export const ProfileScreen = observer(function ProfileScreen() {
     return <Text preset="default" style={PADDING_LEFT_SMALL} tx={text ? '' : 'profileScreen.nophone'}>{text || ''}</Text>
   }
 
+  const _onPressEmpty = (link) => {
+
+    let token = tokenStore?.token?.accessToken || null
+    if (token)
+      navigation.navigate('Home', { screen: link })
+    else navigation.navigate("signin")
+  }
+
   const _renderEmptyList = (s1, s2, s3, link) => {
     return <View style={EMPTY_VIEW}>
       <View>
@@ -377,7 +385,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
         <Text tx={s2} />
       </View>
 
-      <TouchableOpacity style={{ paddingTop: 20 }} onPress={() => navigation.navigate('Home', { screen: link })}>
+      <TouchableOpacity style={{ paddingTop: 20 }} onPress={() => _onPressEmpty(link)}>
         <Text tx={s3} preset={'topic'} style={{ color: color.primary }} />
       </TouchableOpacity>
     </View>
