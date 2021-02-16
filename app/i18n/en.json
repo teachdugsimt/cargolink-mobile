@@ -47,6 +47,7 @@
     "high": "Height Stall",
     "somethingWrong": "something went wrong",
     "pleaseCheckYourData": "please check your data",
+    "invalidEmail": "please check your email",
     "bookAJob": "Book a job",
     "HH": "Hr",
     "mm": "min",
@@ -186,7 +187,8 @@
     "pleaseSelectRegion": "please select region",
     "selectFromLibrary": "choose image from library",
     "captureNew": "camera",
-    "pleaseCheckRegistration": "please check registration number"
+    "pleaseCheckRegistration": "please check registration number",
+    "reqHeight": "please select vehicle height"
   },
   "profileScreen": {
     "nophone": "none specified",
