@@ -45,6 +45,7 @@ export function MyJobNavigator() {
 
   return (
     <Stack.Navigator
+      initialRouteName={"myjob"}
       screenOptions={{
         headerShown: true,
         gestureEnabled: true,
