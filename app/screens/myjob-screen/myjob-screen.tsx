@@ -12,10 +12,9 @@ import { useNavigation } from "@react-navigation/native"
 import { GetTruckType } from "../../utils/get-truck-type"
 import { translate } from "../../i18n"
 import { MapTruckImageName } from "../../utils/map-truck-image-name"
-import { useStores } from "../../models/root-store/root-store-context";
 import DateAndTime from 'date-and-time';
 import StatusStore from '../../store/post-job-store/job-status-store'
-
+import { useStores } from "../../models/root-store/root-store-context";
 const FULL: ViewStyle = { flex: 1 }
 const HEADER: ViewStyle = {
   flexDirection: 'row',
@@ -82,6 +81,7 @@ const Item = (data) => {
   } = JSON.parse(JSON.stringify(data))
 
   const navigation = useNavigation()
+  const { tokenStore } = useStores()
 
   const onVisible = () => {
     CarriersJobStore.findOne(id)
@@ -139,7 +139,9 @@ const Item = (data) => {
     PostJobStore.setJobId(id)
 
     StatusStore.setStatusScreen('edit')
-    navigation.navigate('MyJob', { screen: 'postjob' })
+    let token = tokenStore?.token?.accessToken || null
+    if (!token) navigation.navigate('signin')
+    else navigation.navigate('MyJob', { screen: 'postjob' })
   }
 
   const RenderBottom = () => (
