@@ -37,7 +37,7 @@ const RootStack = () => {
           gestureEnabled: true,
           // stackPresentation: "modal",
         }}
-        initialRouteName={"primaryStack"}
+        // initialRouteName={"primaryStack"}
       >
         <Stack.Screen
           name="primaryStack"
