@@ -154,7 +154,7 @@ const ProfileStore = types.model({
         self.loading_update_profile = false
       } else {
         self.loading_update_profile = false
-        self.error_update_profile = "error fetch updateProfiles"
+        self.error_update_profile = response?.data?.validMsgList?.email && response?.data?.validMsgList?.email[0] ? response.data.validMsgList.email[0] : "error to update profile"
       }
     } catch (error) {
       console.error("Failed to store value get profile : ", error)
@@ -197,7 +197,7 @@ const ProfileStore = types.model({
     self.data_update_profile = null
     self.data_upload_picture = null
   },
-  clearAllData(){
+  clearAllData() {
     self.data = null
     self.data_truck_summary = null
     self.data_update_profile = null

@@ -163,7 +163,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
         <HeaderRight onRightPress={() => _pressEditProfiel()} iconName={"ios-create-outline"} iconSize={24} iconColor={color.black} />
       ),
     });
-    ProfileStore.getProfileRequest()
+    // ProfileStore.getProfileRequest()
     ProfileStore.getTruckSummary()
   }, [])
 
