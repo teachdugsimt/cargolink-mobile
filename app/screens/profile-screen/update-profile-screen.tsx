@@ -4,7 +4,7 @@ import {
   SafeAreaView, Dimensions, Image, KeyboardAvoidingView, Alert, Platform, PermissionsAndroid
 } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Text, TextInputTheme, RoundedButton, ModalLoading } from "../../components"
+import { Text, TextInputTheme, RoundedButton, ModalLoading, Screen } from "../../components"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { useForm, Controller } from "react-hook-form";
@@ -282,7 +282,7 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
   __DEV__ && console.tron.logImportant("Profile Data :: ", tmp_profile)
   return (
     <View testID="UpdateProfileScreen" style={FULL}>
-      <KeyboardAvoidingView behavior={Platform.OS == "ios" ? 'padding' : 'padding'} keyboardVerticalOffset={Platform.OS == "ios" ? 10 : 0} style={{ flex: 1 }}>
+      <Screen preset={'scroll'} unsafe>
         <ScrollView style={FULL}>
           <View style={[PADDING_TOP_20, BACKGROUND_WHITE]}>
             <View style={VIEW_SUGGEST}>
@@ -427,7 +427,7 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
           </View>
 
         </ScrollView>
-      </KeyboardAvoidingView>
+      </Screen>
     </View>
   )
 })
