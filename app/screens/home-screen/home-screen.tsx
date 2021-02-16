@@ -5,6 +5,7 @@ import { observer } from "mobx-react-lite"
 import { images, color, spacing } from '../../theme'
 import { useStores } from "../../models/root-store/root-store-context";
 import { GridView } from '../../components/home-element/home-element'
+import { ModalLoading } from '../../components/'
 import MyVehicleStore from "../../store/my-vehicle-store/my-vehicle-store"
 import TruckTypeStore from "../../store/truck-type-store/truck-type-store"
 import ProductTypeStore from "../../store/product-type-store/product-type-store"
@@ -208,6 +209,11 @@ export const HomeScreen = observer((props) => {
           </View>
         </View>
 
+
+        <ModalLoading
+          containerStyle={{ zIndex: 2 }}
+          size={'large'} color={color.primary} visible={versatileStore.list_loading ||
+            versatileStore.list_group_loading || versatileStore.product_type_loading || ProfileStore.loading} />
 
         <View style={CONTACT_VIEW}>
           <View style={[ROW, ALL_CENTER, FULL]}>
