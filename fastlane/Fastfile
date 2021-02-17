@@ -1,12 +1,48 @@
 fastlane_version '2.53.1'
 
-package = load_json(json_path: "./package.json")
-
 before_all do
   ensure_git_branch
   ensure_git_status_clean
   git_pull
 end
+
+package = load_json(json_path: "./package.json")
+
+desc 'Android: Increment versionCode and set versionName to package.json version.'
+private_lane :inc_ver_and do
+  increment_version_code(
+    gradle_file_path: "./android/app/build.gradle"
+  )
+  build_number = android_get_version_code(
+    gradle_file: "./android/app/build.gradle" # optional
+  )
+
+  android_set_version_name(
+    gradle_file: "./android/app/build.gradle",
+    version_name: version
+  )
+end
+
+
+desc 'iOS: Increment build number and set the version to package.json version.'
+private_lane :inc_ver_ios do
+  increment_build_number(xcodeproj: './ios/CargoLinkMobile.xcodeproj')
+  build_number = get_build_number(xcodeproj: "./ios/CargoLinkMobile.xcodeproj")
+
+  increment_version_number(
+    xcodeproj: './ios/CargoLinkMobile.xcodeproj',
+    version_number: version
+  )
+  # version = get_version_number(xcodeproj: "./ios/CargoLinkMobile.xcodeproj", target: "CargoLinkMobile")
+end
+
+
+desc 'Bump build numbers, and set the version to match the pacakage.json version.'
+lane :bump do
+  inc_ver_ios
+  inc_ver_and
+end
+
 
 platform :ios do
   version = package['version']
@@ -20,14 +56,7 @@ platform :ios do
 
   desc 'Update version code and version number'
   lane :bump_version do
-    increment_build_number(xcodeproj: './ios/CargoLinkMobile.xcodeproj')
-    build_number = get_build_number(xcodeproj: "./ios/CargoLinkMobile.xcodeproj")
-    
-    increment_version_number(
-      xcodeproj: './ios/CargoLinkMobile.xcodeproj',
-      version_number: version
-    )
-    # version = get_version_number(xcodeproj: "./ios/CargoLinkMobile.xcodeproj", target: "CargoLinkMobile")
+
     
   end
 
@@ -60,17 +89,7 @@ platform :android do
 
   desc 'Update version code and version number'
   lane :bump_version do
-    increment_version_code(
-      gradle_file_path: "./android/app/build.gradle"
-    )
-    build_number = android_get_version_code(
-      gradle_file: "./android/app/build.gradle" # optional
-    )
-    
-    android_set_version_name(
-      gradle_file: "./android/app/build.gradle",
-      version_name: version
-    )
+
   end
 
   desc 'Build the Android application.'
