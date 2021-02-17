@@ -404,6 +404,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
       if (route.name === 'jobDetail') {
         CarriersJobStore.setDefaultOfProfile()
         CarriersJobStore.setDefaultOfData()
+        CarriersJobStore.updateFavoriteInList(FavoriteJobStore.id, FavoriteJobStore.liked)
       }
     }
   }, [])
@@ -644,13 +645,9 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
   const isLoaded = !!(CarriersJobStore.loading || CarriersJobStore.mapLoading)
 
-  console.log('CarriersJobStore.loading', CarriersJobStore.loading)
-  console.log('CarriersJobStore.mapLoading', CarriersJobStore.mapLoading)
-  console.log('isLoaded', isLoaded)
-
   return (
     <View style={CONTAINER}>
-      <ModalLoading size={'large'} color={color.primary} visible={isLoaded} />
+      {isLoaded && <ModalLoading size={'large'} color={color.primary} visible={isLoaded} />}
       <View style={MAP_CONTAINER}>
         {from && !!from.lat && !!from.lng && !!CarriersJobStore.directions.length &&
           <MapView

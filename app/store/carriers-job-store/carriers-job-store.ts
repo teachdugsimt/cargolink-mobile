@@ -291,7 +291,8 @@ const CarriersJobStore = types
     },
 
     setProfile: function setProfile(data) {
-      self.profile = JSON.parse(JSON.stringify(data))
+      // CarriersJobStore.setDefaultOfProfile()
+      // self.profile = JSON.parse(JSON.stringify(data))
     },
 
     setDefaultOfProfile: function setDefaultOfProfile() {

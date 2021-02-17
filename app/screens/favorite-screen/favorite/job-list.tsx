@@ -1,11 +1,11 @@
-import React, { ReactNode, useEffect, useState } from "react"
+import React, { ReactNode, useCallback, useEffect, useState } from "react"
 import { View, TextStyle, ImageProps, RefreshControl, FlatList } from "react-native"
 import { EmptyListMessage, SearchItem, Text } from "../../../components"
 import { color, spacing } from "../../../theme"
 import FavoriteJobStore from "../../../store/carriers-job-store/favorite-job-store"
 import { GetTruckType } from "../../../utils/get-truck-type"
 import { translate } from "../../../i18n"
-import { useNavigation } from "@react-navigation/native"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import { useStores } from "../../../models"
 import { observer } from "mobx-react-lite"
 import CarriersJobStore from "../../../store/carriers-job-store/carriers-job-store"
@@ -119,6 +119,18 @@ export const JobList = observer(function JobList() {
   const { versatileStore } = useStores()
   const [lang, setlang] = useState(null)
 
+  useFocusEffect(
+    useCallback(() => {
+      FavoriteJobStore.find();
+    }, [])
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      // console.log('re-render when on press heart')
+    }, [FavoriteJobStore.list.length])
+  );
+
   useEffect(() => {
     if (lang != versatileStore.language) {
       setlang(versatileStore.language)
@@ -131,9 +143,10 @@ export const JobList = observer(function JobList() {
     }
   }, [FavoriteJobStore.loading])
 
-  useEffect(() => {
-    // re-render when on press heart
-  }, [FavoriteJobStore.list.length])
+  // useEffect(() => {
+  //   console.log('re-render when on press heart')
+  //   // re-render when on press heart
+  // }, [FavoriteJobStore.list.length])
 
   const renderItem = ({ item }) => (
     <Item {...item} onToggleHeart={onToggleHeart} />
@@ -150,6 +163,7 @@ export const JobList = observer(function JobList() {
   }
 
   const onRefresh = () => {
+    console.log('onRefresh')
     FavoriteJobStore.find();
   }
 

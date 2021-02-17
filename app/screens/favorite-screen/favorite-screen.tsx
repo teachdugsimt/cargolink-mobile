@@ -64,14 +64,6 @@ const FavoriteRoute = () => {
 
   const [isActivitySwitch, setIsActivitySwitch] = useState<boolean>(false)
 
-  useEffect(() => {
-    if (!isActivitySwitch) {
-      FavoriteJobStore.find()
-    } else {
-      FavoriteTruckStore.find()
-    }
-  }, [isActivitySwitch])
-
   return (<View testID="FavoriteScreen" style={FULL}>
 
     <View style={ACTIVITY}>
@@ -99,6 +91,7 @@ export const FavoriteScreen = observer(function FavoriteScreen() {
 
   const { versatileStore } = useStores()
   const [lang, setlang] = useState(null)
+
   useEffect(() => {
     if (lang != versatileStore.language) {
       setlang(versatileStore.language)
@@ -137,10 +130,21 @@ export const FavoriteScreen = observer(function FavoriteScreen() {
     }
   }, [])
 
-  const renderScene = SceneMap({
-    favorite: () => <FavoriteRoute />,
-    historyCall: () => <HistoryCall />,
-  });
+  // const renderScene = SceneMap({
+  //   favorite: () => <FavoriteRoute />,
+  //   historyCall: () => <HistoryCall />,
+  // });
+
+  const renderScene = ({ route }) => {
+    switch (route.key) {
+      case 'favorite':
+        return <FavoriteRoute />;
+      case 'historyCall':
+        return <HistoryCall />;
+      default:
+        return null;
+    }
+  };
 
   const renderTabBar = props => (
     <TabBar
@@ -151,7 +155,7 @@ export const FavoriteScreen = observer(function FavoriteScreen() {
         <Text style={{ color: color.textBlack }} text={route.title} />
       )}
     />
-  );
+  )
 
   return (
     <TabView

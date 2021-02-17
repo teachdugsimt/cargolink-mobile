@@ -145,7 +145,7 @@ const Item = (data) => {
   const onToggleHeart = (data) => { // id, isLike
     if (tokenStore?.token?.accessToken) {
       FavoriteTruckStore.add(data.id)
-      ShipperTruckStore.updateFavoriteInList(data.id, data.isLike)
+      // ShipperTruckStore.updateFavoriteInList(data.id, data.isLike)
     } else {
       navigation.navigate('signin')
     }
@@ -320,7 +320,6 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
       const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), zoneIds }
       AdvanceSearchStore.setFilter(advSearch)
       ShipperTruckStore.find(advSearch)
-      console.log('ShipperTruckStore.find(advSearch)')
       // ShipperTruckStore.setDefaultOfList()
       PAGE = 0
     }
@@ -339,7 +338,6 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
       PAGE += 1
       const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE }
       ShipperTruckStore.find(advSearch)
-      console.log('onScrollList ShipperTruckStore.find(advSearch)')
       setOnEndReachedCalledDuringMomentum(true)
     }
   }

@@ -39,9 +39,9 @@ export class MyVehicleAPI {
 
   async setup() {
     let to = await this.getToken()
-    .then(val => {
+      .then(val => {
         return val?.tokenStore?.token?.accessToken || ''
-    })
+      })
     // console.log("Setup header token my-vehicle-api :: ", token)
     // construct the apisauce instance
     this.apisauce = create({

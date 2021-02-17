@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { View, ImageProps, FlatList, RefreshControl } from "react-native"
 import { EmptyListMessage, SearchItemTruck, Text } from "../../../components"
 import { spacing, images as imageComponent } from "../../../theme"
 import FavoriteTruckStore from "../../../store/shipper-truck-store/favorite-truck-store"
 import { GetTruckType } from "../../../utils/get-truck-type"
 import { translate } from "../../../i18n"
-import { useNavigation } from "@react-navigation/native"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import ShipperTruckStore from "../../../store/shipper-truck-store/shipper-truck-store"
 import { GetRegion } from "../../../utils/get-region"
 import i18n from "i18n-js"
@@ -139,6 +139,19 @@ export const TruckList = observer(function TruckList() {
   const { versatileStore } = useStores()
   const [lang, setlang] = useState(null)
 
+  useFocusEffect(
+    useCallback(() => {
+      FavoriteTruckStore.find();
+    }, [])
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      // console.log('re-render when on press heart')
+    }, [FavoriteTruckStore.list.length])
+  );
+
+
   useEffect(() => {
     if (lang != versatileStore.language) {
       setlang(versatileStore.language)
@@ -151,9 +164,9 @@ export const TruckList = observer(function TruckList() {
     }
   }, [FavoriteTruckStore.loading])
 
-  useEffect(() => {
-    // re-render when on press heart
-  }, [FavoriteTruckStore.list.length])
+  // useEffect(() => {
+  //   // re-render when on press heart
+  // }, [FavoriteTruckStore.list.length])
 
   const renderItem = ({ item }) => (
     <Item {...item} onToggleHeart={onToggleHeart} />

@@ -61,6 +61,7 @@ const Item = (data) => {
       },
       resizeMode: 'cover'
     } : null
+
     CarriersJobStore.setProfile({ ...owner, imageProps: JSON.stringify(imageSource) })
     CarriersJobStore.findOne(id)
     navigation.navigate('jobDetail')
@@ -69,7 +70,7 @@ const Item = (data) => {
   const onToggleHeart = (data) => {
     if (tokenStore?.token?.accessToken) {
       FavoriteJobStore.add(data.id)
-      CarriersJobStore.updateFavoriteInList(data.id, data.isLike)
+      // CarriersJobStore.updateFavoriteInList(data.id, data.isLike)
     } else {
       navigation.navigate('signin')
     }

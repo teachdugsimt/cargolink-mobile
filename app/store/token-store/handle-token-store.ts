@@ -3,7 +3,7 @@ import { TruckTypeApi } from "../../services/api"
 import i18n from "i18n-js"
 import * as Types from "../../services/api/api.types"
 
-const truckTypeApi = new TruckTypeApi()
+// const truckTypeApi = new TruckTypeApi()
 
 const TruckType = {
   id: types.maybeNull(types.number),
@@ -28,6 +28,7 @@ const HandleTokenStore = types
   })
   .actions((self) => ({
     find: flow(function* find(filter: any = {}) {
+      const truckTypeApi = new TruckTypeApi()
       yield truckTypeApi.setup(i18n.locale)
       self.loading = true
       try {
