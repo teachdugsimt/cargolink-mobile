@@ -44,7 +44,9 @@ end
 
 platform :android do
   desc 'Build the Android application.'
+
   private_lane :build do
+    increment_version_code
     gradle(task: 'clean', project_dir: 'android/')
     gradle(task: 'assemble', build_type: 'Release', project_dir: 'android/')
   end
@@ -53,7 +55,7 @@ platform :android do
   lane :beta do
     build
     supply(track: 'beta', track_promote_to: 'beta')
-    git_commit(path: ['./android/gradle.properties'], message: 'Bump versionCode (android)')
+    # git_commit(path: ['./android/gradle.properties'], message: 'Bump versionCode (android)')
   end
 
   after_all do |lane|
