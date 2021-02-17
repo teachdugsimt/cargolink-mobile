@@ -64,7 +64,7 @@ platform :android do
   desc 'Ship to Playstore Beta.'
   lane :beta do
     build
-    supply(track: 'beta', track_promote_to: 'beta')\
+    supply(track: 'beta', track_promote_to: 'beta')
   end
 
   after_all do |lane|
