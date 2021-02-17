@@ -90,13 +90,6 @@ platform :android do
   end
 
   after_all do |lane|
-    version = package['version']
-    build_number =   build_number = android_get_version_code(
-      gradle_file: "./android/app/build.gradle" # optional
-    )
-    tag_string = "android-v" + version + "-b" + build_number
-    git_commit(path: ".", message: "Bump build (android) " + tag_string)
-    add_git_tag(tag: tag_string)
   end
 end
 
