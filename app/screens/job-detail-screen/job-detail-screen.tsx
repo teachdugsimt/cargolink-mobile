@@ -688,9 +688,9 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             />
           </TouchableOpacity>
 
-          <View style={{ position: 'absolute', right: -spacing[5], top: -spacing[4] }}>
+          <TouchableOpacity style={{ position: 'absolute', right: -spacing[5], top: -spacing[4] }} onPress={onOpenModalize} onPressOut={onOpenModalize}>
             <SwipeUpArrows color={color.disable} />
-          </View>
+          </TouchableOpacity>
 
         </View>
 
