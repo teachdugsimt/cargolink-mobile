@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import {
-  View, ViewStyle, TextStyle, TouchableOpacity,
+  View, ViewStyle, TextStyle, TouchableOpacity, RefreshControl,
   SectionList, Dimensions, Image, ImageStyle, FlatList, Platform, LayoutAnimation, Alert,
 } from "react-native"
 import { observer } from "mobx-react-lite"
@@ -133,7 +133,8 @@ const SUB_VEHICLE_TEXT: ViewStyle = { ...FLEX_ROW, justifyContent: 'space-around
 const IMAGE_LAYOUT: ViewStyle = { width: 60, height: 60 }
 const WIDTH_70: ViewStyle = { width: '70%' }
 const EMPTY_VIEW: ViewStyle = { ...FULL, alignItems: 'center', justifyContent: 'center', marginTop: (height / 4) - 20 }
-
+const MAIN_FLAT_LIST: ViewStyle = { paddingHorizontal: 10, flex: 1 }
+const VIEW_SIGNIN: ViewStyle = { paddingHorizontal: 10, flex: 1, paddingTop: 20, alignItems: 'center' }
 
 const initVehicleList = [
   {
@@ -169,7 +170,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
   const _pressEditProfiel = () => {
     let token = tokenStore?.token?.accessToken || null
-    if (!token) Alert.alert(translate("common.pleaseLogin"))
+    if (!token || !ProfileStore.data) Alert.alert(translate("common.pleaseLogin"))
     else navigation.navigate("updateProfile")
   }
 
@@ -225,6 +226,18 @@ export const ProfileScreen = observer(function ProfileScreen() {
     </View>
   }
 
+  const onRefresh = () => {
+    let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
+    if (tmp_profile && tmp_profile.userId) ProfileStore.getProfileReporter(tmp_profile.userId)
+    ProfileStore.getProfileRequest()
+  }
+
+  const onRefreshTruckSummary = () => {
+    let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
+    if (tmp_profile && tmp_profile.userId) ProfileStore.getProfileReporter(tmp_profile.userId)
+    ProfileStore.getTruckSummary()
+  }
+
   const [provinceTmp, setprovinceTmp] = useState(null)
   const [arrSection, setarrSection] = useState(initVehicleList)
   const [reportWorking, setreportWorking] = useState(initReportWorking)
@@ -242,7 +255,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
       setreportWorking([])
       setarrSection(initVehicleList)
     }
-  }, [ProfileStore.data_report_profile])
+  }, [JSON.stringify(ProfileStore.data_report_profile)])
 
   const mappingWorkingReport = (totalJob) => {
     let tmp = [{ id: 1, title: "profileScreen.allPostJob", content: "common.totalJobText", number: totalJob }]
@@ -386,6 +399,12 @@ export const ProfileScreen = observer(function ProfileScreen() {
     else navigation.navigate("signin")
   }
 
+  const _renderSigninButtton = () => (
+    <TouchableOpacity style={VIEW_SIGNIN} onPress={() => navigation.navigate('signin')}>
+      <Text preset={'topic'} style={COLOR_PRIMARY} tx={"common.pleaseLogin2"} />
+    </TouchableOpacity>
+  )
+
   const _renderEmptyList = (s1, s2, s3, link) => {
     return <View style={EMPTY_VIEW}>
       <View>
@@ -406,6 +425,8 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
   __DEV__ && console.tron.log("Report data :: ", JSON.parse(JSON.stringify(ProfileStore.data_report_profile)))
 
+
+  let token = tokenStore?.token?.accessToken || ''
   return (
     <View testID="ProfileScreen" style={FULL}>
       <View style={TOP_VIEW}>
@@ -414,7 +435,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
             uri: avatar,
             method: 'GET',
             headers: {
-              Authorization: `Bearer ${tokenStore?.token?.accessToken || ''}`
+              Authorization: `Bearer ${token}`
             },
           } : images.greyMock} style={PROFILE_IMG} />}
           <View style={VIEW_NAME_NAD_PHONE}>
@@ -453,61 +474,76 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
 
 
-        {menu1 && <View style={{ paddingHorizontal: 10 }}><FlatList
-          data={reportWorking}
-          renderItem={({ item, index }) => _renderVehice(item, index)}
-          keyExtractor={(item, index) => 'key-' + index.toString()}
-          ListEmptyComponent={() => _renderEmptyList("profileScreen.noEnoughWork", "profileScreen.fromAddWorkScreen",
-            "profileScreen.goAddWorkScreen", "postjob")}
-        /></View>}
+        {menu1 && <>
+          {!token || !ProfileStore.data ? _renderSigninButtton() :
+            <View style={MAIN_FLAT_LIST}>
+              <FlatList
+                data={reportWorking}
+                renderItem={({ item, index }) => _renderVehice(item, index)}
+                keyExtractor={(item, index) => 'key-' + index.toString()}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={ProfileStore.loading_report_profile || ProfileStore.loading || ProfileStore.loading_truck_summary}
+                    onRefresh={onRefresh}
+                  />
+                }
+                ListEmptyComponent={() => _renderEmptyList("profileScreen.noEnoughWork", "profileScreen.fromAddWorkScreen",
+                  "profileScreen.goAddWorkScreen", "postjob")}
+              />
+            </View>}</>}
 
+        {menu2 && <>
+          {!token || !ProfileStore.data ? _renderSigninButtton() :
+            <View style={[FULL, { paddingTop: Platform.OS == "ios" ? 10 : 0 }]}>
+              {ProfileStore.data_report_profile && arrSection && arrSection[0].data.length > 0 ? <SectionList
+                sections={arrSection}
+                keyExtractor={(item: any, index: any) => 'section-list-' + (item.id.toString()) + index}
+                renderItem={({ item, index }) => _renderSectionList(item, index)}
+                stickySectionHeadersEnabled={false}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={ProfileStore.loading_report_profile || ProfileStore.loading_truck_summary}
+                    onRefresh={onRefreshTruckSummary}
+                  />
+                }
+                renderSectionHeader={({ section: { title, id } }) => {
+                  if (id == 1) {
+                    return <View>
+                      <View style={[PADDING_PURE, PADDING_HORIZON_EXTRA]}>
+                        <Text tx={"profileScreen.allCar"} preset="topic" />
+                      </View>
 
-        {menu2 && <View style={[FULL, { paddingTop: Platform.OS == "ios" ? 10 : 0 }]}>
-
-
-          {ProfileStore.data_report_profile && arrSection && arrSection[0].data.length > 0 ? <SectionList
-            sections={arrSection}
-            keyExtractor={(item: any, index: any) => 'section-list-' + (item.id.toString()) + index}
-            renderItem={({ item, index }) => _renderSectionList(item, index)}
-            stickySectionHeadersEnabled={false}
-            renderSectionHeader={({ section: { title, id } }) => {
-              if (id == 1) {
-                return <View>
-                  <View style={[PADDING_PURE, PADDING_HORIZON_EXTRA]}>
-                    <Text tx={"profileScreen.allCar"} preset="topic" />
-                  </View>
-
-                  <View style={[ROW_LAYOUT, JUSTIFY_BETWEEN, PADDING_PURE, PADDING_HORIZON_EXTRA]}>
-                    <Text tx={"profileScreen.allVehicle"} />
-                    <View style={FLEX_ROW}>
-                      <Text style={PADDING_RIGHT}>{allCar.toString() + " "}</Text>
-                      <Text tx={"profileScreen.unit"} />
+                      <View style={[ROW_LAYOUT, JUSTIFY_BETWEEN, PADDING_PURE, PADDING_HORIZON_EXTRA]}>
+                        <Text tx={"profileScreen.allVehicle"} />
+                        <View style={FLEX_ROW}>
+                          <Text style={PADDING_RIGHT}>{allCar.toString() + " "}</Text>
+                          <Text tx={"profileScreen.unit"} />
+                        </View>
+                      </View>
                     </View>
-                  </View>
-                </View>
-              } else {
-                return <View style={[PADDING_VERTICAL_SMALL, PADDING_HORIZON_EXTRA]}><Text tx={"profileScreen.allWorkZone"} preset="topic" /></View>
-              }
-            }}
-            ListFooterComponent={
-              <View style={{ height: 50 }}></View>
-            }
-            ListEmptyComponent={() => _renderEmptyList("profileScreen.noEnoughCar", "profileScreen.fromManageCar",
-              "profileScreen.goManageCar", "myVehicle")}
-          /> : <SectionList
-              sections={[]}
-              keyExtractor={(item: any, index: any) => 'section-list-' + (item.id.toString()) + index}
-              renderItem={({ item, index }) => _renderSectionList(item, index)}
-              stickySectionHeadersEnabled={false}
-              ListFooterComponent={
-                <View style={{ height: 50 }}></View>
-              }
-              ListEmptyComponent={() => _renderEmptyList("profileScreen.noEnoughCar", "profileScreen.fromManageCar",
-                "profileScreen.goManageCar", "myVehicle")}
-            />}
-
-
-        </View>}
+                  } else {
+                    return <View style={[PADDING_VERTICAL_SMALL, PADDING_HORIZON_EXTRA]}><Text tx={"profileScreen.allWorkZone"} preset="topic" /></View>
+                  }
+                }}
+                ListFooterComponent={
+                  <View style={{ height: 50 }}></View>
+                }
+                ListEmptyComponent={() => _renderEmptyList("profileScreen.noEnoughCar", "profileScreen.fromManageCar",
+                  "profileScreen.goManageCar", "myVehicle")}
+              /> : <SectionList
+                  sections={[]}
+                  keyExtractor={(item: any, index: any) => 'section-list-' + (item.id.toString()) + index}
+                  renderItem={({ item, index }) => _renderSectionList(item, index)}
+                  stickySectionHeadersEnabled={false}
+                  ListFooterComponent={
+                    <View style={{ height: 50 }}></View>
+                  }
+                  ListEmptyComponent={() => _renderEmptyList("profileScreen.noEnoughCar", "profileScreen.fromManageCar",
+                    "profileScreen.goManageCar", "myVehicle")}
+                />}
+            </View>
+          }
+        </>}
 
 
       </View>

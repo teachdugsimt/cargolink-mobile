@@ -3,8 +3,6 @@ import { TruckTypeApi } from "../../services/api"
 import i18n from "i18n-js"
 import * as Types from "../../services/api/api.types"
 
-// const truckTypeApi = new TruckTypeApi()
-
 const TruckType = {
   id: types.maybeNull(types.number),
   name: types.maybeNull(types.string),
@@ -43,9 +41,10 @@ const HandleTokenStore = types
       }
     }),
 
-    setResponseUnauthorize(response) {
-      __DEV__ && console.tron.log("Case Unauthorize :: ", response)
-      __DEV__ && console.tron.log("Case Unauthorize :: ", response)
+    setResponseUnauthorize(response, lastFunction?: any) {
+      __DEV__ && console.tron.logImportant("Case Unauthorize :: ", response)
+      if (self.data_unauthorize == null)
+        lastFunction
       self.data_unauthorize = response
     }
 
@@ -54,13 +53,14 @@ const HandleTokenStore = types
   .views((self) => ({
     get getList() {
       return self.list
-    },
-
+    }
   }))
   .create({
     list: [],
     loading: false,
     error: "",
+
+    data_unauthorize: null,
   })
 
 export default HandleTokenStore

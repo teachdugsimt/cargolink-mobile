@@ -11,7 +11,7 @@ import { observer } from "mobx-react-lite"
 import { Text } from "../../../components"
 import { translate } from "../../../i18n"
 import {
-  AddJobElement, MultiSelector,
+  AddJobElement, MultiSelector, Screen,
   TextInputTheme, RoundedButton, ModalLoading,
   Icon, DatePickerRemake, TimePickerRemake, LocationPicker
 } from '../../../components'
@@ -467,397 +467,268 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
   const listGroup = JSON.parse(JSON.stringify(versatileStore.listGroup))
 
   return (
-    <View testID="CheckInformationScreen" style={FULL}>
-      <View style={TOP_VIEW}>
-        <AddJobElement data={list_status} />
-      </View>
+    <Screen unsafe>
+      <View testID="CheckInformationScreen" style={FULL}>
+        <View style={TOP_VIEW}>
+          <AddJobElement data={list_status} />
+        </View>
 
-      <View style={BOTTOM_VIEW}>
-        <ScrollView style={FULL}>
-
-
-
-          <ModalLoading
-            containerStyle={{ zIndex: 2 }}
-            size={'large'} color={color.primary} visible={PostJobStore.loading} />
-
-
-          <Modal
-            visible={visibleMap}
-            onTouchOutside={() => setvisibleMap(false)}
-            onSwipeOut={() => setvisibleMap(false)}>
-            <ModalContent >
-              <View style={{ width: (width / 1), height: '100%', justifyContent: 'flex-start' }}>
-                <SafeAreaView style={{ flex: 1 }}>
-                  <View style={{ flex: 1, position: 'relative' }}>
-
-                    {statusMap && <LocationPicker banner={statusMap.includes('receive') ? "postJobScreen.receiveLocation" : "postJobScreen.shippingLocation"} onSubmitMap={(addr, region) => _submitLocation(addr, region)} />}
-
-                  </View>
-
-                </SafeAreaView>
-
-              </View>
-            </ModalContent>
-          </Modal>
-
-          <View style={TOP_VIEW_2}>
-            <View style={WRAPPER_TOP}>
-
-              <View style={ROW_TEXT}>
-                <Text tx={"postJobScreen.selectVehicleType"} preset={'topic'} style={MARGIN_TOP_BIG} />
-                <Text preset={'topic'} style={RED_DOT} >*</Text>
-              </View>
-
-              <View style={[PADDING_TOP, !dropdown_vehicle_type ? { ...WRAP_DROPDOWN } : { ...WRAP_DROPDOWN_VALUE }]}>
-
-                <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible0(true)}>
-                  {!dropdown_vehicle_type && <><Text style={{ padding: 10 }} tx={"postJobScreen.pleaseSelectVehicleType"} />
-                    <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} /></>}
-                  {dropdown_vehicle_type && versatileStore.list && versatileStore.list.length && _renderSelectedList(JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == dropdown_vehicle_type), 1)}
-
-                </TouchableOpacity>
-
-                <Controller
-                  control={control}
-                  render={({ onChange, onBlur, value }) => (
-                    <Modal
-                      visible={visible0}
-                      onTouchOutside={() => setvisible0(false)}
-                      onSwipeOut={() => setvisible0(false)}
-                      swipeDirection={['up', 'down']} // can be string or an array
-                      swipeThreshold={200} // default 100
-                    >
-                      <ModalContent >
-                        <View style={{ width: (width / 1.1), height: '100%', justifyContent: 'flex-start' }}>
-                          <SafeAreaView style={{ flex: 1 }}>
-                            <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
-                              <Text style={{ color: color.primary }} preset={"topic"} tx={"postJobScreen.selectVehicleType"} />
-                            </View>
-
-
-                            <View style={PADDING_TOP}>
-                              {!!defaultVehicleType && defaultVehicleType.length > 0 && <MultiSelector
-                                items={vehicleType && vehicleType.length > 0 ? vehicleType : defaultVehicleType}
-                                selectedItems={[value]}
-                                selectText={translate("postJobScreen.pleaseSelectVehicleType")}
-                                onSelectedItemsChange={(val: any) => {
-                                  onChange(val[0])
-                                  _closeTruckType()
-                                }}
-                              />}
-                            </View>
-
-                            {listGroup && listGroup.length > 1 && <View>
-                              {_renderGroupTruck(listGroup)}
-                            </View>}
-
-                            <View style={{ flex: 1 }}>
-
-                              <SectionList
-                                sections={sectionTruckType}
-                                keyExtractor={(item, index) => 'section-list-' + (item.name || item.title) + index}
-                                renderItem={({ item, index }) => _renderSectionModal(item, index, onChange, 1)}
-                                renderSectionHeader={({ section: { title } }) => (
-                                  <Text style={PADDING_TOP} >{title}</Text>
-                                )}
-                                ListFooterComponent={
-                                  <View style={{ height: 50 }}></View>
-                                }
-                              />
-
-                            </View>
-
-                          </SafeAreaView>
-
-                        </View>
-                      </ModalContent>
-                    </Modal>
-
-
-                  )}
-                  key={'controller-dropdown-vehicle-type'}
-                  name={"vehicle-type"}
-                  defaultValue=""
-                />
-
-              </View>
-
-              <Text tx={"postJobScreen.vehicleNum"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
-              <Controller
-                control={control}
-                render={({ onChange, onBlur, value }) => (
-                  <TextInputTheme
-                    testID={"car-num"}
-                    placeholder={'คัน'}
-                    keyboardType="numeric"
-                    inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
-                )}
-                key={'text-input-car-num'}
-                name={"car-num"}
-                defaultValue=""
-              />
-
-            </View>
-          </View>
-
-          <View style={[TOP_VIEW_2, MARGIN_TOP]}>
-            <View style={WRAPPER_TOP}>
-              <View style={ROW_TEXT}>
-                <Text tx={"postJobScreen.itemDetail"} preset={'topic'} style={MARGIN_TOP_BIG} />
-                <Text preset={'topic'} style={RED_DOT} >*</Text>
-              </View>
-
-              <View style={[PADDING_TOP, !dropdown_vehicle_type ? { ...WRAP_DROPDOWN } : { ...WRAP_DROPDOWN_VALUE }]}>
-
-                <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible(true)}>
-                  {!dropdown_item_type && <><Text style={{ padding: 10 }} tx={"postJobScreen.selectItemType"} />
-                    <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} />
-                  </>}
-                  {dropdown_item_type && list_product_type_all && _renderSelectedList(list_product_type_all.find(e => e.id == dropdown_item_type), 2)}
-
-                </TouchableOpacity>
-
-                <Controller
-                  control={control}
-                  render={({ onChange, onBlur, value }) => (
-                    <Modal
-                      visible={visible}
-                      onTouchOutside={() => setvisible(false)}
-                      onSwipeOut={() => setvisible(false)}
-                      swipeDirection={['up', 'down']} // can be string or an array
-                      swipeThreshold={200} // default 100
-                    >
-                      <ModalContent >
-                        <View style={{ width: (width / 1.1), height: '100%', justifyContent: 'flex-start' }}>
-                          <SafeAreaView style={{ flex: 1 }}>
-                            <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
-                              <Text style={{ color: color.primary }} preset={"topic"} tx={"postJobScreen.selectVehicleType"} />
-                            </View>
-
-                            <View style={[PADDING_TOP]}>
-
-                              {!!list_product_type_all && list_product_type_all.length > 0 && <MultiSelector
-                                items={list_product_type_all}
-                                keyer={"list-item-type-01"}
-                                selectedItems={[value]}
-                                selectText={translate("postJobScreen.pleaseSelectVehicleType")}
-                                onSelectedItemsChange={(val: any) => {
-                                  onChange(val[0])
-                                  setvisible(false)
-                                }}
-                              />}
-                            </View>
-
-                            <View>
-                              <SectionList
-                                sections={list_product_type}
-                                keyExtractor={(item, index) => 'section-list-' + item.name + index}
-                                renderItem={({ item, index }) => _renderSectionModal(item, index, onChange, 2)}
-                                renderSectionHeader={({ section: { title } }) => (
-                                  <Text tx={title} style={PADDING_TOP} />
-                                )}
-                              />
-                            </View>
-                          </SafeAreaView>
-
-                        </View>
-                      </ModalContent>
-                    </Modal>
-
-
-                  )}
-                  key={'controller-dropdown-item-type'}
-                  name={"item-type"}
-                  defaultValue=""
-                />
-
-              </View>
+        <View style={BOTTOM_VIEW}>
+          <ScrollView style={FULL}>
 
 
 
+            <ModalLoading
+              containerStyle={{ zIndex: 2 }}
+              size={'large'} color={color.primary} visible={PostJobStore.loading} />
 
 
+            <Modal
+              visible={visibleMap}
+              onTouchOutside={() => setvisibleMap(false)}
+              onSwipeOut={() => setvisibleMap(false)}>
+              <ModalContent >
+                <View style={{ width: (width / 1), height: '100%', justifyContent: 'flex-start' }}>
+                  <SafeAreaView style={{ flex: 1 }}>
+                    <View style={{ flex: 1, position: 'relative' }}>
 
-              <Text tx={"postJobScreen.inputYourItem"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
-              <Controller
-                control={control}
-                render={({ onChange, onBlur, value }) => (
-                  <TextInputTheme
-                    testID={"item-name"}
-                    inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
-                )}
-                key={'text-input-item-name'}
-                name={"item-name"}
-                defaultValue=""
-              />
+                      {statusMap && <LocationPicker banner={statusMap.includes('receive') ? "postJobScreen.receiveLocation" : "postJobScreen.shippingLocation"} onSubmitMap={(addr, region) => _submitLocation(addr, region)} />}
 
-              <Text tx={"postJobScreen.weightNumber"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
-              <Controller
-                control={control}
-                render={({ onChange, onBlur, value }) => (
-                  <TextInputTheme
-                    testID={"item-weight"}
-                    keyboardType="numeric"
-                    inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
-                )}
-                key={'text-input-item-weight'}
-                name={"item-weight"}
-                defaultValue=""
-              />
-            </View>
-          </View>
+                    </View>
 
+                  </SafeAreaView>
 
+                </View>
+              </ModalContent>
+            </Modal>
 
+            <View style={TOP_VIEW_2}>
+              <View style={WRAPPER_TOP}>
 
+                <View style={ROW_TEXT}>
+                  <Text tx={"postJobScreen.selectVehicleType"} preset={'topic'} style={MARGIN_TOP_BIG} />
+                  <Text preset={'topic'} style={RED_DOT} >*</Text>
+                </View>
 
+                <View style={[PADDING_TOP, !dropdown_vehicle_type ? { ...WRAP_DROPDOWN } : { ...WRAP_DROPDOWN_VALUE }]}>
 
+                  <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible0(true)}>
+                    {!dropdown_vehicle_type && <><Text style={{ padding: 10 }} tx={"postJobScreen.pleaseSelectVehicleType"} />
+                      <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} /></>}
+                    {dropdown_vehicle_type && versatileStore.list && versatileStore.list.length && _renderSelectedList(JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == dropdown_vehicle_type), 1)}
 
-
-
-
-          <View style={[TOP_VIEW_2, MARGIN_TOP]}>
-            <View style={WRAPPER_TOP}>
-              <View style={ROW_TEXT}>
-                <Icon icon={'pinDropYellow'} style={ICON_PIN_YELLOW} />
-                <Text tx={"postJobScreen.acceptPointProduct"} preset={'topic'} style={[MARGIN_TOP_BIG, MARGIN_LEFT_SMALL]} />
-                <Text preset={'topic'} style={RED_DOT} >*</Text>
-              </View>
-              <View style={ROW_TEXT}>
-                <Text tx={"postJobScreen.inputLocationReceive"} preset={'topic'} style={[MARGIN_TOP_BIG, MARGIN_LEFT_SMALL]} />
-              </View>
-
-
-              <Controller
-                control={control}
-                render={({ onChange, onBlur, value }) => (
-                  <>
-                  </>
-                )}
-                key={'text-input-receive-region'}
-                name={"receive-region"}
-                defaultValue=""
-              />
-              <Controller
-                control={control}
-                render={({ onChange, onBlur, value }) => (
-                  <TouchableOpacity
-                    onPress={() => {
-                      setvisibleMap(true)
-                      setstatusMap('receive-location')
-                    }}
-                    style={BUTTON_MAP}>
-                    {!formControllerValue["receive-location"] && <Text tx={"postJobScreen.receiveLocation"} />}
-                    {!!formControllerValue["receive-location"] && <Text>{formControllerValue["receive-location"]}</Text>}
                   </TouchableOpacity>
-                )}
-                key={'text-input-receive-location'}
-                name={"receive-location"}
-                defaultValue=""
-              />
 
-
-
-              <View style={ROW_TEXT}>
-                <><View style={[FULL, PADDING_RIGHT_SMALL]}>
-                  <Text tx={"postJobScreen.dateReceive"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
                   <Controller
                     control={control}
                     render={({ onChange, onBlur, value }) => (
-                      <DatePickerRemake
-                        keyer={"receive-date1"}
-                        testID={"testID-receive-date"}
-                        value={value}
-                        onChange={onChange}
-                        label={formControllerValue['receive-date']}
-                        iconName={"calendar-sharp"}
-                        mode={"date"}
-                        rerender={rerender}
-                        rerenderFunction={() => setrerender(!rerender)}
-                      />
+                      <Modal
+                        visible={visible0}
+                        onTouchOutside={() => setvisible0(false)}
+                        onSwipeOut={() => setvisible0(false)}
+                        swipeDirection={['up', 'down']} // can be string or an array
+                        swipeThreshold={200} // default 100
+                      >
+                        <ModalContent >
+                          <View style={{ width: (width / 1.1), height: '100%', justifyContent: 'flex-start' }}>
+                            <SafeAreaView style={{ flex: 1 }}>
+                              <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
+                                <Text style={{ color: color.primary }} preset={"topic"} tx={"postJobScreen.selectVehicleType"} />
+                              </View>
+
+
+                              <View style={PADDING_TOP}>
+                                {!!defaultVehicleType && defaultVehicleType.length > 0 && <MultiSelector
+                                  items={vehicleType && vehicleType.length > 0 ? vehicleType : defaultVehicleType}
+                                  selectedItems={[value]}
+                                  selectText={translate("postJobScreen.pleaseSelectVehicleType")}
+                                  onSelectedItemsChange={(val: any) => {
+                                    onChange(val[0])
+                                    _closeTruckType()
+                                  }}
+                                />}
+                              </View>
+
+                              {listGroup && listGroup.length > 1 && <View>
+                                {_renderGroupTruck(listGroup)}
+                              </View>}
+
+                              <View style={{ flex: 1 }}>
+
+                                <SectionList
+                                  sections={sectionTruckType}
+                                  keyExtractor={(item, index) => 'section-list-' + (item.name || item.title) + index}
+                                  renderItem={({ item, index }) => _renderSectionModal(item, index, onChange, 1)}
+                                  renderSectionHeader={({ section: { title } }) => (
+                                    <Text style={PADDING_TOP} >{title}</Text>
+                                  )}
+                                  ListFooterComponent={
+                                    <View style={{ height: 50 }}></View>
+                                  }
+                                />
+
+                              </View>
+
+                            </SafeAreaView>
+
+                          </View>
+                        </ModalContent>
+                      </Modal>
+
+
                     )}
-                    key={'text-input-receive-date'}
-                    name={"receive-date"}
-                    defaultValue={initDatePicker}
+                    key={'controller-dropdown-vehicle-type'}
+                    name={"vehicle-type"}
+                    defaultValue=""
                   />
+
                 </View>
-                  <View style={[FULL, PADDING_LEFT_SMALL]}>
-                    <Text tx={"postJobScreen.timeReceive"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
-                    <Controller
-                      control={control}
-                      render={({ onChange, onBlur, value }) => (
-                        <TimePickerRemake
-                          keyer={"receive-time1"}
-                          testID={"testID-receive-date2"}
-                          value={value}
-                          onChange={onChange}
-                          label={formControllerValue['receive-time']}
-                          mode={"time"}
-                          iconName={"time-outline"}
-                          rerender={rerenderTime}
-                          rerenderFunction={() => setrerenderTime(!rerenderTime)}
-                        />
-                      )}
-                      key={'text-input-receive-time'}
-                      name={"receive-time"}
-                      defaultValue={initDatePicker}
-                    />
-                  </View></>
+
+                <Text tx={"postJobScreen.vehicleNum"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                <Controller
+                  control={control}
+                  render={({ onChange, onBlur, value }) => (
+                    <TextInputTheme
+                      testID={"car-num"}
+                      placeholder={'คัน'}
+                      keyboardType="numeric"
+                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                  )}
+                  key={'text-input-car-num'}
+                  name={"car-num"}
+                  defaultValue=""
+                />
+
               </View>
-
-
-
-              <Text tx={"postJobScreen.receiverInfo"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
-              <Text tx={"postJobScreen.receiverName"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
-              <Controller
-                control={control}
-                render={({ onChange, onBlur, value }) => (
-                  <TextInputTheme
-                    testID={"receive-name"}
-                    inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
-                )}
-                key={'text-input-receive-name'}
-                name={"receive-name"}
-                defaultValue=""
-              />
-
-              <Text tx={"postJobScreen.receiverTel"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
-              <Controller
-                control={control}
-                render={({ onChange, onBlur, value }) => (
-                  <TextInputTheme
-                    testID={"receive-tel-no"}
-                    keyboardType="numeric"
-                    inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
-                )}
-                key={'text-input-receive-tel-no'}
-                name={"receive-tel-no"}
-                defaultValue=""
-              />
-
             </View>
-          </View>
 
-
-
-
-
-
-
-
-
-
-
-          {fieldShippingCheck && fieldShippingCheck.length > 0 ? fieldShippingCheck.map((e, i) => {
-            return <View style={[TOP_VIEW_2, MARGIN_TOP]} key={`view-shipping-${i + 1}`}>
+            <View style={[TOP_VIEW_2, MARGIN_TOP]}>
               <View style={WRAPPER_TOP}>
                 <View style={ROW_TEXT}>
-                  <Icon icon={'pinDropGreen'} style={ICON_PIN_YELLOW} />
-                  <Text tx={"postJobScreen.shipingPoint"} preset={'topic'} style={MARGIN_TOP_BIG} />
-                  <Text preset={'topic'} style={MARGIN_TOP_BIG}>{i + 1}</Text>
+                  <Text tx={"postJobScreen.itemDetail"} preset={'topic'} style={MARGIN_TOP_BIG} />
                   <Text preset={'topic'} style={RED_DOT} >*</Text>
                 </View>
+
+                <View style={[PADDING_TOP, !dropdown_vehicle_type ? { ...WRAP_DROPDOWN } : { ...WRAP_DROPDOWN_VALUE }]}>
+
+                  <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible(true)}>
+                    {!dropdown_item_type && <><Text style={{ padding: 10 }} tx={"postJobScreen.selectItemType"} />
+                      <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} />
+                    </>}
+                    {dropdown_item_type && list_product_type_all && _renderSelectedList(list_product_type_all.find(e => e.id == dropdown_item_type), 2)}
+
+                  </TouchableOpacity>
+
+                  <Controller
+                    control={control}
+                    render={({ onChange, onBlur, value }) => (
+                      <Modal
+                        visible={visible}
+                        onTouchOutside={() => setvisible(false)}
+                        onSwipeOut={() => setvisible(false)}
+                        swipeDirection={['up', 'down']} // can be string or an array
+                        swipeThreshold={200} // default 100
+                      >
+                        <ModalContent >
+                          <View style={{ width: (width / 1.1), height: '100%', justifyContent: 'flex-start' }}>
+                            <SafeAreaView style={{ flex: 1 }}>
+                              <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
+                                <Text style={{ color: color.primary }} preset={"topic"} tx={"postJobScreen.selectVehicleType"} />
+                              </View>
+
+                              <View style={[PADDING_TOP]}>
+
+                                {!!list_product_type_all && list_product_type_all.length > 0 && <MultiSelector
+                                  items={list_product_type_all}
+                                  keyer={"list-item-type-01"}
+                                  selectedItems={[value]}
+                                  selectText={translate("postJobScreen.pleaseSelectVehicleType")}
+                                  onSelectedItemsChange={(val: any) => {
+                                    onChange(val[0])
+                                    setvisible(false)
+                                  }}
+                                />}
+                              </View>
+
+                              <View>
+                                <SectionList
+                                  sections={list_product_type}
+                                  keyExtractor={(item, index) => 'section-list-' + item.name + index}
+                                  renderItem={({ item, index }) => _renderSectionModal(item, index, onChange, 2)}
+                                  renderSectionHeader={({ section: { title } }) => (
+                                    <Text tx={title} style={PADDING_TOP} />
+                                  )}
+                                />
+                              </View>
+                            </SafeAreaView>
+
+                          </View>
+                        </ModalContent>
+                      </Modal>
+
+
+                    )}
+                    key={'controller-dropdown-item-type'}
+                    name={"item-type"}
+                    defaultValue=""
+                  />
+
+                </View>
+
+
+
+
+
+
+                <Text tx={"postJobScreen.inputYourItem"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                <Controller
+                  control={control}
+                  render={({ onChange, onBlur, value }) => (
+                    <TextInputTheme
+                      testID={"item-name"}
+                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                  )}
+                  key={'text-input-item-name'}
+                  name={"item-name"}
+                  defaultValue=""
+                />
+
+                <Text tx={"postJobScreen.weightNumber"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                <Controller
+                  control={control}
+                  render={({ onChange, onBlur, value }) => (
+                    <TextInputTheme
+                      testID={"item-weight"}
+                      keyboardType="numeric"
+                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                  )}
+                  key={'text-input-item-weight'}
+                  name={"item-weight"}
+                  defaultValue=""
+                />
+              </View>
+            </View>
+
+
+
+
+
+
+
+
+
+
+            <View style={[TOP_VIEW_2, MARGIN_TOP]}>
+              <View style={WRAPPER_TOP}>
+                <View style={ROW_TEXT}>
+                  <Icon icon={'pinDropYellow'} style={ICON_PIN_YELLOW} />
+                  <Text tx={"postJobScreen.acceptPointProduct"} preset={'topic'} style={[MARGIN_TOP_BIG, MARGIN_LEFT_SMALL]} />
+                  <Text preset={'topic'} style={RED_DOT} >*</Text>
+                </View>
+                <View style={ROW_TEXT}>
+                  <Text tx={"postJobScreen.inputLocationReceive"} preset={'topic'} style={[MARGIN_TOP_BIG, MARGIN_LEFT_SMALL]} />
+                </View>
+
 
                 <Controller
                   control={control}
@@ -866,107 +737,108 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                     </>
                   )}
                   key={'text-input-receive-region'}
-                  name={"shipping-region-" + e.id}
+                  name={"receive-region"}
                   defaultValue=""
                 />
-
-                <Text tx={"postJobScreen.shippingAddr"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
                 <Controller
                   control={control}
                   render={({ onChange, onBlur, value }) => (
                     <TouchableOpacity
                       onPress={() => {
                         setvisibleMap(true)
-                        setstatusMap("shipping-address-" + e.id)
+                        setstatusMap('receive-location')
                       }}
                       style={BUTTON_MAP}>
-                      {!formControllerValue["shipping-address-" + e.id] && <Text tx={"postJobScreen.shippingLocation"} />}
-                      {!!formControllerValue["shipping-address-" + e.id] && <Text>{formControllerValue["shipping-address-" + e.id]}</Text>}
+                      {!formControllerValue["receive-location"] && <Text tx={"postJobScreen.receiveLocation"} />}
+                      {!!formControllerValue["receive-location"] && <Text>{formControllerValue["receive-location"]}</Text>}
                     </TouchableOpacity>
                   )}
-                  key={'text-input-shipping-address-' + e.id}
-                  name={"shipping-address-" + e.id}
+                  key={'text-input-receive-location'}
+                  name={"receive-location"}
                   defaultValue=""
                 />
 
+
+
                 <View style={ROW_TEXT}>
-                  <View style={[FULL, PADDING_RIGHT_SMALL]}>
-                    <Text tx={"postJobScreen.dateShipping"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                  <><View style={[FULL, PADDING_RIGHT_SMALL]}>
+                    <Text tx={"postJobScreen.dateReceive"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
                     <Controller
                       control={control}
                       render={({ onChange, onBlur, value }) => (
                         <DatePickerRemake
-                          key={"shipping-date-" + e.id}
-                          testID={"testID-shipping-date-" + e.id}
+                          keyer={"receive-date1"}
+                          testID={"testID-receive-date"}
                           value={value}
                           onChange={onChange}
-                          label={formControllerValue["shipping-date-" + e.id]}
+                          label={formControllerValue['receive-date']}
                           iconName={"calendar-sharp"}
                           mode={"date"}
-                          rerender={e.showDate}
-                          rerenderFunction={() => _setRenderDateAndTimeField(!e.showDate, i, 'date')}
+                          rerender={rerender}
+                          rerenderFunction={() => setrerender(!rerender)}
                         />
                       )}
-                      key={'text-input-shipping-date-' + e.id}
-                      name={"shipping-date-" + e.id}
-                      defaultValue=""
+                      key={'text-input-receive-date'}
+                      name={"receive-date"}
+                      defaultValue={initDatePicker}
                     />
                   </View>
-                  <View style={[FULL, PADDING_LEFT_SMALL]}>
-                    <Text tx={"postJobScreen.timeShipping"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
-                    <Controller
-                      control={control}
-                      render={({ onChange, onBlur, value }) => (
-                        <TimePickerRemake
-                          key={"shipping-time-" + e.id}
-                          testID={"testID-shipping-time-" + e.id}
-                          value={value}
-                          onChange={onChange}
-                          label={formControllerValue["shipping-time-" + e.id]}
-                          rerender={e.showTime}
-                          mode={"time"}
-                          iconName={"time-outline"}
-                          rerenderFunction={() => _setRenderDateAndTimeField(!e.showTime, i, 'time')}
-                        />
-                      )}
-                      key={'text-input-shipping-time-' + e.id}
-                      name={"shipping-time-" + e.id}
-                      defaultValue=""
-                    />
-                  </View>
+                    <View style={[FULL, PADDING_LEFT_SMALL]}>
+                      <Text tx={"postJobScreen.timeReceive"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                      <Controller
+                        control={control}
+                        render={({ onChange, onBlur, value }) => (
+                          <TimePickerRemake
+                            keyer={"receive-time1"}
+                            testID={"testID-receive-date2"}
+                            value={value}
+                            onChange={onChange}
+                            label={formControllerValue['receive-time']}
+                            mode={"time"}
+                            iconName={"time-outline"}
+                            rerender={rerenderTime}
+                            rerenderFunction={() => setrerenderTime(!rerenderTime)}
+                          />
+                        )}
+                        key={'text-input-receive-time'}
+                        name={"receive-time"}
+                        defaultValue={initDatePicker}
+                      />
+                    </View></>
                 </View>
 
-                <Text tx={"postJobScreen.shipperInfo"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
-                <Text tx={"postJobScreen.shipperName"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+
+
+                <Text tx={"postJobScreen.receiverInfo"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                <Text tx={"postJobScreen.receiverName"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
                 <Controller
                   control={control}
                   render={({ onChange, onBlur, value }) => (
                     <TextInputTheme
-                      testID={"shipping-name-" + e.id}
+                      testID={"receive-name"}
                       inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
                   )}
-                  key={'text-input-shipping-name-' + e.id}
-                  name={"shipping-name-" + e.id}
+                  key={'text-input-receive-name'}
+                  name={"receive-name"}
                   defaultValue=""
                 />
 
-                <Text tx={"postJobScreen.shipperTel"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                <Text tx={"postJobScreen.receiverTel"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
                 <Controller
                   control={control}
                   render={({ onChange, onBlur, value }) => (
                     <TextInputTheme
-                      testID={"shipping-tel-no-" + e.id}
+                      testID={"receive-tel-no"}
                       keyboardType="numeric"
                       inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
                   )}
-                  key={'text-input-shipping-tel-no-' + e.id}
-                  name={"shipping-tel-no-" + e.id}
+                  key={'text-input-receive-tel-no'}
+                  name={"receive-tel-no"}
                   defaultValue=""
                 />
 
               </View>
             </View>
-          }) : <></>}
 
 
 
@@ -976,20 +848,150 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
 
 
 
-          <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_EXTRA }}>
-            <View style={ROW_TEXT}>
-              <View style={[WRAPPER_TOP, FULL]}>
-                <RoundedButton style={[FULL, BORDER_RADIUS_20, GREY_TEXT]} onPress={() => navigation.goBack()} text={"common.back"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
+
+
+            {fieldShippingCheck && fieldShippingCheck.length > 0 ? fieldShippingCheck.map((e, i) => {
+              return <View style={[TOP_VIEW_2, MARGIN_TOP]} key={`view-shipping-${i + 1}`}>
+                <View style={WRAPPER_TOP}>
+                  <View style={ROW_TEXT}>
+                    <Icon icon={'pinDropGreen'} style={ICON_PIN_YELLOW} />
+                    <Text tx={"postJobScreen.shipingPoint"} preset={'topic'} style={MARGIN_TOP_BIG} />
+                    <Text preset={'topic'} style={MARGIN_TOP_BIG}>{i + 1}</Text>
+                    <Text preset={'topic'} style={RED_DOT} >*</Text>
+                  </View>
+
+                  <Controller
+                    control={control}
+                    render={({ onChange, onBlur, value }) => (
+                      <>
+                      </>
+                    )}
+                    key={'text-input-receive-region'}
+                    name={"shipping-region-" + e.id}
+                    defaultValue=""
+                  />
+
+                  <Text tx={"postJobScreen.shippingAddr"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                  <Controller
+                    control={control}
+                    render={({ onChange, onBlur, value }) => (
+                      <TouchableOpacity
+                        onPress={() => {
+                          setvisibleMap(true)
+                          setstatusMap("shipping-address-" + e.id)
+                        }}
+                        style={BUTTON_MAP}>
+                        {!formControllerValue["shipping-address-" + e.id] && <Text tx={"postJobScreen.shippingLocation"} />}
+                        {!!formControllerValue["shipping-address-" + e.id] && <Text>{formControllerValue["shipping-address-" + e.id]}</Text>}
+                      </TouchableOpacity>
+                    )}
+                    key={'text-input-shipping-address-' + e.id}
+                    name={"shipping-address-" + e.id}
+                    defaultValue=""
+                  />
+
+                  <View style={ROW_TEXT}>
+                    <View style={[FULL, PADDING_RIGHT_SMALL]}>
+                      <Text tx={"postJobScreen.dateShipping"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                      <Controller
+                        control={control}
+                        render={({ onChange, onBlur, value }) => (
+                          <DatePickerRemake
+                            key={"shipping-date-" + e.id}
+                            testID={"testID-shipping-date-" + e.id}
+                            value={value}
+                            onChange={onChange}
+                            label={formControllerValue["shipping-date-" + e.id]}
+                            iconName={"calendar-sharp"}
+                            mode={"date"}
+                            rerender={e.showDate}
+                            rerenderFunction={() => _setRenderDateAndTimeField(!e.showDate, i, 'date')}
+                          />
+                        )}
+                        key={'text-input-shipping-date-' + e.id}
+                        name={"shipping-date-" + e.id}
+                        defaultValue=""
+                      />
+                    </View>
+                    <View style={[FULL, PADDING_LEFT_SMALL]}>
+                      <Text tx={"postJobScreen.timeShipping"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                      <Controller
+                        control={control}
+                        render={({ onChange, onBlur, value }) => (
+                          <TimePickerRemake
+                            key={"shipping-time-" + e.id}
+                            testID={"testID-shipping-time-" + e.id}
+                            value={value}
+                            onChange={onChange}
+                            label={formControllerValue["shipping-time-" + e.id]}
+                            rerender={e.showTime}
+                            mode={"time"}
+                            iconName={"time-outline"}
+                            rerenderFunction={() => _setRenderDateAndTimeField(!e.showTime, i, 'time')}
+                          />
+                        )}
+                        key={'text-input-shipping-time-' + e.id}
+                        name={"shipping-time-" + e.id}
+                        defaultValue=""
+                      />
+                    </View>
+                  </View>
+
+                  <Text tx={"postJobScreen.shipperInfo"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                  <Text tx={"postJobScreen.shipperName"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                  <Controller
+                    control={control}
+                    render={({ onChange, onBlur, value }) => (
+                      <TextInputTheme
+                        testID={"shipping-name-" + e.id}
+                        inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                    )}
+                    key={'text-input-shipping-name-' + e.id}
+                    name={"shipping-name-" + e.id}
+                    defaultValue=""
+                  />
+
+                  <Text tx={"postJobScreen.shipperTel"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                  <Controller
+                    control={control}
+                    render={({ onChange, onBlur, value }) => (
+                      <TextInputTheme
+                        testID={"shipping-tel-no-" + e.id}
+                        keyboardType="numeric"
+                        inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                    )}
+                    key={'text-input-shipping-tel-no-' + e.id}
+                    name={"shipping-tel-no-" + e.id}
+                    defaultValue=""
+                  />
+
+                </View>
               </View>
-              <View style={[WRAPPER_TOP, FULL]}>
-                <RoundedButton style={[FULL, BORDER_RADIUS_20, ROUND_BUTTON_CONTAINER_CONFIRM]} onPress={handleSubmit(onSubmit)} text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER_CONFIRM} textStyle={ROUND_BUTTON_TEXT} />
+            }) : <></>}
+
+
+
+
+
+
+
+
+
+            <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_EXTRA }}>
+              <View style={ROW_TEXT}>
+                <View style={[WRAPPER_TOP, FULL]}>
+                  <RoundedButton style={[FULL, BORDER_RADIUS_20, GREY_TEXT]} onPress={() => navigation.goBack()} text={"common.back"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
+                </View>
+                <View style={[WRAPPER_TOP, FULL]}>
+                  <RoundedButton style={[FULL, BORDER_RADIUS_20, ROUND_BUTTON_CONTAINER_CONFIRM]} onPress={handleSubmit(onSubmit)} text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER_CONFIRM} textStyle={ROUND_BUTTON_TEXT} />
+                </View>
               </View>
             </View>
-          </View>
 
 
-        </ScrollView>
+          </ScrollView>
+        </View>
       </View>
-    </View>
+    </Screen>
   )
 })

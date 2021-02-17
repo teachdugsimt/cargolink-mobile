@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native"
 import { useForm, Controller } from "react-hook-form";
 import { observer } from "mobx-react-lite"
 import { translate } from "../../../i18n"
-import { Text, AddJobElement, TextInputTheme, RoundedButton, MultiSelector, ModalTruckType } from '../../../components'
+import { Text, AddJobElement, TextInputTheme, RoundedButton, MultiSelector, ModalTruckType, Screen } from '../../../components'
 import PostJobStore from '../../../store/post-job-store/post-job-store'
 import AdvanceSearchStore from '../../../store/shipper-job-store/advance-search-store'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -135,7 +135,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
     else navigation.navigate("MyJob", { screen: "receivePoint" })
   }
 
-  
+
   const _renderSectionModal = (item: any, index: any, onChange: any, section: any) => {
     return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name + index} style={ROOT_FLAT_LIST} onPress={() => {
       if (section == 1) setvisible0(false)
@@ -217,13 +217,13 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
 
   return (
-    <View testID="PostJobScreen" style={FULL}>
-      <View style={TOP_VIEW}>
-        <AddJobElement data={list_status} />
-      </View>
+    <Screen unsafe>
+      <View testID="PostJobScreen" style={FULL}>
+        <View style={TOP_VIEW}>
+          <AddJobElement data={list_status} />
+        </View>
 
-      <View style={BOTTOM_VIEW}>
-        <KeyboardAvoidingView behavior={Platform.OS == "ios" ? 'padding' : 'padding'} keyboardVerticalOffset={Platform.OS == "ios" ? 100 : 0} style={{ flex: 1 }}>
+        <View style={BOTTOM_VIEW}>
           <ScrollView style={FULL}>
 
             <View style={TOP_VIEW_2}>
@@ -417,9 +417,9 @@ export const PostJobScreen = observer(function PostJobScreen() {
             </View>
 
           </ScrollView>
-        </KeyboardAvoidingView>
+        </View>
       </View>
-    </View >
+    </Screen>
   )
 })
 
