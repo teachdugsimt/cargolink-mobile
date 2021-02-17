@@ -15,6 +15,14 @@ Install _fastlane_ using
 or alternatively using `brew install fastlane`
 
 # Available Actions
+### bump_version
+```
+fastlane bump_version
+```
+Bump build numbers, and set the version to match the pacakage.json version.
+
+----
+
 ## iOS
 ### ios certificates
 ```
