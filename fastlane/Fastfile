@@ -1,6 +1,7 @@
 fastlane_version '2.53.1'
 
 package = load_json(json_path: "./package.json")
+version = package['version']
 
 before_all do
   ensure_git_branch
@@ -17,7 +18,6 @@ private_lane :inc_ver_and do
     gradle_file: "./android/app/build.gradle" # optional
   )
 
-  version = package['version']
   android_set_version_name(
     gradle_file: "./android/app/build.gradle",
     version_name: version
@@ -30,7 +30,6 @@ private_lane :inc_ver_ios do
   increment_build_number(xcodeproj: './ios/CargoLinkMobile.xcodeproj')
   build_number = get_build_number(xcodeproj: "./ios/CargoLinkMobile.xcodeproj")
 
-  version = package['version']
   increment_version_number(
     xcodeproj: './ios/CargoLinkMobile.xcodeproj',
     version_number: version
