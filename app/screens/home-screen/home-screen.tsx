@@ -13,6 +13,7 @@ import StatusStore from '../../store/post-job-store/job-status-store'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import FontIcon from 'react-native-vector-icons/FontAwesome5'
 import ProfileStore from "../../store/profile-store/profile-store"
+import jwtDecode, { JwtPayload } from "jwt-decode";
 
 const { width, height } = Dimensions.get('window')
 const FULL: ViewStyle = { flex: 1 }
@@ -52,26 +53,41 @@ const VIEW_ICON: ViewStyle = { borderRadius: 20, height: 40, width: 40, justifyC
 const CONTACT_VIEW: ViewStyle = { flex: Platform.OS == "android" ? 0.5 : 0.6 }
 export const HomeScreen = observer((props) => {
   const { tokenStore, versatileStore } = useStores()
-  const [isName, setIsName] = useState<boolean>(false)
-
   const navigation = useNavigation()
-  const [visible, setvisible] = useState(false)
+
   useEffect(() => {
     versatileStore.findGroup()
     versatileStore.find()
     versatileStore.findProductType()
     ProfileStore.getProfileRequest()
 
-    // let d1 = { "vehicle-type": 8, "car-num": "2", "item-type": 8, "item-name": "เครื่องจักรสำหรับบรรทุกรถ", "item-weight": "4300" }
-    // let d2 = { "receive-region": { "latitude": 13.7884902, "longitude": 100.6079443, "latitudeDelta": 0.005878748388420618, "longitudeDelta": 0.004999972879886627 }, "receive-location": "กรุงเทพมหานคร", "receive-date": "2021-02-08T15:33:00:000Z", "receive-time": "2021-02-08T15:33:00:000Z", "receive-name": "Onelink Space", "receive-tel-no": "0998999988", "shipping-information": [{ "shipping-address": "ชลบุรี", "shipping-date": "2021-02-10T11:00:00:000Z", "shipping-time": "2021-02-10T11:00:00:000Z", "shipping-name": "หมู่บ้านบางแสนวิลล์ ตำบล ห้วยกะปิ อำเภอเมืองชลบุรี ชลบุรี", "shipping-tel-no": "0899388403", "shipping-region": { "latitude": 13.2773405, "longitude": 100.9410782, "latitudeDelta": 0.0058863476810167015, "longitudeDelta": 0.005000643432154561 } }, { "shipping-address": "จันทบุรี", "shipping-date": "2021-02-10T17:20:00:000Z", "shipping-time": "2021-02-10T17:20:00:000Z", "shipping-name": "ศูนย์ศึกษาธรรมชาติป่าชายเลนอ่าวคุ้งกระเบน", "shipping-tel-no": "0990999811", "shipping-region": { "latitude": 12.6004546, "longitude": 101.9276771, "latitudeDelta": 0.0058863476810167015, "longitudeDelta": 0.005000643432154561 } }] }
-    // PostJobStore.setPostJob(1, d1)
-    // PostJobStore.setPostJob(2, d2)
-
     console.log("TOKEN STORE :: => ", JSON.parse(JSON.stringify(tokenStore.token)))
   }, [])
 
   const [swipe, setswipe] = useState(false)
   const [lang, setlang] = useState(null)
+
+  const _getDataFromToken = (token) => {
+    const decoded = jwtDecode<JwtPayload>(token);
+    if (decoded) return decoded;
+    else return {};
+  };
+
+  useEffect(() => {
+    if (tokenStore?.token?.accessToken) {
+      let token_data = _getDataFromToken(tokenStore.token.accessToken)
+      let new_date = Math.floor(Date.now() / 1000)
+      __DEV__ && console.tron.display({
+        name: "Token parse ", value: { new_date, token_data }
+      })
+      if (token_data.exp && new_date >= token_data.exp) {
+        // 1. now time >= expire token time
+        // 2. Have token
+        // 3. don't have profile data / loading profile = false
+        // Token was expire => FETCH NEW TOKEN & replace old token
+      }
+    }
+  }, [tokenStore.token, ProfileStore.data, ProfileStore.loading])
 
   useEffect(() => {
     if (lang != versatileStore.language) {
@@ -166,8 +182,9 @@ export const HomeScreen = observer((props) => {
     }
   ]
 
-  __DEV__ && console.tron.log("List (render) home screen :: ", versatileStore.list)
-  __DEV__ && console.tron.log("List Group (render) home screen :: ", versatileStore.listGroup)
+  // __DEV__ && console.tron.log("List (render) home screen :: ", versatileStore.list)
+  // __DEV__ && console.tron.log("List Group (render) home screen :: ", versatileStore.listGroup)
+  __DEV__ && console.tron.log("Token Store :: ", tokenStore.token)
 
   const [topBackgroundValue] = useState(new Animated.Value(-backgrounTopHeight))
   const [leftValue] = useState(new Animated.Value(-(width / 2)))
