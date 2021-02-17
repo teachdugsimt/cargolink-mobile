@@ -2,6 +2,7 @@ fastlane_version '2.53.1'
 
 package = load_json(json_path: "./package.json")
 version = package['version']
+build_number = nil
 
 before_all do
   ensure_git_branch
