@@ -132,6 +132,9 @@ const ShipperJobStore = types
       yield apiShipperJob.setup()
       self.loading = true
       try {
+        if (Object.keys(self.data).length) {
+          ShipperJobStore.setDefaultOfData()
+        }
         const response = yield apiShipperJob.findOne(id)
         console.log("Response call api get shipper job : : ", JSON.stringify(response))
         if (response.kind === 'ok') {
@@ -294,6 +297,10 @@ const ShipperJobStore = types
 
     setDefaultOfList: function setDefaultOfList() {
       self.list = cast([])
+    },
+    clearDataByName(name) {
+      // __DEV__ && console.tron.log('types of list :: ', typeof self[name]) // list => object 
+      self[name] = []
     }
   }))
   .views((self) => ({

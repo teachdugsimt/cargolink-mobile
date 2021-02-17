@@ -59,5 +59,5 @@ export function PrimaryNavigator() {
  *
  * `canExit` is used in ./app/app.tsx in the `useBackButtonHandler` hook.
  */
-// const exitRoutes = ["welcome"]
-// export const canExit = (routeName: string) => exitRoutes.includes(routeName)
+const exitRoutes = ["welcome", 'signin']
+export const canExit = (routeName: string) => exitRoutes.includes(routeName)

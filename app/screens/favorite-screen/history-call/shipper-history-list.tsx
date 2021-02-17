@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
-import { View, ImageProps, FlatList, RefreshControl, ViewStyle, TouchableOpacity, Dimensions, Linking, Platform, Alert } from "react-native"
+import { View, ImageProps, FlatList, RefreshControl, ViewStyle, TouchableOpacity, Dimensions, Linking, Platform, Alert, ImageBackground, ImageStyle } from "react-native"
 import { EmptyListMessage, ContactList, Text } from "../../../components"
-import { spacing, color } from "../../../theme"
+import { spacing, color, images as imageComponent } from "../../../theme"
 import ShippersHistoryStore from "../../../store/shippers-history-call-store/shippers-history-call-store"
 import { GetTruckType } from "../../../utils/get-truck-type"
 import { translate } from "../../../i18n"
@@ -10,6 +10,8 @@ import { observer } from "mobx-react-lite"
 import { useStores } from "../../../models"
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import CallDetectorManager from 'react-native-call-detection'
+import { convertTime12to24 } from "../../../utils/convert-time-format";
+import { MapTruckImageName } from "../../../utils/map-truck-image-name"
 
 const CONTAINER_LIST: ViewStyle = {
   marginVertical: spacing[1],
@@ -28,12 +30,33 @@ const RIGHT: ViewStyle = {
 }
 const FOOTER: ViewStyle = {
   flex: 1,
-  flexDirection: 'row',
   borderTopWidth: 1,
   borderTopColor: color.disable,
   marginTop: spacing[1],
-  paddingTop: spacing[2],
+  paddingTop: spacing[3],
   paddingBottom: spacing[1],
+}
+const JOB_DETAIL: ViewStyle = {
+  flexDirection: 'row',
+  alignItems: 'center',
+  paddingVertical: spacing[1],
+  paddingHorizontal: spacing[1],
+}
+const BACKGROUND_CONTAINER: ViewStyle = {
+  width: 120,
+  height: 80,
+  position: 'absolute',
+  right: 0,
+  bottom: -(spacing[2] + 2),
+  overflow: 'hidden',
+  marginRight: -(spacing[2] + 2)
+}
+const BACKGROUND: ImageStyle = {
+  width: '100%',
+  height: '100%',
+  position: 'absolute',
+  right: -35,
+  opacity: 0.3,
 }
 
 let callDetector = undefined
@@ -107,10 +130,6 @@ export const Item = (data) => {
   const contentRender = () => (
     <View>
       <Text text={shipperPhone} preset={'fieldLabel'} style={{ color: color.line }} />
-      <Text
-        text={`${GetTruckType(+truckType)?.name || translate('common.vehicleTypeField') + " : " + translate('common.notSpecified')}`}
-        style={{ paddingTop: spacing[2], paddingLeft: spacing[1] }}
-      />
     </View>
   )
 
@@ -119,11 +138,21 @@ export const Item = (data) => {
       <MaterialCommunityIcons name={'phone'} size={20} style={{ textAlign: 'center' }} color={color.textWhite} />
     </TouchableOpacity>
   )
-
+  // imageComponent[truckImage && truckImage !== 'greyMock' ? truckImage : '']
   const footer = () => (
     <View style={FOOTER}>
-      <View style={{ flex: 1 }}>
-        <Text text={callTime} style={{ textAlign: 'right', color: color.line }} preset={'fieldLabel'} />
+      <View style={JOB_DETAIL}>
+        <MaterialCommunityIcons name={'truck'} color={color.primary} size={24} />
+        <Text text={`${translate('jobDetailScreen.truckType')} :`} style={{ paddingLeft: spacing[2] }} />
+        <Text text={`${GetTruckType(+truckType)?.name || translate('common.notSpecified')}`} style={{ paddingLeft: spacing[2] }} />
+      </View>
+      <View style={JOB_DETAIL}>
+        <MaterialCommunityIcons name={'weight'} color={color.primary} size={24} />
+        <Text text={`${translate('jobDetailScreen.weightTon')} :`} style={{ paddingLeft: spacing[2] }} />
+        <Text text={loadingWeight} style={{ paddingLeft: spacing[2] }} />
+      </View>
+      <View style={BACKGROUND_CONTAINER}>
+        <ImageBackground source={imageComponent[MapTruckImageName(+truckType) && MapTruckImageName(+truckType) !== 'greyMock' ? MapTruckImageName(+truckType) : '']} style={BACKGROUND} resizeMode={'contain'} />
       </View>
     </View>
   )
@@ -134,6 +163,7 @@ export const Item = (data) => {
         header={shipperName}
         containerStyle={CONTAINER_LIST}
         content={contentRender}
+        callTime={convertTime12to24(callTime)}
         contentRight={contentRight}
         footer={footer}
         imageSource={''}

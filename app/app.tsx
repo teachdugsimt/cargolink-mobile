@@ -83,8 +83,8 @@ function App(props: any) {
     forceUpdate: true,
   }).then(async res => {
     console.log('Latest Version', res)
-    console.log(res.isNeeded);    // true
-    if (res.isNeeded) {
+    console.log(res?.isNeeded);    // true
+    if (res?.isNeeded) {
       Linking.openURL(res.storeUrl);  // open store if update is needed.
     }
   }).catch(async err => {

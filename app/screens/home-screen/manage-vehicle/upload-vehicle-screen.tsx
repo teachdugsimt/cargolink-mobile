@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import {
   View, ViewStyle, TextStyle,
   ScrollView, Switch, Dimensions, Platform, Alert, ImageStyle, PermissionsAndroid,
-  SafeAreaView, SectionList, Image, TouchableOpacity
+  SafeAreaView, Image, TouchableOpacity
 } from "react-native"
 import { useForm, Controller } from "react-hook-form";
 import { observer } from "mobx-react-lite"
@@ -11,8 +11,6 @@ import {
   ModalTruckType, NormalDropdown
 } from "../../../components"
 import { spacing, color, typography, images } from "../../../theme"
-
-import RNPickerSelect from 'react-native-picker-select';
 import { translate } from "../../../i18n"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import CreateVehicleStore from '../../../store/my-vehicle-store/create-vehicle-store'
@@ -27,6 +25,7 @@ import UploadFileStore from '../../../store/my-vehicle-store/upload-file-store'
 import AddressStore from '../../../store/my-vehicle-store/address-store'
 import { Modal, ModalContent } from 'react-native-modals';
 import { useStores } from "../../../models/root-store/root-store-context";
+import { FlatList } from "react-native-gesture-handler";
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -39,6 +38,7 @@ const SAFE_AREA_MODAL: ViewStyle = {
   ...WIDTH_WITH_MARGIN,
   height: 100
 }
+const ALIGN_CENTER: ViewStyle = { alignItems: 'center' }
 const CONTAINER_MODAL: ViewStyle = {
   ...FULL,
   ...WIDTH_WITH_MARGIN
@@ -52,17 +52,19 @@ const BUTTON_MODAL1: ViewStyle = {
   ...BORDER_MODAL_BUTTON,
   height: 50,
   justifyContent: 'center',
-  alignItems: 'center',
+  ...ALIGN_CENTER,
 }
 const BUTTON_MODAL2: ViewStyle = {
   ...WIDTH_WITH_MARGIN,
   height: 50,
   justifyContent: 'center',
-  alignItems: 'center',
+  ...ALIGN_CENTER,
 }
 const TEXT_MODAL_BUTTON: TextStyle = {
   color: color.black, paddingLeft: 20
 }
+const PADDING_TOP_10: ViewStyle = { paddingTop: 10 }
+const PADDING_TOP_5: ViewStyle = { paddingTop: 5 }
 
 const PADDING_LEFT5: TextStyle = {
   paddingLeft: 5
@@ -82,6 +84,7 @@ const ALIGN_RIGHT: TextStyle = {
   alignSelf: 'flex-end',
   color: color.line
 }
+const PRIMARY_COLOR: TextStyle = { color: color.primary }
 const MARGIN_TOP_BIG: ViewStyle = { marginTop: 10 }
 const MARGIN_TOP_MEDIUM: ViewStyle = { marginTop: 15 }
 const MARGIN_TOP_EXTRA: ViewStyle = { marginTop: 20 }
@@ -134,9 +137,6 @@ const WRAP_DROPDOWN: ViewStyle = {
   flex: 1, borderColor: color.line, borderWidth: 1, padding: Platform.OS == "ios" ? 7.5 : 0,
   borderRadius: 2.5
 }
-const DROPDOWN_ICON_CONTAINER: ViewStyle = {
-  paddingTop: 12.5, paddingRight: 5
-}
 const PLACEHOLDER_IMAGE: ImageStyle = {
   width: 50, height: 75
 }
@@ -151,7 +151,6 @@ const ADD_DROPDOWN_REGION: ViewStyle = {
   alignSelf: 'flex-end',
   paddingLeft: 10,
   justifyContent: 'center', height: 40,
-  // paddingTop: Platform.OS == "ios" ? 8 : 12
 }
 
 const WRAPPER_REGION_DROPDOWN: ViewStyle = {
@@ -185,8 +184,9 @@ const BORDER_BOTTOM: ViewStyle = {
   flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
   borderBottomWidth: 1, borderBottomColor: color.line, marginHorizontal: 10,
 }
+const ERROR_REGION: TextStyle = { color: color.error, paddingLeft: 5, marginTop: -10, marginBottom: 5 }
+const UPLOAD_IMG_STY: ViewStyle = { padding: 5, minHeight: 120 }
 const IMAGE_LIST: ImageStyle = {
-  // width: 50, height: 50,
   backgroundColor: color.line, padding: 10,
   resizeMode: "cover",
   aspectRatio: 2 / 2,
@@ -207,11 +207,13 @@ export const UploadVehicleScreen = observer((props) => {
   const [visibleModal, setvisibleModal] = useState(initModal)
   const [stateData, setstateData] = useState(null)
 
+  // const [reqDump, setreqDump] = useState(false)
+  const [reqHeight, setreqHeight] = useState(false)
+
 
   useEffect(() => {
 
     AddressStore.getRegion(i18n.locale)
-    // AddressStore.getProvince(i18n.locale)
     versatileStore.find()
 
 
@@ -438,7 +440,7 @@ export const UploadVehicleScreen = observer((props) => {
   const [inputRegistration, setinputRegistration] = useState({})
   console.log("Mapping data Here :: => ", MyVehicleStore.MappingData)
   const { control, handleSubmit, errors } = useForm({
-    defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : MyVehicleStore.MappingData
+    defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? { 'vehicle-height': '' } : MyVehicleStore.MappingData
   });
 
   const _alert = (field) => {
@@ -466,10 +468,10 @@ export const UploadVehicleScreen = observer((props) => {
       _alert(translate('common.vehicleTypeField'))
       return;
     }
-    else if (!data['vehicle-height']) {
-      _alert(translate('common.vehicleHeightField'))
-      return;
-    }
+    // else if (!data['vehicle-height']) {
+    //   _alert(translate('common.vehicleHeightField'))
+    //   return;
+    // }
     else if (!data['registration-0']) {
       _alert(translate('common.registrationVehicleField'))
       return;
@@ -482,7 +484,7 @@ export const UploadVehicleScreen = observer((props) => {
 
       loadingWeight: 1,
       // stallHeight: Number(parseFloat(data['vehicle-height']).toFixed(1)),
-      stallHeight: data['vehicle-height'].toUpperCase(),
+      stallHeight: data['vehicle-height'] ? data['vehicle-height'].toUpperCase() : "",
 
 
       tipper: toggleDump,
@@ -704,6 +706,8 @@ export const UploadVehicleScreen = observer((props) => {
 
     let initData = JSON.parse(JSON.stringify(MyVehicleStore.data))
     let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
+    if (!editStatus) navigation.goBack()
+
     if (editStatus && editStatus == "edit") {
       settoggleDump(initData.tipper)
       if (initData.truckPhotos) {
@@ -851,11 +855,12 @@ export const UploadVehicleScreen = observer((props) => {
     __DEV__ && console.tron.log("Truck type for stall height get :: ", truckType)
 
     let slotTruck = JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == truckType)
-
+    let requiredStallHeight = false
     if (slotTruck) {
       let tmpTruckType = slotTruck.name.replace(/\s+/g, '').toLowerCase();
       if (tmpTruckType.includes("trailer") || tmpTruckType.includes("เทรเลอร์") || tmpTruckType.includes("18ล้อ")
         || tmpTruckType.includes("หัวลาก") || tmpTruckType.includes("รถพ่วง")) {
+        if (Number(truckType) == 42) requiredStallHeight = true
         let lowTrailer = " (1.50 - 1.80 m)"
         let mediumTrailer = " (1.80 - 2.00 m)"
         let heightTrailer = " (2.20 - 2.50 m)"
@@ -865,18 +870,21 @@ export const UploadVehicleScreen = observer((props) => {
         res.push(low, medium, height)
       }
       else if (tmpTruckType.includes("4wheels") || tmpTruckType.includes("4ล้อ")) {
+        if (Number(truckType) == 49) requiredStallHeight = true
         let low4Wheels = " (~ 1.4 m)"
         let height4Wheels = " (~ 2.1 m)"
         low.label = low.label + low4Wheels
         height.label = height.label + height4Wheels
         res.push(low, height)
       } else if (tmpTruckType.includes("6wheels") || tmpTruckType.includes("6ล้อ")) {
+        if (Number(truckType) == 3) requiredStallHeight = true
         let low6Wheels = " (~ 2.0 m)"
         let height6Wheels = " (~ 3.0 m)"
         low.label = low.label + low6Wheels
         height.label = height.label + height6Wheels
         res.push(low, height)
       } else if (tmpTruckType.includes("10wheels") || tmpTruckType.includes("10ล้อ")) {
+        if (Number(truckType) == 26) requiredStallHeight = true
         let medium10Wheels = " (~ 2.5 m)"
         medium.label = medium.label + medium10Wheels
         res.push(medium)
@@ -884,8 +892,12 @@ export const UploadVehicleScreen = observer((props) => {
       else {
         res.push(low, medium, height)
       }
+      setreqHeight(requiredStallHeight)
       return res
-    } else return res.push(low, medium, height)
+    } else {
+      setreqHeight(requiredStallHeight)
+      return res.push(low, medium, height)
+    }
   }
 
   const _updateVisibleModal = (visibleX, index) => {
@@ -918,9 +930,10 @@ export const UploadVehicleScreen = observer((props) => {
   if (formControllerValue['vehicle-type'] && formControllerValue['vehicle-type']) {
     dropdown_vehicle_type = formControllerValue['vehicle-type']
   }
+  // if (!formControllerValue['vehicle-height']) control.setValue("vehicle-height", "")
   __DEV__ && console.tron.logImportant("Form in render :: ", formControllerValue)
   // __DEV__ && console.tron.logImportant("Controller pure : ", control.setValue())
-  __DEV__ && console.tron.log("Fetching Trucktype :: ", versatileStore.loading)
+  // __DEV__ && console.tron.log("errors['vehicle-height'] errors['vehicle-height'] :: ", errors['vehicle-height'])
 
   let default_stallHeightList = [
     { label: translate("common.low"), value: "LOW" },
@@ -1020,7 +1033,7 @@ export const UploadVehicleScreen = observer((props) => {
               render={({ onChange, onBlur, value }) => (
                 <>
                   <NormalDropdown
-                    value={value}
+                    value={value || ""}
                     onValueChange={onChange}
                     items={dropdown_vehicle_type ? _getStallHeightList(dropdown_vehicle_type) : default_stallHeightList}
                     placeholder={"uploadVehicleScreen.heightVehicleSelect"}
@@ -1029,11 +1042,11 @@ export const UploadVehicleScreen = observer((props) => {
               )}
               key={'text-input-vehicle-height'}
               name={"vehicle-height"}
-              rules={{ pattern: /^[a-zA-Z]+$/ }}
+              rules={{ required: reqHeight }}
               defaultValue=""
             />
             {/* </View> */}
-            {errors['vehicle-height'] && <Text style={{ color: color.red }} tx={"common.acceptOnlyCharacter"} />}
+            {reqHeight == true && errors['vehicle-height'] && <Text style={{ color: color.red }} tx={reqHeight == true ? "uploadVehicleScreen.reqHeight" : "common.acceptOnlyCharacter"} />}
           </View>
         </View>
 
@@ -1089,8 +1102,8 @@ export const UploadVehicleScreen = observer((props) => {
                   onPress={() => _chooseFile('front')}
                   viewImageStyle={Object.keys(fileFront).length ? MARGIN_TOP_EXTRA : MARGIN_TOP_MEDIUM}
                   tx={Object.keys(fileFront).length ? '' : "uploadVehicleScreen.exampleImageFront"}
-                  txStyle={Object.keys(fileFront).length ? {} : { paddingTop: 5 }}
-                  uploadStyle={{ padding: 5, minHeight: 120 }}
+                  txStyle={Object.keys(fileFront).length ? {} : { ...PADDING_TOP_5 }}
+                  uploadStyle={UPLOAD_IMG_STY}
                   source={Object.keys(fileFront).length ? fileFront : images.addTruck2B}
                   imageStyle={Object.keys(fileFront).length ? {} : PLACEHOLDER_IMAGE} />
                 <UploadVehicle
@@ -1099,8 +1112,8 @@ export const UploadVehicleScreen = observer((props) => {
                   onPress={() => _chooseFile('back')}
                   viewImageStyle={Object.keys(fileBack).length ? MARGIN_TOP_EXTRA : MARGIN_TOP_MEDIUM}
                   tx={Object.keys(fileBack).length ? '' : "uploadVehicleScreen.exampleImageBack"}
-                  txStyle={Object.keys(fileBack).length ? {} : { paddingTop: 5 }}
-                  uploadStyle={{ padding: 5, minHeight: 120 }}
+                  txStyle={Object.keys(fileBack).length ? {} : { ...PADDING_TOP_5 }}
+                  uploadStyle={UPLOAD_IMG_STY}
                   source={Object.keys(fileBack).length ? fileBack : images.addTruck2F}
                   imageStyle={Object.keys(fileBack).length ? {} : PLACEHOLDER_IMAGE} />
               </View>
@@ -1111,8 +1124,8 @@ export const UploadVehicleScreen = observer((props) => {
                   onPress={() => _chooseFile('left')}
                   tx={Object.keys(fileLeft).length ? '' : "uploadVehicleScreen.exampleImageLeft"}
                   viewImageStyle={Object.keys(fileLeft).length ? MARGIN_TOP_EXTRA : {}}
-                  txStyle={Object.keys(fileLeft).length ? {} : { paddingTop: 5 }}
-                  uploadStyle={{ padding: 5, minHeight: 120 }}
+                  txStyle={Object.keys(fileLeft).length ? {} : { ...PADDING_TOP_5 }}
+                  uploadStyle={UPLOAD_IMG_STY}
                   source={Object.keys(fileLeft).length ? fileLeft : images.addTruck1}
                   imageStyle={Object.keys(fileLeft).length ? {} : PLACEHOLDER_IMAGE2} />
                 <UploadVehicle
@@ -1121,8 +1134,8 @@ export const UploadVehicleScreen = observer((props) => {
                   onPress={() => _chooseFile('right')}
                   tx={Object.keys(fileRight).length ? '' : "uploadVehicleScreen.exampleImageRight"}
                   viewImageStyle={Object.keys(fileRight).length ? MARGIN_TOP_EXTRA : {}}
-                  txStyle={Object.keys(fileRight).length ? {} : { paddingTop: 5 }}
-                  uploadStyle={{ padding: 5, minHeight: 120 }}
+                  txStyle={Object.keys(fileRight).length ? {} : { ...PADDING_TOP_5 }}
+                  uploadStyle={UPLOAD_IMG_STY}
                   source={Object.keys(fileRight).length ? fileRight : images.addTruck2}
                   imageStyle={Object.keys(fileRight).length ? {} : PLACEHOLDER_IMAGE2} />
               </View>
@@ -1134,7 +1147,7 @@ export const UploadVehicleScreen = observer((props) => {
 
         <View style={{ ...TOP_VIEW, ...MARGIN_TOP }}>
           <View style={WRAPPER_TOP}>
-            <Text tx={"uploadVehicleScreen.workZone"} style={TITLE_TOPIC}>Upload Vehicle 15151515</Text>
+            {/* <Text tx={"uploadVehicleScreen.workZone"} style={TITLE_TOPIC}>Upload Vehicle 15151515</Text> */}
 
 
 
@@ -1148,7 +1161,7 @@ export const UploadVehicleScreen = observer((props) => {
 
             {/* ********************** DROPDOWN ZONE ********************** */}
             {ddRegion.length && AddressStore.region && AddressStore.region.length ? ddRegion.map((e, index) => {
-              return <View key={'view-dropdown-region-' + index} style={[WRAPPER_REGION_DROPDOWN, { height: 40 }]}>
+              return <><View key={'view-dropdown-region-' + index} style={[WRAPPER_REGION_DROPDOWN, { height: 40 }]}>
                 <View style={{ ...FULL, marginLeft: 5 }} key={'view-dropdown-province-' + index}>
                   <Controller
                     control={control}
@@ -1183,10 +1196,11 @@ export const UploadVehicleScreen = observer((props) => {
                     }}
                     key={'controller-dropdown-region-' + index}
                     name={"controller-region-" + index}
+                    rules={{ required: true }}
                     defaultValue=""
                   />
-                </View>
 
+                </View>
                 {ddProvince.length ? ddProvince.map((pro, indexPro) => {
 
 
@@ -1201,8 +1215,10 @@ export const UploadVehicleScreen = observer((props) => {
 
 
                   if (indexPro == index && valRegion[index] != 7) {
+                    let arrRegion = JSON.parse(JSON.stringify(AddressStore.region)) || []
+                    let objReg = arrRegion.find(e => e.value == formControllerValue[`controller-region-${index}`])
+                    let regionName = objReg ? `common.${objReg.label}` : ''
 
-                    // __DEV__ && console.tron.log("PROVINCE :: ", formControllerValue["controller-province-" + index])
                     return (<View style={{ ...WRAP_DROPDOWN, marginLeft: 5 }} key={'view-dropdown-province-' + index}>
 
 
@@ -1256,14 +1272,21 @@ export const UploadVehicleScreen = observer((props) => {
                                   </View>
 
                                   <View>
-                                    <SectionList
+                                    {/* <SectionList
                                       sections={list_province_popular ? list_province_popular : []}
                                       keyExtractor={(item, indexX) => 'section-list-' + item.name + indexX}
                                       renderItem={(data) => _renderSectionModalProvince(data.item, data.index, onChange, index)}
                                       renderSectionHeader={({ section: { title } }) => (
                                         <Text tx={title} style={PADDING_TOP} />
                                       )}
-                                    />
+                                    /> */}
+                                    {!!formControllerValue[`controller-region-${index}`] && !!AddressStore.region && <FlatList
+                                      ListHeaderComponent={<View style={[PADDING_TOP_10, ALIGN_CENTER]}><Text preset={'topic'} tx={regionName} style={PRIMARY_COLOR}></Text></View>}
+                                      ListFooterComponent={<View style={{ height: Platform.OS == 'ios' ? 100 : 20 }}></View>}
+                                      data={JSON.parse(JSON.stringify(AddressStore.province))}
+                                      keyExtractor={(item, indexX) => 'section-list-' + item.name + indexX}
+                                      renderItem={(data) => _renderSectionModalProvince(data.item, data.index, onChange, index)}
+                                    />}
                                   </View>
                                 </SafeAreaView>
 
@@ -1304,7 +1327,8 @@ export const UploadVehicleScreen = observer((props) => {
                   <Ionicons size={20} color={color.darkGreen} name={"add-circle-outline"} />
                 </TouchableOpacity>}
               </View>
-
+                {errors["controller-region-" + index] && <Text style={ERROR_REGION} tx={"common.pleaseCheckYourData"} />}
+              </>
             }) : <></>}
             {/* ********************** DROPDOWN ZONE ********************** */}
 

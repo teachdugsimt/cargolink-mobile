@@ -20,10 +20,13 @@ const TruckSummary = types.model({
 })
 
 const DataUpdateProfile = types.model({
+  "id": types.maybeNull(types.number),
+  "userId": types.maybeNull(types.string),
   "fullName": types.maybeNull(types.string),
   "phoneNumber": types.maybeNull(types.string),
   "approveStatus": types.maybeNull(types.string),
-  "avatar": types.maybeNull(types.string)
+  "avatar": types.maybeNull(types.string),
+  "email": types.maybeNull(types.string),
 })
 
 const PictureProfile = types.model({
@@ -147,11 +150,11 @@ const ProfileStore = types.model({
       const response = yield apiUsers.updateProfile(params)
       __DEV__ && console.tron.log("Response call updateProfile : : ", response)
       if (response.ok) {
-        self.data_update_profile = response.data || {}
+        self.data_update_profile = response.data || null
         self.loading_update_profile = false
       } else {
         self.loading_update_profile = false
-        self.error_update_profile = "error fetch updateProfiles"
+        self.error_update_profile = response?.data?.validMsgList?.email && response?.data?.validMsgList?.email[0] ? response.data.validMsgList.email[0] : "error to update profile"
       }
     } catch (error) {
       console.error("Failed to store value get profile : ", error)
@@ -159,6 +162,9 @@ const ProfileStore = types.model({
       self.error_update_profile = "set up state mobx error"
     }
   }),
+  clearUpdateData(name) {
+    self[name] = null
+  },
 
   uploadPicture: flow(function* updateProfile(file) { // <- note the star, this a generator function!
     yield fileUploadApi.setup()
@@ -190,6 +196,13 @@ const ProfileStore = types.model({
   clearData() {
     self.data_update_profile = null
     self.data_upload_picture = null
+  },
+  clearAllData() {
+    self.data = null
+    self.data_truck_summary = null
+    self.data_update_profile = null
+    self.data_upload_picture = null
+    self.data_report_profile = null
   }
 
 

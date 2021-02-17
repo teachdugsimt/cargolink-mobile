@@ -1,6 +1,7 @@
 import { types, flow, cast } from "mobx-state-tree"
 import { TruckTypeApi, ProductTypeAPI } from "../../services/api"
 import i18n from "i18n-js"
+import { boolean } from "mobx-state-tree/dist/internal"
 
 const truckTypeApi = new TruckTypeApi()
 const productTypeApi = new ProductTypeAPI()
@@ -28,6 +29,12 @@ export const VersatileStore = types.model({
   data: types.optional(types.model(InitialType), {}),
   list: types.optional(types.array(TruckTypeGroup), []),
   listGroup: types.optional(types.array(TruckTypeGroup), []),
+
+  list_loading: types.boolean,
+  list_group_loading: types.boolean,
+  product_type_loading: types.boolean,
+
+
   listProductType: types.optional(types.array(TruckTypeGroup), []),
   loading: types.boolean,
   mappingLoding: types.boolean,
@@ -39,22 +46,22 @@ export const VersatileStore = types.model({
   },
   find: flow(function* find(filter: any = {}) {
     yield truckTypeApi.setup(i18n.locale)
-    self.loading = true
+    self.list_loading = true
     try {
       const response = yield truckTypeApi.getTruckTypeDropdown(filter)
       console.log("Response call api get truck type : : ", response)
       self.list = response.data
-      self.loading = false
+      self.list_loading = false
     } catch (error) {
       console.error("Failed to fetch get truck type : ", error)
-      self.loading = false
+      self.list_loading = false
       self.error = "error fetch api get truck type"
     }
   }),
 
   findGroup: flow(function* findGroup(filter: any = {}) {
     yield truckTypeApi.setup(i18n.locale)
-    self.loading = true
+    self.list_group_loading = true
     try {
       const response = yield truckTypeApi.getGroup(filter)
       console.log("Response call api get truck type group : : ", response)
@@ -63,10 +70,10 @@ export const VersatileStore = types.model({
       } else {
         self.listGroup = cast([])
       }
-      self.loading = false
+      self.list_group_loading = false
     } catch (error) {
       console.error("Failed to fetch get truck type group : ", error)
-      self.loading = false
+      self.list_group_loading = false
       self.error = "error fetch api get truck type group"
     }
 
@@ -100,7 +107,7 @@ export const VersatileStore = types.model({
 
   findProductType: flow(function* findProductType(filter: any = {}) {
     yield productTypeApi.setup(i18n.locale)
-    self.loading = true
+    self.product_type_loading = true
     try {
       const response = yield productTypeApi.findAll(filter)
       console.log("Response call api get product type : : ", response)
@@ -109,10 +116,10 @@ export const VersatileStore = types.model({
       } else {
         self.listProductType = cast([])
       }
-      self.loading = false
+      self.product_type_loading = false
     } catch (error) {
       console.error("Failed to fetch get product type : ", error)
-      self.loading = false
+      self.product_type_loading = false
       self.error = "error fetch api get product type"
     }
   }),

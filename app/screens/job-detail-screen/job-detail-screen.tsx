@@ -26,6 +26,7 @@ import CallDetectorManager from 'react-native-call-detection'
 import UserJobStore from "../../store/user-job-store/user-job-store"
 import ProfileStore from "../../store/profile-store/profile-store"
 import { SearchByAddressTh, GetProvinceByEnArress } from "../../utils/search-province";
+import i18n from 'i18n-js'
 
 interface JobDetailProps {
   booker?: Array<any>
@@ -150,7 +151,8 @@ const CONTENT_SMALL: ViewStyle = {
   height: 105,
   overflow: 'hidden',
   marginHorizontal: spacing[3],
-  paddingVertical: spacing[4],
+  paddingBottom: spacing[2],
+  paddingTop: spacing[1],
 }
 const FLOAT_CONTAINER: ViewStyle = {
   width: Math.floor(Dimensions.get('window').width * (3 / 4)),
@@ -229,7 +231,7 @@ const PickUpPoint = ({ to, from, distances, onPress, containerStyle = {} }) => {
 
   const fromProvinceName = SearchByAddressTh(from?.name)
   const province = CarriersJobStore.provinces ? JSON.parse(CarriersJobStore.provinces) : {}
-  const fromProvinceHeader = fromProvinceName || GetProvinceByEnArress(province[`${from?.lat},${from?.lng}`])
+  const fromProvinceHeader = fromProvinceName || GetProvinceByEnArress(province[`${from?.lat},${from?.lng}`]) || from?.name
 
   return (
     <View style={{ ...LOCATION_CONTAINER, ...containerStyle }} onLayout={(e) => onLayout(e)}>
@@ -241,7 +243,7 @@ const PickUpPoint = ({ to, from, distances, onPress, containerStyle = {} }) => {
           <Dot color={color.primary} />
           <Text
             text={`${translate('common.from')}  :`}
-            style={{ ...LOCATION_TEXT, width: 48, justifyContent: 'flex-end' }}
+            style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 40 : 48, justifyContent: 'flex-end' }}
           />
           <View style={{ flexShrink: 1 }}>
             <Text text={fromProvinceHeader} style={[LOCATION_TEXT, { width: '80%' }]} numberOfLines={1} />
@@ -252,7 +254,7 @@ const PickUpPoint = ({ to, from, distances, onPress, containerStyle = {} }) => {
           const latLng = `${attr.lat},${attr.lng}`
           const fromProvinceName = SearchByAddressTh(attr.name)
           const province = CarriersJobStore.provinces ? JSON.parse(CarriersJobStore.provinces) : {}
-          const fromProvinceHeader = fromProvinceName || GetProvinceByEnArress(province[latLng])
+          const fromProvinceHeader = fromProvinceName || GetProvinceByEnArress(province[latLng]) || attr?.name
           const distance = JSON.parse(JSON.stringify(distances)).filter(dist => dist.to === latLng)[0]
           const distanceKM = distance ? (distance.distance / 1000).toFixed(2) : '0'
           const time = distance ? ConverTimeFormat(distance.duration * 1000, 'HHmm') : '0'
@@ -262,7 +264,7 @@ const PickUpPoint = ({ to, from, distances, onPress, containerStyle = {} }) => {
                 <Dot color={color.success} />
                 <Text
                   text={`${translate('common.to')}  :`}
-                  style={{ ...LOCATION_TEXT, width: 48 }}
+                  style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 40 : 48 }}
                 />
                 <View style={{ flexShrink: 1 }}>
                   <Text text={fromProvinceHeader} style={LOCATION_TEXT} numberOfLines={1} />
@@ -276,6 +278,66 @@ const PickUpPoint = ({ to, from, distances, onPress, containerStyle = {} }) => {
             </View>
           )
         })}
+      </View>
+    </View>
+  )
+}
+
+const PickUpPointSmall = ({ to, from, distances, containerStyle = {} }) => {
+  const [height, setHeight] = useState(0)
+
+  const onLayout = (event: LayoutChangeEvent) => {
+    const { height } = event.nativeEvent.layout
+    setHeight(height)
+  }
+
+  const fromProvinceName = SearchByAddressTh(from?.name || '')
+  const province = CarriersJobStore.provinces ? JSON.parse(CarriersJobStore.provinces) : {}
+  const fromProvinceHeader = fromProvinceName || GetProvinceByEnArress(province[`${from?.lat || ''},${from?.lng || ''}`]) || from?.name || ''
+
+  const valueTo = to && to[0] ? to[0] : {}
+  const latLng = `${valueTo ? valueTo?.lat : ''},${valueTo ? valueTo?.lng : ''}`
+  const toProvinceName = SearchByAddressTh(valueTo?.name || '')
+  const provinceTo = CarriersJobStore.provinces ? JSON.parse(CarriersJobStore.provinces) : {}
+  const toProvinceHeader = toProvinceName || GetProvinceByEnArress(provinceTo[latLng]) || valueTo?.name || ''
+  const distanceTo = JSON.parse(JSON.stringify(distances)).filter(dist => dist.to === latLng)[0]
+  const distanceKM = distanceTo ? (distanceTo.distance / 1000).toFixed(2) : '0'
+  const time = distanceTo ? ConverTimeFormat(distanceTo.duration * 1000, 'HHmm') : '0'
+
+  return (
+    <View style={{ ...LOCATION_CONTAINER, ...containerStyle }} onLayout={(e) => onLayout(e)}>
+
+      <View style={{ ...LINE, height }} />
+
+      <View style={LOCATION_BOX}>
+        <View style={{ ...LOCATION, paddingBottom: spacing[3] }}>
+          <Dot color={color.primary} />
+          <Text
+            text={`${translate('common.from')}  :`}
+            style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 40 : 48, justifyContent: 'flex-end' }}
+          />
+          <View style={{ flexShrink: 1, flexDirection: 'row' }}>
+            <Text text={fromProvinceHeader} style={[LOCATION_TEXT, { width: '80%' }]} numberOfLines={1} />
+          </View>
+        </View>
+
+        <View style={TO_LOCATION}>
+          <View style={{ ...LOCATION, flex: 3 }}>
+            <Dot color={color.success} />
+            <Text
+              text={`${translate('common.to')}  :`}
+              style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 40 : 48 }}
+            />
+            <View style={{ flexShrink: 1, flexDirection: 'row' }}>
+              <Text text={toProvinceHeader} style={LOCATION_TEXT} numberOfLines={1} />
+            </View>
+          </View>
+          <View style={{ alignItems: 'center', flex: 1 }}>
+            <Text style={{ paddingVertical: spacing[1] }} >{distanceKM}<Text text={' KM'} style={TEXT_SMALL} /></Text>
+            <Text text={time} style={{ ...TEXT_SMALL, paddingBottom: spacing[1], color: color.line }} />
+          </View>
+        </View>
+
       </View>
     </View>
   )
@@ -347,11 +409,13 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   }, [])
 
   useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (<TouchableOpacity onPress={() => onSelectedHeart(id)}>
-        <MaterialCommunityIcons name={liked ? 'heart' : 'heart-outline'} size={24} color={liked ? color.red : color.line} />
-      </TouchableOpacity>),
-    })
+    if (route.name === 'jobDetail') {
+      navigation.setOptions({
+        headerRight: () => (<TouchableOpacity onPress={() => onSelectedHeart(id)}>
+          <MaterialCommunityIcons name={liked ? 'heart' : 'heart-outline'} size={24} color={liked ? color.red : color.line} />
+        </TouchableOpacity>),
+      })
+    }
     return () => { }
   }, [liked, id, navigation]);
 
@@ -578,9 +642,15 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     image: JSON.parse(CarriersJobStore.profile.imageProps),
   }
 
+  const isLoaded = !!(CarriersJobStore.loading || CarriersJobStore.mapLoading)
+
+  console.log('CarriersJobStore.loading', CarriersJobStore.loading)
+  console.log('CarriersJobStore.mapLoading', CarriersJobStore.mapLoading)
+  console.log('isLoaded', isLoaded)
+
   return (
     <View style={CONTAINER}>
-      <ModalLoading size={'large'} color={color.primary} visible={CarriersJobStore.mapLoading || CarriersJobStore.loading} />
+      <ModalLoading size={'large'} color={color.primary} visible={isLoaded} />
       <View style={MAP_CONTAINER}>
         {from && !!from.lat && !!from.lng && !!CarriersJobStore.directions.length &&
           <MapView
@@ -611,8 +681,20 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             <View style={FLOAT_LINE} />
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={1} onPress={onOpenModalize} onPressOut={onOpenModalize} style={CONTENT_SMALL}>
-            <PickUpPoint from={from} to={to} distances={CarriersJobStore.distances} containerStyle={{ overflow: 'hidden' }} onPress={null} />
+            <PickUpPointSmall
+              from={from}
+              to={to}
+              distances={CarriersJobStore.distances}
+              containerStyle={{
+                overflow: 'hidden'
+              }}
+            />
           </TouchableOpacity>
+
+          <View style={{ position: 'absolute', right: -spacing[5], top: -spacing[4] }}>
+            <SwipeUpArrows color={color.disable} />
+          </View>
+
         </View>
 
       </View>

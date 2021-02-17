@@ -47,6 +47,7 @@
     "high": "คอกสูง",
     "somethingWrong": "มีบางอย่างผิดพลาด",
     "pleaseCheckYourData": "กรุณาตรวจสอบข้อมูล",
+    "invalidEmail": "กรุณาตรวจสอบ email",
     "bookAJob": "จองงาน",
     "HH": "ชั่วโมง",
     "mm": "นาที",
@@ -57,13 +58,15 @@
     "new": "ใหม่",
     "done": "จบแล้ว",
     "totalJobText": "*เราเปิดโอกาสให้ผู้ใช้ทั้ง Carriers และ Shippers สามารถโพสงานหรือหารถได้หากผู้ใช้สนใจโพสงานสามารถเลือกได้จากหน้าแรก",
-    "pleaseLogin": "กรุณาเข้าสู่ระบบก่อนแก้ไขข้อมูล"
+    "pleaseLogin": "กรุณาเข้าสู่ระบบก่อนแก้ไขข้อมูล",
+    "successTransaction": "ทำรายการสำเร็จ",
+    "updateSuccess": "อัพเดทข้อมูลสำเร็จ"
   },
-  "commentScreen":{
+  "commentScreen": {
     "yourComment": "ความคิดเห็นของคุณ",
     "canDealInApp": "คุณตกลงงานผ่านแอปของเราได้หรือไม่",
     "canPassApp": "ได้จากแอป",
-    "notPassApp":"ไม่ได้จากแอป",
+    "notPassApp": "ไม่ได้จากแอป",
     "howMuchDeal": "บอกเราหน่อยได้ไหมว่าคุณตกลงราคาได้ประมาณเท่าไหร่",
     "rateUs": "ช่วยให้คะแนนความพึงพอใจของคุณต่อการบริการครั้งนี้ใน",
     "star": "ระดับ 1 - 5 ดาว",
@@ -184,7 +187,8 @@
     "pleaseSelectRegion": "กรุณาเลือกภูมิภาค",
     "selectFromLibrary": "เลือกจากอัลบั้ม",
     "captureNew": "กล้องถ่ายรูป",
-    "pleaseCheckRegistration": "โปรดตรวจสอบทะเบียนรถ"
+    "pleaseCheckRegistration": "โปรดตรวจสอบทะเบียนรถ",
+    "reqHeight": "กรุณาเลือกความสูงคอกรถ"
   },
   "profileScreen": {
     "nophone": "ไม่ระบุ",

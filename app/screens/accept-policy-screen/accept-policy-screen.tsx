@@ -28,7 +28,7 @@ const SCROLL_VIEW: ViewStyle = {
   // flex: 2,
   marginLeft: 10,
   marginRight: 10,
-  backgroundColor: color.line,
+  backgroundColor: color.disable,
   borderRadius: 6
 }
 const CONTENT: TextStyle = {

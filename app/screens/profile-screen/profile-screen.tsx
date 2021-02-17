@@ -147,11 +147,7 @@ const initVehicleList = [
     data: []
   },
 ]
-const initReportWorking = [
-  // { id: 1, title: "profileScreen.allPostJob", content: "*เราเปิดโอกาสให้ผู้ใช้ทั้ง Carriers และ Shippers สามารถโพสงานหรือหารถได้หากผู้ใช้สนใจโพสงานสามารถเลือกได้จากหน้าแรก", number: 21 },
-  // { id: 2, title: "profileScreen.workInProgress", content: "*จำนวนรถที่คุณเพิ่มมาในระบบและได้รับการติดต่องานภายในแอปของเรา", number: 5 },
-  // { id: 3, title: "profileScreen.workDone", content: "*จำนวนรถที่คุณเพิ่มมาในระบบและได้รับการติดต่องานภายในแอปของเรา", number: 16 },
-]
+const initReportWorking = []
 export const ProfileScreen = observer(function ProfileScreen() {
   // console.tron.log('hello rendering world')
   const { tokenStore, versatileStore } = useStores()
@@ -167,7 +163,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
         <HeaderRight onRightPress={() => _pressEditProfiel()} iconName={"ios-create-outline"} iconSize={24} iconColor={color.black} />
       ),
     });
-    ProfileStore.getProfileRequest()
+    // ProfileStore.getProfileRequest()
     ProfileStore.getTruckSummary()
   }, [])
 
@@ -241,6 +237,10 @@ export const ProfileScreen = observer(function ProfileScreen() {
       mappingRegionProvince(tmp_report.workingZones)
       mappingWorkingReport(tmp_report.totalJob)
       setallCar(all_car)
+    } else {
+      setallCar('')
+      setreportWorking([])
+      setarrSection(initVehicleList)
     }
   }, [ProfileStore.data_report_profile])
 
@@ -378,6 +378,14 @@ export const ProfileScreen = observer(function ProfileScreen() {
     </Text>
   }
 
+  const _onPressEmpty = (link) => {
+
+    let token = tokenStore?.token?.accessToken || null
+    if (token)
+      navigation.navigate('Home', { screen: link })
+    else navigation.navigate("signin")
+  }
+
   const _renderEmptyList = (s1, s2, s3, link) => {
     return <View style={EMPTY_VIEW}>
       <View>
@@ -387,16 +395,16 @@ export const ProfileScreen = observer(function ProfileScreen() {
         <Text tx={s2} />
       </View>
 
-      <TouchableOpacity style={{ paddingTop: 20 }} onPress={() => navigation.navigate('Home', { screen: link })}>
+      <TouchableOpacity style={{ paddingTop: 20 }} onPress={() => _onPressEmpty(link)}>
         <Text tx={s3} preset={'topic'} style={{ color: color.primary }} />
       </TouchableOpacity>
     </View>
   }
 
   const { fullName, phoneNumber, avatar } = JSON.parse(JSON.stringify(ProfileStore.data)) || {}
-  __DEV__ && console.tron.log("Profile data :: ", JSON.parse(JSON.stringify(ProfileStore.data)))
+  // __DEV__ && console.tron.log("Profile data :: ", JSON.parse(JSON.stringify(ProfileStore.data)))
 
-
+  __DEV__ && console.tron.log("Report data :: ", JSON.parse(JSON.stringify(ProfileStore.data_report_profile)))
 
   return (
     <View testID="ProfileScreen" style={FULL}>
@@ -457,7 +465,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
         {menu2 && <View style={[FULL, { paddingTop: Platform.OS == "ios" ? 10 : 0 }]}>
 
 
-          <SectionList
+          {ProfileStore.data_report_profile && arrSection && arrSection[0].data.length > 0 ? <SectionList
             sections={arrSection}
             keyExtractor={(item: any, index: any) => 'section-list-' + (item.id.toString()) + index}
             renderItem={({ item, index }) => _renderSectionList(item, index)}
@@ -486,7 +494,17 @@ export const ProfileScreen = observer(function ProfileScreen() {
             }
             ListEmptyComponent={() => _renderEmptyList("profileScreen.noEnoughCar", "profileScreen.fromManageCar",
               "profileScreen.goManageCar", "myVehicle")}
-          />
+          /> : <SectionList
+              sections={[]}
+              keyExtractor={(item: any, index: any) => 'section-list-' + (item.id.toString()) + index}
+              renderItem={({ item, index }) => _renderSectionList(item, index)}
+              stickySectionHeadersEnabled={false}
+              ListFooterComponent={
+                <View style={{ height: 50 }}></View>
+              }
+              ListEmptyComponent={() => _renderEmptyList("profileScreen.noEnoughCar", "profileScreen.fromManageCar",
+                "profileScreen.goManageCar", "myVehicle")}
+            />}
 
 
         </View>}

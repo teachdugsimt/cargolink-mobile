@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react"
 import {
   View, ViewStyle, TextStyle, TouchableOpacity,
-  SafeAreaView, Dimensions, Image, ImageStyle, Alert, Platform, PermissionsAndroid
+  SafeAreaView, Dimensions, Image, KeyboardAvoidingView, Alert, Platform, PermissionsAndroid
 } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Text, TextInputTheme, RoundedButton } from "../../components"
+import { Text, TextInputTheme, RoundedButton, ModalLoading, Screen } from "../../components"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { useForm, Controller } from "react-hook-form";
@@ -14,6 +14,8 @@ import { Modal } from 'react-native-modals';
 import { ScrollView } from "react-native-gesture-handler"
 import ProfileStore from '../../store/profile-store/profile-store'
 import { useStores } from "../../models/root-store/root-store-context";
+import { AlertMessage } from "../../utils/alert-form";
+import { translate } from "../../i18n"
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -255,6 +257,23 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
     }
   }, [])
 
+  useEffect(() => {
+    let tmp_update = JSON.parse(JSON.stringify(ProfileStore.data_update_profile))
+    if (tmp_update && tmp_update != null) {
+      AlertMessage(translate('common.successTransaction'), translate('common.updateSuccess'))
+      ProfileStore.clearUpdateData('data_update_profile')
+    }
+  }, [ProfileStore.data_update_profile])
+
+  useEffect(() => {
+    let error_update = JSON.parse(JSON.stringify(ProfileStore.error_update_profile))
+    if (error_update && error_update != null) {
+      if (error_update == "Invalid entry for email address") AlertMessage(translate('common.somethingWrong'), translate('common.invalidEmail'))
+      else AlertMessage(translate('common.somethingWrong'), translate('common.pleaseCheckYourData'))
+      ProfileStore.clearUpdateData('error_update_profile')
+    }
+  }, [ProfileStore.error_update_profile])
+
 
   let formControllerValue = control.getValues()
   __DEV__ && console.tron.logImportant("Form in render :: ", formControllerValue)
@@ -263,146 +282,152 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
   __DEV__ && console.tron.logImportant("Profile Data :: ", tmp_profile)
   return (
     <View testID="UpdateProfileScreen" style={FULL}>
-      <ScrollView style={FULL}>
-        <View style={[PADDING_TOP_20, BACKGROUND_WHITE]}>
-          <View style={VIEW_SUGGEST}>
-            <Text tx={"profileScreen.weSuggest"} style={COLOR_PRIMARY} />
-            <Text tx={"profileScreen.fullSuggestText"} style={[COLOR_LINE, PADDING_VERTICAL]} />
-          </View>
-        </View>
-
-        <Modal
-          visible={selectCapture}
-          onTouchOutside={() => setSelectCapture(false)}
-          onSwipeOut={() => setSelectCapture(false)}
-          onDismiss={() => setSelectCapture(false)}
-          swipeDirection={['up', 'down']} // can be string or an array
-          swipeThreshold={100} // default 100
-        >
-          <SafeAreaView style={SAFE_AREA_MODAL}>
-            <View style={CONTAINER_MODAL}>
-              <TouchableOpacity style={BUTTON_MODAL1} onPress={() => captureImage()}>
-                <View style={ROW_TEXT}>
-                  <Ionicons name="camera" size={20} color={color.primary} />
-                  <Text style={TEXT_MODAL_BUTTON} tx={"uploadVehicleScreen.captureNew"} /></View>
-              </TouchableOpacity>
-              <TouchableOpacity style={BUTTON_MODAL2} onPress={() => chooseFile()}>
-                <View style={ROW_TEXT}>
-                  <Ionicons name="library" size={20} color={color.primary} />
-                  <Text style={TEXT_MODAL_BUTTON} tx={"uploadVehicleScreen.selectFromLibrary"} /></View>
-              </TouchableOpacity>
+      <Screen preset={'scroll'} unsafe>
+        <ScrollView style={FULL}>
+          <View style={[PADDING_TOP_20, BACKGROUND_WHITE]}>
+            <View style={VIEW_SUGGEST}>
+              <Text tx={"profileScreen.weSuggest"} style={COLOR_PRIMARY} />
+              <Text tx={"profileScreen.fullSuggestText"} style={[COLOR_LINE, PADDING_VERTICAL]} />
             </View>
-          </SafeAreaView>
-        </Modal>
+          </View>
 
-        <View style={[FULL, BACKGROUND_WHITE]}>
+          <ModalLoading
+            containerStyle={{ zIndex: 2 }}
+            size={'large'} color={color.primary} visible={ProfileStore.loading_update_profile} />
 
-
-          <View style={MARGIN_HORI_10}>
-            <View style={PADDING_TOP_20}>
-
-              <View style={{ flexDirection: 'row' }}>
-                <Text>1.</Text>
-                <Text tx={"profileScreen.uploadYourPic"} />
-              </View>
-
-              <View style={{ alignItems: 'center', paddingTop: 20 }}>
-                <TouchableOpacity onPress={() => setSelectCapture(true)}>
-                  <View>
-                    {!!imageProfile && <TouchableOpacity style={{ alignItems: 'flex-end', position: 'absolute', top: 0, right: 0, zIndex: 2 }} onPress={() => setImageProfile(null)}>
-                      <Ionicons name={"close"} size={22} color={color.error} />
-                    </TouchableOpacity>}
-                    {/* <Image source={imageProfile ? imageProfile : images.addProfilePic} resizeMode="stretch" style={{ maxHeight: 120, maxWidth: 120 }} /> */}
-                    <Image source={(imageProfile ? imageProfile : images.addProfilePic)} resizeMode="stretch" style={{ width: 120, height: 120 }} />
-                  </View>
+          <Modal
+            visible={selectCapture}
+            onTouchOutside={() => setSelectCapture(false)}
+            onSwipeOut={() => setSelectCapture(false)}
+            onDismiss={() => setSelectCapture(false)}
+            swipeDirection={['up', 'down']} // can be string or an array
+            swipeThreshold={100} // default 100
+          >
+            <SafeAreaView style={SAFE_AREA_MODAL}>
+              <View style={CONTAINER_MODAL}>
+                <TouchableOpacity style={BUTTON_MODAL1} onPress={() => captureImage()}>
+                  <View style={ROW_TEXT}>
+                    <Ionicons name="camera" size={20} color={color.primary} />
+                    <Text style={TEXT_MODAL_BUTTON} tx={"uploadVehicleScreen.captureNew"} /></View>
+                </TouchableOpacity>
+                <TouchableOpacity style={BUTTON_MODAL2} onPress={() => chooseFile()}>
+                  <View style={ROW_TEXT}>
+                    <Ionicons name="library" size={20} color={color.primary} />
+                    <Text style={TEXT_MODAL_BUTTON} tx={"uploadVehicleScreen.selectFromLibrary"} /></View>
                 </TouchableOpacity>
               </View>
+            </SafeAreaView>
+          </Modal>
 
-            </View>
-          </View>
-
-          <View style={MARGIN_HORI_10}>
-            <View style={PADDING_TOP_20}>
-              <View style={{ flexDirection: 'row' }}>
-                <Text>2.</Text>
-                <Text tx={"profileScreen.inputMoreDetail"} />
-              </View>
+          <View style={[FULL, BACKGROUND_WHITE]}>
 
 
-              <View style={PADDING_TOP_10}>
+            <View style={MARGIN_HORI_10}>
+              <View style={PADDING_TOP_20}>
+
                 <View style={{ flexDirection: 'row' }}>
-                  <Text tx={"profileScreen.nameLastName"} />
-                  <Text style={{ color: color.error }}> *</Text>
+                  <Text>1.</Text>
+                  <Text tx={"profileScreen.uploadYourPic"} />
                 </View>
-                <Controller
-                  control={control}
-                  render={({ onChange, onBlur, value }) => (
-                    <TextInputTheme
-                      testID={"name-lastname-input"}
-                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
-                      onBlur={onBlur}
-                      onChangeText={value => onChange(value)}
-                      value={value}
-                    />
-                  )}
-                  key={"key-name-lastname"}
-                  name={"name-lastname"}
-                  rules={{ required: true }}
-                  defaultValue=""
-                />
-              </View>
-              {errors['name-lastname'] && <Text style={{ color: color.red }} tx={"profileScreen.inputName"} />}
 
-              <View style={PADDING_TOP_10}>
-                <Text tx={"profileScreen.phoneNumber"} />
-                <Controller
-                  control={control}
-                  render={({ onChange, onBlur, value }) => (
-                    <TextInputTheme
-                      testID={"phone-number-input"}
-                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
-                      onBlur={onBlur}
-                      onChangeText={value => onChange(value)}
-                      value={value}
-                    />
-                  )}
-                  key={"key-phone-number"}
-                  name={"phone-number"}
-                  defaultValue=""
-                />
-              </View>
+                <View style={{ alignItems: 'center', paddingTop: 20 }}>
+                  <TouchableOpacity onPress={() => setSelectCapture(true)}>
+                    <View>
+                      {!!imageProfile && <TouchableOpacity style={{ alignItems: 'flex-end', position: 'absolute', top: 0, right: 0, zIndex: 2 }} onPress={() => setImageProfile(null)}>
+                        <Ionicons name={"close"} size={22} color={color.error} />
+                      </TouchableOpacity>}
+                      {/* <Image source={imageProfile ? imageProfile : images.addProfilePic} resizeMode="stretch" style={{ maxHeight: 120, maxWidth: 120 }} /> */}
+                      <Image source={(imageProfile ? imageProfile : images.addProfilePic)} resizeMode="stretch" style={{ width: 120, height: 120 }} />
+                    </View>
+                  </TouchableOpacity>
+                </View>
 
-              <View style={PADDING_TOP_10}>
-                <Text tx={"profileScreen.email"} />
-                <Controller
-                  control={control}
-                  render={({ onChange, onBlur, value }) => (
-                    <TextInputTheme
-                      testID={"email-input"}
-                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
-                      onBlur={onBlur}
-                      onChangeText={value => onChange(value)}
-                      value={value}
-                    />
-                  )}
-                  key={"key-email"}
-                  name={"email"}
-                  defaultValue=""
-                />
               </View>
+            </View>
 
+            <View style={MARGIN_HORI_10}>
+              <View style={PADDING_TOP_20}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text>2.</Text>
+                  <Text tx={"profileScreen.inputMoreDetail"} />
+                </View>
+
+
+                <View style={PADDING_TOP_10}>
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text tx={"profileScreen.nameLastName"} />
+                    <Text style={{ color: color.error }}> *</Text>
+                  </View>
+                  <Controller
+                    control={control}
+                    render={({ onChange, onBlur, value }) => (
+                      <TextInputTheme
+                        testID={"name-lastname-input"}
+                        inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
+                        onBlur={onBlur}
+                        onChangeText={value => onChange(value)}
+                        value={value}
+                      />
+                    )}
+                    key={"key-name-lastname"}
+                    name={"name-lastname"}
+                    rules={{ required: true }}
+                    defaultValue=""
+                  />
+                </View>
+                {errors['name-lastname'] && <Text style={{ color: color.red }} tx={"profileScreen.inputName"} />}
+
+                <View style={PADDING_TOP_10}>
+                  <Text tx={"profileScreen.phoneNumber"} />
+                  <Controller
+                    control={control}
+                    render={({ onChange, onBlur, value }) => (
+                      <TextInputTheme
+                        testID={"phone-number-input"}
+                        inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
+                        onBlur={onBlur}
+                        onChangeText={value => onChange(value)}
+                        value={value}
+                      />
+                    )}
+                    key={"key-phone-number"}
+                    name={"phone-number"}
+                    defaultValue=""
+                  />
+                </View>
+
+                <View style={PADDING_TOP_10}>
+                  <Text tx={"profileScreen.email"} />
+                  <Controller
+                    control={control}
+                    render={({ onChange, onBlur, value }) => (
+                      <TextInputTheme
+                        testID={"email-input"}
+                        inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
+                        onBlur={onBlur}
+                        onChangeText={value => onChange(value)}
+                        value={value}
+                      />
+                    )}
+                    key={"key-email"}
+                    name={"email"}
+                    defaultValue=""
+                  />
+                </View>
+
+              </View>
+            </View>
+
+          </View>
+
+          <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_EXTRA }}>
+            <View style={WRAPPER_TOP}>
+              <RoundedButton onPress={handleSubmit(onSubmit)} text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
             </View>
           </View>
 
-        </View>
-
-        <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_EXTRA }}>
-          <View style={WRAPPER_TOP}>
-            <RoundedButton onPress={handleSubmit(onSubmit)} text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
-          </View>
-        </View>
-
-      </ScrollView>
+        </ScrollView>
+      </Screen>
     </View>
   )
 })

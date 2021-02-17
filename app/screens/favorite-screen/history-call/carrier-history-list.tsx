@@ -11,7 +11,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import CallDetectorManager from 'react-native-call-detection'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import i18n from 'i18n-js'
-import moment from 'moment'
+import { convertTime12to24 } from "../../../utils/convert-time-format";
 
 const CONTAINER_LIST: ViewStyle = {
   marginVertical: spacing[1],
@@ -47,6 +47,7 @@ const LOCATION: ViewStyle = {
   display: "flex",
   flexDirection: "row",
   alignItems: "center",
+  paddingVertical: spacing[1],
 }
 const LOCATION_TEXT: TextStyle = {
 
@@ -153,7 +154,7 @@ const Item = (data) => {
         <Text text={callTime} style={{ textAlign: 'right', color: color.line }} preset={'fieldLabel'} />
       </View> */}
       <View style={CONTENT}>
-        <View style={LOCATION}>
+        <View style={[LOCATION, { paddingTop: 0 }]}>
           <MaterialIcons name={'pin-drop'} color={color.primary} size={22} style={{ paddingRight: spacing[2] }} />
           <Text text={`${translate('common.from')}`} style={[LOCATION_TEXT, { width: i18n.locale === 'th' ? 30 : 50 }]} />
           <Text style={{ paddingRight: spacing[2] }} text={':'} />
@@ -188,7 +189,7 @@ const Item = (data) => {
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
       <ContactList
         header={carrierName}
-        callTime={callTime}
+        callTime={convertTime12to24(callTime)}
         containerStyle={CONTAINER_LIST}
         content={contentRender}
         contentRight={contentRight}

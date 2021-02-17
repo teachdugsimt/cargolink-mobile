@@ -396,10 +396,6 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
 
   const imageProps = ShipperTruckStore.profile?.imageProps ? JSON.parse(ShipperTruckStore.profile.imageProps) : ''
 
-  console.log('JSON.parse(JSON.stringify(ProfileStore.data_report_profile))', JSON.parse(JSON.stringify(ProfileStore.data_report_profile)))
-  console.log('JSON.parse(JSON.stringify(UserTruckStore.list))', JSON.parse(JSON.stringify(UserTruckStore.list)))
-  console.log('JSON.parse(JSON.stringify(ShipperTruckStore.profile))', JSON.parse(JSON.stringify(ShipperTruckStore.profile)))
-
   const profile = ProfileStore.data_report_profile
   const truckCountAll = profile?.trucks.reduce((curr, next) => (curr + next.total), 0) || 0
 
