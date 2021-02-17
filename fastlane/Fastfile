@@ -35,13 +35,14 @@ end
 
 
 desc 'Bump build numbers, and set the version to match the pacakage.json version.'
-lane :bump_version do
-  inc_ver_ios
-  inc_ver_and
-  build_number = get_build_number(xcodeproj: "./ios/CargoLinkMobile.xcodeproj")  
-  tag_string = "v" + version + "(" + build_number + ")"
-  git_commit(path: ".", message: "Bump build " + tag_string)
-  add_git_tag(tag: tag_string)
+lane :bump_version do |lane|
+  echo lane
+  # inc_ver_ios
+  # inc_ver_and
+  # build_number = get_build_number(xcodeproj: "./ios/CargoLinkMobile.xcodeproj")  
+  # tag_string = "v" + version + "(" + build_number + ")"
+  # git_commit(path: ".", message: "Bump build " + tag_string)
+  # add_git_tag(tag: tag_string)
 end
 
 platform :ios do
@@ -67,11 +68,6 @@ platform :ios do
 
   after_all do |lane|
     clean_build_artifacts
-    version = package['version']
-    build_number = get_build_number(xcodeproj: "./ios/CargoLinkMobile.xcodeproj")  
-    tag_string = "ios-v" + version + "-b" + build_number
-    commit_version_bump(message: 'Bump build (ios) ' + tag_string, xcodeproj: './ios/CargoLinkMobile.xcodeproj')
-    add_git_tag(tag: tag_string)
   end
 end
 
