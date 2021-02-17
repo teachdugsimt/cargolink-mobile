@@ -3,4 +3,4 @@
 # https://docs.fastlane.tools/actions/deliver/
 
 metadata_path './fastlane/metadata/ios'
-screenshots_path './fastlane/metadata/ios/screenshots'
+screenshots_path './fastlane/metadata/screenshots-ios'
