@@ -36,7 +36,7 @@ platform :ios do
 
   after_all do |lane|
     clean_build_artifacts
-    tag_string = "v" + version + "-b" + build_number
+    tag_string = "ios-v" + version + "-b" + build_number
     commit_version_bump(message: 'Bump build (ios) ' + tag_string, xcodeproj: './ios/CargoLinkMobile.xcodeproj')
     add_git_tag(tag: tag_string)
   end
@@ -44,7 +44,19 @@ end
 
 platform :android do
   desc 'Build the Android application.'
+  version = nil
+  build_number = nil
+
   private_lane :build do
+    increment_version_code(
+      gradle_file_path: "./android/app/build.gradle"
+    )
+    build_number = android_get_version_code(
+      gradle_file: "./android/app/build.gradle" # optional
+    )
+    version = android_get_version_name(
+      gradle_file: "./android/app/build.gradle" # optional
+    )
     gradle(task: 'clean', project_dir: 'android/')
     gradle(task: 'assemble', build_type: 'Release', project_dir: 'android/')
   end
@@ -52,11 +64,13 @@ platform :android do
   desc 'Ship to Playstore Beta.'
   lane :beta do
     build
-    supply(track: 'beta', track_promote_to: 'beta')
-    git_commit(path: ['./android/gradle.properties'], message: 'Bump versionCode (android)')
+    supply(track: 'beta', track_promote_to: 'beta')\
   end
 
   after_all do |lane|
+    tag_string = "android-v" + version + "-b" + build_number
+    git_commit(path: ".", message: "Bump build (android) " + tag_string)
+    add_git_tag(tag: tag_string)
   end
 end
 
