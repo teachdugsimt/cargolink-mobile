@@ -11,9 +11,9 @@
     "android": "react-native run-android",
     "android:build": "cd android && ./gradlew assembleRelease",
     "android:shake": "$ANDROID_HOME/platform-tools/adb devices | grep '\\t' | awk '{print $1}' | sed 's/\\s//g' | xargs -I {} $ANDROID_HOME/platform-tools/adb -s {} shell input keyevent 82",
-    "android:beta": "fastlane android beta",
+    "android:beta": "bundle exec fastlane android beta",
     "ios": "react-native run-ios",
-    "ios:beta": "fastlane ios beta",
+    "ios:beta": "bundle exec fastlane ios beta",
     "start": "react-native start",
     "test": "jest --coverage",
     "lint": "eslint index.js app storybook test --fix --ext .js,.ts,.tsx",
@@ -48,9 +48,9 @@
     "storybook": "start-storybook -p 9001 -c ./storybook",
     "adb": "adb reverse tcp:9090 tcp:9090 && adb reverse tcp:3000 tcp:3000 && adb reverse tcp:9001 tcp:9001 && adb reverse tcp:8081 tcp:8081",
     "test:CI": "set CI=true && react-scripts test --env=jsdom --testResultsProcessor=./node_modules/jest-html-reporter",
-    "bump-patch": "npm version patch && bundle exec fastlane bump_version",
-    "bump-minor": "npm version minor && bundle exec fastlane bump_version",
-    "bump-major": "npm version major && bundle exec fastlane bump_version"
+    "bump:patch": "npm version patch && bundle exec fastlane bump_version",
+    "bump:minor": "npm version minor && bundle exec fastlane bump_version",
+    "bump:major": "npm version major && bundle exec fastlane bump_version"
   },
   "dependencies": {
     "@mapbox/polyline": "^1.1.1",

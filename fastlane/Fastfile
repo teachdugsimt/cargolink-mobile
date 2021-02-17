@@ -35,14 +35,13 @@ end
 
 
 desc 'Bump build numbers, and set the version to match the pacakage.json version.'
-lane :bump_version do |lane|
-  echo lane
-  # inc_ver_ios
-  # inc_ver_and
-  # build_number = get_build_number(xcodeproj: "./ios/CargoLinkMobile.xcodeproj")  
-  # tag_string = "v" + version + "(" + build_number + ")"
-  # git_commit(path: ".", message: "Bump build " + tag_string)
-  # add_git_tag(tag: tag_string)
+lane :bump_version do
+  inc_ver_ios
+  inc_ver_and
+  build_number = get_build_number(xcodeproj: "./ios/CargoLinkMobile.xcodeproj")  
+  tag_string = "v" + version + "(" + build_number + ")"
+  git_commit(path: ".", message: "Bump build " + tag_string)
+  add_git_tag(tag: tag_string)
 end
 
 platform :ios do
@@ -63,7 +62,8 @@ platform :ios do
   desc 'Ship to Testflight.'
   lane :beta do
     build
-    pilot
+    # pilot
+    deliver
   end
 
   after_all do |lane|
