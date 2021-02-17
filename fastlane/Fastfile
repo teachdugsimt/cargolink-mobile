@@ -1,11 +1,5 @@
 fastlane_version '2.53.1'
 
-before_all do
-  ensure_git_branch
-  ensure_git_status_clean
-  git_pull
-end
-
 package = load_json(json_path: "./package.json")
 
 desc 'Android: Increment versionCode and set versionName to package.json version.'
@@ -38,11 +32,16 @@ end
 
 
 desc 'Bump build numbers, and set the version to match the pacakage.json version.'
-lane :bump do
+lane :bump_version do
   inc_ver_ios
   inc_ver_and
 end
 
+before_all do
+  ensure_git_branch
+  ensure_git_status_clean
+  git_pull
+end
 
 platform :ios do
   version = package['version']
@@ -56,8 +55,6 @@ platform :ios do
 
   desc 'Update version code and version number'
   lane :bump_version do
-
-    
   end
 
   desc 'Build the iOS application.'
@@ -89,7 +86,6 @@ platform :android do
 
   desc 'Update version code and version number'
   lane :bump_version do
-
   end
 
   desc 'Build the Android application.'

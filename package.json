@@ -1,6 +1,6 @@
 {
   "name": "cargo-link-mobile",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "private": true,
   "rnpm": {
     "assets": [
@@ -48,7 +48,7 @@
     "storybook": "start-storybook -p 9001 -c ./storybook",
     "adb": "adb reverse tcp:9090 tcp:9090 && adb reverse tcp:3000 tcp:3000 && adb reverse tcp:9001 tcp:9001 && adb reverse tcp:8081 tcp:8081",
     "test:CI": "set CI=true && react-scripts test --env=jsdom --testResultsProcessor=./node_modules/jest-html-reporter",
-    "bump-patch": "npm version patch --no-git-tag-version && fastlane bump_version",
+    "bump-patch": "npm version patch && fastlane bump_version",
     "bump-minor": "npm version minor",
     "bump-major": "npm version major"
   },

@@ -15,12 +15,25 @@ Install _fastlane_ using
 or alternatively using `brew install fastlane`
 
 # Available Actions
+### bump_version
+```
+fastlane bump_version
+```
+Bump build numbers, and set the version to match the pacakage.json version.
+
+----
+
 ## iOS
 ### ios certificates
 ```
 fastlane ios certificates
 ```
 Fetch certificates and provisioning profiles
+### ios bump_version
+```
+fastlane ios bump_version
+```
+Update version code and version number
 ### ios beta
 ```
 fastlane ios beta
@@ -30,6 +43,13 @@ Ship to Testflight.
 ----
 
 ## Android
+### android bump_version
+```
+fastlane android bump_version
+```
+Build the Android application.
+
+Update version code and version number
 ### android beta
 ```
 fastlane android beta
