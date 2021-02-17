@@ -184,6 +184,7 @@ const BORDER_BOTTOM: ViewStyle = {
   flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
   borderBottomWidth: 1, borderBottomColor: color.line, marginHorizontal: 10,
 }
+const ERROR_REGION: TextStyle = { color: color.error, paddingLeft: 5, marginTop: -10, marginBottom: 5 }
 const UPLOAD_IMG_STY: ViewStyle = { padding: 5, minHeight: 120 }
 const IMAGE_LIST: ImageStyle = {
   backgroundColor: color.line, padding: 10,
@@ -205,6 +206,9 @@ export const UploadVehicleScreen = observer((props) => {
 
   const [visibleModal, setvisibleModal] = useState(initModal)
   const [stateData, setstateData] = useState(null)
+
+  // const [reqDump, setreqDump] = useState(false)
+  const [reqHeight, setreqHeight] = useState(false)
 
 
   useEffect(() => {
@@ -436,7 +440,7 @@ export const UploadVehicleScreen = observer((props) => {
   const [inputRegistration, setinputRegistration] = useState({})
   console.log("Mapping data Here :: => ", MyVehicleStore.MappingData)
   const { control, handleSubmit, errors } = useForm({
-    defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : MyVehicleStore.MappingData
+    defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? { 'vehicle-height': '' } : MyVehicleStore.MappingData
   });
 
   const _alert = (field) => {
@@ -464,10 +468,10 @@ export const UploadVehicleScreen = observer((props) => {
       _alert(translate('common.vehicleTypeField'))
       return;
     }
-    else if (!data['vehicle-height']) {
-      _alert(translate('common.vehicleHeightField'))
-      return;
-    }
+    // else if (!data['vehicle-height']) {
+    //   _alert(translate('common.vehicleHeightField'))
+    //   return;
+    // }
     else if (!data['registration-0']) {
       _alert(translate('common.registrationVehicleField'))
       return;
@@ -480,7 +484,7 @@ export const UploadVehicleScreen = observer((props) => {
 
       loadingWeight: 1,
       // stallHeight: Number(parseFloat(data['vehicle-height']).toFixed(1)),
-      stallHeight: data['vehicle-height'].toUpperCase(),
+      stallHeight: data['vehicle-height'] ? data['vehicle-height'].toUpperCase() : "",
 
 
       tipper: toggleDump,
@@ -851,11 +855,12 @@ export const UploadVehicleScreen = observer((props) => {
     __DEV__ && console.tron.log("Truck type for stall height get :: ", truckType)
 
     let slotTruck = JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == truckType)
-
+    let requiredStallHeight = false
     if (slotTruck) {
       let tmpTruckType = slotTruck.name.replace(/\s+/g, '').toLowerCase();
       if (tmpTruckType.includes("trailer") || tmpTruckType.includes("เทรเลอร์") || tmpTruckType.includes("18ล้อ")
         || tmpTruckType.includes("หัวลาก") || tmpTruckType.includes("รถพ่วง")) {
+        if (Number(truckType) == 42) requiredStallHeight = true
         let lowTrailer = " (1.50 - 1.80 m)"
         let mediumTrailer = " (1.80 - 2.00 m)"
         let heightTrailer = " (2.20 - 2.50 m)"
@@ -865,18 +870,21 @@ export const UploadVehicleScreen = observer((props) => {
         res.push(low, medium, height)
       }
       else if (tmpTruckType.includes("4wheels") || tmpTruckType.includes("4ล้อ")) {
+        if (Number(truckType) == 49) requiredStallHeight = true
         let low4Wheels = " (~ 1.4 m)"
         let height4Wheels = " (~ 2.1 m)"
         low.label = low.label + low4Wheels
         height.label = height.label + height4Wheels
         res.push(low, height)
       } else if (tmpTruckType.includes("6wheels") || tmpTruckType.includes("6ล้อ")) {
+        if (Number(truckType) == 3) requiredStallHeight = true
         let low6Wheels = " (~ 2.0 m)"
         let height6Wheels = " (~ 3.0 m)"
         low.label = low.label + low6Wheels
         height.label = height.label + height6Wheels
         res.push(low, height)
       } else if (tmpTruckType.includes("10wheels") || tmpTruckType.includes("10ล้อ")) {
+        if (Number(truckType) == 26) requiredStallHeight = true
         let medium10Wheels = " (~ 2.5 m)"
         medium.label = medium.label + medium10Wheels
         res.push(medium)
@@ -884,8 +892,12 @@ export const UploadVehicleScreen = observer((props) => {
       else {
         res.push(low, medium, height)
       }
+      setreqHeight(requiredStallHeight)
       return res
-    } else return res.push(low, medium, height)
+    } else {
+      setreqHeight(requiredStallHeight)
+      return res.push(low, medium, height)
+    }
   }
 
   const _updateVisibleModal = (visibleX, index) => {
@@ -918,9 +930,10 @@ export const UploadVehicleScreen = observer((props) => {
   if (formControllerValue['vehicle-type'] && formControllerValue['vehicle-type']) {
     dropdown_vehicle_type = formControllerValue['vehicle-type']
   }
+  // if (!formControllerValue['vehicle-height']) control.setValue("vehicle-height", "")
   __DEV__ && console.tron.logImportant("Form in render :: ", formControllerValue)
   // __DEV__ && console.tron.logImportant("Controller pure : ", control.setValue())
-  __DEV__ && console.tron.log("Fetching Trucktype :: ", versatileStore.loading)
+  // __DEV__ && console.tron.log("errors['vehicle-height'] errors['vehicle-height'] :: ", errors['vehicle-height'])
 
   let default_stallHeightList = [
     { label: translate("common.low"), value: "LOW" },
@@ -1020,7 +1033,7 @@ export const UploadVehicleScreen = observer((props) => {
               render={({ onChange, onBlur, value }) => (
                 <>
                   <NormalDropdown
-                    value={value}
+                    value={value || ""}
                     onValueChange={onChange}
                     items={dropdown_vehicle_type ? _getStallHeightList(dropdown_vehicle_type) : default_stallHeightList}
                     placeholder={"uploadVehicleScreen.heightVehicleSelect"}
@@ -1029,11 +1042,11 @@ export const UploadVehicleScreen = observer((props) => {
               )}
               key={'text-input-vehicle-height'}
               name={"vehicle-height"}
-              rules={{ pattern: /^[a-zA-Z]+$/ }}
+              rules={{ required: reqHeight }}
               defaultValue=""
             />
             {/* </View> */}
-            {errors['vehicle-height'] && <Text style={{ color: color.red }} tx={"common.acceptOnlyCharacter"} />}
+            {reqHeight == true && errors['vehicle-height'] && <Text style={{ color: color.red }} tx={reqHeight == true ? "uploadVehicleScreen.reqHeight" : "common.acceptOnlyCharacter"} />}
           </View>
         </View>
 
@@ -1148,7 +1161,7 @@ export const UploadVehicleScreen = observer((props) => {
 
             {/* ********************** DROPDOWN ZONE ********************** */}
             {ddRegion.length && AddressStore.region && AddressStore.region.length ? ddRegion.map((e, index) => {
-              return <View key={'view-dropdown-region-' + index} style={[WRAPPER_REGION_DROPDOWN, { height: 40 }]}>
+              return <><View key={'view-dropdown-region-' + index} style={[WRAPPER_REGION_DROPDOWN, { height: 40 }]}>
                 <View style={{ ...FULL, marginLeft: 5 }} key={'view-dropdown-province-' + index}>
                   <Controller
                     control={control}
@@ -1183,10 +1196,11 @@ export const UploadVehicleScreen = observer((props) => {
                     }}
                     key={'controller-dropdown-region-' + index}
                     name={"controller-region-" + index}
+                    rules={{ required: true }}
                     defaultValue=""
                   />
-                </View>
 
+                </View>
                 {ddProvince.length ? ddProvince.map((pro, indexPro) => {
 
 
@@ -1313,7 +1327,8 @@ export const UploadVehicleScreen = observer((props) => {
                   <Ionicons size={20} color={color.darkGreen} name={"add-circle-outline"} />
                 </TouchableOpacity>}
               </View>
-
+                {errors["controller-region-" + index] && <Text style={ERROR_REGION} tx={"common.pleaseCheckYourData"} />}
+              </>
             }) : <></>}
             {/* ********************** DROPDOWN ZONE ********************** */}
 

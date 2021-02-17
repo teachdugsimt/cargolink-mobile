@@ -153,10 +153,29 @@ export const JobList = observer(function JobList() {
     FavoriteJobStore.find();
   }
 
+  const renderList = (data) => (
+    <FlatList
+      data={data}
+      renderItem={renderItem}
+      keyExtractor={item => item.id}
+      onEndReached={() => onScrollList()}
+      onEndReachedThreshold={0.1}
+      ListEmptyComponent={<EmptyListMessage />}
+      contentContainerStyle={{ flexGrow: 1 }}
+      refreshControl={
+        <RefreshControl
+          refreshing={FavoriteJobStore.loading}
+          onRefresh={onRefresh}
+        />
+      }
+    />
+  )
+
   return (
     <View style={{ flex: 1 }}>
-      <FlatList
-        data={FavoriteJobStore.list}
+      {FavoriteJobStore.list?.length > 0 ? renderList(FavoriteJobStore.list) : renderList([])}
+      {/* <FlatList
+        data={JSON.parse(JSON.stringify(FavoriteJobStore.list))}
         renderItem={renderItem}
         keyExtractor={item => item.id}
         onEndReached={() => onScrollList()}
@@ -169,7 +188,7 @@ export const JobList = observer(function JobList() {
             onRefresh={onRefresh}
           />
         }
-      />
+      /> */}
     </View>
   )
 })

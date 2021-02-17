@@ -45,6 +45,7 @@ export function MyJobNavigator() {
 
   return (
     <Stack.Navigator
+      initialRouteName={"myjob"}
       screenOptions={{
         headerShown: true,
         gestureEnabled: true,
@@ -106,7 +107,7 @@ export function MyJobNavigator() {
       <Stack.Screen name="postSuccess" component={PostSuccessScreen}
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"postJobScreen.postjob"} />,
-          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.navigate("MyJob", { screen: "checkInformation" })} />),
+          // headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.navigate("MyJob", { screen: "checkInformation" })} />),
           headerHideShadow: true
         })}
       />

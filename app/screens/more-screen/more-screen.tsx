@@ -9,6 +9,8 @@ import i18n from 'i18n-js'
 import { useStores } from "../../models/root-store/root-store-context";
 import AuthStore from "../../store/auth-store/auth-store"
 import ProfileStore from "../../store/profile-store/profile-store"
+import ShipperJobStore from "../../store/shipper-job-store/shipper-job-store"
+import FavoriteJobStore from "../../store/carriers-job-store/favorite-job-store"
 
 interface SubMenuProps {
   key?: string
@@ -222,8 +224,9 @@ export const MoreScreen = observer(function MoreScreen() {
             tokenStore.clearToken()
             AuthStore.clearAuthProfile()
             ProfileStore.clearAllData()
+            ShipperJobStore.clearDataByName('list')
+            FavoriteJobStore.setList([])
             navigation.navigate("signin")
-            console.log("Token after logout :: ", tokenStore.token)
           }}
             text={tokenStore?.token?.accessToken ? "homeScreen.logout" : "signinScreen.signin"}
             containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT}

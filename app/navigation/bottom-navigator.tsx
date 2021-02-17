@@ -11,11 +11,16 @@ import { color } from '../theme'
 import Icon22 from 'react-native-vector-icons/Ionicons'
 import { translate } from "../i18n"
 import { BottomTabNavigation } from "../components/bottom-tab-navigation/bottom-tab-navigation";
-
+import { useNavigation } from "@react-navigation/native"
 
 const Tab = createBottomTabNavigator();
 
 export default function BottomNavigator() {
+
+  const navigation = useNavigation()
+  useEffect(() => {
+    navigation.navigate('Home', { screen: 'home' })
+  }, [])
 
   return (
     <Tab.Navigator

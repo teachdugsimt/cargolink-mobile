@@ -163,7 +163,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
         <HeaderRight onRightPress={() => _pressEditProfiel()} iconName={"ios-create-outline"} iconSize={24} iconColor={color.black} />
       ),
     });
-    ProfileStore.getProfileRequest()
+    // ProfileStore.getProfileRequest()
     ProfileStore.getTruckSummary()
   }, [])
 
@@ -378,6 +378,14 @@ export const ProfileScreen = observer(function ProfileScreen() {
     </Text>
   }
 
+  const _onPressEmpty = (link) => {
+
+    let token = tokenStore?.token?.accessToken || null
+    if (token)
+      navigation.navigate('Home', { screen: link })
+    else navigation.navigate("signin")
+  }
+
   const _renderEmptyList = (s1, s2, s3, link) => {
     return <View style={EMPTY_VIEW}>
       <View>
@@ -387,7 +395,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
         <Text tx={s2} />
       </View>
 
-      <TouchableOpacity style={{ paddingTop: 20 }} onPress={() => navigation.navigate('Home', { screen: link })}>
+      <TouchableOpacity style={{ paddingTop: 20 }} onPress={() => _onPressEmpty(link)}>
         <Text tx={s3} preset={'topic'} style={{ color: color.primary }} />
       </TouchableOpacity>
     </View>
