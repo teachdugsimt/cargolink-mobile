@@ -38,6 +38,7 @@ desc 'Bump build numbers, and set the version to match the pacakage.json version
 lane :bump_version do
   inc_ver_ios
   inc_ver_and
+  build_number = get_build_number(xcodeproj: "./ios/CargoLinkMobile.xcodeproj")  
   tag_string = "v" + version + "(" + build_number + ")"
   git_commit(path: ".", message: "Bump build " + tag_string)
   add_git_tag(tag: tag_string)
