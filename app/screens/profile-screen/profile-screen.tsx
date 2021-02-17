@@ -126,7 +126,7 @@ const IMAGE_LAYOUT: ViewStyle = { width: 60, height: 60 }
 const WIDTH_70: ViewStyle = { width: '70%' }
 const EMPTY_VIEW: ViewStyle = { ...FULL, alignItems: 'center', justifyContent: 'center', marginTop: (height / 4) - 20 }
 const MAIN_FLAT_LIST: ViewStyle = { paddingHorizontal: 10, flex: 1 }
-const VIEW_SIGNIN: ViewStyle = { paddingHorizontal: 10, flex: 1, paddingTop: 20, alignItems: 'center' }
+const VIEW_SIGNIN: ViewStyle = { paddingHorizontal: 10, paddingVertical: 20, alignItems: 'center' }
 
 const initVehicleList = [
   {
