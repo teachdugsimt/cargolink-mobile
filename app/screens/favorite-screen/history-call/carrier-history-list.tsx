@@ -178,7 +178,7 @@ const Item = (data) => {
           </View>
           <View style={CAR_DETAIL}>
             <Text style={TEXT} text={`${translate('common.amount')} : `} />
-            <Text style={TEXT} text={requiredTruckAmount ? requiredTruckAmount.toString() : '-'} />
+            <Text style={TEXT} text={requiredTruckAmount ? `${requiredTruckAmount.toString()} ${translate('jobDetailScreen.unit')}` : '-'} />
           </View>
         </View>
       </View>

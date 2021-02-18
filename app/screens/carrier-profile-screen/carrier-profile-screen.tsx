@@ -395,7 +395,7 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
   return (
     <View style={CONTAINER}>
 
-      <ModalLoading size={'large'} color={color.primary} visible={ProfileStore.loading_report_profile} />
+      {/* <ModalLoading size={'large'} color={color.primary} visible={ProfileStore.loading_report_profile} /> */}
 
       <View style={[ROW, { padding: spacing[5], ...SPACE_BOTTOM }]}>
         <View style={{ flex: 1 }} >
