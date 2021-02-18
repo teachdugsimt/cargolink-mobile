@@ -97,12 +97,12 @@ const stopListenerTapped = () => {
 
 export const Item = (data) => {
   const {
-    shipperName = '',
-    shipperPhone = '',
-    shipperEmail,
+    name = '',
+    phone = '',
+    // email = '',
     truckType,
     loadingWeight,
-    registrationNumber,
+    // registrationNumber,
     callTime,
   } = data
 
@@ -129,12 +129,12 @@ export const Item = (data) => {
 
   const contentRender = () => (
     <View>
-      <Text text={shipperPhone} preset={'fieldLabel'} style={{ color: color.line }} />
+      <Text text={phone} preset={'fieldLabel'} style={{ color: color.line }} />
     </View>
   )
 
   const contentRight = () => (
-    <TouchableOpacity style={RIGHT} onPress={() => onCall(shipperPhone)}>
+    <TouchableOpacity style={RIGHT} onPress={() => onCall(phone)}>
       <MaterialCommunityIcons name={'phone'} size={20} style={{ textAlign: 'center' }} color={color.textWhite} />
     </TouchableOpacity>
   )
@@ -160,7 +160,7 @@ export const Item = (data) => {
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
       <ContactList
-        header={shipperName}
+        header={name}
         containerStyle={CONTAINER_LIST}
         content={contentRender}
         callTime={convertTime12to24(callTime)}

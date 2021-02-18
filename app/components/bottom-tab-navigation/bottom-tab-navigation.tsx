@@ -1,11 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { View, TouchableOpacity, Platform, SafeAreaView, Animated, ViewStyle } from 'react-native';
 import Icon22 from 'react-native-vector-icons/Ionicons'
 import { color, spacing } from '../../theme';
 import { Text } from '../text/text';
 import ProfileStore from '../../store/profile-store/profile-store'
 import { useStores } from "../../models/root-store/root-store-context";
-import { useFocusEffect } from '@react-navigation/native';
 
 const CONTAINER: ViewStyle = {
   flexDirection: 'row',
@@ -74,13 +73,6 @@ export const BottomTabNavigation = ({ state, descriptors, navigation }) => {
   const [clearRedDot, setClearRedDot] = useState<boolean>(false)
 
   const { tokenStore } = useStores()
-
-  useFocusEffect(
-    useCallback(() => {
-      // setClearRedDot(true)
-      console.log('useFocusEffect -> useCallback')
-    }, [])
-  );
 
   const onMoveUp = () => {
     Animated.timing(bottomValue, {
