@@ -105,8 +105,7 @@ export const SigninScreen = observer(function SigninScreen() {
   // const goBack = () => navigation.goBack()
   const [{ disabled, buttonColor, value, visibleModal }, setState] = useState(initialState)
   const [countryCode, setCountryCode] = useState<CountryCode>('TH')
-  const [country, setCountry] = useState<Country>(null)
-  const [callingCode, setCallingCode] = useState<string>('66')
+  const [callingCode, setCallingCode] = useState<string>('+66')
 
   useFocusEffect(
     useCallback(() => {
@@ -127,8 +126,7 @@ export const SigninScreen = observer(function SigninScreen() {
 
   const onSelect = (countryData: Country) => {
     setCountryCode(countryData.cca2)
-    setCallingCode(countryData.callingCode[0])
-    setCountry(countryData)
+    setCallingCode(`+${countryData.callingCode[0]}`)
     setState(initialState)
   }
 
@@ -195,10 +193,10 @@ export const SigninScreen = observer(function SigninScreen() {
     }))
   }
 
-  const onPress = (mobileNo: string) => {
-    const phoneNumber = normalizeMobileNo(mobileNo)
+  const onPress = (mobileNo: string, countryCode: string) => {
+    const phoneNumber = normalizeMobileNo(mobileNo).substr(1)
     AuthStore.setPhoneNumber(phoneNumber)
-    AuthStore.signInRequest({ phoneNumber: phoneNumber, userType: 7 })
+    AuthStore.signInRequest({ phoneNumber, countryCode, userType: 7 })
     setState(initialState)
     navigation.navigate("confirmCode")
   }
@@ -268,7 +266,7 @@ export const SigninScreen = observer(function SigninScreen() {
           disabled={disabled}
           // tx="goHome"
           text={translate("signinScreen.signin")}
-          onPress={() => onPress(value)}
+          onPress={() => onPress(value, callingCode)}
         />
       </View>
 

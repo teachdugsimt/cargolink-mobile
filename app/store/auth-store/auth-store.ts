@@ -1,4 +1,4 @@
-import { types, flow } from "mobx-state-tree"
+import { types, flow, cast } from "mobx-state-tree"
 import { AuthAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
 const apiAuth = new AuthAPI()
@@ -156,8 +156,8 @@ const AuthStore = types
     }),
 
     clearAuthProfile() {
-      self.profile = {}
-      self.policyData = {}
+      self.profile = cast({})
+      self.policyData = cast({})
     },
 
     setPhoneNumber(phoneNumber: string) {

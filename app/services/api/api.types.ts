@@ -13,6 +13,7 @@ export interface AuthReponse {
 
 export interface AuthRequest {
   phoneNumber: string
+  countryCode: string
   userType: number
 }
 

@@ -16,6 +16,17 @@ const ShipperTruck = types.model({
   registrationNumber: types.maybeNull(types.array(types.string)),
   tipper: types.maybeNull(types.boolean),
   isLiked: types.maybeNull(types.optional(types.boolean, true)),
+  owner: types.maybeNull(types.model({
+    id: types.maybeNull(types.number),
+    companyName: types.maybeNull(types.string),
+    fullName: types.maybeNull(types.string),
+    mobileNo: types.maybeNull(types.string),
+    email: types.maybeNull(types.string),
+    avatar: types.maybeNull(types.model({
+      object: types.maybeNull(types.string),
+      token: types.maybeNull(types.string),
+    })),
+  })),
 })
 
 const isAutenticated = async () => {
