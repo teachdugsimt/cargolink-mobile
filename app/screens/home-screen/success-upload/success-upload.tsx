@@ -33,7 +33,7 @@ const VIEW_BUTTON: ViewStyle = {
 }
 
 const BUTTON_CONTAINER: ViewStyle = {
-  backgroundColor: color.primary
+  backgroundColor: color.primary, borderColor: color.primary
 }
 
 const TEXT_TOPIC: TextStyle = { color: color.primary }

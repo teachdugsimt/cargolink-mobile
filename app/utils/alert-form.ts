@@ -32,7 +32,7 @@ export const AlertFormDate = () => {
 export const AlertMessage = (title = null, text = null, trans = false) => {
   Alert.alert(
     trans && title ? translate(title) : (title || translate('common.somethingWrong')),
-    trans && text ? translate(text) : (text || translate("postJobScreen.pleaseCheckYourData")),
+    trans && text ? translate(text) : (text || translate("common.pleaseCheckYourData")),
     [
       {
         text: translate('common.ok'), onPress: () => { }
