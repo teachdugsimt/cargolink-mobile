@@ -63,11 +63,6 @@ platform :ios do
   lane :beta do
     build
     # pilot
-    cl = changelog_from_git_commits
-    set_changelog(
-      changelog: cl, 
-      app_identifier: "th.co.cargolink.mobile"
-    )
     deliver
   end
 
