@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react"
 import {
-  View, ViewStyle, Dimensions, TextStyle, FlatList,
+  View, ViewStyle, Dimensions, TextStyle,
   Platform, ImageStyle, Image, TouchableOpacity,
   SectionList, ScrollView,
 } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { useForm, Controller } from "react-hook-form";
-import RNPickerSelect from 'react-native-picker-select';
 import { observer } from "mobx-react-lite"
 import { Text } from "../../../components"
 import { translate } from "../../../i18n"
@@ -17,9 +16,9 @@ import {
 } from '../../../components'
 import { AlertMessage } from "../../../utils/alert-form";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import moment from 'moment-timezone'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { spacing, color, typography, images } from "../../../theme"
+import { color, typography, images } from "../../../theme"
 import date from 'date-and-time';
 import { Modal, ModalContent } from 'react-native-modals';
 import PostJobStore from "../../../store/post-job-store/post-job-store";
@@ -30,11 +29,8 @@ import StatusStore from '../../../store/post-job-store/job-status-store'
 import { useStores } from "../../../models/root-store/root-store-context";
 import { FlatGrid } from 'react-native-super-grid';
 
-const { width, height } = Dimensions.get("window")
+const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
-const BORDER_GREY: ViewStyle = {
-  borderColor: color.line, borderWidth: 1
-}
 const GREY_TEXT: ViewStyle = { backgroundColor: color.line }
 const BORDER_RADIUS_20: ViewStyle = {
   borderRadius: 20,
@@ -67,6 +63,7 @@ const WRAP_DROPDOWN: ViewStyle = {
   flex: 1, borderColor: color.line, borderWidth: 1, padding: Platform.OS == "ios" ? 7.5 : 0,
   borderRadius: 2.5
 }
+const PADDING_TOP_20: ViewStyle = { paddingTop: 20 }
 const IMAGE_LIST: ImageStyle = {
   // width: 50, height: 50,
   backgroundColor: color.line, padding: 10,
@@ -163,7 +160,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
   }
   const initialData = _mappingObject(PostJobStore.MappingInitValue) || {}
 
-
+  console.log("Initial Value Check Information :: ", initialData)
   const { control, handleSubmit, errors } = useForm({
     defaultValues: initialData
   });
@@ -262,17 +259,18 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
     Object.keys(tmp_data).forEach((key) => {
       let arr = key.split("-")
       let indexing = arr[arr.length - 1]
+
       if (key.includes("shipping-date-")) {
-        final[key] = date.format(data['shipping-date-' + indexing], "DD-MM-YYYY hh:mm:ss")
+        final[key] = moment(data['shipping-date-' + indexing].toString().slice(0, 25)).format("DD-MM-YYYY HH:mm:ss")
       }
       if (key.includes("shipping-time-")) {
-        final[key] = date.format(data['shipping-time-' + indexing], "DD-MM-YYYY hh:mm:ss")
+        final[key] = moment(data['shipping-time-' + indexing].toString().slice(0, 25)).format("DD-MM-YYYY HH:mm:ss")
       }
       if (key.includes("receive-date")) {
-        final[key] = date.format(data['receive-date'], "DD-MM-YYYY hh:mm:ss")
+        final[key] = moment(data['receive-date'].toString().slice(0, 25)).format("DD-MM-YYYY HH:mm:ss")
       }
       if (key.includes("receive-time")) {
-        final[key] = date.format(data['receive-time'], "DD-MM-YYYY hh:mm:ss")
+        final[key] = moment(data['receive-time'].toString().slice(0, 25)).format("DD-MM-YYYY HH:mm:ss")
       }
     })
     console.log("Position 1 :: ", final)
@@ -679,8 +677,10 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
 
 
 
-
-                <Text tx={"postJobScreen.inputYourItem"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                <View style={ROW_TEXT}>
+                  <Text tx={"postJobScreen.inputYourItem"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                  <Text preset={'topic'} style={[RED_DOT, PADDING_TOP_20]}>*</Text>
+                </View>
                 <Controller
                   control={control}
                   render={({ onChange, onBlur, value }) => (
@@ -690,8 +690,10 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                   )}
                   key={'text-input-item-name'}
                   name={"item-name"}
+                  rules={{ required: true }}
                   defaultValue=""
                 />
+                {errors['item-name'] && <Text style={{ color: color.red }} tx={"common.productName"} />}
 
                 <Text tx={"postJobScreen.weightNumber"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
                 <Controller

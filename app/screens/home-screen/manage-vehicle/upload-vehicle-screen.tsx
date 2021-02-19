@@ -215,8 +215,7 @@ export const UploadVehicleScreen = observer((props) => {
 
     AddressStore.getRegion(i18n.locale)
     versatileStore.find()
-
-
+    if (!StatusStore.status) navigation.goBack()
 
     let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
     if (editStatus && editStatus == "edit") {
@@ -438,7 +437,7 @@ export const UploadVehicleScreen = observer((props) => {
 
 
   const [inputRegistration, setinputRegistration] = useState({})
-  console.log("Mapping data Here :: => ", MyVehicleStore.MappingData)
+  // console.log("Mapping data Here :: => ", MyVehicleStore.MappingData)
   const { control, handleSubmit, errors } = useForm({
     defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? { 'vehicle-height': '' } : MyVehicleStore.MappingData
   });
@@ -484,7 +483,7 @@ export const UploadVehicleScreen = observer((props) => {
 
       loadingWeight: 1,
       // stallHeight: Number(parseFloat(data['vehicle-height']).toFixed(1)),
-      stallHeight: data['vehicle-height'] ? data['vehicle-height'].toUpperCase() : "",
+      stallHeight: data['vehicle-height'] ? data['vehicle-height'].toUpperCase() : "NO",
 
 
       tipper: toggleDump,
