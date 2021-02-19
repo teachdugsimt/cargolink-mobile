@@ -42,6 +42,8 @@ const BORDER_GREY: ViewStyle = {
   borderColor: color.line, borderWidth: 1
 }
 
+const PADDING_TOP_20: ViewStyle = { paddingTop: 20 }
+
 const WRAP_DROPDOWN_VALUE: ViewStyle = {
   flex: 1, padding: Platform.OS == "ios" ? 7.5 : 0,
   borderRadius: 2.5
@@ -185,17 +187,6 @@ export const PostJobScreen = observer(function PostJobScreen() {
     { key: 4, ID: 4, no: 4, id: 4, name: 'postJobScreen.success', active: false },
   ]
 
-  const list_product_type = [
-    {
-      title: 'postJobScreen.popular',
-      data: [{ id: 1, name: 'วัสดุก่อสร้าง', image: 'greyMock' },
-      { id: 2, name: 'สินค้าเกษตร', image: 'greyMock' },
-      { id: 3, name: 'อาหาร และสินค้าบริโภค', image: 'greyMock' }]
-    }
-  ]
-
-
-
   let multi_select: object, multi_select2: object
   console.log("Multi select Item :: ", multi_select, multi_select2)
   let formControllerValue = control.getValues()
@@ -210,7 +201,15 @@ export const PostJobScreen = observer(function PostJobScreen() {
   }
 
   let list_product_type_all = JSON.parse(JSON.stringify(AdvanceSearchStore.productTypes))
-
+  let list_product_type = [
+    {
+      title: 'postJobScreen.popular',
+      data: []
+    }
+  ]
+  if (list_product_type_all && list_product_type_all.length > 0) {
+    list_product_type[0].data = list_product_type_all.slice(1, 4)
+  }
 
 
 
@@ -374,8 +373,10 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
 
 
-
-                <Text tx={"postJobScreen.inputYourItem"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                <View style={ROW_TEXT}>
+                  <Text tx={"postJobScreen.inputYourItem"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                  <Text preset={'topic'} style={[RED_DOT, PADDING_TOP_20]}>*</Text>
+                </View>
                 <Controller
                   control={control}
                   render={({ onChange, onBlur, value }) => (
@@ -385,8 +386,10 @@ export const PostJobScreen = observer(function PostJobScreen() {
                   )}
                   key={'text-input-item-name'}
                   name={"item-name"}
+                  rules={{ required: true }}
                   defaultValue=""
                 />
+                {errors['item-name'] && <Text style={{ color: color.red }} tx={"common.productName"} />}
 
                 <Text tx={"postJobScreen.weightNumber"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
                 <Controller

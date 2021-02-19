@@ -71,6 +71,7 @@ export const PostSuccessScreen = observer(function PostSuccessScreen() {
       headerCenter: () => (
         <HeaderCenter tx={"postJobScreen.updateJob"} />
       ),
+      headerLeft: () => {}
     });
     return () => {
       PostJobStore.clearDataPostjob()

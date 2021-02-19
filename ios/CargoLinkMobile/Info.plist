@@ -43,6 +43,11 @@
 	<string>App needs Camera Access Permission for testing</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<string>App needs location access</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>App needs always location access when usage</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>App needs location access</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>App needs photo library Access</string>
 	<key>NSPhotoLibraryUsageDescription</key>

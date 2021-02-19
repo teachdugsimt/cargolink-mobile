@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import {
   View, ViewStyle, TextStyle, Platform, ImageStyle, SafeAreaView, Dimensions,
-  KeyboardAvoidingView, TouchableOpacity, ScrollView, Keyboard, TouchableWithoutFeedback
+  KeyboardAvoidingView, TouchableOpacity, ScrollView
 } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { useForm, Controller } from "react-hook-form";
@@ -15,7 +15,6 @@ import { color, typography } from "../../../theme"
 import PostJobStore from "../../../store/post-job-store/post-job-store";
 import _ from 'lodash'
 import { Modal, ModalContent } from 'react-native-modals';
-import date from 'date-and-time'
 import { AlertForm, AlertFormDate } from "../../../utils/alert-form";
 import StatusStore from '../../../store/post-job-store/job-status-store'
 
@@ -107,8 +106,6 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
 
   const [statusMap, setstatusMap] = useState(null)
 
-
-
   const _mappingObject = (object) => {
     let tmp = object
     Object.keys(object).forEach(key => {
@@ -163,6 +160,9 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
       }
     }
 
+      return () => {
+        setfieldShipping(initField)
+      }
   }, [])
 
   const addDays = (date, days) => {
@@ -174,9 +174,11 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
   const onSubmit = (data) => {
     console.log("Raw Data Form Post job : ", data)
     const a = new Date()
-    const expiredDate = addDays(a, 2)
+    const expiredDate = (addDays(a, 2)).getTime()
+    console.log("Expire date :: ", expiredDate)
     const tmpCheckDate = data['receive-date']
-    const receiveDateForCheck = date.addHours(tmpCheckDate, 7)
+    const receiveDateForCheck = tmpCheckDate.setHours(data['receive-time'].getHours(), data['receive-time'].getMinutes(), data['receive-time'].getSeconds());
+    console.log("Full receive date/time :: ", receiveDateForCheck)
 
     if (receiveDateForCheck < expiredDate) { AlertFormDate(); return; }
     if (!data['receive-location']) { AlertForm("postJobScreen.receiveLocation"); return; }
@@ -219,7 +221,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
     })
 
     PostJobStore.setPostJob(2, final)
-
+    console.log("position final for REACEIVE POINT :: => ,", final)
     let status_action = JSON.parse(JSON.stringify(StatusStore.status))
     if (status_action == "add")
       navigation.navigate("checkInformation")
@@ -251,8 +253,8 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
     { key: 4, no: 4, id: 4, name: 'postJobScreen.success', active: false },
   ]
   let formControllerValue = control.getValues()
-
-
+  let fromNow2Days = addDays(initDatePicker, 2)
+  let addOneHours = new Date(fromNow2Days.setHours(fromNow2Days.getHours() + 1))
   // const { longitude, latitude } = position?.coords || {}
   return (
     <Screen unsafe>
@@ -355,7 +357,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                         )}
                         key={'text-input-receive-date'}
                         name={"receive-date"}
-                        defaultValue={initDatePicker}
+                        defaultValue={fromNow2Days}
                       />
                     </View>
                     <View style={[FULL, PADDING_LEFT_SMALL]}>
@@ -377,7 +379,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                         )}
                         key={'text-input-receive-time'}
                         name={"receive-time"}
-                        defaultValue={initDatePicker}
+                        defaultValue={addOneHours}
                       />
                     </View>
                   </View>
@@ -488,6 +490,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                         <Controller
                           control={control}
                           render={({ onChange, onBlur, value }) => (
+
                             <DatePickerRemake
                               key={"shipping-date-" + e.id}
                               testID={"testID-shipping-date-" + e.id}
@@ -502,7 +505,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                           )}
                           key={'text-input-shipping-date-' + e.id}
                           name={"shipping-date-" + e.id}
-                          defaultValue={initDatePicker}
+                          defaultValue={addDays(initDatePicker, 3)}
                         />
                       </View>
                       <View style={[FULL, PADDING_LEFT_SMALL]}>
@@ -524,7 +527,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                           )}
                           key={'text-input-shipping-time-' + e.id}
                           name={"shipping-time-" + e.id}
-                          defaultValue={initDatePicker}
+                          defaultValue={addDays(initDatePicker, 3)}
                         />
                       </View>
                     </View>

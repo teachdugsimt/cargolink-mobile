@@ -59,7 +59,8 @@ export const LocationPicker = (props) => {
       });
   }
   useEffect(() => {
-    Geolocation.getCurrentPosition(info => _currentRegion(info), error => __DEV__ && console.tron.log(error))
+    // Geolocation.getCurrentPosition(info => _currentRegion(info), error => __DEV__ && console.tron.log(error))
+    Geolocation.getCurrentPosition(info => _currentRegion(info))
     getAddress()
     return () => {
       Geolocation.stopObserving()
@@ -90,11 +91,11 @@ export const LocationPicker = (props) => {
 
   const _currentRegion = (info) => {
     settmpCurrentRegion(info)
-    __DEV__ && console.tron.log("______ INFO CURRENT LOCATION :: ", info)
+    __DEV__ && console.tron.logImportant("______ INFO CURRENT LOCATION :: ", info)
     let tmp = Object.assign({}, region);
     tmp.latitude = info.coords.latitude
     tmp.longitude = info.coords.longitude
-    __DEV__ && console.tron.log("After set Current Location :: ", tmp)
+    __DEV__ && console.tron.logImportant("After set Current Location :: ", tmp)
     setregion(tmp)
   }
 

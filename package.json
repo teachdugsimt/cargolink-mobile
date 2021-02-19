@@ -75,6 +75,7 @@
     "mobx": "^4.15.4",
     "mobx-react-lite": "^1.4.1",
     "mobx-state-tree": "^3.14.1",
+    "moment-timezone": "^0.5.33",
     "ramda": "0.27.1",
     "react": "16.13.1",
     "react-hook-form": "^6.13.1",

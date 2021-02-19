@@ -160,6 +160,7 @@ export const ModalTruckType = (props: ModalTruckProps) => {
           <View style={FULL}>
 
             <SectionList
+              style={{ zIndex: 5 }}
               sections={sectionTruckType}
               stickySectionHeadersEnabled={false}
               keyExtractor={(item, index) => 'section-list-' + (item.name || item.title) + index}
