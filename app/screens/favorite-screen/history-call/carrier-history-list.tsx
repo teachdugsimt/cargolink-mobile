@@ -94,16 +94,16 @@ const stopListenerTapped = () => {
 const Item = (data) => {
   const {
     callTime,
-    carrierEmail = '',
-    carrierName = '',
-    carrierPhone = '',
+    // email = '',
+    name = '',
+    phone = '',
     from,
     productName,
-    productTypeId,
+    // productTypeId,
     requiredTruckAmount,
     to,
     truckType,
-    weight,
+    // weight,
   } = data
 
   // const navigation = useNavigation()
@@ -129,7 +129,7 @@ const Item = (data) => {
 
   const contentRender = () => (
     <View>
-      <Text text={carrierPhone} preset={'fieldLabel'} style={{ color: color.line }} />
+      <Text text={phone} preset={'fieldLabel'} style={{ color: color.line }} />
       {/* <Text text={`${GetTruckType(+truckType)?.name || translate('common.vehicleTypeField') + " : " + translate('common.notSpecified')}`} /> */}
 
     </View>
@@ -137,7 +137,7 @@ const Item = (data) => {
 
   const contentRight = () => (
     <View>
-      <TouchableOpacity style={RIGHT} onPress={() => onCall(carrierPhone)}>
+      <TouchableOpacity style={RIGHT} onPress={() => onCall(phone)}>
         <MaterialCommunityIcons name={'phone'} size={20} style={{ textAlign: 'center' }} color={color.textWhite} />
       </TouchableOpacity>
       {/* <Text text={callTime}
@@ -178,7 +178,7 @@ const Item = (data) => {
           </View>
           <View style={CAR_DETAIL}>
             <Text style={TEXT} text={`${translate('common.amount')} : `} />
-            <Text style={TEXT} text={requiredTruckAmount ? requiredTruckAmount.toString() : '-'} />
+            <Text style={TEXT} text={requiredTruckAmount ? `${requiredTruckAmount.toString()} ${translate('jobDetailScreen.unit')}` : '-'} />
           </View>
         </View>
       </View>
@@ -188,7 +188,7 @@ const Item = (data) => {
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
       <ContactList
-        header={carrierName}
+        header={name}
         callTime={convertTime12to24(callTime)}
         containerStyle={CONTAINER_LIST}
         content={contentRender}

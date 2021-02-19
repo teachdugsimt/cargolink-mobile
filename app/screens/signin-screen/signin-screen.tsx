@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import {
   View,
   Image,
@@ -9,11 +9,12 @@ import {
   TextInput,
   Keyboard,
   Dimensions,
+  TouchableWithoutFeedback,
 } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Button, Icon, ModalAlert, Text } from "../../components"
-import { useNavigation } from '@react-navigation/native'
-// import CountryPicker, { Country, CountryCode, DEFAULT_THEME } from 'react-native-country-picker-modal'
+import { Button, Icon, ModalAlert, Screen, Text } from "../../components"
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import CountryPicker, { Country, CountryCode, DEFAULT_THEME, FlagButton } from 'react-native-country-picker-modal'
 import { color, spacing, images } from '../../theme'
 import { translate } from '../../i18n'
 import i18n from 'i18n-js'
@@ -56,7 +57,6 @@ const CONTINUE_TEXT: TextStyle = {
   paddingBottom: 5,
 }
 const MOBILE_FORM: ViewStyle = {
-  display: "flex",
   flexDirection: "row",
   alignItems: "center",
   borderWidth: 1,
@@ -69,6 +69,8 @@ const MOBILE_INPUT: TextStyle = {
   marginLeft: spacing[5],
   padding: 2,
   width: Dimensions.get("window").width / 2,
+  fontFamily: 'Kanit',
+  fontSize: 18
 }
 const FLAG: ImageStyle = {
   width: 35,
@@ -102,22 +104,34 @@ export const SigninScreen = observer(function SigninScreen() {
   const navigation = useNavigation()
   // const goBack = () => navigation.goBack()
   const [{ disabled, buttonColor, value, visibleModal }, setState] = useState(initialState)
-  const [countryCode, setCountryCode] = useState("TH")
-  // const [country, setCountry] = useState<Country>(null)
-  const [withCountryNameButton, setWithCountryNameButton] = useState<boolean>(false)
-  const [withFlag, setWithFlag] = useState<boolean>(true)
-  const [withEmoji, setWithEmoji] = useState<boolean>(true)
-  const [withFilter, setWithFilter] = useState<boolean>(true)
-  const [withAlphaFilter, setWithAlphaFilter] = useState<boolean>(false)
-  const [withCallingCode, setWithCallingCode] = useState<boolean>(true)
-  // const CUSTOM_DEFAULT_THEME: Partial<typeof DEFAULT_THEME> = {
-  //   ...DEFAULT_THEME,
-  //   flagSizeButton: Platform.select({ android: 30, ios: 30 }),
-  // }
-  // const onSelect = (countryData: Country) => {
-  //   setCountryCode(countryData.cca2)
-  //   setCountry(countryData)
-  // }
+  const [countryCode, setCountryCode] = useState<CountryCode>('TH')
+  const [country, setCountry] = useState<Country>(null)
+  const [callingCode, setCallingCode] = useState<string>('66')
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        setState(initialState)
+        setCountryCode('TH')
+        // setCountry(null)
+      }
+    }, [])
+  );
+
+  const CUSTOM_DEFAULT_THEME: Partial<typeof DEFAULT_THEME> = {
+    ...DEFAULT_THEME,
+    flagSizeButton: Platform.select({ android: 20, ios: 24 }),
+    fontFamily: 'Kanit-Medium',
+    fontSize: 16,
+  }
+
+  const onSelect = (countryData: Country) => {
+    setCountryCode(countryData.cca2)
+    setCallingCode(countryData.callingCode[0])
+    setCountry(countryData)
+    setState(initialState)
+  }
+
   const validateMobileNumberSuccess = () => {
     setState(prevState => ({
       ...prevState,
@@ -129,30 +143,47 @@ export const SigninScreen = observer(function SigninScreen() {
 
   const normalizeInput = (value: string, previousValue: string) => {
     if (!value) return value;
-    const currentValue = value.replace(/[^\d]/g, '');
-    const cvLength = currentValue.length;
-    const firstMobileNo = value.slice(0, 1)
+    if (countryCode === 'TH') {
+      const currentValue = value.replace(/[^\d]/g, '');
+      const cvLength = currentValue.length;
+      const firstMobileNo = value.slice(0, 1)
 
-    if (!previousValue || value.length > previousValue.length) {
-      if (firstMobileNo === FIRST_MOBILE_NO) {
-        if (cvLength === 10) validateMobileNumberSuccess()
-        if (cvLength < 4) return currentValue;
-        if (cvLength < 7) return `${currentValue.slice(0, 3)} - ${currentValue.slice(3)}`;
-        return `${currentValue.slice(0, 3)} - ${currentValue.slice(3, 6)} - ${currentValue.slice(6, 10)}`;
+      if (!previousValue || value.length > previousValue.length) {
+        if (firstMobileNo === FIRST_MOBILE_NO) {
+          if (cvLength === 10) validateMobileNumberSuccess()
+          if (cvLength < 4) return currentValue;
+          if (cvLength < 7) return `${currentValue.slice(0, 3)} - ${currentValue.slice(3)}`;
+          return `${currentValue.slice(0, 3)} - ${currentValue.slice(3, 6)} - ${currentValue.slice(6, 10)}`;
+        } else {
+          if (cvLength === 9) validateMobileNumberSuccess()
+          if (cvLength < 3) return currentValue;
+          if (cvLength < 6) return `${currentValue.slice(0, 2)} - ${currentValue.slice(2)}`;
+          return `${currentValue.slice(0, 2)} - ${currentValue.slice(2, 5)} - ${currentValue.slice(5, 9)}`;
+        }
       } else {
-        if (cvLength === 9) validateMobileNumberSuccess()
-        if (cvLength < 3) return currentValue;
-        if (cvLength < 6) return `${currentValue.slice(0, 2)} - ${currentValue.slice(2)}`;
-        return `${currentValue.slice(0, 2)} - ${currentValue.slice(2, 5)} - ${currentValue.slice(5, 9)}`;
+        setState(prevState => ({
+          ...prevState,
+          disabled: true,
+          buttonColor: color.line,
+        }))
+        if (value.slice(-3).match(' - ')) value = value.slice(0, -3)
+        return value;
       }
     } else {
-      setState(prevState => ({
-        ...prevState,
-        disabled: true,
-        buttonColor: color.line,
-      }))
-      if (value.slice(-3).match(' - ')) value = value.slice(0, -3)
-      return value;
+      if (value.length > 6) {
+        setState(prevState => ({
+          ...prevState,
+          disabled: false,
+          buttonColor: color.primary,
+        }))
+      } else {
+        setState(prevState => ({
+          ...prevState,
+          disabled: true,
+          buttonColor: color.line,
+        }))
+      }
+      return value
     }
   };
 
@@ -194,38 +225,41 @@ export const SigninScreen = observer(function SigninScreen() {
       <View testID="Logo" style={LOGO_PART}>
         <Image source={images.logoNewYellow} style={LOGO} resizeMode={"contain"} />
       </View>
-      <View testID="MobileForm" style={MOBILE_FORM_PART}>
-        <Text style={LABEL} text={translate("signinScreen.enterYourPhoneNumber")} />
-        <View style={MOBILE_FORM}>
-          {/* <CountryPicker
-            {...{
-              countryCode,
-              withFilter,
-              withFlag,
-              withCountryNameButton,
-              withAlphaFilter,
-              withCallingCode,
-              withEmoji,
-              withCallingCodeButton: true,
-              containerButtonStyle: CONTAINER_BUTTON_STYLE,
-              onSelect,
-              countryCodes: ['TH'],
-            }}
-            theme={CUSTOM_DEFAULT_THEME}
-          /> */}
-          <Icon icon="thFlag" style={FLAG} />
-          <Text>+66</Text>
-          <TextInput
-            testID={'phone-number-signin'}
-            style={MOBILE_INPUT}
-            keyboardType={"numeric"}
-            maxLength={16}
-            placeholder={"xx - xxx - xxxx"} // ใส่ข้อมูลเบอร์โทรศัพท์ของคุณ
-            onChangeText={(text) => onChangeText(text)}
-            value={value}
-          />
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View testID="MobileForm" style={MOBILE_FORM_PART}>
+          <Text style={LABEL} text={translate("signinScreen.enterYourPhoneNumber")} />
+          <View style={MOBILE_FORM}>
+            <CountryPicker
+              countryCode={countryCode}
+              withFilter={true}
+              withFlag={true}
+              withCountryNameButton={false}
+              withAlphaFilter={false}
+              withCallingCode={true}
+              withEmoji={false}
+              withCallingCodeButton
+              containerButtonStyle={{
+                marginBottom: spacing[1],
+              }}
+              onSelect={onSelect}
+              // countryCodes={['TH']}
+              theme={CUSTOM_DEFAULT_THEME}
+              withCloseButton={true}
+            />
+            {/* <Icon icon="thFlag" style={FLAG} /> */}
+            {/* <Text>+66</Text> */}
+            <TextInput
+              testID={'phone-number-signin'}
+              style={MOBILE_INPUT}
+              keyboardType={"numeric"}
+              maxLength={30}
+              placeholder={"xx - xxx - xxxx"}
+              onChangeText={(text) => onChangeText(text)}
+              value={value}
+            />
+          </View>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
       <View testID="ButtonSignin" style={SIGNIN_PART}>
         <Button
           testID="continue-with-signin"

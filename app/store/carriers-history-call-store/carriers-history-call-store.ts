@@ -8,9 +8,9 @@ const carriersHistoryCallApi = new CarriersHistoryCallAPI()
 const History = types.model({
   id: types.maybeNull(types.string),
   callTime: types.maybeNull(types.string),
-  carrierEmail: types.maybeNull(types.string),
-  carrierName: types.maybeNull(types.string),
-  carrierPhone: types.maybeNull(types.string),
+  email: types.maybeNull(types.string),
+  name: types.maybeNull(types.string),
+  phone: types.maybeNull(types.string),
   from: types.model({
     contactMobileNo: types.maybeNull(types.string),
     contactName: types.maybeNull(types.string),

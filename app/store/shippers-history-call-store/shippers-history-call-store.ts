@@ -12,9 +12,9 @@ const History = types.model({
   registrationNumber: types.array(
     types.maybeNull(types.string)
   ),
-  shipperEmail: types.maybeNull(types.string),
-  shipperName: types.maybeNull(types.string),
-  shipperPhone: types.maybeNull(types.string),
+  email: types.maybeNull(types.string),
+  name: types.maybeNull(types.string),
+  phone: types.maybeNull(types.string),
   truckType: types.maybeNull(types.number)
 })
 
