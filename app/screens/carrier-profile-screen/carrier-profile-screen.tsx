@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { observer } from 'mobx-react-lite'
-import { Dimensions, FlatList, Image, ImageProps, ImageStyle, RefreshControl, ScrollView, TextStyle, View, ViewStyle } from 'react-native'
+import { Dimensions, FlatList, Image, ImageProps, ImageStyle, RefreshControl, ScrollView, TextStyle, TouchableOpacity, View, ViewStyle, Animated } from 'react-native'
 import { Button, EmptyListMessage, Icon, ModalAlert, ModalLoading, RatingStart, SearchItem, Text } from '../../components'
 import { translate } from '../../i18n'
 import { spacing, images as imageComponent, color, images } from '../../theme'
@@ -14,6 +14,7 @@ import { GetTruckType } from "../../utils/get-truck-type"
 import { MapTruckImageName } from '../../utils/map-truck-image-name'
 import FavoriteJobStore from '../../store/carriers-job-store/favorite-job-store'
 import { useStores } from '../../models'
+import Feather from 'react-native-vector-icons/Feather'
 
 interface CarrierProfileProps {
   isBooker?: boolean
@@ -111,6 +112,15 @@ const CALL_TEXT: TextStyle = {
   fontSize: 18,
   paddingVertical: spacing[1]
 }
+const SHOW_MORE: ViewStyle = {
+  justifyContent: 'center',
+  alignItems: 'center',
+  paddingTop: spacing[4],
+}
+const SHOW_MORE_TEXT: TextStyle = {
+  color: color.primary,
+  textDecorationLine: 'underline',
+}
 
 const STAR = [
   {
@@ -159,7 +169,7 @@ const Truck = ({ truckType, total }) => {
   const truckTypeName = GetTruckType(+truckType)?.name || translate('common.notSpecified')
   const truckImage = MapTruckImageName(+truckType)
 
-  return (<View style={{ ...ROW, paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.disable }}>
+  return (<View style={{ ...ROW, paddingHorizontal: spacing[2], paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.disable }}>
     <View style={{ flex: 2 }}>
       <View style={OUTER_CIRCLE}>
         <Image source={imageComponent[truckImage && truckImage !== 'greyMock' ? truckImage : '']} style={TRUCK_IMAGE} />
@@ -180,7 +190,7 @@ const Truck = ({ truckType, total }) => {
 const Rating = ({ show, count }) => (
   <View style={RATING_CONTAINER}>
     <View style={START_CONTAINER}>
-      <RatingStart size={16} colorInActive={color.disable} colorActive={color.primary} indexActive={show} isHorizontal disabled />
+      <RatingStart size={16} space={1} colorInActive={color.disable} colorActive={color.primary} indexActive={show} isHorizontal disabled />
     </View>
     <View style={RATING_BAR_CONTAINER}>
       <View style={{ flex: 1, width: '0%', backgroundColor: color.primary, borderRadius: 3 }} />
@@ -294,10 +304,18 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
   const [visibleModal, setVisibleModal] = useState<boolean>(false)
   const [isBokking, setIsBooking] = useState<boolean>(false)
   const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState<boolean>(true)
+  const [showMore, setShowMore] = useState<boolean>(false)
+  const scrollRef = useRef<FlatList>(null);
 
   const route = useRoute()
 
   const { isBooker }: CarrierProfileProps = route?.params || {}
+
+  useEffect(() => {
+    return () => {
+      ProfileStore.clearAllData()
+    }
+  }, [])
 
   const confirmBookAJob = () => {
     setVisibleModal(true)
@@ -333,6 +351,16 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
     }
   }
 
+  const onToggle = () => {
+    if (showMore) {
+      scrollRef?.current?.scrollToOffset({
+        animated: true,
+        offset: 0,
+      })
+    }
+    setShowMore(!showMore)
+  }
+
   const modalProps = {
     containerStyle: {
       paddingTop: spacing[5],
@@ -363,22 +391,32 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
   const profile = ProfileStore.data_report_profile
   const truckCountAll = profile?.trucks.reduce((curr, next) => (curr + next.total), 0) || 0
 
+  const showLessTruck = JSON.parse(JSON.stringify(profile))?.trucks.splice(0, 4) || []
+
   const HeaderComponent = () => (<>
     <View style={SECTION}>
       <View style={TOPIC}>
         <Text text={translate('profileScreen.allVehicle')} />
-        <Text text={`${truckCountAll.toString()}  ${translate('jobDetailScreen.unit')}`} />
+        <Text text={`${truckCountAll.toString()}  ${translate('jobDetailScreen.unit')}`} style={{ paddingRight: spacing[1] + 2 }} />
       </View>
-      {profile?.trucks?.map((vehicle, index) => {
-        return <Truck key={index} {...vehicle} />
-      })}
+      <View>
+        {!showMore ? showLessTruck.map((vehicle, index) => {
+          return <Truck key={index} {...vehicle} />
+        }) : profile?.trucks?.map((vehicle, index) => {
+          return <Truck key={index} {...vehicle} />
+        })}
+      </View>
+      {profile?.trucks?.length > 4 && <TouchableOpacity style={SHOW_MORE} onPress={onToggle}>
+        <Text text={showMore ? translate('shipperProfileScreen.showLess') : translate('shipperProfileScreen.showMore')} style={SHOW_MORE_TEXT} />
+        {/* <Feather name={'more-horizontal'} color={color.primary} size={50} /> */}
+      </TouchableOpacity>}
     </View>
 
     <View style={SECTION}>
       <View style={TOPIC}>
         <Text tx={'shipperProfileScreen.feedbackScore'} />
       </View>
-      <View>
+      <View style={{ paddingLeft: spacing[2] }}>
         {STAR.map(val => <Rating key={val.show} {...val} />)}
       </View>
     </View>
@@ -402,7 +440,7 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
           <Image {...imageProps} style={PROFILE_IMAGE} resizeMode={'cover'} />
         </View>
         <View style={{ flex: 3 }}>
-          <Text text={CarriersJobStore.profile?.companyName || ''} style={TEXT} />
+          <Text text={CarriersJobStore.profile?.companyName || ''} style={TEXT} preset={'topicExtra'} />
           <Verified isVerified={false} />
         </View>
       </View>
@@ -438,6 +476,7 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
       </ScrollView> */}
 
       <FlatList
+        ref={scrollRef}
         data={UserJobStore.list || []}
         renderItem={renderItem}
         keyExtractor={item => item.id}
@@ -449,7 +488,8 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
         onMomentumScrollBegin={() => setOnEndReachedCalledDuringMomentum(false)}
         refreshControl={
           <RefreshControl
-            refreshing={CarriersJobStore.loading}
+            // refreshing={CarriersJobStore.loading}
+            refreshing={ProfileStore.loading_report_profile}
             onRefresh={() => console.log('onRefresh')}
           />
         }

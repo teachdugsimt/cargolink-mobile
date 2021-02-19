@@ -382,7 +382,9 @@
     "notVerified": "ยังไม่ผ่านการตรวจสอบ",
     "workInProgress": "งานที่กำลังดำเนินการ",
     "pastWork": "งานที่ผ่านมา",
-    "feedbackScore": "คะแนนความพึงพอใจ"
+    "feedbackScore": "คะแนนความพึงพอใจ",
+    "showMore": "แสดงเพิ่มเติม",
+    "showLess": "แสดงน้อยลง"
   },
   "feedbackScreen": {
     "yourOpinion": "ความคิดเห็นของคุณ",
