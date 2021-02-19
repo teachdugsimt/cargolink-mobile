@@ -1,6 +1,8 @@
 export interface NormalDropdownProps {
   items?: Array<Object>
   value?: string
-  onValueChange?: () => any
+  keyer?: number
+  onValueChange?: (val: any) => any
+  onChange?: any
   placeholder?: string
 }

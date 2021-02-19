@@ -1,14 +1,14 @@
 
 
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Platform, TouchableOpacity, ViewStyle } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useForm, Controller } from "react-hook-form";
-import { spacing, color, typography, images } from "../../theme"
+import { spacing, color } from "../../theme"
 import { Text } from '../text/text'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import date from 'date-and-time';
+import i18n from 'i18n-js'
 
 const PADDING_PURE: ViewStyle = { padding: 5 }
 const FULL: ViewStyle = { flex: 1 }
@@ -55,6 +55,8 @@ export const TimePickerRemake = (props) => {
           display="default"
           timeZoneOffsetInMinutes={420}
           timeZoneOffsetInSeconds={25200}
+          textColor={color.primary}
+          locale={i18n.locale == "th" ? 'th-TH' : 'en-EN'}
           onTouchCancel={() => setShow(Platform.OS === 'ios')}
           onChange={(event, selectedDate) => {
             if (selectedDate) {
