@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { TextStyle, View, ViewStyle, FlatList, RefreshControl, Platform } from "react-native"
+import { TextStyle, View, ViewStyle, FlatList, RefreshControl, Platform, Alert } from "react-native"
 import { Button, VehicleItem, Text } from "../../components/"
 import { color, spacing } from "../../theme"
 import { translate } from "../../i18n"
 import { useNavigation } from "@react-navigation/native"
 import MyVehicleStore from '../../store/my-vehicle-store/my-vehicle-store'
 import StatusStore from '../../store/my-vehicle-store/status-vehicle-store'
-import { GetTruckType } from "../../utils/get-truck-type";
+import { AlertMessage } from '../../utils/alert-form'
 import { useStores } from "../../models/root-store/root-store-context";
 import date from 'date-and-time';
 import Feather from 'react-native-vector-icons/Feather'
 import i18n from 'i18n-js'
+import ProfileStore from "../../store/profile-store/profile-store"
 
 const CONTAINER: ViewStyle = {
   flex: 1,
@@ -121,7 +122,7 @@ export const MyVehicle = observer(function MyVehicle() {
     )
   }
 
-  const _renderEmptyText = (text) => {
+  const EmptyText = (text) => {
     return <View style={[EMPTY_CONTAINER_STYLE]}>
       <Text tx={"common.notFound"} style={EMPTY_TEXT_STYLE} preset={"topicExtra"} />
       <Feather name={"inbox"} size={50} color={color.line} />
@@ -146,20 +147,22 @@ export const MyVehicle = observer(function MyVehicle() {
             onRefresh={onRefresh}
           />
         }
-        ListEmptyComponent={_renderEmptyText()}
+        ListEmptyComponent={<EmptyText />}
       />
 
       <View>
         <Button
           testID="add-new-vahicle"
-          style={BUTTON_ADD}
+          style={[BUTTON_ADD, {
+            backgroundColor: !tokenStore.token || !tokenStore.token.accessToken || !ProfileStore.data ? color.disable : color.primary,
+            borderColor: !tokenStore.token || !tokenStore.token.accessToken || !ProfileStore.data ? color.disable : color.primary
+          }]}
           textStyle={TEXT_ADD}
           text={translate("myVehicleScreen.addNewCar")} // เพิ่มรถของฉัน
-          // disabled={disabled}
+          disabled={!tokenStore.token || !tokenStore.token.accessToken || !ProfileStore.data}
           onPress={() => {
             navigation.navigate("uploadVehicle")
             StatusStore.setStatusScreen('add')
-            // MyVehicleStore.setStatusScreen('add')
           }}
         />
       </View>

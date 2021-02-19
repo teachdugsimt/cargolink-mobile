@@ -138,7 +138,7 @@ export const HomeScreen = observer((props) => {
       title: "homeScreen.carriers",
       data: [{
         id: 1, name: "homeScreen.manageCar", onPressButton: () => {
-          if (!token) navigation.navigate("signin")
+          if (!token || !ProfileStore.data) navigation.navigate("signin")
           else {
             MyVehicleStore.findRequest({ page: 1 })
             navigation.navigate("myVehicle")
@@ -152,7 +152,7 @@ export const HomeScreen = observer((props) => {
       title: "homeScreen.shippers",
       data: [{
         id: 3, name: "homeScreen.postJob", onPressButton: () => {
-          if (!token) navigation.navigate("signin")
+          if (!token || !ProfileStore.data) navigation.navigate("signin")
           else {
             StatusStore.setStatusScreen('add')
             navigation.navigate("postjob")

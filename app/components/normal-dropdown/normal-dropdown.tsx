@@ -27,9 +27,9 @@ const WRAP_DROPDOWN: ViewStyle = {
 }
 export function NormalDropdown(props: NormalDropdownProps) {
 
-  const { value, onValueChange, items, placeholder } = props
+  const { value, onValueChange, items, placeholder, keyer } = props
   return (
-    <View style={{ ...WRAP_DROPDOWN }} key={'view-dropdown-vehicle-height'}>
+    <View style={{ ...WRAP_DROPDOWN }} key={'view-dropdown-vehicle-height-' + keyer}>
       <RNPickerSelect
         value={value}
         onValueChange={(val) => onValueChange(val)}

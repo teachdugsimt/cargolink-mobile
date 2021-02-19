@@ -1026,7 +1026,7 @@ export const UploadVehicleScreen = observer((props) => {
               />
             </View>
             <Text tx={"uploadVehicleScreen.heightVehicle"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
-            {/* <View style={{ ...WRAP_DROPDOWN }} key={'view-dropdown-vehicle-height'}> */}
+           
             <Controller
               control={control}
               render={({ onChange, onBlur, value }) => (
@@ -1044,7 +1044,6 @@ export const UploadVehicleScreen = observer((props) => {
               rules={{ required: reqHeight }}
               defaultValue=""
             />
-            {/* </View> */}
             {reqHeight == true && errors['vehicle-height'] && <Text style={{ color: color.red }} tx={reqHeight == true ? "uploadVehicleScreen.reqHeight" : "common.acceptOnlyCharacter"} />}
           </View>
         </View>
@@ -1167,6 +1166,7 @@ export const UploadVehicleScreen = observer((props) => {
                     render={({ onChange, onBlur, value }) => {
                       return (
                         <NormalDropdown
+                          keyer={index}
                           value={value}
                           onValueChange={(val) => {
                             onChange(val)
@@ -1271,14 +1271,6 @@ export const UploadVehicleScreen = observer((props) => {
                                   </View>
 
                                   <View>
-                                    {/* <SectionList
-                                      sections={list_province_popular ? list_province_popular : []}
-                                      keyExtractor={(item, indexX) => 'section-list-' + item.name + indexX}
-                                      renderItem={(data) => _renderSectionModalProvince(data.item, data.index, onChange, index)}
-                                      renderSectionHeader={({ section: { title } }) => (
-                                        <Text tx={title} style={PADDING_TOP} />
-                                      )}
-                                    /> */}
                                     {!!formControllerValue[`controller-region-${index}`] && !!AddressStore.region && <FlatList
                                       ListHeaderComponent={<View style={[PADDING_TOP_10, ALIGN_CENTER]}><Text preset={'topic'} tx={regionName} style={PRIMARY_COLOR}></Text></View>}
                                       ListFooterComponent={<View style={{ height: Platform.OS == 'ios' ? 100 : 20 }}></View>}
