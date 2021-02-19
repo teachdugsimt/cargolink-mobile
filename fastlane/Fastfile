@@ -5,9 +5,9 @@ version = package['version']
 build_number = nil
 
 before_all do
-  # ensure_git_branch
-  # ensure_git_status_clean
-  # git_pull
+  ensure_git_branch
+  ensure_git_status_clean
+  git_pull
 end
 
 desc 'Android: Increment versionCode and set versionName to package.json version.'
@@ -61,8 +61,12 @@ platform :ios do
 
   desc 'Ship to Testflight.'
   lane :beta do
-    # build
+    build
     # pilot
+    set_changelog(
+      changelog: changelog_from_git_commits, 
+      app_identifier: "th.co.cargolink.mobile"
+    )
     deliver
   end
 
@@ -90,5 +94,5 @@ platform :android do
 end
 
 after_all do
-  # push_to_git_remote
+  push_to_git_remote
 end
