@@ -20,11 +20,6 @@ or alternatively using `brew install fastlane`
 fastlane bump_version
 ```
 Bump build numbers, and set the version to match the pacakage.json version.
-### changelog
-```
-fastlane changelog
-```
-Generate change log from git commit message
 
 ----
 
