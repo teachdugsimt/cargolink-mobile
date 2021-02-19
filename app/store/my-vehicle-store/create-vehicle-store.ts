@@ -97,7 +97,10 @@ const CreateVehicleStore = types.model({
       const response = yield apiMyVehicle.patchMyVehicle(params)
       console.log("Response call api patch my vehicle : : ", response)
       if (response.ok) self.patchMyVehicle = "success"
-      else self.patchMyVehicle = null
+      else {
+        self.patchMyVehicle = null
+        self.errorPatchMyVehicle = "error fetch patch upload vehicles"
+      }
 
       self.loadingPatchMyVehicle = false
     } catch (error) {

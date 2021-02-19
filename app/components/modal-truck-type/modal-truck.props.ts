@@ -6,4 +6,6 @@ export interface ModalTruckProps {
   selectedItems: Array<string>
 
   onChange?: () => void
+
+  getStallHeight?: (val: any) => void
 }

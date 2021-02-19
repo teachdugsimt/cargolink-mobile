@@ -3,5 +3,6 @@ export interface NormalDropdownProps {
   value?: string
   keyer?: number
   onValueChange?: (val: any) => any
+  onChange?: any
   placeholder?: string
 }
