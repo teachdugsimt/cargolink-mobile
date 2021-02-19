@@ -8,7 +8,7 @@ import React from "react"
 
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import { HeaderCenter, HeaderLeft } from "../components"
-import { FavoriteScreen, JobDetailScreen, TruckDetailScreen } from "../screens"
+import { FavoriteScreen, JobDetailScreen, TruckDetailScreen, CarrierProfileScreen, ShipperProfileScreen } from "../screens"
 import { color } from "../theme"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -26,6 +26,8 @@ export type PrimaryFavoriteParamList = {
   favorite: undefined,
   favoriteJobDetail: undefined,
   favoriteTruckDetail: undefined,
+  favoriteCarrierProfile: undefined,
+  favoriteShipperProfile: undefined,
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -69,6 +71,20 @@ export function FavoriteNavigator() {
       <Stack.Screen name="favoriteTruckDetail" component={TruckDetailScreen}
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"truckDetailScreen.truckDetail"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+
+      <Stack.Screen name="favoriteCarrierProfile" component={CarrierProfileScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"profileScreen.profile"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+
+      <Stack.Screen name="favoriteShipperProfile" component={ShipperProfileScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"profileScreen.profile"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
       />

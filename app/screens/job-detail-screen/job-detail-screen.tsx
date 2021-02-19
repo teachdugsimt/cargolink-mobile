@@ -456,7 +456,11 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
       page: 0,
     })
     modalizeRef.current?.close();
-    navigation.navigate('carrierProfile')
+    if (route.name === 'favoriteJobDetail') {
+      navigation.navigate('favoriteCarrierProfile')
+    } else {
+      navigation.navigate('carrierProfile')
+    }
   }
 
   const onOpenModalize = () => {

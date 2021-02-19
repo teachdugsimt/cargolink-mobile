@@ -18,6 +18,7 @@ const ShipperTruck = types.model({
   isLiked: types.maybeNull(types.optional(types.boolean, true)),
   owner: types.maybeNull(types.model({
     id: types.maybeNull(types.number),
+    userId: types.maybeNull(types.string),
     companyName: types.maybeNull(types.string),
     fullName: types.maybeNull(types.string),
     mobileNo: types.maybeNull(types.string),

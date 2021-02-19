@@ -268,8 +268,11 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
       userId: userId,
       page: 0,
     })
-    console.log('JSON.parse(JSON.stringify(ShipperTruckStore.profile))', JSON.parse(JSON.stringify(ShipperTruckStore.profile)))
-    navigation.navigate('shipperProfile')
+    if (route.name === 'favoriteTruckDetail') {
+      navigation.navigate('favoriteShipperProfile')
+    } else {
+      navigation.navigate('shipperProfile')
+    }
   }
 
   useEffect(() => {
