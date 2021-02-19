@@ -46,8 +46,6 @@ const Item = (data: JobProps) => {
     onToggleHeart = null,
   } = data
 
-  console.log('JSON.parse(JSON.stringify(owner))', JSON.parse(JSON.stringify(owner)))
-
   const navigation = useNavigation()
 
   const onPress = () => {
@@ -79,8 +77,6 @@ const Item = (data: JobProps) => {
     },
     resizeMode: 'cover'
   } : null
-
-  console.log('imageSource', imageSource)
 
   const onPressHeart = onToggleHeart ? () => onToggleHeart && onToggleHeart(data) : null
 
