@@ -44,7 +44,7 @@ export const TimePickerRemake = (props) => {
 
     <View key={"root-time-picker-" + keyer} style={[FULL, MARGIN_MEDIUM]}>
 
-      <Button keyer={keyer} label={label} iconName={iconName} openDatePicker={_openDatePicker} />
+      {Platform.OS == "android" && <Button keyer={keyer} label={label} value={value} iconName={iconName} openDatePicker={_openDatePicker} />}
 
       {!!value && show &&
         <DateTimePicker
@@ -72,13 +72,13 @@ export const TimePickerRemake = (props) => {
 
 const Button = (props) => {
 
-  const { keyer, label, iconName, openDatePicker } = props
+  const { keyer, label, iconName, openDatePicker, value } = props
 
   return <TouchableOpacity key={"button-time-picker-" + keyer} style={DATE_BUTTON} onPress={openDatePicker}>
     <View style={[ROW_TEXT, SPACE_BETWEEN]} key={'v-time-' + keyer}>
       <View key={"v-time2-" + keyer}>
         <Text style={PADDING_PURE}>{label && typeof label != undefined ?
-          (Platform.OS == 'android' ? date.format(label, "HH:mm") : '') : ''}</Text>
+          date.format(label, "HH:mm") : value ? date.format(value, "HH:mm") : ''}</Text>
       </View>
       <Ionicons name={iconName} size={20} style={PADDING_PURE} />
     </View>

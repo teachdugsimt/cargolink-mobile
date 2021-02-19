@@ -75,6 +75,7 @@ Podfile.lock
 
 package-lock.json
 yarn.log
+yarn.lock
 coverage/
 ut-report/
 artifacts/
