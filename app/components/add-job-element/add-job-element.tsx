@@ -29,7 +29,7 @@ export const AddJobElement = (props: any) => {
     <View style={[FULL, MARGIN_HOR_10]}>
       <View style={ROW}>
         {data.map((e, i) => {
-          return <View style={[FULL, ROW]}>
+          return <View style={[FULL, ROW]} key={'main-view-column-' + i.toString()}>
             <ColumnNumber number={e.no} active={e.active} name={e.name} />
             {i != data.length - 1 && <View style={MAIN_WRAP_LINE}>
               <View style={LINE_VIEW}></View>
