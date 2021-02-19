@@ -3,6 +3,7 @@ import { PostJobAPI } from '../../services/api'
 const postjobAPI = new PostJobAPI()
 
 const dateError: string = "Date of delivery should not be a date before the date of loading"
+const dateError2: string = "วันที่ส่งมอบ ไม่สามารถลงวันที่ก่อนวันที่ทำการขนส่ง"
 const RegionMap = types.model({
   longitudeDelta: types.maybeNull(types.number),
   longitude: types.maybeNull(types.number),
@@ -74,8 +75,8 @@ const PostJobStore = types.model({
           self.loading = false
           __DEV__ && console.tron.log("Response ERROR POST JOB :: ", response)
           if (response.data && response.data.validMsgList && response.data.validMsgList['from.datetime'] &&
-            response.data.validMsgList['from.datetime'][0] && response.data.validMsgList['from.datetime'][0]
-            == dateError) {
+            response.data.validMsgList['from.datetime'][0] && (response.data.validMsgList['from.datetime'][0]
+              == dateError || response.data.validMsgList['from.datetime'][0] == dateError2)) {
             __DEV__ && console.tron.log("Error : : Call API post job :: ", response)
             self.error = response.data.validMsgList['from.datetime'][0]
           } else

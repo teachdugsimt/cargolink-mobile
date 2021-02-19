@@ -252,8 +252,10 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
   const onSubmit = (data) => {
     let status_action = JSON.parse(JSON.stringify(StatusStore.status))
     console.log("Raw data post job 3 :: ", data)
-    const expirationDate = compareDateTime(date.format(date.addDays(data['receive-date'], -1), "DD-MM-YYYY hh:mm:ss")
-      , date.format(data['receive-time'], "DD-MM-YYYY hh:mm:ss"))
+
+    const expirationDate = compareDateTime(moment(date.addDays(data['receive-date'], -1).toISOString()).format("DD-MM-YYYY HH:mm:ss"),
+      moment(data['receive-time'].toISOString()).format("DD-MM-YYYY HH:mm:ss"))
+
     let tmp_data = JSON.parse(JSON.stringify(data))
     let final = { ...tmp_data }
     Object.keys(tmp_data).forEach((key) => {
@@ -261,16 +263,16 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
       let indexing = arr[arr.length - 1]
 
       if (key.includes("shipping-date-")) {
-        final[key] = moment(data['shipping-date-' + indexing].toString().slice(0, 25)).format("DD-MM-YYYY HH:mm:ss")
+        final[key] = moment(data['shipping-date-' + indexing].toISOString()).format("DD-MM-YYYY HH:mm:ss")
       }
       if (key.includes("shipping-time-")) {
-        final[key] = moment(data['shipping-time-' + indexing].toString().slice(0, 25)).format("DD-MM-YYYY HH:mm:ss")
+        final[key] = moment(data['shipping-time-' + indexing].toISOString()).format("DD-MM-YYYY HH:mm:ss")
       }
       if (key.includes("receive-date")) {
-        final[key] = moment(data['receive-date'].toString().slice(0, 25)).format("DD-MM-YYYY HH:mm:ss")
+        final[key] = moment(data['receive-date'].toISOString()).format("DD-MM-YYYY HH:mm:ss")
       }
       if (key.includes("receive-time")) {
-        final[key] = moment(data['receive-time'].toString().slice(0, 25)).format("DD-MM-YYYY HH:mm:ss")
+        final[key] = moment(data['receive-time'].toISOString()).format("DD-MM-YYYY HH:mm:ss")
       }
     })
     console.log("Position 1 :: ", final)
@@ -330,9 +332,10 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
     let error = JSON.parse(JSON.stringify(PostJobStore.error))
     if (error && error != errorPostJob) {
       const dateErrorMessage: string = "Date of delivery should not be a date before the date of loading"
-      let messageTitle = error && error == dateErrorMessage ?
+      const dateErrorMessage2: string = "วันที่ส่งมอบ ไม่สามารถลงวันที่ก่อนวันที่ทำการขนส่ง"
+      let messageTitle = error && (error == dateErrorMessage || error == dateErrorMessage2) ?
         "postJobScreen.checkShippingDate" : "common.somethingWrong"
-      let messageContent = error && error == dateErrorMessage ?
+      let messageContent = error && (error == dateErrorMessage || error == dateErrorMessage2) ?
         "postJobScreen.shippingDateMoreThan" : "common.pleaseCheckYourData"
       seterrorPostJob(error)
       AlertMessage(translate(messageTitle), translate(messageContent))
@@ -451,7 +454,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
       { id: 3, name: 'อาหาร และสินค้าบริโภค', image: 'greyMock' }]
     }
   ]
-  let list_vehicle = JSON.parse(JSON.stringify(versatileStore.list))
+
   const list_product_type_all = JSON.parse(JSON.stringify(AdvanceSearchStore.productTypes))
   let formControllerValue = control.getValues()
   let dropdown_item_type, dropdown_vehicle_type

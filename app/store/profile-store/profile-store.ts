@@ -92,6 +92,7 @@ const ProfileStore = types.model({
         self.data = response.data || null
         self.loading = false
       } else {
+        self.data = null
         self.loading = false
         self.error = "error fetch getProfileRequests"
       }
