@@ -42,7 +42,6 @@
 	<key>NSCameraUsageDescription</key>
 	<string>App needs Camera Access Permission for testing</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
 	<string>App needs location access</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>App needs always location access when usage</string>

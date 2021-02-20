@@ -303,6 +303,7 @@
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
 				C8032BA4376521CE31F9D974 /* [CP] Copy Pods Resources */,
+				8806267FF6E5AFE3F9DAE43C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -326,6 +327,7 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				763B487495821AB33FC17918 /* [CP] Copy Pods Resources */,
 				6D95A17D8765B861715F2454 /* [CP-User] [RNFB] Core Configuration */,
+				56B3E27911A82F4BBC4F6F97 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -527,6 +529,24 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
+		56B3E27911A82F4BBC4F6F97 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CargoLinkMobile/Pods-CargoLinkMobile-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL/OpenSSL.framework/OpenSSL",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenSSL.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CargoLinkMobile/Pods-CargoLinkMobile-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		64AF48D007DB859295F48DB5 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -609,6 +629,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CargoLinkMobile/Pods-CargoLinkMobile-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8806267FF6E5AFE3F9DAE43C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CargoLinkMobile-CargoLinkMobileTests/Pods-CargoLinkMobile-CargoLinkMobileTests-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL/OpenSSL.framework/OpenSSL",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenSSL.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CargoLinkMobile-CargoLinkMobileTests/Pods-CargoLinkMobile-CargoLinkMobileTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C8032BA4376521CE31F9D974 /* [CP] Copy Pods Resources */ = {
