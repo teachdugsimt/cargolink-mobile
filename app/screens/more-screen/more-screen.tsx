@@ -134,6 +134,10 @@ export const MoreScreen = observer(function MoreScreen() {
     });
   }, [renderNew])
 
+  useEffect(() => {
+    setrenderNew(!renderNew)
+  }, [tokenStore.token])
+
   const onCall = (phone: string) => {
     let phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
     __DEV__ && console.tron.log('phoneNumber', phoneNumber)
