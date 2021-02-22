@@ -67,7 +67,7 @@ const BookingStore = types
   .actions((self) => ({
 
     findCarrierJobBookingOne: flow(function* findCarrierJobBookingOne(id: string) {
-      bookingAPI.setup()
+      yield bookingAPI.setup()
       self.loading_find_carrier_job_booking_one = true
       try {
         const response = yield bookingAPI.findCarrierJobBookingOne(id)
@@ -87,7 +87,7 @@ const BookingStore = types
     }),
 
     findShipperJobOne: flow(function* findShipperJobOne(id: string) {
-      bookingAPI.setup()
+      yield bookingAPI.setup()
       self.loading_shipper_job_one = true
       try {
         const response = yield bookingAPI.findShipperJobOne(id)
@@ -107,7 +107,7 @@ const BookingStore = types
     }),
 
     updateBooking: flow(function* updateBooking(filter: Types.BookingBody) {
-      bookingAPI.setup()
+      yield bookingAPI.setup()
       self.loading_update_booking = true
       try {
         const response = yield bookingAPI.updateBooking(filter)
@@ -127,7 +127,7 @@ const BookingStore = types
     }),
 
     // findCarrierJobBookingOne: flow(function* findCarrierJobBookingOne(id: string) {
-    //   bookingAPI.setup()
+    //   yield bookingAPI.setup()
     //   self.loading_find_carrier_job_booking_one = true
     //   try {
     //     const response = yield bookingAPI.findCarrierMyJob(id)
