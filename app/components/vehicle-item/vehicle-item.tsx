@@ -58,7 +58,7 @@ const BOTTOM_SUB_LIST_VIEW: ViewStyle = { flex: 1, borderTopColor: color.line, b
 const FLEX_ROW_BOTTOM: ViewStyle = { ...ROW, flex: 1 }
 const TEXT_LEFT_BOTTOM: TextStyle = {
   flex: 1,
-  //  borderRightColor: color.line, borderRightWidth: 1,
+   borderRightColor: color.line, borderRightWidth: 1,
   justifyContent: 'center', alignItems: 'center'
 }
 const TEXT_RIGHT_BOTTOM: TextStyle = { flex: 1, justifyContent: 'center', alignItems: 'center' }
@@ -111,9 +111,9 @@ export function VehicleItem(props: VehicleItemProps) {
               <TouchableOpacity style={TEXT_LEFT_BOTTOM} onPress={onEdit || null}>
                 <Text style={PRIMARY_COLOR} tx={"myVehicleScreen.editCar"} />
               </TouchableOpacity>
-              {/* <TouchableOpacity style={TEXT_RIGHT_BOTTOM} onPress={onPress|| null}>
+              <TouchableOpacity style={TEXT_RIGHT_BOTTOM} onPress={onPress|| null}>
                 <Text style={PRIMARY_COLOR} tx={"myVehicleScreen.pendingWork"} />
-              </TouchableOpacity> */}
+              </TouchableOpacity>
             </View>
           </View>
         </View>

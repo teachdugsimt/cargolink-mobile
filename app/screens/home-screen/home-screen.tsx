@@ -137,23 +137,6 @@ export const HomeScreen = observer((props) => {
       .catch(err => __DEV__ && console.tron.log('err', err));
   };
 
-  const onCall = (phone: string) => {
-    let phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
-    __DEV__ && console.tron.log('phoneNumber', phoneNumber)
-    Linking.canOpenURL(phoneNumber)
-      .then(supported => {
-        if (!supported) {
-          __DEV__ && console.tron.log('Phone number is not available');
-          Alert.alert('Phone number is not available')
-          return false;
-        }
-      })
-      .then(() => {
-        return Linking.openURL(phoneNumber);
-      })
-      .catch(err => __DEV__ && console.tron.log('err', err));
-  };
-
   __DEV__ && console.tron.log('hello rendering world')
   interface List {
     title: string;

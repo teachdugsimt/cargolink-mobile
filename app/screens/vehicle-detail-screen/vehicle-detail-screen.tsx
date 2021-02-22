@@ -302,7 +302,7 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
 
 
 
-        {/* <View style={[COLUMN, {}]}>
+        <View style={[COLUMN, {}]}>
           <View>
             <Text style={TOPIC} preset="topic" text={translate("myVehicleScreen.userRequestQueue")} />
           </View>
@@ -313,7 +313,7 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
               renderItem={_renderBookUser}
             />
           </View>
-        </View> */}
+        </View>
 
 
 
