@@ -86,7 +86,7 @@ export class BookingApi {
 
   async updateBooking(data: BookingBody): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/mobile/shippers/trucks/booking`, data)
+      const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/mobile/shippers/truck/booking`, data)
       console.log("Response updateBooking :: ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
