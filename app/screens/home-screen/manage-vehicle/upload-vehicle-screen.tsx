@@ -123,7 +123,7 @@ const ADD_VEHICLE_BUTTON: ViewStyle = {
   borderColor: color.line,
   backgroundColor: color.textWhite
 }
-
+const RED_COLOR: ViewStyle = { color: color.red }
 const ROW_UPLOAD: ViewStyle = {
   flexDirection: 'row',
   justifyContent: 'center',
@@ -999,7 +999,7 @@ export const UploadVehicleScreen = observer(() => {
                 defaultValue=""
               />
             </View>
-            {errors['vehicle-type'] && <Text style={{ color: color.red }} tx={"postJobScreen.validateTruckType"} />}
+            {errors['vehicle-type'] && <Text style={RED_COLOR} tx={"postJobScreen.validateTruckType"} />}
 
 
 
@@ -1031,7 +1031,7 @@ export const UploadVehicleScreen = observer(() => {
               rules={{ required: reqHeight }}
               defaultValue=""
             />
-            {reqHeight == true && errors['vehicle-height'] && <Text style={{ color: color.red }} tx={reqHeight == true ? "uploadVehicleScreen.reqHeight" : "common.acceptOnlyCharacter"} />}
+            {reqHeight == true && errors['vehicle-height'] && <Text style={RED_COLOR} tx={reqHeight == true ? "uploadVehicleScreen.reqHeight" : "common.acceptOnlyCharacter"} />}
           </View>
         </View>
 
@@ -1057,7 +1057,7 @@ export const UploadVehicleScreen = observer(() => {
                       <Ionicons name={'remove-circle-outline'} size={20} color={color.red} />
                     </TouchableOpacity>}
                   </View>
-                  {!!errors["registration-" + index] && <Text style={{ color: color.red }} tx={"uploadVehicleScreen.pleaseCheckRegistration"} />}
+                  {!!errors["registration-" + index] && <Text style={RED_COLOR} tx={"uploadVehicleScreen.pleaseCheckRegistration"} />}
                 </View>)
               })}
 
