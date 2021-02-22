@@ -130,6 +130,10 @@ const BookingStore = types
 
   }))
   .create({
+    data_find_carrier_job_booking_one: null,
+    loading_find_carrier_job_booking_one: false,
+    error_find_carrier_job_booking_one: "",
+
     data_find_shipper_job_one: null,
     loading_shipper_job_one: false,
     error_shipper_job_one: "",
