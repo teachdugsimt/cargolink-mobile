@@ -1,5 +1,10 @@
 apply plugin: "com.android.application"
 
+apply plugin: 'com.google.gms.google-services' // Google Services Gradle plugin
+
+// Apply the Crashlytics Gradle plugin
+apply plugin: 'com.google.firebase.crashlytics'
+
 import com.android.build.OutputFile
 
 /**
@@ -138,8 +143,8 @@ android {
         applicationId "th.co.cargolink.mobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 48
+        versionName "1.0.22"
         testBuildType System.getProperty('testBuildType', 'debug')  // This will later be used to control the test apk build type
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
@@ -172,6 +177,9 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
+            // firebaseCrashlytics {
+            //     nativeSymbolUploadEnabled true
+            // }
             // Add New : Detox
             minifyEnabled true
 
@@ -188,6 +196,7 @@ android {
             signingConfig signingConfigs.release
             // minifyEnabled enableProguardInReleaseBuilds
             // proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+
         }
         releaseE2E {
             initWith release
@@ -221,6 +230,16 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     implementation project(':react-native-reanimated')
     // implementation project(':@react-native-community_datetimepicker')
+    
+    // Import the BoM for the Firebase platform
+    implementation platform('com.google.firebase:firebase-bom:26.5.0')
+
+    // // Declare the dependencies for the Crashlytics and Analytics libraries
+    // // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
+
+    // implementation 'androidx.multidex:multidex:2.0.1'
 
     implementation project(':lottie-react-native')
     implementation project(':react-native-maps')

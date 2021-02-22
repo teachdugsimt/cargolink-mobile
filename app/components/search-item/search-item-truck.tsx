@@ -33,6 +33,7 @@ const BACKGROUND_CONTAINER: ViewStyle = {
   position: 'absolute',
   overflow: 'hidden',
   right: 0,
+  top: 22,
 }
 const BACKGROUND: ImageStyle = {
   width: '100%',
@@ -72,8 +73,7 @@ const LOCATION_TEXT: TextStyle = {
   ...PADDING_LEFT
 }
 const TEXT: TextStyle = {
-  paddingVertical: spacing[1],
-  ...PADDING_BOTTOM
+  paddingBottom: spacing[1],
 }
 const CAR_DETAIL_ROOT: TextStyle = {
   ...PADDING_LEFT,
@@ -112,12 +112,13 @@ const BUTTOM_ROOT: ViewStyle = {
   paddingBottom: spacing[2],
 }
 const VIEW_DETAIL_ROOT: ViewStyle = {
-  flex: 1,
+  // flex: 1,
+  width: 100,
   flexDirection: 'row',
-  alignItems: 'center'
+  alignItems: 'center',
 }
 const ACCOUNT_ROOT: ViewStyle = {
-  // flex: 1,
+  flex: 1,
   flexDirection: 'row',
   justifyContent: "flex-end"
 }
@@ -141,9 +142,10 @@ export function SearchItemTruck(props: SearchItemProps) {
     rating,
     ratingCount,
     isCrown,
-    logo,
+    image,
     containerStyle,
     backgroundImage,
+    customContent = null,
     onPress,
     onToggleHeart
   } = props
@@ -158,6 +160,8 @@ export function SearchItemTruck(props: SearchItemProps) {
     setIsLike(!isLike)
     onToggleHeart({ id, isLike: !isLike })
   }
+
+  const renderContent = customContent ? customContent((comp) => comp) : null
 
   return (
     <TouchableOpacity style={{ ...CONTAINER, ...containerStyle }} activeOpacity={1} onPress={onPress}>
@@ -176,19 +180,21 @@ export function SearchItemTruck(props: SearchItemProps) {
             <Text text={fromText} style={LOCATION_TEXT} numberOfLines={1} />
           </View>
           <View style={{ ...CAR_DETAIL_ROOT, paddingTop: spacing[1] }}>
-            <View style={CAR_DETAIL}>
+            {!!count && <View style={CAR_DETAIL}>
               <Text
                 style={TEXT}
                 text={`${translate('jobDetailScreen.truckCount')} : `}
               />
               <Text style={TEXT} text={count.toString()} />
-            </View>
+            </View>}
           </View>
-          <View style={{ ...CAR_DETAIL_ROOT, paddingBottom: spacing[1] }}>
+          <View style={{ ...CAR_DETAIL_ROOT }}>
             <View style={CAR_DETAIL}>
               <Text style={TEXT} text={truckType} numberOfLines={1} />
             </View>
           </View>
+          {renderContent}
+
         </View>
         <View style={CONTENT_RIGHT}>
           <TouchableOpacity onPress={onSelectedHeart}>
@@ -216,7 +222,7 @@ export function SearchItemTruck(props: SearchItemProps) {
               isCrown,
               rating,
               ratingCount,
-              logo,
+              image,
             }
           } />
         </View>

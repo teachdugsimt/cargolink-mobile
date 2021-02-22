@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:drawable="@color/splashscreen_bg"/>
+
+    <item
+        android:width="230dp"
+        android:height="130dp"
+        android:drawable="@mipmap/logo"
+        android:gravity="center" />
+    <item
+        android:bottom="0dp"
+        android:scaleWidth="100%"
+        android:height="160dp"
+        android:drawable="@mipmap/earth"
+        android:gravity="bottom" />
+
+</layer-list>

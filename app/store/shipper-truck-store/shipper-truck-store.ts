@@ -21,10 +21,51 @@ const defaultModel = {
   workingZones: types.optional(types.array(types.model({
     region: types.maybeNull(types.number),
     province: types.maybeNull(types.number),
-  })), [])
+  })), []),
+  owner: types.maybeNull(types.model({
+    id: types.maybeNull(types.number),
+    userId: types.maybeNull(types.string),
+    companyName: types.maybeNull(types.string),
+    fullName: types.maybeNull(types.string),
+    mobileNo: types.maybeNull(types.string),
+    email: types.maybeNull(types.string),
+    avatar: types.maybeNull(types.model({
+      object: types.maybeNull(types.string),
+      token: types.maybeNull(types.string),
+    }))
+  })),
 }
 
 const ShipperJob = types.model(defaultModel)
+
+const ShippersJobList = types.model({
+  content: types.maybeNull(types.array(ShipperJob)),
+  pageable: types.maybeNull(types.model({
+    sort: types.model({
+      sorted: types.maybeNull(types.boolean),
+      unsorted: types.maybeNull(types.boolean),
+      empty: types.maybeNull(types.boolean),
+    }),
+    pageNumber: types.maybeNull(types.number),
+    pageSize: types.maybeNull(types.number),
+    offset: types.maybeNull(types.number),
+    unpaged: types.maybeNull(types.boolean),
+    paged: types.maybeNull(types.boolean),
+  })),
+  totalElements: types.maybeNull(types.number),
+  totalPages: types.maybeNull(types.number),
+  last: types.maybeNull(types.boolean),
+  first: types.maybeNull(types.boolean),
+  sort: types.maybeNull(types.model({
+    sorted: types.maybeNull(types.boolean),
+    unsorted: types.maybeNull(types.boolean),
+    empty: types.maybeNull(types.boolean),
+  })),
+  numberOfElements: types.maybeNull(types.number),
+  size: types.maybeNull(types.number),
+  number: types.maybeNull(types.number),
+  empty: types.maybeNull(types.boolean),
+})
 
 const ImageModel = types.model({
   object: types.maybeNull(types.string),
@@ -40,24 +81,33 @@ const ShipperJobFull = types.model({
     right: types.maybeNull(ImageModel),
   })),
   truckTypeName: types.maybeNull(types.string),
-  owner: types.maybeNull(types.model({
-    id: types.maybeNull(types.number),
-    companyName: types.maybeNull(types.string),
-    fullName: types.maybeNull(types.string),
-    mobileNo: types.maybeNull(types.string),
-    email: types.maybeNull(types.string)
-  })),
 })
+
+const Profile = {
+  id: types.maybeNull(types.number),
+  userId: types.maybeNull(types.string),
+  companyName: types.maybeNull(types.string),
+  fullName: types.maybeNull(types.string),
+  mobileNo: types.maybeNull(types.string),
+  email: types.maybeNull(types.string),
+  avatar: types.maybeNull(types.model({
+    object: types.maybeNull(types.string),
+    token: types.maybeNull(types.string),
+  })),
+  imageProps: types.maybeNull(types.string)
+}
 
 const isAutenticated = async () => {
   const profile = await storage.load('root')
-  return !!profile.tokenStore.token.accessToken
+  return !!profile?.tokenStore?.token?.accessToken
 }
 
 const ShipperTruckStore = types
   .model({
+    mainList: types.maybeNull(ShippersJobList),
     list: types.maybeNull(types.array(ShipperJob)),
     data: types.maybeNull(ShipperJobFull),
+    profile: types.model(Profile),
     previousListLength: types.optional(types.number, 0),
     truckTypeName: types.maybeNull(types.string),
     loading: types.boolean,
@@ -73,11 +123,13 @@ const ShipperTruckStore = types
         console.log("Response call api get shipper jobs : : ", response)
         if (response.kind === 'ok') {
 
+          self.mainList = response.data
+
           let arrMerge = []
           if (!filter.page) {
-            arrMerge = [...response.data]
+            arrMerge = [...response.data.content]
           } else {
-            arrMerge = [...self.list, ...response.data]
+            arrMerge = [...self.list, ...response.data.content]
           }
 
           if (!(yield isAutenticated())) {
@@ -171,14 +223,33 @@ const ShipperTruckStore = types
         ]),
         owner: {
           id: 0,
+          userId: '',
           companyName: null,
           fullName: null,
           mobileNo: '',
-          email: null
+          email: null,
+          avatar: null,
         },
         tipper: false,
         isLiked: false,
         truckTypeName: null,
+      }
+    },
+
+    setProfile: function setProfile(data) {
+      self.profile = JSON.parse(JSON.stringify(data))
+    },
+
+    setDefaultOfProfile: function setDefaultOfProfile() {
+      self.profile = {
+        id: 0,
+        userId: '',
+        companyName: '',
+        fullName: '',
+        mobileNo: '',
+        email: '',
+        avatar: null,
+        imageProps: null
       }
     },
 
@@ -196,8 +267,10 @@ const ShipperTruckStore = types
     }
   }))
   .create({
+    mainList: {},
     list: [],
     data: {},
+    profile: {},
     previousListLength: 0,
     loading: false,
     error: "",

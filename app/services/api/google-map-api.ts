@@ -83,3 +83,4 @@ export class GoogleMapAPI {
 
 
 }
+// https://maps.googleapis.com/maps/api/directions/json?origin=18.6893087,98.9496379&destination=13.7221565,100.528014&result_type=country&key=AIzaSyD_xZbQQVruH1NWLqCE2kgSWBPoWH7l3Sw

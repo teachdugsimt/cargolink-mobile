@@ -23,6 +23,10 @@ import { ConverTimeFormat } from "../../utils/convert-time-format";
 import LottieView from 'lottie-react-native';
 import CarriersHistoryCallStore from '../../store/carriers-history-call-store/carriers-history-call-store'
 import CallDetectorManager from 'react-native-call-detection'
+import UserJobStore from "../../store/user-job-store/user-job-store"
+import ProfileStore from "../../store/profile-store/profile-store"
+import { SearchByAddressTh, GetProvinceByEnArress } from "../../utils/search-province";
+import i18n from 'i18n-js'
 
 interface JobDetailProps {
   booker?: Array<any>
@@ -147,7 +151,8 @@ const CONTENT_SMALL: ViewStyle = {
   height: 105,
   overflow: 'hidden',
   marginHorizontal: spacing[3],
-  paddingVertical: spacing[4],
+  paddingBottom: spacing[2],
+  paddingTop: spacing[1],
 }
 const FLOAT_CONTAINER: ViewStyle = {
   width: Math.floor(Dimensions.get('window').width * (3 / 4)),
@@ -224,6 +229,10 @@ const PickUpPoint = ({ to, from, distances, onPress, containerStyle = {} }) => {
 
   // const onMove = onPress ? (lat: string, lng: string) => onPress(lat, lng) : null
 
+  const fromProvinceName = SearchByAddressTh(from?.name)
+  const province = CarriersJobStore.provinces ? JSON.parse(CarriersJobStore.provinces) : {}
+  const fromProvinceHeader = fromProvinceName || GetProvinceByEnArress(province[`${from?.lat},${from?.lng}`]) || from?.name
+
   return (
     <View style={{ ...LOCATION_CONTAINER, ...containerStyle }} onLayout={(e) => onLayout(e)}>
 
@@ -234,15 +243,18 @@ const PickUpPoint = ({ to, from, distances, onPress, containerStyle = {} }) => {
           <Dot color={color.primary} />
           <Text
             text={`${translate('common.from')}  :`}
-            style={{ ...LOCATION_TEXT, width: 48, justifyContent: 'flex-end' }}
+            style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 40 : 48, justifyContent: 'flex-end' }}
           />
-          <Text
-            text={from && from.name}
-            style={{ ...LOCATION_TEXT, flexShrink: 1 }}
-          />
+          <View style={{ flexShrink: 1 }}>
+            <Text text={fromProvinceHeader} style={[LOCATION_TEXT, { width: '80%' }]} numberOfLines={1} />
+            <Text text={from && from.name} style={[LOCATION_TEXT, { color: color.line }]} />
+          </View>
         </TouchableOpacity>
         {to?.length && to.map((attr, index) => {
           const latLng = `${attr.lat},${attr.lng}`
+          const fromProvinceName = SearchByAddressTh(attr.name)
+          const province = CarriersJobStore.provinces ? JSON.parse(CarriersJobStore.provinces) : {}
+          const fromProvinceHeader = fromProvinceName || GetProvinceByEnArress(province[latLng]) || attr?.name
           const distance = JSON.parse(JSON.stringify(distances)).filter(dist => dist.to === latLng)[0]
           const distanceKM = distance ? (distance.distance / 1000).toFixed(2) : '0'
           const time = distance ? ConverTimeFormat(distance.duration * 1000, 'HHmm') : '0'
@@ -252,12 +264,12 @@ const PickUpPoint = ({ to, from, distances, onPress, containerStyle = {} }) => {
                 <Dot color={color.success} />
                 <Text
                   text={`${translate('common.to')}  :`}
-                  style={{ ...LOCATION_TEXT, width: 48 }}
+                  style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 40 : 48 }}
                 />
-                <Text
-                  text={attr.name}
-                  style={{ ...LOCATION_TEXT, flexShrink: 1 }}
-                />
+                <View style={{ flexShrink: 1 }}>
+                  <Text text={fromProvinceHeader} style={LOCATION_TEXT} numberOfLines={1} />
+                  <Text text={attr.name} style={[LOCATION_TEXT, { color: color.line }]} />
+                </View>
               </TouchableOpacity>
               <View style={{ alignItems: 'center', flex: 1 }}>
                 <Text style={{ paddingVertical: spacing[1] }} >{distanceKM}<Text text={' KM'} style={TEXT_SMALL} /></Text>
@@ -266,6 +278,66 @@ const PickUpPoint = ({ to, from, distances, onPress, containerStyle = {} }) => {
             </View>
           )
         })}
+      </View>
+    </View>
+  )
+}
+
+const PickUpPointSmall = ({ to, from, distances, containerStyle = {} }) => {
+  const [height, setHeight] = useState(0)
+
+  const onLayout = (event: LayoutChangeEvent) => {
+    const { height } = event.nativeEvent.layout
+    setHeight(height)
+  }
+
+  const fromProvinceName = SearchByAddressTh(from?.name || '')
+  const province = CarriersJobStore.provinces ? JSON.parse(CarriersJobStore.provinces) : {}
+  const fromProvinceHeader = fromProvinceName || GetProvinceByEnArress(province[`${from?.lat || ''},${from?.lng || ''}`]) || from?.name || ''
+
+  const valueTo = to && to[0] ? to[0] : {}
+  const latLng = `${valueTo ? valueTo?.lat : ''},${valueTo ? valueTo?.lng : ''}`
+  const toProvinceName = SearchByAddressTh(valueTo?.name || '')
+  const provinceTo = CarriersJobStore.provinces ? JSON.parse(CarriersJobStore.provinces) : {}
+  const toProvinceHeader = toProvinceName || GetProvinceByEnArress(provinceTo[latLng]) || valueTo?.name || ''
+  const distanceTo = JSON.parse(JSON.stringify(distances)).filter(dist => dist.to === latLng)[0]
+  const distanceKM = distanceTo ? (distanceTo.distance / 1000).toFixed(2) : '0'
+  const time = distanceTo ? ConverTimeFormat(distanceTo.duration * 1000, 'HHmm') : '0'
+
+  return (
+    <View style={{ ...LOCATION_CONTAINER, ...containerStyle }} onLayout={(e) => onLayout(e)}>
+
+      <View style={{ ...LINE, height }} />
+
+      <View style={LOCATION_BOX}>
+        <View style={{ ...LOCATION, paddingBottom: spacing[3] }}>
+          <Dot color={color.primary} />
+          <Text
+            text={`${translate('common.from')}  :`}
+            style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 40 : 48, justifyContent: 'flex-end' }}
+          />
+          <View style={{ flexShrink: 1, flexDirection: 'row' }}>
+            <Text text={fromProvinceHeader} style={[LOCATION_TEXT, { width: '80%' }]} numberOfLines={1} />
+          </View>
+        </View>
+
+        <View style={TO_LOCATION}>
+          <View style={{ ...LOCATION, flex: 3 }}>
+            <Dot color={color.success} />
+            <Text
+              text={`${translate('common.to')}  :`}
+              style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 40 : 48 }}
+            />
+            <View style={{ flexShrink: 1, flexDirection: 'row' }}>
+              <Text text={toProvinceHeader} style={LOCATION_TEXT} numberOfLines={1} />
+            </View>
+          </View>
+          <View style={{ alignItems: 'center', flex: 1 }}>
+            <Text style={{ paddingVertical: spacing[1] }} >{distanceKM}<Text text={' KM'} style={TEXT_SMALL} /></Text>
+            <Text text={time} style={{ ...TEXT_SMALL, paddingBottom: spacing[1], color: color.line }} />
+          </View>
+        </View>
+
       </View>
     </View>
   )
@@ -307,38 +379,44 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     booker = []
   }: JobDetailProps = route?.params || {}
 
-  const { versatileStore } = useStores()
+  const { versatileStore, tokenStore } = useStores()
+
+  // useEffect(() => {
+  //   if (!TruckTypeStore.list?.length) {
+  //     TruckTypeStore.find()
+  //   }
+  //   return () => {
+  //     CarriersJobStore.setDefaultOfData()
+  //     CarriersJobStore.updateFavoriteInList(FavoriteJobStore.id, FavoriteJobStore.liked)
+  //   }
+  // }, [])
 
   useEffect(() => {
     if (!TruckTypeStore.list?.length) {
       TruckTypeStore.find()
     }
-    return () => {
-      CarriersJobStore.setDefaultOfData()
-      CarriersJobStore.updateFavoriteInList(FavoriteJobStore.id, FavoriteJobStore.liked)
-    }
-  }, [])
 
-  useEffect(() => {
-    if (!TruckTypeStore.list?.length) {
-      TruckTypeStore.find()
-    }
-
-    if (!showOwnerAccount) {
-      modalizeRef.current?.open();
-    }
+    // if (!showOwnerAccount) {
+    //   modalizeRef.current?.open();
+    // }
 
     return () => {
-      CarriersJobStore.setDefaultOfData()
+      if (route.name === 'jobDetail') {
+        CarriersJobStore.setDefaultOfProfile()
+        CarriersJobStore.setDefaultOfData()
+        CarriersJobStore.updateFavoriteInList(FavoriteJobStore.id, FavoriteJobStore.liked)
+      }
     }
   }, [])
 
   useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (<TouchableOpacity onPress={() => onSelectedHeart(id)}>
-        <MaterialCommunityIcons name={liked ? 'heart' : 'heart-outline'} size={24} color={liked ? color.red : color.line} />
-      </TouchableOpacity>),
-    })
+    if (route.name === 'jobDetail') {
+      navigation.setOptions({
+        headerRight: () => (<TouchableOpacity onPress={() => onSelectedHeart(id)}>
+          <MaterialCommunityIcons name={liked ? 'heart' : 'heart-outline'} size={24} color={liked ? color.red : color.line} />
+        </TouchableOpacity>),
+      })
+    }
     return () => { }
   }, [liked, id, navigation]);
 
@@ -361,14 +439,28 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   }, [CarriersJobStore.loading, CarriersJobStore.data])
 
   const onSelectedHeart = (id: string) => {
-    FavoriteJobStore.keepLiked(id, !liked)
-    FavoriteJobStore.add(id)
-    setLiked(!liked)
+    if (tokenStore?.token?.accessToken) {
+      FavoriteJobStore.keepLiked(id, !liked)
+      FavoriteJobStore.add(id)
+      setLiked(!liked)
+    } else {
+      navigation.navigate('signin')
+    }
   }
 
   const onPress = () => {
+    const userId = CarriersJobStore.profile.userId
+    ProfileStore.getProfileReporter(userId)
+    UserJobStore.find({
+      userId: userId,
+      page: 0,
+    })
     modalizeRef.current?.close();
-    navigation.navigate('shipperProfile')
+    if (route.name === 'favoriteJobDetail') {
+      navigation.navigate('favoriteCarrierProfile')
+    } else {
+      navigation.navigate('carrierProfile')
+    }
   }
 
   const onOpenModalize = () => {
@@ -400,9 +492,8 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
       if (event === 'Disconnected') {
         __DEV__ && console.tron.log('Disconnected')
         stopListenerTapped()
-        CarriersHistoryCallStore.add({ jobId })
         setIsCalling(false)
-        route.name === 'jobDetail' ? navigation.navigate('feedback') : navigation.navigate('myFeedback')
+        // route.name === 'jobDetail' ? navigation.navigate('feedback') : navigation.navigate('myFeedback')
         // setTimeout(() => {
         //   setIsCalling(false)
         //   route.name === 'jobDetail' ? navigation.navigate('feedback') : navigation.navigate('myFeedback')
@@ -416,6 +507,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         setIsCalling(true)
       } else if (event === 'Offhook') { // for Android
         __DEV__ && console.tron.log('Offhook')
+        CarriersHistoryCallStore.add({ jobId })
         setIsCalling(true)
       } else if (event === 'Missed') { // for Android
         __DEV__ && console.tron.log('Missed')
@@ -436,22 +528,26 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   }
 
   const onCall = (jobId: string, phone: string) => {
-    let phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
-    __DEV__ && console.tron.log('phoneNumber', phoneNumber)
-    Linking.canOpenURL(phoneNumber)
-      .then(supported => {
-        if (!supported) {
-          __DEV__ && console.tron.log('Phone number is not available');
-          Alert.alert('Phone number is not available')
-          return false;
-        } else {
-          return startListenerTapped(jobId)
-        }
-      })
-      .then(() => {
-        return Linking.openURL(phoneNumber);
-      })
-      .catch(err => __DEV__ && console.tron.log('err', err));
+    if (tokenStore?.token?.accessToken) {
+      const phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
+      __DEV__ && console.tron.log('phoneNumber', phoneNumber)
+      Linking.canOpenURL(phoneNumber)
+        .then(supported => {
+          if (!supported) {
+            __DEV__ && console.tron.log('Phone number is not available');
+            Alert.alert('Phone number is not available')
+            return false;
+          } else {
+            return startListenerTapped(jobId)
+          }
+        })
+        .then(() => {
+          return Linking.openURL(phoneNumber);
+        })
+        .catch(err => __DEV__ && console.tron.log('err', err));
+    } else {
+      navigation.navigate('signin')
+    }
   };
 
   const changeRegion = (lat: string, lng: string) => {
@@ -548,12 +644,14 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     postBy: owner?.companyName || '',
     rating: '0',
     ratingCount: '0',
-    logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
+    image: JSON.parse(CarriersJobStore.profile.imageProps),
   }
+
+  const isLoaded = !!(CarriersJobStore.loading || CarriersJobStore.mapLoading)
 
   return (
     <View style={CONTAINER}>
-      <ModalLoading size={'large'} color={color.primary} visible={CarriersJobStore.mapLoading || CarriersJobStore.loading || isCalling} />
+      {isLoaded && <ModalLoading size={'large'} color={color.primary} visible={isLoaded} />}
       <View style={MAP_CONTAINER}>
         {from && !!from.lat && !!from.lng && !!CarriersJobStore.directions.length &&
           <MapView
@@ -584,13 +682,20 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             <View style={FLOAT_LINE} />
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={1} onPress={onOpenModalize} onPressOut={onOpenModalize} style={CONTENT_SMALL}>
-            <PickUpPoint from={from} to={to} distances={CarriersJobStore.distances} containerStyle={{ overflow: 'hidden' }} onPress={null} />
-
-            {/* <View style={{ position: 'absolute', right: -spacing[5], top: -spacing[4] }}>
-              <SwipeUpArrows color={color.disable} />
-            </View> */}
-
+            <PickUpPointSmall
+              from={from}
+              to={to}
+              distances={CarriersJobStore.distances}
+              containerStyle={{
+                overflow: 'hidden'
+              }}
+            />
           </TouchableOpacity>
+
+          <TouchableOpacity style={{ position: 'absolute', right: -spacing[5], top: -spacing[4] }} onPress={onOpenModalize} onPressOut={onOpenModalize}>
+            <SwipeUpArrows color={color.disable} />
+          </TouchableOpacity>
+
         </View>
 
       </View>
@@ -648,7 +753,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
               </View>
               <View style={DETAIL_BOX}>
                 <Text text={`${translate('jobDetailScreen.truckType')} : ${txtTruckType}`} style={TEXT} />
-                <Text text={`${translate('common.amount')} : ${requiredTruckAmount} ${translate('jobDetailScreen.unit')}`} style={TEXT} />
+                <Text text={`${translate('common.amount')} : ${requiredTruckAmount || '-'} ${translate('jobDetailScreen.unit')}`} style={TEXT} />
               </View>
             </View>
             <View style={PRODUCT_ROW}>
@@ -674,7 +779,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           </View>
         }
 
-        {booker.length > 0 && <View style={ONWER_ROOT}>
+        {/* {booker.length > 0 && <View style={ONWER_ROOT}>
           <Text tx={'myJobScreen.listOfBookingJob'} preset={'topic'} style={TOPIC} />
           {booker.map((booker, index) => <BookerItem
             key={index}
@@ -689,7 +794,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             btnTextStyle={{ fontSize: 12, paddingLeft: spacing[1] }}
             onToggle={() => visibleProfile()}
           />)}
-        </View>}
+        </View>} */}
 
       </Modalize>
 
@@ -705,7 +810,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           }
           onPress={() => onCall(id, owner.mobileNo)}
         />
-        <Button
+        {/* <Button
           testID="book-a-job"
           style={[BTN_STYLE, { backgroundColor: color.primary }]}
           children={
@@ -715,7 +820,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             </View>
           }
           onPress={confirmBookAJob}
-        />
+        /> */}
       </View>)}
 
       <ModalAlert {...modalProps} />

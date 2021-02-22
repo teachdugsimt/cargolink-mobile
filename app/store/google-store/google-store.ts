@@ -48,7 +48,6 @@ const GoogleStore = types.model({
   error: types.maybeNull(types.string),
 })
   .actions((self) => ({
-    
     getLocationMap: flow(function* getLocationMap(params: Types.GoogleLocationRequest = {}) {
       yield googleAPI.setup()
       self.loading = true

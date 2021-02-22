@@ -1,6 +1,7 @@
 import { types, flow, cast } from "mobx-state-tree"
 import { FavoriteJobAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
+import * as storage from "../../utils/storage"
 
 const favoriteJobApi = new FavoriteJobAPI()
 
@@ -29,13 +30,23 @@ const ShipperJob = types.model({
   }))),
   owner: types.maybeNull(types.model({
     id: types.maybeNull(types.number),
+    userId: types.maybeNull(types.string),
     companyName: types.maybeNull(types.string),
     fullName: types.maybeNull(types.string),
     mobileNo: types.maybeNull(types.string),
-    email: types.maybeNull(types.string)
+    email: types.maybeNull(types.string),
+    avatar: types.maybeNull(types.model({
+      object: types.maybeNull(types.string),
+      token: types.maybeNull(types.string),
+    })),
   })),
   isLiked: types.maybeNull(types.optional(types.boolean, true)),
 })
+
+const isAutenticated = async () => {
+  const profile = await storage.load('root')
+  return !!profile?.tokenStore?.token?.accessToken
+}
 
 const FavoriteJobStore = types
   .model({
@@ -48,22 +59,26 @@ const FavoriteJobStore = types
   })
   .actions((self) => ({
     find: flow(function* find(filter: Types.ShipperJobRequest = {}) {
-      yield favoriteJobApi.setup()
-      self.loading = true
-      try {
-        const response = yield favoriteJobApi.find(filter)
-        console.log("Response call api get favorite jobs : : ", response)
-        if (response.kind === 'ok') {
-          self.list = response.data || []
-        } else if (response.kind === 'unauthorized') {
-          self.list = cast([])
-          self.error = response.kind
+      if (!(yield isAutenticated())) {
+        self.list = cast([])
+      } else {
+        self.loading = true
+        yield favoriteJobApi.setup()
+        try {
+          const response = yield favoriteJobApi.find(filter)
+          console.log("Response call api get favorite jobs : : ", response)
+          if (response.kind === 'ok') {
+            self.list = response.data || []
+          } else if (response.kind === 'unauthorized') {
+            self.list = cast([])
+            self.error = response.kind
+          }
+          self.loading = false
+        } catch (error) {
+          console.error("Failed to fetch get favorite jobs : ", error)
+          self.loading = false
+          self.error = "error fetch api get favorite jobs"
         }
-        self.loading = false
-      } catch (error) {
-        console.error("Failed to fetch get favorite jobs : ", error)
-        self.loading = false
-        self.error = "error fetch api get favorite jobs"
       }
     }),
 
@@ -88,6 +103,10 @@ const FavoriteJobStore = types
       self.id = id
       self.liked = liked
     },
+
+    setList: function setList(list: any) {
+      self.list = list
+    }
 
   }))
   .views((self) => ({

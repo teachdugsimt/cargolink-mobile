@@ -153,7 +153,6 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
           })
         })
         setfieldShipping(tmp_field_level)
-        // setswipe(!swipe)
         setTimeout(() => {
           setswipe(!swipe)
         }, 500);

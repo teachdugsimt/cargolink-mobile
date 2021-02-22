@@ -1,0 +1,2 @@
+
+We only use OTP for login.

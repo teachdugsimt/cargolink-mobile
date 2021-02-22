@@ -87,7 +87,6 @@
     "weightNumber": "จำนวนน้ำหนัก (ตัน)",
     "popular": "ยอดนิยม",
     "4maxType": "ประเภท 4 ล้อ",
-
     "acceptPointProduct": "จุดรับสินค้า",
     "inputLocationReceive": "ระบุสถานที่เข้ารับสินค้า",
     "dateReceive": "วันรับสินค้า",
@@ -95,7 +94,6 @@
     "receiverInfo": "ข้อมูลติดต่อผู้รับสินค้า",
     "receiverName": "ชื่อผู้รับสินค้า",
     "receiverTel": "เบอร์ติดต่อ",
-
     "shipingPoint": "จุดส่งสินค้าที่",
     "shippingAddr": "ระบุสถานที่ส่งสินค้า",
     "dateShipping": "วันส่งสินค้า",
@@ -103,7 +101,6 @@
     "shipperInfo": "ข้อมูลติดต่อผู้ส่งสินค้า",
     "shipperName": "ชื่อผู้ส่งสินค้า",
     "shipperTel": "เบอร์ติดต่อ",
-
     "addShippingPoint": "เพิ่มจุดส่งสินค้า",
     "postJobSuccess": "ยินดีด้วยคุณเพิ่มงานสำเร็จแล้ว"
   },
@@ -177,7 +174,7 @@
     "product": "สินค้า"
   },
   "acceptPolicyScreen": {
-    "termAndCondition": "ข้อกำหนดและเงื่อนไข",
+    "termAndCondition": "เงื่อนไขและข้อตกลงการใช้บริการ",
     "accept": "ยอมรับเงื่อนไข",
     "cancel": "ไม่ยอมรับเงื่อนไข"
   },

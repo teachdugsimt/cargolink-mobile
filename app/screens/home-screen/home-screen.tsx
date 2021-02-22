@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react"
-import { View, ViewStyle, TouchableOpacity, Image, ImageStyle, Dimensions, Platform, Linking, Alert } from "react-native"
+import { View, ViewStyle, TouchableOpacity, Image, ImageStyle, Dimensions, Platform, Linking, Alert, Animated } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
-import { images, color } from '../../theme'
+import { images, color, spacing } from '../../theme'
 import { useStores } from "../../models/root-store/root-store-context";
 import { GridView } from '../../components/home-element/home-element'
 import { ModalLoading } from '../../components/'
@@ -20,8 +20,10 @@ const FULL: ViewStyle = { flex: 1 }
 const ROW: ViewStyle = { flexDirection: 'row' }
 const ALL_CENTER: ViewStyle = { justifyContent: 'center', alignItems: Platform.OS == "android" ? 'flex-start' : 'center' }
 
+const backgrounTopHeight = 160
+
 const TOP_VIEW: ViewStyle = {
-  height: 230,
+  height: backgrounTopHeight,
   backgroundColor: color.mainTheme,
   borderBottomLeftRadius: 20,
   borderBottomRightRadius: 20,
@@ -30,6 +32,8 @@ const TOP_VIEW: ViewStyle = {
 }
 const BOTTOM_VIEW: ViewStyle = {
   flex: 2,
+  // backgroundColor: 'red',
+  paddingTop: spacing[5]
 }
 
 const IMAGE_LOGO: ImageStyle = {
@@ -38,7 +42,7 @@ const IMAGE_LOGO: ImageStyle = {
 
 const VIEW_GRID_BOX: ViewStyle = {
   flex: 1,
-  marginTop: Platform.OS == "ios" ? ((height / 2) - (height / 1.69)) : ((height / 2) - (height / 1.6))
+  // marginTop: Platform.OS == "ios" ? ((height / 2) - (height / 1.69)) : ((height / 2) - (height / 1.6))
 }
 
 const ROOT_HOME: ViewStyle = {
@@ -50,7 +54,7 @@ const CONTACT_VIEW: ViewStyle = { flex: Platform.OS == "android" ? 0.5 : 0.6 }
 export const HomeScreen = observer((props) => {
   const { tokenStore, versatileStore } = useStores()
   const navigation = useNavigation()
-  const [visible, setvisible] = useState(false)
+
   useEffect(() => {
     versatileStore.findGroup()
     versatileStore.find()
@@ -93,22 +97,45 @@ export const HomeScreen = observer((props) => {
   }, [versatileStore.language])
 
   useEffect(() => {
-    if (versatileStore.list.length && !TruckTypeStore.list.length) {
+    if (versatileStore.list.length) {
       TruckTypeStore.setList(JSON.parse(JSON.stringify(versatileStore.list)))
     }
-  }, [versatileStore.list.length])
+  }, [JSON.stringify(versatileStore.list)])
 
   useEffect(() => {
-    if (versatileStore.listGroup.length && !TruckTypeStore.listGroup.length) {
+    if (versatileStore.listGroup.length) {
       TruckTypeStore.setGroupList(JSON.parse(JSON.stringify(versatileStore.listGroup)))
     }
-  }, [versatileStore.listGroup.length])
+  }, [JSON.stringify(versatileStore.listGroup)])
 
   useEffect(() => {
-    if (versatileStore.listProductType.length && !ProductTypeStore.list.length) {
+    if (versatileStore.listProductType.length) {
       ProductTypeStore.setList(JSON.parse(JSON.stringify(versatileStore.listProductType)))
     }
-  }, [versatileStore.listProductType.length])
+  }, [JSON.stringify(versatileStore.listProductType)])
+
+  useEffect(() => {
+    if (ProfileStore.data) {
+      navigation.navigate('home')
+    }
+  }, [ProfileStore.data])
+
+  const onCall = (phone: string) => {
+    let phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
+    __DEV__ && console.tron.log('phoneNumber', phoneNumber)
+    Linking.canOpenURL(phoneNumber)
+      .then(supported => {
+        if (!supported) {
+          __DEV__ && console.tron.log('Phone number is not available');
+          Alert.alert('Phone number is not available')
+          return false;
+        }
+      })
+      .then(() => {
+        return Linking.openURL(phoneNumber);
+      })
+      .catch(err => __DEV__ && console.tron.log('err', err));
+  };
 
   const onCall = (phone: string) => {
     let phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
@@ -146,7 +173,11 @@ export const HomeScreen = observer((props) => {
         },
         img: images.truck1
       },
-      { id: 2, name: "homeScreen.findJob", onPressButton: () => navigation.navigate("searchJob"), img: images.pinbox }]
+      {
+        id: 2, name: "homeScreen.findJob", onPressButton: () => {
+          navigation.navigate("searchJob")
+        }, img: images.pinbox
+      }]
     },
     {
       title: "homeScreen.shippers",
@@ -160,7 +191,11 @@ export const HomeScreen = observer((props) => {
         },
         img: images.sheet1
       },
-      { id: 4, name: "homeScreen.findCar", onPressButton: () => navigation.navigate("searchTruck"), img: images.word1 }]
+      {
+        id: 4, name: "homeScreen.findCar", onPressButton: () => {
+          navigation.navigate("searchTruck")
+        }, img: images.word1
+      }]
     }
   ]
 
@@ -168,19 +203,52 @@ export const HomeScreen = observer((props) => {
   // __DEV__ && console.tron.log("List Group (render) home screen :: ", versatileStore.listGroup)
   __DEV__ && console.tron.log("Token Store :: ", tokenStore.token)
 
+  const [topBackgroundValue] = useState(new Animated.Value(-backgrounTopHeight))
+  const [leftValue] = useState(new Animated.Value(-(width / 2)))
+  const [rightValue] = useState(new Animated.Value(width / 2))
+
+  useEffect(() => {
+    Animated.timing(topBackgroundValue, {
+      toValue: 0,
+      duration: 600,
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      console.log('finished', finished)
+    })
+    Animated.timing(leftValue, {
+      toValue: 0,
+      duration: 600,
+      useNativeDriver: true,
+    }).start()
+    Animated.timing(rightValue, {
+      toValue: 0,
+      duration: 600,
+      useNativeDriver: true,
+    }).start()
+  }, [])
+
 
   return (
     <>
       <View testID="HomeScreen" style={ROOT_HOME}>
-        <View style={TOP_VIEW}>
-          {/* <View style={IMG_VIEW}> */}
+        {/* <View style={TOP_VIEW}>
           <Image style={IMAGE_LOGO} width={width / 1.5} height={width / 3.24}
             resizeMode='stretch'
             source={images.logoNew} />
-        </View>
+        </View> */}
+        <Animated.View style={[TOP_VIEW, {
+          transform: [{
+            translateY: topBackgroundValue
+          }]
+        }]}>
+          <Image style={IMAGE_LOGO} width={width / 1.5} height={width / 3.24}
+            resizeMode='stretch'
+            source={images.logoNew} />
+        </Animated.View>
         <View style={BOTTOM_VIEW}>
           <View style={VIEW_GRID_BOX}>
-            {swipe ? <GridView data={dataTest} /> : <GridView data={dataTest} />}
+            {/* {swipe ? <GridView data={dataTest} /> : <GridView data={dataTest} />} */}
+            <GridView data={dataTest} />
           </View>
         </View>
 
@@ -192,22 +260,25 @@ export const HomeScreen = observer((props) => {
 
         <View style={CONTACT_VIEW}>
           <View style={[ROW, ALL_CENTER, FULL]}>
-            <TouchableOpacity style={VIEW_ICON} onPress={() => Linking.openURL(versatileStore.fblink)}>
-              <FontIcon name={"facebook"} size={24} />
-            </TouchableOpacity>
+            <Animated.View style={{ transform: [{ translateX: leftValue }] }} >
+              <TouchableOpacity style={VIEW_ICON} onPress={() => Linking.openURL(versatileStore.fblink)}>
+                <FontIcon name={"facebook"} size={24} />
+              </TouchableOpacity>
+            </Animated.View>
             {/* <TouchableOpacity style={VIEW_ICON} onPress={() => console.log("LINE PRESS")}>
               <FontIcon name={"line"} size={24} />
             </TouchableOpacity> */}
-            <TouchableOpacity style={VIEW_ICON} onPress={() => onCall(versatileStore.phoneNumber)}>
-              <Ionicons name={"call"} size={22} />
-            </TouchableOpacity>
+            <Animated.View style={{ transform: [{ translateX: rightValue }] }} >
+              <TouchableOpacity style={VIEW_ICON} onPress={() => onCall(versatileStore.phoneNumber)}>
+                <Ionicons name={"call"} size={22} />
+              </TouchableOpacity>
+            </Animated.View>
           </View>
         </View>
 
         {/* <TouchableOpacity onPress={() => navigation.navigate("comment")}>
           <Text>Click Me!!</Text>
         </TouchableOpacity> */}
-
 
       </View>
     </>

@@ -87,12 +87,6 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
   const [{ truckTypes, truckAmount, productType, truckWeight, loading }, setState] = useState(initialState)
 
   useEffect(() => {
-    // if (!AdvanceSearchStore.menu || !AdvanceSearchStore.menu.length || AdvanceSearchStore.locale !== i18n.locale) {
-    //   console.log('AdvanceSearchStore.locale', AdvanceSearchStore.locale)
-    //   console.log('i18n.locale', i18n.locale)
-    //   AdvanceSearchStore.setLocale(i18n.locale)
-    //   AdvanceSearchStore.mapMenu()
-    // }
     if (!AdvanceSearchStore.menu || !AdvanceSearchStore.menu.length) {
       AdvanceSearchStore.mapMenu()
     }
@@ -273,7 +267,7 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
 
       <View style={BUTTON_ROOT}>
         <RoundedButton
-          testID={"setting-search-confirm"}
+          // testID={"setting-search-confirm"}
           onPress={onConfirm}
           containerStyle={BUTTON_CONFIRM}
           textStyle={BUTTON_CONFIRM_TEXT}

@@ -2,6 +2,7 @@ import { types, flow, cast } from "mobx-state-tree"
 import { TruckTypeApi } from "../../services/api"
 import i18n from "i18n-js"
 import * as Types from "../../services/api/api.types"
+import * as storage from "../../utils/storage"
 
 const truckTypeApi = new TruckTypeApi()
 
@@ -18,6 +19,11 @@ const TruckTypeMapping = types.model({
   ...TruckType,
   subTypes: types.optional(types.array(types.model(TruckType)), [])
 })
+
+const loadVersatileStore = async (key) => {
+  const root = await storage.load('root')
+  return root?.versatileStore[key]
+}
 
 const TruckTypeStore = types
   .model({
@@ -66,12 +72,14 @@ const TruckTypeStore = types
       }
     }),
 
-    mappingType: function mappingType() {
+    mappingType: flow(function* mappingType() {
       // yield truckTypeApi.setup(i18n.locale)
       self.mappingLoding = true
       try {
-        const mapping = JSON.parse(JSON.stringify(self.listGroup)).map(type => {
-          const subTypes = JSON.parse(JSON.stringify(self.list)).filter(subType => subType.groupId === type.id)
+        const listGroup = yield loadVersatileStore('listGroup')
+        const list = yield loadVersatileStore('list')
+        const mapping = listGroup.map(type => {
+          const subTypes = list.filter(subType => subType.groupId === type.id)
           return {
             ...type,
             subTypes
@@ -85,7 +93,7 @@ const TruckTypeStore = types
         self.mappingLoding = false
         self.error = "error fetch api get truck type group"
       }
-    },
+    }),
 
     getTruckTypeById: function getTruckType(id: number) {
       const truckType = self.list.filter(type => type.id === id)

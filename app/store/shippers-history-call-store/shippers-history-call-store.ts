@@ -1,20 +1,27 @@
 import { types, flow, cast } from "mobx-state-tree"
 import { ShippersHistoryCallAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
+import * as storage from "../../utils/storage"
 
 const shippersHistoryCallApi = new ShippersHistoryCallAPI()
 
 const History = types.model({
+  id: types.maybeNull(types.string),
   callTime: types.maybeNull(types.string),
   loadingWeight: types.maybeNull(types.number),
   registrationNumber: types.array(
     types.maybeNull(types.string)
   ),
-  shipperEmail: types.maybeNull(types.string),
-  shipperName: types.maybeNull(types.string),
-  shipperPhone: types.maybeNull(types.string),
+  email: types.maybeNull(types.string),
+  name: types.maybeNull(types.string),
+  phone: types.maybeNull(types.string),
   truckType: types.maybeNull(types.number)
 })
+
+const isAutenticated = async () => {
+  const profile = await storage.load('root')
+  return !!profile?.tokenStore?.token?.accessToken
+}
 
 const CarriersHistoryCallStore = types
   .model({
@@ -29,12 +36,22 @@ const CarriersHistoryCallStore = types
       yield shippersHistoryCallApi.setup()
       self.loading = true
       try {
-        const response = yield shippersHistoryCallApi.find(filter)
-
-        if (response.kind === 'ok') {
-          self.list = response.data
+        if (!(yield isAutenticated())) {
+          self.list = cast([])
         } else {
-          self.error = response?.data?.message || response?.kind
+          const response = yield shippersHistoryCallApi.find(filter)
+
+          if (response.kind === 'ok') {
+            const data = response.data.map((history, index) => {
+              return {
+                id: (index + 1).toString(),
+                ...history,
+              }
+            })
+            self.list = data
+          } else {
+            self.error = response?.data?.message || response?.kind
+          }
         }
 
         self.loading = false
@@ -63,7 +80,11 @@ const CarriersHistoryCallStore = types
         self.loading = false
         self.error = "error fetch api add shipper history call"
       }
-    })
+    }),
+
+    setList: function setList(list: any) {
+      self.list = list
+    }
 
   }))
   .views((self) => ({

@@ -1,15 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from "mobx-react-lite"
-import {
-  CodeField,
-  Cursor,
-  useBlurOnFulfill,
-  useClearByFocusCell,
-} from 'react-native-confirmation-code-field';
-import { Dimensions, SafeAreaView, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
-import { Button, CountDown, ModalAlert, ModalLoading, Text } from '../../components';
+import { useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
+import { Dimensions, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { Button, CountDown, HeaderLeft, ModalAlert, ModalLoading, Screen, Text } from '../../components';
 import { color, spacing } from '../../theme';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { translate } from '../../i18n';
 import AuthStore from '../../store/auth-store/auth-store'
 import OTPInputView from '@twotalltotems/react-native-otp-input'
@@ -29,17 +24,13 @@ const CODE_FIELD_ROOT: TextStyle = {
 }
 const CODE_INFORMATION_ROOT: ViewStyle = {
   flex: 1,
+  flexDirection: 'row',
+  justifyContent: 'space-between',
   marginLeft: spacing[5],
   marginRight: spacing[5],
 }
 const CODE_INFORMATION: ViewStyle = {
   flexDirection: 'row',
-  // justifyContent: "center",
-  alignItems: 'center'
-}
-const RESEND_CODE_ROOT: ViewStyle = {
-  marginVertical: spacing[3],
-  alignItems: "center",
 }
 const RESEND_CODE_TEXT: TextStyle = {
   color: color.line
@@ -52,9 +43,6 @@ const CONFIRM_CODE_ROOT: ViewStyle = {
 const COUNT_DOWN: TextStyle = {
   paddingLeft: 5
 }
-const CODE_REF: TextStyle = {
-  marginLeft: "auto"
-}
 const CONTINUE_BUTTON: ViewStyle = {
   width: '100%',
   borderRadius: Math.floor(Dimensions.get('window').height / 2)
@@ -65,15 +53,12 @@ const CONTINUE_TEXT: TextStyle = {
   paddingTop: spacing[1],
   paddingBottom: spacing[1]
 }
-const TEXT_EXPIRE: TextStyle = {
-  color: color.error
-}
 const CODE_INPUT_FILED_STYLE: TextStyle = {
   borderColor: color.transparent,
   borderBottomWidth: 2,
   borderBottomColor: color.line,
-  fontSize: 25,
-  color: color.dim,
+  fontSize: 24,
+  color: color.dim
 }
 const CODE_INPUT_HIGHTLIGHT_STYLE: ViewStyle = {
   borderColor: color.transparent,
@@ -130,16 +115,9 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
   }
 
   const onResendCode = () => {
-    AuthStore.signInRequest({ phoneNumber: AuthStore.phoneNumber, userType: 7 })
+    AuthStore.signInRequest({ phoneNumber: AuthStore.phoneNumber, countryCode: AuthStore.countryCode, userType: 7 })
     clearState()
     setValue('')
-  }
-
-  const setButtonColor = (_color: string) => {
-    setState(prevState => ({
-      ...prevState,
-      buttonColor: _color
-    }))
   }
 
   const onFinish = () => {
@@ -224,8 +202,12 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
   }, [AuthStore.getAuthData])
 
   return (
-    <SafeAreaView style={ROOT}>
+    <Screen style={ROOT} statusBar={'dark-content'}>
       <ModalLoading size={'large'} color={color.primary} visible={isLoading} />
+
+      <TouchableOpacity style={{ paddingLeft: spacing[4] + spacing[1] }} onPress={() => navigation.goBack()}>
+        <HeaderLeft onLeftPress={() => navigation.goBack()} />
+      </TouchableOpacity>
 
       <View style={CODE_FIELD_ROOT} accessible={true}
         accessibilityLabel="otp-input-new" >
@@ -263,34 +245,29 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
             />
             : <Text style={COUNT_DOWN}>00:00</Text>
           }
-          {/* <Text style={CODE_REF}>(Ref: {'ABCD'})</Text> */}
         </View>
-        <View style={RESEND_CODE_ROOT}>
-          {/* {showMessageError && <Text style={TEXT_EXPIRE} text={AuthStore.error} />}
-          {isExpired && <Text style={TEXT_EXPIRE} text={translate('confirmCodeScreen.codeExpired')} />} */}
-          {!tokenStore.token && (isExpired || !!AuthStore.error) && <ModalAlert // !!isError
-            containerStyle={{ paddingVertical: spacing[5] }}
-            iconName={'bell-alert-outline'}
-            iconStyle={{
-              color: color.line,
-              size: 100
-            }}
-            header={translate('confirmCodeScreen.codeExpiredOrIncorrect')}
-            headerStyle={{ padding: spacing[3], color: color.primary }}
-            content={translate('confirmCodeScreen.confirmOTPAgianOrRequestNewOTP')}
-            contentStyle={{ paddingTop: spacing[3], paddingBottom: spacing[5], paddingHorizontal: spacing[7], color: color.line }}
-            buttonContainerStyle={{ width: '90%' }}
-            buttonComponent={RenderButtonAlert}
-            visible={visibleModal}
-          />
-          }
-        </View>
-        <View style={RESEND_CODE_ROOT}>
-          <TouchableOpacity disabled={!isExpired} onPress={onResendCode}>
-            <Text style={RESEND_CODE_TEXT} text={translate('confirmCodeScreen.requestNewOTP')} />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity disabled={!isExpired} onPress={onResendCode}>
+          <Text style={RESEND_CODE_TEXT} text={translate('confirmCodeScreen.requestNewOTP')} />
+        </TouchableOpacity>
       </View>
+
+      {!tokenStore.token && (isExpired || !!AuthStore.error) && <ModalAlert // !!isError
+        containerStyle={{ paddingVertical: spacing[5] }}
+        iconName={'bell-alert-outline'}
+        iconStyle={{
+          color: color.line,
+          size: 100
+        }}
+        header={translate('confirmCodeScreen.codeExpiredOrIncorrect')}
+        headerStyle={{ padding: spacing[3], color: color.primary }}
+        content={translate('confirmCodeScreen.confirmOTPAgianOrRequestNewOTP')}
+        contentStyle={{ paddingTop: spacing[3], paddingBottom: spacing[5], paddingHorizontal: spacing[7], color: color.line }}
+        buttonContainerStyle={{ width: '90%' }}
+        buttonComponent={RenderButtonAlert}
+        visible={visibleModal}
+      />
+      }
+
       <View testID="ConfirmCodeRoot" style={CONFIRM_CODE_ROOT}>
         <Button
           testID="continue-with-otp"
@@ -304,6 +281,6 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
           onPress={() => onPress(value)}
         />
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 })

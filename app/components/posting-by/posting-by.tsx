@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dimensions, ImageStyle, TextStyle, View, ViewStyle, Image, TouchableOpacity } from 'react-native'
+import { Dimensions, ImageStyle, TextStyle, View, ViewStyle, Image, TouchableOpacity, ImageProps } from 'react-native'
 import { PostingByProps } from './posting-by.props'
 import { color, spacing } from '../../theme';
 import { Icon } from '../icon/icon';
@@ -14,6 +14,7 @@ const FILL: ViewStyle = {
   alignItems: 'center'
 }
 const ACCOUNT_VIEW: ViewStyle = {
+  flex: 1,
   flexDirection: 'column'
 }
 const ACCOUNT_DETAIL: ViewStyle = {
@@ -22,7 +23,8 @@ const ACCOUNT_DETAIL: ViewStyle = {
   alignItems: 'center'
 }
 const LOGO_ROOT: ViewStyle = {
-  flexDirection: 'row',
+  // flexDirection: 'row',
+  width: 40, height: 40,
   ...PADDING_LEFT
 }
 const LOGO: ImageStyle = {
@@ -51,18 +53,29 @@ export function PostingBy(props: PostingByProps) {
     isCrown,
     rating,
     ratingCount,
-    logo,
+    image,
     onToggle
   } = props
 
   const onPress = onToggle ? () => onToggle && onToggle() : null
+  const imageProps: ImageProps = typeof image === 'string' ? {
+    style: LOGO,
+    resizeMode: 'contain',
+    source: {
+      uri: image
+    }
+  } : {
+      style: LOGO,
+      resizeMode: 'contain',
+      ...image
+    }
 
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={1}>
+    <TouchableOpacity onPress={onPress} activeOpacity={1} style={{ flex: 1 }}>
       <View style={FILL}>
         <View style={ACCOUNT_VIEW}>
           <View style={ACCOUNT_DETAIL}>
-            <Text style={{ ...PADDING_RIGHT }} text={postBy} />
+            <Text numberOfLines={1} ellipsizeMode={'tail'} style={{ ...PADDING_RIGHT, flex: 1, textAlign: 'right' }} text={postBy} />
             <Icon icon={isVerified ? "checkActive" : "checkInactive"} style={SMALL_ICON} containerStyle={{ ...PADDING_RIGHT }} />
             {isCrown && <Icon icon="crown" style={SMALL_ICON} containerStyle={{ ...PADDING_RIGHT }} />}
           </View>
@@ -73,7 +86,7 @@ export function PostingBy(props: PostingByProps) {
           </View>
         </View>
         <View style={LOGO_ROOT}>
-          {logo ? <Image source={{ uri: logo }} style={LOGO} resizeMode={'contain'} /> : <View style={{ ...LOGO, backgroundColor: color.disable }} />}
+          {image ? <Image {...imageProps} /> : <View style={{ ...LOGO, backgroundColor: color.disable }} />}
         </View>
       </View>
     </TouchableOpacity>

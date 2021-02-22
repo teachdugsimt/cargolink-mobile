@@ -214,7 +214,7 @@ export const AdvanceSearchTruckScreen = observer(function AdvanceSearchTruckScre
 
   return (
     <View style={CONTAINER}>
-      {AdvanceSearchJobStore.loading && <ModalLoading size={'large'} color={color.primary} visible={AdvanceSearchJobStore.loading} />}
+      {/* {AdvanceSearchJobStore.loading && <ModalLoading size={'large'} color={color.primary} visible={AdvanceSearchJobStore.loading} />} */}
       <View style={SEARCH_ITEM_ROOT}>
         <ScrollView style={{ padding: spacing[3] }}>
 
@@ -264,7 +264,7 @@ export const AdvanceSearchTruckScreen = observer(function AdvanceSearchTruckScre
 
       <View style={BUTTON_ROOT}>
         <RoundedButton
-          testID={"setting-search-confirm"}
+          // testID={"setting-search-confirm"}
           onPress={onConfirm}
           containerStyle={BUTTON_CONFIRM}
           textStyle={BUTTON_CONFIRM_TEXT}

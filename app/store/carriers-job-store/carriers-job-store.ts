@@ -33,12 +33,46 @@ const CarriersJob = types.model({
   }))),
   owner: types.maybeNull(types.model({
     id: types.maybeNull(types.number),
+    userId: types.maybeNull(types.string),
     companyName: types.maybeNull(types.string),
     fullName: types.maybeNull(types.string),
     mobileNo: types.maybeNull(types.string),
-    email: types.maybeNull(types.string)
+    email: types.maybeNull(types.string),
+    avatar: types.maybeNull(types.model({
+      object: types.maybeNull(types.string),
+      token: types.maybeNull(types.string),
+    }))
   })),
-  isLiked: types.maybeNull(types.optional(types.boolean, false))
+  isLiked: types.maybeNull(types.optional(types.boolean, false)),
+})
+
+const CarriersJobList = types.model({
+  content: types.maybeNull(types.array(CarriersJob)),
+  pageable: types.maybeNull(types.model({
+    sort: types.model({
+      sorted: types.maybeNull(types.boolean),
+      unsorted: types.maybeNull(types.boolean),
+      empty: types.maybeNull(types.boolean),
+    }),
+    pageNumber: types.maybeNull(types.number),
+    pageSize: types.maybeNull(types.number),
+    offset: types.maybeNull(types.number),
+    unpaged: types.maybeNull(types.boolean),
+    paged: types.maybeNull(types.boolean),
+  })),
+  totalElements: types.maybeNull(types.number),
+  totalPages: types.maybeNull(types.number),
+  last: types.maybeNull(types.boolean),
+  first: types.maybeNull(types.boolean),
+  sort: types.maybeNull(types.model({
+    sorted: types.maybeNull(types.boolean),
+    unsorted: types.maybeNull(types.boolean),
+    empty: types.maybeNull(types.boolean),
+  })),
+  numberOfElements: types.maybeNull(types.number),
+  size: types.maybeNull(types.number),
+  number: types.maybeNull(types.number),
+  empty: types.maybeNull(types.boolean),
 })
 
 const Directions = types.model({
@@ -58,20 +92,37 @@ const SummaryDistances = types.model({
   duration: types.optional(types.number, 0),
 })
 
+const Profile = {
+  id: types.maybeNull(types.number),
+  userId: types.maybeNull(types.string),
+  companyName: types.maybeNull(types.string),
+  fullName: types.maybeNull(types.string),
+  mobileNo: types.maybeNull(types.string),
+  email: types.maybeNull(types.string),
+  avatar: types.maybeNull(types.model({
+    object: types.maybeNull(types.string),
+    token: types.maybeNull(types.string),
+  })),
+  imageProps: types.maybeNull(types.string)
+}
+
 const isAutenticated = async () => {
   const profile = await storage.load('root')
-  return !!profile.tokenStore.token.accessToken
+  return !!profile?.tokenStore?.token?.accessToken
 }
 
 const CarriersJobStore = types
   .model({
-    list: types.maybeNull(types.array(types.maybeNull(CarriersJob))),
+    mainList: types.maybeNull(CarriersJobList),
+    list: types.maybeNull(types.array(CarriersJob)),
     data: types.maybeNull(CarriersJob),
+    profile: types.model(Profile),
     previousListLength: types.optional(types.number, 0),
     favoriteList: types.maybeNull(CarriersJob),
     directions: types.optional(types.array(types.array(Directions)), []),
     distances: types.optional(types.array(Distances), []),
     summaryDistances: types.maybeNull(SummaryDistances),
+    provinces: types.maybeNull(types.string),
     loading: types.boolean,
     mapLoading: types.boolean,
     error: types.maybeNull(types.string),
@@ -86,11 +137,13 @@ const CarriersJobStore = types
         console.log("Response call api get shipper jobs : : ", response)
         if (response.kind === 'ok') {
 
+          self.mainList = response.data
+
           let arrMerge = []
           if (!filter.page) {
-            arrMerge = [...response.data]
+            arrMerge = [...response.data.content]
           } else {
-            arrMerge = [...self.list, ...response.data]
+            arrMerge = [...self.list, ...response.data.content]
           }
 
           if (!(yield isAutenticated())) {
@@ -126,13 +179,20 @@ const CarriersJobStore = types
       apiCarriersJob.setup()
       self.loading = true
       try {
-        yield FavoriteJobStore.find()
+        if (Object.keys(self.data).length) {
+          CarriersJobStore.setDefaultOfData()
+        }
         const response = yield apiCarriersJob.findOne(id)
         console.log("Response call api get shipper job : : ", JSON.stringify(response))
         if (response.kind === 'ok') {
           const result = response.data || {}
-          const isLiked = FavoriteJobStore.list.find(({ id }) => id === result.id)?.isLiked
-          self.data = { ...result, isLiked: isLiked || false }
+          if (!(yield isAutenticated())) {
+            self.data = response.data
+          } else {
+            yield FavoriteJobStore.find()
+            const isLiked = FavoriteJobStore.list.find(({ id }) => id === result.id)?.isLiked
+            self.data = { ...result, isLiked: isLiked || false }
+          }
         } else {
           self.error = response?.data?.message || response.kind
         }
@@ -154,6 +214,8 @@ const CarriersJobStore = types
         let arrDistances = []
         let summaryDistance = 0
         let summaryDuration = 0
+        let province = {}
+        CarriersJobStore.clearProvince()
         for (let index = 0; index < coordinates.length; index++) {
           if (index + 1 < coordinates.length) {
             const startLoc = `${coordinates[index].lat},${coordinates[index].lng}`
@@ -162,11 +224,17 @@ const CarriersJobStore = types
 
             if (response.kind === 'ok') {
               const mapData = response.data.routes[0]
-              const distanceValue = mapData.legs[0].distance.value
-              const durationValue = mapData.legs[0].duration.value
+              const distanceValue = mapData?.legs[0]?.distance?.value || 0
+              const durationValue = mapData?.legs[0]?.duration?.value || 0
 
               summaryDistance += distanceValue
               summaryDuration += durationValue
+
+              province = {
+                ...province,
+                [startLoc]: mapData?.legs[0]?.start_address || '',
+                [destinationLoc]: mapData?.legs[0]?.end_address || ''
+              }
 
               arrDistances.push({
                 from: startLoc,
@@ -175,14 +243,16 @@ const CarriersJobStore = types
                 duration: durationValue,
               })
 
-              const points = decode(mapData.overview_polyline.points);
-              const coords = points.map(point => {
-                return {
-                  latitude: point[0],
-                  longitude: point[1]
-                };
-              });
-              arrDirections[index] = coords
+              if (mapData?.overview_polyline) {
+                const points = decode(mapData.overview_polyline.points);
+                const coords = points.map(point => {
+                  return {
+                    latitude: point[0],
+                    longitude: point[1]
+                  };
+                });
+                arrDirections[index] = coords
+              }
             } else {
               self.error = response.data.message
             }
@@ -193,6 +263,7 @@ const CarriersJobStore = types
           distance: summaryDistance,
           duration: summaryDuration
         }
+        self.provinces = JSON.stringify(province)
         // console.log('arrDirections', JSON.stringify(arrDirections))
         self.directions = cast(arrDirections)
         // const result = coordinates.reduce((prev, curr) => yield callApiMap(prev, curr))
@@ -247,13 +318,35 @@ const CarriersJobStore = types
           fullName: null,
           mobileNo: '',
           email: null
-        }
+        },
       })
+    },
+
+    setProfile: function setProfile(data) {
+      self.profile = JSON.parse(JSON.stringify(data))
+    },
+
+    setDefaultOfProfile: function setDefaultOfProfile() {
+      self.profile = {
+        id: 0,
+        userId: '',
+        companyName: '',
+        fullName: '',
+        mobileNo: '',
+        email: '',
+        avatar: null,
+        imageProps: null
+      }
     },
 
     setDefaultOfList: function setDefaultOfList() {
       self.list = cast([])
+    },
+
+    clearProvince: function clearProvince() {
+      self.provinces = ''
     }
+
   }))
   .views((self) => ({
     get getList() {
@@ -265,8 +358,11 @@ const CarriersJobStore = types
   }))
   .create({
     // IMPORTANT !!
+    mainList: {},
     list: [],
     data: {},
+    profile: {},
+    provinces: '',
     previousListLength: 0,
     loading: false,
     mapLoading: false,

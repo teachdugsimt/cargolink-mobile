@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "pc-api-6960837403206582778-806",
+  "private_key_id": "c287508216faf4fb3ff01c44df0fed03740ec994",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDJSQPeHrNKmEby\nv3vHROqOH8Wlcrsc2ROIIyV5u3K1D+FwdFIqa1bmygYCFFupx+FDKC9ZcMd3VTxr\nUVn0j7E9fbm3fthGhipAV22DL2xETtMZ6jyU9fiBOI3WdbGQekXHcHZjSGEs6GEW\n/JuuMnxnktwq4f1Wf+AM+owaPaN2Imak7CLilug9UsqNNCyF9Pq5TBPrf6lncoP+\nmAe3CK4xNegQSkToscipSa8IPqTDSjkmT1+T3sm9PR3RsFQdVhl5PfEXFCL6mIHl\nHEAxsegfvZygtHyDBz3rzbHOEQR7+IVwnIywvIcqn0vf8xnKVwg9shl6W+lwAsAO\nLl2wHMXxAgMBAAECggEAF6zfaBZrV0hO/Al6ySb5gcsJ59p1WMDNs9MSet2J8fMS\nvLPp4DRs7ctwZnk3iOJKRChrXVVPGOGtMCBK+OGX4tgxanxgevcX7CZ8apQ+40/0\nM5WiF5FQ7/4TbNi+EHTZVUqMmkPuriYNGXOP6i7lBBe5js+zCSQUWeJ0bTe3zNKs\nYPEYXeIzaNHgWXS6aW9gCxrsihbOhlO7ZiO6cfSXFRhBnMHZn7d+q2M3mJR7GWOy\nvHkeVMzyrTZK+90latcAgQTT2Q5QQ9tRhMzxG+rbdRENNKHn0Vgr22+anD1W8hoD\njDfNQjc4/i2EWitH9YR5cSZJJ1/Q3JY9WZXWwndZ6wKBgQD6WmKq47pOh3d4NWHT\n3XYg2zHOHvObPaNLUbMLWZc5Kpx8/6kukaouaGS1KOqbaefs131ZvM/5z76mgY60\njXFKJBAU9gQ3sAIzFhnFJpsNZ+csQ9PejtdOhLMpjzyVXm4ArFqk1dSiG4iqG142\nfDEaghin0hU51gNRMZbWYz7ecwKBgQDN00wJUtkJhy/iskALLHI/n7wzRHDNe3Ks\niHVyZ3iyF862qtMwSprtIhiJB/3RMfhnTVBtSs1n28tGReo4MjX2xN7Kg9tafVzT\nR50LHQYaoirzFpWlmbkrT2jXDuSI56z4GPs8QgpX4tosA+zoMZ92WuJQPh799siO\nM4NXiLUtCwKBgG+vpPbh0zq3WofpILR4xvtPbj+rNThbXh762qpElJ8vMFLfZ2Vc\nHJTJg6wCDe+5ZnsVg1lmT0397OqxP62ysAjIX9hKDIWfYsvRnzuBxohLgykPNVTD\nWrAvqRHwUbG9R8vLGEETF+Id8HEa9oPOEcXmpgMwSMHdhOtS+Ry5d9GbAoGAA9p/\n4vDNJXOFfv4NWugzH2PTNzaB0icMh5RqdoDfbp4pfZwHJjFPYz8vLGmc4+zGlNCK\nv/EVlWs1DBTFBNZT0lHvReVgFvqf4UjG9O1PLvJ4UWLL3HTbVac/9D7QIowL3f1B\nvugRn4GcyhQsvFAphyK+d/ghxml3aconHF1v3u8CgYAy/gb6Os4RLtJjzSI1ViW+\nj399HOikg+I3/LeCmYlvJJ3I0y22tdC8PfDIVITeGMVxU8uNXK7KzxIt9qGKC0RL\nMiBLOd4Fg8QwbDFGnaKP0E3FbzsvdY0TzuksIT/60fPu0VE8LkBOrvmc3mI35z0h\n6ahPNwnN5i/YJYOjQJ0HKg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "cargolink-tech@pc-api-6960837403206582778-806.iam.gserviceaccount.com",
+  "client_id": "110657521560033803871",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/cargolink-tech%40pc-api-6960837403206582778-806.iam.gserviceaccount.com"
+}

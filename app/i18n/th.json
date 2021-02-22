@@ -286,7 +286,7 @@
     "bookATruck": "จองรถ"
   },
   "acceptPolicyScreen": {
-    "termAndCondition": "ข้อกำหนดและเงื่อนไข",
+    "termAndCondition": "เงื่อนไขและข้อตกลงการใช้บริการ",
     "accept": "ยอมรับเงื่อนไข",
     "cancel": "ไม่ยอมรับเงื่อนไข"
   },
@@ -373,13 +373,18 @@
     "clear": "ล้าง",
     "fullSearch": "ค้นหาโดยละเอียด",
     "search": "ค้นหา",
-    "more": "แสดงเพิ่มเติม"
+    "more": "แสดงเพิ่มเติม",
+    "moreThan": "มากกว่า",
+    "ton": "ตัน"
   },
   "shipperProfileScreen": {
     "verified": "ผู้ใช้ผ่านการตรวจสอบ",
     "notVerified": "ยังไม่ผ่านการตรวจสอบ",
     "workInProgress": "งานที่กำลังดำเนินการ",
-    "pastWork": "งานที่ผ่านมา"
+    "pastWork": "งานที่ผ่านมา",
+    "feedbackScore": "คะแนนความพึงพอใจ",
+    "showMore": "แสดงเพิ่มเติม",
+    "showLess": "แสดงน้อยลง"
   },
   "feedbackScreen": {
     "yourOpinion": "ความคิดเห็นของคุณ",
@@ -399,13 +404,17 @@
   },
   "truckDetailScreen": {
     "truckDetail": "รายละเอียดรถ",
-    "heighttOfTheCarStall": "ความสูงของคอกรถ"
+    "heighttOfTheCarStall": "ความสูงของคอกรถ",
+    "haveDump": "รถมีที่ดั้ม",
+    "haveNotDump": "รถไม่มีที่ดั้ม"
   },
   "favoriteScreen": {
     "favoriteList": "รายการโปรด",
     "lastestContact": "ที่ติดต่อล่าสุด",
     "job": "งาน",
-    "vehicle": "รถ"
+    "vehicle": "รถ",
+    "shipper": "ผู้ส่งสินค้า",
+    "carrier": "ผู้ให้บริการ"
   },
   "myJobScreen": {
     "myJob": "งานของฉัน",

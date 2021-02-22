@@ -1,14 +1,50 @@
 fastlane_version '2.53.1'
 
+package = load_json(json_path: "./package.json")
+version = package['version']
+build_number = nil
+
 before_all do
   ensure_git_branch
   ensure_git_status_clean
   git_pull
 end
 
+desc 'Android: Increment versionCode and set versionName to package.json version.'
+private_lane :inc_ver_and do
+  increment_version_code(
+    gradle_file_path: "./android/app/build.gradle"
+  )
+
+  android_set_version_name(
+    gradle_file: "./android/app/build.gradle",
+    version_name: version
+  )
+end
+
+desc 'iOS: Increment build number and set the version to package.json version.'
+private_lane :inc_ver_ios do
+  increment_build_number(xcodeproj: './ios/CargoLinkMobile.xcodeproj')
+
+  increment_version_number(
+    xcodeproj: './ios/CargoLinkMobile.xcodeproj',
+    version_number: version
+  )
+  # version = get_version_number(xcodeproj: "./ios/CargoLinkMobile.xcodeproj", target: "CargoLinkMobile")
+end
+
+
+desc 'Bump build numbers, and set the version to match the pacakage.json version.'
+lane :bump_version do
+  inc_ver_ios
+  inc_ver_and
+  build_number = get_build_number(xcodeproj: "./ios/CargoLinkMobile.xcodeproj")  
+  tag_string = "v" + version + "(" + build_number + ")"
+  git_commit(path: ".", message: "Bump build " + tag_string)
+  add_git_tag(tag: tag_string)
+end
+
 platform :ios do
-  version = nil
-  build_number = nil
 
   desc 'Fetch certificates and provisioning profiles'
   lane :certificates do
@@ -19,11 +55,6 @@ platform :ios do
   desc 'Build the iOS application.'
   private_lane :build do
     certificates
-    increment_build_number(xcodeproj: './ios/CargoLinkMobile.xcodeproj')
-    
-    version = get_version_number(xcodeproj: "./ios/CargoLinkMobile.xcodeproj", target: "CargoLinkMobile")
-    build_number = get_build_number(xcodeproj: "./ios/CargoLinkMobile.xcodeproj")
-
     build_app(workspace: "./ios/CargoLinkMobile.xcworkspace", scheme: "CargoLinkMobile")
     # gym(scheme: 'CargoLinkMobile', project: './ios/CargoLinkMobile.xcodeproj')
   end
@@ -31,18 +62,17 @@ platform :ios do
   desc 'Ship to Testflight.'
   lane :beta do
     build
-    pilot
+    # pilot
+    deliver
   end
 
   after_all do |lane|
     clean_build_artifacts
-    tag_string = "v" + version + " build " + build_number
-    commit_version_bump(message: 'Bump build (ios) ' + tag_string, xcodeproj: './ios/CargoLinkMobile.xcodeproj')
-    add_git_tag(tag: tag_string)
   end
 end
 
 platform :android do
+
   desc 'Build the Android application.'
   private_lane :build do
     gradle(task: 'clean', project_dir: 'android/')
@@ -53,7 +83,6 @@ platform :android do
   lane :beta do
     build
     supply(track: 'beta', track_promote_to: 'beta')
-    git_commit(path: ['./android/gradle.properties'], message: 'Bump versionCode (android)')
   end
 
   after_all do |lane|

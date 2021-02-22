@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite';
-import { Dimensions, FlatList, ImageStyle, TextStyle, View, ViewStyle, SafeAreaView, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
+import { Dimensions, FlatList, ImageStyle, TextStyle, View, ViewStyle, SafeAreaView, ScrollView, TouchableOpacity, RefreshControl, ImageProps } from 'react-native';
 import { AdvanceSearchTab, Text, SearchItemTruck, EmptyListMessage } from '../../components';
 import { color, spacing, images as imageComponent } from '../../theme';
 import { useFocusEffect, useNavigation, useIsFocused } from '@react-navigation/native';
@@ -17,6 +17,8 @@ import AdvanceSearchStore from '../../store/shipper-truck-store/advance-search-s
 import FavoriteTruckStore from '../../store/shipper-truck-store/favorite-truck-store';
 import { MapTruckImageName } from '../../utils/map-truck-image-name';
 import { GetTruckType } from '../../utils/get-truck-type';
+import { useStores } from "../../models/root-store/root-store-context";
+import analytics from '@react-native-firebase/analytics';
 
 const width = Dimensions.get('window').width
 
@@ -68,15 +70,6 @@ const ZONE: TextStyle = {
 const PROVINCE: TextStyle = {
   color: color.line,
 }
-const CONTEXT_NOT_FOUND: ViewStyle = {
-  flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-  top: -spacing[5],
-}
-const NOT_FOUND_TEXT: TextStyle = {
-  color: color.line,
-}
 const SELECTED: ViewStyle = {
   flexDirection: 'row',
   alignItems: 'center',
@@ -118,27 +111,55 @@ const Item = (data) => {
     id,
     truckType,
     // loadingWeight,
-    // stallHeight,
+    stallHeight,
     // createdAt,
     // updatedAt,
     // approveStatus,
     // registrationNumber,
-    // tipper,
+    tipper,
     isLiked,
+    owner,
     workingZones,
   } = data
+
+  const { tokenStore } = useStores()
 
   const navigation = useNavigation()
 
   const onPress = () => {
+    const imageSource = owner?.avatar?.object && owner?.avatar?.token ? {
+      source: {
+        uri: owner?.avatar?.object || '',
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+          adminAuth: owner?.avatar?.token
+        },
+      },
+      resizeMode: 'cover'
+    } : null
+    ShipperTruckStore.setProfile({ ...owner, imageProps: JSON.stringify(imageSource) })
     ShipperTruckStore.findOne(id)
     navigation.navigate('truckDetail')
   }
 
   const onToggleHeart = (data) => { // id, isLike
-    FavoriteTruckStore.add(data.id)
-    ShipperTruckStore.updateFavoriteInList(data.id, data.isLike)
+    if (tokenStore?.token?.accessToken) {
+      FavoriteTruckStore.add(data.id)
+      // ShipperTruckStore.updateFavoriteInList(data.id, data.isLike)
+    } else {
+      navigation.navigate('signin')
+    }
   }
+
+  const renderContent = () => (<View style={{ paddingLeft: spacing[2] }}>
+    <View style={{ paddingVertical: spacing[1] }}>
+      <Text text={`${translate('truckDetailScreen.heighttOfTheCarStall')} : ${stallHeight ? translate(`common.${stallHeight.toLowerCase()}`) : '-'}`} />
+    </View>
+    <View style={{ paddingVertical: spacing[1] }}>
+      <Text text={`${tipper ? translate('truckDetailScreen.haveDump') : translate('truckDetailScreen.haveNotDump')}`} />
+    </View>
+  </View>)
 
   const workingZoneStr = workingZones?.length ? workingZones.map(zone => {
     let reg = GetRegion(zone.region, i18n.locale)
@@ -146,25 +167,36 @@ const Item = (data) => {
   }).join(', ') : translate('common.notSpecified')
 
   const truckImage = MapTruckImageName(+truckType)
+  const imageSource: ImageProps = owner?.avatar?.object && owner?.avatar?.token ? {
+    source: {
+      uri: owner?.avatar?.object || '',
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+        adminAuth: owner?.avatar?.token
+      },
+    },
+    resizeMode: 'cover'
+  } : null
 
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
       <SearchItemTruck
-        {
-        ...{
+        {...{
           id,
           fromText: workingZoneStr,
-          count: 2,
+          // count: 2,
+          customContent: renderContent,
           truckType: `${translate('common.vehicleTypeField')} : ${GetTruckType(+truckType)?.name || translate('common.notSpecified')}`,
           // viewDetail,
-          postBy: 'CargoLink',
+          postBy: owner?.companyName || '',
           isVerified: false,
           isLike: isLiked,
           backgroundImage: imageComponent[truckImage && truckImage !== 'greyMock' ? truckImage : ''],
           // rating,
           // ratingCount,
           isCrown: false,
-          logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
+          image: imageSource,
           // isRecommened,
           containerStyle: {
             paddingTop: spacing[2],
@@ -172,8 +204,7 @@ const Item = (data) => {
           },
           onPress,
           onToggleHeart
-        }
-        }
+        }}
       />
     </View>
   )
@@ -209,6 +240,8 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
   const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState<boolean>(true)
   const [selectSearch, setSelectSearch] = useState({})
 
+  const { versatileStore } = useStores()
+
   useFocusEffect(
     useCallback(() => {
       const { truckType } = JSON.parse(JSON.stringify(AdvanceSearchStore.filter))
@@ -220,7 +253,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
         ...prevState,
         filterLength: length,
       }))
-      PAGE = 0
+      // PAGE = 0
     }, [])
   );
 
@@ -231,14 +264,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
   }, [isFocused])
 
   useEffect(() => {
-    if (!TruckTypeStore.list.length) {
-      TruckTypeStore.find()
-    }
-    if (!AdvanceSearchStore.menu || !AdvanceSearchStore.menu.length) {
-      AdvanceSearchStore.mapMenu()
-    }
     ShipperTruckStore.find()
-    console.log('ShipperTruckStore.find()')
     let newZone = null
     if (i18n.locale === 'th') {
       const ascZones = sortArray(regionListTh)
@@ -259,6 +285,12 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
       setState(initialState)
     }
   }, [])
+
+  useEffect(() => {
+    if (versatileStore.list.length) {
+      AdvanceSearchStore.mapMenu()
+    }
+  }, [JSON.stringify(versatileStore.list)])
 
   useEffect(() => {
     if (Object.keys(selectSearch).length) {
@@ -289,7 +321,6 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
       const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), zoneIds }
       AdvanceSearchStore.setFilter(advSearch)
       ShipperTruckStore.find(advSearch)
-      console.log('ShipperTruckStore.find(advSearch)')
       // ShipperTruckStore.setDefaultOfList()
       PAGE = 0
     }
@@ -308,7 +339,6 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
       PAGE += 1
       const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE }
       ShipperTruckStore.find(advSearch)
-      console.log('onScrollList ShipperTruckStore.find(advSearch)')
       setOnEndReachedCalledDuringMomentum(true)
     }
   }
@@ -428,7 +458,6 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      {/* <ModalLoading size={'large'} color={color.primary} visible={loading} /> */}
       <View style={SEARCH_BAR}>
         <View style={SEARCH_BAR_ROW}>
           <MaterialIcons name={'pin-drop'} color={color.primary} size={25} style={PIN_ICON} />
@@ -491,7 +520,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
                   <MaterialIcons name={'cancel'} color={color.line} size={18} />
                 </TouchableOpacity>
               )
-            } else if (zone.isSelected) {
+            } else {
               return (
                 <View key={`menu-selected-${index}-${zone.value}`} style={{ flexDirection: 'row' }}>
                   {
@@ -507,7 +536,6 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
                 </View>
               )
             }
-            return null
           })}
         </ScrollView>
       </View>

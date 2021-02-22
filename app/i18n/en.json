@@ -71,11 +71,11 @@
     "updateSuccess": "update complete",
     "productName": "please input product name"
   },
-  "commentScreen":{
+  "commentScreen": {
     "yourComment": "Your Comment",
     "canDealInApp": "Can you agree to work through our app ?",
     "canPassApp": "Right from the app ",
-    "notPassApp":"Not from the app",
+    "notPassApp": "Not from the app",
     "howMuchDeal": "Can you tell us how much you agree on the price?",
     "rateUs": "Help rate your satisfaction with this service in",
     "star": "Level 1 - 5 stars",
@@ -370,15 +370,20 @@
   "searchJobScreen": {
     "settingSearch": "Setting Search",
     "clear": "Clear",
-    "fullSearch": "Full search",
+    "fullSearch": "Advanced search",
     "search": "Search",
-    "more": "more.."
+    "more": "more..",
+    "moreThan": "More than",
+    "ton": "TON"
   },
   "shipperProfileScreen": {
     "verified": "Verified",
     "notVerified": "Not Verified",
     "workInProgress": "Work in progress",
-    "pastWork": "Past work"
+    "pastWork": "Past work",
+    "feedbackScore": "Satisfaction score",
+    "showMore": "Show more",
+    "showLess": "Show less"
   },
   "feedbackScreen": {
     "yourOpinion": "Your opinion",
@@ -404,7 +409,9 @@
     "favoriteList": "Favorite List",
     "lastestContact": "Lastest Contact",
     "job": "Job",
-    "vehicle": "Vehicle"
+    "vehicle": "Vehicle",
+    "shipper": "Shippers",
+    "carrier": "Carriers"
   },
   "myJobScreen": {
     "myJob": "My job",

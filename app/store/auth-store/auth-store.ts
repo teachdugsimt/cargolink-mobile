@@ -1,4 +1,4 @@
-import { types, flow } from "mobx-state-tree"
+import { types, flow, cast } from "mobx-state-tree"
 import { AuthAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
 const apiAuth = new AuthAPI()
@@ -67,6 +67,7 @@ const AuthStore = types
     data: types.maybeNull(SignIn),
     profile: types.maybeNull(OTPVerify),
     phoneNumber: types.maybeNull(types.string),
+    countryCode: types.string,
     policyData: types.maybeNull(Policy),
     loading: types.boolean,
     error: types.maybeNull(types.string),
@@ -156,12 +157,13 @@ const AuthStore = types
     }),
 
     clearAuthProfile() {
-      self.profile = {}
-      self.policyData = {}
+      self.profile = cast({})
+      self.policyData = cast({})
     },
 
-    setPhoneNumber(phoneNumber: string) {
+    setPhoneNumber(phoneNumber: string, countryCode: string) {
       self.phoneNumber = phoneNumber
+      self.countryCode = countryCode
     },
 
   }))
@@ -179,6 +181,7 @@ const AuthStore = types
     profile: {},
     policyData: {},
     phoneNumber: null,
+    countryCode: '',
     loading: false,
     error: "",
   })

@@ -14,11 +14,12 @@ import {
   TextStyle,
   View,
   ViewStyle,
+  // TouchableOpacity
 } from "react-native"
 import { Button, ModalLoading, PostingBy, Text } from "../../components"
 import { translate } from "../../i18n"
 import { color, images as imageComponent, spacing } from "../../theme"
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation, useRoute } from "@react-navigation/native"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import ShipperTruckStore from '../../store/shipper-truck-store/shipper-truck-store'
 import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
@@ -29,6 +30,11 @@ import { GetTruckType } from "../../utils/get-truck-type"
 import { MapTruckImageName } from "../../utils/map-truck-image-name"
 import ImageView from 'react-native-image-view';
 import ShippersHistoryCallStore from '../../store/shippers-history-call-store/shippers-history-call-store'
+import UserTruckStore from '../../store/user-truck-store/user-truck-store'
+import ProfileStore from '../../store/profile-store/profile-store'
+import i18n from 'i18n-js'
+import { GetRegion } from "../../utils/get-region"
+import CallDetectorManager from 'react-native-call-detection'
 
 interface ImageInfo {
   width: number
@@ -85,7 +91,6 @@ const BOTTOM_ROOT: ViewStyle = {
 const CALL_TEXT: TextStyle = {
   color: color.textWhite,
   fontSize: 18,
-  paddingVertical: spacing[1]
 }
 const ICON_BOX: ViewStyle = {
   paddingTop: spacing[2]
@@ -123,6 +128,8 @@ const initialState = {
   liked: false,
 }
 
+let callDetector = undefined
+
 export const TruckDetailScreen = observer(function TruckDetailScreen() {
   const navigation = useNavigation()
 
@@ -137,7 +144,11 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
     isLiked,
     truckPhotos,
     phoneNumber,
+    workingZones,
+    owner
   } = ShipperTruckStore.data
+
+  const route = useRoute()
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -171,38 +182,97 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
   }
 
   const onSelectedHeart = (id: string) => {
-    FavoriteTruckStore.keepLiked(id, !liked)
-    FavoriteTruckStore.add(id)
-    setState(prevState => ({
-      ...prevState,
-      liked: !prevState.liked,
-    }))
+    if (tokenStore?.token?.accessToken) {
+      FavoriteTruckStore.keepLiked(id, !liked)
+      FavoriteTruckStore.add(id)
+      setState(prevState => ({
+        ...prevState,
+        liked: !prevState.liked,
+      }))
+    } else {
+      navigation.navigate('signin')
+    }
   }
 
-  const onCall = (id: string, phoneNumber: string) => {
-    callNumber(id, phoneNumber)
-    // route.name === 'jobDetail' ? navigation.navigate('feedback') : navigation.navigate('myFeedback')
+  const startListenerTapped = (truckId: string) => {
+    __DEV__ && console.tron.log('startListenerTapped')
+    callDetector = new CallDetectorManager((event, phoneNumber) => {
+      __DEV__ && console.tron.log('phoneNumber', phoneNumber)
+      if (event === 'Disconnected') {
+        __DEV__ && console.tron.log('Disconnected')
+        stopListenerTapped()
+      } else if (event === 'Connected') { //  for iOS
+        __DEV__ && console.tron.log('Connected')
+      } else if (event === 'Incoming') {
+        __DEV__ && console.tron.log('Incoming')
+      } else if (event === 'Dialing') { //  for iOS
+        __DEV__ && console.tron.log('Dialing')
+      } else if (event === 'Offhook') { // for Android
+        __DEV__ && console.tron.log('Offhook')
+        ShippersHistoryCallStore.add({ truckId })
+      } else if (event === 'Missed') { // for Android
+        __DEV__ && console.tron.log('Missed')
+      }
+    },
+      false,
+      () => { },
+      {
+        title: 'Phone State Permission',
+        message: 'This app needs access to your phone state in order to react and/or to adapt to incoming calls.'
+      }
+    )
   }
 
-  const callNumber = (truckId: string, phone: string) => {
-    let phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
-    __DEV__ && console.tron.log('phoneNumber', phoneNumber)
-    Linking.canOpenURL(phoneNumber)
-      .then(supported => {
-        if (!supported) {
-          __DEV__ && console.tron.log('Phone number is not available');
-          Alert.alert('Phone number is not available')
-          return false;
-        } else {
-          ShippersHistoryCallStore.add({ truckId })
+  const stopListenerTapped = () => {
+    __DEV__ && console.tron.log('stopListenerTapped')
+    callDetector && callDetector.dispose();
+  }
+
+  const onCall = (truckId: string, phone: string) => {
+    if (tokenStore?.token?.accessToken) {
+      const phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
+      __DEV__ && console.tron.log('phoneNumber', phoneNumber)
+      Linking.canOpenURL(phoneNumber)
+        .then(supported => {
+          if (!supported) {
+            __DEV__ && console.tron.log('Phone number is not available');
+            Alert.alert('Phone number is not available')
+            return false;
+          } else {
+            return startListenerTapped(truckId)
+          }
+        })
+        .then(() => {
           return Linking.openURL(phoneNumber);
-        }
-      })
-      .catch(err => __DEV__ && console.tron.log('err', err));
+        })
+        .catch(err => __DEV__ && console.tron.log('err', err));
+    } else {
+      navigation.navigate('signin')
+    }
   };
 
   const confirmBookAJob = () => {
     navigation.navigate('myJobList')
+  }
+
+  const onVisiblePorfile = () => {
+    // UserTruckStore.find({
+    //   userId: ShipperTruckStore.profile.userId,
+    //   page: 0,
+    // })
+    // navigation.navigate('shipperProfile')
+
+    const userId = ShipperTruckStore.profile.userId
+    ProfileStore.getProfileReporter(userId)
+    UserTruckStore.find({
+      userId: userId,
+      page: 0,
+    })
+    if (route.name === 'favoriteTruckDetail') {
+      navigation.navigate('favoriteShipperProfile')
+    } else {
+      navigation.navigate('shipperProfile')
+    }
   }
 
   useEffect(() => {
@@ -210,8 +280,11 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
       TruckTypeStore.find()
     }
     return () => {
-      ShipperTruckStore.setDefaultOfData()
-      ShipperTruckStore.updateFavoriteInList(FavoriteTruckStore.id, FavoriteTruckStore.liked)
+      if (route.name === 'truckDetail') {
+        ShipperTruckStore.setDefaultOfData()
+        ShipperTruckStore.setDefaultOfProfile()
+        ShipperTruckStore.updateFavoriteInList(FavoriteTruckStore.id, FavoriteTruckStore.liked)
+      }
     }
   }, [])
 
@@ -241,6 +314,20 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
   __DEV__ && console.tron.log("Transform Image :: ", transformImage)
   const truckImage = MapTruckImageName(+truckType)
 
+  const ownerProfile = {
+    postBy: ShipperTruckStore.profile?.companyName || '',
+    isVerified: false,
+    rating: '0',
+    ratingCount: '0',
+    isCrown: false,
+    image: JSON.parse(ShipperTruckStore.profile.imageProps),
+  }
+
+  const workingZoneStr = workingZones?.length ? workingZones.map(zone => {
+    let reg = GetRegion(zone.region, i18n.locale)
+    return reg?.label || ''
+  }).join(', ') : translate('common.notSpecified')
+
   return (
     <View style={CONTAINER}>
       {ShipperTruckStore.loading && <ModalLoading size={'large'} color={color.primary} visible={ShipperTruckStore.loading} />}
@@ -255,8 +342,9 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
                 transformImage.map((image, index) => {
                   // __DEV__ && console.tron.log("Image index : ", image)
                   return (
-                    <TouchableOpacity style={TOUCHABLE} key={index} onPress={(attr) => {
-                      if (ShipperTruckStore.data.id && image && image.source && image.source != 51) onViewer(index)
+                    <TouchableOpacity style={TOUCHABLE} key={index} onPress={() => {
+                      if (ShipperTruckStore.data.id && image && image.source && image.source != 51)
+                        onViewer(index)
                     }
                     }>
                       <Image style={IMAGE} source={ShipperTruckStore.data.id && image?.source ? image.source : imageComponent['noImageAvailable']} key={index} />
@@ -269,6 +357,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
                 imageIndex={indexOfImage}
                 isVisible={openViewer}
                 onClose={onCancel}
+                useNativeDriver={true}
               />
               {/* </Modal> */}
             </View>
@@ -285,10 +374,23 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
               <MaterialCommunityIcons name={'truck-outline'} size={24} color={color.primary} />
             </View>
             <View style={DETAIL_BOX}>
-              <Text text={`${translate('common.vehicleTypeField')} : ${GetTruckType(+truckType)?.name || translate('common.notSpecified')}`} style={TEXT} />
-              <Text text={`${translate('common.count')} : ${2} ${translate('jobDetailScreen.unit')}`} style={TEXT} />
-              <Text text={`${translate('vehicleDetailScreen.carHaveDum')} : ${tipper ? translate('common.have') : translate('common.notHave')}`} style={TEXT} />
-              <Text text={`${translate('truckDetailScreen.heighttOfTheCarStall')} : ${stallHeight ? translate(`common.${stallHeight.toLowerCase()}`) : '-'} `} style={TEXT} />
+              <Text style={TEXT}>
+                {translate('searchTruckScreen.workingZone') + ' : '}
+                <Text style={{ fontFamily: 'Kanit-Bold' }} text={workingZoneStr} numberOfLines={1} />
+              </Text>
+              <Text style={TEXT}>
+                {translate('common.vehicleTypeField') + ' : '}
+                <Text style={{ fontFamily: 'Kanit-Bold' }} text={GetTruckType(+truckType)?.name || translate('common.notSpecified')} numberOfLines={1} />
+              </Text>
+              {/* <Text text={`${translate('common.count')} : ${2} ${translate('jobDetailScreen.unit')}`} style={TEXT} /> */}
+              <Text style={TEXT}>
+                {translate('vehicleDetailScreen.carHaveDum') + ' : '}
+                <Text style={{ fontFamily: 'Kanit-Bold' }} text={tipper ? translate('common.have') : translate('common.notHave')} />
+              </Text>
+              <Text style={TEXT} >
+                {translate('truckDetailScreen.heighttOfTheCarStall') + ' : '}
+                <Text style={{ fontFamily: 'Kanit-Bold' }} text={stallHeight ? translate(`common.${stallHeight.toLowerCase()}`) : '-'} />
+              </Text>
             </View>
           </View>
 
@@ -301,14 +403,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
         <View style={COLUMN}>
           <View style={[ROW, { justifyContent: 'space-between', alignItems: 'center' }]}>
             <Text style={{ color: color.line }}>{translate('jobDetailScreen.postBy')}</Text>
-            <PostingBy {...{
-              postBy: 'CargoLink',
-              isVerified: false,
-              rating: '0',
-              ratingCount: '0',
-              isCrown: false,
-              logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
-            }} onToggle={() => navigation.navigate('shipperProfile')} />
+            <PostingBy {...ownerProfile} onToggle={() => onVisiblePorfile()} />
           </View>
         </View>
 
@@ -340,7 +435,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
           }
           onPress={() => onCall(id, phoneNumber)}
         />
-        <Button
+        {/* <Button
           testID="book-a-job"
           style={[BTN_STYLE, { backgroundColor: color.primary }]}
           children={
@@ -350,7 +445,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
             </View>
           }
           onPress={confirmBookAJob}
-        />
+        /> */}
       </View>
     </View>
   )

@@ -1,6 +1,6 @@
 {
   "name": "cargo-link-mobile",
-  "version": "0.0.1",
+  "version": "1.0.22",
   "private": true,
   "rnpm": {
     "assets": [
@@ -9,10 +9,11 @@
   },
   "scripts": {
     "android": "react-native run-android",
+    "android:build": "cd android && ./gradlew assembleRelease",
     "android:shake": "$ANDROID_HOME/platform-tools/adb devices | grep '\\t' | awk '{print $1}' | sed 's/\\s//g' | xargs -I {} $ANDROID_HOME/platform-tools/adb -s {} shell input keyevent 82",
-    "android:beta": "fastlane android beta",
+    "android:beta": "bundle exec fastlane android beta",
     "ios": "react-native run-ios",
-    "ios:beta": "fastlane ios beta",
+    "ios:beta": "bundle exec fastlane ios beta",
     "start": "react-native start",
     "test": "jest --coverage",
     "lint": "eslint index.js app storybook test --fix --ext .js,.ts,.tsx",
@@ -46,7 +47,10 @@
     "prepare": "npm-run-all patch hack:*",
     "storybook": "start-storybook -p 9001 -c ./storybook",
     "adb": "adb reverse tcp:9090 tcp:9090 && adb reverse tcp:3000 tcp:3000 && adb reverse tcp:9001 tcp:9001 && adb reverse tcp:8081 tcp:8081",
-    "test:CI": "set CI=true && react-scripts test --env=jsdom --testResultsProcessor=./node_modules/jest-html-reporter"
+    "test:CI": "set CI=true && react-scripts test --env=jsdom --testResultsProcessor=./node_modules/jest-html-reporter",
+    "bump:patch": "npm version patch && bundle exec fastlane bump_version",
+    "bump:minor": "npm version minor && bundle exec fastlane bump_version",
+    "bump:major": "npm version major && bundle exec fastlane bump_version"
   },
   "dependencies": {
     "@mapbox/polyline": "^1.1.1",
@@ -56,8 +60,9 @@
     "@react-native-community/datetimepicker": "^3.0.9",
     "@react-native-community/geolocation": "^2.0.2",
     "@react-native-community/masked-view": "0.1.10",
-    "@react-native-firebase/app": "^8.4.6",
-    "@react-native-firebase/messaging": "^7.9.1",
+    "@react-native-firebase/analytics": "^10.8.0",
+    "@react-native-firebase/app": "^10.8.0",
+    "@react-native-firebase/crashlytics": "^10.8.0",
     "@react-native-picker/picker": "^1.9.4",
     "@react-navigation/bottom-tabs": "^5.11.2",
     "@react-navigation/native": "^5.1.5",
@@ -84,6 +89,7 @@
     "react-native-collapsible-list": "^2.2.2",
     "react-native-confirmation-code-field": "^6.5.1",
     "react-native-countdown-component": "^2.7.1",
+    "react-native-country-picker-modal": "^2.0.0",
     "react-native-dropdown-latest": "0.0.8",
     "react-native-elements": "^3.0.0-alpha.1",
     "react-native-gesture-handler": "^1.5.0",
@@ -106,11 +112,12 @@
     "react-native-safe-area-view": "1.1.1",
     "react-native-screens": "^2.17.1",
     "react-native-sectioned-multi-select": "^0.8.1",
-    "react-native-splash-screen": "3.2.0",
+    "react-native-splash-screen": "^3.2.0",
     "react-native-super-grid": "^4.0.3",
     "react-native-svg": "^12.1.0",
     "react-native-tab-view": "^2.15.2",
     "react-native-vector-icons": "^7.1.0",
+    "react-native-version-check": "^3.4.2",
     "reactotron-mst": "^3.1.1",
     "reactotron-react-native": "^5.0.0",
     "sprintf-js": "^1.1.2",

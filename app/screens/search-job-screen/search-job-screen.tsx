@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite';
-import { FlatList, RefreshControl, TextStyle, View, ViewStyle } from 'react-native';
-import { AdvanceSearchTab, EmptyListMessage, ModalLoading, SearchBar, Text } from '../../components';
-import { color, spacing, images as imageComponent } from '../../theme';
+import { FlatList, ImageProps, RefreshControl, View, ViewStyle } from 'react-native';
+import { AdvanceSearchTab, EmptyListMessage, SearchBar } from '../../components';
+import { spacing, images as imageComponent } from '../../theme';
 import { SearchItem } from '../../components/search-item/search-item';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { translate } from '../../i18n';
@@ -15,6 +15,7 @@ import TruckTypeStore from "../../store/truck-type-store/truck-type-store"
 import { provinceListEn, provinceListTh } from '../../screens/home-screen/manage-vehicle/datasource'
 import FavoriteJobStore from "../../store/carriers-job-store/favorite-job-store"
 import { MapTruckImageName } from '../../utils/map-truck-image-name';
+import { useStores } from "../../models/root-store/root-store-context";
 
 const SEARCH_BAR: ViewStyle = {
   marginBottom: spacing[1],
@@ -44,19 +45,49 @@ const Item = (data) => {
     isLiked,
   } = data
 
+  const { tokenStore } = useStores()
+
   const navigation = useNavigation()
 
   const onPress = () => {
+    const imageSource = owner?.avatar?.object && owner?.avatar?.token ? {
+      source: {
+        uri: owner?.avatar?.object || '',
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+          adminAuth: owner?.avatar?.token
+        },
+      },
+      resizeMode: 'cover'
+    } : null
+
+    CarriersJobStore.setProfile({ ...owner, imageProps: JSON.stringify(imageSource) })
     CarriersJobStore.findOne(id)
     navigation.navigate('jobDetail')
   }
 
   const onToggleHeart = (data) => {
-    FavoriteJobStore.add(data.id)
-    CarriersJobStore.updateFavoriteInList(data.id, data.isLike)
+    if (tokenStore?.token?.accessToken) {
+      FavoriteJobStore.add(data.id)
+      // CarriersJobStore.updateFavoriteInList(data.id, data.isLike)
+    } else {
+      navigation.navigate('signin')
+    }
   }
 
   const typeOfTruck = GetTruckType(+truckType)?.name || `${translate('jobDetailScreen.truckType')} : ${translate('common.notSpecified')}`
+  const imageSource: ImageProps = owner?.avatar?.object && owner?.avatar?.token ? {
+    source: {
+      uri: owner?.avatar?.object || '',
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+        adminAuth: owner?.avatar?.token
+      },
+    },
+    resizeMode: 'cover'
+  } : null
 
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
@@ -66,11 +97,9 @@ const Item = (data) => {
           id,
           fromText: from?.name || '',
           toText: to?.map(location => location.name).join(', ') || '',
-          count: requiredTruckAmount || '',
+          count: requiredTruckAmount || '-',
           productName: productName,
           truckType: typeOfTruck,
-          // packaging: productName,
-          // detail,
           viewDetail: true,
           postBy: owner?.companyName || '',
           isVerified: false,
@@ -79,13 +108,13 @@ const Item = (data) => {
           rating: '0',
           // ratingCount,
           // isCrown,
-          logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
           // isRecommened: true,s
+          image: imageSource,
           containerStyle: {
             paddingTop: spacing[2],
             borderRadius: 6
           },
-          onPress,
+          onPress: () => onPress(),
           onToggleHeart
         }
         }
@@ -108,6 +137,8 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
   const [{ listLength, filterLength, arrayFilter }, setState] = useState(initialState)
   const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState<boolean>(true)
   const [selectSearch, setSelectSearch] = useState({})
+
+  const { versatileStore } = useStores()
 
   useFocusEffect(
     useCallback(() => {
@@ -139,13 +170,6 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
   }, [JSON.stringify(arrayFilter)])
 
   useEffect(() => {
-    if (!TruckTypeStore.list.length) {
-      TruckTypeStore.find()
-    }
-
-    if (!AdvanceSearchStore.menu || !AdvanceSearchStore.menu.length) {
-      AdvanceSearchStore.mapMenu()
-    }
 
     return () => {
       PAGE = 0
@@ -155,6 +179,12 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
       setState(initialState)
     }
   }, [])
+
+  useEffect(() => {
+    if (versatileStore.list.length) {
+      AdvanceSearchStore.mapMenu()
+    }
+  }, [JSON.stringify(versatileStore.list)])
 
   useEffect(() => {
     if (Object.keys(selectSearch)) {
@@ -301,7 +331,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
             renderItem={renderItem}
             keyExtractor={item => item.id}
             onEndReached={onScrollList}
-            onEndReachedThreshold={0.1}
+            onEndReachedThreshold={0.4}
             contentContainerStyle={{ flexGrow: 1 }}
             ListEmptyComponent={<EmptyListMessage />}
             onMomentumScrollBegin={() => setOnEndReachedCalledDuringMomentum(false)}
