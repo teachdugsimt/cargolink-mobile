@@ -1,7 +1,7 @@
-import React, { ReactNode, useCallback, useEffect, useState } from "react"
-import { View, TextStyle, ImageProps, RefreshControl, FlatList } from "react-native"
-import { EmptyListMessage, SearchItem, Text } from "../../../components"
-import { color, spacing } from "../../../theme"
+import React, { useCallback, useEffect, useState } from "react"
+import { View, ImageProps, RefreshControl, FlatList } from "react-native"
+import { EmptyListMessage, SearchItem } from "../../../components"
+import { spacing } from "../../../theme"
 import FavoriteJobStore from "../../../store/carriers-job-store/favorite-job-store"
 import { GetTruckType } from "../../../utils/get-truck-type"
 import { translate } from "../../../i18n"
@@ -143,11 +143,6 @@ export const JobList = observer(function JobList() {
     }
   }, [FavoriteJobStore.loading])
 
-  // useEffect(() => {
-  //   console.log('re-render when on press heart')
-  //   // re-render when on press heart
-  // }, [FavoriteJobStore.list.length])
-
   const renderItem = ({ item }) => (
     <Item {...item} onToggleHeart={onToggleHeart} />
   )
@@ -188,21 +183,6 @@ export const JobList = observer(function JobList() {
   return (
     <View style={{ flex: 1 }}>
       {FavoriteJobStore.list?.length > 0 ? renderList(FavoriteJobStore.list) : renderList([])}
-      {/* <FlatList
-        data={JSON.parse(JSON.stringify(FavoriteJobStore.list))}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        onEndReached={() => onScrollList()}
-        onEndReachedThreshold={0.1}
-        ListEmptyComponent={<EmptyListMessage />}
-        contentContainerStyle={{ flexGrow: 1 }}
-        refreshControl={
-          <RefreshControl
-            refreshing={FavoriteJobStore.loading}
-            onRefresh={onRefresh}
-          />
-        }
-      /> */}
     </View>
   )
 })

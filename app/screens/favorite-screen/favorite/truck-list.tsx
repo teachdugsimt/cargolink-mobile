@@ -97,8 +97,6 @@ export const Item = (data: JobProps) => {
     resizeMode: 'cover'
   } : null
 
-  const onPressHeart = onToggleHeart ? () => onToggleHeart && onToggleHeart(data) : null
-
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
       <SearchItemTruck
@@ -163,10 +161,6 @@ export const TruckList = observer(function TruckList() {
       FavoriteTruckStore.setList(FavoriteTruckStore.list)
     }
   }, [FavoriteTruckStore.loading])
-
-  // useEffect(() => {
-  //   // re-render when on press heart
-  // }, [FavoriteTruckStore.list.length])
 
   const renderItem = ({ item }) => (
     <Item {...item} onToggleHeart={onToggleHeart} />

@@ -10,9 +10,10 @@ import {
   Keyboard,
   Dimensions,
   TouchableWithoutFeedback,
+  TouchableOpacity,
 } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Button, Icon, ModalAlert, Screen, Text } from "../../components"
+import { Button, HeaderLeft, Icon, ModalAlert, Screen, Text } from "../../components"
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import CountryPicker, { Country, CountryCode, DEFAULT_THEME, FlagButton } from 'react-native-country-picker-modal'
 import { color, spacing, images } from '../../theme'
@@ -44,7 +45,7 @@ const SIGNIN_PART: ViewStyle = {
   paddingRight: 22,
 }
 const LOGO: ImageStyle = {
-  height: "60%",
+  height: 160,
 }
 const CONTINUE_BUTTON: ViewStyle = {
   width: "100%",
@@ -195,7 +196,7 @@ export const SigninScreen = observer(function SigninScreen() {
 
   const onPress = (mobileNo: string, countryCode: string) => {
     const phoneNumber = normalizeMobileNo(mobileNo).substr(1)
-    AuthStore.setPhoneNumber(phoneNumber)
+    AuthStore.setPhoneNumber(phoneNumber, countryCode)
     AuthStore.signInRequest({ phoneNumber, countryCode, userType: 7 })
     setState(initialState)
     navigation.navigate("confirmCode")
@@ -219,7 +220,10 @@ export const SigninScreen = observer(function SigninScreen() {
   const isError = !!(AuthStore.error && AuthStore.error === 'SERVER_ERROR')
 
   return (
-    <View testID="SigninScreen" style={FULL}>
+    <Screen style={FULL} statusBar={'dark-content'}>
+      <TouchableOpacity style={{ paddingLeft: spacing[4] + spacing[1] }} onPress={() => navigation.goBack()}>
+        <HeaderLeft onLeftPress={() => navigation.goBack()} />
+      </TouchableOpacity>
       <View testID="Logo" style={LOGO_PART}>
         <Image source={images.logoNewYellow} style={LOGO} resizeMode={"contain"} />
       </View>
@@ -286,6 +290,6 @@ export const SigninScreen = observer(function SigninScreen() {
         visible={visibleModal}
       />}
 
-    </View>
+    </Screen>
   )
 })

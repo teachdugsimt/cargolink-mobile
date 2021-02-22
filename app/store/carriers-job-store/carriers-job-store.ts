@@ -46,6 +46,35 @@ const CarriersJob = types.model({
   isLiked: types.maybeNull(types.optional(types.boolean, false)),
 })
 
+const CarriersJobList = types.model({
+  content: types.maybeNull(types.array(CarriersJob)),
+  pageable: types.maybeNull(types.model({
+    sort: types.model({
+      sorted: types.maybeNull(types.boolean),
+      unsorted: types.maybeNull(types.boolean),
+      empty: types.maybeNull(types.boolean),
+    }),
+    pageNumber: types.maybeNull(types.number),
+    pageSize: types.maybeNull(types.number),
+    offset: types.maybeNull(types.number),
+    unpaged: types.maybeNull(types.boolean),
+    paged: types.maybeNull(types.boolean),
+  })),
+  totalElements: types.maybeNull(types.number),
+  totalPages: types.maybeNull(types.number),
+  last: types.maybeNull(types.boolean),
+  first: types.maybeNull(types.boolean),
+  sort: types.maybeNull(types.model({
+    sorted: types.maybeNull(types.boolean),
+    unsorted: types.maybeNull(types.boolean),
+    empty: types.maybeNull(types.boolean),
+  })),
+  numberOfElements: types.maybeNull(types.number),
+  size: types.maybeNull(types.number),
+  number: types.maybeNull(types.number),
+  empty: types.maybeNull(types.boolean),
+})
+
 const Directions = types.model({
   latitude: types.number,
   longitude: types.number,
@@ -84,7 +113,8 @@ const isAutenticated = async () => {
 
 const CarriersJobStore = types
   .model({
-    list: types.maybeNull(types.array(types.maybeNull(CarriersJob))),
+    mainList: types.maybeNull(CarriersJobList),
+    list: types.maybeNull(types.array(CarriersJob)),
     data: types.maybeNull(CarriersJob),
     profile: types.model(Profile),
     previousListLength: types.optional(types.number, 0),
@@ -107,11 +137,13 @@ const CarriersJobStore = types
         console.log("Response call api get shipper jobs : : ", response)
         if (response.kind === 'ok') {
 
+          self.mainList = response.data
+
           let arrMerge = []
           if (!filter.page) {
-            arrMerge = [...response.data]
+            arrMerge = [...response.data.content]
           } else {
-            arrMerge = [...self.list, ...response.data]
+            arrMerge = [...self.list, ...response.data.content]
           }
 
           if (!(yield isAutenticated())) {
@@ -326,6 +358,7 @@ const CarriersJobStore = types
   }))
   .create({
     // IMPORTANT !!
+    mainList: {},
     list: [],
     data: {},
     profile: {},
