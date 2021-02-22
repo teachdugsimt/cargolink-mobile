@@ -126,25 +126,25 @@ const BookingStore = types
       }
     }),
 
-    findCarrierJobBookingOne: flow(function* findCarrierJobBookingOne(id: string) {
-      bookingAPI.setup()
-      self.loading_find_carrier_job_booking_one = true
-      try {
-        const response = yield bookingAPI.findCarrierMyJob(id)
-        console.log("Response call api findCarrierJobBookingOne : : ", response)
-        if (response.kind === 'ok') {
-          self.data_find_carrier_job_booking_one = response.data || null
-        } else {
-          self.error_find_carrier_job_booking_one = response?.data?.message || response.kind
-        }
-        self.loading_find_carrier_job_booking_one = false
+    // findCarrierJobBookingOne: flow(function* findCarrierJobBookingOne(id: string) {
+    //   bookingAPI.setup()
+    //   self.loading_find_carrier_job_booking_one = true
+    //   try {
+    //     const response = yield bookingAPI.findCarrierMyJob(id)
+    //     console.log("Response call api findCarrierJobBookingOne : : ", response)
+    //     if (response.kind === 'ok') {
+    //       self.data_find_carrier_job_booking_one = response.data || null
+    //     } else {
+    //       self.error_find_carrier_job_booking_one = response?.data?.message || response.kind
+    //     }
+    //     self.loading_find_carrier_job_booking_one = false
 
-      } catch (error) {
-        console.error("error for save data findCarrierJobBookingOne : ", error)
-        self.loading_find_carrier_job_booking_one = false
-        self.error_find_carrier_job_booking_one = "error for save data findCarrierJobBookingOne"
-      }
-    }),
+    //   } catch (error) {
+    //     console.error("error for save data findCarrierJobBookingOne : ", error)
+    //     self.loading_find_carrier_job_booking_one = false
+    //     self.error_find_carrier_job_booking_one = "error for save data findCarrierJobBookingOne"
+    //   }
+    // }),
   }))
   .views((self) => ({
 
