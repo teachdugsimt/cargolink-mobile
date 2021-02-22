@@ -38,6 +38,35 @@ const defaultModel = {
 
 const ShipperJob = types.model(defaultModel)
 
+const ShippersJobList = types.model({
+  content: types.maybeNull(types.array(ShipperJob)),
+  pageable: types.maybeNull(types.model({
+    sort: types.model({
+      sorted: types.maybeNull(types.boolean),
+      unsorted: types.maybeNull(types.boolean),
+      empty: types.maybeNull(types.boolean),
+    }),
+    pageNumber: types.maybeNull(types.number),
+    pageSize: types.maybeNull(types.number),
+    offset: types.maybeNull(types.number),
+    unpaged: types.maybeNull(types.boolean),
+    paged: types.maybeNull(types.boolean),
+  })),
+  totalElements: types.maybeNull(types.number),
+  totalPages: types.maybeNull(types.number),
+  last: types.maybeNull(types.boolean),
+  first: types.maybeNull(types.boolean),
+  sort: types.maybeNull(types.model({
+    sorted: types.maybeNull(types.boolean),
+    unsorted: types.maybeNull(types.boolean),
+    empty: types.maybeNull(types.boolean),
+  })),
+  numberOfElements: types.maybeNull(types.number),
+  size: types.maybeNull(types.number),
+  number: types.maybeNull(types.number),
+  empty: types.maybeNull(types.boolean),
+})
+
 const ImageModel = types.model({
   object: types.maybeNull(types.string),
   token: types.maybeNull(types.string),
@@ -75,6 +104,7 @@ const isAutenticated = async () => {
 
 const ShipperTruckStore = types
   .model({
+    mainList: types.maybeNull(ShippersJobList),
     list: types.maybeNull(types.array(ShipperJob)),
     data: types.maybeNull(ShipperJobFull),
     profile: types.model(Profile),
@@ -93,11 +123,13 @@ const ShipperTruckStore = types
         console.log("Response call api get shipper jobs : : ", response)
         if (response.kind === 'ok') {
 
+          self.mainList = response.data
+
           let arrMerge = []
           if (!filter.page) {
-            arrMerge = [...response.data]
+            arrMerge = [...response.data.content]
           } else {
-            arrMerge = [...self.list, ...response.data]
+            arrMerge = [...self.list, ...response.data.content]
           }
 
           if (!(yield isAutenticated())) {
@@ -235,6 +267,7 @@ const ShipperTruckStore = types
     }
   }))
   .create({
+    mainList: {},
     list: [],
     data: {},
     profile: {},

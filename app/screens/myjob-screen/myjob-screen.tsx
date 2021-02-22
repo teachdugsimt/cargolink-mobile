@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { View, ViewStyle, TextStyle, TouchableOpacity, FlatList, RefreshControl } from "react-native"
 import { observer } from "mobx-react-lite"
 import { EmptyListMessage, SearchItem, Text, HeaderCenter } from "../../components"
@@ -8,7 +8,7 @@ import CarriersJobStore from '../../store/carriers-job-store/carriers-job-store'
 import PostJobStore from '../../store/post-job-store/post-job-store'
 import AdvanceSearchStore from '../../store/shipper-job-store/advance-search-store'
 import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
-import { useNavigation } from "@react-navigation/native"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import { GetTruckType } from "../../utils/get-truck-type"
 import { translate } from "../../i18n"
 import { MapTruckImageName } from "../../utils/map-truck-image-name"
@@ -207,13 +207,18 @@ export const MyJobScreen = observer(function MyJobScreen() {
   const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState<boolean>(true)
   const [listLength, setListLength] = useState<number>(0)
 
+  useFocusEffect(
+    useCallback(() => {
+      ShipperJobStore.find();
+      return () => {
+        ShipperJobStore.setDefaultOfList()
+      }
+    }, [])
+  );
+
   useEffect(() => {
     if (!TruckTypeStore.list.length) {
       TruckTypeStore.find()
-    }
-    ShipperJobStore.find()
-    return () => {
-      ShipperJobStore.setDefaultOfList()
     }
   }, [])
 
