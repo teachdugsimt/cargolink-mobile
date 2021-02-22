@@ -151,7 +151,7 @@ const LAYOUT_REGISTRATION_FIELD: TextStyle = {
 const ADD_DROPDOWN_REGION: ViewStyle = {
   alignSelf: 'flex-end',
   paddingLeft: 10,
-  justifyContent: 'center', height: 40,
+  justifyContent: 'center',
 }
 
 const WRAPPER_REGION_DROPDOWN: ViewStyle = {
@@ -796,6 +796,18 @@ export const UploadVehicleScreen = observer(() => {
     setddRegion(tmpDropdownRegion)
     setrenderNewRegion(!renderNewRegion)
   }
+  const _deleteDropdown = (regionObj) => {
+    let tmpDropdownRegion = ddRegion
+    let tmpDropdownProvince = ddProvince
+    let last_province_data = tmpDropdownProvince[tmpDropdownProvince.length-1]
+    if(last_province_data && last_province_data.id && last_province_data.id == regionObj.id){
+      tmpDropdownProvince.pop()
+    }
+    tmpDropdownRegion.pop()
+    setddRegion(tmpDropdownRegion)
+    setddProvince(tmpDropdownProvince)
+    setrenderNewRegion(!renderNewRegion)
+  }
 
   const _onPressSectionModal = (onChange, item) => {
     onChange(item.id)
@@ -915,7 +927,8 @@ export const UploadVehicleScreen = observer(() => {
   ]
 
   console.log("Form control Vehicle Height :: ", formControllerValue['vehicle-height'])
-
+  console.log("Dropdown Region :: ", ddRegion)
+  console.log("Dropown province :: ", ddProvince)
   return (
     <View testID="UploadVehicleScreen" style={FULL}>
 
@@ -1141,7 +1154,7 @@ export const UploadVehicleScreen = observer(() => {
 
 
             {/* ********************** DROPDOWN ZONE ********************** */}
-            {ddRegion.length && AddressStore.region && AddressStore.region.length ? ddRegion.map((e, index) => {
+            {ddRegion.length && AddressStore.region && AddressStore.region.length ? ddRegion.map((regionObj, index) => {
               return <View key={'view-dropdown-region-' + index}><View key={'view-dropdown-region-' + index} style={[WRAPPER_REGION_DROPDOWN, { height: 40 }]}>
                 <View style={{ ...FULL, marginLeft: 5 }} key={'view-dropdown-province-' + index}>
                   <Controller
@@ -1298,9 +1311,13 @@ export const UploadVehicleScreen = observer(() => {
 
 
                 }
-                {index == ddRegion.length - 1 && <TouchableOpacity key={'icon-add-circle-' + index} style={[ADD_DROPDOWN_REGION]} onPress={() => _addRowDropdown()}>
+                {index == ddRegion.length - 1 && <View><TouchableOpacity key={'icon-add-circle-' + index} style={[ADD_DROPDOWN_REGION, { height: index == 0 ? 40 : null }]} onPress={() => _addRowDropdown()}>
                   <Ionicons size={20} color={color.darkGreen} name={"add-circle-outline"} />
-                </TouchableOpacity>}
+                </TouchableOpacity>
+                  {index >= 1 && <TouchableOpacity key={'icon-remove-circle-' + index} style={[ADD_DROPDOWN_REGION]} onPress={() => _deleteDropdown(regionObj)}>
+                    <Ionicons name={'remove-circle-outline'} size={20} color={color.red} />
+                  </TouchableOpacity>}
+                </View>}
               </View>
                 {errors["controller-region-" + index] && <Text style={ERROR_REGION} tx={"common.pleaseCheckYourData"} />}
               </View>
