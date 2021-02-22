@@ -193,7 +193,7 @@ export function HomeNavigator() {
         component={SuccessUpload}
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"myVehicleScreen.addNewCar"} />,
-          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+          headerLeft: () => (null),
         })}
       />
       <Stack.Screen
