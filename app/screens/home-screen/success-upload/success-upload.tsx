@@ -1,11 +1,12 @@
 import React, { useEffect } from "react"
-import { View, ViewStyle, TextStyle, FlatList, Platform } from "react-native"
+import { View, ViewStyle, TextStyle, Platform } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
 import { Text, RoundedButton, HeaderCenter } from "../../../components"
-import { color, spacing } from "../../../theme"
+import { color } from "../../../theme"
 import StatusStore from '../../../store/my-vehicle-store/status-vehicle-store'
 import LottieView from 'lottie-react-native';
+import Icon from 'react-native-vector-icons/Ionicons'
 
 const SuccessAnimmation = () => {
   return <LottieView source={require('../../../AnimationJson/order-packed.json')}
@@ -19,9 +20,9 @@ const FULL: ViewStyle = {
 }
 
 const TEXT_VIEW: ViewStyle = {
-  flex: 1,
   alignItems: 'center',
   backgroundColor: color.textWhite,
+  paddingTop: 20
 }
 const VIEW_BUTTON: ViewStyle = {
   flex: 1,
@@ -36,7 +37,9 @@ const BUTTON_CONTAINER: ViewStyle = {
   backgroundColor: color.primary, borderColor: color.primary
 }
 
-const TEXT_TOPIC: TextStyle = { color: color.primary }
+const ICON_VIEW: ViewStyle = { alignItems: 'center', justifyContent: 'center', marginTop: -20 }
+
+const TEXT_TOPIC: TextStyle = { color: color.success }
 const TEXT_SUB_TITLE: TextStyle = { color: color.line }
 const TEXT_BUTTTON_STYLE: TextStyle = { color: color.textWhite }
 export const SuccessUpload = observer(function SuccessUpload() {
@@ -58,14 +61,15 @@ export const SuccessUpload = observer(function SuccessUpload() {
     <View testID="SuccessUpload" style={FULL}>
 
       <View style={{ flex: 7 }}>
-
-        <View style={{ flex: 2, alignItems: 'center' }}>
-          <SuccessAnimmation />
-        </View>
-        <View style={[TEXT_VIEW, { marginTop: Platform.OS == "ios" ? -100 : -80 }]}>
-          <Text tx={status == "edit" ? "myVehicleScreen.editVehicleSuccess" : "myVehicleScreen.addVehicleSuccess"} preset={'topic'} style={TEXT_TOPIC} />
-          <Text tx={"myVehicleScreen.pendingVehicleDetail"} preset={'default'} style={TEXT_SUB_TITLE} />
-          <Text tx={"myVehicleScreen.pendingVehicleDetail2"} preset={'default'} style={TEXT_SUB_TITLE} />
+        <View style={[FULL]}>
+          <View style={ICON_VIEW}>
+            <Icon name={"checkmark-circle"} size={100} color={color.success} />
+          </View>
+          <View style={[TEXT_VIEW]}>
+            <Text tx={status == "edit" ? "myVehicleScreen.editVehicleSuccess" : "myVehicleScreen.addVehicleSuccess"} preset={'topic'} style={TEXT_TOPIC} />
+            <Text tx={"myVehicleScreen.pendingVehicleDetail"} preset={'default'} style={TEXT_SUB_TITLE} />
+            <Text tx={"myVehicleScreen.pendingVehicleDetail2"} preset={'default'} style={TEXT_SUB_TITLE} />
+          </View>
         </View>
       </View>
 
