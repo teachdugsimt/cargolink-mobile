@@ -53,7 +53,6 @@ const IMAGE: ImageStyle = {
   aspectRatio: 4 / 2,
 }
 
-
 const BOTTOM_LIST_VIEW: ViewStyle = { width: '100%', height: 50, paddingTop: 10 }
 const BOTTOM_SUB_LIST_VIEW: ViewStyle = { flex: 1, borderTopColor: color.line, borderTopWidth: 1 }
 const FLEX_ROW_BOTTOM: ViewStyle = { ...ROW, flex: 1 }

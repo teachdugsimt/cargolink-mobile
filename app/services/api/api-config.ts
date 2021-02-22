@@ -4,8 +4,6 @@
 // const API_URL = "https://jsonplaceholder.typicode.com/"
 const { API_URL } = require("../../config/env")
 
-import { makeServer } from './server'
-
 console.log('process.env.NODE_ENV :>> ', process.env.NODE_ENV);
 
 if (process.env.NODE_ENV === 'development') {
