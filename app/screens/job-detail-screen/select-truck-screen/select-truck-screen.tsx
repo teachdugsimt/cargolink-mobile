@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { observer } from "mobx-react-lite"
-import { Dimensions, FlatList, Image, ImageProps, RefreshControl, TextStyle, View, ViewStyle } from 'react-native'
+import { Dimensions, FlatList, Image, RefreshControl, TextStyle, View, ViewStyle } from 'react-native'
 import { color, images, spacing } from "../../../theme";
 import { useNavigation } from "@react-navigation/native"
 import { GetTruckType } from "../../../utils/get-truck-type";
 import { MapTruckImageName } from "../../../utils/map-truck-image-name";
 import { Button, EmptyListMessage, ModalAlert, SearchItemTruck, Text } from "../../../components";
 import { translate } from '../../../i18n';
-import AdvanceSearchStore from '../../../store/shipper-job-store/advance-search-store'
 import TruckTypeStore from '../../../store/truck-type-store/truck-type-store'
 import LottieView from 'lottie-react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import BookingStore from "../../../store/booking-store/booking-store";
 import CarriersJobStore from '../../../store/carriers-job-store/carriers-job-store'
-import FavoriteTruckStore from '../../../store/shipper-truck-store/favorite-truck-store';
 import i18n from 'i18n-js'
-import { useStores } from "../../../models/root-store/root-store-context";
 import { GetRegion } from "../../../utils/get-region";
 import MyVehicleStore from "../../../store/my-vehicle-store/my-vehicle-store";
 
@@ -30,12 +27,6 @@ const BOTTOM_ROOT: ViewStyle = {
   flexDirection: 'row',
   alignItems: 'center',
   paddingVertical: spacing[1],
-}
-const BTN_COLUMN: ViewStyle = {
-  flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-  paddingVertical: spacing[2]
 }
 const LIST: ViewStyle = {
   flex: 1,

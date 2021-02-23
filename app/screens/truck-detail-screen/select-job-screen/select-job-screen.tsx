@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { observer } from "mobx-react-lite"
-import { Dimensions, FlatList, Image, RefreshControl, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native'
+import { Dimensions, FlatList, Image, RefreshControl, TextStyle, View, ViewStyle } from 'react-native'
 import { color, images, spacing } from "../../../theme";
 import ShipperJobStore from '../../../store/shipper-job-store/shipper-job-store'
 import { useNavigation } from "@react-navigation/native"
@@ -26,12 +26,6 @@ const BOTTOM_ROOT: ViewStyle = {
   flexDirection: 'row',
   alignItems: 'center',
   paddingVertical: spacing[1],
-}
-const BTN_COLUMN: ViewStyle = {
-  flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-  paddingVertical: spacing[2]
 }
 const LIST: ViewStyle = {
   flex: 1,
@@ -201,10 +195,10 @@ export const SelectJobScreen = observer(function MyJobScreen() {
   }
 
   const onConfirmJob = () => {
-    // BookingStore.updateBooking({
-    //   truckId: ShipperTruckStore.data.id,
-    //   jobId: jobId
-    // })
+    BookingStore.updateBooking({
+      truckId: ShipperTruckStore.data.id,
+      jobId: jobId
+    })
     setIsBooking(true)
     // onCloseModal()
   }
