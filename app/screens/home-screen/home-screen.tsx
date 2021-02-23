@@ -14,8 +14,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import FontIcon from 'react-native-vector-icons/FontAwesome5'
 import ProfileStore from "../../store/profile-store/profile-store"
 import jwtDecode, { JwtPayload } from "jwt-decode";
+import i18n from 'i18n-js'
 
-const { width, height } = Dimensions.get('window')
+const { width } = Dimensions.get('window')
 const FULL: ViewStyle = { flex: 1 }
 const ROW: ViewStyle = { flexDirection: 'row' }
 const ALL_CENTER: ViewStyle = { justifyContent: 'center', alignItems: Platform.OS == "android" ? 'flex-start' : 'center' }
@@ -56,11 +57,12 @@ export const HomeScreen = observer((props) => {
   const navigation = useNavigation()
 
   useEffect(() => {
+    console.log("Persist Language :: ",versatileStore.language)
+    if(versatileStore.language) i18n.locale = versatileStore.language
     versatileStore.findGroup()
     versatileStore.find()
     versatileStore.findProductType()
     ProfileStore.getProfileRequest()
-
     console.log("TOKEN STORE :: => ", JSON.parse(JSON.stringify(tokenStore.token)))
   }, [])
 

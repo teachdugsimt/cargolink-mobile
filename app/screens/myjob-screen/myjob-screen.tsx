@@ -149,9 +149,9 @@ const Item = (data) => {
       <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={onEdit}>
         <Text tx={'myJobScreen.editJob'} style={{ color: color.line }} />
       </TouchableOpacity>
-      {/* <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onVisible}>
+      <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onVisible}>
         <Text tx={'myJobScreen.bookerWaiting'} style={{ color: color.primary }} />
-      </TouchableOpacity> */}
+      </TouchableOpacity>
     </View>
   )
 
@@ -255,6 +255,7 @@ export const MyJobScreen = observer(function MyJobScreen() {
       headerCenter: () => (
         <HeaderCenter tx={"myJobScreen.myJob"} />
       ),
+      headerLeft: () => null
     });
   }, [lang])
 

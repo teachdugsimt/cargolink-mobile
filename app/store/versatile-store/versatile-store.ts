@@ -45,7 +45,7 @@ export const VersatileStore = types.model({
     self.language = lang
   },
   find: flow(function* find(filter: any = {}) {
-    yield truckTypeApi.setup(i18n.locale)
+    yield truckTypeApi.setup()
     self.list_loading = true
     try {
       const response = yield truckTypeApi.getTruckTypeDropdown(filter)
@@ -60,7 +60,7 @@ export const VersatileStore = types.model({
   }),
 
   findGroup: flow(function* findGroup(filter: any = {}) {
-    yield truckTypeApi.setup(i18n.locale)
+    yield truckTypeApi.setup()
     self.list_group_loading = true
     try {
       const response = yield truckTypeApi.getGroup(filter)
