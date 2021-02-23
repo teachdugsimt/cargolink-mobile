@@ -12,7 +12,7 @@ const Quotation = types.model({
   bookingDatetime: types.maybeNull(types.string),
 })
 
-const ShipperJob = types.maybeNull(types.model({
+const JobModel = {
   id: types.maybeNull(types.string),
   productTypeId: types.maybeNull(types.number),
   productName: types.maybeNull(types.string),
@@ -47,7 +47,16 @@ const ShipperJob = types.maybeNull(types.model({
       token: types.maybeNull(types.string),
     }))
   })),
+}
+
+const ShipperJob = types.maybeNull(types.model({
+  ...JobModel,
   quotations: types.maybeNull(types.array(types.maybeNull(Quotation)))
+}))
+
+const CarrierMyjob = types.maybeNull(types.model({
+  ...JobModel,
+  type: types.maybeNull(types.string),
 }))
 
 const BookingStore = types
@@ -63,6 +72,14 @@ const BookingStore = types
     data_update_booking: types.maybeNull(types.number),
     loading_update_booking: types.boolean,
     error_update_booking: types.maybeNull(types.string),
+
+    data_find_carrier_myjob: types.maybeNull(types.array(CarrierMyjob)),
+    loading_find_carrier_myjob: types.boolean,
+    error_find_carrier_myjob: types.maybeNull(types.string),
+
+    data_find_carrier_myjob_one: types.maybeNull(CarrierMyjob),
+    loading_find_carrier_myjob_one: types.boolean,
+    error_find_carrier_myjob_one: types.maybeNull(types.string),
   })
   .actions((self) => ({
 
@@ -126,25 +143,45 @@ const BookingStore = types
       }
     }),
 
-    // findCarrierJobBookingOne: flow(function* findCarrierJobBookingOne(id: string) {
-    //   yield bookingAPI.setup()
-    //   self.loading_find_carrier_job_booking_one = true
-    //   try {
-    //     const response = yield bookingAPI.findCarrierMyJob(id)
-    //     console.log("Response call api findCarrierJobBookingOne : : ", response)
-    //     if (response.kind === 'ok') {
-    //       self.data_find_carrier_job_booking_one = response.data || null
-    //     } else {
-    //       self.error_find_carrier_job_booking_one = response?.data?.message || response.kind
-    //     }
-    //     self.loading_find_carrier_job_booking_one = false
+    findCarrierMyJob: flow(function* findCarrierMyJob() {
+      yield bookingAPI.setup()
+      self.loading_find_carrier_myjob = true
+      try {
+        const response = yield bookingAPI.findCarrierMyJob()
+        console.log("Response call api findCarrierMyJob : : ", response)
+        if (response.kind === 'ok') {
+          self.data_find_carrier_myjob = response.data || null
+        } else {
+          self.error_find_carrier_myjob = response?.data?.message || response.kind
+        }
+        self.loading_find_carrier_myjob = false
 
-    //   } catch (error) {
-    //     console.error("error for save data findCarrierJobBookingOne : ", error)
-    //     self.loading_find_carrier_job_booking_one = false
-    //     self.error_find_carrier_job_booking_one = "error for save data findCarrierJobBookingOne"
-    //   }
-    // }),
+      } catch (error) {
+        console.error("error for save data findCarrierMyJob : ", error)
+        self.loading_find_carrier_myjob = false
+        self.error_find_carrier_myjob = "error for save data findCarrierMyJob"
+      }
+    }),
+
+    findCarrierMyJobOne: flow(function* findCarrierMyJobOne(id: string) {
+      yield bookingAPI.setup()
+      self.loading_find_carrier_myjob_one = true
+      try {
+        const response = yield bookingAPI.findCarrierMyJobOne(id)
+        console.log("Response call api findCarrierMyJob : : ", response)
+        if (response.kind === 'ok') {
+          self.data_find_carrier_myjob_one = response.data || null
+        } else {
+          self.error_find_carrier_myjob_one = response?.data?.message || response.kind
+        }
+        self.loading_find_carrier_myjob_one = false
+
+      } catch (error) {
+        console.error("error for save data findCarrierMyJob : ", error)
+        self.loading_find_carrier_myjob_one = false
+        self.error_find_carrier_myjob_one = "error for save data findCarrierMyJob"
+      }
+    }),
   }))
   .views((self) => ({
 
@@ -161,6 +198,14 @@ const BookingStore = types
     data_update_booking: null,
     loading_update_booking: false,
     error_update_booking: "",
+
+    data_find_carrier_myjob: null,
+    loading_find_carrier_myjob: false,
+    error_find_carrier_myjob: "",
+
+    data_find_carrier_myjob_one: null,
+    loading_find_carrier_myjob_one: false,
+    error_find_carrier_myjob_one: "",
   })
 
 export default BookingStore
