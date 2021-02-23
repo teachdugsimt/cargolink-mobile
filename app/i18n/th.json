@@ -429,5 +429,9 @@
   "selectJobScreen": {
     "selectBooking": "เลือกงานของคุณสำหรับการจองนี้",
     "addNewJob": "เพิ่มงานใหม่"
+  },
+  "selectTruckScreen": {
+    "selectBooking": "เลือกรถของคุณสำหรับการจองนี้",
+    "addNewTruck": "เพิ่มรถใหม่"
   }
 }

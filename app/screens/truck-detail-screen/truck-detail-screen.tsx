@@ -328,6 +328,9 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
     return reg?.label || ''
   }).join(', ') : translate('common.notSpecified')
 
+  const ownerUserId = owner?.userId || ''
+  const myUserId = ProfileStore.data?.userId || ''
+
   return (
     <View style={CONTAINER}>
       {ShipperTruckStore.loading && <ModalLoading size={'large'} color={color.primary} visible={ShipperTruckStore.loading} />}
@@ -409,20 +412,6 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
 
       </ScrollView>
 
-      {/* <View style={BOTTOM_ROOT}>
-        <Button
-          testID="call-with-owner"
-          style={CALL_BUTTON}
-          children={
-            <View style={{ alignItems: 'center', flexDirection: 'row' }}>
-              <MaterialCommunityIcons name={'phone'} size={24} color={color.textWhite} style={{ paddingRight: spacing[2] }} />
-              <Text style={CALL_TEXT} text={translate('jobDetailScreen.call')} />
-            </View>
-          }
-          onPress={() => navigation.navigate('feedback')}
-        />
-      </View> */}
-
       <View style={BOTTOM_ROOT}>
         <Button
           testID="call-with-owner"
@@ -435,7 +424,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
           }
           onPress={() => onCall(id, phoneNumber)}
         />
-        {/* <Button
+        {ownerUserId !== myUserId && <Button
           testID="book-a-job"
           style={[BTN_STYLE, { backgroundColor: color.primary }]}
           children={
@@ -445,7 +434,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
             </View>
           }
           onPress={confirmBookAJob}
-        /> */}
+        />}
       </View>
     </View>
   )

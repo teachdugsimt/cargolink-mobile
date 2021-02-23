@@ -468,7 +468,8 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   };
 
   const confirmBookAJob = () => {
-    setVisibleModal(true)
+    // setVisibleModal(true)
+    navigation.navigate('myTruckList')
   }
 
   const onCloseModal = () => {
@@ -648,6 +649,8 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   }
 
   const isLoaded = !!(CarriersJobStore.loading || CarriersJobStore.mapLoading)
+  const ownerUserId = owner?.userId || ''
+  const myUserId = ProfileStore.data?.userId || ''
 
   return (
     <View style={CONTAINER}>
@@ -779,7 +782,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           </View>
         }
 
-        {/* {booker.length > 0 && <View style={ONWER_ROOT}>
+        {booker.length > 0 && <View style={ONWER_ROOT}>
           <Text tx={'myJobScreen.listOfBookingJob'} preset={'topic'} style={TOPIC} />
           {booker.map((booker, index) => <BookerItem
             key={index}
@@ -794,7 +797,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             btnTextStyle={{ fontSize: 12, paddingLeft: spacing[1] }}
             onToggle={() => visibleProfile()}
           />)}
-        </View>} */}
+        </View>}
 
       </Modalize>
 
@@ -810,7 +813,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           }
           onPress={() => onCall(id, owner.mobileNo)}
         />
-        {/* <Button
+        {ownerUserId !== myUserId && <Button
           testID="book-a-job"
           style={[BTN_STYLE, { backgroundColor: color.primary }]}
           children={
@@ -820,7 +823,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             </View>
           }
           onPress={confirmBookAJob}
-        /> */}
+        />}
       </View>)}
 
       <ModalAlert {...modalProps} />

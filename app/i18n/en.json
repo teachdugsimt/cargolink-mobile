@@ -426,5 +426,9 @@
   "selectJobScreen": {
     "selectBooking": "Select your event for this booking.",
     "addNewJob": "Add new job"
+  },
+  "selectTruckScreen": {
+    "selectBooking": "Select your truck for this booking.",
+    "addNewTruck": "Add new truck"
   }
 }

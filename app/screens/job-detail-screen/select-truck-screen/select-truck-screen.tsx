@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import { observer } from "mobx-react-lite"
-import { Dimensions, FlatList, Image, RefreshControl, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native'
+import { Dimensions, FlatList, Image, ImageProps, RefreshControl, TextStyle, View, ViewStyle } from 'react-native'
 import { color, images, spacing } from "../../../theme";
-import ShipperJobStore from '../../../store/shipper-job-store/shipper-job-store'
 import { useNavigation } from "@react-navigation/native"
 import { GetTruckType } from "../../../utils/get-truck-type";
 import { MapTruckImageName } from "../../../utils/map-truck-image-name";
-import { Button, EmptyListMessage, ModalAlert, SearchItem, Text } from "../../../components";
+import { Button, EmptyListMessage, ModalAlert, SearchItemTruck, Text } from "../../../components";
 import { translate } from '../../../i18n';
 import AdvanceSearchStore from '../../../store/shipper-job-store/advance-search-store'
 import TruckTypeStore from '../../../store/truck-type-store/truck-type-store'
 import LottieView from 'lottie-react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import BookingStore from "../../../store/booking-store/booking-store";
-import ShipperTruckStore from '../../../store/shipper-truck-store/shipper-truck-store'
+import CarriersJobStore from '../../../store/carriers-job-store/carriers-job-store'
+import FavoriteTruckStore from '../../../store/shipper-truck-store/favorite-truck-store';
+import i18n from 'i18n-js'
+import { useStores } from "../../../models/root-store/root-store-context";
+import { GetRegion } from "../../../utils/get-region";
+import MyVehicleStore from "../../../store/my-vehicle-store/my-vehicle-store";
 
 const FULL: ViewStyle = { flex: 1 }
 const HEADER: ViewStyle = {
@@ -98,97 +102,101 @@ const RenderButtonAlert = (props) => {
 const Item = (data) => {
   const {
     id,
-    productName,
     truckType,
-    requiredTruckAmount,
-    from,
-    to,
+    stallHeight,
+    tipper,
+    isLiked,
     owner,
-    onVisibleModal
+    workingZones,
+    onVisibleModal,
   } = data
 
   const onToggleHeart = (data) => { }
 
-  const RenderBottom = () => (
-    <View></View>
-    // <View style={BOTTOM_ROOT}>
-    //   <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={() => onEdit(id)}>
-    //     <Text tx={'myJobScreen.editJob'} />
-    //   </TouchableOpacity>
-    //   <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={() => onVisibleModal(id)}>
-    //     <Text tx={'myJobScreen.bookerWaiting'} />
-    //   </TouchableOpacity>
-    // </View>
-  )
+  const renderContent = () => (<View style={{ paddingLeft: spacing[2] }}>
+    <View style={{ paddingVertical: spacing[1] }}>
+      <Text text={`${translate('truckDetailScreen.heighttOfTheCarStall')} : ${stallHeight ? translate(`common.${stallHeight.toLowerCase()}`) : '-'}`} />
+    </View>
+    <View style={{ paddingVertical: spacing[1] }}>
+      <Text text={`${tipper ? translate('truckDetailScreen.haveDump') : translate('truckDetailScreen.haveNotDump')}`} />
+    </View>
+  </View>)
 
-  const typeOfTruck = GetTruckType(+truckType)?.name || `${translate('jobDetailScreen.truckType')} : ${translate('common.notSpecified')}`
+  const renderBottom = () => <View />
+
+  const workingZoneStr = workingZones?.length ? workingZones.map(zone => {
+    let reg = GetRegion(zone.region, i18n.locale)
+    return reg?.label || ''
+  }).join(', ') : translate('common.notSpecified')
+
+  const truckImage = MapTruckImageName(+truckType)
 
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
-      <SearchItem
-        {
-        ...{
+      <SearchItemTruck
+        {...{
           id,
-          fromText: from.name,
-          toText: to.map(location => location.name).join(', '),
-          count: requiredTruckAmount,
-          productName: productName,
-          truckType: typeOfTruck,
-          viewDetail: true,
-          postBy: owner.companyName,
+          fromText: workingZoneStr,
+          customContent: renderContent,
+          truckType: `${translate('common.vehicleTypeField')} : ${GetTruckType(+truckType)?.name || translate('common.notSpecified')}`,
+          postBy: owner?.companyName || '',
           isVerified: false,
+          isLike: isLiked,
+          backgroundImage: images[truckImage && truckImage !== 'greyMock' ? truckImage : ''],
+          isCrown: false,
           showFavoriteIcon: false,
-          backgroundImage: images[MapTruckImageName(+truckType) || 'truck'],
-          isRecommened: false,
           containerStyle: {
             paddingTop: spacing[2],
             borderRadius: 6
           },
           onPress: () => onVisibleModal(id),
           onToggleHeart,
-          bottomComponent: () => <RenderBottom />
-        }
-        }
+          bottomComponent: renderBottom
+        }}
       />
     </View>
   )
 }
 
-let PAGE = 0
+let initCount = 0
+let count = 0
 
-export const SelectJobScreen = observer(function MyJobScreen() {
+export const SelectTruckScreen = observer(function MyJobScreen() {
   const navigation = useNavigation()
 
   const [visibleModal, setVisibleModal] = useState<boolean>(false)
   const [isBokking, setIsBooking] = useState<boolean>(false)
   const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState<boolean>(true)
-  const [jobId, setJobId] = useState<string>(null)
+  const [truckId, setTruckId] = useState<string>(null)
   // const [listLength, setListLength] = useState<number>(0)
 
   useEffect(() => {
     if (!TruckTypeStore.list.length) {
       TruckTypeStore.find()
     }
-    ShipperJobStore.find()
+    // CarriersJobStore.find()
+    MyVehicleStore.findRequest({ page: count })
     return () => {
-      ShipperJobStore.setDefaultOfList()
+      // CarriersJobStore.setDefaultOfList()
+      count = initCount
+      MyVehicleStore.clearListData()
     }
   }, [])
 
   const renderItem = ({ item }) => <Item {...item} onVisibleModal={onVisibleModal} />
 
   const onScrollList = () => {
-    console.log('onScrollList')
-    if (!onEndReachedCalledDuringMomentum && !ShipperJobStore.loading) {
-      PAGE += 10
-      const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE }
-      ShipperJobStore.find(advSearch)
+    const myVehicleList = JSON.parse(JSON.stringify(MyVehicleStore.list))
+    if (!onEndReachedCalledDuringMomentum && MyVehicleStore.loading == false && myVehicleList.length % 10 == 0) {
+      count++
+      MyVehicleStore.findRequest({ page: count })
       setOnEndReachedCalledDuringMomentum(true)
     }
   }
 
   const onRefresh = () => {
-
+    count = initCount
+    MyVehicleStore.findRequest({ page: count })
   }
 
   const onCloseModal = () => {
@@ -196,15 +204,16 @@ export const SelectJobScreen = observer(function MyJobScreen() {
   }
 
   const onVisibleModal = (id: string) => {
-    setJobId(id)
+    console.log('id', id)
+    setTruckId(id)
     setVisibleModal(true)
   }
 
   const onConfirmJob = () => {
-    // BookingStore.updateBooking({
-    //   truckId: ShipperTruckStore.data.id,
-    //   jobId: jobId
-    // })
+    BookingStore.updateBooking({
+      jobId: CarriersJobStore.data.id,
+      truckId: truckId
+    })
     setIsBooking(true)
     // onCloseModal()
   }
@@ -240,11 +249,11 @@ export const SelectJobScreen = observer(function MyJobScreen() {
   return (
     <View style={FULL}>
       <View style={HEADER}>
-        <Text text={`* ${translate('selectJobScreen.selectBooking')}`} />
+        <Text text={`* ${translate('selectTruckScreen.selectBooking')}`} />
       </View>
       <View style={LIST}>
         <FlatList
-          data={ShipperJobStore.list}
+          data={MyVehicleStore.list}
           renderItem={renderItem}
           keyExtractor={item => item.id}
           onEndReached={() => onScrollList()}
@@ -254,7 +263,7 @@ export const SelectJobScreen = observer(function MyJobScreen() {
           onMomentumScrollBegin={() => setOnEndReachedCalledDuringMomentum(false)}
           refreshControl={
             <RefreshControl
-              refreshing={ShipperJobStore.loading}
+              refreshing={MyVehicleStore.loading}
               onRefresh={onRefresh}
             />
           }
@@ -268,10 +277,10 @@ export const SelectJobScreen = observer(function MyJobScreen() {
           children={
             <View style={{ alignItems: 'center', flexDirection: 'row' }}>
               <Ionicons name={'add-circle-outline'} size={24} color={color.primary} style={{ paddingRight: spacing[2] }} />
-              <Text style={BTN_BOTTOM_TXT} tx={'selectJobScreen.addNewJob'} />
+              <Text style={BTN_BOTTOM_TXT} tx={'selectTruckScreen.addNewTruck'} />
             </View>
           }
-          onPress={() => navigation.navigate('postjob')}
+          onPress={() => navigation.navigate('uploadVehicle')}
         />
       </View>
 

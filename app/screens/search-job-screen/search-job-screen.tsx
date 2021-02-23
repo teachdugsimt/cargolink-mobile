@@ -223,7 +223,8 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
       && !CarriersJobStore.loading
       // && CarriersJobStore.previousListLength !== listLength
     ) {
-      PAGE = CarriersJobStore.list.length === listLength ? listLength : PAGE + CarriersJobStore.list.length
+      // PAGE = CarriersJobStore.list.length === listLength ? listLength : PAGE + CarriersJobStore.list.length
+      PAGE += 1
       const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE }
       CarriersJobStore.find(advSearch)
       setOnEndReachedCalledDuringMomentum(true)

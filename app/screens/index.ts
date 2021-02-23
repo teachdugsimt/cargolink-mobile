@@ -37,3 +37,5 @@ export * from "./truck-detail-screen/truck-detail-screen"
 
 export * from './truck-detail-screen/select-job-screen/select-job-screen'
 export * from './carrier-profile-screen/carrier-profile-screen'
+
+export * from './job-detail-screen/select-truck-screen/select-truck-screen'
