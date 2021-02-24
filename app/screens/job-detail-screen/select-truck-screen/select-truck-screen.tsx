@@ -15,6 +15,7 @@ import CarriersJobStore from '../../../store/carriers-job-store/carriers-job-sto
 import i18n from 'i18n-js'
 import { GetRegion } from "../../../utils/get-region";
 import MyVehicleStore from "../../../store/my-vehicle-store/my-vehicle-store";
+import StatusVehicleStore from "../../../store/my-vehicle-store/status-vehicle-store";
 
 const FULL: ViewStyle = { flex: 1 }
 const HEADER: ViewStyle = {
@@ -191,11 +192,15 @@ export const SelectTruckScreen = observer(function MyJobScreen() {
   }
 
   const onCloseModal = () => {
+    // navigation.navigate('Home', {
+    //   // onNavigateBack: (commentText) => refresh(commentText)
+    //   screen: 'jobDetail'
+    // })
+    navigation.navigate('jobDetail')
     setVisibleModal(false)
   }
 
   const onVisibleModal = (id: string) => {
-    console.log('id', id)
     setTruckId(id)
     setVisibleModal(true)
   }
@@ -212,6 +217,11 @@ export const SelectTruckScreen = observer(function MyJobScreen() {
   const onAnimationFinish = () => {
     setIsBooking(false)
     onCloseModal()
+  }
+
+  const addNewTruck = () => {
+    StatusVehicleStore.setStatusScreen('add')
+    navigation.navigate('uploadVehicle')
   }
 
   const modalProps = {
@@ -271,7 +281,7 @@ export const SelectTruckScreen = observer(function MyJobScreen() {
               <Text style={BTN_BOTTOM_TXT} tx={'selectTruckScreen.addNewTruck'} />
             </View>
           }
-          onPress={() => navigation.navigate('uploadVehicle')}
+          onPress={() => addNewTruck()}
         />
       </View>
 

@@ -230,7 +230,7 @@ const RenderButtonAlert = ({ onCloseModal, onConfirmJob }) => {
 
 const RenderImageAlert = () => (<Image source={images['workYellowIcon']} width={75} height={75} />)
 
-const Item = (data) => {
+const JobItem = (data) => {
   const {
     id,
     truckType,
@@ -286,17 +286,6 @@ const Item = (data) => {
   }).join(', ') : translate('common.notSpecified')
 
   const truckImage = MapTruckImageName(+truckType)
-  const imageSource: ImageProps = owner?.avatar?.object && owner?.avatar?.token ? {
-    source: {
-      uri: owner?.avatar?.object || '',
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-        adminAuth: owner?.avatar?.token
-      },
-    },
-    resizeMode: 'cover'
-  } : null
 
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
@@ -305,19 +294,14 @@ const Item = (data) => {
         ...{
           id,
           fromText: workingZoneStr,
-          // count: 2,
           customContent: renderContent,
           truckType: `${translate('common.vehicleTypeField')} : ${GetTruckType(+truckType)?.name || translate('common.notSpecified')}`,
-          // viewDetail,
           postBy: owner?.companyName || '',
           isVerified: false,
           isLike: isLiked,
           backgroundImage: imageComponent[truckImage && truckImage !== 'greyMock' ? truckImage : ''],
-          // rating,
-          // ratingCount,
           isCrown: false,
-          image: imageSource,
-          // isRecommened,
+          bottomComponent: () => <></>,
           containerStyle: {
             paddingTop: spacing[2],
             borderRadius: 6
@@ -327,6 +311,65 @@ const Item = (data) => {
         }
         }
       />
+    </View>
+  )
+}
+
+const Item = () => {
+
+  const [isActive, setIsActive] = useState<number>(0)
+
+  return (
+    <View>
+
+      <View style={{ flexDirection: 'row' }}>
+        <TouchableOpacity
+          style={[SECTION, {
+            alignItems: 'center',
+            borderBottomWidth: 3,
+            borderBottomColor: isActive === 0 ? color.dim : color.transparent,
+            flex: 1,
+          }]}
+          onPress={() => setIsActive(0)}>
+          <Text tx={'shipperProfileScreen.workInProgress'} preset={'topic'} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[SECTION, {
+            alignItems: 'center',
+            borderBottomWidth: 3,
+            borderBottomColor: isActive === 1 ? color.dim : color.transparent,
+            flex: 1,
+          }]}
+          onPress={() => setIsActive(1)}>
+          <Text tx={'shipperProfileScreen.pastWork'} preset={'topic'} />
+        </TouchableOpacity>
+      </View>
+
+      {isActive === 0 && <FlatList
+        data={UserTruckStore.list || []}
+        renderItem={({ item }) => {
+          return <JobItem {...item} />
+        }}
+        keyExtractor={item => item.id.toString()}
+        onEndReachedThreshold={0.1}
+        contentContainerStyle={{ flexGrow: 1 }}
+        ListEmptyComponent={<EmptyListMessage containerStyle={{ top: 0 }} />}
+        onEndReached={() => console.log('onScrollList isActive = 0')}
+      />}
+
+      {isActive === 1 && <FlatList
+        data={UserTruckStore.list || []}
+        renderItem={({ item }) => {
+          return <JobItem {...item} />
+        }}
+        keyExtractor={item => item.id.toString()}
+        onEndReachedThreshold={0.1}
+        contentContainerStyle={{ flexGrow: 1 }}
+        ListEmptyComponent={<EmptyListMessage containerStyle={{ top: 0 }} />}
+        onEndReached={() => console.log('onScrollList isActive = 1')}
+      />}
+
     </View>
   )
 }
@@ -454,14 +497,6 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
         {STAR.map(val => <Rating key={val.show} {...val} />)}
       </View>
     </View>
-
-    <View style={[SECTION, {
-      justifyContent: 'center',
-      borderBottomWidth: 3,
-      borderBottomColor: color.dim,
-    }]}>
-      <Text tx={'shipperProfileScreen.workInProgress'} preset={'topic'} />
-    </View>
   </>)
 
   return (
@@ -509,7 +544,7 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
         </View>
       </ScrollView> */}
 
-      <FlatList
+      {/* <FlatList
         ref={scrollRef}
         data={UserTruckStore.list || []}
         renderItem={renderItem}
@@ -527,6 +562,24 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
             onRefresh={() => console.log('onRefresh')}
           />
         }
+      /> */}
+
+      <FlatList
+        ref={scrollRef}
+        data={[{ id: '1' }]}
+        renderItem={renderItem}
+        onEndReachedThreshold={0.1}
+        keyExtractor={item => item.id}
+        contentContainerStyle={{ flexGrow: 1 }}
+        ListEmptyComponent={<EmptyListMessage containerStyle={{ top: 0 }} />}
+        ListHeaderComponent={HeaderComponent}
+        onMomentumScrollBegin={() => setOnEndReachedCalledDuringMomentum(false)}
+      // refreshControl={
+      //   <RefreshControl
+      //     refreshing={ProfileStore.loading_report_profile}
+      //     onRefresh={() => console.log('onRefresh')}
+      //   />
+      // }
       />
 
       {isBooker && (<>
