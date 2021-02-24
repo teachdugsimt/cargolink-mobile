@@ -798,7 +798,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
         </View>
 
-        {showOwnerAccount || fromManageCar &&
+        {(showOwnerAccount || fromManageCar) &&
           <View style={ONWER_ROOT}>
             <View style={ROW}>
               <Text style={{ color: color.line }}>{translate('jobDetailScreen.postBy')}</Text>
