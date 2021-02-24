@@ -237,7 +237,7 @@ export const MyJobScreen = observer(function MyJobScreen() {
       && !ShipperJobStore.loading
       // && ShipperJobStore.previousListLength !== listLength
     ) {
-      PAGE = ShipperJobStore.list.length === listLength ? listLength : PAGE + ShipperJobStore.list.length
+      PAGE++
       const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE }
       ShipperJobStore.find(advSearch)
       setOnEndReachedCalledDuringMomentum(true)
