@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react"
-import { View, ViewStyle, TextStyle, TouchableOpacity, FlatList, RefreshControl } from "react-native"
+import { View, ViewStyle, TextStyle, TouchableOpacity, FlatList, RefreshControl, Dimensions } from "react-native"
 import { observer } from "mobx-react-lite"
 import { EmptyListMessage, SearchItem, Text, HeaderCenter } from "../../components"
 import { color, spacing, images as imageComponent } from "../../theme"
@@ -8,18 +8,16 @@ import CarriersJobStore from '../../store/carriers-job-store/carriers-job-store'
 import PostJobStore from '../../store/post-job-store/post-job-store'
 import AdvanceSearchStore from '../../store/shipper-job-store/advance-search-store'
 import TruckTypeStore from '../../store/truck-type-store/truck-type-store'
-import { useFocusEffect, useNavigation } from "@react-navigation/native"
+import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native"
 import { GetTruckType } from "../../utils/get-truck-type"
 import { translate } from "../../i18n"
 import { MapTruckImageName } from "../../utils/map-truck-image-name"
 import DateAndTime from 'date-and-time';
 import StatusStore from '../../store/post-job-store/job-status-store'
 import { useStores } from "../../models/root-store/root-store-context";
+
+const COLOR_WHITE: TextStyle = { color: color.textWhite }
 const FULL: ViewStyle = { flex: 1 }
-const HEADER: ViewStyle = {
-  flexDirection: 'row',
-  backgroundColor: color.primary,
-}
 const HEADER_ACTIVE: ViewStyle = {
   borderBottomWidth: 2,
   borderBottomColor: color.textBlack,
@@ -28,8 +26,9 @@ const TOUCHABLE_VIEW: ViewStyle = {
   flex: 1,
   alignItems: 'center',
 }
-const TEXT: TextStyle = {
-  color: color.textBlack,
+const QUOTATION_NUM: ViewStyle = {
+  backgroundColor: 'red', height: 20, width: 20, borderRadius: 10, position: 'absolute', top: 0, right: 40,
+  justifyContent: 'center', alignItems: 'center'
 }
 const CONTENT: ViewStyle = {
   flex: 1,
@@ -78,6 +77,7 @@ const Item = (data) => {
     from,
     to,
     owner,
+    quotationNumber
   } = JSON.parse(JSON.stringify(data))
 
   const navigation = useNavigation()
@@ -146,10 +146,13 @@ const Item = (data) => {
 
   const RenderBottom = () => (
     <View style={BOTTOM_ROOT}>
-      <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={onEdit}>
-        <Text tx={'myJobScreen.editJob'} style={{ color: color.line }} />
+      <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={quotationNumber == 0 ? onEdit : null}>
+        <Text tx={'myJobScreen.editJob'} style={{ color: quotationNumber == 0 ? color.primary : color.line }} />
       </TouchableOpacity>
       <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onVisible}>
+        {!!quotationNumber && <View style={QUOTATION_NUM}>
+          <Text style={COLOR_WHITE}>{quotationNumber}</Text>
+        </View>}
         <Text tx={'myJobScreen.bookerWaiting'} style={{ color: color.primary }} />
       </TouchableOpacity>
     </View>
@@ -199,6 +202,9 @@ let PAGE = 0
 
 export const MyJobScreen = observer(function MyJobScreen() {
   const navigation = useNavigation()
+  const route = useRoute()
+  const { status }: any = route?.params || {}
+  console.log("status : ", status)
   const [isFirstHeaderSelected, setIsFirstHeaderSelected] = useState<boolean>(true)
   const [activeTab, setActiveTab] = useState<number>(0)
   const [isActivitySwitch, setIsActivitySwitch] = useState<boolean>(false)
@@ -291,6 +297,7 @@ export const MyJobScreen = observer(function MyJobScreen() {
 
       <View style={CONTENT}>
         <FlatList
+          ListHeaderComponent={() => (<View style={{ height: 200, backgroundColor: 'red' }}></View>)}
           data={ShipperJobStore.list}
           renderItem={renderItem}
           keyExtractor={item => item.id}

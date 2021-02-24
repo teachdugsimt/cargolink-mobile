@@ -80,6 +80,11 @@ const BookingStore = types
     data_find_carrier_myjob_one: types.maybeNull(CarrierMyjob),
     loading_find_carrier_myjob_one: types.boolean,
     error_find_carrier_myjob_one: types.maybeNull(types.string),
+
+    data_approve_booking: types.maybeNull(types.number),
+    loading_approve_booking: types.boolean,
+    error_approve_booking: types.maybeNull(types.string)
+
   })
   .actions((self) => ({
 
@@ -182,6 +187,37 @@ const BookingStore = types
         self.error_find_carrier_myjob_one = "error for save data findCarrierMyJob"
       }
     }),
+
+    approveBooking: flow(function* approveBooking(who: string, status: string, id: string) {
+      yield bookingAPI.setup()
+      self.loading_approve_booking = true
+      try {
+        if (who == "shipper") {
+          const response = status == "accept" ? yield bookingAPI.findShipperJobBookingAccept(id) : yield bookingAPI.findShipperJobBookingReject(id)
+          console.log(`Response call api ${who} ${status}Booking :: `, response)
+          if (response.kind === 'ok') {
+            self.data_approve_booking = response.data || null
+          } else {
+            self.error_approve_booking = response?.data?.message || response.kind
+          }
+        } else if (who == "carrier") {
+          const response = status == "accept" ? yield bookingAPI.findCarrierTruckBookingAccept(id) : yield bookingAPI.findCarrierTruckBookingReject(id)
+          console.log(`Response call api ${who} ${status}Booking :: `, response)
+          if (response.kind === 'ok') {
+            self.data_approve_booking = response.data || null
+          } else {
+            self.error_approve_booking = response?.data?.message || response.kind
+          }
+        }
+
+        self.loading_approve_booking = false
+
+      } catch (error) {
+        console.error("error for save data approveBooking : ", error)
+        self.loading_approve_booking = false
+        self.error_approve_booking = "error for save data approveBooking"
+      }
+    }),
   }))
   .views((self) => ({
 
@@ -206,6 +242,11 @@ const BookingStore = types
     data_find_carrier_myjob_one: null,
     loading_find_carrier_myjob_one: false,
     error_find_carrier_myjob_one: "",
+
+    data_approve_booking: null,
+    loading_approve_booking: false,
+    error_approve_booking: "",
+
   })
 
 export default BookingStore

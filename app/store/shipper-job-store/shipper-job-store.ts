@@ -43,6 +43,7 @@ const ShipperJob = types.model({
       token: types.maybeNull(types.string),
     }))
   })),
+  quotationNumber: types.maybeNull(types.number),
   isLiked: types.maybeNull(types.optional(types.boolean, false))
 })
 
