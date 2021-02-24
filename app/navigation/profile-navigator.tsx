@@ -8,7 +8,7 @@ import React from "react"
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import { ProfileScreen, UpdateProfileScreen } from "../screens"
 import { color } from "../theme"
-import { HeaderCenter, HeaderLeft } from "../components"
+import { HeaderCenter, HeaderLeft, HeaderRight } from "../components"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
  * as well as what properties (if any) they might take when navigating to them.
@@ -44,7 +44,7 @@ export function ProfileNavigator() {
     >
       <Stack.Screen name="profile" component={ProfileScreen}
         options={({ navigation, route }) => ({
-          // headerRight: () => <HeaderRight iconName={"ios-create-outline"} iconSize={24} iconColor={color.black} onRightPress={() => console.log("Right press:::")}/>,
+          headerRight: () => <HeaderRight onRightPress={() => console.log("press right")} iconName={"ios-create-outline"} iconSize={24} iconColor={color.black} />,
           headerCenter: () => <HeaderCenter tx={"profileScreen.profile"} />,
           headerHideShadow: true,
           // headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),

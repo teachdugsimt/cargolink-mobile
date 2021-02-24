@@ -15,6 +15,7 @@ import { MapTruckImageName } from "../../utils/map-truck-image-name"
 import DateAndTime from 'date-and-time';
 import StatusStore from '../../store/post-job-store/job-status-store'
 import { useStores } from "../../models/root-store/root-store-context";
+import ProfileStore from "../../store/profile-store/profile-store"
 
 const COLOR_WHITE: TextStyle = { color: color.textWhite }
 const FULL: ViewStyle = { flex: 1 }
@@ -202,6 +203,7 @@ let PAGE = 0
 
 export const MyJobScreen = observer(function MyJobScreen() {
   const navigation = useNavigation()
+
   const route = useRoute()
   const { status }: any = route?.params || {}
   console.log("status : ", status)
@@ -248,7 +250,7 @@ export const MyJobScreen = observer(function MyJobScreen() {
     ShipperJobStore.find()
   }
 
-  const { versatileStore } = useStores()
+  const { versatileStore, tokenStore } = useStores()
   const [lang, setlang] = useState(null)
   useEffect(() => {
     if (lang != versatileStore.language) {
@@ -264,6 +266,24 @@ export const MyJobScreen = observer(function MyJobScreen() {
       headerLeft: () => null
     });
   }, [lang])
+
+  const _renderFlatList = (data) => (
+    <FlatList
+      data={data}
+      renderItem={renderItem}
+      keyExtractor={item => item.id}
+      onEndReached={() => onScrollList()}
+      onEndReachedThreshold={0.1}
+      contentContainerStyle={{ flexGrow: 1 }}
+      ListEmptyComponent={<EmptyListMessage />}
+      onMomentumScrollBegin={() => setOnEndReachedCalledDuringMomentum(false)}
+      refreshControl={
+        <RefreshControl
+          refreshing={ShipperJobStore.loading}
+          onRefresh={onRefresh}
+        />
+      }
+    />)
 
   const touchableHeaderStyle: ViewStyle = {
     ...TOUCHABLE_VIEW,
@@ -296,22 +316,7 @@ export const MyJobScreen = observer(function MyJobScreen() {
       </View> */}
 
       <View style={CONTENT}>
-        <FlatList
-          data={ShipperJobStore.list}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-          onEndReached={() => onScrollList()}
-          onEndReachedThreshold={0.1}
-          contentContainerStyle={{ flexGrow: 1 }}
-          ListEmptyComponent={<EmptyListMessage />}
-          onMomentumScrollBegin={() => setOnEndReachedCalledDuringMomentum(false)}
-          refreshControl={
-            <RefreshControl
-              refreshing={ShipperJobStore.loading}
-              onRefresh={onRefresh}
-            />
-          }
-        />
+        {ProfileStore.data && tokenStore?.token?.accessToken ? _renderFlatList(ShipperJobStore.list) : _renderFlatList([])}
       </View>
 
     </View>
