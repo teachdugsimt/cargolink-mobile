@@ -532,10 +532,10 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
 
       <FlatList
         ref={scrollRef}
-        data={[{ id: '1' }]}
+        data={[{ id: Date.now().toString() }]}
         renderItem={renderItem}
         onEndReachedThreshold={0.1}
-        keyExtractor={item => item.idx}
+        keyExtractor={item => item.id}
         contentContainerStyle={{ flexGrow: 1 }}
         ListEmptyComponent={<EmptyListMessage containerStyle={{ top: 0 }} />}
         ListHeaderComponent={HeaderComponent}

@@ -578,7 +578,7 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
 
       <FlatList
         ref={scrollRef}
-        data={[{ id: '1' }]}
+        data={[{ id: Date.now().toString() }]}
         renderItem={renderItem}
         onEndReachedThreshold={0.1}
         keyExtractor={item => item.id}

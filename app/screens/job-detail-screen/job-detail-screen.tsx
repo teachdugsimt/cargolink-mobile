@@ -832,7 +832,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
         {!showOwnerAccount && !fromManageCar && arrBooker.length > 0 && <View style={ONWER_ROOT}>
           <Text tx={'myJobScreen.listOfBookingJob'} preset={'topic'} style={TOPIC} />
-          {arrBooker.map((booker, index) =>  <BookerItem
+          {arrBooker.map((booker, index) => <BookerItem
             key={index}
             imageUrl={booker.image}
             topic={booker.name}
