@@ -103,6 +103,10 @@ const UserJobStore = types
       }
     }),
 
+    clearList() {
+      self.list = cast([])
+    }
+
   }))
   .views((self) => ({
     get getList() {

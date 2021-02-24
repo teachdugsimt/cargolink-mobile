@@ -229,7 +229,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
   }
 
   const onCall = (truckId: string, phone: string) => {
-    if (tokenStore?.token?.accessToken) {
+    if (ProfileStore.data && tokenStore?.token?.accessToken) {
       const phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
       __DEV__ && console.tron.log('phoneNumber', phoneNumber)
       Linking.canOpenURL(phoneNumber)
@@ -252,7 +252,11 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
   };
 
   const confirmBookAJob = () => {
-    navigation.navigate('myJobList')
+    if (ProfileStore.data && tokenStore?.token?.accessToken) {
+      navigation.navigate('myJobList')
+    } else {
+      navigation.navigate('signin')
+    }
   }
 
   const onVisiblePorfile = () => {

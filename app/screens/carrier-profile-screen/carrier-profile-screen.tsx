@@ -368,6 +368,7 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
   useEffect(() => {
     return () => {
       ProfileStore.clearAllData()
+      UserJobStore.clearList()
     }
   }, [])
 

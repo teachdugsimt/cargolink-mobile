@@ -488,7 +488,11 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
   const confirmBookAJob = () => {
     // setVisibleModal(true)
-    navigation.navigate('myTruckList')
+    if (ProfileStore.data && tokenStore?.token?.accessToken) {
+      navigation.navigate('myTruckList')
+    } else {
+      navigation.navigate('signin')
+    }
   }
 
   const onCloseModal = () => {
@@ -548,7 +552,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   }
 
   const onCall = (jobId: string, phone: string) => {
-    if (tokenStore?.token?.accessToken) {
+    if (ProfileStore.data && tokenStore?.token?.accessToken) {
       const phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
       __DEV__ && console.tron.log('phoneNumber', phoneNumber)
       Linking.canOpenURL(phoneNumber)
