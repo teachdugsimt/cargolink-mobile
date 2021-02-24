@@ -185,7 +185,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
   useEffect(() => {
     let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
     if (tmp_profile && tmp_profile != profileState) {
-      ProfileStore.getProfileReporter(tmp_profile.userId)
+      ProfileStore.getProfileReporterScreen(tmp_profile.userId)
       setprofileState(tmp_profile)
       setrenderNewProfile(!renderNewProfile)
     }
@@ -247,13 +247,13 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
   const onRefresh = () => {
     let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
-    if (tmp_profile && tmp_profile.userId) ProfileStore.getProfileReporter(tmp_profile.userId)
+    if (tmp_profile && tmp_profile.userId) ProfileStore.getProfileReporterScreen(tmp_profile.userId)
     ProfileStore.getProfileRequest()
   }
 
   const onRefreshTruckSummary = () => {
     let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
-    if (tmp_profile && tmp_profile.userId) ProfileStore.getProfileReporter(tmp_profile.userId)
+    if (tmp_profile && tmp_profile.userId) ProfileStore.getProfileReporterScreen(tmp_profile.userId)
     ProfileStore.getTruckSummary()
   }
 
@@ -262,7 +262,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
   const [reportWorking, setreportWorking] = useState(initReportWorking)
   const [allCar, setallCar] = useState("")
   useEffect(() => {
-    let tmp_report = JSON.parse(JSON.stringify(ProfileStore.data_report_profile))
+    let tmp_report = JSON.parse(JSON.stringify(ProfileStore.data_report_profile_screen))
     if (tmp_report && tmp_report.trucks && tmp_report.trucks.length > 0) {
       let all_car = tmp_report.trucks.reduce((prev, next) => prev + next.total, 0)
       mappingSectionTruckType(tmp_report.trucks)
@@ -274,7 +274,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
       setreportWorking([])
       setarrSection(initVehicleList)
     }
-  }, [JSON.stringify(ProfileStore.data_report_profile)])
+  }, [JSON.stringify(ProfileStore.data_report_profile_screen)])
 
   const mappingWorkingReport = (totalJob) => {
     let tmp = [{ id: 1, title: "profileScreen.allPostJob", content: "common.totalJobText", number: totalJob }]
@@ -332,7 +332,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
   useEffect(() => {
     let tmp_list_all = JSON.parse(JSON.stringify(versatileStore.list))
     if (tmp_list_all != tmpListTruckType) {
-      let tmp_report = JSON.parse(JSON.stringify(ProfileStore.data_report_profile))
+      let tmp_report = JSON.parse(JSON.stringify(ProfileStore.data_report_profile_screen))
       if (tmp_report && tmp_report.trucks && tmp_report.trucks.length > 0) {
         console.log("_______________ Mapping new Section List when Language change _______________")
         mappingSectionTruckType(tmp_report.trucks)
@@ -442,7 +442,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
   const { fullName, phoneNumber, avatar } = JSON.parse(JSON.stringify(ProfileStore.data)) || {}
   // __DEV__ && console.tron.log("Profile data :: ", JSON.parse(JSON.stringify(ProfileStore.data)))
 
-  __DEV__ && console.tron.log("Report data :: ", JSON.parse(JSON.stringify(ProfileStore.data_report_profile)))
+  __DEV__ && console.tron.log("Report data :: ", JSON.parse(JSON.stringify(ProfileStore.data_report_profile_screen)))
 
 
   let token = tokenStore?.token?.accessToken || ''
@@ -502,7 +502,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
                 keyExtractor={(item, index) => 'key-' + index.toString()}
                 refreshControl={
                   <RefreshControl
-                    refreshing={ProfileStore.loading_report_profile || ProfileStore.loading || ProfileStore.loading_truck_summary}
+                    refreshing={ProfileStore.loading_report_profile_screen || ProfileStore.loading || ProfileStore.loading_truck_summary}
                     onRefresh={onRefresh}
                   />
                 }
@@ -514,14 +514,14 @@ export const ProfileScreen = observer(function ProfileScreen() {
         {menu2 && <>
           {!token || !ProfileStore.data ? _renderSigninButtton() :
             <View style={[FULL, { paddingTop: Platform.OS == "ios" ? 10 : 0 }]}>
-              {ProfileStore.data_report_profile && arrSection && arrSection[0].data.length > 0 ? <SectionList
+              {ProfileStore.data_report_profile_screen && arrSection && arrSection[0].data.length > 0 ? <SectionList
                 sections={arrSection}
                 keyExtractor={(item: any, index: any) => 'section-list-' + (item.id.toString()) + index}
                 renderItem={({ item, index }) => _renderSectionList(item, index)}
                 stickySectionHeadersEnabled={false}
                 refreshControl={
                   <RefreshControl
-                    refreshing={ProfileStore.loading_report_profile || ProfileStore.loading_truck_summary}
+                    refreshing={ProfileStore.loading_report_profile_screen || ProfileStore.loading_truck_summary}
                     onRefresh={onRefreshTruckSummary}
                   />
                 }

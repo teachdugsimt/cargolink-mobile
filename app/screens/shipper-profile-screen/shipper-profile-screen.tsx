@@ -393,7 +393,7 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
 
   useEffect(() => {
     return () => {
-      ProfileStore.clearAllData()
+      ProfileStore.clearDataReportProfile()
       UserTruckStore.clearList()
     }
   }, [])

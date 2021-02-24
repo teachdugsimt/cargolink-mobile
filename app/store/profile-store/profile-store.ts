@@ -80,6 +80,10 @@ const ProfileStore = types.model({
   loading_report_profile: types.boolean,
   error_report_profile: types.maybeNull(types.string),
 
+  data_report_profile_screen: types.maybeNull(ReportProfile),
+  loading_report_profile_screen: types.boolean,
+  error_report_profile_screen: types.maybeNull(types.string),
+
 
 }).actions(self => ({
   getProfileRequest: flow(function* getProfileRequest() { // <- note the star, this a generator function!
@@ -100,6 +104,26 @@ const ProfileStore = types.model({
       console.error("Failed to store value get profile : ", error)
       self.loading = false
       self.error = "set up state mobx error"
+    }
+  }),
+
+  getProfileReporterScreen: flow(function* getProfileReporterScreen(id) { // <- note the star, this a generator function!
+    yield apiUsers.setup()
+    self.loading_report_profile_screen = true
+    try {
+      const response = yield apiUsers.getUserReport(id)
+      __DEV__ && console.tron.log("Response call getProfileReporter : : ", response)
+      if (response.ok) {
+        self.data_report_profile_screen = response.data || null
+        self.loading_report_profile_screen = false
+      } else {
+        self.loading_report_profile_screen = false
+        self.error_report_profile_screen = "error fetch getProfileReporters"
+      }
+    } catch (error) {
+      console.error("Failed to store value get profile : ", error)
+      self.loading_report_profile_screen = false
+      self.error_report_profile_screen = "set up state mobx error"
     }
   }),
 
@@ -194,6 +218,9 @@ const ProfileStore = types.model({
     }
   }),
 
+  clearDataReportProfile() {
+    self.data_report_profile = null
+  },
   clearData() {
     self.data_update_profile = null
     self.data_upload_picture = null
@@ -241,6 +268,10 @@ const ProfileStore = types.model({
     data_report_profile: null,
     loading_report_profile: false,
     error_report_profile: null,
+
+    data_report_profile_screen: null,
+    loading_report_profile_screen: false,
+    error_report_profile_screen: null,
   })
 
 
