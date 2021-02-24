@@ -297,7 +297,6 @@ export const MyJobScreen = observer(function MyJobScreen() {
 
       <View style={CONTENT}>
         <FlatList
-          ListHeaderComponent={() => (<View style={{ height: 200, backgroundColor: 'red' }}></View>)}
           data={ShipperJobStore.list}
           renderItem={renderItem}
           keyExtractor={item => item.id}
