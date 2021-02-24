@@ -136,20 +136,6 @@ const EMPTY_VIEW: ViewStyle = { ...FULL, alignItems: 'center', justifyContent: '
 const MAIN_FLAT_LIST: ViewStyle = { paddingHorizontal: 10, flex: 1 }
 const VIEW_SIGNIN: ViewStyle = { paddingHorizontal: 10, paddingVertical: 20, alignItems: 'center' }
 
-const DOT: ViewStyle = {
-  position: 'absolute',
-  right: 0,
-  width: 6,
-  height: 6,
-  borderRadius: 3,
-  backgroundColor: color.red,
-}
-const FLOAT_DOT: ViewStyle = {
-  position: 'absolute',
-  top: 0,
-  right: 0,
-}
-
 const initVehicleList = [
   {
     title: "profileScreen.allVehicle",
@@ -183,12 +169,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
     }
     navigation.setOptions({
       headerRight: () => (
-        <View>
-          <HeaderRight onRightPress={() => _pressEditProfiel()} iconName={"ios-create-outline"} iconSize={24} iconColor={color.black} />
-          { showRedDot && <View style={FLOAT_DOT} >
-            <View style={DOT} />
-          </View>}
-        </View>
+        <HeaderRight showRedDot={showRedDot} onRightPress={() => _pressEditProfiel()} iconName={"ios-create-outline"} iconSize={24} iconColor={color.black} />
       ),
     });
     // ProfileStore.getProfileRequest()
@@ -220,9 +201,20 @@ export const ProfileScreen = observer(function ProfileScreen() {
   }, [versatileStore.language])
 
   useEffect(() => {
+    let showRedDot = null
+    if (!ProfileStore.data || !ProfileStore.data.fullName && !tokenStore.token || !tokenStore.token.accessToken) {
+      showRedDot = false
+    } else if (!ProfileStore.data || !ProfileStore.data.fullName) {
+      showRedDot = true
+    } else {
+      showRedDot = false
+    }
     navigation.setOptions({
       headerCenter: () => (
         <HeaderCenter tx={"profileScreen.profile"} />
+      ),
+      headerRight: () => (
+        <HeaderRight showRedDot={showRedDot} onRightPress={() => _pressEditProfiel()} iconName={"ios-create-outline"} iconSize={24} iconColor={color.black} />
       ),
     });
   }, [lang])

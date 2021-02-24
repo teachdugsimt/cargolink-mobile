@@ -11,6 +11,7 @@ import LottieView from 'lottie-react-native';
 import ProfileStore from '../../store/profile-store/profile-store'
 import UserTruckStore from '../../store//user-truck-store/user-truck-store'
 import ShipperTruckStore from '../../store/shipper-truck-store/shipper-truck-store'
+import BookingStore from '../../store/booking-store/booking-store'
 import { GetTruckType } from "../../utils/get-truck-type"
 import { MapTruckImageName } from '../../utils/map-truck-image-name'
 import FavoriteTruckStore from '../../store/shipper-truck-store/favorite-truck-store'
@@ -20,6 +21,7 @@ import i18n from 'i18n-js'
 
 interface ShipperTruckProps {
   isBooker?: boolean
+  bookingId?: any
 }
 
 const deviceWidht = Dimensions.get('window').width
@@ -387,7 +389,7 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
 
   const route = useRoute()
 
-  const { isBooker }: ShipperTruckProps = route?.params || {}
+  const { isBooker, bookingId }: ShipperTruckProps = route?.params || {}
 
   useEffect(() => {
     return () => {
@@ -400,6 +402,8 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
   }
 
   const cancelBookAJob = () => {
+    BookingStore.approveBooking('shipper', 'reject', bookingId)
+    navigation.goBack()
     console.log('cancel')
   }
 
@@ -414,6 +418,7 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
   }
 
   const onConfirmJobSuccess = () => {
+    onApproveJobBooking()
     setIsBooking(true)
   }
 
@@ -498,6 +503,13 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
       </View>
     </View>
   </>)
+
+  const onApproveJobBooking = () => {
+    console.log("on confirm booking approval :: ", isBooker, bookingId)
+    BookingStore.approveBooking('shipper', 'accept', bookingId)
+    // navigation.navigate('jobDetail')
+  }
+
 
   return (
     <View style={CONTAINER}>
@@ -587,7 +599,7 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
           <Button
             testID="cancel"
             style={[BTN_STYLE, { backgroundColor: color.line }]}
-            tx={'common.cancel'}
+            tx={'common.reject'}
             textStyle={CALL_TEXT}
             onPress={cancelBookAJob}
           />

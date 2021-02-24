@@ -1,7 +1,7 @@
 import React from 'react'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { Dimensions, Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native";
-import { color, spacing } from "../../theme"
+import { color, images, spacing } from "../../theme"
 import { Text } from "../"
 import { BookerItemProps } from './booker-item.props';
 import { Button } from '../button/button';
@@ -61,7 +61,7 @@ export function BookerItem(props: BookerItemProps) {
   return (
     <View style={containerViewStyle}>
       <View style={imageStyle}>
-        <Image source={{ uri: imageUrl }} style={imageViewStyle} resizeMode={'cover'} />
+        <Image source={imageUrl ? { uri: imageUrl } : images.greyMock} style={imageViewStyle} resizeMode={'cover'} />
       </View>
 
       <View style={DETAIL}>

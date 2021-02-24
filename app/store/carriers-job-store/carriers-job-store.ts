@@ -8,6 +8,33 @@ import * as storage from "../../utils/storage"
 const apiCarriersJob = new CarriersJobAPI()
 const apiGoogleMap = new GoogleMapAPI()
 
+const QuotationField = types.model({
+  "id": types.maybeNull(types.string),
+  "fullName": types.maybeNull(types.string),
+  "bookingDatetime": types.maybeNull(types.string),
+  "truck": types.maybeNull(types.model({
+    "id": types.maybeNull(types.string),
+    "truckType": types.maybeNull(types.number),
+    "loadingWeight": types.maybeNull(types.number),
+    "stallHeight": types.maybeNull(types.string),
+    "createdAt": types.maybeNull(types.string),
+    "updatedAt": types.maybeNull(types.string),
+    "approveStatus": types.maybeNull(types.string),
+    "registrationNumber": types.maybeNull(types.array(types.maybeNull(types.string))),
+    "truckPhotos": types.maybeNull(types.model({
+      "front": types.maybeNull(types.string),
+      "back": types.maybeNull(types.string),
+      "left": types.maybeNull(types.string),
+      "right": types.maybeNull(types.string),
+    })),
+    "workingZones": types.maybeNull(types.array(types.maybeNull(types.model({
+      "region": types.maybeNull(types.number),
+      "province": types.maybeNull(types.number),
+    })))),
+    "tipper": types.maybeNull(types.boolean)
+  }))
+})
+
 const CarriersJob = types.model({
   id: types.maybeNull(types.string),
   productTypeId: types.maybeNull(types.number),
@@ -44,6 +71,7 @@ const CarriersJob = types.model({
     }))
   })),
   isLiked: types.maybeNull(types.optional(types.boolean, false)),
+  quotations: types.maybeNull(types.array(QuotationField))
 })
 
 const CarriersJobList = types.model({

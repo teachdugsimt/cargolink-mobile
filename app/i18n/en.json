@@ -1,5 +1,7 @@
 {
   "common": {
+    "reject": "Reject",
+    "approve": "Approve",
     "ok": "OK!",
     "cancel": "Cancel",
     "back": "Back",
@@ -69,7 +71,9 @@
     "pleaseLogin2": "please login",
     "successTransaction": "success transaction",
     "updateSuccess": "update complete",
-    "productName": "please input product name"
+    "productName": "please input product name",
+    "acceptBooking": "Confirm Approve",
+    "noticeFastest": "We will notify the guest as soon as possible."
   },
   "commentScreen": {
     "yourComment": "Your Comment",
@@ -300,7 +304,7 @@
   "myVehicleScreen": {
     "informationAt": "Information at",
     "type": "Type",
-    "addNewCar": "Add new car",
+    "addNewCar": "Add new truck",
     "myTruck": "My Truck",
     "verified": "Verified",
     "pending": "Pending",
@@ -355,7 +359,7 @@
     "20” Trailer 18 Wheels - Stall Truck": "20” Trailer 18 Wheels - Stall Truck",
     "Trailer 22 wheels Side Curtain": "Trailer 22 wheels Side Curtain",
     "20 wheels Side Curtain": "20 wheels Side Curtain",
-    "addNewCar": "Add new car",
+    "addNewCar": "Add new truck",
     "myTruck": "My Truck"
   },
   "vehicleDetailScreen": {
