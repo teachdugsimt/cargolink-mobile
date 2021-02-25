@@ -136,20 +136,6 @@ const EMPTY_VIEW: ViewStyle = { ...FULL, alignItems: 'center', justifyContent: '
 const MAIN_FLAT_LIST: ViewStyle = { paddingHorizontal: 10, flex: 1 }
 const VIEW_SIGNIN: ViewStyle = { paddingHorizontal: 10, paddingVertical: 20, alignItems: 'center' }
 
-const DOT: ViewStyle = {
-  position: 'absolute',
-  right: 0,
-  width: 6,
-  height: 6,
-  borderRadius: 3,
-  backgroundColor: color.red,
-}
-const FLOAT_DOT: ViewStyle = {
-  position: 'absolute',
-  top: 0,
-  right: 0,
-}
-
 const initVehicleList = [
   {
     title: "profileScreen.allVehicle",
@@ -183,12 +169,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
     }
     navigation.setOptions({
       headerRight: () => (
-        <View>
-          <HeaderRight onRightPress={() => _pressEditProfiel()} iconName={"ios-create-outline"} iconSize={24} iconColor={color.black} />
-          { showRedDot && <View style={FLOAT_DOT} >
-            <View style={DOT} />
-          </View>}
-        </View>
+        <HeaderRight showRedDot={showRedDot} onRightPress={() => _pressEditProfiel()} iconName={"ios-create-outline"} iconSize={24} iconColor={color.black} />
       ),
     });
     // ProfileStore.getProfileRequest()
@@ -204,7 +185,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
   useEffect(() => {
     let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
     if (tmp_profile && tmp_profile != profileState) {
-      ProfileStore.getProfileReporter(tmp_profile.userId)
+      ProfileStore.getProfileReporterScreen(tmp_profile.userId)
       setprofileState(tmp_profile)
       setrenderNewProfile(!renderNewProfile)
     }
@@ -220,9 +201,20 @@ export const ProfileScreen = observer(function ProfileScreen() {
   }, [versatileStore.language])
 
   useEffect(() => {
+    let showRedDot = null
+    if (!ProfileStore.data || !ProfileStore.data.fullName && !tokenStore.token || !tokenStore.token.accessToken) {
+      showRedDot = false
+    } else if (!ProfileStore.data || !ProfileStore.data.fullName) {
+      showRedDot = true
+    } else {
+      showRedDot = false
+    }
     navigation.setOptions({
       headerCenter: () => (
         <HeaderCenter tx={"profileScreen.profile"} />
+      ),
+      headerRight: () => (
+        <HeaderRight showRedDot={showRedDot} onRightPress={() => _pressEditProfiel()} iconName={"ios-create-outline"} iconSize={24} iconColor={color.black} />
       ),
     });
   }, [lang])
@@ -255,13 +247,13 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
   const onRefresh = () => {
     let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
-    if (tmp_profile && tmp_profile.userId) ProfileStore.getProfileReporter(tmp_profile.userId)
+    if (tmp_profile && tmp_profile.userId) ProfileStore.getProfileReporterScreen(tmp_profile.userId)
     ProfileStore.getProfileRequest()
   }
 
   const onRefreshTruckSummary = () => {
     let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
-    if (tmp_profile && tmp_profile.userId) ProfileStore.getProfileReporter(tmp_profile.userId)
+    if (tmp_profile && tmp_profile.userId) ProfileStore.getProfileReporterScreen(tmp_profile.userId)
     ProfileStore.getTruckSummary()
   }
 
@@ -270,7 +262,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
   const [reportWorking, setreportWorking] = useState(initReportWorking)
   const [allCar, setallCar] = useState("")
   useEffect(() => {
-    let tmp_report = JSON.parse(JSON.stringify(ProfileStore.data_report_profile))
+    let tmp_report = JSON.parse(JSON.stringify(ProfileStore.data_report_profile_screen))
     if (tmp_report && tmp_report.trucks && tmp_report.trucks.length > 0) {
       let all_car = tmp_report.trucks.reduce((prev, next) => prev + next.total, 0)
       mappingSectionTruckType(tmp_report.trucks)
@@ -282,7 +274,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
       setreportWorking([])
       setarrSection(initVehicleList)
     }
-  }, [JSON.stringify(ProfileStore.data_report_profile)])
+  }, [JSON.stringify(ProfileStore.data_report_profile_screen)])
 
   const mappingWorkingReport = (totalJob) => {
     let tmp = [{ id: 1, title: "profileScreen.allPostJob", content: "common.totalJobText", number: totalJob }]
@@ -340,7 +332,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
   useEffect(() => {
     let tmp_list_all = JSON.parse(JSON.stringify(versatileStore.list))
     if (tmp_list_all != tmpListTruckType) {
-      let tmp_report = JSON.parse(JSON.stringify(ProfileStore.data_report_profile))
+      let tmp_report = JSON.parse(JSON.stringify(ProfileStore.data_report_profile_screen))
       if (tmp_report && tmp_report.trucks && tmp_report.trucks.length > 0) {
         console.log("_______________ Mapping new Section List when Language change _______________")
         mappingSectionTruckType(tmp_report.trucks)
@@ -450,7 +442,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
   const { fullName, phoneNumber, avatar } = JSON.parse(JSON.stringify(ProfileStore.data)) || {}
   // __DEV__ && console.tron.log("Profile data :: ", JSON.parse(JSON.stringify(ProfileStore.data)))
 
-  __DEV__ && console.tron.log("Report data :: ", JSON.parse(JSON.stringify(ProfileStore.data_report_profile)))
+  __DEV__ && console.tron.log("Report data :: ", JSON.parse(JSON.stringify(ProfileStore.data_report_profile_screen)))
 
 
   let token = tokenStore?.token?.accessToken || ''
@@ -510,7 +502,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
                 keyExtractor={(item, index) => 'key-' + index.toString()}
                 refreshControl={
                   <RefreshControl
-                    refreshing={ProfileStore.loading_report_profile || ProfileStore.loading || ProfileStore.loading_truck_summary}
+                    refreshing={ProfileStore.loading_report_profile_screen || ProfileStore.loading || ProfileStore.loading_truck_summary}
                     onRefresh={onRefresh}
                   />
                 }
@@ -522,14 +514,14 @@ export const ProfileScreen = observer(function ProfileScreen() {
         {menu2 && <>
           {!token || !ProfileStore.data ? _renderSigninButtton() :
             <View style={[FULL, { paddingTop: Platform.OS == "ios" ? 10 : 0 }]}>
-              {ProfileStore.data_report_profile && arrSection && arrSection[0].data.length > 0 ? <SectionList
+              {ProfileStore.data_report_profile_screen && arrSection && arrSection[0].data.length > 0 ? <SectionList
                 sections={arrSection}
                 keyExtractor={(item: any, index: any) => 'section-list-' + (item.id.toString()) + index}
                 renderItem={({ item, index }) => _renderSectionList(item, index)}
                 stickySectionHeadersEnabled={false}
                 refreshControl={
                   <RefreshControl
-                    refreshing={ProfileStore.loading_report_profile || ProfileStore.loading_truck_summary}
+                    refreshing={ProfileStore.loading_report_profile_screen || ProfileStore.loading_truck_summary}
                     onRefresh={onRefreshTruckSummary}
                   />
                 }

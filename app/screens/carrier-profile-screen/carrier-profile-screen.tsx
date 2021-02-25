@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { observer } from 'mobx-react-lite'
-import { Dimensions, FlatList, Image, ImageProps, ImageStyle, RefreshControl, ScrollView, TextStyle, TouchableOpacity, View, ViewStyle, Animated } from 'react-native'
-import { Button, EmptyListMessage, Icon, ModalAlert, ModalLoading, RatingStart, SearchItem, Text } from '../../components'
+import { Dimensions, FlatList, Image, ImageProps, ImageStyle, RefreshControl, ScrollView, TextStyle, TouchableOpacity, View, ViewStyle, Animated, SafeAreaView } from 'react-native'
+import { Button, EmptyListMessage, Icon, ModalAlert, ModalLoading, RatingStart, Screen, SearchItem, Text } from '../../components'
 import { translate } from '../../i18n'
 import { spacing, images as imageComponent, color, images } from '../../theme'
 import { TabBarNavigation } from './tab-bar-navigation'
@@ -15,6 +15,7 @@ import { MapTruckImageName } from '../../utils/map-truck-image-name'
 import FavoriteJobStore from '../../store/carriers-job-store/favorite-job-store'
 import { useStores } from '../../models'
 import Feather from 'react-native-vector-icons/Feather'
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
 interface CarrierProfileProps {
   isBooker?: boolean
@@ -227,7 +228,7 @@ const RenderButtonAlert = ({ onCloseModal, onConfirmJob }) => {
 
 const RenderImageAlert = () => (<Image source={images['workYellowIcon']} width={75} height={75} />)
 
-const Item = (data) => {
+const JobItem = (data) => {
   const {
     id,
     productName,
@@ -260,7 +261,6 @@ const Item = (data) => {
   }
 
   const typeOfTruck = GetTruckType(+truckType)?.name || `${translate('jobDetailScreen.truckType')} : ${translate('common.notSpecified')}`
-  const imageProps: ImageProps = JSON.parse(owner?.imageProps)
 
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
@@ -279,10 +279,7 @@ const Item = (data) => {
           isLike: isLiked,
           backgroundImage: imageComponent[MapTruckImageName(+truckType) || 'truck'],
           rating: '0',
-          // ratingCount,
-          // isCrown,
-          // isRecommened: true,s
-          image: imageProps,
+          bottomComponent: () => <></>,
           containerStyle: {
             paddingTop: spacing[2],
             borderRadius: 6
@@ -292,6 +289,63 @@ const Item = (data) => {
         }
         }
       />
+    </View>
+  )
+}
+
+const Item = () => {
+
+  const [isActive, setIsActive] = useState<number>(0)
+
+  return (
+    <View>
+
+      <View style={{ flexDirection: 'row' }}>
+        <TouchableOpacity
+          style={[SECTION, {
+            alignItems: 'center',
+            borderBottomWidth: 3,
+            borderBottomColor: isActive === 0 ? color.dim : color.transparent,
+            flex: 1,
+          }]}
+          onPress={() => setIsActive(0)}>
+          <Text tx={'shipperProfileScreen.workInProgress'} preset={'topic'} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[SECTION, {
+            alignItems: 'center',
+            borderBottomWidth: 3,
+            borderBottomColor: isActive === 1 ? color.dim : color.transparent,
+            flex: 1,
+          }]}
+          onPress={() => setIsActive(1)}>
+          <Text tx={'shipperProfileScreen.pastWork'} preset={'topic'} />
+        </TouchableOpacity>
+      </View>
+
+      {isActive === 0 && <FlatList
+        data={UserJobStore.list || []}
+        renderItem={({ item }) => {
+          return <JobItem {...item} />
+        }}
+        keyExtractor={item => item.id.toString()}
+        onEndReachedThreshold={0.1}
+        contentContainerStyle={{ flexGrow: 1 }}
+        ListEmptyComponent={<EmptyListMessage containerStyle={{ top: 0 }} />}
+      />}
+
+      {isActive === 1 && <FlatList
+        data={UserJobStore.list || []}
+        renderItem={({ item }) => {
+          return <JobItem {...item} />
+        }}
+        keyExtractor={item => item.id.toString()}
+        onEndReachedThreshold={0.1}
+        contentContainerStyle={{ flexGrow: 1 }}
+        ListEmptyComponent={<EmptyListMessage containerStyle={{ top: 0 }} />}
+      />}
+
     </View>
   )
 }
@@ -313,7 +367,8 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
 
   useEffect(() => {
     return () => {
-      ProfileStore.clearAllData()
+      ProfileStore.clearDataReportProfile()
+      UserJobStore.clearList()
     }
   }, [])
 
@@ -421,13 +476,13 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
       </View>
     </View>
 
-    <View style={[SECTION, {
+    {/* <View style={[SECTION, {
       justifyContent: 'center',
       borderBottomWidth: 3,
       borderBottomColor: color.dim,
     }]}>
       <Text tx={'shipperProfileScreen.workInProgress'} preset={'topic'} />
-    </View>
+    </View> */}
   </>)
 
   return (
@@ -446,36 +501,17 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
       </View>
 
       {/* <ScrollView
-        onScroll={({ nativeEvent }) => {
-        }}
+        onScroll={({ nativeEvent }) => { }}
         style={{}}
         scrollEventThrottle={400}
+        contentContainerStyle={{ flexGrow: 1 }}
       >
-        <View style={SECTION}>
-          <View style={TOPIC}>
-            <Text text={translate('profileScreen.allVehicle')} />
-            <Text text={`${truckCountAll.toString()}  ${translate('jobDetailScreen.unit')}`} />
-          </View>
-          {profile?.trucks?.map((vehicle, index) => {
-            return <Truck key={index} {...vehicle} />
-          })}
-        </View>
-
-        <View style={SECTION}>
-          <View style={TOPIC}>
-            <Text tx={'shipperProfileScreen.feedbackScore'} />
-          </View>
-          <View>
-            {STAR.map(val => <Star key={val.show} {...val} />)}
-          </View>
-        </View>
-
         <View style={{}}>
           <TabBarNavigation data={UserJobStore.list} />
         </View>
       </ScrollView> */}
 
-      <FlatList
+      {/* <FlatList
         ref={scrollRef}
         data={UserJobStore.list || []}
         renderItem={renderItem}
@@ -493,6 +529,24 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
             onRefresh={() => console.log('onRefresh')}
           />
         }
+      /> */}
+
+      <FlatList
+        ref={scrollRef}
+        data={[{ id: Date.now().toString() }]}
+        renderItem={renderItem}
+        onEndReachedThreshold={0.1}
+        keyExtractor={item => item.id}
+        contentContainerStyle={{ flexGrow: 1 }}
+        ListEmptyComponent={<EmptyListMessage containerStyle={{ top: 0 }} />}
+        ListHeaderComponent={HeaderComponent}
+        onMomentumScrollBegin={() => setOnEndReachedCalledDuringMomentum(false)}
+      // refreshControl={
+      //   <RefreshControl
+      //     refreshing={ProfileStore.loading_report_profile}
+      //     onRefresh={() => console.log('onRefresh')}
+      //   />
+      // }
       />
 
       {isBooker && (<>

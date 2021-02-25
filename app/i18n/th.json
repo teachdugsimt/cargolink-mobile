@@ -1,5 +1,7 @@
 {
   "common": {
+    "reject": "ปฏิเสธ",
+    "approve": "ยอมรับ",
     "ok": "ตกลง",
     "cancel": "ยกเลิก",
     "back": "กลับ",
@@ -69,7 +71,9 @@
     "pleaseLogin2": "กรุณาเข้าสู่ระบบ",
     "successTransaction": "ทำรายการสำเร็จ",
     "updateSuccess": "อัพเดทข้อมูลสำเร็จ",
-    "productName": "กรุณาใส่ชื่อสินค้า"
+    "productName": "กรุณาใส่ชื่อสินค้า",
+    "acceptBooking": "ยืนยันการตอบรับ",
+    "noticeFastest": "เราจะแจ้งให้ผู้จองทราบโดยเร็วที่สุด"
   },
   "commentScreen": {
     "yourComment": "ความคิดเห็นของคุณ",
@@ -429,5 +433,9 @@
   "selectJobScreen": {
     "selectBooking": "เลือกงานของคุณสำหรับการจองนี้",
     "addNewJob": "เพิ่มงานใหม่"
+  },
+  "selectTruckScreen": {
+    "selectBooking": "เลือกรถของคุณสำหรับการจองนี้",
+    "addNewTruck": "เพิ่มรถใหม่"
   }
 }

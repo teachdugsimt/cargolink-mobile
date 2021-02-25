@@ -229,7 +229,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
   }
 
   const onCall = (truckId: string, phone: string) => {
-    if (tokenStore?.token?.accessToken) {
+    if (ProfileStore.data && tokenStore?.token?.accessToken) {
       const phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
       __DEV__ && console.tron.log('phoneNumber', phoneNumber)
       Linking.canOpenURL(phoneNumber)
@@ -252,7 +252,11 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
   };
 
   const confirmBookAJob = () => {
-    navigation.navigate('myJobList')
+    if (ProfileStore.data && tokenStore?.token?.accessToken) {
+      navigation.navigate('myJobList')
+    } else {
+      navigation.navigate('signin')
+    }
   }
 
   const onVisiblePorfile = () => {
@@ -327,6 +331,9 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
     let reg = GetRegion(zone.region, i18n.locale)
     return reg?.label || ''
   }).join(', ') : translate('common.notSpecified')
+
+  const ownerUserId = owner?.userId || ''
+  const myUserId = ProfileStore.data?.userId || ''
 
   return (
     <View style={CONTAINER}>
@@ -409,20 +416,6 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
 
       </ScrollView>
 
-      {/* <View style={BOTTOM_ROOT}>
-        <Button
-          testID="call-with-owner"
-          style={CALL_BUTTON}
-          children={
-            <View style={{ alignItems: 'center', flexDirection: 'row' }}>
-              <MaterialCommunityIcons name={'phone'} size={24} color={color.textWhite} style={{ paddingRight: spacing[2] }} />
-              <Text style={CALL_TEXT} text={translate('jobDetailScreen.call')} />
-            </View>
-          }
-          onPress={() => navigation.navigate('feedback')}
-        />
-      </View> */}
-
       <View style={BOTTOM_ROOT}>
         <Button
           testID="call-with-owner"
@@ -435,7 +428,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
           }
           onPress={() => onCall(id, phoneNumber)}
         />
-        {/* <Button
+        {ownerUserId !== myUserId && <Button
           testID="book-a-job"
           style={[BTN_STYLE, { backgroundColor: color.primary }]}
           children={
@@ -445,7 +438,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
             </View>
           }
           onPress={confirmBookAJob}
-        /> */}
+        />}
       </View>
     </View>
   )

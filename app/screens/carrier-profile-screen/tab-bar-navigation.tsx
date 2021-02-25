@@ -161,7 +161,7 @@ export function TabBarNavigation(props) {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'workInProgress', title: translate('shipperProfileScreen.workInProgress') },
-    // { key: 'pastWork', title: translate('shipperProfileScreen.pastWork') },
+    { key: 'pastWork', title: translate('shipperProfileScreen.pastWork') },
   ]);
 
   const onScrollList = () => {
@@ -174,12 +174,13 @@ export function TabBarNavigation(props) {
 
   const renderScene = SceneMap({
     workInProgress: () => WorkInProgressRoute(props.data, onScrollList, onRefresh),
-    // pastWork: () => PastWorkRoute(props.data.filter((_, i) => i > 3)),
+    pastWork: () => PastWorkRoute(props.data, onScrollList, onRefresh),
   });
 
   return (
     <View style={{}}>
       <TabView
+        key={props.key}
         navigationState={{ index, routes }}
         renderTabBar={renderTabBar}
         renderScene={renderScene}

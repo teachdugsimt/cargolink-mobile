@@ -239,5 +239,10 @@ export interface UserTruckFilter {
   rowsPerPage?: number
 }
 
+export interface BookingBody {
+  jobId: string
+  truckId: string
+}
+
 export type GetUsersResult = { kind: "ok"; users: User[] } | GeneralApiProblem
 export type GetUserResult = { kind: "ok"; user: User } | GeneralApiProblem

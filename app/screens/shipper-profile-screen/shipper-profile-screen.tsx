@@ -11,6 +11,7 @@ import LottieView from 'lottie-react-native';
 import ProfileStore from '../../store/profile-store/profile-store'
 import UserTruckStore from '../../store//user-truck-store/user-truck-store'
 import ShipperTruckStore from '../../store/shipper-truck-store/shipper-truck-store'
+import BookingStore from '../../store/booking-store/booking-store'
 import { GetTruckType } from "../../utils/get-truck-type"
 import { MapTruckImageName } from '../../utils/map-truck-image-name'
 import FavoriteTruckStore from '../../store/shipper-truck-store/favorite-truck-store'
@@ -20,6 +21,7 @@ import i18n from 'i18n-js'
 
 interface ShipperTruckProps {
   isBooker?: boolean
+  bookingId?: any
 }
 
 const deviceWidht = Dimensions.get('window').width
@@ -230,7 +232,7 @@ const RenderButtonAlert = ({ onCloseModal, onConfirmJob }) => {
 
 const RenderImageAlert = () => (<Image source={images['workYellowIcon']} width={75} height={75} />)
 
-const Item = (data) => {
+const JobItem = (data) => {
   const {
     id,
     truckType,
@@ -286,17 +288,6 @@ const Item = (data) => {
   }).join(', ') : translate('common.notSpecified')
 
   const truckImage = MapTruckImageName(+truckType)
-  const imageSource: ImageProps = owner?.avatar?.object && owner?.avatar?.token ? {
-    source: {
-      uri: owner?.avatar?.object || '',
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-        adminAuth: owner?.avatar?.token
-      },
-    },
-    resizeMode: 'cover'
-  } : null
 
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
@@ -305,19 +296,14 @@ const Item = (data) => {
         ...{
           id,
           fromText: workingZoneStr,
-          // count: 2,
           customContent: renderContent,
           truckType: `${translate('common.vehicleTypeField')} : ${GetTruckType(+truckType)?.name || translate('common.notSpecified')}`,
-          // viewDetail,
           postBy: owner?.companyName || '',
           isVerified: false,
           isLike: isLiked,
           backgroundImage: imageComponent[truckImage && truckImage !== 'greyMock' ? truckImage : ''],
-          // rating,
-          // ratingCount,
           isCrown: false,
-          image: imageSource,
-          // isRecommened,
+          bottomComponent: () => <></>,
           containerStyle: {
             paddingTop: spacing[2],
             borderRadius: 6
@@ -327,6 +313,65 @@ const Item = (data) => {
         }
         }
       />
+    </View>
+  )
+}
+
+const Item = () => {
+
+  const [isActive, setIsActive] = useState<number>(0)
+
+  return (
+    <View>
+
+      <View style={{ flexDirection: 'row' }}>
+        <TouchableOpacity
+          style={[SECTION, {
+            alignItems: 'center',
+            borderBottomWidth: 3,
+            borderBottomColor: isActive === 0 ? color.dim : color.transparent,
+            flex: 1,
+          }]}
+          onPress={() => setIsActive(0)}>
+          <Text tx={'shipperProfileScreen.workInProgress'} preset={'topic'} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[SECTION, {
+            alignItems: 'center',
+            borderBottomWidth: 3,
+            borderBottomColor: isActive === 1 ? color.dim : color.transparent,
+            flex: 1,
+          }]}
+          onPress={() => setIsActive(1)}>
+          <Text tx={'shipperProfileScreen.pastWork'} preset={'topic'} />
+        </TouchableOpacity>
+      </View>
+
+      {isActive === 0 && <FlatList
+        data={UserTruckStore.list || []}
+        renderItem={({ item }) => {
+          return <JobItem {...item} />
+        }}
+        keyExtractor={item => item.id.toString()}
+        onEndReachedThreshold={0.1}
+        contentContainerStyle={{ flexGrow: 1 }}
+        ListEmptyComponent={<EmptyListMessage containerStyle={{ top: 0 }} />}
+        onEndReached={() => console.log('onScrollList isActive = 0')}
+      />}
+
+      {isActive === 1 && <FlatList
+        data={UserTruckStore.list || []}
+        renderItem={({ item }) => {
+          return <JobItem {...item} />
+        }}
+        keyExtractor={item => item.id.toString()}
+        onEndReachedThreshold={0.1}
+        contentContainerStyle={{ flexGrow: 1 }}
+        ListEmptyComponent={<EmptyListMessage containerStyle={{ top: 0 }} />}
+        onEndReached={() => console.log('onScrollList isActive = 1')}
+      />}
+
     </View>
   )
 }
@@ -344,11 +389,12 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
 
   const route = useRoute()
 
-  const { isBooker }: ShipperTruckProps = route?.params || {}
+  const { isBooker, bookingId }: ShipperTruckProps = route?.params || {}
 
   useEffect(() => {
     return () => {
-      ProfileStore.clearAllData()
+      ProfileStore.clearDataReportProfile()
+      UserTruckStore.clearList()
     }
   }, [])
 
@@ -357,6 +403,8 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
   }
 
   const cancelBookAJob = () => {
+    BookingStore.approveBooking('shipper', 'reject', bookingId)
+    navigation.goBack()
     console.log('cancel')
   }
 
@@ -371,6 +419,7 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
   }
 
   const onConfirmJobSuccess = () => {
+    onApproveJobBooking()
     setIsBooking(true)
   }
 
@@ -454,15 +503,14 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
         {STAR.map(val => <Rating key={val.show} {...val} />)}
       </View>
     </View>
-
-    <View style={[SECTION, {
-      justifyContent: 'center',
-      borderBottomWidth: 3,
-      borderBottomColor: color.dim,
-    }]}>
-      <Text tx={'shipperProfileScreen.workInProgress'} preset={'topic'} />
-    </View>
   </>)
+
+  const onApproveJobBooking = () => {
+    console.log("on confirm booking approval :: ", isBooker, bookingId)
+    BookingStore.approveBooking('shipper', 'accept', bookingId)
+    // navigation.navigate('jobDetail')
+  }
+
 
   return (
     <View style={CONTAINER}>
@@ -509,7 +557,7 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
         </View>
       </ScrollView> */}
 
-      <FlatList
+      {/* <FlatList
         ref={scrollRef}
         data={UserTruckStore.list || []}
         renderItem={renderItem}
@@ -527,6 +575,24 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
             onRefresh={() => console.log('onRefresh')}
           />
         }
+      /> */}
+
+      <FlatList
+        ref={scrollRef}
+        data={[{ id: Date.now().toString() }]}
+        renderItem={renderItem}
+        onEndReachedThreshold={0.1}
+        keyExtractor={item => item.id}
+        contentContainerStyle={{ flexGrow: 1 }}
+        ListEmptyComponent={<EmptyListMessage containerStyle={{ top: 0 }} />}
+        ListHeaderComponent={HeaderComponent}
+        onMomentumScrollBegin={() => setOnEndReachedCalledDuringMomentum(false)}
+      // refreshControl={
+      //   <RefreshControl
+      //     refreshing={ProfileStore.loading_report_profile}
+      //     onRefresh={() => console.log('onRefresh')}
+      //   />
+      // }
       />
 
       {isBooker && (<>
@@ -534,7 +600,7 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
           <Button
             testID="cancel"
             style={[BTN_STYLE, { backgroundColor: color.line }]}
-            tx={'common.cancel'}
+            tx={'common.reject'}
             textStyle={CALL_TEXT}
             onPress={cancelBookAJob}
           />

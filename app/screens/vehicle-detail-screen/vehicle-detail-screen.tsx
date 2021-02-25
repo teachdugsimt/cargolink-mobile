@@ -9,8 +9,9 @@ import {
   TextStyle,
   View,
   ViewStyle,
+  FlatList
 } from "react-native"
-import { ModalLoading, Text, BookList } from "../../components"
+import { ModalLoading, Text, BookList, BookerItem } from "../../components"
 import { translate } from "../../i18n"
 import { color, images as imageComponent, spacing } from "../../theme"
 import { useNavigation } from "@react-navigation/native"
@@ -185,13 +186,13 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
     return tmp
   }
 
-  const _renderBookUser = ({ item, index }) => {
-    return (<BookList item={item} index={index} onPress={() => console.log("Accept Press")} />)
-  }
+  // const _renderBookUser = ({ item, index }) => {
+  //   return (<BookList item={item} index={index} onPress={() => console.log("Accept Press")} />)
+  // }
   const user_book = [
-    { id: 1, name: 'สมชาย ใจดี', prefix: 'นาย', img: "", bookTime: "29/01/2564 15.20 " },
-    { id: 2, name: 'สมชาย ใจดี', prefix: 'นาย', img: "", bookTime: "29/01/2564 15.20 " },
-    { id: 3, name: 'สมชาย ใจดี', prefix: 'นาย', img: "", bookTime: "29/01/2564 15.20 " },
+    { id: 1, name: 'สมชาย ใจดี', prefix: 'นาย', image: "", date: "29/01/2564 15.20 " },
+    { id: 2, name: 'สมชาย ใจดี', prefix: 'นาย', image: "", date: "29/01/2564 15.20 " },
+    { id: 3, name: 'สมชาย ใจดี', prefix: 'นาย', image: "", date: "29/01/2564 15.20 " },
   ]
 
   const raw_image = truckPhotos &&
@@ -301,18 +302,29 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
 
 
 
-        {/* <View style={[COLUMN, {}]}>
+        <View style={[COLUMN, {}]}>
           <View>
             <Text style={TOPIC} preset="topic" text={translate("myVehicleScreen.userRequestQueue")} />
           </View>
           <View>
-            <FlatList
-              keyExtractor={item => item.id.toString()}
-              data={user_book}
-              renderItem={_renderBookUser}
-            />
+            {user_book.map((booker, index) => <BookerItem
+              key={index}
+              imageUrl={booker.image}
+              topic={booker.name}
+              detail={booker.date}
+              btnTxt={translate('myJobScreen.accept')}
+              containerStyle={{ paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.disable }}
+              topicStyle={{ fontSize: 14, paddingBottom: spacing[1] }}
+              detailStyle={{ color: color.line }}
+              btnStyle={{ paddingVertical: 2, paddingHorizontal: spacing[2] }}
+              btnTextStyle={{ fontSize: 12, paddingLeft: spacing[1] }}
+              onToggle={() =>   navigation.navigate('jobDetail', {
+                showOwnerAccount: false,
+                fromManageCar: true
+              })}
+            />)}
           </View>
-        </View> */}
+        </View>
 
 
 

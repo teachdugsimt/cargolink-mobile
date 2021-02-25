@@ -10,6 +10,7 @@ import { Text } from '../text/text';
 import { translate } from '../../i18n';
 // import { TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { TouchableOpacity as TouchableOpacityGesture } from 'react-native-gesture-handler';
 
 const FONT_SIZE_SMALL = 15
 
@@ -145,6 +146,9 @@ export function SearchItemTruck(props: SearchItemProps) {
     image,
     containerStyle,
     backgroundImage,
+    showFavoriteIcon = true,
+    requiredTouchableOpacityGesture = false,
+    bottomComponent,
     customContent = null,
     onPress,
     onToggleHeart
@@ -162,6 +166,9 @@ export function SearchItemTruck(props: SearchItemProps) {
   }
 
   const renderContent = customContent ? customContent((comp) => comp) : null
+  const renderButtom = bottomComponent ? bottomComponent((comp) => comp) : null
+
+  const MainTouchableOpacity = requiredTouchableOpacityGesture ? TouchableOpacityGesture : TouchableOpacity
 
   return (
     <TouchableOpacity style={{ ...CONTAINER, ...containerStyle }} activeOpacity={1} onPress={onPress}>
@@ -197,9 +204,9 @@ export function SearchItemTruck(props: SearchItemProps) {
 
         </View>
         <View style={CONTENT_RIGHT}>
-          <TouchableOpacity onPress={onSelectedHeart}>
+          {showFavoriteIcon && <MainTouchableOpacity onPress={onSelectedHeart}>
             <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} size={26} color={isLike ? color.red : color.line} />
-          </TouchableOpacity>
+          </MainTouchableOpacity>}
           {isRecommened &&
             <View style={RECOMMENED_ROOT}>
               <Text
@@ -209,7 +216,7 @@ export function SearchItemTruck(props: SearchItemProps) {
             </View>}
         </View>
       </View>
-      <View style={BUTTOM_ROOT}>
+      {renderButtom || <View style={BUTTOM_ROOT}>
         <View style={VIEW_DETAIL_ROOT}>
           <Text text={translate('jobDetailScreen.seeDetail')} style={TEXT_VIEW} />
           <AntDesign name="right" size={spacing[5]} color={color.line} />
@@ -226,7 +233,7 @@ export function SearchItemTruck(props: SearchItemProps) {
             }
           } />
         </View>
-      </View>
+      </View>}
     </TouchableOpacity>
   )
 }
