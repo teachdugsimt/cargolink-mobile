@@ -54,9 +54,9 @@ export class BookingApi {
     })
   }
 
-  async findCarrierJobBookingOne(id: string): Promise<any> {
+  async findCarrierJobBookingOne(body: BookingBody): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/carriers/job/booking/${id}`)
+      const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/mobile/carriers/job/booking`, body)
       console.log("Response findCarrierJobBookingOne :: ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)

@@ -88,11 +88,11 @@ const BookingStore = types
   })
   .actions((self) => ({
 
-    findCarrierJobBookingOne: flow(function* findCarrierJobBookingOne(id: string) {
+    findCarrierJobBookingOne: flow(function* findCarrierJobBookingOne(body: Types.BookingBody) {
       yield bookingAPI.setup()
       self.loading_find_carrier_job_booking_one = true
       try {
-        const response = yield bookingAPI.findCarrierJobBookingOne(id)
+        const response = yield bookingAPI.findCarrierJobBookingOne(body)
         console.log("Response call api findCarrierJobBookingOne : : ", response)
         if (response.kind === 'ok') {
           self.data_find_carrier_job_booking_one = response.data || null

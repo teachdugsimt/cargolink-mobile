@@ -49,7 +49,7 @@ const VIEW_GRID_BOX: ViewStyle = {
 const ROOT_HOME: ViewStyle = {
   ...FULL,
 }
-const VIEW_ICON: ViewStyle = { borderRadius: 20, height: 40, width: 40, justifyContent: 'center', alignItems: 'center', backgroundColor: color.line, marginHorizontal: 15 }
+const VIEW_ICON: ViewStyle = { borderRadius: 20, height: 40, width: 40, justifyContent: 'center', alignItems: 'center', backgroundColor: color.disable, marginHorizontal: 15 }
 
 const CONTACT_VIEW: ViewStyle = { flex: Platform.OS == "android" ? 0.5 : 0.6 }
 export const HomeScreen = observer((props) => {
@@ -156,12 +156,12 @@ export const HomeScreen = observer((props) => {
             navigation.navigate("myVehicle")
           }
         },
-        img: images.truck1
+        img: images.manageTruck
       },
       {
         id: 2, name: "homeScreen.findJob", onPressButton: () => {
           navigation.navigate("searchJob")
-        }, img: images.pinbox
+        }, img: images.findJob
       }]
     },
     {
@@ -174,12 +174,12 @@ export const HomeScreen = observer((props) => {
             navigation.navigate("postjob")
           }
         },
-        img: images.sheet1
+        img: images.postjob
       },
       {
         id: 4, name: "homeScreen.findCar", onPressButton: () => {
           navigation.navigate("searchTruck")
-        }, img: images.word1
+        }, img: images.findTruck
       }]
     }
   ]
@@ -247,7 +247,7 @@ export const HomeScreen = observer((props) => {
           <View style={[ROW, ALL_CENTER, FULL]}>
             <Animated.View style={{ transform: [{ translateX: leftValue }] }} >
               <TouchableOpacity style={VIEW_ICON} onPress={() => Linking.openURL(versatileStore.fblink)}>
-                <FontIcon name={"facebook"} size={24} />
+                <FontIcon name={"facebook"} size={28} color={color.facebook}/>
               </TouchableOpacity>
             </Animated.View>
             {/* <TouchableOpacity style={VIEW_ICON} onPress={() => console.log("LINE PRESS")}>
@@ -255,7 +255,7 @@ export const HomeScreen = observer((props) => {
             </TouchableOpacity> */}
             <Animated.View style={{ transform: [{ translateX: rightValue }] }} >
               <TouchableOpacity style={VIEW_ICON} onPress={() => onCall(versatileStore.phoneNumber)}>
-                <Ionicons name={"call"} size={22} />
+                <Ionicons name={"call"} size={22}  color={color.primary}/>
               </TouchableOpacity>
             </Animated.View>
           </View>
