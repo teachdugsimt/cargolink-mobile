@@ -10,6 +10,7 @@ import { MultiSelector } from '../multi-select/multi-select'
 import { FlatGrid } from 'react-native-super-grid';
 import { MapTruckImageName } from '../../utils/map-truck-image-name'
 import { ModalTruckProps } from './modal-truck.props'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 const { width } = Dimensions.get("window")
 const COLOR_PRIMARY: TextStyle = { color: color.primary }
@@ -23,7 +24,7 @@ const ROOT_FLAT_LIST: ViewStyle = {
   flexDirection: 'row',
   justifyContent: 'center', alignItems: 'center'
 }
-
+const BACK_CHEVRON: ViewStyle = { position: 'absolute', left: 0, top: -10 }
 const BORDER_BOTTOM: ViewStyle = {
   ...ROOT_FLAT_LIST,
   width: '100%',
@@ -137,6 +138,9 @@ export const ModalTruckType = (props: ModalTruckProps) => {
       <View style={ROOT_MODAL_VIEW}>
         <SafeAreaView style={FULL}>
           <View style={VIEW_TITLE_MODAL}>
+            <TouchableOpacity style={BACK_CHEVRON} onPress={_closeTruckType}>
+              <Icon name="chevron-back" size={20} />
+            </TouchableOpacity>
             <Text style={COLOR_PRIMARY} preset={"topic"} tx={"postJobScreen.selectVehicleType"} />
           </View>
 
