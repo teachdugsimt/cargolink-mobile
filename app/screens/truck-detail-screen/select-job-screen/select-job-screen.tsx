@@ -44,14 +44,14 @@ const BTN_BOTTOM: ViewStyle = {
   flex: 1,
   borderRadius: Dimensions.get('window').width / 2,
   marginHorizontal: spacing[3],
-  backgroundColor: color.transparent,
+  marginVertical: spacing[2],
+  backgroundColor: color.primary,
   borderWidth: 1,
   borderColor: color.primary,
 }
 const BTN_BOTTOM_TXT: TextStyle = {
-  color: color.primary,
+  color: color.textWhite,
   fontSize: 18,
-  paddingVertical: spacing[1]
 }
 
 const CheckMark = (data) => (<LottieView
@@ -261,7 +261,7 @@ export const SelectJobScreen = observer(function MyJobScreen() {
           style={BTN_BOTTOM}
           children={
             <View style={{ alignItems: 'center', flexDirection: 'row' }}>
-              <Ionicons name={'add-circle-outline'} size={24} color={color.primary} style={{ paddingRight: spacing[2] }} />
+              <Ionicons name={'add-circle-outline'} size={24} color={color.textWhite} style={{ paddingRight: spacing[2] }} />
               <Text style={BTN_BOTTOM_TXT} tx={'selectJobScreen.addNewJob'} />
             </View>
           }
