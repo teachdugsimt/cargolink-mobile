@@ -80,15 +80,15 @@ export function HomeNavigator() {
     >
       <Stack.Screen name="home" component={HomeScreen}
         options={({ navigation, route }) => {
-          return { // title: route.params.name,
-            headerRight: () => (
-              <Ionicons
-                onPress={() => console.log("++ Press notofication icon ++")}
-                name={"notifications-outline"}
-                color={color.black}
-                size={24}
-              />
-            ),
+          return {
+            // headerRight: () => (
+            //   <Ionicons
+            //     onPress={() => console.log("++ Press notofication icon ++")}
+            //     name={"notifications-outline"}
+            //     color={color.black}
+            //     size={24}
+            //   />
+            // ),
             headerTitle: '',
             headerHideShadow: true
           }

@@ -8,10 +8,10 @@ import StatusStore from '../../../store/my-vehicle-store/status-vehicle-store'
 import LottieView from 'lottie-react-native';
 import Icon from 'react-native-vector-icons/Ionicons'
 
-const SuccessAnimmation = () => {
-  return <LottieView source={require('../../../AnimationJson/order-packed.json')}
-    autoPlay loop style={{ height: '100%' }} />
-}
+// const SuccessAnimmation = () => {
+//   return <LottieView source={require('../../../AnimationJson/order-packed.json')}
+//     autoPlay loop style={{ height: '100%' }} />
+// }
 
 const FULL: ViewStyle = {
   flex: 1,
@@ -63,7 +63,13 @@ export const SuccessUpload = observer(function SuccessUpload() {
       <View style={{ flex: 7 }}>
         <View style={[FULL]}>
           <View style={ICON_VIEW}>
-            <Icon name={"checkmark-circle"} size={100} color={color.success} />
+            <LottieView
+              source={require('../../../AnimationJson/check-mark.json')}
+              style={{ height: 120, width: 120, }}
+              autoPlay
+              loop={false}
+              speed={0.7}
+            />
           </View>
           <View style={[TEXT_VIEW]}>
             <Text tx={status == "edit" ? "myVehicleScreen.editVehicleSuccess" : "myVehicleScreen.addVehicleSuccess"} preset={'topic'} style={TEXT_TOPIC} />
