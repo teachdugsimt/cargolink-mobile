@@ -26,7 +26,7 @@ const BORDER_RADIUS_20: ViewStyle = {
   borderRadius: 20,
 }
 const ADD_NEW_POINT: ViewStyle = {
-  backgroundColor: color.transparent2,
+  backgroundColor: color.primary,
   borderWidth: 1,
   borderColor: color.primary,
   ...BORDER_RADIUS_20
@@ -159,9 +159,9 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
       }
     }
 
-      return () => {
-        setfieldShipping(initField)
-      }
+    return () => {
+      setfieldShipping(initField)
+    }
   }, [])
 
   const addDays = (date, days) => {
@@ -277,7 +277,10 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                     <SafeAreaView style={{ flex: 1 }}>
                       <View style={{ flex: 1, position: 'relative' }}>
 
-                        {statusMap && <LocationPicker banner={statusMap.includes('receive') ? "postJobScreen.receiveLocation" : "postJobScreen.shippingLocation"} onSubmitMap={(addr, region) => _submitLocation(addr, region)} />}
+                        {statusMap && <LocationPicker
+                          onCloseModal={() => setvisibleMap(false)}
+                          banner={statusMap.includes('receive') ? "postJobScreen.receiveLocation" : "postJobScreen.shippingLocation"}
+                          onSubmitMap={(addr, region) => _submitLocation(addr, region)} />}
 
                       </View>
 
@@ -580,9 +583,9 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                 <RoundedButton
                   style={ADD_NEW_POINT}
                   onPress={() => _addFieldInputShipping()} text={"postJobScreen.addShippingPoint"}
-                  textStyle={{ color: color.primary }}
+                  textStyle={{ color: color.textWhite }}
                   leftIconName="add-circle-outline"
-                  leftIconColor={color.primary}
+                  leftIconColor={color.textWhite}
                 />
               </View>
 

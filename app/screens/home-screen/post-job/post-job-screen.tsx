@@ -18,7 +18,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
-
+const BACK_CHEVRON: ViewStyle = { position: 'absolute', left: 0, top: -10 }
 const TOP_VIEW: ViewStyle = {
   paddingTop: Platform.OS == "ios" ? 10 : 0,
   flex: Platform.OS == "ios" ? 0.65 : 0.85,
@@ -326,6 +326,9 @@ export const PostJobScreen = observer(function PostJobScreen() {
                           <View style={{ width: (width / 1.1), height: '100%', justifyContent: 'flex-start' }}>
                             <SafeAreaView style={{ flex: 1 }}>
                               <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
+                                <TouchableOpacity style={BACK_CHEVRON} onPress={() => setvisible(false)}>
+                                  <Ionicons name="chevron-back" size={20} />
+                                </TouchableOpacity>
                                 <Text style={{ color: color.primary }} preset={"topic"} tx={"postJobScreen.selectItemType"} />
                               </View>
 

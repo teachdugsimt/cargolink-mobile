@@ -58,6 +58,10 @@ export const images = {
   truckYellowIcon: require('../images/truck-yellow-icon.png'),
   th: require("../images/flag/th-flag.png"),
   en: require("../images/flag/us-flag.jpg"),
+  manageTruck: require("../images/home-icon-2/iconcarma.png"),
+  findJob: require("../images/home-icon-2/iconfindwork.png"),
+  postjob: require("../images/home-icon-2/iconpostwork.png"),
+  findTruck: require("../images/home-icon-2/iconfindtruck.png"),
 }
 
 // export default images

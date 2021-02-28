@@ -199,8 +199,9 @@ export const AdvanceSearchScreen = observer(function AdvanceSearchScreen() {
       text={label}
       style={{
         ...ITEM_SUB_MENU,
-        borderColor: isChecked === true ? color.primary : color.disable,
-        borderWidth: isChecked === true ? 2 : 1,
+        borderColor: isChecked ? color.primary : color.disable,
+        backgroundColor: isChecked ? color.primary : color.transparent,
+        // borderWidth: isChecked ? 2 : 1,
         flexBasis: `${percentWidth}%`,
       }}
       textStyle={{
