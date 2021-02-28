@@ -9,6 +9,7 @@
     "from": "From",
     "to": "To",
     "confirm": "confirm",
+    "searchLocation": "Search for Location",
     "pleaseInputCorrect": "Please input correct data",
     "regionField": "region",
     "provinceField": "province",

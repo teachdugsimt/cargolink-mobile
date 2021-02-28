@@ -54,17 +54,17 @@ export class BookingApi {
     })
   }
 
-  async findCarrierJobBookingOne(id: string): Promise<any> {
+  async addCarrierJobBookingOne(body: BookingBody): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/carriers/job/booking/${id}`)
-      console.log("Response findCarrierJobBookingOne :: ", response)
+      const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/mobile/carriers/job/booking`, body)
+      console.log("Response addCarrierJobBookingOne :: ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
         if (problem) return problem
       }
       return { kind: 'ok', data: response.data }
     } catch (error) {
-      console.log("Error call api findCarrierJobBookingOne : ", error)
+      console.log("Error call api addCarrierJobBookingOne : ", error)
       return error
     }
   }

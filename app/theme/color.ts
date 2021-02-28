@@ -80,4 +80,5 @@ export const color = {
 
   sky: palette.sky,
   registration: palette.regisGrey,
+  facebook: palette.facebook
 }

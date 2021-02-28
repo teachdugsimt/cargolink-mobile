@@ -25,4 +25,5 @@ export const palette = {
 
   sky: '#4EBDAE',
   regisGrey: "#f8f8f8",
+  facebook: "#4267B2"
 }

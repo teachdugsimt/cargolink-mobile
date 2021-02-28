@@ -61,9 +61,9 @@ const CarrierMyjob = types.maybeNull(types.model({
 
 const BookingStore = types
   .model({
-    data_find_carrier_job_booking_one: types.maybeNull(types.number),
-    loading_find_carrier_job_booking_one: types.boolean,
-    error_find_carrier_job_booking_one: types.maybeNull(types.string),
+    data_add_carrier_job_booking_one: types.maybeNull(types.number),
+    loading_add_carrier_job_booking_one: types.boolean,
+    error_add_carrier_job_booking_one: types.maybeNull(types.string),
 
     data_find_shipper_job_one: ShipperJob,
     loading_shipper_job_one: types.boolean,
@@ -88,23 +88,23 @@ const BookingStore = types
   })
   .actions((self) => ({
 
-    findCarrierJobBookingOne: flow(function* findCarrierJobBookingOne(id: string) {
+    addCarrierJobBookingOne: flow(function* addCarrierJobBookingOne(body: Types.BookingBody) {
       yield bookingAPI.setup()
-      self.loading_find_carrier_job_booking_one = true
+      self.loading_add_carrier_job_booking_one = true
       try {
-        const response = yield bookingAPI.findCarrierJobBookingOne(id)
-        console.log("Response call api findCarrierJobBookingOne : : ", response)
+        const response = yield bookingAPI.addCarrierJobBookingOne(body)
+        console.log("Response call api addCarrierJobBookingOne : : ", response)
         if (response.kind === 'ok') {
-          self.data_find_carrier_job_booking_one = response.data || null
+          self.data_add_carrier_job_booking_one = response.data || null
         } else {
-          self.error_find_carrier_job_booking_one = response?.data?.message || response.kind
+          self.error_add_carrier_job_booking_one = response?.data?.message || response.kind
         }
-        self.loading_find_carrier_job_booking_one = false
+        self.loading_add_carrier_job_booking_one = false
 
       } catch (error) {
-        console.error("error for save data findCarrierJobBookingOne : ", error)
-        self.loading_find_carrier_job_booking_one = false
-        self.error_find_carrier_job_booking_one = "error for save data findCarrierJobBookingOne"
+        console.error("error for save data addCarrierJobBookingOne : ", error)
+        self.loading_add_carrier_job_booking_one = false
+        self.error_add_carrier_job_booking_one = "error for save data addCarrierJobBookingOne"
       }
     }),
 
@@ -223,9 +223,9 @@ const BookingStore = types
 
   }))
   .create({
-    data_find_carrier_job_booking_one: null,
-    loading_find_carrier_job_booking_one: false,
-    error_find_carrier_job_booking_one: "",
+    data_add_carrier_job_booking_one: null,
+    loading_add_carrier_job_booking_one: false,
+    error_add_carrier_job_booking_one: "",
 
     data_find_shipper_job_one: null,
     loading_shipper_job_one: false,

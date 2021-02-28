@@ -48,7 +48,7 @@ export default StyleSheet.create({
     //add custom header
   },
   buttonSubmit: {
-    width: "30%",
+    width: "40%",
     alignSelf: "center",
     alignItems: "center",
     backgroundColor: color.primary,

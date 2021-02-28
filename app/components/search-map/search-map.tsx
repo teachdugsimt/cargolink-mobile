@@ -1,17 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback, Dimensions } from "react-native";
+import { View, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback, Dimensions, ViewStyle } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { GOOGLE_API_KEY } from '../../config/env'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { Text } from '../../components/'
+import { Text, Screen } from '../../components/'
 import { color, images } from "../../theme";
 import i18n from 'i18n-js'
+import { translate } from "../../i18n"
 import styles from './styles'
 import Geolocation from '@react-native-community/geolocation';
+import { SearchMapProps } from './search-map.props'
 
+const FULL: ViewStyle = { flex: 1 }
 const { height } = Dimensions.get('window')
-
+const PADDING_VERTICAL: ViewStyle = { paddingVertical: 2.5 }
+const ROW: ViewStyle = { flexDirection: "row" }
+const MAIN_VIEW_BOTTOM: ViewStyle = { ...ROW, marginHorizontal: 10, justifyContent: 'space-between' }
+const ROW_1: ViewStyle = { ...ROW, ...FULL }
+const FLEX_END: ViewStyle = { justifyContent: 'flex-end' }
+const ROOT_BOTTOM: ViewStyle = { ...FLEX_END, backgroundColor: color.textWhite }
+const BUTTON_VIEW: ViewStyle = { ...ROW, ...FULL, ...FLEX_END }
+const PADDING_PURE_10: ViewStyle = { padding: 10 }
 const latitudeDelta = 0.005;
 const longitudeDelta = 0.005;
 
@@ -35,7 +45,7 @@ let initialState = {
   forceRefresh: 0,
 }
 
-export const LocationPicker = (props) => {
+export const LocationPicker = (props: SearchMapProps) => {
   const [region, setregion] = useState(initialData)
   const [tmpCurrentRegion, settmpCurrentRegion] = useState(null)
   const [{ address, listViewDisplayed,
@@ -70,7 +80,7 @@ export const LocationPicker = (props) => {
   }, [])
 
 
-  const { onSubmitMap, banner } = props
+  const { onSubmitMap, banner, onCloseModal } = props
 
   const goToInitialLocation = (region) => {
     let initialRegion = Object.assign({}, region);
@@ -103,9 +113,10 @@ export const LocationPicker = (props) => {
   console.log("Autocomplete Google :: ", searchText)
   return (
     <View style={styles.map}>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+      <Screen unsafe>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
-          <View style={{ flex: 1 }}>
+          <View style={FULL}>
+
             <MapView
               ref={(ref) => mapView = ref}
               onMapReady={() => goToInitialLocation(region)}
@@ -124,13 +135,14 @@ export const LocationPicker = (props) => {
 
 
             <View style={styles.panel}>
+
               <View style={[styles.panelHeader,
               listViewDisplayed ? styles.panelFill : styles.panel,]}>
                 <GooglePlacesAutocomplete
                   currentLocation={false}
                   enableHighAccuracyLocation={true}
                   ref={(c) => (searchText = c)}
-                  placeholder="Search for a location"
+                  placeholder={translate("common.searchLocation")}
                   minLength={2} // minimum length of text to search
                   autoFocus={false}
                   returnKeyType={"search"}
@@ -219,19 +231,26 @@ export const LocationPicker = (props) => {
 
 
 
-            <View style={{ justifyContent: 'flex-end', minHeight: Platform.OS == "ios" ? height / 6.5 : height / 5 }}>
+            <View style={[ROOT_BOTTOM, { minHeight: Platform.OS == "ios" ? height / 6.5 : height / 5 }]}>
 
 
-              <View style={{ flexDirection: "row", marginHorizontal: 10, justifyContent: 'space-between' }}>
-                <View style={{ flexDirection: "row" }}>
-                  <Icon name="home" size={24} color={color.primary} style={{ padding: 10 }} />
+              <View style={MAIN_VIEW_BOTTOM}>
+                <View style={ROW_1}>
+                  <Icon name="home" size={24} color={color.primary} style={PADDING_PURE_10} />
                   <Text style={styles.addressText} tx={banner} />
                 </View>
-                <TouchableOpacity
-                  onPress={() => onSubmitMap(address, region)}
-                  style={styles.buttonSubmit}>
-                  <Text style={{ paddingVertical: 2.5 }} tx={"common.confirm"} />
-                </TouchableOpacity>
+                <View style={BUTTON_VIEW}>
+                  <TouchableOpacity
+                    onPress={() => onCloseModal()}
+                    style={styles.buttonSubmit}>
+                    <Text style={PADDING_VERTICAL} tx={"common.back"} />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => onSubmitMap(address, region)}
+                    style={styles.buttonSubmit}>
+                    <Text style={PADDING_VERTICAL} tx={"common.confirm"} />
+                  </TouchableOpacity>
+                </View>
               </View>
 
               <TextInput
@@ -246,7 +265,7 @@ export const LocationPicker = (props) => {
             </View>
           </View>
         </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+      </Screen>
 
 
     </View>
