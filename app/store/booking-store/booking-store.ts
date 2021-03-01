@@ -251,13 +251,14 @@ const BookingStore = types
         console.log("++ Response my carrier list :: ", otherList)
         if (response.kind === 'ok') {
 
-          let carrierList = otherList.data && Array.isArray(otherList.data) ? otherList.data : []
+          let carrierList = otherList.data && otherList.data.content && Array.isArray(otherList.data.content) ?
+            JSON.parse(JSON.stringify(otherList.data.content)) : []
           let arrMerge = []
           if (!filter.page) {
             arrMerge = _.unionBy(response.data, carrierList, 'id')
           } else {
-            arrMerge = _.unionBy(self.list, response.data, 'id')
-            arrMerge = _.unionBy(arrMerge, carrierList, 'id')
+            arrMerge = _.unionBy(self.list, _.unionBy(response.data, carrierList, 'id'), 'id')
+            // arrMerge = _.unionBy(arrMerge, carrierList, 'id')
           }
           console.log("Summary List :: ", arrMerge)
           self.list = JSON.parse(JSON.stringify(arrMerge))
@@ -271,8 +272,8 @@ const BookingStore = types
         self.error = "error fetch api findSummaryJob"
       }
     }),
-    clearList(){
-      self.list = null
+    clearList() {
+      self.list = cast([])
     }
   }))
   .views((self) => ({
