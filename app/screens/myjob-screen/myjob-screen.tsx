@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react"
-import { View, ViewStyle, TextStyle, TouchableOpacity, FlatList, RefreshControl, Dimensions } from "react-native"
+import { View, ViewStyle, TextStyle, TouchableOpacity, FlatList, RefreshControl, Dimensions, Image, ImageStyle } from "react-native"
 import { observer } from "mobx-react-lite"
 import { EmptyListMessage, SearchItem, Text, HeaderCenter, ModalAlert, Button } from "../../components"
 import { color, spacing, images as imageComponent } from "../../theme"
@@ -61,20 +61,16 @@ const CALL_TEXT: TextStyle = {
   color: color.textWhite,
   fontSize: 18,
 }
-
-const bookerList = [{
-  image: 'https://img.cinemablend.com/filter:scale/quill/f/6/0/5/4/7/f60547eb6c012791e9a6e360989779224b947d31.jpg?mw=600',
-  name: 'Mr. John Wick',
-  date: 'จองเมื่อ 29/01/2564 11:11 น.'
-}, {
-  image: 'https://img.cinemablend.com/filter:scale/quill/f/6/0/5/4/7/f60547eb6c012791e9a6e360989779224b947d31.jpg?mw=600',
-  name: 'Mr. John Wick',
-  date: 'จองเมื่อ 30/01/2564 12:12 น.'
-}, {
-  image: 'https://img.cinemablend.com/filter:scale/quill/f/6/0/5/4/7/f60547eb6c012791e9a6e360989779224b947d31.jpg?mw=600',
-  name: 'Mr. John Wick',
-  date: 'จองเมื่อ 31/01/2564 13:13 น.'
-}]
+const LOGO_ROOT: ViewStyle = {
+  width: 40,
+  height: 40,
+  paddingLeft: spacing[4],
+}
+const LOGO: ImageStyle = {
+  width: 40,
+  height: 40,
+  borderRadius: Math.round(Dimensions.get('window').width + Dimensions.get('window').height) / 2,
+}
 
 const dateFormat = (date: string) => {
   if (!date) return ''
@@ -122,6 +118,9 @@ const Item = (data) => {
     statusScreen,
   } = JSON.parse(JSON.stringify(data))
 
+  const myUserId = ProfileStore.data?.userId || ''
+  const ownerUserId = owner?.userId || null
+
   const [visible, setVisible] = useState<boolean>(false)
 
   const navigation = useNavigation()
@@ -131,7 +130,6 @@ const Item = (data) => {
     CarriersJobStore.findOne(id)
     navigation.navigate('myJobDetail', {
       showOwnerAccount: false,
-      booker: bookerList
     })
   }
 
@@ -191,11 +189,31 @@ const Item = (data) => {
 
   const onConfirmJob = (id: string) => {
     console.log('id', id)
+    setVisible(false)
   }
 
   const onCloseModal = () => {
     setVisible(false)
   }
+
+  const renderOwnerProfile = () => (
+    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingVertical: spacing[1] }}>
+      <View style={LOGO_ROOT}>
+        <Image
+          style={LOGO}
+          source={{
+            uri: owner?.avatar?.object || '',
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+              adminAuth: owner?.avatar?.token
+            },
+          }}
+          resizeMode={'cover'} />
+      </View>
+      <Text text={owner?.fullName || ''} style={{ paddingLeft: spacing[5] }} />
+    </View>
+  )
 
   const modalProps = {
     containerStyle: {
@@ -237,26 +255,32 @@ const Item = (data) => {
           <MaterialCommunityIcons name={'clock-fast'} color={color.line} size={28} />
           <Text tx={'myJobScreen.waitForAcceptingFromCarrer'} style={WAITING_TEXT} />
         </View>) : (<>
-          <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={quotationNumber == 0 ? onEdit : null}>
-            <Text tx={'myJobScreen.editJob'} style={{ color: quotationNumber == 0 ? color.primary : color.line }} />
-          </TouchableOpacity>
-          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onVisible}>
-            <Text tx={'myJobScreen.bookerWaiting'} style={{ color: color.primary }} />
-          </TouchableOpacity>
+          {myUserId === ownerUserId ? (<>
+            <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={quotationNumber == 0 ? onEdit : null}>
+              <Text tx={'myJobScreen.editJob'} style={{ color: quotationNumber == 0 ? color.primary : color.line }} />
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onVisible}>
+              <Text tx={'myJobScreen.bookerWaiting'} style={{ color: color.primary }} />
+            </TouchableOpacity>
+          </>) : (renderOwnerProfile())}
         </>)
       )}
 
       {statusScreen === 3 && (<>
-        <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { flexDirection: 'row' }]} onPress={() => onFinishJob(id)}>
-          <MaterialCommunityIcons name={'checkbox-marked-circle-outline'} color={color.primary} size={20} />
-          <Text tx={'myJobScreen.finishJob'} style={{ color: color.primary, paddingHorizontal: spacing[2] }} />
-        </TouchableOpacity>
+        {myUserId === ownerUserId ? (<>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { flexDirection: 'row' }]} onPress={() => onFinishJob(id)}>
+            <MaterialCommunityIcons name={'checkbox-marked-circle-outline'} color={color.primary} size={20} />
+            <Text tx={'myJobScreen.finishJob'} style={{ color: color.primary, paddingHorizontal: spacing[2] }} />
+          </TouchableOpacity>
+        </>) : (renderOwnerProfile())}
       </>)}
 
       {statusScreen === 7 && (<>
-        <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN]} onPress={onVisible}>
-          <Text tx={'jobDetailScreen.seeDetail'} style={{ color: color.primary }} />
-        </TouchableOpacity>
+        {myUserId === ownerUserId ? (<>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN]} onPress={onVisible}>
+            <Text tx={'jobDetailScreen.seeDetail'} style={{ color: color.primary }} />
+          </TouchableOpacity>
+        </>) : (renderOwnerProfile())}
       </>)}
 
       <ModalAlert {...modalProps} />
@@ -307,11 +331,12 @@ export const MyJobScreen = observer(function MyJobScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      PAGE = 0
-      ShipperJobStore.find({ type: status });
-      BookingStore.clearList()
+      // ShipperJobStore.find({ type: status });
+      BookingStore.findSummaryJob({ type: status });
       return () => {
-        ShipperJobStore.setDefaultOfList()
+        PAGE = 0
+        BookingStore.clearList()
+        // ShipperJobStore.setDefaultOfList()
       }
     }, [])
   );
@@ -327,20 +352,21 @@ export const MyJobScreen = observer(function MyJobScreen() {
   const onScrollList = () => {
     console.log('onScrollList')
     if (!onEndReachedCalledDuringMomentum
-      && ShipperJobStore.list.length >= 10
-      && !ShipperJobStore.loading
-      // && ShipperJobStore.previousListLength !== listLength
+      && BookingStore.list.length >= 10
+      && !BookingStore.loading
+      // && BookingStore.previousListLength !== listLength
     ) {
       PAGE++
       const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE, type: status }
-      ShipperJobStore.find(advSearch)
+      BookingStore.findSummaryJob(advSearch)
       setOnEndReachedCalledDuringMomentum(true)
     }
   }
 
   const onRefresh = () => {
-    // BookingStore.findSummaryJob({ type: status,})
-    ShipperJobStore.find({ type: status })
+    PAGE = 0
+    BookingStore.findSummaryJob({ type: status, page: PAGE })
+    // ShipperJobStore.find({ type: status })
   }
 
   const { versatileStore, tokenStore } = useStores()
@@ -372,7 +398,7 @@ export const MyJobScreen = observer(function MyJobScreen() {
       onMomentumScrollBegin={() => setOnEndReachedCalledDuringMomentum(false)}
       refreshControl={
         <RefreshControl
-          refreshing={ShipperJobStore.loading}
+          refreshing={BookingStore.loading}
           onRefresh={onRefresh}
         />
       }
@@ -382,7 +408,7 @@ export const MyJobScreen = observer(function MyJobScreen() {
     <View testID="MyJobScreen" style={FULL}>
 
       <View style={CONTENT}>
-        {ProfileStore.data && tokenStore?.token?.accessToken ? _renderFlatList(ShipperJobStore.list) : _renderFlatList([])}
+        {ProfileStore.data && tokenStore?.token?.accessToken ? _renderFlatList(BookingStore.list) : _renderFlatList([])}
       </View>
 
     </View>

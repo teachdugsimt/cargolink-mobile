@@ -879,7 +879,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           </View>
         }
 
-        {fromManageCar && (<View style={BOTTOM_ROOT}>
+        {fromManageCar && !BookingStore.data_approve_booking && (<View style={BOTTOM_ROOT}>
           <Button
             testID="reject"
             style={[BTN_STYLE, { backgroundColor: color.disable }]}
