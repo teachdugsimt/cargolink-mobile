@@ -48,8 +48,8 @@ const VIEW_BUTTON: ViewStyle = {
 }
 
 const BUTTON_CONTAINER: ViewStyle = {
-  borderColor: color.line,
-  backgroundColor: color.line
+  // borderColor: color.line,
+  backgroundColor: color.primary
 }
 
 const TEXT_TOPIC: TextStyle = { color: color.black }

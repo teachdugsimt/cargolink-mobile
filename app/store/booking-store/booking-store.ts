@@ -11,7 +11,7 @@ const apiShipperJob = new ShipperJobAPI()
 const tabStatus = {
   first: 0,
   second: 3,
-  third: 7
+  third: 2
 }
 const isAutenticated = async () => {
   const profile = await storage.load('root')
