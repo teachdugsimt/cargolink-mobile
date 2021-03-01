@@ -1,10 +1,11 @@
 import { types, flow, cast } from "mobx-state-tree"
-import { CarriersJobAPI, GoogleMapAPI } from "../../services/api"
+import { CarriersJobAPI, GoogleMapAPI, MyVehicleAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
 import { decode } from "@mapbox/polyline";
 import FavoriteJobStore from "./favorite-job-store";
 import * as storage from "../../utils/storage"
 
+const apiMyVehicle = new MyVehicleAPI()
 const apiCarriersJob = new CarriersJobAPI()
 const apiGoogleMap = new GoogleMapAPI()
 
@@ -231,6 +232,26 @@ const CarriersJobStore = types
         // self.data = []
         self.loading = false
         self.error = "error fetch api get shipper job"
+      }
+    }),
+
+
+    getJobDetail: flow(function* getJobDetail(id: string) {
+      yield apiMyVehicle.setup()
+      self.loading = true
+      try {
+        const response = yield apiMyVehicle.getJobDetailByQuotationId(id)
+        console.log("Response call api getJobDetail : : ", response)
+        if (response.kind === 'ok') {
+          self.data = response.data || null
+        } else {
+          self.error = response.data.message || 'fail to fetch getJobDetail api'
+        }
+        self.loading = false
+      } catch (error) {
+        console.error("Failed to fetch getJobDetail api : ", error)
+        self.loading = false
+        self.error = "error fetch api getJobDetail"
       }
     }),
 

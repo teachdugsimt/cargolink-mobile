@@ -4,23 +4,26 @@ import {
   Dimensions,
   Image,
   ImageStyle,
-  ScrollView,
+  RefreshControl,
   Switch,
   TextStyle,
   View,
   ViewStyle,
-  FlatList
+  FlatList,
 } from "react-native"
-import { ModalLoading, Text, BookList, BookerItem } from "../../components"
+import { ModalLoading, Text, BookerItem } from "../../components"
+import Feather from 'react-native-vector-icons/Feather'
 import { translate } from "../../i18n"
 import { color, images as imageComponent, spacing } from "../../theme"
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation, useRoute } from "@react-navigation/native"
 import ImageView from 'react-native-image-view';
 import { TouchableOpacity } from "react-native-gesture-handler"
 import MyVehicleStore from '../../store/my-vehicle-store/my-vehicle-store'
 import { GetTruckType } from "../../utils/get-truck-type";
 import { useStores } from "../../models/root-store/root-store-context";
 import { MapTruckImageName } from '../../utils/map-truck-image-name'
+import CarriersJobStore from "../../store/carriers-job-store/carriers-job-store"
+import myVehicle from "../../services/api/mock-data/my-vehicle"
 
 const deviceWidht = Dimensions.get("window").width
 const deviceHeight = Dimensions.get("window").height
@@ -28,6 +31,7 @@ const deviceHeight = Dimensions.get("window").height
 const CONTAINER: ViewStyle = {
   flex: 1,
 }
+const PADDING_HOR_20: ViewStyle = { paddingHorizontal: 20 }
 const COLUMN: ViewStyle = {
   flex: 1,
   backgroundColor: color.backgroundWhite,
@@ -109,9 +113,8 @@ const initialState = {
   indexOfImage: 0,
 }
 
-export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
+const HeaderComponent = observer(function HeaderComponent() {
   const navigation = useNavigation()
-
   const { tokenStore } = useStores()
 
   const [{ openViewer, indexOfImage }, setState] = useState(initialState)
@@ -186,15 +189,6 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
     return tmp
   }
 
-  // const _renderBookUser = ({ item, index }) => {
-  //   return (<BookList item={item} index={index} onPress={() => console.log("Accept Press")} />)
-  // }
-  const user_book = [
-    { id: 1, name: 'สมชาย ใจดี', prefix: 'นาย', image: "", date: "29/01/2564 15.20 " },
-    { id: 2, name: 'สมชาย ใจดี', prefix: 'นาย', image: "", date: "29/01/2564 15.20 " },
-    { id: 3, name: 'สมชาย ใจดี', prefix: 'นาย', image: "", date: "29/01/2564 15.20 " },
-  ]
-
   const raw_image = truckPhotos &&
     Object.keys(truckPhotos).length ?
     Object.entries(truckPhotos).map(img => {
@@ -214,123 +208,175 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
   return (
     <View style={CONTAINER}>
 
-      {MyVehicleStore.loading && <ModalLoading size={'large'} color={color.primary} visible={MyVehicleStore.loading} />}
-      <ScrollView onScroll={({ nativeEvent }) => { }} style={{}} scrollEventThrottle={400}>
-        <View style={COLUMN}>
-          <View style={ROW}>
-            <Text style={TOPIC} text={translate("vehicleDetailScreen.vehicleImage")} />
-          </View>
-          <View style={ROW}>
-            <View style={IMAGES}>
-              {!!transformImage &&
-                transformImage.map((image, index) => {
-                  __DEV__ && console.tron.log("Each Image render ::  ", image) // undefined || {url: "xxxxx"}
-                  return (
-                    <TouchableOpacity style={TOUCHABLE} key={index} onPress={(attr) => {
-                      if (MyVehicleStore.data.id && image && !!image.url) onViewer(index)
-                    }}>
-                      <Image style={IMAGE} source={MyVehicleStore.data.id && image && !!image.url ? {
-                        uri: image.url,
-                        method: 'GET',
-                        headers: {
-                          Authorization: `Bearer ${tokenStore.token.accessToken}`
-                        },
-                      } : imageComponent["noImageAvailable"]} key={index} />
-                    </TouchableOpacity>
-                  )
-                })}
-
-              <ImageView
-                images={viewListImage}
-                imageIndex={indexOfImage}
-                isVisible={openViewer}
-                onClose={onCancel}
-              />
-            </View>
-          </View>
+      {/* {MyVehicleStore.loading && <ModalLoading size={'large'} color={color.primary} visible={MyVehicleStore.loading} />} */}
+      <View style={COLUMN}>
+        <View style={ROW}>
+          <Text style={TOPIC} text={translate("vehicleDetailScreen.vehicleImage")} />
         </View>
-
-        <View style={COLUMN}>
-          <View style={ROW}>
-            <Text style={TOPIC} text={translate("vehicleDetailScreen.vehicleType")} />
-          </View>
-          <View style={{ ...ROW, alignItems: "center" }}>
-            <View style={OUTER_CIRCLE}>
-              <Image source={imageComponent[truckType ? MapTruckImageName(Number(truckType)) : "truck17"]} style={LOGO} />
-            </View>
-            <Text style={TYPE_CAR_NAME} text={txtTruckType && txtTruckType.name ? txtTruckType.name : ''} />
-          </View>
-          <View style={ROW}>
-            <View style={SUB_TOPIC_ROOT}>
-              <Text style={SUB_TOPIC} text={translate("vehicleDetailScreen.heighttOfTheCarStall")} />
-              <Text style={TEXT_OF_VALUE} text={stallHeight ? stallHeight.toString() : '0'} />
-            </View>
-          </View>
-          <View style={{ ...ROW, justifyContent: "space-between" }}>
-            <Text text={translate("vehicleDetailScreen.carHaveDum")} />
-            <Switch value={tipper || false} disabled={true} />
-          </View>
-        </View>
-
-        <View style={COLUMN}>
-          <View style={ROW}>
-            <Text style={TOPIC} text={translate("vehicleDetailScreen.myVehicleDetail")} />
-          </View>
-          <View style={ROW}>
-            <View
-              style={{
-                ...SUB_TOPIC_ROOT,
-                backgroundColor: color.registration,
-                paddingLeft: spacing[3],
-                paddingRight: spacing[3],
-                borderRadius: 4,
-              }}
-            >
-              <Text
-                style={SUB_TOPIC}
-                text={translate("vehicleDetailScreen.vehicleRegistrationNumber")}
-              />
-              {MyVehicleStore.data &&
-                MyVehicleStore.data.registrationNumber &&
-                MyVehicleStore.data.registrationNumber.length &&
-                MyVehicleStore.data.registrationNumber.map((regNo, index) => <Text key={index} style={TEXT_OF_VALUE} text={regNo} />)
-              }
-            </View>
-          </View>
-        </View>
-
-
-
-
-        <View style={[COLUMN, {}]}>
-          <View>
-            <Text style={TOPIC} preset="topic" text={translate("myVehicleScreen.userRequestQueue")} />
-          </View>
-          <View>
-            {user_book.map((booker, index) => <BookerItem
-              key={index}
-              imageUrl={booker.image}
-              topic={booker.name}
-              detail={booker.date}
-              btnTxt={translate('myJobScreen.accept')}
-              containerStyle={{ paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.disable }}
-              topicStyle={{ fontSize: 14, paddingBottom: spacing[1] }}
-              detailStyle={{ color: color.line }}
-              btnStyle={{ paddingVertical: 2, paddingHorizontal: spacing[2] }}
-              btnTextStyle={{ fontSize: 12, paddingLeft: spacing[1] }}
-              onToggle={() =>   navigation.navigate('jobDetail', {
-                showOwnerAccount: false,
-                fromManageCar: true
+        <View style={ROW}>
+          <View style={IMAGES}>
+            {!!transformImage &&
+              transformImage.map((image, index) => {
+                __DEV__ && console.tron.log("Each Image render ::  ", image) // undefined || {url: "xxxxx"}
+                return (
+                  <TouchableOpacity style={TOUCHABLE} key={index} onPress={() => {
+                    if (MyVehicleStore.data.id && image && !!image.url) onViewer(index)
+                  }}>
+                    <Image style={IMAGE} source={MyVehicleStore.data.id && image && !!image.url ? {
+                      uri: image.url,
+                      method: 'GET',
+                      headers: {
+                        Authorization: `Bearer ${tokenStore.token.accessToken}`
+                      },
+                    } : imageComponent["noImageAvailable"]} key={index} />
+                  </TouchableOpacity>
+                )
               })}
-            />)}
+
+            <ImageView
+              images={viewListImage}
+              imageIndex={indexOfImage}
+              isVisible={openViewer}
+              onClose={onCancel}
+            />
           </View>
         </View>
+      </View>
+
+      <View style={COLUMN}>
+        <View style={ROW}>
+          <Text style={TOPIC} text={translate("vehicleDetailScreen.vehicleType")} />
+        </View>
+        <View style={{ ...ROW, alignItems: "center" }}>
+          <View style={OUTER_CIRCLE}>
+            <Image source={imageComponent[truckType ? MapTruckImageName(Number(truckType)) : "truck17"]} style={LOGO} />
+          </View>
+          <Text style={TYPE_CAR_NAME} text={txtTruckType && txtTruckType.name ? txtTruckType.name : ''} />
+        </View>
+        <View style={ROW}>
+          <View style={SUB_TOPIC_ROOT}>
+            <Text style={SUB_TOPIC} text={translate("vehicleDetailScreen.heighttOfTheCarStall")} />
+            <Text style={TEXT_OF_VALUE} text={stallHeight ? stallHeight.toString() : '0'} />
+          </View>
+        </View>
+        <View style={{ ...ROW, justifyContent: "space-between" }}>
+          <Text text={translate("vehicleDetailScreen.carHaveDum")} />
+          <Switch value={tipper || false} disabled={true} />
+        </View>
+      </View>
+
+      <View style={COLUMN}>
+        <View style={ROW}>
+          <Text style={TOPIC} text={translate("vehicleDetailScreen.myVehicleDetail")} />
+        </View>
+        <View style={ROW}>
+          <View
+            style={{
+              ...SUB_TOPIC_ROOT,
+              backgroundColor: color.registration,
+              paddingLeft: spacing[3],
+              paddingRight: spacing[3],
+              borderRadius: 4,
+            }}
+          >
+            <Text
+              style={SUB_TOPIC}
+              text={translate("vehicleDetailScreen.vehicleRegistrationNumber")}
+            />
+            {MyVehicleStore.data &&
+              MyVehicleStore.data.registrationNumber &&
+              MyVehicleStore.data.registrationNumber.length &&
+              MyVehicleStore.data.registrationNumber.map((regNo, index) => <Text key={index} style={TEXT_OF_VALUE} text={regNo} />)
+            }
+          </View>
+        </View>
+      </View>
 
 
 
-      </ScrollView>
+
+
+
+
+
+
 
     </View>
   )
 })
 
+
+interface VehicleProps {
+  id?: string
+}
+export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
+  const navigation = useNavigation()
+  const { quotations: user_book } = MyVehicleStore.data
+  const route = useRoute()
+  const {
+    id = ''
+  }: VehicleProps = route?.params || {}
+  
+  const _renderListBooking = (booker, index) => {
+    console.log("booker object :: ", JSON.parse(JSON.stringify(booker)))
+    return (<>
+      {index == 0 && <View style={{ paddingTop: 20, width: '100%', marginTop: 1, backgroundColor: color.textWhite }}>
+        <Text style={[TOPIC, PADDING_HOR_20]} preset="topic" text={translate("myVehicleScreen.userRequestQueue")} />
+      </View>}
+      <View style={{ ...PADDING_HOR_20, backgroundColor: color.textWhite }}>
+        <BookerItem
+          key={index}
+          imageUrl={booker?.avatar?.object || ''}
+          tokenUrl={booker?.avatar?.token || ''}
+          topic={booker.fullName}
+          detail={booker.bookingDatetime}
+          btnTxt={translate('myJobScreen.accept')}
+          containerStyle={{ paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.disable, backgroundColor: color.textWhite }}
+          topicStyle={{ fontSize: 14, paddingBottom: spacing[1] }}
+          detailStyle={{ color: color.line }}
+          btnStyle={{ paddingVertical: 2, paddingHorizontal: spacing[2] }}
+          btnTextStyle={{ fontSize: 12, paddingLeft: spacing[1] }}
+          onToggle={() => {
+            CarriersJobStore.getJobDetail(booker.id)
+            navigation.navigate('jobDetail', {
+              showOwnerAccount: false,
+              fromManageCar: true,
+              quotationsID: booker.id
+            })
+          }}
+        />
+      </View>
+      {index == user_book.length - 1 && <View style={{ height: 10, backgroundColor: color.textWhite }}></View>}
+    </>
+    )
+  }
+  return <FlatList
+    ListHeaderComponent={<HeaderComponent />}
+    ListEmptyComponent={<EmptyListBooking />}
+    refreshControl={
+      <RefreshControl
+        refreshing={MyVehicleStore.loading}
+        onRefresh={() => MyVehicleStore.findOneRequest(id)}
+      />}
+    renderItem={({ item, index }) => _renderListBooking(item, index)}
+    data={user_book}
+    keyExtractor={item => item.id.toString()}
+  />
+
+})
+
+
+const MAIN_VIEW_EMPTY: ViewStyle = { backgroundColor: color.textWhite, paddingTop: 20 }
+const TEXT_EMPTY: TextStyle = { justifyContent: 'center', alignItems: 'center', paddingBottom: 20 }
+const COLOR_LINE: TextStyle = { color: color.line }
+const EmptyListBooking = () => {
+  return (
+    <View style={MAIN_VIEW_EMPTY}>
+      <Text style={[TOPIC, PADDING_HOR_20]} preset="topic" text={translate("myVehicleScreen.userRequestQueue")} />
+      <View style={TEXT_EMPTY}>
+        <Text tx={'common.notFound'} preset={'topicExtra'} style={COLOR_LINE} />
+        <Feather name={'inbox'} size={50} color={color.line} />
+      </View>
+    </View>
+  )
+}

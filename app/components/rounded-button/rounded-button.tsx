@@ -27,7 +27,7 @@ const ADD_VEHICLE_BUTTON: ViewStyle = {
   height: 50,
   borderRadius: 25,
   borderWidth: 1,
-  borderColor: color.line,
+  // borderColor: color.line,
   backgroundColor: color.textWhite
 }
 const MAIN_VIEW: ViewStyle = {

@@ -3,6 +3,7 @@ import { getGeneralApiProblem } from "./api-problem"
 import { ApiConfig, DEFAULT_API_CONFIG } from "./api-config"
 import { BookingBody } from './api.types'
 import * as storage from "../../utils/storage"
+import * as Types from "./api.types"
 import i18n from 'i18n-js'
 /**
  * Manages all requests to the API.
@@ -160,7 +161,7 @@ export class BookingApi {
   }
   async findCarrierTruckBookingAccept(id: string): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/carriers/trucks/booking/accept/${id}`)
+      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/carriers/truck/booking/accept/${id}`)
       console.log("Response findCarrierTruckBookingAccept :: ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
@@ -174,7 +175,7 @@ export class BookingApi {
   }
   async findCarrierTruckBookingReject(id: string): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/carriers/trucks/booking/reject/${id}`)
+      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/carriers/truck/booking/reject/${id}`)
       console.log("Response findCarrierTruckBookingReject :: ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
@@ -183,6 +184,21 @@ export class BookingApi {
       return { kind: 'ok', data: response.data }
     } catch (error) {
       console.log("Error call api findCarrierTruckBookingReject : ", error)
+      return error
+    }
+  }
+
+  async findCarrierJob(filter: Types.ShipperJobRequest | {} = {}): Promise<any> {
+    try {
+      const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/mobile/carriers/job`, filter)
+      console.log("Response findCarrierMyJob (carrier accept job booking) :: ", response)
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+      return { kind: 'ok', data: response.data }
+    } catch (error) {
+      console.log("Error call api findCarrierMyJob (carrier accept job booking) : ", error)
       return error
     }
   }

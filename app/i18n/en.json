@@ -5,10 +5,10 @@
     "ok": "OK!",
     "cancel": "Cancel",
     "back": "Back",
-    "next": "next",
+    "next": "Next",
     "from": "From",
     "to": "To",
-    "confirm": "confirm",
+    "confirm": "Confirm",
     "searchLocation": "Search for Location",
     "pleaseInputCorrect": "Please input correct data",
     "regionField": "region",
@@ -16,7 +16,7 @@
     "vehicleTypeField": "truck type",
     "vehicleHeightField": "truck height",
     "registrationVehicleField": "truck license plate",
-    "edit": "edit",
+    "edit": "Edit",
     "north": "north",
     "north-east": "north-east",
     "south": "south",
@@ -282,11 +282,14 @@
     "pickUpPoint": "Pick up point",
     "product": "Product",
     "confirmJob": "Confirm booking of this job.",
+    "whenReject": "When you reject this job, you will not be able to accept it again.",
+    "rejectConfirm": "Confirm to reject this job",
     "confirmVehicleForThisJob": "Confirm car reservations for this event.",
     "truckType": "Truck type",
     "unit": "",
     "callbackForOwner": "When the owner presses to accept, there will be a response.",
     "bookedSuccess": "You have successfully booked the job.",
+    "rejectSuccess": "Reject job success",
     "bookATruck": "Book a truck"
   },
   "acceptPolicyScreen": {
@@ -415,7 +418,7 @@
     "lastestContact": "Lastest Contact",
     "job": "Job",
     "vehicle": "Vehicle",
-    "shipper": "Shippers",
+    "productOwner": "Product Owner",
     "carrier": "Carriers"
   },
   "myJobScreen": {
@@ -426,6 +429,11 @@
     "editJob": "Edit job",
     "bookerWaiting": "request booking",
     "accept": "Accept",
+    "listOfBookingJob": "Applicants for booking this job",
+    "waitForAcceptingFromCarrer": "Wait for accepting reservations from the carrier.",
+    "finishJob": "Finish job",
+    "confirmJob": "Confirm this job?",
+    "accept": "Response",
     "listOfBookingJob": "Applicants for booking this job"
   },
   "selectJobScreen": {

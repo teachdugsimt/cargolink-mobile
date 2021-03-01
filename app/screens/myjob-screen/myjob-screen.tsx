@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { View, ViewStyle, TextStyle, TouchableOpacity, FlatList, RefreshControl, Dimensions } from "react-native"
 import { observer } from "mobx-react-lite"
-import { EmptyListMessage, SearchItem, Text, HeaderCenter } from "../../components"
+import { EmptyListMessage, SearchItem, Text, HeaderCenter, ModalAlert, Button } from "../../components"
 import { color, spacing, images as imageComponent } from "../../theme"
 import ShipperJobStore from '../../store/shipper-job-store/shipper-job-store'
 import CarriersJobStore from '../../store/carriers-job-store/carriers-job-store'
@@ -16,17 +16,12 @@ import DateAndTime from 'date-and-time';
 import StatusStore from '../../store/post-job-store/job-status-store'
 import { useStores } from "../../models/root-store/root-store-context";
 import ProfileStore from "../../store/profile-store/profile-store"
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import BookingStore from "../../store/booking-store/booking-store";
 
 const COLOR_WHITE: TextStyle = { color: color.textWhite }
 const FULL: ViewStyle = { flex: 1 }
-const HEADER_ACTIVE: ViewStyle = {
-  borderBottomWidth: 2,
-  borderBottomColor: color.textBlack,
-}
-const TOUCHABLE_VIEW: ViewStyle = {
-  flex: 1,
-  alignItems: 'center',
-}
+
 const QUOTATION_NUM: ViewStyle = {
   backgroundColor: 'red', height: 20, width: 20, borderRadius: 10, position: 'absolute', top: 0, right: 40,
   justifyContent: 'center', alignItems: 'center'
@@ -44,6 +39,27 @@ const BTN_COLUMN: ViewStyle = {
   justifyContent: 'center',
   alignItems: 'center',
   paddingVertical: spacing[2]
+}
+const WAITING: ViewStyle = {
+  flex: 1,
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+  paddingVertical: spacing[2],
+}
+const WAITING_TEXT: TextStyle = {
+  color: color.line,
+  paddingHorizontal: spacing[2],
+  paddingVertical: spacing[1],
+}
+const BTN_STYLE: ViewStyle = {
+  flex: 1,
+  borderRadius: Dimensions.get('window').width / 2,
+  marginHorizontal: spacing[3]
+}
+const CALL_TEXT: TextStyle = {
+  color: color.textWhite,
+  fontSize: 18,
 }
 
 const bookerList = [{
@@ -67,6 +83,29 @@ const dateFormat = (date: string) => {
   return dateFormat
 }
 
+const RenderButtonAlert = ({ onConfirmJob, onCloseModal }) => {
+  const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.line, backgroundColor: color.transparent }
+  const btnConfirmStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.primary, backgroundColor: color.primary }
+  return (
+    <View style={{ ...BOTTOM_ROOT, paddingVertical: spacing[2] }}>
+      <Button
+        testID="btn-cancel"
+        style={btnCancleStyle}
+        textStyle={{ ...CALL_TEXT, color: color.line }}
+        text={translate("common.cancel")}
+        onPress={onCloseModal}
+      />
+      <Button
+        testID="btn-ok"
+        style={btnConfirmStyle}
+        textStyle={{ ...CALL_TEXT, color: color.textWhite }}
+        text={translate("common.confirm")}
+        onPress={onConfirmJob}
+      />
+    </View>
+  )
+}
+
 const Item = (data) => {
   const {
     id,
@@ -78,8 +117,12 @@ const Item = (data) => {
     from,
     to,
     owner,
-    quotationNumber
+    status: bookingStatus,
+    quotationNumber,
+    statusScreen,
   } = JSON.parse(JSON.stringify(data))
+
+  const [visible, setVisible] = useState<boolean>(false)
 
   const navigation = useNavigation()
   const { tokenStore } = useStores()
@@ -132,9 +175,6 @@ const Item = (data) => {
       "shipping-information": shippings
     }
 
-    // console.log('jobInfoFirstTab', jobInfoFirstTab)
-    // console.log('jobInfoSecondTab', jobInfoSecondTab)
-
     PostJobStore.setPostJob(1, jobInfoFirstTab)
     PostJobStore.setPostJob(2, jobInfoSecondTab)
     PostJobStore.setJobId(id)
@@ -145,24 +185,88 @@ const Item = (data) => {
     else navigation.navigate('MyJob', { screen: 'postjob' })
   }
 
-  const RenderBottom = () => (
+  const onFinishJob = (id: string) => {
+    setVisible(true)
+  }
+
+  const onConfirmJob = (id: string) => {
+    console.log('id', id)
+  }
+
+  const onCloseModal = () => {
+    setVisible(false)
+  }
+
+  const modalProps = {
+    containerStyle: {
+      paddingTop: spacing[5],
+      paddingBottom: spacing[2]
+    },
+    // imageComponent: onAnimationFinish: () => onAnimationFinish }),
+    header: translate('myJobScreen.confirmJob'),
+    headerStyle: {
+      paddingTop: spacing[3],
+      color: color.primary
+    },
+    content: translate('myJobScreen.confirmJob'),
+    contentStyle: {
+      paddingTop: spacing[1],
+      paddingBottom: spacing[5],
+      paddingHorizontal: spacing[7],
+      color: color.line
+    },
+    buttonContainerStyle: { width: '90%' },
+    buttonComponent: () => <RenderButtonAlert onConfirmJob={() => onConfirmJob(id)} onCloseModal={onCloseModal} />,
+    visible: visible,
+  }
+
+  const RenderFooter = () => (
     <View style={BOTTOM_ROOT}>
-      <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={quotationNumber == 0 ? onEdit : null}>
-        <Text tx={'myJobScreen.editJob'} style={{ color: quotationNumber == 0 ? color.primary : color.line }} />
-      </TouchableOpacity>
-      <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onVisible}>
-        {!!quotationNumber && <View style={QUOTATION_NUM}>
-          <Text style={COLOR_WHITE}>{quotationNumber}</Text>
-        </View>}
-        <Text tx={'myJobScreen.bookerWaiting'} style={{ color: color.primary }} />
-      </TouchableOpacity>
+      {statusScreen === 0 && (
+        bookingStatus === 3 ? (<>
+          <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={quotationNumber == 0 ? onEdit : null}>
+            <Text tx={'myJobScreen.editJob'} style={{ color: quotationNumber == 0 ? color.primary : color.line }} />
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onVisible}>
+            {!!quotationNumber && <View style={QUOTATION_NUM}>
+              <Text style={COLOR_WHITE}>{quotationNumber}</Text>
+            </View>}
+            <Text tx={'myJobScreen.bookerWaiting'} style={{ color: color.primary }} />
+          </TouchableOpacity>
+        </>) : bookingStatus === 1 && !!quotationNumber ? (<View style={WAITING}>
+          <MaterialCommunityIcons name={'clock-fast'} color={color.line} size={28} />
+          <Text tx={'myJobScreen.waitForAcceptingFromCarrer'} style={WAITING_TEXT} />
+        </View>) : (<>
+          <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={quotationNumber == 0 ? onEdit : null}>
+            <Text tx={'myJobScreen.editJob'} style={{ color: quotationNumber == 0 ? color.primary : color.line }} />
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onVisible}>
+            <Text tx={'myJobScreen.bookerWaiting'} style={{ color: color.primary }} />
+          </TouchableOpacity>
+        </>)
+      )}
+
+      {statusScreen === 3 && (<>
+        <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { flexDirection: 'row' }]} onPress={() => onFinishJob(id)}>
+          <MaterialCommunityIcons name={'checkbox-marked-circle-outline'} color={color.primary} size={20} />
+          <Text tx={'myJobScreen.finishJob'} style={{ color: color.primary, paddingHorizontal: spacing[2] }} />
+        </TouchableOpacity>
+      </>)}
+
+      {statusScreen === 7 && (<>
+        <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN]} onPress={onVisible}>
+          <Text tx={'jobDetailScreen.seeDetail'} style={{ color: color.primary }} />
+        </TouchableOpacity>
+      </>)}
+
+      <ModalAlert {...modalProps} />
     </View>
   )
 
   const typeOfTruck = GetTruckType(+truckType)?.name || `${translate('jobDetailScreen.truckType')} : ${translate('common.notSpecified')}`
 
   return (
-    <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
+    <View style={{ paddingHorizontal: spacing[2] }}>
       <SearchItem
         {
         ...{
@@ -172,26 +276,19 @@ const Item = (data) => {
           count: requiredTruckAmount,
           productName: productName,
           truckType: typeOfTruck,
-          // packaging: productName,
-          // detail,
           viewDetail: true,
           postBy: owner.companyName,
           isVerified: false,
-          // isLike: isLiked,
           showFavoriteIcon: false,
           backgroundImage: imageComponent[MapTruckImageName(+truckType) || 'truck'],
-          // rating,
-          // ratingCount,
-          // isCrown,
-          logo: 'https://pbs.twimg.com/profile_images/1246060692748161024/nstphRkx_400x400.jpg',
           isRecommened: false,
           containerStyle: {
             paddingTop: spacing[2],
             borderRadius: 6
           },
+          requiredTouchableOpacityGesture: true,
           onPress: () => onVisible(),
-          // onToggleHeart,
-          bottomComponent: () => <RenderBottom />
+          bottomComponent: () => <RenderFooter />
         }
         }
       />
@@ -206,18 +303,13 @@ export const MyJobScreen = observer(function MyJobScreen() {
 
   const route = useRoute()
   const { status }: any = route?.params || {}
-  console.log("status : ", status)
-  const [isFirstHeaderSelected, setIsFirstHeaderSelected] = useState<boolean>(true)
-  const [activeTab, setActiveTab] = useState<number>(0)
-  const [isActivitySwitch, setIsActivitySwitch] = useState<boolean>(false)
-  const [data, setData] = useState([])
-  const [loading, setLoading] = useState<boolean>(true)
   const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState<boolean>(true)
-  const [listLength, setListLength] = useState<number>(0)
 
   useFocusEffect(
     useCallback(() => {
-      ShipperJobStore.find();
+      PAGE = 0
+      ShipperJobStore.find({ type: status });
+      BookingStore.clearList()
       return () => {
         ShipperJobStore.setDefaultOfList()
       }
@@ -230,7 +322,7 @@ export const MyJobScreen = observer(function MyJobScreen() {
     }
   }, [])
 
-  const renderItem = ({ item }) => <Item {...item} />
+  const renderItem = ({ item }) => <Item {...item} statusScreen={status} />
 
   const onScrollList = () => {
     console.log('onScrollList')
@@ -240,14 +332,15 @@ export const MyJobScreen = observer(function MyJobScreen() {
       // && ShipperJobStore.previousListLength !== listLength
     ) {
       PAGE++
-      const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE }
+      const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE, type: status }
       ShipperJobStore.find(advSearch)
       setOnEndReachedCalledDuringMomentum(true)
     }
   }
 
   const onRefresh = () => {
-    ShipperJobStore.find()
+    // BookingStore.findSummaryJob({ type: status,})
+    ShipperJobStore.find({ type: status })
   }
 
   const { versatileStore, tokenStore } = useStores()
@@ -285,35 +378,8 @@ export const MyJobScreen = observer(function MyJobScreen() {
       }
     />)
 
-  const touchableHeaderStyle: ViewStyle = {
-    ...TOUCHABLE_VIEW,
-    paddingTop: spacing[2],
-    paddingBottom: spacing[4],
-  }
-  // const favoriteHeaderStyle: ViewStyle = { ...touchableHeaderStyle, ...(isFirstHeaderSelected && HEADER_ACTIVE) }
-  // const lastestContactHeaderStyle: ViewStyle = { ...touchableHeaderStyle, ...(!isFirstHeaderSelected && HEADER_ACTIVE) }
-
-  const firstTabStyle: ViewStyle = { ...touchableHeaderStyle, ...(activeTab === 0 && HEADER_ACTIVE) }
-  const secondTabStyle: ViewStyle = { ...touchableHeaderStyle, ...(activeTab === 1 && HEADER_ACTIVE) }
-  const thirdTabStyle: ViewStyle = { ...touchableHeaderStyle, ...(activeTab === 2 && HEADER_ACTIVE) }
-
   return (
     <View testID="MyJobScreen" style={FULL}>
-
-      {/* <View style={HEADER}>
-        <TouchableOpacity activeOpacity={1} style={firstTabStyle}
-          onPress={() => setActiveTab(0)} >
-          <Text tx={'myJobScreen.workOpen'} style={{ ...TEXT, color: activeTab === 0 ? color.textBlack : color.textWhite }} />
-        </TouchableOpacity>
-        <TouchableOpacity activeOpacity={1} style={secondTabStyle}
-          onPress={() => setActiveTab(1)} >
-          <Text tx={'myJobScreen.workInProgress'} style={{ ...TEXT, color: activeTab === 1 ? color.textBlack : color.textWhite }} />
-        </TouchableOpacity>
-        <TouchableOpacity activeOpacity={1} style={thirdTabStyle}
-          onPress={() => setActiveTab(2)} >
-          <Text tx={'myJobScreen.workDone'} style={{ ...TEXT, color: activeTab === 2 ? color.textBlack : color.textWhite }} />
-        </TouchableOpacity>
-      </View> */}
 
       <View style={CONTENT}>
         {ProfileStore.data && tokenStore?.token?.accessToken ? _renderFlatList(ShipperJobStore.list) : _renderFlatList([])}

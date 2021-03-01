@@ -51,10 +51,10 @@ export const HistoryCall = observer(function HistoryCall() {
 
     <View style={ACTIVITY}>
       <TouchableOpacity activeOpacity={1} style={{ ...TOUCHABLE_VIEW, ...BORDER_RADIUS_LEFT, backgroundColor: !isActivitySwitch ? color.primary : color.disable }} onPress={() => setIsActivitySwitch(!isActivitySwitch)}>
-        <Text tx={'favoriteScreen.shipper'} style={ACTIVITY_TEXT_VIEW} />
+        <Text tx={'favoriteScreen.carrier'} style={ACTIVITY_TEXT_VIEW} />
       </TouchableOpacity>
       <TouchableOpacity activeOpacity={1} style={{ ...TOUCHABLE_VIEW, ...BORDER_RADIUS_RIGHT, backgroundColor: isActivitySwitch ? color.primary : color.disable }} onPress={() => setIsActivitySwitch(!isActivitySwitch)}>
-        <Text tx={'favoriteScreen.carrier'} style={ACTIVITY_TEXT_VIEW} />
+        <Text tx={'favoriteScreen.productOwner'} style={ACTIVITY_TEXT_VIEW} />
       </TouchableOpacity>
     </View>
 

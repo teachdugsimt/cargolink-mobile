@@ -44,11 +44,12 @@ const VIEW_BUTTON: ViewStyle = {
   alignItems: 'center',
   borderTopColor: color.line,
   borderTopWidth: 1,
-  padding: 20,
+  padding: 10,
 }
 
 const BUTTON_CONTAINER: ViewStyle = {
-  backgroundColor: color.darkGrey
+  borderColor: color.line,
+  backgroundColor: color.line
 }
 
 const TEXT_TOPIC: TextStyle = { color: color.black }
