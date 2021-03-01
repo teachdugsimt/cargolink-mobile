@@ -338,6 +338,7 @@ export const MyJobScreen = observer(function MyJobScreen() {
   }
 
   const onRefresh = () => {
+    // BookingStore.findSummaryJob({ type: status,})
     ShipperJobStore.find({ type: status })
   }
 
