@@ -15,6 +15,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import com.swmansion.reanimated.ReanimatedPackage;
 import com.airbnb.android.react.maps.MapsPackage;
+import android.content.pm.ActivityInfo;
+import org.wonday.orientation.OrientationActivityLifecycle;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -54,6 +56,7 @@ public class MainApplication extends Application implements ReactApplication {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
+    registerActivityLifecycleCallbacks(OrientationActivityLifecycle.getInstance());
   }
 
   /**
@@ -68,7 +71,7 @@ public class MainApplication extends Application implements ReactApplication {
     if (BuildConfig.DEBUG) {
       try {
         /*
-         We use reflection here to pick up the class that initializes Flipper,
+        We use reflection here to pick up the class that initializes Flipper,
         since Flipper library is not available in release mode
         */
         Class<?> aClass = Class.forName("com.cargolinkmobile.ReactNativeFlipper");

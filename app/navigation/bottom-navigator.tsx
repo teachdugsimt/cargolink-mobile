@@ -27,10 +27,6 @@ export default observer(function BottomNavigator() {
     navigation.navigate('Home', { screen: 'home' })
   }, [])
 
-  useEffect(() => {
-    console.log("***************** LANG", versatileStore.language)
-  }, [versatileStore.language])
-
   return (
     <Tab.Navigator
       initialRouteName={'Home'}

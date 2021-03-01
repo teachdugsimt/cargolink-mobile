@@ -10,7 +10,19 @@ import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
 import org.devio.rn.splashscreen.SplashScreen; // Import this.
 import android.os.Bundle; // Import this.
 
+import android.content.Intent;
+import android.content.res.Configuration;
+
 public class MainActivity extends ReactActivity {
+
+  @Override
+  public void onConfigurationChanged(Configuration newConfig) {
+      super.onConfigurationChanged(newConfig);
+      Intent intent = new Intent("onConfigurationChanged");
+      intent.putExtra("newConfig", newConfig);
+      this.sendBroadcast(intent);
+  }
+
   // Add this method.
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +35,7 @@ public class MainActivity extends ReactActivity {
     return new ReactActivityDelegate(this, getMainComponentName()) {
       @Override
       protected ReactRootView createRootView() {
-       return new RNGestureHandlerEnabledRootView(MainActivity.this);
+        return new RNGestureHandlerEnabledRootView(MainActivity.this);
       }
     };
   }
