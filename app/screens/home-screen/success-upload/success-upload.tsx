@@ -34,7 +34,7 @@ const VIEW_BUTTON: ViewStyle = {
 }
 
 const BUTTON_CONTAINER: ViewStyle = {
-  backgroundColor: color.primary, borderColor: color.primary
+  backgroundColor: color.primary
 }
 
 const ICON_VIEW: ViewStyle = { alignItems: 'center', justifyContent: 'center', marginTop: -20 }
