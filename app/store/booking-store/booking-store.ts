@@ -257,7 +257,9 @@ const BookingStore = types
           if (!filter.page) {
             arrMerge = _.unionBy(response.data, carrierList, 'id')
           } else {
-            arrMerge = _.unionBy(self.list, _.unionBy(response.data, carrierList, 'id'), 'id')
+            let parseSelfList = JSON.parse(JSON.stringify(self.list))
+            let parseShipperList = JSON.parse(JSON.stringify(response.data))
+            arrMerge = _.unionBy(parseSelfList, _.unionBy(parseShipperList, carrierList, 'id'), 'id')
             // arrMerge = _.unionBy(arrMerge, carrierList, 'id')
           }
           console.log("Summary List :: ", arrMerge)
