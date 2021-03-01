@@ -27,6 +27,8 @@ import {
 import { RootStore, RootStoreProvider, setupRootStore } from "./models"
 import { Linking } from 'react-native';
 import VersionCheck from 'react-native-version-check';
+import ScreenOrientation, { PORTRAIT, LANDSCAPE } from "react-native-orientation-locker/ScreenOrientation";
+
 // import crashlytics from '@react-native-firebase/crashlytics';
 
 // This puts screens in a native ViewController or Activity. If you want fully native
@@ -96,6 +98,11 @@ function App(props: any) {
   return (
     <RootStoreProvider value={rootStore}>
       <SafeAreaProvider initialSafeAreaInsets={initialWindowSafeAreaInsets}>
+        <ScreenOrientation
+          orientation={PORTRAIT}
+          onChange={orientation => console.log('onChange', orientation)}
+          onDeviceChange={orientation => console.log('onDeviceChange', orientation)}
+        />
         <RootNavigator
           ref={navigationRef}
           initialState={initialNavigationState}

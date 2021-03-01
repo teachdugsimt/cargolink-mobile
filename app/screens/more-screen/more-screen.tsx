@@ -57,7 +57,7 @@ const ROUND_BUTTON_CONTAINER: ViewStyle = {
   backgroundColor: color.primary, borderColor: color.transparent
 }
 const ROUND_BUTTON_TEXT: TextStyle = {
-  color: color.textWhite
+  color: color.black
 }
 const MENUS: Array<MenuProps> = [
   // {
@@ -176,6 +176,7 @@ export const MoreScreen = observer(function MoreScreen() {
   }
 
   const _pressChangeLanguage = (item: any) => {
+    console.log('======== CHANGE LANG')
     versatileStore.setLanguage(item.value)
     i18n.locale = item.value
     versatileStore.findGroup()
@@ -185,8 +186,15 @@ export const MoreScreen = observer(function MoreScreen() {
   }
 
   const _renderFlag = (region, i) => {
-    return <TouchableOpacity key={`flag-view-${i}`} style={{ paddingRight: i == list.length - 1 ? 0 : 5 }} onPress={() => _pressChangeLanguage(region)}>
-      <Image source={images[region.value]} width={40} height={30} resizeMode="stretch" style={{ width: 45, height: 30, borderRadius: 3 }} />
+    return <TouchableOpacity key={`flag-view-${i}`}
+      style={{
+        paddingRight: i == list.length - 1 ? 0 : 5
+      }} onPress={() => _pressChangeLanguage(region)}>
+      <Image source={images[region.value]}
+        width={40} height={30}
+        resizeMode="stretch" style={{
+          width: 45, height: 30, borderRadius: 3
+        }} />
     </TouchableOpacity>
   }
 
