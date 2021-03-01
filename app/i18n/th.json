@@ -418,8 +418,8 @@
     "lastestContact": "ที่ติดต่อล่าสุด",
     "job": "งาน",
     "vehicle": "รถ",
-    "shipper": "ผู้ส่งสินค้า",
-    "carrier": "ผู้ให้บริการ"
+    "productOwner": "เจ้าของสินค้า",
+    "carrier": "ผู้ให้บริการขนส่ง"
   },
   "myJobScreen": {
     "myJob": "งานของฉัน",
@@ -429,7 +429,10 @@
     "editJob": "แก้ไขข้อมูลงาน",
     "bookerWaiting": "ผู้จองรอตอบรับ",
     "accept": "ตอบรับ",
-    "listOfBookingJob": "ผู้ขอจองงานนี้"
+    "listOfBookingJob": "ผู้ขอจองงานนี้",
+    "waitForAcceptingFromCarrer": "รอการตอบรับการจองจากผู้ให้บริการขนส่ง",
+    "finishJob": "จบงาน",
+    "confirmJob": "ยืนยันการจบงานนี้"
   },
   "selectJobScreen": {
     "selectBooking": "เลือกงานของคุณสำหรับการจองนี้",

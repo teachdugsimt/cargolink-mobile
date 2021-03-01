@@ -42,6 +42,7 @@ const FLOAT_DOT: ViewStyle = {
 
 const Icon = ({ routeName, focused, color }) => {
   let iconName: string = null;
+  let paddingIcon: number = 0;
   if (routeName === 'Home' || routeName == "หน้าแรก") {
     iconName = focused
       ? (Platform.OS === 'ios' ? 'home' : "home")
@@ -50,20 +51,24 @@ const Icon = ({ routeName, focused, color }) => {
     iconName = focused
       ? (Platform.OS === 'ios' ? 'clipboard' : "clipboard")
       : (Platform.OS === 'ios' ? 'clipboard-outline' : "clipboard-outline");
+    paddingIcon = 3
   } else if (routeName === 'Favorite' || routeName == "ถูกใจ") {
     iconName = focused
       ? (Platform.OS === 'ios' ? 'heart' : "heart")
       : (Platform.OS === 'ios' ? 'heart-outline' : "heart-outline")
+    paddingIcon = 1
   } else if (routeName === 'Profile' || routeName == "โปรไฟล์") {
     iconName = focused
       ? (Platform.OS === 'ios' ? 'person' : "person")
       : (Platform.OS === 'ios' ? 'person-outline' : "person-outline")
+    paddingIcon = 1
   } else if (routeName === 'More' || routeName == "อื่นๆ") {
     iconName = focused
       ? (Platform.OS === 'ios' ? 'ellipsis-horizontal' : "ellipsis-horizontal")
       : (Platform.OS === 'ios' ? 'ellipsis-horizontal-outline' : "ellipsis-horizontal-outline")
+    paddingIcon = 2
   }
-  return <Icon22 name={iconName} size={24} color={color} />;
+  return <Icon22 name={iconName} size={24} color={color} style={{ paddingLeft: paddingIcon }} />;
 }
 
 export const BottomTabNavigation = ({ state, descriptors, navigation }) => {

@@ -415,7 +415,7 @@
     "lastestContact": "Lastest Contact",
     "job": "Job",
     "vehicle": "Vehicle",
-    "shipper": "Shippers",
+    "productOwner": "Product Owner",
     "carrier": "Carriers"
   },
   "myJobScreen": {
@@ -426,7 +426,10 @@
     "editJob": "Edit job",
     "bookerWaiting": "request booking",
     "accept": "Accept",
-    "listOfBookingJob": "Applicants for booking this job"
+    "listOfBookingJob": "Applicants for booking this job",
+    "waitForAcceptingFromCarrer": "Wait for accepting reservations from the carrier.",
+    "finishJob": "Finish job",
+    "confirmJob": "Confirm this job?"
   },
   "selectJobScreen": {
     "selectBooking": "Select your event for this booking.",

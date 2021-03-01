@@ -169,8 +169,8 @@ export function SearchItem(props: SearchItemProps) {
   const MainTouchableOpacity = requiredTouchableOpacityGesture ? TouchableOpacityGesture : TouchableOpacity
 
   return (
-    <MainTouchableOpacity style={{ ...CONTAINER, ...containerStyle }} activeOpacity={1} onPress={onPress}>
-      <View style={TOP_ROOT}>
+    <View style={{ ...CONTAINER, ...containerStyle }}>
+      <MainTouchableOpacity style={TOP_ROOT} activeOpacity={1} onPress={onPress}>
         <ImageBackground source={truckBackImage} style={BACKGROUND} ></ImageBackground>
         <View style={CONTENT}>
           <View style={LOCATION}>
@@ -227,8 +227,8 @@ export function SearchItem(props: SearchItemProps) {
               />
             </View>}
         </View>
-      </View>
-      {renderButtom || (<View style={BUTTOM_ROOT}>
+      </MainTouchableOpacity>
+      {renderButtom || (<MainTouchableOpacity style={BUTTOM_ROOT} activeOpacity={1} onPress={onPress}>
         <View style={VIEW_DETAIL_ROOT}>
           <Text text={translate('jobDetailScreen.seeDetail')} style={TEXT_VIEW} />
           <AntDesign name="right" size={spacing[4] + spacing[1]} color={color.line} />
@@ -245,8 +245,8 @@ export function SearchItem(props: SearchItemProps) {
             }
           } />
         </View>
-      </View>)
+      </MainTouchableOpacity>)
       }
-    </MainTouchableOpacity>
+    </View>
   )
 }
