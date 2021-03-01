@@ -27,11 +27,13 @@ import UserJobStore from "../../store/user-job-store/user-job-store"
 import ProfileStore from "../../store/profile-store/profile-store"
 import { SearchByAddressTh, GetProvinceByEnArress } from "../../utils/search-province";
 import i18n from 'i18n-js'
+import BookingStore from '../../store/booking-store/booking-store'
 
 interface JobDetailProps {
   booker?: Array<any>
   showOwnerAccount?: boolean
   fromManageCar?: boolean
+  quotationsID?: string
 }
 
 const deviceWidht = Dimensions.get('window').width
@@ -358,7 +360,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   const [isCalling, setIsCalling] = useState<boolean>(false)
   const [region, setRegion] = useState(null)
   const [scrollY, setScrollY] = useState<number>(0)
-
+  const [visibleModalReject, setvisibleModalReject] = useState<boolean>(false)
   const {
     id,
     from,
@@ -378,7 +380,8 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   const {
     showOwnerAccount = true,
     booker = [],
-    fromManageCar
+    fromManageCar,
+    quotationsID = ''
   }: JobDetailProps = route?.params || {}
 
   const { versatileStore, tokenStore } = useStores()
@@ -498,8 +501,12 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   const onCloseModal = () => {
     setVisibleModal(false)
   }
+  const onCloseModal2 = () => {
+    setvisibleModalReject(false)
+  }
 
   const onConfirmJob = () => {
+    BookingStore.approveBooking("carrier", 'accept', quotationsID)
     setIsBooking(true)
     // onCloseModal()
   }
@@ -507,6 +514,10 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   const onAnimationFinish = () => {
     setIsBooking(false)
     onCloseModal()
+  }
+  const onAnimationFinish2 = () => {
+    setIsBooking(false)
+    onCloseModal2()
   }
 
   const startListenerTapped = (jobId: string) => {
@@ -605,7 +616,8 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   }
 
   const onRejectJob = () => {
-
+    BookingStore.approveBooking("carrier", 'reject', quotationsID)
+    setIsBooking(true)
   }
 
   const RenderButtonAlert = () => {
@@ -626,6 +638,28 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           textStyle={{ ...CALL_TEXT, color: color.textWhite }}
           text={translate("common.confirm")}
           onPress={() => onConfirmJob()}
+        />
+      </View>
+    )
+  }
+  const RenderButtonAlertReject = () => {
+    const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.line, backgroundColor: color.transparent }
+    const btnRejectStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.red, backgroundColor: color.red }
+    return (
+      <View style={{ ...BOTTOM_ROOT, paddingVertical: spacing[2] }}>
+        <Button
+          testID="btn-cancel"
+          style={btnCancleStyle}
+          textStyle={{ ...CALL_TEXT, color: color.line }}
+          text={translate("common.cancel")}
+          onPress={() => onCloseModal2()}
+        />
+        <Button
+          testID="btn-ok"
+          style={btnRejectStyle}
+          textStyle={{ ...CALL_TEXT, color: color.textWhite }}
+          text={translate("common.reject")}
+          onPress={() => onRejectJob()}
         />
       </View>
     )
@@ -668,6 +702,32 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     buttonComponent: !isBokking ? RenderButtonAlert : null,
     visible: visibleModal,
   }
+
+  const modalPropsReject = {
+    containerStyle: {
+      paddingTop: spacing[5],
+      paddingBottom: spacing[2]
+    },
+    imageComponent: !isBokking ? RenderImageAlert : () => CheckMark({ autoPlay: isBokking, onAnimationFinish: () => onAnimationFinish2 }),
+    header: !isBokking ? translate('jobDetailScreen.rejectConfirm') : translate('jobDetailScreen.rejectSuccess'),
+    headerStyle: {
+      paddingTop: spacing[3],
+      color: color.primary
+    },
+    content: translate('jobDetailScreen.whenReject'),
+    contentStyle: {
+      paddingTop: spacing[1],
+      paddingBottom: spacing[5],
+      paddingHorizontal: spacing[7],
+      color: color.line
+    },
+    buttonContainerStyle: !isBokking ? { width: '90%' } : {},
+    buttonComponent: !isBokking ? RenderButtonAlertReject : null,
+    visible: visibleModalReject,
+  }
+
+  console.log("Visible modal reject :: ", visibleModalReject)
+  console.log("Bokking value :: ", isBokking)
 
   const ownerProfile = {
     id: id,
@@ -820,7 +880,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                 <Text style={CALL_TEXT} tx={'common.reject'} />
               </View>
             }
-            onPress={() => onRejectJob()}
+            onPress={() => setvisibleModalReject(true)}
           />
           {ownerUserId !== myUserId && <Button
             testID="accept"
@@ -879,6 +939,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
       </View>)}
 
       <ModalAlert {...modalProps} />
+      <ModalAlert {...modalPropsReject} />
 
     </View>
   )

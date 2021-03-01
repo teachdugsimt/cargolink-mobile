@@ -40,6 +40,7 @@ export function BookerItem(props: BookerItemProps) {
     detail,
     btnTxt,
     containerStyle,
+    tokenUrl,
     imageStyle,
     topicStyle,
     detailStyle,
@@ -61,7 +62,13 @@ export function BookerItem(props: BookerItemProps) {
   return (
     <View style={containerViewStyle}>
       <View style={imageStyle}>
-        <Image source={imageUrl ? { uri: imageUrl } : images.greyMock} style={imageViewStyle} resizeMode={'cover'} />
+        <Image source={imageUrl ? {
+          uri: imageUrl,
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${tokenUrl}`
+          },
+        } : images.greyMock} style={imageViewStyle} resizeMode={'cover'} />
       </View>
 
       <View style={DETAIL}>

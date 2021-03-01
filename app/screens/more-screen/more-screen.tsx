@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { View, ViewStyle, TextStyle, TouchableOpacity, Linking, Alert, Image, Platform } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Text, RoundedButton, HeaderCenter } from "../../components"
+import { Text, RoundedButton, HeaderCenter, Button } from "../../components"
 import { color, images, spacing } from "../../theme"
 import { useNavigation } from "@react-navigation/native"
 import Icon from "react-native-vector-icons/Ionicons"
@@ -121,9 +121,10 @@ export const MoreScreen = observer(function MoreScreen() {
   const navigation = useNavigation()
   const { versatileStore, tokenStore } = useStores()
   const [list, setlist] = useState([
-    { label: 'moreScreen.Thai', value: 'th', active: i18n.locale == "th" ? true : false },
-    { label: 'moreScreen.English', value: 'en', active: i18n.locale == "en" ? true : false },
+    { label: 'moreScreen.Thai', value: 'th', active: versatileStore.language == "th" ? true : false },
+    { label: 'moreScreen.English', value: 'en', active: versatileStore.language == "th" ? false : true },
   ])
+  console.log("Now language :: ", versatileStore.language)
   const [renderNew, setrenderNew] = useState(false)
 
   useEffect(() => {
@@ -175,27 +176,45 @@ export const MoreScreen = observer(function MoreScreen() {
     }
   }
 
-  const _pressChangeLanguage = (item: any) => {
-    console.log('======== CHANGE LANG')
+  const _pressChangeLanguage = (item: any, index: any) => {
     versatileStore.setLanguage(item.value)
     i18n.locale = item.value
+
     versatileStore.findGroup()
     versatileStore.find()
     versatileStore.findProductType()
+
+    let tmp = list
+    tmp[index].active = true
+    tmp.forEach((e, i) => {
+      if (i != index)
+        tmp[i].active = false
+    })
+    setlist(tmp)
+
     setrenderNew(!renderNew)
   }
 
-  const _renderFlag = (region, i) => {
-    return <TouchableOpacity key={`flag-view-${i}`}
+  // const _renderFlag = (region, i) => {
+  //   return <TouchableOpacity key={`flag-view-${i}`}
+  //     style={{
+  //       paddingRight: i == list.length - 1 ? 0 : 5
+  //     }} onPress={() => _pressChangeLanguage(region)}>
+  //     <Image source={images[region.value]}
+  //       width={40} height={30}
+  //       resizeMode="stretch" style={{
+  //         width: 45, height: 30, borderRadius: 3
+  //       }} />
+  //   </TouchableOpacity>
+  // }
+  const _renderRegionButton = (region, i) => {
+    return <Button key={`flag-view-${i}`}
       style={{
-        paddingRight: i == list.length - 1 ? 0 : 5
-      }} onPress={() => _pressChangeLanguage(region)}>
-      <Image source={images[region.value]}
-        width={40} height={30}
-        resizeMode="stretch" style={{
-          width: 45, height: 30, borderRadius: 3
-        }} />
-    </TouchableOpacity>
+        marginRight: i == list.length - 1 ? 0 : 5,
+        backgroundColor: region.active ? color.primary : color.line
+      }} onPress={() => _pressChangeLanguage(region, i)}
+      text={region.value.toUpperCase()} textStyle={{ fontFamily: 'Kanit-Bold', fontSize: 14 }}>
+    </Button>
   }
 
   return (
@@ -220,7 +239,7 @@ export const MoreScreen = observer(function MoreScreen() {
                 })}
 
                 <View style={RADIO_VIEW}>
-                  {menu.key && menu.key == "language" && (list.map((e, i) => _renderFlag(e, i)))}
+                  {menu.key && menu.key == "language" && (list.map((e, i) => _renderRegionButton(e, i)))}
                 </View>
 
               </View>
@@ -240,7 +259,7 @@ export const MoreScreen = observer(function MoreScreen() {
             FavoriteJobStore.setList([])
             navigation.navigate("signin")
           }}
-            text={tokenStore?.token?.accessToken ? "homeScreen.logout" : "signinScreen.signin"}
+            text={tokenStore?.token?.accessToken && !ProfileStore.loading && ProfileStore.data ? "homeScreen.logout" : "signinScreen.signin"}
             containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT}
           />
         </View>

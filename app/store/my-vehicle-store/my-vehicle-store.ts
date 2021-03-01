@@ -3,6 +3,7 @@ import { MyVehicleAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
 import { vehicleEn, vehicleTh } from '../../screens/home-screen/manage-vehicle/datasource'
 import _ from 'lodash'
+import { type } from "ramda"
 const apiMyVehicle = new MyVehicleAPI()
 
 const Region = types.model({
@@ -17,6 +18,15 @@ const VehicleImage = types.model({
   right: types.maybeNull(types.string),
 })
 
+const Quotation = types.model({
+  avatar: types.maybeNull(types.model({
+    object: types.maybeNull(types.string),
+    token: types.maybeNull(types.string)
+  })),
+  id: types.maybeNull(types.string),
+  fullName: types.maybeNull(types.string),
+  bookingDatetime: types.maybeNull(types.string),
+})
 const vehicleModel = {
   approveStatus: types.maybeNull(types.string),
   createdAt: types.maybeNull(types.string),
@@ -27,7 +37,47 @@ const vehicleModel = {
   stallHeight: types.maybeNull(types.string),
   tipper: types.maybeNull(types.boolean),
   loadingWeight: types.maybeNull(types.number),
+  quotations: types.maybeNull(types.array(types.maybeNull(Quotation)))
 }
+
+const JobDetail = types.model({
+  id: types.maybeNull(types.string),
+  productTypeId: types.maybeNull(types.number),
+  productName: types.maybeNull(types.string),
+  truckType: types.maybeNull(types.string),
+  weight: types.maybeNull(types.number),
+  requiredTruckAmount: types.maybeNull(types.number),
+  from: types.maybeNull(types.model({
+    name: types.maybeNull(types.string),
+    dateTime: types.maybeNull(types.string),
+    contactName: types.maybeNull(types.string),
+    contactMobileNo: types.maybeNull(types.string),
+    lat: types.maybeNull(types.string),
+    lng: types.maybeNull(types.string),
+  })),
+  to: types.maybeNull(types.array(types.model({
+    name: types.maybeNull(types.string),
+    dateTime: types.maybeNull(types.string),
+    contactName: types.maybeNull(types.string),
+    contactMobileNo: types.maybeNull(types.string),
+    lat: types.maybeNull(types.string),
+    lng: types.maybeNull(types.string),
+  }))),
+  owner: types.maybeNull(types.model({
+    id: types.maybeNull(types.number),
+    userId: types.maybeNull(types.string),
+    companyName: types.maybeNull(types.string),
+    fullName: types.maybeNull(types.string),
+    mobileNo: types.maybeNull(types.string),
+    email: types.maybeNull(types.string),
+    avatar: types.maybeNull(types.model({
+      object: types.maybeNull(types.string),
+      token: types.maybeNull(types.string),
+    }))
+  })),
+  // quotationNumber: types.maybeNull(types.number),
+  // isLiked: types.maybeNull(types.optional(types.boolean, false))
+})
 
 const fullVehicleModel = {
   ...vehicleModel,
@@ -44,6 +94,10 @@ const MyVehicleStore = types
     data: types.maybeNull(VehicleDetail),
     loading: types.boolean,
     error: types.maybeNull(types.string),
+
+    job_booking_mycar: types.maybeNull(JobDetail),
+    loading_job_booking_mycar: types.boolean,
+    error_job_booking_mycar: types.maybeNull(types.string),
   })
   .actions((self) => ({
     findRequest: flow(function* findRequest(filter?: Types.VehicleFilterRequest | {}) {
@@ -98,6 +152,25 @@ const MyVehicleStore = types
         // self.data = []
         self.loading = false
         self.error = "error fetch api findOneRequest"
+      }
+    }),
+
+    getJobDetail: flow(function* getJobDetail(id: string) {
+      yield apiMyVehicle.setup()
+      self.loading_job_booking_mycar = true
+      try {
+        const response = yield apiMyVehicle.getJobDetailByQuotationId(id)
+        console.log("Response call api getJobDetail : : ", response)
+        if (response.kind === 'ok') {
+          self.job_booking_mycar = response.data || null
+        } else {
+          self.error_job_booking_mycar = response.data.message || 'fail to fetch getJobDetail api'
+        }
+        self.loading_job_booking_mycar = false
+      } catch (error) {
+        console.error("Failed to fetch getJobDetail api : ", error)
+        self.loading_job_booking_mycar = false
+        self.error_job_booking_mycar = "error fetch api getJobDetail"
       }
     }),
 
@@ -174,6 +247,10 @@ const MyVehicleStore = types
     data: {},
     loading: false,
     error: "",
+
+    job_booking_mycar: null,
+    loading_job_booking_mycar: false,
+    error_job_booking_mycar: ''
   })
 
 export default MyVehicleStore

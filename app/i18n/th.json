@@ -283,11 +283,14 @@
     "pickUpPoint": "จุดรับส่งสินค้า",
     "product": "สินค้า",
     "confirmJob": "ยืนยันการจองงานนี้",
+    "rejectConfirm": "ยืนยันการปฏิเสธงานนี้",
+    "whenReject": "เมื่อปฏิเสธงานนี้ จะไม่สามารถกลับมารับงานนี้ได้อีก",
     "confirmVehicleForThisJob": "ยืนยันการจองรถสำหรับงานนี้",
     "truckType": "ประเภทรถ",
     "unit": "คัน",
     "callbackForOwner": "เมื่อเจ้าของงานกดตอบรับจะมีการติดต่อกลับ",
     "bookedSuccess": "คุณจองงานสำเร็จ",
+    "rejectSuccess": "คุณปฏิเสธงานสำเร็จ",
     "bookATruck": "จองรถ"
   },
   "acceptPolicyScreen": {
@@ -432,7 +435,9 @@
     "listOfBookingJob": "ผู้ขอจองงานนี้",
     "waitForAcceptingFromCarrer": "รอการตอบรับการจองจากผู้ให้บริการขนส่ง",
     "finishJob": "จบงาน",
-    "confirmJob": "ยืนยันการจบงานนี้"
+    "confirmJob": "ยืนยันการจบงานนี้",
+    "accept": "ตอบ",
+    "listOfBookingJob": "ผู้ขอจองงานนี้"
   },
   "selectJobScreen": {
     "selectBooking": "เลือกงานของคุณสำหรับการจองนี้",
