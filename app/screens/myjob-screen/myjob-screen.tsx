@@ -307,8 +307,9 @@ export const MyJobScreen = observer(function MyJobScreen() {
 
   useFocusEffect(
     useCallback(() => {
+      PAGE = 0
       ShipperJobStore.find({ type: status });
-      BookingStore.findCarrierMyJob()
+      BookingStore.clearList()
       return () => {
         ShipperJobStore.setDefaultOfList()
       }

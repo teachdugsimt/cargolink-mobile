@@ -271,6 +271,9 @@ const BookingStore = types
         self.error = "error fetch api findSummaryJob"
       }
     }),
+    clearList(){
+      self.list = null
+    }
   }))
   .views((self) => ({
 
