@@ -28,6 +28,7 @@ import ProfileStore from "../../store/profile-store/profile-store"
 import { SearchByAddressTh, GetProvinceByEnArress } from "../../utils/search-province";
 import i18n from 'i18n-js'
 import BookingStore from '../../store/booking-store/booking-store'
+import MyVehicleStore from '../../store/my-vehicle-store/my-vehicle-store'
 
 interface JobDetailProps {
   booker?: Array<any>
@@ -406,6 +407,13 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     }
 
     return () => {
+      if(fromManageCar) {
+        console.log("Unmount from manage car ::; ")
+        if(BookingStore.data_approve_booking){
+          BookingStore.clearDataApproveBooking()
+          MyVehicleStore.findOneRequest(quotationsID)
+        }
+      }
       if (route.name === 'jobDetail') {
         CarriersJobStore.setDefaultOfProfile()
         CarriersJobStore.setDefaultOfData()
