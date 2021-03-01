@@ -8,7 +8,11 @@ import _ from 'lodash'
 
 const bookingAPI = new BookingApi()
 const apiShipperJob = new ShipperJobAPI()
-
+const tabStatus = {
+  first: 0,
+  second: 3,
+  third: 7
+}
 const isAutenticated = async () => {
   const profile = await storage.load('root')
   return !!profile?.tokenStore?.token?.accessToken
@@ -245,14 +249,22 @@ const BookingStore = types
         // last tab = 7
         const response = yield apiShipperJob.find(filter)
         let otherList: any = []
-        if (filter.type == 0) otherList = yield bookingAPI.findCarrierMyJob()
-        else if (filter.type == 3) otherList = yield bookingAPI.findCarrierJob({ type: 1, page: filter.page })
+        if (filter.type == tabStatus.first) otherList = yield bookingAPI.findCarrierMyJob()
+        else if (filter.type == tabStatus.second) otherList = yield bookingAPI.findCarrierJob({ type: 1, page: filter.page })
         console.log("++ Response normal list : : ", response)
         console.log("++ Response my carrier list :: ", otherList)
         if (response.kind === 'ok') {
 
-          let carrierList = otherList.data && otherList.data.content && Array.isArray(otherList.data.content) ?
-            JSON.parse(JSON.stringify(otherList.data.content)) : []
+
+          let carrierList = []
+          if (filter.type == tabStatus.second) {
+            carrierList = otherList.data && otherList.data.content && Array.isArray(otherList.data.content) ?
+              JSON.parse(JSON.stringify(otherList.data.content)) : []
+          } else if(filter.type == tabStatus.first) {
+            carrierList = otherList.data && otherList.data && Array.isArray(otherList.data) ?
+              JSON.parse(JSON.stringify(otherList.data)) : []
+          }
+
           let arrMerge = []
           if (!filter.page) {
             arrMerge = _.unionBy(response.data, carrierList, 'id')
