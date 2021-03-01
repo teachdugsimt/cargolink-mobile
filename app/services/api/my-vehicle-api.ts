@@ -163,4 +163,21 @@ export class MyVehicleAPI {
       return error
     }
   }
+
+  async getJobDetailByQuotationId(id: string): Promise<any> {
+    try {
+      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/carriers/quotation/${id}`)
+
+      console.log("Response call api get getJobDetailByQuotationId by id : ", response)
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+      return { kind: "ok", data: response.data }
+      // transform the data into the format we are expecting
+    } catch (error) {
+      console.log("Error call api get getJobDetailByQuotationId by id: ", error)
+      return error
+    }
+  }
 }

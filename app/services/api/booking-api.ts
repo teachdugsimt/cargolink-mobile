@@ -160,7 +160,7 @@ export class BookingApi {
   }
   async findCarrierTruckBookingAccept(id: string): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/carriers/trucks/booking/accept/${id}`)
+      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/carriers/truck/booking/accept/${id}`)
       console.log("Response findCarrierTruckBookingAccept :: ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
@@ -174,7 +174,7 @@ export class BookingApi {
   }
   async findCarrierTruckBookingReject(id: string): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/carriers/trucks/booking/reject/${id}`)
+      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/carriers/truck/booking/reject/${id}`)
       console.log("Response findCarrierTruckBookingReject :: ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)

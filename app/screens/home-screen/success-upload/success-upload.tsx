@@ -64,8 +64,8 @@ export const SuccessUpload = observer(function SuccessUpload() {
         <View style={[FULL]}>
           <View style={ICON_VIEW}>
             <LottieView
-              source={require('../../../AnimationJson/check-mark.json')}
-              style={{ height: 120, width: 120, }}
+              source={require('../../../AnimationJson/correct-2.json')}
+              style={{ height: 120, width: 120 }}
               autoPlay
               loop={false}
               speed={0.7}
