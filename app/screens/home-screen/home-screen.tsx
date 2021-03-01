@@ -49,7 +49,12 @@ const VIEW_GRID_BOX: ViewStyle = {
 const ROOT_HOME: ViewStyle = {
   ...FULL,
 }
-const VIEW_ICON: ViewStyle = { borderRadius: 20, height: 40, width: 40, justifyContent: 'center', alignItems: 'center', backgroundColor: color.disable, marginHorizontal: 15 }
+const VIEW_ICON: ViewStyle = {
+  borderRadius: 20, height: 40, width: 40,
+  justifyContent: 'center', alignItems: 'center',
+  backgroundColor: color.disable,
+  marginHorizontal: 15
+}
 
 const CONTACT_VIEW: ViewStyle = { flex: Platform.OS == "android" ? 0.5 : 0.6 }
 export const HomeScreen = observer((props) => {
@@ -57,8 +62,8 @@ export const HomeScreen = observer((props) => {
   const navigation = useNavigation()
 
   useEffect(() => {
-    console.log("Persist Language :: ",versatileStore.language)
-    if(versatileStore.language) i18n.locale = versatileStore.language
+    console.log("Persist Language :: ", versatileStore.language)
+    if (versatileStore.language) i18n.locale = versatileStore.language
     versatileStore.findGroup()
     versatileStore.find()
     versatileStore.findProductType()
@@ -247,7 +252,7 @@ export const HomeScreen = observer((props) => {
           <View style={[ROW, ALL_CENTER, FULL]}>
             <Animated.View style={{ transform: [{ translateX: leftValue }] }} >
               <TouchableOpacity style={VIEW_ICON} onPress={() => Linking.openURL(versatileStore.fblink)}>
-                <FontIcon name={"facebook"} size={28} color={color.facebook}/>
+                <FontIcon name={"facebook"} size={40} color={color.facebook} />
               </TouchableOpacity>
             </Animated.View>
             {/* <TouchableOpacity style={VIEW_ICON} onPress={() => console.log("LINE PRESS")}>
@@ -255,7 +260,7 @@ export const HomeScreen = observer((props) => {
             </TouchableOpacity> */}
             <Animated.View style={{ transform: [{ translateX: rightValue }] }} >
               <TouchableOpacity style={VIEW_ICON} onPress={() => onCall(versatileStore.phoneNumber)}>
-                <Ionicons name={"call"} size={22}  color={color.primary}/>
+                <Ionicons name={"call"} size={22} color={color.primary} />
               </TouchableOpacity>
             </Animated.View>
           </View>

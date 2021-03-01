@@ -115,7 +115,7 @@ const Item = (data) => {
   </View>)
 
   const renderBottom = () => <View />
-
+  console.log('workingZones', workingZones)
   const workingZoneStr = workingZones?.length ? workingZones.map(zone => {
     let reg = GetRegion(zone.region, i18n.locale)
     return reg?.label || ''
@@ -246,6 +246,8 @@ export const SelectTruckScreen = observer(function MyJobScreen() {
     buttonComponent: () => !isBokking ? <RenderButtonAlert onCloseModal={onCloseModal} onConfirmJob={onConfirmJob} /> : null,
     visible: visibleModal,
   }
+
+  console.log('JSON.parse(JSON.stringify(MyVehicleStore.list))', JSON.parse(JSON.stringify(MyVehicleStore.list)))
 
   return (
     <View style={FULL}>

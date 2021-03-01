@@ -214,7 +214,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
         <HeaderCenter tx={"profileScreen.profile"} />
       ),
       headerRight: () => (
-        <HeaderRight showRedDot={showRedDot} onRightPress={() => _pressEditProfiel()} iconName={"ios-create-outline"} iconSize={24} iconColor={color.black} />
+        <HeaderRight showRedDot={showRedDot} onRightPress={() => _pressEditProfiel()} tx={"common.edit"}/>
       ),
     });
   }, [lang])

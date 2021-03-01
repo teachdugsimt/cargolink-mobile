@@ -14,6 +14,8 @@ export interface BookerItemProps {
 
   imageStyle?: ImageStyle
 
+  tokenUrl?: string
+
   topicStyle?: TextStyle
 
   detailStyle?: TextStyle

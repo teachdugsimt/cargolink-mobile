@@ -44,7 +44,7 @@ export function ProfileNavigator() {
     >
       <Stack.Screen name="profile" component={ProfileScreen}
         options={({ navigation, route }) => ({
-          headerRight: () => <HeaderRight onRightPress={() => console.log("press right")} iconName={"ios-create-outline"} iconSize={24} iconColor={color.black} />,
+          headerRight: () => <HeaderRight onRightPress={() => {}} tx={"common.edit"}/>,
           headerCenter: () => <HeaderCenter tx={"profileScreen.profile"} />,
           headerHideShadow: true,
           // headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),

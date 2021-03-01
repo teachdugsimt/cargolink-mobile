@@ -1,10 +1,22 @@
 import { types, flow, cast } from "mobx-state-tree"
 import { boolean } from "mobx-state-tree/dist/internal"
 import { type } from "ramda"
-import { BookingApi } from "../../services/api"
+import { BookingApi, ShipperJobAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
+import * as storage from "../../utils/storage"
+import _ from 'lodash'
 
 const bookingAPI = new BookingApi()
+const apiShipperJob = new ShipperJobAPI()
+const tabStatus = {
+  first: 0,
+  second: 3,
+  third: 7
+}
+const isAutenticated = async () => {
+  const profile = await storage.load('root')
+  return !!profile?.tokenStore?.token?.accessToken
+}
 
 const Quotation = types.model({
   id: types.maybeNull(types.string),
@@ -51,7 +63,10 @@ const JobModel = {
 
 const ShipperJob = types.maybeNull(types.model({
   ...JobModel,
-  quotations: types.maybeNull(types.array(types.maybeNull(Quotation)))
+  quotations: types.maybeNull(types.array(types.maybeNull(Quotation))),
+  status: types.maybeNull(types.number),
+  quotationNumber: types.maybeNull(types.number),
+  isLiked: types.maybeNull(types.optional(types.boolean, false))
 }))
 
 const CarrierMyjob = types.maybeNull(types.model({
@@ -83,8 +98,11 @@ const BookingStore = types
 
     data_approve_booking: types.maybeNull(types.number),
     loading_approve_booking: types.boolean,
-    error_approve_booking: types.maybeNull(types.string)
+    error_approve_booking: types.maybeNull(types.string),
 
+    list: types.maybeNull(types.array(types.maybeNull(ShipperJob))),
+    loading: types.boolean,
+    error: types.maybeNull(types.string),
   })
   .actions((self) => ({
 
@@ -218,11 +236,71 @@ const BookingStore = types
         self.error_approve_booking = "error for save data approveBooking"
       }
     }),
+    clearDataApproveBooking(){
+      self.data_approve_booking = null
+    },
+
+
+    findSummaryJob: flow(function* findSummaryJob(filter: Types.ShipperJobRequest = {}) {
+
+      yield apiShipperJob.setup()
+      yield bookingAPI.setup()
+      self.loading = true
+      try {
+        // first tab = 0
+        // second tab = 3
+        // last tab = 7
+        const response = yield apiShipperJob.find(filter)
+        let otherList: any = []
+        if (filter.type == tabStatus.first) otherList = yield bookingAPI.findCarrierMyJob()
+        else if (filter.type == tabStatus.second) otherList = yield bookingAPI.findCarrierJob({ type: 1, page: filter.page })
+        console.log("++ Response normal list : : ", response)
+        console.log("++ Response my carrier list :: ", otherList)
+        if (response.kind === 'ok') {
+
+
+          let carrierList = []
+          if (filter.type == tabStatus.second) {
+            carrierList = otherList.data && otherList.data.content && Array.isArray(otherList.data.content) ?
+              JSON.parse(JSON.stringify(otherList.data.content)) : []
+          } else if(filter.type == tabStatus.first) {
+            carrierList = otherList.data && otherList.data && Array.isArray(otherList.data) ?
+              JSON.parse(JSON.stringify(otherList.data)) : []
+          }
+
+          let arrMerge = []
+          if (!filter.page) {
+            arrMerge = _.unionBy(response.data, carrierList, 'id')
+          } else {
+            let parseSelfList = JSON.parse(JSON.stringify(self.list))
+            let parseShipperList = JSON.parse(JSON.stringify(response.data))
+            arrMerge = _.unionBy(parseSelfList, _.unionBy(parseShipperList, carrierList, 'id'), 'id')
+            // arrMerge = _.unionBy(arrMerge, carrierList, 'id')
+          }
+          console.log("Summary List :: ", arrMerge)
+          self.list = JSON.parse(JSON.stringify(arrMerge))
+          self.loading = false
+        } else {
+          self.loading = false
+        }
+      } catch (error) {
+        console.error("Failed to fetch findSummaryJob : ", error)
+        self.loading = false
+        self.error = "error fetch api findSummaryJob"
+      }
+    }),
+    clearList() {
+      self.list = cast([])
+    }
   }))
   .views((self) => ({
 
   }))
   .create({
+    list: null,
+    loading: false,
+    error: '',
+
     data_add_carrier_job_booking_one: null,
     loading_add_carrier_job_booking_one: false,
     error_add_carrier_job_booking_one: "",

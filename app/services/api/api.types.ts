@@ -115,7 +115,8 @@ export interface ShipperJobRequest {
   truckAmountMax?: number
   truckAmountMin?: number
   truckType?: number[]
-  weight?: number
+  weight?: number,
+  type?: number,
 }
 
 export interface GoogleLocationRequest {

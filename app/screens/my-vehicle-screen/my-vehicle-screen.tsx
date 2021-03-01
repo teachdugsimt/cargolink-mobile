@@ -53,7 +53,7 @@ export const MyVehicle = observer(function MyVehicle() {
   const { tokenStore, versatileStore } = useStores()
   const onPress = (id: string) => {
     MyVehicleStore.findOneRequest(id)
-    navigation.navigate("vehicleDetail")
+    navigation.navigate("vehicleDetail", { id })
   }
   const [swipe, setswipe] = useState(false)
   const [list_state, setlist_state] = useState(null)

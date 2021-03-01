@@ -256,7 +256,7 @@
     "changeYourPhone": "เปลี่ยนหมายเลขโทรศัพท์",
     "lineOfficialAccount": "Line Official Account",
     "callCenter": "Call Center",
-    "moreMenu": "เมนูเพิ่มเติม",
+    "moreMenu": "เพิ่มเติม",
     "language": "เปลี่ยนภาษา",
     "English": "EN",
     "Thai": "TH",
@@ -283,11 +283,14 @@
     "pickUpPoint": "จุดรับส่งสินค้า",
     "product": "สินค้า",
     "confirmJob": "ยืนยันการจองงานนี้",
+    "rejectConfirm": "ยืนยันการปฏิเสธงานนี้",
+    "whenReject": "เมื่อปฏิเสธงานนี้ จะไม่สามารถกลับมารับงานนี้ได้อีก",
     "confirmVehicleForThisJob": "ยืนยันการจองรถสำหรับงานนี้",
     "truckType": "ประเภทรถ",
     "unit": "คัน",
     "callbackForOwner": "เมื่อเจ้าของงานกดตอบรับจะมีการติดต่อกลับ",
     "bookedSuccess": "คุณจองงานสำเร็จ",
+    "rejectSuccess": "คุณปฏิเสธงานสำเร็จ",
     "bookATruck": "จองรถ"
   },
   "acceptPolicyScreen": {
@@ -418,8 +421,8 @@
     "lastestContact": "ที่ติดต่อล่าสุด",
     "job": "งาน",
     "vehicle": "รถ",
-    "shipper": "ผู้ส่งสินค้า",
-    "carrier": "ผู้ให้บริการ"
+    "productOwner": "เจ้าของสินค้า",
+    "carrier": "ผู้ให้บริการขนส่ง"
   },
   "myJobScreen": {
     "myJob": "งานของฉัน",
@@ -429,6 +432,11 @@
     "editJob": "แก้ไขข้อมูลงาน",
     "bookerWaiting": "ผู้จองรอตอบรับ",
     "accept": "ตอบรับ",
+    "listOfBookingJob": "ผู้ขอจองงานนี้",
+    "waitForAcceptingFromCarrer": "รอการตอบรับการจองจากผู้ให้บริการขนส่ง",
+    "finishJob": "จบงาน",
+    "confirmJob": "ยืนยันการจบงานนี้",
+    "accept": "ตอบ",
     "listOfBookingJob": "ผู้ขอจองงานนี้"
   },
   "selectJobScreen": {
