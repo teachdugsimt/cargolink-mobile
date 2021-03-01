@@ -236,6 +236,9 @@ const BookingStore = types
         self.error_approve_booking = "error for save data approveBooking"
       }
     }),
+    clearDataApproveBooking(){
+      self.data_approve_booking = null
+    },
 
 
     findSummaryJob: flow(function* findSummaryJob(filter: Types.ShipperJobRequest = {}) {

@@ -316,6 +316,7 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
   const {
     id = ''
   }: VehicleProps = route?.params || {}
+  
   const _renderListBooking = (booker, index) => {
     console.log("booker object :: ", JSON.parse(JSON.stringify(booker)))
     return (<>
