@@ -119,7 +119,7 @@ const Item = (data) => {
   } = JSON.parse(JSON.stringify(data))
 
   const myUserId = ProfileStore.data?.userId || ''
-  const ownerUserId = owner?.userId || ''
+  const ownerUserId = owner?.userId || null
 
   const [visible, setVisible] = useState<boolean>(false)
 
@@ -196,6 +196,25 @@ const Item = (data) => {
     setVisible(false)
   }
 
+  const renderOwnerProfile = () => (
+    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingVertical: spacing[1] }}>
+      <View style={LOGO_ROOT}>
+        <Image
+          style={LOGO}
+          source={{
+            uri: owner?.avatar?.object || '',
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+              adminAuth: owner?.avatar?.token
+            },
+          }}
+          resizeMode={'cover'} />
+      </View>
+      <Text text={owner?.fullName || ''} style={{ paddingLeft: spacing[5] }} />
+    </View>
+  )
+
   const modalProps = {
     containerStyle: {
       paddingTop: spacing[5],
@@ -218,8 +237,6 @@ const Item = (data) => {
     buttonComponent: () => <RenderButtonAlert onConfirmJob={() => onConfirmJob(id)} onCloseModal={onCloseModal} />,
     visible: visible,
   }
-
-  console.log('owner?.avatar?.object ', owner?.avatar?.object)
 
   const RenderFooter = () => (
     <View style={BOTTOM_ROOT}>
@@ -245,36 +262,25 @@ const Item = (data) => {
             <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onVisible}>
               <Text tx={'myJobScreen.bookerWaiting'} style={{ color: color.primary }} />
             </TouchableOpacity>
-          </>) : (<View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingVertical: spacing[1] }}>
-            <View style={LOGO_ROOT}>
-              <Image
-                style={LOGO}
-                source={{
-                  uri: owner?.avatar?.object || '',
-                  method: 'GET',
-                  headers: {
-                    Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-                    adminAuth: owner?.avatar?.token
-                  },
-                }}
-                resizeMode={'cover'} />
-            </View>
-            <Text text={owner?.fullName || ''} style={{ paddingLeft: spacing[5] }} />
-          </View>)}
+          </>) : (renderOwnerProfile())}
         </>)
       )}
 
       {statusScreen === 3 && (<>
-        <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { flexDirection: 'row' }]} onPress={() => onFinishJob(id)}>
-          <MaterialCommunityIcons name={'checkbox-marked-circle-outline'} color={color.primary} size={20} />
-          <Text tx={'myJobScreen.finishJob'} style={{ color: color.primary, paddingHorizontal: spacing[2] }} />
-        </TouchableOpacity>
+        {myUserId === ownerUserId ? (<>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { flexDirection: 'row' }]} onPress={() => onFinishJob(id)}>
+            <MaterialCommunityIcons name={'checkbox-marked-circle-outline'} color={color.primary} size={20} />
+            <Text tx={'myJobScreen.finishJob'} style={{ color: color.primary, paddingHorizontal: spacing[2] }} />
+          </TouchableOpacity>
+        </>) : (renderOwnerProfile())}
       </>)}
 
       {statusScreen === 7 && (<>
-        <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN]} onPress={onVisible}>
-          <Text tx={'jobDetailScreen.seeDetail'} style={{ color: color.primary }} />
-        </TouchableOpacity>
+        {myUserId === ownerUserId ? (<>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN]} onPress={onVisible}>
+            <Text tx={'jobDetailScreen.seeDetail'} style={{ color: color.primary }} />
+          </TouchableOpacity>
+        </>) : (renderOwnerProfile())}
       </>)}
 
       <ModalAlert {...modalProps} />
