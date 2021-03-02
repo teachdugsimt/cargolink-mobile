@@ -13,9 +13,30 @@ const tabStatus = {
   second: 3,
   third: 2
 }
-const isAutenticated = async () => {
-  const profile = await storage.load('root')
-  return !!profile?.tokenStore?.token?.accessToken
+
+const mapActionsStatus = (data) => {
+  let tmp = data
+  tmp.map(e => {
+    let slot = e
+    if (e.status == 1 && e.type == "REQUEST_FROM_SHIPPER") { // (ฉันเป็นเจ้าของรถและมีงานมาขอจอง)
+      slot.actionStatus = "IM_OWN_CAR_AND_HAVE_JOB_ASK_FOR_BOOKING"
+    }
+    else if (e.status == 3 && !e.type && Number(e?.quotationNumber) >= 1) {  // (ฉันเป็นเจ้าของงานและมีคนมาขอจอง)
+      slot.actionStatus = "IM_OWN_JOB_AND_HAVE_CAR_ASK_FOR_BOOKING"
+    }
+    else if (e.status == 3 && e.type == "WAITING_FOR_APPROVAL") { //  (ฉันเป็นเจ้าของรถและไปขอจองงานคนอื่น)
+      slot.actionStatus = "IM_OWN_CAR_AND_ASK_FOR_BOOKING_HIM_JOB"
+    }
+    else if (e.status == 1 && !e.type && !e.quotationNumber) { // (ฉันเป็นเจ้าของงาน ไม่มีใครมาขอจอง)
+      slot.actionStatus = "IM_OWN_JOB"
+    }
+    else if (e.status == 1 && !e.type && Number(e?.quotationNumber) >= 1) { // (ฉันเป็นเจ้าของงานและไปขอจองรถ)
+      slot.actionStatus = "IM_OWN_JOB_AND_ASK_FOR_BOOKING_HIM_CAR"
+    }
+    return slot
+  })
+  console.log("Tmp after mapping :: ", tmp)
+  return tmp
 }
 
 const Quotation = types.model({
@@ -66,7 +87,8 @@ const ShipperJob = types.maybeNull(types.model({
   quotations: types.maybeNull(types.array(types.maybeNull(Quotation))),
   status: types.maybeNull(types.number),
   quotationNumber: types.maybeNull(types.number),
-  isLiked: types.maybeNull(types.optional(types.boolean, false))
+  isLiked: types.maybeNull(types.optional(types.boolean, false)),
+  actionStatus: types.maybeNull(types.string)
 }))
 
 const CarrierMyjob = types.maybeNull(types.model({
@@ -236,7 +258,7 @@ const BookingStore = types
         self.error_approve_booking = "error for save data approveBooking"
       }
     }),
-    clearDataApproveBooking(){
+    clearDataApproveBooking() {
       self.data_approve_booking = null
     },
 
@@ -263,7 +285,7 @@ const BookingStore = types
           if (filter.type == tabStatus.second) {
             carrierList = otherList.data && otherList.data.content && Array.isArray(otherList.data.content) ?
               JSON.parse(JSON.stringify(otherList.data.content)) : []
-          } else if(filter.type == tabStatus.first) {
+          } else if (filter.type == tabStatus.first) {
             carrierList = otherList.data && otherList.data && Array.isArray(otherList.data) ?
               JSON.parse(JSON.stringify(otherList.data)) : []
           }
@@ -278,7 +300,7 @@ const BookingStore = types
             // arrMerge = _.unionBy(arrMerge, carrierList, 'id')
           }
           console.log("Summary List :: ", arrMerge)
-          self.list = JSON.parse(JSON.stringify(arrMerge))
+          self.list = mapActionsStatus(JSON.parse(JSON.stringify(arrMerge)))
           self.loading = false
         } else {
           self.loading = false
