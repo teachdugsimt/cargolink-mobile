@@ -43,5 +43,7 @@ export interface VehicleItemProps {
    */
   imageStyle?: ImageStyle
 
+  quotationNumber?: number
+
   onPress?: (value: any) => void
 }

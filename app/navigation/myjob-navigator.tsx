@@ -14,7 +14,7 @@ import {
   CheckInformationScreen,
   PostSuccessScreen,
   ShipperProfileScreen,
-  CarrierProfileScreen
+  CarrierProfileScreen, TruckDetailOnlyScreen
 } from "../screens"
 import { color } from "../theme"
 import { translate } from "../i18n"
@@ -58,6 +58,7 @@ export type PrimaryMyJobParamList = {
   checkInformation: undefined
   postSuccess: undefined
   bookerProfile: undefined
+  truckDetailOnly: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -137,6 +138,13 @@ export function MyJobNavigator() {
       <Stack.Screen name="bookerProfile" component={CarrierProfileScreen}
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"feedbackScreen.yourOpinion"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+
+      <Stack.Screen name="truckDetailOnly" component={TruckDetailOnlyScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"truckDetailScreen.truckDetail"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
       />

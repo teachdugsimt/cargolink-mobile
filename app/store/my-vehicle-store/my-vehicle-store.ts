@@ -37,7 +37,8 @@ const vehicleModel = {
   stallHeight: types.maybeNull(types.string),
   tipper: types.maybeNull(types.boolean),
   loadingWeight: types.maybeNull(types.number),
-  quotations: types.maybeNull(types.array(types.maybeNull(Quotation)))
+  quotations: types.maybeNull(types.array(types.maybeNull(Quotation))),
+  quotationNumber: types.maybeNull(types.number)
 }
 
 const JobDetail = types.model({

@@ -183,9 +183,17 @@ export function SearchBar(props: SearchBarProps) {
     onAnimationFinish={onAnimationFinish}
   />)
 
+  const _sortProvince  = (data) => {
+    return data.sort(function (a, b) {
+      if (a.label.charAt(0).toLowerCase() < b.label.charAt(0).toLowerCase()) { return -1; }
+      if (a.label.charAt(0).toLowerCase() > b.label.charAt(0).toLowerCase()) { return 1; }
+      return 0;
+    })
+  }
+
   const textStyleContainer = { ...LOCATION_TEXT, ...textStyle }
 
-  const province = i18n.locale === 'th' ? provinceListTh : provinceListEn
+  const province = i18n.locale === 'th' ? _sortProvince(provinceListTh) : _sortProvince(provinceListEn)
 
   return (
     <View style={{ ...ROOT, ...style }}>

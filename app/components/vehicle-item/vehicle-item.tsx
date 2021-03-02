@@ -13,6 +13,7 @@ import { Text } from ".."
 import { MapTruckImageName } from '../../utils/map-truck-image-name'
 
 const BORDER_RADIUS = { borderRadius: 4 }
+const COLOR_WHITE: TextStyle = { color: color.textWhite }
 const CONTAINER: ViewStyle = {
   flex: 1,
   backgroundColor: color.backgroundWhite,
@@ -58,11 +59,16 @@ const BOTTOM_SUB_LIST_VIEW: ViewStyle = { flex: 1, borderTopColor: color.line, b
 const FLEX_ROW_BOTTOM: ViewStyle = { ...ROW, flex: 1 }
 const TEXT_LEFT_BOTTOM: TextStyle = {
   flex: 1,
-   borderRightColor: color.line, borderRightWidth: 1,
+  borderRightColor: color.line, borderRightWidth: 1,
   justifyContent: 'center', alignItems: 'center'
 }
 const TEXT_RIGHT_BOTTOM: TextStyle = { flex: 1, justifyContent: 'center', alignItems: 'center' }
 const PRIMARY_COLOR: TextStyle = { color: color.primary }
+
+const QUOTATION_NUM: ViewStyle = {
+  backgroundColor: 'red', height: 20, width: 20, borderRadius: 10, position: 'absolute', top: 0, right: 40,
+  justifyContent: 'center', alignItems: 'center'
+}
 
 export function VehicleItem(props: VehicleItemProps) {
   const {
@@ -77,6 +83,7 @@ export function VehicleItem(props: VehicleItemProps) {
     statusStyle,
     imageStyle,
     onPress,
+    quotationNumber,
     onEdit,
     ...rest
   } = props
@@ -111,7 +118,10 @@ export function VehicleItem(props: VehicleItemProps) {
               <TouchableOpacity style={TEXT_LEFT_BOTTOM} onPress={onEdit || null}>
                 <Text style={PRIMARY_COLOR} tx={"myVehicleScreen.editCar"} />
               </TouchableOpacity>
-              <TouchableOpacity style={TEXT_RIGHT_BOTTOM} onPress={onPress|| null}>
+              <TouchableOpacity style={TEXT_RIGHT_BOTTOM} onPress={onPress || null}>
+                {!!quotationNumber && <View style={QUOTATION_NUM}>
+                  <Text style={COLOR_WHITE}>{quotationNumber}</Text>
+                </View>}
                 <Text style={PRIMARY_COLOR} tx={"myVehicleScreen.pendingWork"} />
               </TouchableOpacity>
             </View>

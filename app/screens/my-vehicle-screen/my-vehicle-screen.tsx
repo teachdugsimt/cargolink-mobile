@@ -70,7 +70,6 @@ export const MyVehicle = observer(function MyVehicle() {
 
   const onScrollList = () => {
     let tmp_list = JSON.parse(JSON.stringify(MyVehicleStore.list))
-    __DEV__ && console.tron.log("Tmmp list On scroll END :: >> ", tmp_list)
     if (MyVehicleStore.loading == false && tmp_list.length % 10 == 0) {
       count++
       MyVehicleStore.findRequest({ page: count })
@@ -114,6 +113,7 @@ export const MyVehicle = observer(function MyVehicle() {
         updatedDate={txtDateTime}
         image={item.truckType}
         status={statusText}
+        quotationNumber={item.quotationNumber}
         imageStyle={{ marginBottom: spacing[1] }}
         statusStyle={{ color: statusColor }}
         onPress={() => onPress(item.id)}
