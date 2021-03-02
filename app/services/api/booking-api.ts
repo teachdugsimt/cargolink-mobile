@@ -203,4 +203,21 @@ export class BookingApi {
     }
   }
 
+  async finishJob(id: string): Promise<any> {
+    try {
+      const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/mobile/shippers/jobs/finish/${id}`)
+      console.log("Response finishJob (apisauce) :: ", response)
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+      return { kind: 'ok', data: response.data }
+    } catch (error) {
+      console.log("Error call api finishJob (apisauce) : ", error)
+      return error
+    }
+  }
+
+
+
 }
