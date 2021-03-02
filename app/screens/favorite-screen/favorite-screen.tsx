@@ -79,7 +79,6 @@ export const FavoriteScreen = observer(function FavoriteScreen() {
 
   useEffect(() => {
     navigation.setOptions({
-      headerStyle: { backgroundColor: color.mainTheme },
       headerCenter: () => (
         <HeaderCenter tx={"favoriteScreen.favoriteList"} />
       ),

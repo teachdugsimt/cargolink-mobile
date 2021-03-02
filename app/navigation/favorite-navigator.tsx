@@ -54,12 +54,16 @@ export function FavoriteNavigator() {
       {/* <Stack.Screen name="detail" component={DetailScreen} /> */}
 
       <Stack.Screen name="favorite" component={FavoriteScreen}
-        options={({ navigation, route }) => ({
-          // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
+        // options={({ navigation, route }) => ({
+        //   // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
+        //   headerCenter: () => <HeaderCenter tx={"favoriteScreen.favoriteList"} />,
+        //   // headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        //   headerHideShadow: true
+        // })}
+        options={{
           headerCenter: () => <HeaderCenter tx={"favoriteScreen.favoriteList"} />,
-          // headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
           headerHideShadow: true
-        })}
+        }}
       />
 
       <Stack.Screen name="favoriteJobDetail" component={JobDetailScreen}

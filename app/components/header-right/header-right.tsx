@@ -28,7 +28,7 @@ export const HeaderRight = (props: any) => {
     return (
       <TouchableOpacity onPress={onRightPress}>
         <Text tx={tx} style={{ ...ROOT_STYLE, ...txStyle }} />
-        {showRedDot && <View style={FLOAT_DOT}>
+         {showRedDot && <View style={FLOAT_DOT}>
           <View style={DOT} />
         </View>}
       </TouchableOpacity>
