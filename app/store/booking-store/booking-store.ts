@@ -35,7 +35,7 @@ const mapActionsStatus = (data) => {
     }
     return slot
   })
-  console.log("Tmp after mapping :: ", tmp)
+  // console.log("Tmp after mapping :: ", tmp)
   return tmp
 }
 
@@ -125,6 +125,11 @@ const BookingStore = types
     list: types.maybeNull(types.array(types.maybeNull(ShipperJob))),
     loading: types.boolean,
     error: types.maybeNull(types.string),
+
+    finish_job: types.maybeNull(types.number),
+    loading_finish_job: types.maybeNull(types.boolean),
+    error_finish_job: types.maybeNull(types.string),
+
   })
   .actions((self) => ({
 
@@ -262,6 +267,26 @@ const BookingStore = types
       self.data_approve_booking = null
     },
 
+    finishJob: flow(function* finishJob(id: string) {
+      yield bookingAPI.setup()
+      self.loading_finish_job = true
+      try {
+        const response = yield bookingAPI.finishJob(id)
+        console.log("Response call api findCarrierMyJob : : ", response)
+        if (response.kind === 'ok') {
+          self.finish_job = response.data || null
+        } else {
+          self.error_finish_job = response?.data?.message || response.kind
+        }
+        self.loading_finish_job = false
+
+      } catch (error) {
+        console.error("error for save data findCarrierMyJob : ", error)
+        self.loading_finish_job = false
+        self.error_finish_job = "error for save data findCarrierMyJob"
+      }
+    }),
+
 
     findSummaryJob: flow(function* findSummaryJob(filter: Types.ShipperJobRequest = {}) {
 
@@ -269,9 +294,6 @@ const BookingStore = types
       yield bookingAPI.setup()
       self.loading = true
       try {
-        // first tab = 0
-        // second tab = 3
-        // last tab = 7
         const response = yield apiShipperJob.find(filter)
         let otherList: any = []
         if (filter.type == tabStatus.first) otherList = yield bookingAPI.findCarrierMyJob()
@@ -346,6 +368,10 @@ const BookingStore = types
     data_approve_booking: null,
     loading_approve_booking: false,
     error_approve_booking: "",
+
+    finish_job: null,
+    loading_finish_job: false,
+    error_finish_job: "",
 
   })
 
