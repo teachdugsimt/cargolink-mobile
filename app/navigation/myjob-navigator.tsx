@@ -84,7 +84,6 @@ export function MyJobNavigator() {
     >
       <Stack.Screen name="myjob" component={MyjobTab}
         options={({ navigation, route }) => ({
-          headerStyle: { backgroundColor: color.mainTheme },
           headerCenter: () => <HeaderCenter tx={"myJobScreen.myJob"} />,
           // headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
           headerHideShadow: true,

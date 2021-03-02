@@ -49,7 +49,6 @@ export function MoreNavigator() {
     >
       <Stack.Screen name="more" component={MoreScreen}
         options={({ navigation, route }) => ({
-          headerStyle: { backgroundColor: color.mainTheme },
           headerCenter: () => <HeaderCenter tx={"moreScreen.moreMenu"} />,
           headerHideShadow: false,
         })}

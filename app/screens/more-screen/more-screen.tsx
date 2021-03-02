@@ -128,7 +128,6 @@ export const MoreScreen = observer(function MoreScreen() {
 
   useEffect(() => {
     navigation.setOptions({
-      headerStyle: { backgroundColor: color.mainTheme },
       headerCenter: () => (
         <HeaderCenter tx={"moreScreen.moreMenu"} />
       ),
