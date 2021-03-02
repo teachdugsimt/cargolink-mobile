@@ -168,14 +168,14 @@ export const ProfileScreen = observer(function ProfileScreen() {
       showRedDot = false
     }
     navigation.setOptions({
-      headerStyle: { backgroundColor: color.mainTheme },
+      // headerStyle: { backgroundColor: color.mainTheme },
       headerCenter: () => (
         <HeaderCenter tx={"profileScreen.profile"} />
       ),
       headerRight: () => (
         <HeaderRight showRedDot={showRedDot} onRightPress={() => _pressEditProfiel()} tx={"common.edit"} />
       ),
-      headerHideShadow: true,
+      // headerHideShadow: true,
     });
     // ProfileStore.getProfileRequest()
     ProfileStore.getTruckSummary()
@@ -215,14 +215,14 @@ export const ProfileScreen = observer(function ProfileScreen() {
       showRedDot = false
     }
     navigation.setOptions({
-      headerStyle: { backgroundColor: color.mainTheme },
+      // headerStyle: { backgroundColor: color.mainTheme },
       headerCenter: () => (
         <HeaderCenter tx={"profileScreen.profile"} />
       ),
       headerRight: () => (
         <HeaderRight showRedDot={showRedDot} onRightPress={() => _pressEditProfiel()} tx={"common.edit"} />
       ),
-      headerHideShadow: true,
+      // headerHideShadow: true,
     });
   }, [lang])
 

@@ -280,6 +280,7 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
 
   let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
   __DEV__ && console.tron.logImportant("Profile Data :: ", tmp_profile)
+
   return (
     <View testID="UpdateProfileScreen" style={FULL}>
       <Screen preset={'scroll'} unsafe>

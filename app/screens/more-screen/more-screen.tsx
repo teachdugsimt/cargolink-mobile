@@ -124,7 +124,6 @@ export const MoreScreen = observer(function MoreScreen() {
     { label: 'moreScreen.Thai', value: 'th', active: versatileStore.language == "th" ? true : false },
     { label: 'moreScreen.English', value: 'en', active: versatileStore.language == "th" ? false : true },
   ])
-  console.log("Now language :: ", versatileStore.language)
   const [renderNew, setrenderNew] = useState(false)
 
   useEffect(() => {

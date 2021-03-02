@@ -528,6 +528,10 @@ const TruckItem = (data) => {
 
 const RenderOwnerTruck = ({ truck }) => {
   const navigation = useNavigation()
+  const route = useRoute()
+  const {
+    statusScreen
+  }: JobDetailProps = route?.params || {}
 
   const openProfile = (id: string) => {
     const imageSource = truck?.owner?.avatar?.object && truck?.owner?.avatar?.token ? {
@@ -550,7 +554,7 @@ const RenderOwnerTruck = ({ truck }) => {
       page: 0,
     })
 
-    navigation.navigate('bookerProfile')
+    navigation.navigate('bookerProfile', { statusScreen })
   }
 
   return (<TouchableOpacity
@@ -738,7 +742,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     if (route.name === 'favoriteJobDetail') {
       navigation.navigate('favoriteCarrierProfile')
     } else {
-      navigation.navigate('bookerProfile')
+      navigation.navigate('bookerProfile', { statusScreen })
     }
   }
 
@@ -883,7 +887,8 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     })
     navigation.navigate('bookerProfile', {
       isBooker: true,
-      bookingId: id
+      bookingId: id,
+      statusScreen
     })
   }
 

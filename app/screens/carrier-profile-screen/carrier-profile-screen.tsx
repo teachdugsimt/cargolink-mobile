@@ -21,6 +21,7 @@ import BookingStore from '../../store/booking-store/booking-store'
 interface CarrierProfileProps {
   isBooker?: boolean
   bookingId?: string
+  statusScreen?: number
 }
 
 const deviceWidht = Dimensions.get('window').width
@@ -365,7 +366,7 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
 
   const route = useRoute()
 
-  const { isBooker, bookingId }: CarrierProfileProps = route?.params || {}
+  const { isBooker, bookingId, statusScreen }: CarrierProfileProps = route?.params || {}
 
   useEffect(() => {
     return () => {
@@ -560,7 +561,7 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
       // }
       />
 
-      {isBooker && (<>
+      {isBooker && statusScreen == 0 && (<>
         <View style={BOTTOM_ROOT}>
           <Button
             testID="cancel"

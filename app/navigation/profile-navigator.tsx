@@ -33,6 +33,7 @@ export function ProfileNavigator() {
 
   return (
     <Stack.Navigator
+      initialRouteName={"profile"}
       screenOptions={{
         headerShown: true,
         gestureEnabled: true,
@@ -45,7 +46,7 @@ export function ProfileNavigator() {
       <Stack.Screen name="profile" component={ProfileScreen}
         options={({ navigation, route }) => ({
           headerStyle: { backgroundColor: color.mainTheme },
-          headerRight: () => <HeaderRight onRightPress={() => { }} tx={"common.edit"} />,
+          headerRight: () => <HeaderRight tx={"common.edit"} />,
           headerCenter: () => <HeaderCenter tx={"profileScreen.profile"} />,
           headerHideShadow: true,
           // headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
