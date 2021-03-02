@@ -438,7 +438,7 @@
     "listOfBookingJob": "ผู้ขอจองงานนี้",
     "ownerProductAwaitYourResponse": "เจ้าของสินค้ารอการตอบรับจากคุณ",
     "waitingForFeedback": "รอการตอบรับจากเจ้าของสินค้า",
-    "waitingForFeedbackFrom": "รอบการตอบรับจาก"
+    "waitingForFeedbackFrom": "รอการตอบรับจาก"
   },
   "selectJobScreen": {
     "selectBooking": "เลือกงานของคุณสำหรับการจองนี้",
