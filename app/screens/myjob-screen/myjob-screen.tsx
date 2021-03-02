@@ -115,6 +115,7 @@ const Item = (data) => {
     owner,
     status: bookingStatus,
     quotationNumber,
+    actionStatus,
     statusScreen,
   } = JSON.parse(JSON.stringify(data))
 
@@ -143,6 +144,7 @@ const Item = (data) => {
     CarriersJobStore.findOne(id)
     navigation.navigate('myJobDetail', {
       showOwnerAccount: false,
+      actionStatus: actionStatus
     })
   }
 
@@ -228,6 +230,62 @@ const Item = (data) => {
     </View>
   )
 
+  const renderFooter = (status: string) => {
+    let footer = null
+    switch (status) {
+      case 'IM_OWN_CAR_AND_HAVE_JOB_ASK_FOR_BOOKING':
+        footer = (<TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { flexDirection: 'row' }]}>
+          <MaterialCommunityIcons name={'clock-fast'} color={color.line} size={28} />
+          <Text tx={'myJobScreen.ownerProductAwaitYourResponse'} style={{ color: color.line, paddingLeft: spacing[2] }} />
+        </TouchableOpacity>)
+        break;
+      case 'IM_OWN_JOB_AND_HAVE_CAR_ASK_FOR_BOOKING':
+        footer = (<>
+          <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={quotationNumber == 0 ? onEdit : null}>
+            <Text tx={'myJobScreen.editJob'} style={{ color: quotationNumber == 0 ? color.primary : color.line }} />
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onVisible}>
+            {!!quotationNumber && <View style={QUOTATION_NUM}>
+              <Text style={COLOR_WHITE}>{quotationNumber}</Text>
+            </View>}
+            <Text tx={'myJobScreen.bookerWaiting'} style={{ color: color.primary }} />
+          </TouchableOpacity>
+        </>)
+        break;
+      case 'IM_OWN_CAR_AND_ASK_FOR_BOOKING_HIM_JOB':
+        footer = (<TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { flexDirection: 'row' }]} >
+          <MaterialCommunityIcons name={'clock-fast'} color={color.line} size={28} />
+          <Text tx={'myJobScreen.waitingForFeedback'} style={{ color: color.line, paddingLeft: spacing[2] }} />
+        </TouchableOpacity>)
+        break;
+      case 'IM_OWN_JOB':
+        footer = (<>
+          <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={quotationNumber == 0 ? onEdit : null}>
+            <Text tx={'myJobScreen.editJob'} style={{ color: color.primary }} />
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onVisible}>
+            <Text tx={'myJobScreen.bookerWaiting'} style={{ color: color.primary }} />
+          </TouchableOpacity>
+        </>)
+        break;
+      case 'IM_OWN_JOB_AND_ASK_FOR_BOOKING_HIM_CAR':
+        footer = (<>
+          <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={onEdit}>
+            <Text tx={'myJobScreen.editJob'} style={{ color: color.primary }} />
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]}>
+            {/* <MaterialCommunityIcons name={'clock-fast'} color={color.line} size={28} /> */}
+            <Text tx={'myJobScreen.waitForAcceptingFromCarrer'} style={{ color: color.line, textAlign: 'center' }} />
+          </TouchableOpacity>
+        </>)
+        break;
+      default:
+        break;
+    }
+
+    return footer
+  }
+
   const modalProps = {
     containerStyle: {
       paddingTop: spacing[5],
@@ -253,7 +311,7 @@ const Item = (data) => {
 
   const RenderFooter = () => (
     <View style={BOTTOM_ROOT}>
-      {statusScreen === 0 && (
+      {/* {statusScreen === 0 && (
         bookingStatus === 3 ? (<>
           <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={quotationNumber == 0 ? onEdit : null}>
             <Text tx={'myJobScreen.editJob'} style={{ color: quotationNumber == 0 ? color.primary : color.line }} />
@@ -277,6 +335,10 @@ const Item = (data) => {
             </TouchableOpacity>
           </>) : (renderOwnerProfile())}
         </>)
+      )} */}
+
+      {statusScreen === 0 && (
+        renderFooter(actionStatus)
       )}
 
       {statusScreen === 3 && (<>

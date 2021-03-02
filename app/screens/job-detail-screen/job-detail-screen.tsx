@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState, createRef } from 'react'
 import { observer } from 'mobx-react-lite'
-import { Dimensions, ScrollView, TextStyle, View, ViewStyle, TouchableOpacity, LayoutChangeEvent, Linking, Platform, Alert, Image, AppState } from 'react-native'
+import { Dimensions, ScrollView, TextStyle, View, ViewStyle, TouchableOpacity, LayoutChangeEvent, Linking, Platform, Alert, Image, AppState, ImageStyle } from 'react-native'
 import { BookerItem, Button, ModalAlert, ModalLoading, PostingBy, Text } from '../../components'
 import { getFocusedRouteNameFromRoute, useNavigation, useRoute } from '@react-navigation/native'
 import { color, spacing, images } from '../../theme'
@@ -35,6 +35,8 @@ interface JobDetailProps {
   showOwnerAccount?: boolean
   fromManageCar?: boolean
   quotationsID?: string
+  actionStatus?: string
+  statusScreen?: number
 }
 
 const deviceWidht = Dimensions.get('window').width
@@ -103,7 +105,7 @@ const ONWER_ROOT: ViewStyle = {
   paddingBottom: spacing[3],
   paddingLeft: spacing[4] + spacing[2],
   paddingRight: spacing[4] + spacing[2],
-  marginBottom: spacing[6],
+  // marginBottom: spacing[6],
 }
 const TO_LOCATION: ViewStyle = {
   flexDirection: 'row',
@@ -195,6 +197,16 @@ const LINE: ViewStyle = {
 const TOPIC: TextStyle = {
   color: color.primary,
   paddingBottom: spacing[2],
+}
+const LOGO_ROOT: ViewStyle = {
+  width: 40,
+  height: 40,
+  paddingLeft: spacing[4],
+}
+const LOGO: ImageStyle = {
+  width: 40,
+  height: 40,
+  borderRadius: Math.round(Dimensions.get('window').width + Dimensions.get('window').height) / 2,
 }
 
 const Dot = (data) => (<LottieView
@@ -382,7 +394,9 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     showOwnerAccount = true,
     booker = [],
     fromManageCar,
-    quotationsID = ''
+    quotationsID = '',
+    actionStatus,
+    statusScreen,
   }: JobDetailProps = route?.params || {}
 
   const { versatileStore, tokenStore } = useStores()
@@ -877,12 +891,12 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         </View>
 
         {/* {(showOwnerAccount || fromManageCar) && */}
-          <View style={ONWER_ROOT}>
-            <View style={ROW}>
-              <Text style={{ color: color.line }}>{translate('jobDetailScreen.postBy')}</Text>
-              <PostingBy {...ownerProfile} onToggle={() => onPress()} />
-            </View>
+        <View style={ONWER_ROOT}>
+          <View style={ROW}>
+            <Text style={{ color: color.line }}>{translate('jobDetailScreen.postBy')}</Text>
+            <PostingBy {...ownerProfile} onToggle={() => onPress()} />
           </View>
+        </View>
         {/* } */}
 
         {fromManageCar && !BookingStore.data_approve_booking && (<View style={BOTTOM_ROOT}>
@@ -908,7 +922,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           />}
         </View>)}
 
-        {!showOwnerAccount && !fromManageCar && arrBooker.length > 0 && <View style={ONWER_ROOT}>
+        {!showOwnerAccount && !fromManageCar && arrBooker.length > 0 && actionStatus !== 'IM_OWN_JOB_AND_ASK_FOR_BOOKING_HIM_CAR' && <View style={ONWER_ROOT}>
           <Text tx={'myJobScreen.listOfBookingJob'} preset={'topic'} style={TOPIC} />
           {arrBooker.map((booker, index) => <BookerItem
             key={index}
@@ -924,6 +938,52 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             onToggle={() => visibleProfile(booker.id)}
           />)}
         </View>}
+
+        {/* // (ฉันเป็นเจ้าของรถและมีงานมาขอจอง)
+            slot.actionStatus = "IM_OWN_CAR_AND_HAVE_JOB_ASK_FOR_BOOKING"
+
+          // (ฉันเป็นเจ้าของงานและมีคนมาขอจอง)
+            slot.actionStatus = "IM_OWN_JOB_AND_HAVE_CAR_ASK_FOR_BOOKING"
+
+          //  (ฉันเป็นเจ้าของรถและไปขอจองงานคนอื่น)
+            slot.actionStatus = "IM_OWN_CAR_AND_ASK_FOR_BOOKING_HIM_JOB"
+
+          (ฉันเป็นเจ้าของงาน ไม่มีใครมาขอจอง)
+            slot.actionStatus = "IM_OWN_JOB"
+
+          // (ฉันเป็นเจ้าของงานและไปขอจองรถ)
+            slot.actionStatus = "IM_OWN_JOB_AND_ASK_FOR_BOOKING_HIM_CAR" */}
+
+
+        {actionStatus === 'IM_OWN_JOB_AND_ASK_FOR_BOOKING_HIM_CAR' && (<View style={PRODUCT_ROOT}>
+          <View>
+            <Text tx={'myJobScreen.waitingForFeedbackFrom'} preset={'topic'} style={TOPIC} />
+          </View>
+          <View style={{ flexDirection: 'row' }}>
+            <View style={LOGO_ROOT}>
+              <Image
+                style={LOGO}
+                source={{
+                  uri: owner?.avatar?.object || '',
+                  method: 'GET',
+                  headers: {
+                    Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+                    adminAuth: owner?.avatar?.token
+                  },
+                }}
+                resizeMode={'cover'} />
+            </View>
+            <Text text={owner?.fullName || ''} style={{ paddingRight: spacing[2] }} />
+          </View>
+        </View>)}
+
+        {actionStatus === 'IM_OWN_JOB_AND_HAVE_CAR_ASK_FOR_BOOKING' && (<View></View>)}
+
+        {actionStatus === 'IM_OWN_CAR_AND_ASK_FOR_BOOKING_HIM_JOB' && (<View></View>)}
+
+        {actionStatus === 'IM_OWN_CAR_AND_HAVE_JOB_ASK_FOR_BOOKING' && (<View></View>)}
+
+        {actionStatus === 'IM_OWN_JOB' && (<View></View>)}
 
       </Modalize>
 

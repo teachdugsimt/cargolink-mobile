@@ -431,13 +431,14 @@
     "workDone": "เสร็จสิ้น",
     "editJob": "แก้ไขข้อมูลงาน",
     "bookerWaiting": "ผู้จองรอตอบรับ",
-    "accept": "ตอบรับ",
-    "listOfBookingJob": "ผู้ขอจองงานนี้",
     "waitForAcceptingFromCarrer": "รอการตอบรับการจองจากผู้ให้บริการขนส่ง",
     "finishJob": "จบงาน",
     "confirmJob": "ยืนยันการจบงานนี้",
     "accept": "ตอบ",
-    "listOfBookingJob": "ผู้ขอจองงานนี้"
+    "listOfBookingJob": "ผู้ขอจองงานนี้",
+    "ownerProductAwaitYourResponse": "เจ้าของสินค้ารอการตอบรับจากคุณ",
+    "waitingForFeedback": "รอการตอบรับจากเจ้าของสินค้า",
+    "waitingForFeedbackFrom": "รอบการตอบรับจาก"
   },
   "selectJobScreen": {
     "selectBooking": "เลือกงานของคุณสำหรับการจองนี้",
