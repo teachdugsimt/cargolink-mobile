@@ -147,8 +147,8 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
           tokenStore.setProfile(profile.userProfile || null)
           let screen = 'acceptPolicy'
           if (profile.termOfService.accepted) {
-            screen = 'home'
             ProfileStore.getProfileRequest()
+            screen = 'home'
           }
           clearState()
           navigation.navigate(screen)

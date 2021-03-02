@@ -220,6 +220,11 @@ const sortArray = (list) => list.sort((a, b) => (a.value > b.value) ? 1 : -1)
 const mappingDefaultZone = (regions, provinces) => {
   return regions.map(reg => {
     const resultProvinces = provinces.filter(prov => prov.region === reg.value).map(prov => ({ ...prov, isSelected: false }))
+      .sort((a, b) => {
+        if (a.label.charAt(0).toLowerCase() < b.label.charAt(0).toLowerCase()) { return -1; }
+        if (a.label.charAt(0).toLowerCase() > b.label.charAt(0).toLowerCase()) { return 1; }
+        return 0;
+      })
     return {
       ...reg,
       isSelected: false,
