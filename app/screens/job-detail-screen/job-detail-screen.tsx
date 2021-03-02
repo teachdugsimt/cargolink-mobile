@@ -385,6 +385,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     isLiked,
     weight,
     owner,
+    quotations,
   } = JSON.parse(JSON.stringify(CarriersJobStore.data))
 
   const route = useRoute()
@@ -964,7 +965,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
               <Image
                 style={LOGO}
                 source={{
-                  uri: owner?.avatar?.object || '',
+                  uri: owner?.avatar?.object || null,
                   method: 'GET',
                   headers: {
                     Authorization: `Bearer ${owner?.avatar?.token || ''}`,
@@ -981,7 +982,11 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
         {actionStatus === 'IM_OWN_CAR_AND_ASK_FOR_BOOKING_HIM_JOB' && (<View></View>)}
 
-        {actionStatus === 'IM_OWN_CAR_AND_HAVE_JOB_ASK_FOR_BOOKING' && (<View></View>)}
+        {actionStatus === 'IM_OWN_CAR_AND_HAVE_JOB_ASK_FOR_BOOKING' && (<View>
+          {/* {quotations?.map(({truck}, index) => {
+            return 
+          })} */}
+        </View>)}
 
         {actionStatus === 'IM_OWN_JOB' && (<View></View>)}
 
