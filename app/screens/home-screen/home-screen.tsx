@@ -5,7 +5,7 @@ import { observer } from "mobx-react-lite"
 import { images, color, spacing } from '../../theme'
 import { useStores } from "../../models/root-store/root-store-context";
 import { GridView } from '../../components/home-element/home-element'
-import { ModalLoading } from '../../components/'
+import { ModalLoading, Text } from '../../components/'
 import MyVehicleStore from "../../store/my-vehicle-store/my-vehicle-store"
 import TruckTypeStore from "../../store/truck-type-store/truck-type-store"
 import ProductTypeStore from "../../store/product-type-store/product-type-store"
@@ -56,7 +56,10 @@ const VIEW_ICON: ViewStyle = {
   marginHorizontal: 15
 }
 
-const CONTACT_VIEW: ViewStyle = { flex: Platform.OS == "android" ? 0.5 : 0.6 }
+const CONTACT_VIEW: ViewStyle = {
+  flex: Platform.OS == "android" ? 0.5 : 0.6,
+  alignItems: 'center'
+}
 export const HomeScreen = observer((props) => {
   const { tokenStore, versatileStore } = useStores()
   const navigation = useNavigation()
@@ -249,7 +252,7 @@ export const HomeScreen = observer((props) => {
             versatileStore.list_group_loading || versatileStore.product_type_loading || ProfileStore.loading} />
 
         <View style={CONTACT_VIEW}>
-          <View style={[ROW, ALL_CENTER, FULL]}>
+          <View style={[ROW, ALL_CENTER, { height: 40 }]}>
             <Animated.View style={{ transform: [{ translateX: leftValue }] }} >
               <TouchableOpacity style={VIEW_ICON} onPress={() => Linking.openURL(versatileStore.fblink)}>
                 <FontIcon name={"facebook"} size={40} color={color.facebook} />
@@ -264,6 +267,7 @@ export const HomeScreen = observer((props) => {
               </TouchableOpacity>
             </Animated.View>
           </View>
+          <Text tx={'moreScreen.contactUs'} style={{ marginTop: 10 }}></Text>
         </View>
 
         {/* <TouchableOpacity onPress={() => navigation.navigate("comment")}>
