@@ -134,7 +134,7 @@ const Item = (data) => {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-          adminAuth: owner?.avatar?.token
+          adminAuth: `Bearer ${owner?.avatar?.token || ''}`,
         },
       },
       resizeMode: 'cover'
@@ -144,7 +144,9 @@ const Item = (data) => {
     CarriersJobStore.findOne(id)
     navigation.navigate('myJobDetail', {
       showOwnerAccount: false,
-      actionStatus: actionStatus
+      actionStatus: actionStatus,
+      statusScreen: statusScreen,
+      jobStatus: bookingStatus
     })
   }
 
@@ -203,7 +205,7 @@ const Item = (data) => {
   }
 
   const onConfirmJob = (id: string) => {
-    console.log('id', id)
+    BookingStore.finishJob(id)
     setVisible(false)
   }
 
@@ -292,12 +294,12 @@ const Item = (data) => {
       paddingBottom: spacing[2]
     },
     // imageComponent: onAnimationFinish: () => onAnimationFinish }),
-    header: translate('myJobScreen.confirmJob'),
+    header: translate('myJobScreen.confirmFinishJob'),
     headerStyle: {
       paddingTop: spacing[3],
       color: color.primary
     },
-    content: translate('myJobScreen.confirmJob'),
+    content: translate('myJobScreen.confirmFinishJob'),
     contentStyle: {
       paddingTop: spacing[1],
       paddingBottom: spacing[5],
@@ -341,7 +343,7 @@ const Item = (data) => {
         renderFooter(actionStatus)
       )}
 
-      {statusScreen === 3 && (<>
+      {statusScreen === 1 && (<>
         {myUserId === ownerUserId ? (<>
           <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { flexDirection: 'row' }]} onPress={() => onFinishJob(id)}>
             <MaterialCommunityIcons name={'checkbox-marked-circle-outline'} color={color.primary} size={20} />

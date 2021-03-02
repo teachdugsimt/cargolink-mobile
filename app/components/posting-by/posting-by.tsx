@@ -31,6 +31,7 @@ const LOGO: ImageStyle = {
   width: 40,
   height: 40,
   borderRadius: Math.round(Dimensions.get('window').width + Dimensions.get('window').height) / 2,
+  backgroundColor: color.disable,
 }
 const TEXT_RATING: TextStyle = {
   ...PADDING_RIGHT,

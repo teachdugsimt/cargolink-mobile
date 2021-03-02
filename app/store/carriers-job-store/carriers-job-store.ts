@@ -9,30 +9,82 @@ const apiMyVehicle = new MyVehicleAPI()
 const apiCarriersJob = new CarriersJobAPI()
 const apiGoogleMap = new GoogleMapAPI()
 
+const truckModal = types.model({
+  id: types.maybeNull(types.string),
+  truckType: types.maybeNull(types.number),
+  loadingWeight: types.maybeNull(types.number),
+  stallHeight: types.maybeNull(types.string),
+  createdAt: types.maybeNull(types.string),
+  updatedAt: types.maybeNull(types.string),
+  approveStatus: types.maybeNull(types.string),
+  registrationNumber: types.maybeNull(types.array(types.string)),
+  tipper: types.maybeNull(types.boolean),
+  phoneNumber: types.maybeNull(types.string),
+  isLiked: types.optional(types.boolean, false),
+  workingZones: types.optional(types.array(types.model({
+    region: types.maybeNull(types.number),
+    province: types.maybeNull(types.number),
+  })), []),
+  owner: types.maybeNull(types.model({
+    id: types.maybeNull(types.number),
+    userId: types.maybeNull(types.string),
+    companyName: types.maybeNull(types.string),
+    fullName: types.maybeNull(types.string),
+    mobileNo: types.maybeNull(types.string),
+    email: types.maybeNull(types.string),
+    avatar: types.maybeNull(types.model({
+      object: types.maybeNull(types.string),
+      token: types.maybeNull(types.string),
+    }))
+  })),
+  truckPhotos: types.maybeNull(types.model({
+    front: types.maybeNull(types.string),
+    back: types.maybeNull(types.string),
+    left: types.maybeNull(types.string),
+    right: types.maybeNull(types.string),
+  })),
+})
+
 const QuotationField = types.model({
-  "id": types.maybeNull(types.string),
-  "fullName": types.maybeNull(types.string),
-  "bookingDatetime": types.maybeNull(types.string),
-  "truck": types.maybeNull(types.model({
-    "id": types.maybeNull(types.string),
-    "truckType": types.maybeNull(types.number),
-    "loadingWeight": types.maybeNull(types.number),
-    "stallHeight": types.maybeNull(types.string),
-    "createdAt": types.maybeNull(types.string),
-    "updatedAt": types.maybeNull(types.string),
-    "approveStatus": types.maybeNull(types.string),
-    "registrationNumber": types.maybeNull(types.array(types.maybeNull(types.string))),
-    "truckPhotos": types.maybeNull(types.model({
-      "front": types.maybeNull(types.string),
-      "back": types.maybeNull(types.string),
-      "left": types.maybeNull(types.string),
-      "right": types.maybeNull(types.string),
+  id: types.maybeNull(types.string),
+  fullName: types.maybeNull(types.string),
+  bookingDatetime: types.maybeNull(types.string),
+  truck: types.maybeNull(types.model({
+    id: types.maybeNull(types.string),
+    truckType: types.maybeNull(types.number),
+    loadingWeight: types.maybeNull(types.number),
+    stallHeight: types.maybeNull(types.string),
+    createdAt: types.maybeNull(types.string),
+    updatedAt: types.maybeNull(types.string),
+    approveStatus: types.maybeNull(types.string),
+    registrationNumber: types.maybeNull(types.array(types.maybeNull(types.string))),
+    truckPhotos: types.maybeNull(types.model({
+      front: types.maybeNull(types.string),
+      back: types.maybeNull(types.string),
+      left: types.maybeNull(types.string),
+      right: types.maybeNull(types.string),
     })),
-    "workingZones": types.maybeNull(types.array(types.maybeNull(types.model({
-      "region": types.maybeNull(types.number),
-      "province": types.maybeNull(types.number),
+    workingZones: types.maybeNull(types.array(types.maybeNull(types.model({
+      region: types.maybeNull(types.number),
+      province: types.maybeNull(types.number),
     })))),
-    "tipper": types.maybeNull(types.boolean)
+    tipper: types.maybeNull(types.boolean),
+    owner: types.maybeNull(types.model({
+      id: types.maybeNull(types.number),
+      userId: types.maybeNull(types.string),
+      companyName: types.maybeNull(types.string),
+      fullName: types.maybeNull(types.string),
+      mobileNo: types.maybeNull(types.string),
+      email: types.maybeNull(types.string),
+      avatar: types.maybeNull(types.model({
+        object: types.maybeNull(types.string),
+        token: types.maybeNull(types.string),
+      }))
+    })),
+  })),
+  avatar: types.maybeNull(types.model({
+    object: types.maybeNull(types.string),
+    token: types.maybeNull(types.string),
   }))
 })
 
@@ -72,7 +124,8 @@ const CarriersJob = types.model({
     }))
   })),
   isLiked: types.maybeNull(types.optional(types.boolean, false)),
-  quotations: types.maybeNull(types.array(QuotationField))
+  quotations: types.maybeNull(types.array(QuotationField)),
+  truck: types.maybeNull(truckModal)
 })
 
 const CarriersJobList = types.model({
@@ -265,6 +318,7 @@ const CarriersJobStore = types
         let summaryDuration = 0
         let province = {}
         CarriersJobStore.clearProvince()
+        console.log('coordinates', JSON.parse(JSON.stringify(coordinates)))
         for (let index = 0; index < coordinates.length; index++) {
           if (index + 1 < coordinates.length) {
             const startLoc = `${coordinates[index].lat},${coordinates[index].lng}`

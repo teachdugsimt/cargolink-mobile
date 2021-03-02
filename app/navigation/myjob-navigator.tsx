@@ -32,7 +32,7 @@ const MyjobTab = () => {
         indicatorStyle: { backgroundColor: color.textBlack }
       }}>
       <Tab.Screen name="new" options={{ tabBarLabel: translate('myJobScreen.workOpen') }} component={MyJobScreen} initialParams={{ status: 0 }} />
-      <Tab.Screen name="inprogress" options={{ tabBarLabel: translate('myJobScreen.workInProgress') }} component={MyJobScreen} initialParams={{ status: 3 }} />
+      <Tab.Screen name="inprogress" options={{ tabBarLabel: translate('myJobScreen.workInProgress') }} component={MyJobScreen} initialParams={{ status: 1 }} />
       <Tab.Screen name="done" options={{ tabBarLabel: translate('myJobScreen.workDone') }} component={MyJobScreen} initialParams={{ status: 2 }} />
     </Tab.Navigator>
   );

@@ -433,12 +433,15 @@
     "bookerWaiting": "ผู้จองรอตอบรับ",
     "waitForAcceptingFromCarrer": "รอการตอบรับการจองจากผู้ให้บริการขนส่ง",
     "finishJob": "จบงาน",
-    "confirmJob": "ยืนยันการจบงานนี้",
+    "confirmFinishJob": "ยืนยันการจบงานนี้",
     "accept": "ตอบ",
     "listOfBookingJob": "ผู้ขอจองงานนี้",
     "ownerProductAwaitYourResponse": "เจ้าของสินค้ารอการตอบรับจากคุณ",
     "waitingForFeedback": "รอการตอบรับจากเจ้าของสินค้า",
-    "waitingForFeedbackFrom": "รอบการตอบรับจาก"
+    "waitingForFeedbackFrom": "รอบการตอบรับจาก",
+    "confirmJob": "ยืนยันการรับงานนี้",
+    "cancelJob": "ยืนยันการยกเลิกงานนี้",
+    "transportBy": "ขนส่งโดย"
   },
   "selectJobScreen": {
     "selectBooking": "เลือกงานของคุณสำหรับการจองนี้",

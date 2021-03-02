@@ -10,7 +10,7 @@ const bookingAPI = new BookingApi()
 const apiShipperJob = new ShipperJobAPI()
 const tabStatus = {
   first: 0,
-  second: 3,
+  second: 1,
   third: 2
 }
 

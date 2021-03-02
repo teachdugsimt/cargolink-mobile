@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState, createRef } from 'react'
 import { observer } from 'mobx-react-lite'
-import { Dimensions, ScrollView, TextStyle, View, ViewStyle, TouchableOpacity, LayoutChangeEvent, Linking, Platform, Alert, Image, AppState, ImageStyle } from 'react-native'
-import { BookerItem, Button, ModalAlert, ModalLoading, PostingBy, Text } from '../../components'
+import { Dimensions, ScrollView, TextStyle, View, ViewStyle, TouchableOpacity, LayoutChangeEvent, Linking, Platform, Alert, Image, AppState, ImageStyle, ImageProps } from 'react-native'
+import { BookerItem, Button, ModalAlert, ModalLoading, PostingBy, SearchItemTruck, Text } from '../../components'
 import { getFocusedRouteNameFromRoute, useNavigation, useRoute } from '@react-navigation/native'
 import { color, spacing, images } from '../../theme'
 import { translate } from '../../i18n'
@@ -29,6 +29,9 @@ import { SearchByAddressTh, GetProvinceByEnArress } from "../../utils/search-pro
 import i18n from 'i18n-js'
 import BookingStore from '../../store/booking-store/booking-store'
 import MyVehicleStore from '../../store/my-vehicle-store/my-vehicle-store'
+import { GetRegion } from '../../utils/get-region'
+import { MapTruckImageName } from '../../utils/map-truck-image-name'
+import { GetTruckType } from '../../utils/get-truck-type'
 
 interface JobDetailProps {
   booker?: Array<any>
@@ -37,6 +40,7 @@ interface JobDetailProps {
   quotationsID?: string
   actionStatus?: string
   statusScreen?: number
+  jobStatus?: number
 }
 
 const deviceWidht = Dimensions.get('window').width
@@ -201,12 +205,20 @@ const TOPIC: TextStyle = {
 const LOGO_ROOT: ViewStyle = {
   width: 40,
   height: 40,
-  paddingLeft: spacing[4],
+  // paddingLeft: spacing[4],
 }
 const LOGO: ImageStyle = {
   width: 40,
   height: 40,
   borderRadius: Math.round(Dimensions.get('window').width + Dimensions.get('window').height) / 2,
+}
+const TRANSPORT_BY: ViewStyle = {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  padding: spacing[2],
+  marginLeft: spacing[4],
+  marginRight: spacing[3],
 }
 
 const Dot = (data) => (<LottieView
@@ -359,6 +371,210 @@ const PickUpPointSmall = ({ to, from, distances, containerStyle = {} }) => {
   )
 }
 
+const RenderButtonAlert = ({ onConfirm, onCloseModal }) => {
+  const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.line, backgroundColor: color.transparent }
+  const btnConfirmStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.primary, backgroundColor: color.primary }
+  return (
+    <View style={{ ...BOTTOM_ROOT, paddingVertical: spacing[2] }}>
+      <Button
+        testID="btn-cancel"
+        style={btnCancleStyle}
+        textStyle={{ ...CALL_TEXT, color: color.line }}
+        text={translate("common.cancel")}
+        onPress={onCloseModal}
+      />
+      <Button
+        testID="btn-ok"
+        style={btnConfirmStyle}
+        textStyle={{ ...CALL_TEXT, color: color.textWhite }}
+        text={translate("common.confirm")}
+        onPress={onConfirm}
+      />
+    </View>
+  )
+}
+
+const TruckItem = (data) => {
+  const {
+    id,
+    truckType,
+    stallHeight,
+    tipper,
+    isLiked,
+    owner,
+    workingZones,
+    requiredFooter = true,
+  } = data
+
+  const [visible, setVisible] = useState<boolean>(false)
+  const [isConfirm, setIsConfirm] = useState<boolean>(true)
+
+  const navigation = useNavigation()
+
+  const onPress = () => {
+    navigation.navigate('truckDetailOnly', {
+      truckData: data
+    })
+  }
+
+  const openModal = (status: boolean) => {
+    setIsConfirm(status)
+    setVisible(true)
+  }
+
+  const onConfirm = (id: string) => {
+    if (isConfirm) {
+      BookingStore.approveBooking('carrier', 'accept', id)
+    } else {
+      BookingStore.approveBooking('carrier', 'reject', id)
+    }
+    setVisible(false)
+  }
+
+  const onCloseModal = () => {
+    setVisible(false)
+  }
+
+  const renderContent = () => (<View style={{ paddingLeft: spacing[2] }}>
+    <View style={{ paddingVertical: spacing[1] }}>
+      <Text text={`${translate('truckDetailScreen.heighttOfTheCarStall')} : ${stallHeight ? translate(`common.${stallHeight.toLowerCase()}`) : '-'}`} />
+    </View>
+    <View style={{ paddingVertical: spacing[1] }}>
+      <Text text={`${tipper ? translate('truckDetailScreen.haveDump') : translate('truckDetailScreen.haveNotDump')}`} />
+    </View>
+  </View>)
+
+  const renderFooter = () => {
+    return requiredFooter ? (<View style={{ flexDirection: 'row' }}>
+      <TouchableOpacity style={{ flex: 1, alignItems: 'center', paddingVertical: spacing[3] }} onPress={() => openModal(true)}>
+        <Text text={translate('common.confirm')} style={{ color: color.primary }} />
+      </TouchableOpacity>
+      <TouchableOpacity style={{ flex: 1, alignItems: 'center', paddingVertical: spacing[3], borderLeftColor: color.disable, borderLeftWidth: 1 }} onPress={() => openModal(false)}>
+        <Text text={translate('common.reject')} style={{ color: color.line }} />
+      </TouchableOpacity>
+    </View>) : <></>
+  }
+
+  const workingZoneStr = workingZones?.length ? workingZones.map(zone => {
+    let reg = GetRegion(zone.region, i18n.locale)
+    return reg?.label || ''
+  }).join(', ') : translate('common.notSpecified')
+
+  const truckImage = MapTruckImageName(+truckType)
+  const imageSource: ImageProps = owner?.avatar?.object && owner?.avatar?.token ? {
+    source: {
+      uri: owner?.avatar?.object || '',
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+        adminAuth: owner?.avatar?.token
+      },
+    },
+    resizeMode: 'cover'
+  } : null
+
+  const modalProps = {
+    containerStyle: {
+      paddingTop: spacing[5],
+      paddingBottom: spacing[2]
+    },
+    // imageComponent: onAnimationFinish: () => onAnimationFinish }),
+    header: isConfirm ? translate('myJobScreen.confirmJob') : translate('myJobScreen.cancelJob'),
+    headerStyle: {
+      paddingTop: spacing[3],
+      color: color.primary
+    },
+    content: isConfirm ? translate('myJobScreen.confirmJob') : translate('myJobScreen.cancelJob'),
+    contentStyle: {
+      paddingTop: spacing[1],
+      paddingBottom: spacing[5],
+      paddingHorizontal: spacing[7],
+      color: color.line
+    },
+    buttonContainerStyle: { width: '90%' },
+    buttonComponent: () => <RenderButtonAlert onConfirm={() => onConfirm(id)} onCloseModal={onCloseModal} />,
+    visible: visible,
+  }
+
+  return (
+    <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
+      <SearchItemTruck
+        {...{
+          id,
+          fromText: workingZoneStr,
+          customContent: renderContent,
+          truckType: `${translate('common.vehicleTypeField')} : ${GetTruckType(+truckType)?.name || translate('common.notSpecified')}`,
+          postBy: owner?.companyName || '',
+          isVerified: false,
+          isLike: isLiked,
+          backgroundImage: images[truckImage && truckImage !== 'greyMock' ? truckImage : ''],
+          isCrown: false,
+          image: imageSource,
+          showFavoriteIcon: false,
+          bottomComponent: renderFooter,
+          containerStyle: {
+            paddingTop: spacing[2],
+            borderRadius: 6
+          },
+          onPress,
+        }}
+      />
+
+      <ModalAlert {...modalProps} />
+
+    </View>
+  )
+}
+
+const RenderOwnerTruck = ({ truck }) => {
+  const navigation = useNavigation()
+
+  const openProfile = (id: string) => {
+    const imageSource = truck?.owner?.avatar?.object && truck?.owner?.avatar?.token ? {
+      source: {
+        uri: truck?.owner?.avatar?.object || '',
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${truck?.owner?.avatar?.token || ''}`,
+          adminAuth: truck?.owner?.avatar?.token
+        },
+      },
+      resizeMode: 'cover'
+    } : null
+
+    CarriersJobStore.setProfile({ ...truck.owner, imageProps: JSON.stringify(imageSource) })
+
+    ProfileStore.getProfileReporter(id)
+    UserJobStore.find({
+      userId: id,
+      page: 0,
+    })
+
+    navigation.navigate('bookerProfile')
+  }
+
+  return (<TouchableOpacity
+    activeOpacity={1}
+    style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: spacing[2] }}
+    onPress={() => openProfile(truck?.owner?.userId)}
+  >
+    <View style={LOGO_ROOT}>
+      <Image
+        style={LOGO}
+        source={{
+          uri: truck?.owner?.avatar?.object || null,
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${truck?.owner?.avatar?.token || null}`,
+            adminAuth: truck?.owner?.avatar?.token || null
+          },
+        }}
+        resizeMode={'cover'} />
+    </View>
+    <Text text={truck?.owner?.companyName || ''} style={{ paddingLeft: spacing[2] }} />
+  </TouchableOpacity>)
+}
+
 let callDetector = undefined
 
 export const JobDetailScreen = observer(function JobDetailScreen() {
@@ -386,6 +602,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     weight,
     owner,
     quotations,
+    truck,
   } = JSON.parse(JSON.stringify(CarriersJobStore.data))
 
   const route = useRoute()
@@ -398,6 +615,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     quotationsID = '',
     actionStatus,
     statusScreen,
+    jobStatus,
   }: JobDetailProps = route?.params || {}
 
   const { versatileStore, tokenStore } = useStores()
@@ -434,6 +652,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         CarriersJobStore.setDefaultOfData()
         CarriersJobStore.updateFavoriteInList(FavoriteJobStore.id, FavoriteJobStore.liked)
       }
+      CarriersJobStore.setProfile({})
     }
   }, [])
 
@@ -458,8 +677,9 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     bookerDetail.forEach((e: any, i: number) => {
       tmp_detail.push({
         id: e.id || '',
-        image: e.imageUrl || '',
-        name: e.fullName || '',
+        image: e.avatar?.object || '',
+        imageToken: e.avatar?.token || '',
+        name: e.companyName || e.fullName || '',
         date: e.bookingDatetime || ''
       })
     })
@@ -494,6 +714,20 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   }
 
   const onPress = () => {
+    const imageSource = owner?.avatar?.object && owner?.avatar?.token ? {
+      source: {
+        uri: owner?.avatar?.object || '',
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+          adminAuth: owner?.avatar?.token
+        },
+      },
+      resizeMode: 'cover'
+    } : null
+
+    CarriersJobStore.setProfile({ ...owner, imageProps: JSON.stringify(imageSource) })
+
     const userId = CarriersJobStore.profile.userId
     ProfileStore.getProfileReporter(userId)
     UserJobStore.find({
@@ -504,7 +738,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     if (route.name === 'favoriteJobDetail') {
       navigation.navigate('favoriteCarrierProfile')
     } else {
-      navigation.navigate('carrierProfile')
+      navigation.navigate('bookerProfile')
     }
   }
 
@@ -625,8 +859,22 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     modalizeRef.current?.close()
   }
 
-  const visibleProfile = (id: string) => {
+  const visibleProfile = (id: string, imageUrl: string, imageToken: string) => {
     console.log("ID BOOKING :: ", id)
+    const imageSource = imageUrl && imageToken ? {
+      source: {
+        uri: imageUrl,
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${imageToken}`,
+          adminAuth: imageToken
+        },
+      },
+      resizeMode: 'cover'
+    } : null
+
+    CarriersJobStore.setProfile({ ...owner, imageProps: JSON.stringify(imageSource) })
+
     const userId = CarriersJobStore.data?.owner?.userId
     ProfileStore.getProfileReporter(userId)
     UserJobStore.find({
@@ -770,6 +1018,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   const ownerUserId = owner?.userId || ''
   const myUserId = ProfileStore.data?.userId || ''
   console.log("Job Detail data :: ", JSON.parse(JSON.stringify(CarriersJobStore.data)))
+  console.log('jobStatus', jobStatus)
   return (
     <View style={CONTAINER}>
       {isLoaded && <ModalLoading size={'large'} color={color.primary} visible={isLoaded} />}
@@ -923,22 +1172,27 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           />}
         </View>)}
 
-        {!showOwnerAccount && !fromManageCar && arrBooker.length > 0 && actionStatus !== 'IM_OWN_JOB_AND_ASK_FOR_BOOKING_HIM_CAR' && <View style={ONWER_ROOT}>
-          <Text tx={'myJobScreen.listOfBookingJob'} preset={'topic'} style={TOPIC} />
-          {arrBooker.map((booker, index) => <BookerItem
-            key={index}
-            imageUrl={booker.image}
-            topic={booker.name}
-            detail={booker.date}
-            btnTxt={translate('myJobScreen.accept')}
-            containerStyle={{ paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.disable }}
-            topicStyle={{ fontSize: 14, paddingBottom: spacing[1] }}
-            detailStyle={{ color: color.line }}
-            btnStyle={{ paddingVertical: 2, paddingHorizontal: spacing[2] }}
-            btnTextStyle={{ fontSize: 12, paddingLeft: spacing[1] }}
-            onToggle={() => visibleProfile(booker.id)}
-          />)}
-        </View>}
+        {!showOwnerAccount
+          && !fromManageCar
+          && arrBooker.length > 0
+          && actionStatus === 'IM_OWN_JOB_AND_HAVE_CAR_ASK_FOR_BOOKING'
+          && <View style={ONWER_ROOT}>
+            <Text tx={'myJobScreen.listOfBookingJob'} preset={'topic'} style={TOPIC} />
+            {arrBooker.map((booker, index) => <BookerItem
+              key={index}
+              imageUrl={booker.image}
+              tokenUrl={booker.imageToken}
+              topic={booker.name}
+              detail={booker.date}
+              btnTxt={translate('myJobScreen.accept')}
+              containerStyle={{ paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.disable }}
+              topicStyle={{ fontSize: 14, paddingBottom: spacing[1] }}
+              detailStyle={{ color: color.line }}
+              btnStyle={{ paddingVertical: 2, paddingHorizontal: spacing[2] }}
+              btnTextStyle={{ fontSize: 12, paddingLeft: spacing[1] }}
+              onToggle={() => visibleProfile(booker.id, booker.image, booker.imageToken)}
+            />)}
+          </View>}
 
         {/* // (ฉันเป็นเจ้าของรถและมีงานมาขอจอง)
             slot.actionStatus = "IM_OWN_CAR_AND_HAVE_JOB_ASK_FOR_BOOKING"
@@ -960,35 +1214,56 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
           <View>
             <Text tx={'myJobScreen.waitingForFeedbackFrom'} preset={'topic'} style={TOPIC} />
           </View>
-          <View style={{ flexDirection: 'row' }}>
-            <View style={LOGO_ROOT}>
-              <Image
-                style={LOGO}
-                source={{
-                  uri: owner?.avatar?.object || null,
-                  method: 'GET',
-                  headers: {
-                    Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-                    adminAuth: owner?.avatar?.token
-                  },
-                }}
-                resizeMode={'cover'} />
-            </View>
-            <Text text={owner?.fullName || ''} style={{ paddingRight: spacing[2] }} />
+          <View>
+            {quotations?.map((item, index: number) => <RenderOwnerTruck key={index} {...item} />)}
           </View>
         </View>)}
 
-        {actionStatus === 'IM_OWN_JOB_AND_HAVE_CAR_ASK_FOR_BOOKING' && (<View></View>)}
-
-        {actionStatus === 'IM_OWN_CAR_AND_ASK_FOR_BOOKING_HIM_JOB' && (<View></View>)}
+        {/* render carrier profile and truck list */}
+        {/* {actionStatus === 'IM_OWN_CAR_AND_ASK_FOR_BOOKING_HIM_JOB' && (<View>
+          <TruckItem {...truck} />
+        </View>)} */}
 
         {actionStatus === 'IM_OWN_CAR_AND_HAVE_JOB_ASK_FOR_BOOKING' && (<View>
-          {/* {quotations?.map(({truck}, index) => {
-            return 
-          })} */}
+          {quotations?.map(({ truck }, index: number) => {
+            if (myUserId === truck.owner?.userId) {
+              return <TruckItem key={index} {...truck} />
+            }
+            return null
+          })}
         </View>)}
 
-        {actionStatus === 'IM_OWN_JOB' && (<View></View>)}
+        {/* {actionStatus === 'IM_OWN_JOB' && (<View></View>)} */}
+
+        {statusScreen === 1 && jobStatus !== 2 && (<View>
+          <View style={TRANSPORT_BY}>
+            <View>
+              <Text tx={'myJobScreen.transportBy'} style={{ color: color.line }} />
+            </View>
+            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} activeOpacity={1} onPress={() => visibleProfile(truck.id, truck?.owner?.avatar?.object, truck?.owner?.avatar?.token)} >
+              <Text text={truck?.owner?.companyName || ''} style={{ paddingRight: spacing[2] }} />
+              <View style={LOGO_ROOT}>
+                <Image
+                  style={LOGO}
+                  source={{
+                    uri: truck?.owner?.avatar?.object || null,
+                    method: 'GET',
+                    headers: {
+                      Authorization: `Bearer ${truck?.owner?.avatar?.token || null}`,
+                      adminAuth: truck?.owner?.avatar?.token || null
+                    },
+                  }}
+                  resizeMode={'cover'} />
+              </View>
+            </TouchableOpacity>
+          </View>
+          <TruckItem {...truck} requiredFooter={false} />
+        </View>)}
+
+        {/* render carrier profile and truck list */}
+        {/* {statusScreen === 2 && jobStatus !== 2 && (<View>
+          <TruckItem {...truck} />
+        </View>)} */}
 
       </Modalize>
 

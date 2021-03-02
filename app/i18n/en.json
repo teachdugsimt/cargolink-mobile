@@ -430,12 +430,15 @@
     "bookerWaiting": "request booking",
     "waitForAcceptingFromCarrer": "Wait for accepting reservations from the carrier.",
     "finishJob": "Finish job",
-    "confirmJob": "Confirm this job?",
+    "confirmFinishJob": "Confirm this job?",
     "accept": "Response",
     "listOfBookingJob": "Applicants for booking this job",
     "ownerProductAwaitYourResponse": "The owner of the product awaits your response.",
     "waitingForFeedback": "Waiting for feedback from the product owner",
-    "waitingForFeedbackFrom": "Waiting for feeback from"
+    "waitingForFeedbackFrom": "Waiting for feeback from",
+    "confirmJob": "Confirm this job",
+    "cancelJob": "Confirm cancel this job",
+    "transportBy": "Transport by"
   },
   "selectJobScreen": {
     "selectBooking": "Select your event for this booking.",

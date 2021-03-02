@@ -478,14 +478,14 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
       </TouchableOpacity>}
     </View>
 
-    <View style={SECTION}>
+    {/* <View style={SECTION}>
       <View style={TOPIC}>
         <Text tx={'shipperProfileScreen.feedbackScore'} />
       </View>
       <View style={{ paddingLeft: spacing[2] }}>
         {STAR.map(val => <Rating key={val.show} {...val} />)}
       </View>
-    </View>
+    </View> */}
 
     {/* <View style={[SECTION, {
       justifyContent: 'center',

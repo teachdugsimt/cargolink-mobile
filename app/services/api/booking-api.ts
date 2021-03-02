@@ -205,7 +205,7 @@ export class BookingApi {
 
   async finishJob(id: string): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/mobile/shippers/jobs/finish/${id}`)
+      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/shippers/jobs/finish/${id}`)
       console.log("Response finishJob (apisauce) :: ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
