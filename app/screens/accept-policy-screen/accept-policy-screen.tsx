@@ -7,6 +7,8 @@ import { useNavigation } from '@react-navigation/native';
 import { translate } from '../../i18n';
 import AuthStore from '../../store/auth-store/auth-store'
 import { useStores } from "../../models/root-store/root-store-context";
+import HTML from "react-native-render-html";
+import ProfileStore from '../../store/profile-store/profile-store';
 
 const ROOT: ViewStyle = {
   flex: 1,
@@ -16,9 +18,6 @@ const ROOT: ViewStyle = {
   backgroundColor: color.backgroundWhite
 }
 const TITLE: TextStyle = {
-  // flex: 1,
-  fontSize: 16,
-  fontWeight: "bold",
   textAlign: "center",
   paddingTop: 30,
   paddingBottom: 20,
@@ -30,13 +29,6 @@ const SCROLL_VIEW: ViewStyle = {
   marginRight: 10,
   backgroundColor: color.disable,
   borderRadius: 6
-}
-const CONTENT: TextStyle = {
-  paddingTop: 5,
-  paddingBottom: 5,
-  paddingLeft: 10,
-  paddingRight: 10,
-  fontSize: 15
 }
 const BUTTON_ROOT: ViewStyle = {
   paddingLeft: 20,
@@ -85,28 +77,24 @@ export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
       version: AuthStore.profile.termOfService.version
     }).then(() => {
       clearState()
+      ProfileStore.getProfileRequest()
       navigation.navigate("home")
     })
   }
 
+  __DEV__ && console.tron.logImportant("Policy data :: ", AuthStore?.policyData?.data)
+
+
   return (
     <View style={ROOT} testID={"accept-policy-element"}>
       {isLoading && <ModalLoading size={'large'} color={color.primary} visible={isLoading} />}
-      <Text style={TITLE} text={translate('acceptPolicyScreen.termAndCondition')} />
-      <ScrollView
-        onScroll={({ nativeEvent }) => {
-          if (isCloseToBottom(nativeEvent)) {
-            console.log('End')
-            // setButtonColor(color.primary)
-            // setDisabled(false)
-          }
-        }}
-        style={SCROLL_VIEW}
-        scrollEventThrottle={400}
-      >
-        <Text style={CONTENT}>
-          {AuthStore.policyData && AuthStore.policyData.data ? AuthStore.policyData.data : ''}
-        </Text>
+      <Text style={TITLE} preset="topicExtra" text={translate('acceptPolicyScreen.termAndCondition')} />
+      <ScrollView style={SCROLL_VIEW}>
+        {AuthStore.policyData && AuthStore.policyData.data ?
+          <HTML source={{ html: AuthStore.policyData.data }}
+            containerStyle={{ padding: 10 }}
+            contentWidth={Dimensions.get("window").width - 40} />
+          : <Text>{""}</Text>}
       </ScrollView>
       <View style={BUTTON_ROOT}>
         <Button
