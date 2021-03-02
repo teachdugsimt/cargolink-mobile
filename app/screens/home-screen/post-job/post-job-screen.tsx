@@ -212,9 +212,6 @@ export const PostJobScreen = observer(function PostJobScreen() {
     list_product_type[0].data = list_product_type_all.slice(1, 4)
   }
 
-
-
-
   return (
     <Screen unsafe>
       <View testID="PostJobScreen" style={FULL}>
@@ -223,6 +220,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
         </View>
 
         <View style={BOTTOM_VIEW}>
+
           <ScrollView style={FULL}>
 
             <View style={TOP_VIEW_2}>

@@ -44,7 +44,8 @@ export function ProfileNavigator() {
     >
       <Stack.Screen name="profile" component={ProfileScreen}
         options={({ navigation, route }) => ({
-          headerRight: () => <HeaderRight onRightPress={() => {}} tx={"common.edit"}/>,
+          headerStyle: { backgroundColor: color.mainTheme },
+          headerRight: () => <HeaderRight onRightPress={() => { }} tx={"common.edit"} />,
           headerCenter: () => <HeaderCenter tx={"profileScreen.profile"} />,
           headerHideShadow: true,
           // headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
@@ -52,6 +53,7 @@ export function ProfileNavigator() {
       />
       <Stack.Screen name="updateProfile" component={UpdateProfileScreen}
         options={({ navigation, route }) => ({
+          headerStyle: { backgroundColor: color.mainTheme },
           headerCenter: () => <HeaderCenter tx={"profileScreen.profile"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
           headerHideShadow: true,

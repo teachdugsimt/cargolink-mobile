@@ -35,7 +35,7 @@ const mapActionsStatus = (data) => {
     }
     return slot
   })
-  console.log("Tmp after mapping :: ", tmp)
+  // console.log("Tmp after mapping :: ", tmp)
   return tmp
 }
 
@@ -269,9 +269,6 @@ const BookingStore = types
       yield bookingAPI.setup()
       self.loading = true
       try {
-        // first tab = 0
-        // second tab = 3
-        // last tab = 7
         const response = yield apiShipperJob.find(filter)
         let otherList: any = []
         if (filter.type == tabStatus.first) otherList = yield bookingAPI.findCarrierMyJob()
