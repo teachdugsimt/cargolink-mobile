@@ -187,6 +187,7 @@ export const SelectJobScreen = observer(function MyJobScreen() {
 
   const onCloseModal = () => {
     setVisibleModal(false)
+    navigation.navigate('truckDetail')
   }
 
   const onVisibleModal = (id: string) => {

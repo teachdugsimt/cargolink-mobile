@@ -372,6 +372,7 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
     return () => {
       ProfileStore.clearDataReportProfile()
       UserJobStore.clearList()
+      CarriersJobStore.setProfile({})
     }
   }, [])
 

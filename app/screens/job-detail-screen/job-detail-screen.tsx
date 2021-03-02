@@ -404,6 +404,7 @@ const TruckItem = (data) => {
     owner,
     workingZones,
     requiredFooter = true,
+    quotationId,
   } = data
 
   const [visible, setVisible] = useState<boolean>(false)
@@ -429,6 +430,7 @@ const TruckItem = (data) => {
       BookingStore.approveBooking('carrier', 'reject', id)
     }
     setVisible(false)
+    navigation.goBack()
   }
 
   const onCloseModal = () => {
@@ -492,7 +494,7 @@ const TruckItem = (data) => {
       color: color.line
     },
     buttonContainerStyle: { width: '90%' },
-    buttonComponent: () => <RenderButtonAlert onConfirm={() => onConfirm(id)} onCloseModal={onCloseModal} />,
+    buttonComponent: () => <RenderButtonAlert onConfirm={() => onConfirm(quotationId)} onCloseModal={onCloseModal} />,
     visible: visible,
   }
 
@@ -739,7 +741,9 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
       page: 0,
     })
     modalizeRef.current?.close();
-    if (route.name === 'favoriteJobDetail') {
+    if (route.name === 'jobDetail') {
+      navigation.navigate('carrierProfile')
+    } else if (route.name === 'favoriteJobDetail') {
       navigation.navigate('favoriteCarrierProfile')
     } else {
       navigation.navigate('bookerProfile', { statusScreen })
@@ -1230,9 +1234,9 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         </View>)} */}
 
         {actionStatus === 'IM_OWN_CAR_AND_HAVE_JOB_ASK_FOR_BOOKING' && (<View>
-          {quotations?.map(({ truck }, index: number) => {
+          {quotations?.map(({ truck, id }, index: number) => {
             if (myUserId === truck.owner?.userId) {
-              return <TruckItem key={index} {...truck} />
+              return <TruckItem key={index} {...truck} quotationId={id} />
             }
             return null
           })}
