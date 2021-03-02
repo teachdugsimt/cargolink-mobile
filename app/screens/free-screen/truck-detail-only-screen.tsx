@@ -11,7 +11,7 @@ import {
   View,
   ViewStyle, Platform, Linking, Alert
 } from "react-native"
-import { Button, HeaderCenter, ModalLoading, Text } from "../../components"
+import { Button, HeaderCenter, ModalLoading, Text, PostingBy } from "../../components"
 import { translate } from "../../i18n"
 import { color, images as imageComponent, spacing } from "../../theme"
 import { useNavigation, useRoute } from "@react-navigation/native"
@@ -25,6 +25,7 @@ import { GetRegion } from "../../utils/get-region"
 import CallDetectorManager from 'react-native-call-detection'
 
 import { useStores } from "../../models/root-store/root-store-context";
+import UserTruckStore from '../../store/user-truck-store/user-truck-store'
 import ProfileStore from '../../store/profile-store/profile-store'
 import TruckDetailStore from '../../store/free-store/truck-detail-store'
 import FavoriteTruckStore from "../../store/shipper-truck-store/favorite-truck-store"
@@ -38,9 +39,10 @@ interface ImageInfo {
 }
 
 interface TruckDetailProps {
-  truckID?: string,
-  truckData?: any,
+  truckID?: string
+  truckData?: any
   headerName?: string
+  profile?: any
 }
 
 const deviceWidht = Dimensions.get("window").width
@@ -135,7 +137,8 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
 
   const { tokenStore, versatileStore } = useStores()
   const route = useRoute()
-  const { truckID, truckData, headerName = "truckDetailScreen.truckDetail" }: TruckDetailProps = route?.params || {}
+  const { truckID, truckData, headerName = "truckDetailScreen.truckDetail",
+    profile }: TruckDetailProps = route?.params || {}
 
   const [{ openViewer, indexOfImage, liked }, setState] = useState(initialState)
 
@@ -144,6 +147,30 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
       TruckDetailStore.findOne(truckID)
     }
   }, [truckID, truckData])
+
+  useEffect(() => {
+    const imageSource = profile?.avatar?.object && profile?.avatar?.token ? {
+      source: {
+        uri: profile?.avatar?.object || '',
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${profile?.avatar?.token || ''}`,
+          adminAuth: profile?.avatar?.token
+        },
+      },
+      resizeMode: 'cover'
+    } : null
+    TruckDetailStore.setProfile({ ...profile, imageProps: JSON.stringify(imageSource) })
+  }, [profile])
+
+  const ownerProfile = {
+    postBy: TruckDetailStore.profile?.companyName || '',
+    isVerified: false,
+    rating: '0',
+    ratingCount: '0',
+    isCrown: false,
+    image: JSON.parse(TruckDetailStore.profile?.imageProps),
+  }
 
   const {
     id,
@@ -247,6 +274,21 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
     }
   };
 
+
+  const onVisiblePorfile = () => {
+    const userId = TruckDetailStore.profile.userId
+    ProfileStore.getProfileReporter(userId)
+    UserTruckStore.find({
+      userId: userId,
+      page: 0,
+    })
+    // if (route.name === 'favoriteTruckDetail') {
+    //   navigation.navigate('favoriteShipperProfile')
+    // } else {
+    //   navigation.navigate('shipperProfile')
+    // }
+    navigation.navigate("bookerProfile")
+  }
 
   const onSelectedHeart = (id: string) => {
     if (tokenStore?.token?.accessToken) {
@@ -375,6 +417,12 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
           </View>
 
         </View>
+        {!!profile && !!TruckDetailStore.profile && <View style={COLUMN}>
+          <View style={[ROW, { justifyContent: 'space-between', alignItems: 'center' }]}>
+            <Text style={{ color: color.line }}>{translate('jobDetailScreen.postBy')}</Text>
+            <PostingBy {...ownerProfile} onToggle={() => onVisiblePorfile()} />
+          </View>
+        </View>}
 
       </ScrollView>
 
