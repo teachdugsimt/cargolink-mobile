@@ -134,7 +134,7 @@ const Item = (data) => {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-          adminAuth: `Bearer ${owner?.avatar?.token || ''}`,
+          adminAuth: owner?.avatar?.token || '',
         },
       },
       resizeMode: 'cover'

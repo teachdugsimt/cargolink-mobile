@@ -15,6 +15,7 @@ const IMAGE: ImageStyle = {
   width: 45,
   height: 45,
   borderRadius: Math.round(Dimensions.get('window').width + Dimensions.get('window').height) / 2,
+  backgroundColor: color.disable,
 }
 const DETAIL: ViewStyle = {
   flexDirection: 'column',
@@ -67,7 +68,7 @@ export function BookerItem(props: BookerItemProps) {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${tokenUrl}`,
-            adminAuth: `Bearer ${tokenUrl}`,
+            adminAuth: tokenUrl,
           },
         } : images.greyMock} style={imageViewStyle} resizeMode={'cover'} />
       </View>
