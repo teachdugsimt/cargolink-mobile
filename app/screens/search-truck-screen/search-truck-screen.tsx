@@ -244,9 +244,9 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      const { truckType } = JSON.parse(JSON.stringify(AdvanceSearchStore.filter))
+      const { truckTypes } = JSON.parse(JSON.stringify(AdvanceSearchStore.filter))
       const length = [
-        ...[...truckType || []],
+        ...[...truckTypes || []],
       ].filter(Boolean).length
 
       setState(prevState => ({
@@ -294,9 +294,9 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
 
   useEffect(() => {
     if (Object.keys(selectSearch).length) {
-      const { truckType } = JSON.parse(JSON.stringify(AdvanceSearchStore.filter))
+      const { truckTypes } = JSON.parse(JSON.stringify(AdvanceSearchStore.filter))
       const length = [
-        ...[...truckType || []],
+        ...[...truckTypes || []],
       ].filter(Boolean).length
 
       setState(prevState => ({
@@ -318,7 +318,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
   useEffect(() => {
     const zoneIds = zones.filter(({ isSelected }) => isSelected).map(({ value }) => value)
     if (!visible && zoneIds.length) {
-      const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), zoneIds }
+      const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), workingZones: zoneIds }
       AdvanceSearchStore.setFilter(advSearch)
       ShipperTruckStore.find(advSearch)
       // ShipperTruckStore.setDefaultOfList()
@@ -346,7 +346,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
   const onPress = (id: number) => {
     let idx = []
     const newMenu = JSON.parse(JSON.stringify(AdvanceSearchStore.menu))
-    const indexMenu = newMenu.findIndex(({ type }) => type === 'truckType')
+    const indexMenu = newMenu.findIndex(({ type }) => type === 'truckTypes')
     const indexSubmenu = newMenu[indexMenu]?.subMenu.findIndex(({ id: idx }) => idx === id)
     const mainSelect = newMenu[indexMenu].subMenu[indexSubmenu]
     const activeMenu = newMenu[indexMenu].subMenu[indexSubmenu].subMenu.map(data => {
@@ -357,15 +357,14 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
 
     AdvanceSearchStore.mapMenu(newMenu)
 
-    let truckTypes = JSON.parse(JSON.stringify(AdvanceSearchStore.filter))?.truckType || []
+    let truckTypes = JSON.parse(JSON.stringify(AdvanceSearchStore.filter))?.truckTypes || []
 
     if (newMenu[indexMenu].subMenu[indexSubmenu].isChecked) {
       truckTypes = [...truckTypes, ...mainSelect.subMenu.map(menu => menu.value)]
     } else {
       truckTypes = truckTypes.filter(type => !idx.includes(type))
     }
-
-    AdvanceSearchStore.setFilter({ ...AdvanceSearchStore.filter, truckType: truckTypes })
+    AdvanceSearchStore.setFilter({ ...AdvanceSearchStore.filter, truckTypes: truckTypes })
 
     setSelectSearch({ ...selectSearch, [id]: !mainSelect.isChecked })
   }
@@ -441,7 +440,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
     }))
 
     const zoneIds = zones.filter(({ isSelected }) => isSelected).map(({ value }) => value)
-    const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), zoneIds }
+    const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), workingZones: zoneIds }
     AdvanceSearchStore.setFilter(advSearch)
     ShipperTruckStore.find(advSearch)
     // ShipperTruckStore.setDefaultOfList()
@@ -544,7 +543,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
           mainText={translate('searchJobScreen.fullSearch')}
           // subButtons={subButtons?.length ? subButtons : []}
           subButtons={
-            AdvanceSearchStore.menu?.filter(({ type }) => type === 'truckType')[0]?.subMenu?.map(subMenu => {
+            AdvanceSearchStore.menu?.filter(({ type }) => type === 'truckTypes')[0]?.subMenu?.map(subMenu => {
               if (subMenu.id === 1 || subMenu.id === 2) {
                 return { ...subMenu, label: subMenu.name }
               }

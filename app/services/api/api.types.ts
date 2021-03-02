@@ -119,6 +119,21 @@ export interface ShipperJobRequest {
   type?: number,
 }
 
+export interface ShipperTruckRequest {
+  approveStatus?: number,
+  descending?: boolean,
+  loadingWeight?: number,
+  owner?: string,
+  page?: number,
+  registrationNumber?: string,
+  rowsPerPage?: number,
+  sortBy?: string,
+  stallHeight?: string,
+  truckAmount?: number,
+  truckTypes?: number[],
+  workingZones?: number[]
+}
+
 export interface GoogleLocationRequest {
   latitude?: string
   longitude?: string

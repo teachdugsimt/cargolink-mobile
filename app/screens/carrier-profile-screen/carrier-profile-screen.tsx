@@ -16,9 +16,11 @@ import FavoriteJobStore from '../../store/carriers-job-store/favorite-job-store'
 import { useStores } from '../../models'
 import Feather from 'react-native-vector-icons/Feather'
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import BookingStore from '../../store/booking-store/booking-store'
 
 interface CarrierProfileProps {
   isBooker?: boolean
+  bookingId?: string
 }
 
 const deviceWidht = Dimensions.get('window').width
@@ -363,7 +365,7 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
 
   const route = useRoute()
 
-  const { isBooker }: CarrierProfileProps = route?.params || {}
+  const { isBooker, bookingId }: CarrierProfileProps = route?.params || {}
 
   useEffect(() => {
     return () => {
@@ -377,6 +379,8 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
   }
 
   const cancelBookAJob = () => {
+    BookingStore.approveBooking('shipper', 'reject', bookingId)
+    navigation.goBack()
     console.log('cancel')
   }
 
@@ -390,7 +394,14 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
     navigation.navigate('myjob')
   }
 
+  const onApproveJobBooking = () => {
+    console.log("on confirm booking approval :: ", isBooker, bookingId)
+    BookingStore.approveBooking('shipper', 'accept', bookingId)
+    // navigation.navigate('jobDetail')
+  }
+
   const onConfirmJobSuccess = () => {
+    onApproveJobBooking()
     setIsBooking(true)
   }
 
@@ -495,7 +506,7 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
           <Image {...imageProps} style={PROFILE_IMAGE} resizeMode={'cover'} />
         </View>
         <View style={{ flex: 3 }}>
-          <Text text={CarriersJobStore.profile?.companyName || ''} style={TEXT} preset={'topicExtra'} />
+          <Text text={CarriersJobStore.profile?.companyName || CarriersJobStore.data?.owner?.companyName} style={TEXT} preset={'topicExtra'} />
           <Verified isVerified={false} />
         </View>
       </View>
@@ -554,7 +565,7 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
           <Button
             testID="cancel"
             style={[BTN_STYLE, { backgroundColor: color.line }]}
-            tx={'common.cancel'}
+            tx={'common.reject'}
             textStyle={CALL_TEXT}
             onPress={cancelBookAJob}
           />

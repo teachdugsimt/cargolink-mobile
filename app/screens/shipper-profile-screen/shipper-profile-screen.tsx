@@ -511,7 +511,6 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
     // navigation.navigate('jobDetail')
   }
 
-
   return (
     <View style={CONTAINER}>
 

@@ -13,7 +13,8 @@ import {
   FeedbackScreen, JobDetailScreen, MyJobScreen, ReceivePointScreen, PostJobScreen,
   CheckInformationScreen,
   PostSuccessScreen,
-  ShipperProfileScreen
+  ShipperProfileScreen,
+  CarrierProfileScreen
 } from "../screens"
 import { color } from "../theme"
 import { translate } from "../i18n"
@@ -32,7 +33,7 @@ const MyjobTab = () => {
       }}>
       <Tab.Screen name="new" options={{ tabBarLabel: translate('myJobScreen.workOpen') }} component={MyJobScreen} initialParams={{ status: 0 }} />
       <Tab.Screen name="inprogress" options={{ tabBarLabel: translate('myJobScreen.workInProgress') }} component={MyJobScreen} initialParams={{ status: 3 }} />
-      <Tab.Screen name="done" options={{ tabBarLabel: translate('myJobScreen.workDone') }} component={MyJobScreen} initialParams={{ status: 7 }} />
+      <Tab.Screen name="done" options={{ tabBarLabel: translate('myJobScreen.workDone') }} component={MyJobScreen} initialParams={{ status: 2 }} />
     </Tab.Navigator>
   );
 }
@@ -133,7 +134,7 @@ export function MyJobNavigator() {
         })}
       />
 
-      <Stack.Screen name="bookerProfile" component={ShipperProfileScreen}
+      <Stack.Screen name="bookerProfile" component={CarrierProfileScreen}
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"feedbackScreen.yourOpinion"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),

@@ -407,9 +407,9 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     }
 
     return () => {
-      if(fromManageCar) {
+      if (fromManageCar) {
         console.log("Unmount from manage car ::; ")
-        if(BookingStore.data_approve_booking){
+        if (BookingStore.data_approve_booking) {
           BookingStore.clearDataApproveBooking()
           MyVehicleStore.findOneRequest(quotationsID)
         }
@@ -612,6 +612,12 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
   const visibleProfile = (id: string) => {
     console.log("ID BOOKING :: ", id)
+    const userId = CarriersJobStore.data?.owner?.userId
+    ProfileStore.getProfileReporter(userId)
+    UserJobStore.find({
+      userId: userId,
+      page: 0,
+    })
     navigation.navigate('bookerProfile', {
       isBooker: true,
       bookingId: id
@@ -870,14 +876,14 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
         </View>
 
-        {(showOwnerAccount || fromManageCar) &&
+        {/* {(showOwnerAccount || fromManageCar) && */}
           <View style={ONWER_ROOT}>
             <View style={ROW}>
               <Text style={{ color: color.line }}>{translate('jobDetailScreen.postBy')}</Text>
               <PostingBy {...ownerProfile} onToggle={() => onPress()} />
             </View>
           </View>
-        }
+        {/* } */}
 
         {fromManageCar && !BookingStore.data_approve_booking && (<View style={BOTTOM_ROOT}>
           <Button

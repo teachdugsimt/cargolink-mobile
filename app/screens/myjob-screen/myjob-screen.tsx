@@ -127,6 +127,19 @@ const Item = (data) => {
   const { tokenStore } = useStores()
 
   const onVisible = () => {
+    const imageSource = owner?.avatar?.object && owner?.avatar?.token ? {
+      source: {
+        uri: owner?.avatar?.object || '',
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+          adminAuth: owner?.avatar?.token
+        },
+      },
+      resizeMode: 'cover'
+    } : null
+
+    CarriersJobStore.setProfile({ ...owner, imageProps: JSON.stringify(imageSource) })
     CarriersJobStore.findOne(id)
     navigation.navigate('myJobDetail', {
       showOwnerAccount: false,
@@ -196,8 +209,8 @@ const Item = (data) => {
     setVisible(false)
   }
 
-  const renderOwnerProfile = () => (
-    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingVertical: spacing[1] }}>
+  const renderOwnerProfile = (reverse?: boolean) => (
+    <View style={{ flexDirection: reverse ? 'row-reverse' : 'row', justifyContent: 'center', alignItems: 'center', paddingVertical: spacing[1] }}>
       <View style={LOGO_ROOT}>
         <Image
           style={LOGO}
@@ -211,7 +224,7 @@ const Item = (data) => {
           }}
           resizeMode={'cover'} />
       </View>
-      <Text text={owner?.fullName || ''} style={{ paddingLeft: spacing[5] }} />
+      <Text text={owner?.fullName || ''} style={reverse ? { paddingRight: spacing[2] } : { paddingLeft: spacing[5] }} />
     </View>
   )
 
@@ -275,12 +288,21 @@ const Item = (data) => {
         </>) : (renderOwnerProfile())}
       </>)}
 
-      {statusScreen === 7 && (<>
+      {statusScreen === 2 && (<>
         {myUserId === ownerUserId ? (<>
           <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN]} onPress={onVisible}>
             <Text tx={'jobDetailScreen.seeDetail'} style={{ color: color.primary }} />
           </TouchableOpacity>
-        </>) : (renderOwnerProfile())}
+        </>) : (<View style={{ flex: 1, flexDirection: 'row' }}>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderRightWidth: 1, borderRightColor: color.disable }]} onPress={onVisible}>
+            <Text tx={'jobDetailScreen.seeDetail'} style={{ color: color.primary }} />
+          </TouchableOpacity>
+          <View style={{ paddingRight: spacing[4], flex: 1 }}>
+            <View style={{ alignItems: 'flex-end' }}>
+              {renderOwnerProfile(true)}
+            </View>
+          </View>
+        </View>)}
       </>)}
 
       <ModalAlert {...modalProps} />

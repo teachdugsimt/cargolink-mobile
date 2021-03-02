@@ -33,8 +33,8 @@ const Filter = types.model({
   // truckAmountMax: types.maybeNull(types.number),
   // truckAmountMin: types.maybeNull(types.number),
   truckAmount: types.maybeNull(types.number),
-  truckType: types.maybeNull(types.array(types.number)),
-  zoneIds: types.maybeNull(types.array(types.number)),
+  truckTypes: types.maybeNull(types.array(types.number)),
+  workingZones: types.maybeNull(types.array(types.number)),
   // weight: types.maybeNull(types.number),
 })
 
@@ -58,7 +58,7 @@ const AdvanceSearchStore = types
     error: types.string
   })
   .actions((self) => ({
-    setFilter: function setFilter(filter: Types.ShipperJobRequest = {}) {
+    setFilter: function setFilter(filter: Types.ShipperTruckRequest = {}) {
       self.filter = cast(filter)
     },
 
@@ -122,8 +122,8 @@ const AdvanceSearchStore = types
       self.filter = {
         ...self.filter,
         truckAmount: null,
-        truckType: null,
-        zoneIds: null
+        truckTypes: null,
+        workingZones: null
       }
     },
 
@@ -136,7 +136,7 @@ const AdvanceSearchStore = types
       const menu: Array<Types.AdvanceSearchMenu> = [
         {
           id: 1,
-          type: 'truckType',
+          type: 'truckTypes',
           topic: translate('jobDetailScreen.truckType'),
           showSubColumn: 3,
           isChecked: false,
