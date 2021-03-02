@@ -54,7 +54,6 @@ export function ProfileNavigator() {
       />
       <Stack.Screen name="updateProfile" component={UpdateProfileScreen}
         options={({ navigation, route }) => ({
-          headerStyle: { backgroundColor: color.mainTheme },
           headerCenter: () => <HeaderCenter tx={"profileScreen.profile"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
           headerHideShadow: true,

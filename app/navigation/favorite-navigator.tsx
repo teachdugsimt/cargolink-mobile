@@ -55,6 +55,7 @@ export function FavoriteNavigator() {
 
       <Stack.Screen name="favorite" component={FavoriteScreen}
         options={({ navigation, route }) => ({
+          headerStyle: { backgroundColor: color.mainTheme },
           // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
           headerCenter: () => <HeaderCenter tx={"favoriteScreen.favoriteList"} />,
           // headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),

@@ -49,14 +49,15 @@ export function MoreNavigator() {
     >
       <Stack.Screen name="more" component={MoreScreen}
         options={({ navigation, route }) => ({
+          headerStyle: { backgroundColor: color.mainTheme },
           headerCenter: () => <HeaderCenter tx={"moreScreen.moreMenu"} />,
+          headerHideShadow: false,
         })}
       />
       <Stack.Screen name="report" component={ReportScreen}
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"moreScreen.reportUser"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
-          headerHideShadow: true,
         })}
       />
 
