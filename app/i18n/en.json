@@ -74,7 +74,8 @@
     "updateSuccess": "update complete",
     "productName": "please input product name",
     "acceptBooking": "Confirm Approve",
-    "noticeFastest": "We will notify the guest as soon as possible."
+    "noticeFastest": "We will notify the guest as soon as possible.",
+    "noPhoneNumber": "No phone number"
   },
   "commentScreen": {
     "yourComment": "Your Comment",

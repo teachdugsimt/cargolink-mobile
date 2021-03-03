@@ -823,18 +823,18 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   }
 
   const stopListenerTapped = () => {
-    __DEV__ && console.tron.log('stopListenerTapped')
+    console.log('stopListenerTapped')
     callDetector && callDetector.dispose();
   }
 
   const onCall = (jobId: string, phone: string) => {
-    if (ProfileStore.data && tokenStore?.token?.accessToken) {
+    if (phone && ProfileStore.data && tokenStore?.token?.accessToken) {
       const phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
-      __DEV__ && console.tron.log('phoneNumber', phoneNumber)
+      console.log('phoneNumber', phoneNumber)
       Linking.canOpenURL(phoneNumber)
         .then(supported => {
           if (!supported) {
-            __DEV__ && console.tron.log('Phone number is not available');
+            console.log('Phone number is not available');
             Alert.alert('Phone number is not available')
             return false;
           } else {
@@ -844,7 +844,9 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         .then(() => {
           return Linking.openURL(phoneNumber);
         })
-        .catch(err => __DEV__ && console.tron.log('err', err));
+        .catch(err => console.log('err', err));
+    } else if (!phone) {
+      Alert.alert(translate('common.noPhoneNumber'))
     } else {
       navigation.navigate('signin')
     }
