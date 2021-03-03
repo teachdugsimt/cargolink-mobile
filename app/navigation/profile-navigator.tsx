@@ -44,17 +44,12 @@ export function ProfileNavigator() {
       }}
     >
       <Stack.Screen name="profile" component={ProfileScreen}
-        // options={({ navigation, route }) => ({
-        //   headerRight: () => <HeaderRight tx={"common.edit"} />,
-        //   headerCenter: () => <HeaderCenter tx={"profileScreen.profile"} />,
-        //   headerHideShadow: true,
-        //   // headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
-        // })}
-        options={{
+        options={({ navigation, route }) => ({
           headerRight: () => <HeaderRight tx={"common.edit"} />,
           headerCenter: () => <HeaderCenter tx={"profileScreen.profile"} />,
           headerHideShadow: true,
-        }}
+          // headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
       />
       <Stack.Screen name="updateProfile" component={UpdateProfileScreen}
         options={({ navigation, route }) => ({

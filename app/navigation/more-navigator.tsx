@@ -48,14 +48,10 @@ export function MoreNavigator() {
       }}
     >
       <Stack.Screen name="more" component={MoreScreen}
-        // options={({ navigation, route }) => ({
-        //   headerCenter: () => <HeaderCenter tx={"moreScreen.moreMenu"} />,
-        //   headerHideShadow: false,
-        // })}
-        options={{
+        options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"moreScreen.moreMenu"} />,
           headerHideShadow: false,
-        }}
+        })}
       />
       <Stack.Screen name="report" component={ReportScreen}
         options={({ navigation, route }) => ({

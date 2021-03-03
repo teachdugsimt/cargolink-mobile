@@ -83,15 +83,11 @@ export function MyJobNavigator() {
       }}
     >
       <Stack.Screen name="myjob" component={MyjobTab}
-        // options={({ navigation, route }) => ({
-        //   headerCenter: () => <HeaderCenter tx={"myJobScreen.myJob"} />,
-        //   // headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
-        //   headerHideShadow: true,
-        // })}
-        options={{
+        options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"myJobScreen.myJob"} />,
+          // headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
           headerHideShadow: true,
-        }}
+        })}
       />
 
       <Stack.Screen name="myJobDetail" component={JobDetailScreen}

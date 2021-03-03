@@ -468,7 +468,7 @@ export const MyJobScreen = observer(function MyJobScreen() {
       headerCenter: () => (
         <HeaderCenter tx={"myJobScreen.myJob"} />
       ),
-      headerLeft: () => null
+      // headerLeft: () => null
     });
   }, [lang])
 

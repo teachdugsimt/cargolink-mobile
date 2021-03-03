@@ -93,7 +93,24 @@ export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
         {AuthStore.policyData && AuthStore.policyData.data ?
           <HTML source={{ html: AuthStore.policyData.data }}
             containerStyle={{ padding: 10 }}
-            contentWidth={Dimensions.get("window").width - 40} />
+            contentWidth={Dimensions.get("window").width - 40}
+            // tagsStyles={{ span: { fontStyle: 'bold' } }}
+            ignoredStyles={['font-weight', 'fontWeight']}
+            onParsed={(dom, RNElements) => {
+              // Find the index of the first paragraph
+              console.log("RneElement :: ", RNElements)
+              let all_slot = RNElements.map(e => {
+                let slot = { ...e }
+                if (slot?.attribs?.style && typeof slot.attribs.style == "string" && slot.attribs.style.includes('Sarabun, sans-serif')) {
+                  let oriTxt = slot.attribs.style
+                  let parseTxt = oriTxt.replace("Sarabun, sans-serif", "Kanit-Medium")
+                  slot.attribs.style = parseTxt
+                }
+                return slot
+              })
+              return all_slot;
+            }}
+          />
           : <Text>{""}</Text>}
       </ScrollView>
       <View style={BUTTON_ROOT}>
