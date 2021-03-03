@@ -1027,7 +1027,6 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   const ownerUserId = owner?.userId || ''
   const myUserId = ProfileStore.data?.userId || ''
   console.log("Job Detail data :: ", JSON.parse(JSON.stringify(CarriersJobStore.data)))
-  console.log('jobStatus', jobStatus)
   return (
     <View style={CONTAINER}>
       {isLoaded && <ModalLoading size={'large'} color={color.primary} visible={isLoaded} />}
@@ -1229,9 +1228,14 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         </View>)}
 
         {/* render carrier profile and truck list */}
-        {/* {actionStatus === 'IM_OWN_CAR_AND_ASK_FOR_BOOKING_HIM_JOB' && (<View>
-          <TruckItem {...truck} />
-        </View>)} */}
+        {actionStatus === 'IM_OWN_CAR_AND_ASK_FOR_BOOKING_HIM_JOB' && (<View>
+          {quotations?.map(({ truck, id }, index: number) => {
+            // if (myUserId === truck.owner?.userId) {
+            return <TruckItem key={index} {...truck} quotationId={id} requiredFooter={false} />
+            // }
+            // return null
+          })}
+        </View>)}
 
         {actionStatus === 'IM_OWN_CAR_AND_HAVE_JOB_ASK_FOR_BOOKING' && (<View>
           {quotations?.map(({ truck, id }, index: number) => {
@@ -1270,9 +1274,9 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         </View>)}
 
         {/* render carrier profile and truck list */}
-        {/* {statusScreen === 2 && jobStatus !== 2 && (<View>
-          <TruckItem {...truck} />
-        </View>)} */}
+        {statusScreen === 2 && jobStatus !== 2 && (<View>
+          <TruckItem {...truck} requiredFooter={false} />
+        </View>)}
 
       </Modalize>
 
