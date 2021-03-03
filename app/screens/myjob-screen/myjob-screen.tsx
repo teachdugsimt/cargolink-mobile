@@ -117,7 +117,8 @@ const Item = (data) => {
     quotationNumber,
     actionStatus,
     statusScreen,
-  } = JSON.parse(JSON.stringify(data))
+    onConfirm
+  } = data
 
   const myUserId = ProfileStore.data?.userId || ''
   const ownerUserId = owner?.userId || null
@@ -205,7 +206,7 @@ const Item = (data) => {
   }
 
   const onConfirmJob = (id: string) => {
-    BookingStore.finishJob(id)
+    onConfirm(id)
     setVisible(false)
   }
 
@@ -433,7 +434,12 @@ export const MyJobScreen = observer(function MyJobScreen() {
     }
   }, [])
 
-  const renderItem = ({ item }) => <Item {...item} statusScreen={status} />
+  const renderItem = ({ item }) => <Item {...item} statusScreen={status} onConfirm={(id: string) => onConfirm(id)} />
+
+  const onConfirm = (id: string) => {
+    BookingStore.finishJob(id)
+    onRefresh()
+  }
 
   const onScrollList = () => {
     console.log('onScrollList')
