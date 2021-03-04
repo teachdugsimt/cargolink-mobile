@@ -4,8 +4,8 @@
  *
  * You'll likely spend most of your time in this file.
  */
-import React from "react"
-
+import React, { } from "react"
+import { observer } from 'mobx-react-lite'
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { HeaderCenter, HeaderLeft, TabBar } from "../components"
@@ -18,9 +18,12 @@ import {
 } from "../screens"
 import { color } from "../theme"
 import { translate } from "../i18n"
+import { useStores } from '../models'
 
 const Tab = createMaterialTopTabNavigator();
-const MyjobTab = () => {
+
+const MyjobTab = observer(function MyjobTab() {
+  const { versatileStore } = useStores()
   return (
     <Tab.Navigator
       initialRouteName={'new'}
@@ -30,13 +33,14 @@ const MyjobTab = () => {
         inactiveTintColor: color.textBlack,
         labelStyle: { fontFamily: "Kanit-Medium", fontSize: 16 },
         indicatorStyle: { backgroundColor: color.textBlack }
-      }}>
-      <Tab.Screen name="new" options={{ tabBarLabel: translate('myJobScreen.workOpen') }} component={MyJobScreen} initialParams={{ status: 0 }} />
-      <Tab.Screen name="inprogress" options={{ tabBarLabel: translate('myJobScreen.workInProgress') }} component={MyJobScreen} initialParams={{ status: 1 }} />
-      <Tab.Screen name="done" options={{ tabBarLabel: translate('myJobScreen.workDone') }} component={MyJobScreen} initialParams={{ status: 2 }} />
+      }}
+    >
+      <Tab.Screen name="new" options={{ tabBarLabel: translate('myJobScreen.workOpen', { locale: versatileStore.language }) }} component={MyJobScreen} initialParams={{ status: 0 }} />
+      <Tab.Screen name="inprogress" options={{ tabBarLabel: translate('myJobScreen.workInProgress', { locale: versatileStore.language }) }} component={MyJobScreen} initialParams={{ status: 1 }} />
+      <Tab.Screen name="done" options={{ tabBarLabel: translate('myJobScreen.workDone', { locale: versatileStore.language }) }} component={MyJobScreen} initialParams={{ status: 2 }} />
     </Tab.Navigator>
   );
-}
+})
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
  * as well as what properties (if any) they might take when navigating to them.
@@ -65,7 +69,6 @@ export type PrimaryMyJobParamList = {
 const Stack = createNativeStackNavigator<PrimaryMyJobParamList>()
 
 export function MyJobNavigator() {
-
   return (
     <Stack.Navigator
       initialRouteName={"myjob"}
