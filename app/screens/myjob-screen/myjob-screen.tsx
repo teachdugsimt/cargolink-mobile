@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react"
-import { View, ViewStyle, TextStyle, TouchableOpacity, FlatList, RefreshControl, Dimensions, Image, ImageStyle } from "react-native"
+import { View, ViewStyle, TextStyle, TouchableOpacity, FlatList, RefreshControl, Dimensions, Image, ImageStyle, Platform } from "react-native"
 import { observer } from "mobx-react-lite"
 import { EmptyListMessage, SearchItem, Text, HeaderCenter, ModalAlert, Button } from "../../components"
 import { color, spacing, images as imageComponent } from "../../theme"
@@ -18,7 +18,8 @@ import { useStores } from "../../models/root-store/root-store-context";
 import ProfileStore from "../../store/profile-store/profile-store"
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import BookingStore from "../../store/booking-store/booking-store";
-
+import { TabView, TabBar } from 'react-native-tab-view';
+import Animated from 'react-native-reanimated';
 const COLOR_WHITE: TextStyle = { color: color.textWhite }
 const FULL: ViewStyle = { flex: 1 }
 
@@ -409,20 +410,29 @@ const Item = (data) => {
 
 let PAGE = 0
 
-export const MyJobScreen = observer(function MyJobScreen() {
+export const MyJobScreen = observer(function MyJobScreen(props: any) {
   const navigation = useNavigation()
 
+  const [index, setIndex] = useState<number>(0);
+  const [routes, setroutes] = useState([
+    { key: '0', title: translate('myJobScreen.workOpen') },
+    { key: '1', title: translate('myJobScreen.workInProgress') },
+    { key: '2', title: translate('myJobScreen.workDone') },
+  ]);
   const route = useRoute()
-  const { status }: any = route?.params || {}
+  // const { status }: any = route?.params || {}
   const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState<boolean>(true)
 
+  const clearBookingList = () => {
+    PAGE = 0
+    BookingStore.clearList()
+  }
   useFocusEffect(
     useCallback(() => {
-      // ShipperJobStore.find({ type: status });
-      BookingStore.findSummaryJob({ type: status });
+      // ShipperJobStore.find({ type: index });
+      BookingStore.findSummaryJob({ type: index });
       return () => {
-        PAGE = 0
-        BookingStore.clearList()
+        clearBookingList()
         // ShipperJobStore.setDefaultOfList()
       }
     }, [])
@@ -434,7 +444,7 @@ export const MyJobScreen = observer(function MyJobScreen() {
     }
   }, [])
 
-  const renderItem = ({ item }) => <Item {...item} statusScreen={status} onConfirm={(id: string) => onConfirm(id)} />
+  const renderItem = ({ item }) => <Item {...item} statusScreen={index} onConfirm={(id: string) => onConfirm(id)} />
 
   const onConfirm = (id: string) => {
     BookingStore.finishJob(id)
@@ -449,7 +459,7 @@ export const MyJobScreen = observer(function MyJobScreen() {
       // && BookingStore.previousListLength !== listLength
     ) {
       PAGE++
-      const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE, type: status }
+      const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE, type: index }
       BookingStore.findSummaryJob(advSearch)
       setOnEndReachedCalledDuringMomentum(true)
     }
@@ -457,19 +467,25 @@ export const MyJobScreen = observer(function MyJobScreen() {
 
   const onRefresh = () => {
     PAGE = 0
-    BookingStore.findSummaryJob({ type: status, page: PAGE })
-    // ShipperJobStore.find({ type: status })
+    BookingStore.findSummaryJob({ type: index, page: PAGE })
+    // ShipperJobStore.find({ type: index })
   }
 
   const { versatileStore, tokenStore } = useStores()
   const [lang, setlang] = useState(null)
   useEffect(() => {
     if (lang != versatileStore.language) {
+      setroutes([
+        { key: '0', title: translate('myJobScreen.workOpen') },
+        { key: '1', title: translate('myJobScreen.workInProgress') },
+        { key: '2', title: translate('myJobScreen.workDone') },
+      ])
       setlang(versatileStore.language)
     }
   }, [versatileStore.language])
 
   useEffect(() => {
+    console.log("Route myjob Inprogress : ", route)
     navigation.setOptions({
       headerCenter: () => (
         <HeaderCenter tx={"myJobScreen.myJob"} />
@@ -496,13 +512,74 @@ export const MyJobScreen = observer(function MyJobScreen() {
       }
     />)
 
-  return (
-    <View testID="MyJobScreen" style={FULL}>
+  const renderTabBar = props => {
+    return <TabBar
+      {...props}
+      renderTabBarItem={({ route, onPress, style }) => {
+        return <TouchableOpacity
+          key={`route-${route.title}`}
+          style={[style, {
+            justifyContent: 'center', alignItems: 'center',
+            flex: +route.key == 1 ? 1.25 : 1, height: 50
+          }]}
+          onPress={onPress}
+        >
+          <Text style={[{ fontFamily: 'Kanit-Medium', color: index == +route.key ? color.textWhite : color.textBlack }]}>
+            {route.title}</Text>
+        </TouchableOpacity>
+      }}
+      indicatorStyle={{ backgroundColor: color.dim }}
+      style={{ backgroundColor: color.primary }}
+    />
+  }
+  const [dataList, setdataList] = useState([])
+  const [renderer, setrenderer] = useState(false)
+  useEffect(() => {
+    console.log("Index use Effect :: ", index)
+    clearBookingList()
+    BookingStore.findSummaryJob({ type: index, page: 0 })
+  }, [index])
 
-      <View style={CONTENT}>
-        {ProfileStore.data && tokenStore?.token?.accessToken ? _renderFlatList(BookingStore.list) : _renderFlatList([])}
-      </View>
+  useEffect(() => {
+    if (BookingStore.list != dataList) {
+      setdataList(BookingStore.list)
+      setrenderer(!renderer)
+    }
+  }, [JSON.stringify(BookingStore.list)])
 
-    </View>
-  )
+
+  const renderScene = ({ route }) => {
+    switch (route.key) {
+      case '0':
+        return _renderFlatList(BookingStore.list);
+      case '1':
+        return _renderFlatList(BookingStore.list);
+      case '2':
+        return _renderFlatList(BookingStore.list);
+      default:
+        return null;
+    }
+  };
+
+  const _renderTabView = () => {
+    // BookingStore.findSummaryJob({ type: index });
+    return <TabView
+      navigationState={{ index, routes }}
+      renderTabBar={renderTabBar}
+      renderScene={(nav) => renderScene(nav)}
+      onIndexChange={(ind) => {
+        // clearBookingList()
+        // BookingStore.findSummaryJob({ type: index, page: 0 })
+        setIndex(ind)
+      }}
+      initialLayout={{ width: Dimensions.get('window').width }}
+    />
+  }
+
+  const _renderMainJobScreen = () => (<View testID="MyJobScreen" style={FULL}>
+    {ProfileStore.data && tokenStore?.token?.accessToken ? _renderTabView() : _renderTabView()}
+  </View>)
+
+  if (versatileStore.language == 'th') return _renderMainJobScreen()
+  else return _renderMainJobScreen()
 })

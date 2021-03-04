@@ -63,7 +63,7 @@ export const FavoriteScreen = observer(function FavoriteScreen() {
   const navigation = useNavigation()
 
   const [index, setIndex] = useState<number>(0);
-  const [routes] = useState([
+  const [routes, setroutes] = useState([
     { key: 'favorite', title: translate('favoriteScreen.favoriteList') },
     { key: 'historyCall', title: translate('favoriteScreen.lastestContact') },
   ]);
@@ -73,6 +73,10 @@ export const FavoriteScreen = observer(function FavoriteScreen() {
 
   useEffect(() => {
     if (lang != versatileStore.language) {
+      setroutes([
+        { key: 'favorite', title: translate('favoriteScreen.favoriteList') },
+        { key: 'historyCall', title: translate('favoriteScreen.lastestContact') },
+      ])
       setlang(versatileStore.language)
     }
   }, [versatileStore.language])
@@ -113,13 +117,16 @@ export const FavoriteScreen = observer(function FavoriteScreen() {
     />
   )
 
-  return (
+
+  const _renderMainScreen = () => (
     <TabView
       navigationState={{ index, routes }}
       renderTabBar={renderTabBar}
       renderScene={renderScene}
       onIndexChange={setIndex}
       initialLayout={{ width: Dimensions.get('window').width }}
-    />
-  )
+    />)
+
+  if (versatileStore.language == 'th') return _renderMainScreen()
+  else return _renderMainScreen()
 })

@@ -324,10 +324,8 @@ const BookingStore = types
           }
           console.log("Summary List :: ", arrMerge)
           self.list = mapActionsStatus(JSON.parse(JSON.stringify(arrMerge)))
-          self.loading = false
-        } else {
-          self.loading = false
         }
+        self.loading = false
       } catch (error) {
         console.error("Failed to fetch findSummaryJob : ", error)
         self.loading = false
