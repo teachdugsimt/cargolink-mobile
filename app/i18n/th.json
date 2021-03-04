@@ -75,7 +75,8 @@
     "productName": "กรุณาใส่ชื่อสินค้า",
     "acceptBooking": "ยืนยันการตอบรับ",
     "noticeFastest": "เราจะแจ้งให้ผู้จองทราบโดยเร็วที่สุด",
-    "noPhoneNumber": "ไม่มีเบอร์โทรศัพท์"
+    "noPhoneNumber": "ไม่มีเบอร์โทรศัพท์",
+    "date": "วันที่"
   },
   "commentScreen": {
     "yourComment": "ความคิดเห็นของคุณ",
@@ -292,7 +293,9 @@
     "callbackForOwner": "เมื่อเจ้าของงานกดตอบรับจะมีการติดต่อกลับ",
     "bookedSuccess": "คุณจองงานสำเร็จ",
     "rejectSuccess": "คุณปฏิเสธงานสำเร็จ",
-    "bookATruck": "จองรถ"
+    "bookATruck": "จองรถ",
+    "contact": "ผู้ติดต่อ",
+    "mobileNo": "เบอร์โทรศัพท์"
   },
   "acceptPolicyScreen": {
     "termAndCondition": "เงื่อนไขและข้อตกลงการใช้บริการ",
