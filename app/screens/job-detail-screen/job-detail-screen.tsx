@@ -823,18 +823,18 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   }
 
   const stopListenerTapped = () => {
-    __DEV__ && console.tron.log('stopListenerTapped')
+    console.log('stopListenerTapped')
     callDetector && callDetector.dispose();
   }
 
   const onCall = (jobId: string, phone: string) => {
-    if (ProfileStore.data && tokenStore?.token?.accessToken) {
+    if (phone && ProfileStore.data && tokenStore?.token?.accessToken) {
       const phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
-      __DEV__ && console.tron.log('phoneNumber', phoneNumber)
+      console.log('phoneNumber', phoneNumber)
       Linking.canOpenURL(phoneNumber)
         .then(supported => {
           if (!supported) {
-            __DEV__ && console.tron.log('Phone number is not available');
+            console.log('Phone number is not available');
             Alert.alert('Phone number is not available')
             return false;
           } else {
@@ -844,7 +844,9 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         .then(() => {
           return Linking.openURL(phoneNumber);
         })
-        .catch(err => __DEV__ && console.tron.log('err', err));
+        .catch(err => console.log('err', err));
+    } else if (!phone) {
+      Alert.alert(translate('common.noPhoneNumber'))
     } else {
       navigation.navigate('signin')
     }
@@ -1027,7 +1029,6 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   const ownerUserId = owner?.userId || ''
   const myUserId = ProfileStore.data?.userId || ''
   console.log("Job Detail data :: ", JSON.parse(JSON.stringify(CarriersJobStore.data)))
-  console.log('jobStatus', jobStatus)
   return (
     <View style={CONTAINER}>
       {isLoaded && <ModalLoading size={'large'} color={color.primary} visible={isLoaded} />}
@@ -1229,9 +1230,14 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         </View>)}
 
         {/* render carrier profile and truck list */}
-        {/* {actionStatus === 'IM_OWN_CAR_AND_ASK_FOR_BOOKING_HIM_JOB' && (<View>
-          <TruckItem {...truck} />
-        </View>)} */}
+        {actionStatus === 'IM_OWN_CAR_AND_ASK_FOR_BOOKING_HIM_JOB' && (<View>
+          {quotations?.map(({ truck, id }, index: number) => {
+            // if (myUserId === truck.owner?.userId) {
+            return <TruckItem key={index} {...truck} quotationId={id} requiredFooter={false} />
+            // }
+            // return null
+          })}
+        </View>)}
 
         {actionStatus === 'IM_OWN_CAR_AND_HAVE_JOB_ASK_FOR_BOOKING' && (<View>
           {quotations?.map(({ truck, id }, index: number) => {
@@ -1270,9 +1276,9 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         </View>)}
 
         {/* render carrier profile and truck list */}
-        {/* {statusScreen === 2 && jobStatus !== 2 && (<View>
-          <TruckItem {...truck} />
-        </View>)} */}
+        {statusScreen === 2 && jobStatus !== 2 && (<View>
+          <TruckItem {...truck} requiredFooter={false} />
+        </View>)}
 
       </Modalize>
 

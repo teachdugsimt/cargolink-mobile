@@ -74,7 +74,8 @@
     "updateSuccess": "อัพเดทข้อมูลสำเร็จ",
     "productName": "กรุณาใส่ชื่อสินค้า",
     "acceptBooking": "ยืนยันการตอบรับ",
-    "noticeFastest": "เราจะแจ้งให้ผู้จองทราบโดยเร็วที่สุด"
+    "noticeFastest": "เราจะแจ้งให้ผู้จองทราบโดยเร็วที่สุด",
+    "noPhoneNumber": "ไม่มีเบอร์โทรศัพท์"
   },
   "commentScreen": {
     "yourComment": "ความคิดเห็นของคุณ",
