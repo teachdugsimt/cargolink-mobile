@@ -75,7 +75,8 @@
     "productName": "please input product name",
     "acceptBooking": "Confirm Approve",
     "noticeFastest": "We will notify the guest as soon as possible.",
-    "noPhoneNumber": "No phone number"
+    "noPhoneNumber": "No phone number",
+    "date": "Date"
   },
   "commentScreen": {
     "yourComment": "Your Comment",
@@ -291,7 +292,9 @@
     "callbackForOwner": "When the owner presses to accept, there will be a response.",
     "bookedSuccess": "You have successfully booked the job.",
     "rejectSuccess": "Reject job success",
-    "bookATruck": "Book a truck"
+    "bookATruck": "Book a truck",
+    "contact": "Contact",
+    "mobileNo": "Tel"
   },
   "acceptPolicyScreen": {
     "termAndCondition": "Term and condition",

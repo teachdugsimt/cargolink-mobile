@@ -2,6 +2,7 @@ import React from "react"
 import {
   ImageBackground,
   ImageStyle,
+  Platform,
   TextStyle,
   TouchableOpacity,
   View,
@@ -40,16 +41,17 @@ const STATUS_TEXT: TextStyle = {
 }
 const SUB_TOPIC: TextStyle = {
   paddingTop: spacing[1],
+  width: '70%',
 }
 const INFORMATION_DATE: TextStyle = {
   color: color.line,
-  fontSize: 13,
+  fontSize: 12,
   fontFamily: 'Kanit-Medium',
 }
 const IMAGE: ImageStyle = {
   position: "absolute",
   height: 90,
-  right: spacing[2],
+  right: Platform.OS == "ios" ? 0 : -40,
   bottom: -10,
   aspectRatio: 4 / 2,
 }
@@ -108,7 +110,7 @@ export function VehicleItem(props: VehicleItemProps) {
               text={updatedDate}
             />
           </View>
-          <ImageBackground source={images[MapTruckImageName(image)]} resizeMode={'contain'} style={{ ...IMAGE, ...imageStyle }} />
+          <ImageBackground source={images[MapTruckImageName(image)]} resizeMode={Platform.OS == "ios" ? "contain" : 'center'} style={{ ...IMAGE, ...imageStyle }} />
 
         </View>
 

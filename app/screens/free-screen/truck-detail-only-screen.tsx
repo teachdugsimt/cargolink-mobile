@@ -364,11 +364,11 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
                 transformImage.map((image, index) => {
                   return (
                     <TouchableOpacity style={TOUCHABLE} key={index} onPress={() => {
-                      if (TruckDetailStore.data.id && image && image.source && image.source != 51)
+                      if (image && image.source && image.source != 51)
                         onViewer(index)
                     }
                     }>
-                      <Image style={IMAGE} source={TruckDetailStore.data.id && image?.source ? image.source : imageComponent['noImageAvailable']} key={index} />
+                      <Image style={IMAGE} source={image?.source ? image.source : imageComponent['noImageAvailable']} key={index} />
                     </TouchableOpacity>
                   )
                 })}

@@ -69,7 +69,7 @@ export function HomeNavigator() {
         headerShown: true,
         // gestureEnabled: true,
         headerStyle: {
-          backgroundColor: color.mainTheme,
+          backgroundColor: color.primary,
         },
         headerTitleStyle: {
           fontFamily: 'Kanit-Medium',

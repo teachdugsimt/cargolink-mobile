@@ -85,6 +85,7 @@ const JobModel = {
 const ShipperJob = types.maybeNull(types.model({
   ...JobModel,
   quotations: types.maybeNull(types.array(types.maybeNull(Quotation))),
+  type: types.maybeNull(types.string),
   status: types.maybeNull(types.number),
   quotationNumber: types.maybeNull(types.number),
   isLiked: types.maybeNull(types.optional(types.boolean, false)),
@@ -323,10 +324,8 @@ const BookingStore = types
           }
           console.log("Summary List :: ", arrMerge)
           self.list = mapActionsStatus(JSON.parse(JSON.stringify(arrMerge)))
-          self.loading = false
-        } else {
-          self.loading = false
         }
+        self.loading = false
       } catch (error) {
         console.error("Failed to fetch findSummaryJob : ", error)
         self.loading = false

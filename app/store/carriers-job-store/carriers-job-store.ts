@@ -9,6 +9,11 @@ const apiMyVehicle = new MyVehicleAPI()
 const apiCarriersJob = new CarriersJobAPI()
 const apiGoogleMap = new GoogleMapAPI()
 
+const ImageModel = types.model({
+  object: types.maybeNull(types.string),
+  token: types.maybeNull(types.string),
+})
+
 const truckModal = types.model({
   id: types.maybeNull(types.string),
   truckType: types.maybeNull(types.number),
@@ -38,10 +43,10 @@ const truckModal = types.model({
     }))
   })),
   truckPhotos: types.maybeNull(types.model({
-    front: types.maybeNull(types.string),
-    back: types.maybeNull(types.string),
-    left: types.maybeNull(types.string),
-    right: types.maybeNull(types.string),
+    front: types.maybeNull(ImageModel),
+    back: types.maybeNull(ImageModel),
+    left: types.maybeNull(ImageModel),
+    right: types.maybeNull(ImageModel),
   })),
 })
 
@@ -57,12 +62,13 @@ const QuotationField = types.model({
     createdAt: types.maybeNull(types.string),
     updatedAt: types.maybeNull(types.string),
     approveStatus: types.maybeNull(types.string),
+    phoneNumber: types.maybeNull(types.string),
     registrationNumber: types.maybeNull(types.array(types.maybeNull(types.string))),
     truckPhotos: types.maybeNull(types.model({
-      front: types.maybeNull(types.string),
-      back: types.maybeNull(types.string),
-      left: types.maybeNull(types.string),
-      right: types.maybeNull(types.string),
+      front: types.maybeNull(ImageModel),
+      back: types.maybeNull(ImageModel),
+      left: types.maybeNull(ImageModel),
+      right: types.maybeNull(ImageModel),
     })),
     workingZones: types.maybeNull(types.array(types.maybeNull(types.model({
       region: types.maybeNull(types.number),

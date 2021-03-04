@@ -220,6 +220,14 @@ const TRANSPORT_BY: ViewStyle = {
   marginLeft: spacing[4],
   marginRight: spacing[3],
 }
+const PHONE: ViewStyle = {
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginLeft: spacing[2],
+  padding: spacing[1],
+  borderRadius: Dimensions.get('window').width / 2,
+  backgroundColor: color.line,
+}
 
 const Dot = (data) => (<LottieView
   source={require('../../AnimationJson/dot.json')}
@@ -247,7 +255,9 @@ const CheckMark = (data) => (<LottieView
   onAnimationFinish={data.onAnimationFinish()}
 />)
 
-const PickUpPoint = ({ to, from, distances, onPress, containerStyle = {} }) => {
+const dateFormat = (date: string) => date.replace(/-/g, '/')
+
+const PickUpPoint = ({ to, from, distances, onPress, containerStyle = {}, statusScreen, onCall }) => {
   const [height, setHeight] = useState(0)
 
   const onLayout = (event: LayoutChangeEvent) => {
@@ -274,8 +284,25 @@ const PickUpPoint = ({ to, from, distances, onPress, containerStyle = {} }) => {
             style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 40 : 48, justifyContent: 'flex-end' }}
           />
           <View style={{ flexShrink: 1 }}>
-            <Text text={fromProvinceHeader} style={[LOCATION_TEXT, { width: '80%' }]} numberOfLines={1} />
-            <Text text={from && from.name} style={[LOCATION_TEXT, { color: color.line }]} />
+            <View style={{ width: '80%' }}>
+              <Text text={fromProvinceHeader} style={LOCATION_TEXT} numberOfLines={1} />
+            </View>
+            <View>
+              <View style={{ flex: 1 }}>
+                <Text text={from && from.name} style={[LOCATION_TEXT, { color: color.line }]} />
+              </View>
+              <View style={{ flex: 1, flexDirection: 'row' }}>
+                <Text text={`${translate('common.date')} :`} style={[LOCATION_TEXT, { color: color.line }]} />
+                <Text text={from?.dateTime ? dateFormat(from.dateTime) : '-'} style={[LOCATION_TEXT, { color: color.line }]} />
+              </View>
+              {(statusScreen === 1 || statusScreen === 2) && <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                <Text text={`${translate('jobDetailScreen.contact')} :`} style={[LOCATION_TEXT, { color: color.line }]} />
+                <Text text={from?.contactName || '-'} style={[LOCATION_TEXT, { color: color.line }]} />
+                <TouchableOpacity style={PHONE} onPress={() => onCall(from?.contactMobileNo)}>
+                  <MaterialCommunityIcons name={'phone'} size={18} />
+                </TouchableOpacity>
+              </View>}
+            </View>
           </View>
         </TouchableOpacity>
         {to?.length && to.map((attr, index) => {
@@ -295,8 +322,25 @@ const PickUpPoint = ({ to, from, distances, onPress, containerStyle = {} }) => {
                   style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 40 : 48 }}
                 />
                 <View style={{ flexShrink: 1 }}>
-                  <Text text={fromProvinceHeader} style={LOCATION_TEXT} numberOfLines={1} />
-                  <Text text={attr.name} style={[LOCATION_TEXT, { color: color.line }]} />
+                  <View>
+                    <Text text={fromProvinceHeader} style={LOCATION_TEXT} numberOfLines={1} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text text={attr.name} style={[LOCATION_TEXT, { color: color.line }]} />
+                  </View>
+                  <View>
+                    <View style={{ flex: 1, flexDirection: 'row' }}>
+                      <Text text={`${translate('common.date')} :`} style={[LOCATION_TEXT, { color: color.line }]} />
+                      <Text text={attr?.dateTime ? dateFormat(attr.dateTime) : ''} style={[LOCATION_TEXT, { color: color.line }]} />
+                    </View>
+                    {(statusScreen === 1 || statusScreen === 2) && <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                      <Text text={`${translate('jobDetailScreen.contact')} :`} style={[LOCATION_TEXT, { color: color.line }]} />
+                      <Text text={attr?.contactName || '-'} style={[LOCATION_TEXT, { color: color.line }]} />
+                      <TouchableOpacity style={PHONE} onPress={() => onCall(attr?.contactMobileNo)}>
+                        <MaterialCommunityIcons name={'phone'} size={18} />
+                      </TouchableOpacity>
+                    </View>}
+                  </View>
                 </View>
               </TouchableOpacity>
               <View style={{ alignItems: 'center', flex: 1 }}>
@@ -683,10 +727,15 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     bookerDetail.forEach((e: any, i: number) => {
       tmp_detail.push({
         id: e.id || '',
-        image: e.avatar?.object || '',
-        imageToken: e.avatar?.token || '',
-        name: e.companyName || e.fullName || '',
-        date: e.bookingDatetime || ''
+        // image: e.avatar?.object || '',
+        // imageToken: e.avatar?.token || '',
+        // name: e.companyName || e.fullName || '',
+        image: e?.truck?.owner?.avatar?.object || '',
+        imageToken: e?.truck?.owner?.avatar?.token || '',
+        name: e?.truck?.owner?.companyName || e?.truck?.owner?.fullName || '',
+        date: e.bookingDatetime || '',
+        owner: e?.truck?.owner || null,
+        truck: e.truck || {}
       })
     })
     setarrBooker(tmp_detail)
@@ -869,8 +918,11 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     modalizeRef.current?.close()
   }
 
-  const visibleProfile = (id: string, imageUrl: string, imageToken: string) => {
-    console.log("ID BOOKING :: ", id)
+  const visibleProfile = (truckOwner: any) => {
+    const userId = truckOwner?.userId
+    console.log("user id :: ", id)
+    const imageUrl = truckOwner?.avatar?.object
+    const imageToken = truckOwner?.avatar?.token
     const imageSource = imageUrl && imageToken ? {
       source: {
         uri: imageUrl,
@@ -883,9 +935,8 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
       resizeMode: 'cover'
     } : null
 
-    CarriersJobStore.setProfile({ ...owner, imageProps: JSON.stringify(imageSource) })
+    CarriersJobStore.setProfile({ ...truckOwner, imageProps: JSON.stringify(imageSource) })
 
-    const userId = CarriersJobStore.data?.owner?.userId
     ProfileStore.getProfileReporter(userId)
     UserJobStore.find({
       userId: userId,
@@ -1029,6 +1080,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   const ownerUserId = owner?.userId || ''
   const myUserId = ProfileStore.data?.userId || ''
   console.log("Job Detail data :: ", JSON.parse(JSON.stringify(CarriersJobStore.data)))
+  console.log('route.name', route.name)
   return (
     <View style={CONTAINER}>
       {isLoaded && <ModalLoading size={'large'} color={color.primary} visible={isLoaded} />}
@@ -1110,6 +1162,8 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
               containerStyle={{ paddingBottom: spacing[4] }}
               distances={CarriersJobStore.distances}
               onPress={(lat, lng) => changeRegion(lat, lng)}
+              statusScreen={statusScreen}
+              onCall={(contactMobileNo: string) => onCall(id, contactMobileNo)}
             />
             <View style={{ ...BOTTOM_LINE, ...LOCATION_BOX, flexDirection: 'row', paddingBottom: spacing[3] }}>
               <View style={{ ...LOCATION, flex: 3 }}>
@@ -1200,7 +1254,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
               detailStyle={{ color: color.line }}
               btnStyle={{ paddingVertical: 2, paddingHorizontal: spacing[2] }}
               btnTextStyle={{ fontSize: 12, paddingLeft: spacing[1] }}
-              onToggle={() => visibleProfile(booker.id, booker.image, booker.imageToken)}
+              onToggle={() => visibleProfile(booker?.owner)}
             />)}
           </View>}
 
@@ -1232,10 +1286,10 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         {/* render carrier profile and truck list */}
         {actionStatus === 'IM_OWN_CAR_AND_ASK_FOR_BOOKING_HIM_JOB' && (<View>
           {quotations?.map(({ truck, id }, index: number) => {
-            // if (myUserId === truck.owner?.userId) {
-            return <TruckItem key={index} {...truck} quotationId={id} requiredFooter={false} />
-            // }
-            // return null
+            if (myUserId === truck.owner?.userId) {
+              return <TruckItem key={index} {...truck} quotationId={id} requiredFooter={false} />
+            }
+            return null
           })}
         </View>)}
 
@@ -1255,7 +1309,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             <View>
               <Text tx={'myJobScreen.transportBy'} style={{ color: color.line }} />
             </View>
-            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} activeOpacity={1} onPress={() => visibleProfile(truck.id, truck?.owner?.avatar?.object, truck?.owner?.avatar?.token)} >
+            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} activeOpacity={1} onPress={() => visibleProfile(truck?.owner)} >
               <Text text={truck?.owner?.companyName || ''} style={{ paddingRight: spacing[2] }} />
               <View style={LOGO_ROOT}>
                 <Image
@@ -1277,6 +1331,27 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
         {/* render carrier profile and truck list */}
         {statusScreen === 2 && jobStatus !== 2 && (<View>
+          <View style={TRANSPORT_BY}>
+            <View>
+              <Text tx={'myJobScreen.transportBy'} style={{ color: color.line }} />
+            </View>
+            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} activeOpacity={1} onPress={() => visibleProfile(truck?.owner)} >
+              <Text text={truck?.owner?.companyName || ''} style={{ paddingRight: spacing[2] }} />
+              <View style={LOGO_ROOT}>
+                <Image
+                  style={LOGO}
+                  source={{
+                    uri: truck?.owner?.avatar?.object || null,
+                    method: 'GET',
+                    headers: {
+                      Authorization: `Bearer ${truck?.owner?.avatar?.token || null}`,
+                      adminAuth: truck?.owner?.avatar?.token || null
+                    },
+                  }}
+                  resizeMode={'cover'} />
+              </View>
+            </TouchableOpacity>
+          </View>
           <TruckItem {...truck} requiredFooter={false} />
         </View>)}
 
