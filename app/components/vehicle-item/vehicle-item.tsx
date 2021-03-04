@@ -40,6 +40,7 @@ const STATUS_TEXT: TextStyle = {
 }
 const SUB_TOPIC: TextStyle = {
   paddingTop: spacing[1],
+  width: '50%',
 }
 const INFORMATION_DATE: TextStyle = {
   color: color.line,
@@ -49,7 +50,7 @@ const INFORMATION_DATE: TextStyle = {
 const IMAGE: ImageStyle = {
   position: "absolute",
   height: 90,
-  right: spacing[2],
+  right: spacing[1],
   bottom: -10,
   aspectRatio: 4 / 2,
 }
