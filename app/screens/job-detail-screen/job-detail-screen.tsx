@@ -595,10 +595,12 @@ const RenderOwnerTruck = ({ truck }) => {
     CarriersJobStore.setProfile({ ...truck.owner, imageProps: JSON.stringify(imageSource) })
 
     ProfileStore.getProfileReporter(id)
-    UserJobStore.find({
-      userId: id,
-      page: 0,
-    })
+    UserJobStore.setUserId(id)
+    // UserJobStore.find({
+    //   userId: id,
+    //   page: 0,
+    //   type: 1,
+    // })
 
     navigation.navigate('bookerProfile', { statusScreen })
   }
@@ -702,7 +704,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         CarriersJobStore.setDefaultOfData()
         CarriersJobStore.updateFavoriteInList(FavoriteJobStore.id, FavoriteJobStore.liked)
       }
-      CarriersJobStore.setProfile({})
+      // CarriersJobStore.setProfile({})
     }
   }, [])
 
@@ -785,10 +787,12 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
     const userId = CarriersJobStore.profile.userId
     ProfileStore.getProfileReporter(userId)
-    UserJobStore.find({
-      userId: userId,
-      page: 0,
-    })
+    UserJobStore.setUserId(userId)
+    // UserJobStore.find({
+    //   userId: userId,
+    //   page: 0,
+    //   type: 1,
+    // })
     modalizeRef.current?.close();
     if (route.name === 'jobDetail') {
       navigation.navigate('carrierProfile')
@@ -938,10 +942,12 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     CarriersJobStore.setProfile({ ...truckOwner, imageProps: JSON.stringify(imageSource) })
 
     ProfileStore.getProfileReporter(userId)
-    UserJobStore.find({
-      userId: userId,
-      page: 0,
-    })
+    UserJobStore.setUserId(userId)
+    // UserJobStore.find({
+    //   userId: userId,
+    //   page: 0,
+    //   type: 1
+    // })
     navigation.navigate('bookerProfile', {
       isBooker: true,
       bookingId: id,

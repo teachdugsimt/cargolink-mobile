@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { observer } from 'mobx-react-lite'
-import { Dimensions, FlatList, Image, ImageProps, ImageStyle, RefreshControl, ScrollView, TextStyle, TouchableOpacity, View, ViewStyle, Animated, SafeAreaView } from 'react-native'
-import { Button, EmptyListMessage, Icon, ModalAlert, ModalLoading, RatingStart, Screen, SearchItem, Text } from '../../components'
+import { Dimensions, FlatList, Image, ImageStyle, ScrollView, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native'
+import { Button, Icon, ModalAlert, RatingStart, Text } from '../../components'
 import { translate } from '../../i18n'
 import { spacing, images as imageComponent, color, images } from '../../theme'
-import { TabBarNavigation } from './tab-bar-navigation'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import LottieView from 'lottie-react-native';
 import ProfileStore from '../../store/profile-store/profile-store'
@@ -12,11 +11,11 @@ import UserJobStore from '../../store/user-job-store/user-job-store'
 import CarriersJobStore from '../../store/carriers-job-store/carriers-job-store'
 import { GetTruckType } from "../../utils/get-truck-type"
 import { MapTruckImageName } from '../../utils/map-truck-image-name'
-import FavoriteJobStore from '../../store/carriers-job-store/favorite-job-store'
-import { useStores } from '../../models'
-import Feather from 'react-native-vector-icons/Feather'
-import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import BookingStore from '../../store/booking-store/booking-store'
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { TabItem } from "./tab-item";
+
+const Tab = createMaterialTopTabNavigator();
 
 interface CarrierProfileProps {
   isBooker?: boolean
@@ -231,136 +230,11 @@ const RenderButtonAlert = ({ onCloseModal, onConfirmJob }) => {
 
 const RenderImageAlert = () => (<Image source={images['workYellowIcon']} width={75} height={75} />)
 
-const JobItem = (data) => {
-  const {
-    id,
-    productName,
-    truckType,
-    requiredTruckAmount,
-    from,
-    to,
-    owner,
-    isLiked,
-  } = data
-
-  const { tokenStore } = useStores()
-
-  const navigation = useNavigation()
-
-  const onPress = () => {
-    // CarriersJobStore.setProfile({ ...owner, imageProps: JSON.stringify(imageSource) })
-    CarriersJobStore.setDefaultOfData()
-    CarriersJobStore.findOne(id)
-    navigation.navigate('jobDetailOwner')
-  }
-
-  const onToggleHeart = (data) => {
-    if (tokenStore?.token?.accessToken) {
-      FavoriteJobStore.add(data.id)
-      CarriersJobStore.updateFavoriteInList(data.id, data.isLike)
-    } else {
-      navigation.navigate('signin')
-    }
-  }
-
-  const typeOfTruck = GetTruckType(+truckType)?.name || `${translate('jobDetailScreen.truckType')} : ${translate('common.notSpecified')}`
-
-  return (
-    <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
-      <SearchItem
-        {
-        ...{
-          id,
-          fromText: from?.name || '',
-          toText: to?.map(location => location.name).join(', ') || '',
-          count: requiredTruckAmount || '',
-          productName: productName,
-          truckType: typeOfTruck,
-          viewDetail: true,
-          postBy: owner?.companyName || '',
-          isVerified: false,
-          isLike: isLiked,
-          backgroundImage: imageComponent[MapTruckImageName(+truckType) || 'truck'],
-          rating: '0',
-          bottomComponent: () => <></>,
-          containerStyle: {
-            paddingTop: spacing[2],
-            borderRadius: 6
-          },
-          onPress: () => onPress(),
-          onToggleHeart
-        }
-        }
-      />
-    </View>
-  )
-}
-
-const Item = () => {
-
-  const [isActive, setIsActive] = useState<number>(0)
-
-  return (
-    <View>
-
-      <View style={{ flexDirection: 'row' }}>
-        <TouchableOpacity
-          style={[SECTION, {
-            alignItems: 'center',
-            borderBottomWidth: 3,
-            borderBottomColor: isActive === 0 ? color.dim : color.transparent,
-            flex: 1,
-          }]}
-          onPress={() => setIsActive(0)}>
-          <Text tx={'shipperProfileScreen.workInProgress'} preset={'topic'} />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[SECTION, {
-            alignItems: 'center',
-            borderBottomWidth: 3,
-            borderBottomColor: isActive === 1 ? color.dim : color.transparent,
-            flex: 1,
-          }]}
-          onPress={() => setIsActive(1)}>
-          <Text tx={'shipperProfileScreen.pastWork'} preset={'topic'} />
-        </TouchableOpacity>
-      </View>
-
-      {isActive === 0 && <FlatList
-        data={UserJobStore.list || []}
-        renderItem={({ item }) => {
-          return <JobItem {...item} />
-        }}
-        keyExtractor={item => item.id.toString()}
-        onEndReachedThreshold={0.1}
-        contentContainerStyle={{ flexGrow: 1 }}
-        ListEmptyComponent={<EmptyListMessage containerStyle={{ top: 0 }} />}
-      />}
-
-      {isActive === 1 && <FlatList
-        data={UserJobStore.list || []}
-        renderItem={({ item }) => {
-          return <JobItem {...item} />
-        }}
-        keyExtractor={item => item.id.toString()}
-        onEndReachedThreshold={0.1}
-        contentContainerStyle={{ flexGrow: 1 }}
-        ListEmptyComponent={<EmptyListMessage containerStyle={{ top: 0 }} />}
-      />}
-
-    </View>
-  )
-}
-
-let PAGE = 0
-
 export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
   const navigation = useNavigation()
 
   const [visibleModal, setVisibleModal] = useState<boolean>(false)
   const [isBokking, setIsBooking] = useState<boolean>(false)
-  const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState<boolean>(true)
   const [showMore, setShowMore] = useState<boolean>(false)
   const scrollRef = useRef<FlatList>(null);
 
@@ -407,18 +281,6 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
     setIsBooking(true)
   }
 
-  const onScrollList = () => {
-    if (!onEndReachedCalledDuringMomentum
-      && UserJobStore.list.length >= 10
-      && !UserJobStore.loading
-    ) {
-      PAGE += 1
-      const filter = { userId: CarriersJobStore.profile?.userId, page: PAGE }
-      UserJobStore.find(filter)
-      setOnEndReachedCalledDuringMomentum(true)
-    }
-  }
-
   const onToggle = () => {
     if (showMore) {
       scrollRef?.current?.scrollToOffset({
@@ -451,8 +313,6 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
     buttonComponent: !isBokking ? () => <RenderButtonAlert onCloseModal={onCloseModal} onConfirmJob={onConfirmJobSuccess} /> : null,
     visible: visibleModal,
   }
-
-  const renderItem = ({ item }) => (<Item {...item} owner={CarriersJobStore.profile} />)
 
   const imageProps = CarriersJobStore.profile?.imageProps ? JSON.parse(CarriersJobStore.profile.imageProps) : ''
 
@@ -498,10 +358,16 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
     </View> */}
   </>)
 
+  const inprogressBar = route.name === 'bookerProfile'
+    ? 'inprogress-booker'
+    : (route.name === 'favoriteCarrierProfile' ? 'inprogress-favorite' : 'inprogress-carrier')
+
+  const doneBar = route.name === 'bookerProfile'
+    ? 'done-booker'
+    : (route.name === 'favoriteCarrierProfile' ? 'done-favorite' : 'done-carrier')
+
   return (
     <View style={CONTAINER}>
-
-      {/* <ModalLoading size={'large'} color={color.primary} visible={ProfileStore.loading_report_profile} /> */}
 
       <View style={[ROW, { padding: spacing[5], ...SPACE_BOTTOM }]}>
         <View style={{ flex: 1 }} >
@@ -513,54 +379,30 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
         </View>
       </View>
 
-      {/* <ScrollView
+      <ScrollView
         onScroll={({ nativeEvent }) => { }}
         style={{}}
         scrollEventThrottle={400}
         contentContainerStyle={{ flexGrow: 1 }}
       >
-        <View style={{}}>
-          <TabBarNavigation data={UserJobStore.list} />
-        </View>
-      </ScrollView> */}
 
-      {/* <FlatList
-        ref={scrollRef}
-        data={UserJobStore.list || []}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        onEndReached={onScrollList}
-        onEndReachedThreshold={0.1}
-        contentContainerStyle={{ flexGrow: 1 }}
-        ListEmptyComponent={<EmptyListMessage containerStyle={{ top: 0 }} />}
-        ListHeaderComponent={HeaderComponent}
-        onMomentumScrollBegin={() => setOnEndReachedCalledDuringMomentum(false)}
-        refreshControl={
-          <RefreshControl
-            // refreshing={CarriersJobStore.loading}
-            refreshing={ProfileStore.loading_report_profile}
-            onRefresh={() => console.log('onRefresh')}
-          />
-        }
-      /> */}
+        <HeaderComponent />
 
-      <FlatList
-        ref={scrollRef}
-        data={[{ id: Date.now().toString() }]}
-        renderItem={renderItem}
-        onEndReachedThreshold={0.1}
-        keyExtractor={item => item.id}
-        contentContainerStyle={{ flexGrow: 1 }}
-        ListEmptyComponent={<EmptyListMessage containerStyle={{ top: 0 }} />}
-        ListHeaderComponent={HeaderComponent}
-        onMomentumScrollBegin={() => setOnEndReachedCalledDuringMomentum(false)}
-      // refreshControl={
-      //   <RefreshControl
-      //     refreshing={ProfileStore.loading_report_profile}
-      //     onRefresh={() => console.log('onRefresh')}
-      //   />
-      // }
-      />
+        <Tab.Navigator
+          initialRouteName={'new'}
+          tabBarOptions={{
+            style: { backgroundColor: color.primary, borderColor: color.line, borderBottomColor: color.line },
+            activeTintColor: color.textWhite,
+            inactiveTintColor: color.textBlack,
+            labelStyle: { fontFamily: "Kanit-Medium", fontSize: 16 },
+            indicatorStyle: { backgroundColor: color.textBlack }
+          }}
+        >
+          <Tab.Screen name={inprogressBar} options={{ tabBarLabel: translate('shipperProfileScreen.workInProgress') }} component={TabItem} initialParams={{ status: 1 }} />
+          <Tab.Screen name={doneBar} options={{ tabBarLabel: translate('shipperProfileScreen.pastWork') }} component={TabItem} initialParams={{ status: 2 }} />
+        </Tab.Navigator>
+
+      </ScrollView>
 
       {isBooker && statusScreen == 0 && (<>
         <View style={BOTTOM_ROOT}>
