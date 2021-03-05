@@ -71,10 +71,6 @@ export function HomeNavigator() {
         headerStyle: {
           backgroundColor: color.primary,
         },
-        headerTitleStyle: {
-          fontFamily: 'Kanit-Medium',
-          fontSize: 20
-        },
         stackAnimation: 'slide_from_right',
       }}
     >
