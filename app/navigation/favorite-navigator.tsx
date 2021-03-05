@@ -43,10 +43,6 @@ export function FavoriteNavigator() {
         headerStyle: {
           backgroundColor: color.mainTheme,
         },
-        headerTitleStyle: {
-          fontFamily: 'Kanit-Medium',
-          fontSize: 20
-        },
         stackAnimation: 'slide_from_right',
       }}
     >
