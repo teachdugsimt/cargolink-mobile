@@ -131,6 +131,8 @@ const BookingStore = types
     loading_finish_job: types.maybeNull(types.boolean),
     error_finish_job: types.maybeNull(types.string),
 
+    status_myjob: types.maybeNull(types.number)
+
   })
   .actions((self) => ({
 
@@ -334,6 +336,9 @@ const BookingStore = types
     }),
     clearList() {
       self.list = cast([])
+    },
+    setStatus(status) {
+      self.status_myjob = status
     }
   }))
   .views((self) => ({
@@ -371,6 +376,8 @@ const BookingStore = types
     finish_job: null,
     loading_finish_job: false,
     error_finish_job: "",
+
+    status_myjob: 0
 
   })
 

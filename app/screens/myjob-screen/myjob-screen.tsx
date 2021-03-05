@@ -19,7 +19,8 @@ import ProfileStore from "../../store/profile-store/profile-store"
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import BookingStore from "../../store/booking-store/booking-store";
 import { TabView, TabBar } from 'react-native-tab-view';
-import Animated from 'react-native-reanimated';
+
+
 const COLOR_WHITE: TextStyle = { color: color.textWhite }
 const FULL: ViewStyle = { flex: 1 }
 
@@ -413,13 +414,12 @@ let PAGE = 0
 export const MyJobScreen = observer(function MyJobScreen(props: any) {
   const navigation = useNavigation()
 
-  const [index, setIndex] = useState<number>(0);
+  const [index, setIndex] = useState<number>(BookingStore.status_myjob != null ? BookingStore.status_myjob : 0);
   const [routes, setroutes] = useState([
     { key: '0', title: translate('myJobScreen.workOpen') },
     { key: '1', title: translate('myJobScreen.workInProgress') },
     { key: '2', title: translate('myJobScreen.workDone') },
   ]);
-  const route = useRoute()
   // const { status }: any = route?.params || {}
   const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState<boolean>(true)
 
@@ -430,9 +430,9 @@ export const MyJobScreen = observer(function MyJobScreen(props: any) {
   useFocusEffect(
     useCallback(() => {
       // ShipperJobStore.find({ type: index });
-      BookingStore.findSummaryJob({ type: index });
+      BookingStore.findSummaryJob({ type: BookingStore.status_myjob });   // when back from other screen 
       return () => {
-        clearBookingList()
+        clearBookingList() // before go Other screen 
         // ShipperJobStore.setDefaultOfList()
       }
     }, [])
@@ -452,7 +452,6 @@ export const MyJobScreen = observer(function MyJobScreen(props: any) {
   }
 
   const onScrollList = () => {
-    console.log('onScrollList')
     if (!onEndReachedCalledDuringMomentum
       && BookingStore.list.length >= 10
       && !BookingStore.loading
@@ -485,7 +484,6 @@ export const MyJobScreen = observer(function MyJobScreen(props: any) {
   }, [versatileStore.language])
 
   useEffect(() => {
-    console.log("Route myjob Inprogress : ", route)
     navigation.setOptions({
       headerCenter: () => (
         <HeaderCenter tx={"myJobScreen.myJob"} />
@@ -535,7 +533,6 @@ export const MyJobScreen = observer(function MyJobScreen(props: any) {
   const [dataList, setdataList] = useState([])
   const [renderer, setrenderer] = useState(false)
   useEffect(() => {
-    console.log("Index use Effect :: ", index)
     clearBookingList()
     BookingStore.findSummaryJob({ type: index, page: 0 })
   }, [index])
@@ -562,19 +559,18 @@ export const MyJobScreen = observer(function MyJobScreen(props: any) {
   };
 
   const _renderTabView = () => {
-    // BookingStore.findSummaryJob({ type: index });
     return <TabView
       navigationState={{ index, routes }}
       renderTabBar={renderTabBar}
       renderScene={(nav) => renderScene(nav)}
       onIndexChange={(ind) => {
-        // clearBookingList()
-        // BookingStore.findSummaryJob({ type: index, page: 0 })
+        BookingStore.setStatus(ind)
         setIndex(ind)
       }}
       initialLayout={{ width: Dimensions.get('window').width }}
     />
   }
+  console.log("Index In Render Function :: ", index)
 
   const _renderMainJobScreen = () => (<View testID="MyJobScreen" style={FULL}>
     {ProfileStore.data && tokenStore?.token?.accessToken ? _renderTabView() : _renderTabView()}
