@@ -38,6 +38,7 @@ export type PrimaryMyJobParamList = {
   postSuccess: undefined
   bookerProfile: undefined
   truckDetailOnly: undefined
+  myJobDetailOwner: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -119,6 +120,13 @@ export function MyJobNavigator() {
       <Stack.Screen name="truckDetailOnly" component={TruckDetailOnlyScreen}
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"truckDetailScreen.truckDetail"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+
+      <Stack.Screen name="myJobDetailOwner" component={JobDetailScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"jobDetailScreen.jobDetail"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
       />
