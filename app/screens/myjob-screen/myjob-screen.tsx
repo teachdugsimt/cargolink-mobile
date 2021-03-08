@@ -449,6 +449,7 @@ export const MyJobScreen = observer(function MyJobScreen(props: any) {
   const onConfirm = (id: string) => {
     BookingStore.finishJob(id)
     onRefresh()
+    navigation.navigate('myFeedback')
   }
 
   const onScrollList = () => {

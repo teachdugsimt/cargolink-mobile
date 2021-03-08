@@ -11,6 +11,7 @@ import { GetTruckType } from "../../utils/get-truck-type";
 import { translate } from '../../i18n';
 import { MapTruckImageName } from '../../utils/map-truck-image-name';
 import { observer } from 'mobx-react-lite';
+import UserTruckStore from '../../store/user-truck-store/user-truck-store';
 
 const JobItem = (data) => {
   const {
@@ -30,15 +31,11 @@ const JobItem = (data) => {
   const navigation = useNavigation()
 
   const onPress = () => {
-    // CarriersJobStore.setProfile({ ...owner, imageProps: JSON.stringify(imageSource) })
-
     CarriersJobStore.setDefaultOfData()
     CarriersJobStore.findOne(id)
 
-    if (routeName === 'inprogress-carrier') {
-      navigation.navigate('jobDetailOwner')
-    } else if (routeName === 'inprogress-booker') {
-      navigation.navigate('myJobDetailOwner')
+    if (routeName === 'inprogress-shipper') {
+      navigation.navigate('truckDetailOwner')
     } else if (routeName === 'inprogress-favorite') {
       navigation.navigate('favoriteJobDetailOwner')
     }
@@ -52,7 +49,6 @@ const JobItem = (data) => {
       navigation.navigate('signin')
     }
   }
-  // myJobDetail
 
   const typeOfTruck = GetTruckType(+truckType)?.name || `${translate('jobDetailScreen.truckType')} : ${translate('common.notSpecified')}`
 
@@ -136,7 +132,7 @@ export const TabItem = observer(function TabItem() {
       return <JobItem {...item} routeName={route.name} />
     }}
     keyExtractor={item => item.id.toString()}
-    onEndReachedThreshold={0.4}
+    onEndReachedThreshold={0.1}
     contentContainerStyle={{ flexGrow: 1 }}
     ListEmptyComponent={<EmptyListMessage containerStyle={{ top: 0 }} />}
     onEndReached={onScrollList}
