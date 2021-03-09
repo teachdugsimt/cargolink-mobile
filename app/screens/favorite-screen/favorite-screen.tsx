@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { View, ViewStyle, TextStyle, TouchableOpacity, Dimensions } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Text, HeaderCenter } from "../../components"
+import { Text, HeaderCenter, RenderHeader } from "../../components"
 import { color, spacing } from "../../theme"
 import TruckTypeStore from "../../store/truck-type-store/truck-type-store"
 import { translate } from "../../i18n"
@@ -82,14 +82,17 @@ export const FavoriteScreen = observer(function FavoriteScreen() {
   }, [versatileStore.language])
 
   useEffect(() => {
-    navigation.setOptions({
-      headerCenter: () => (
-        <HeaderCenter tx={"favoriteScreen.favoriteList"} />
-      ),
-    });
+    // navigation.setOptions({
+    //   headerCenter: () => (
+    //     <HeaderCenter tx={"favoriteScreen.favoriteList"} />
+    //   ),
+    // });
   }, [lang])
 
   useEffect(() => {
+    // navigation.setOptions({
+    //   headerCenter: () => (<RenderHeader text={"favoriteScreen.favoriteList"} />),
+    // });
     if (!TruckTypeStore.list.length) {
       TruckTypeStore.find()
     }

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { View, ViewStyle, TextStyle, TouchableOpacity, FlatList, RefreshControl, Dimensions, Image, ImageStyle, Platform } from "react-native"
 import { observer } from "mobx-react-lite"
-import { EmptyListMessage, SearchItem, Text, HeaderCenter, ModalAlert, Button } from "../../components"
+import { EmptyListMessage, SearchItem, Text, ModalAlert, Button } from "../../components"
 import { color, spacing, images as imageComponent } from "../../theme"
 import ShipperJobStore from '../../store/shipper-job-store/shipper-job-store'
 import CarriersJobStore from '../../store/carriers-job-store/carriers-job-store'
@@ -439,6 +439,9 @@ export const MyJobScreen = observer(function MyJobScreen(props: any) {
   );
 
   useEffect(() => {
+    // navigation.setOptions({
+    //   headerCenter: () => (<RenderHeader text={"myJobScreen.myJob"} />),
+    // });
     if (!TruckTypeStore.list.length) {
       TruckTypeStore.find()
     }
@@ -484,14 +487,14 @@ export const MyJobScreen = observer(function MyJobScreen(props: any) {
     }
   }, [versatileStore.language])
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerCenter: () => (
-        <HeaderCenter tx={"myJobScreen.myJob"} />
-      ),
-      // headerLeft: () => null
-    });
-  }, [lang])
+  // useEffect(() => {
+  //   navigation.setOptions({
+  //     headerCenter: () => (
+  //       <HeaderCenter tx={"myJobScreen.myJob"} />
+  //     ),
+  //     // headerLeft: () => null
+  //   });
+  // }, [lang])
 
   const _renderFlatList = (data) => (
     <FlatList

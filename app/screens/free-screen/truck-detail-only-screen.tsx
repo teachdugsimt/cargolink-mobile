@@ -189,7 +189,7 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerStyle: { backgroundColor: color.mainTheme },
+      // headerStyle: { backgroundColor: color.mainTheme },
       headerCenter: () => <HeaderCenter tx={headerName} />,
       headerRight: () => (<TouchableOpacity onPress={() => onSelectedHeart(id)}>
         <MaterialCommunityIcons name={liked ? 'heart' : 'heart-outline'} size={24} color={liked ? color.red : color.line} />

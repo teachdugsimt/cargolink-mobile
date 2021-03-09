@@ -7,7 +7,7 @@
 import React, { } from "react"
 import { observer } from 'mobx-react-lite'
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
-import { HeaderCenter, HeaderLeft, TabBar } from "../components"
+import { HeaderCenter, RenderHeader, HeaderLeft, TabBar } from "../components"
 import {
   FeedbackScreen, JobDetailScreen, MyJobScreen, ReceivePointScreen, PostJobScreen,
   CheckInformationScreen,
@@ -52,15 +52,15 @@ export function MyJobNavigator() {
       screenOptions={{
         headerShown: true,
         gestureEnabled: true,
-        headerStyle: {
-          backgroundColor: color.mainTheme,
-        },
+        // headerStyle: { backgroundColor: color.mainTheme, },
         stackAnimation: 'slide_from_right',
       }}
     >
       <Stack.Screen name="myjob" component={MyJobScreen}
         options={({ navigation, route }) => ({
-          headerCenter: () => <HeaderCenter tx={"myJobScreen.myJob"} />,
+          // headerStyle: { backgroundColor: color.mainTheme, },
+          headerTitle: '',
+          headerCenter: () => <RenderHeader text={"myJobScreen.myJob"} />,
           headerLeft: () => null,
           headerHideShadow: true,
         })}

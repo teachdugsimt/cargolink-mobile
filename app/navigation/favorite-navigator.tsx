@@ -7,7 +7,7 @@
 import React from "react"
 
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
-import { HeaderCenter, HeaderLeft } from "../components"
+import { HeaderCenter, RenderHeader, HeaderLeft } from "../components"
 import { FavoriteScreen, JobDetailScreen, TruckDetailScreen, CarrierProfileScreen, ShipperProfileScreen } from "../screens"
 import { color } from "../theme"
 /**
@@ -38,12 +38,11 @@ export function FavoriteNavigator() {
 
   return (
     <Stack.Navigator
+      initialRouteName={"favorite"}
       screenOptions={{
         headerShown: true,
         gestureEnabled: true,
-        headerStyle: {
-          backgroundColor: color.mainTheme,
-        },
+        // headerStyle: {   backgroundColor: color.mainTheme, },
         stackAnimation: 'slide_from_right',
       }}
     >
@@ -52,8 +51,10 @@ export function FavoriteNavigator() {
 
       <Stack.Screen name="favorite" component={FavoriteScreen}
         options={({ navigation, route }) => ({
+          // headerStyle: { backgroundColor: color.primary },
+          headerTitle: '',
           // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
-          headerCenter: () => <HeaderCenter tx={"favoriteScreen.favoriteList"} />,
+          headerCenter: () => <RenderHeader text={"favoriteScreen.favoriteList"} />,
           // headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
           headerHideShadow: true
         })}
