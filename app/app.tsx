@@ -93,7 +93,7 @@ function App(props: any) {
         translate('common.pleaseUpdateNewVersion'),
         [
           {
-            text: translate('common.ok'),
+            text: translate('common.update'),
             onPress: () => Linking.openURL(res.storeUrl)  // open store if update is needed.
           }
         ],
