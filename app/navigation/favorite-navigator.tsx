@@ -28,6 +28,7 @@ export type PrimaryFavoriteParamList = {
   favoriteTruckDetail: undefined,
   favoriteCarrierProfile: undefined,
   favoriteShipperProfile: undefined,
+  favoriteJobDetailOwner: undefined,
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -42,10 +43,6 @@ export function FavoriteNavigator() {
         gestureEnabled: true,
         headerStyle: {
           backgroundColor: color.mainTheme,
-        },
-        headerTitleStyle: {
-          fontFamily: 'Kanit-Medium',
-          fontSize: 20
         },
         stackAnimation: 'slide_from_right',
       }}
@@ -88,6 +85,13 @@ export function FavoriteNavigator() {
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
       />
+
+      <Stack.Screen name="favoriteJobDetailOwner" component={JobDetailScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"jobDetailScreen.jobDetail"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })} />
+
     </Stack.Navigator>
   )
 }

@@ -39,10 +39,10 @@ const vehicleModel = {
   loadingWeight: types.maybeNull(types.number),
   quotations: types.maybeNull(types.array(types.maybeNull(Quotation))),
   quotationNumber: types.maybeNull(types.number),
-  // workingZones: types.optional(types.array(types.model({
-  //   region: types.maybeNull(types.number),
-  //   province: types.maybeNull(types.number),
-  // })), [])
+  workingZones: types.optional(types.array(types.model({
+    region: types.maybeNull(types.number),
+    province: types.maybeNull(types.number),
+  })), [])
 }
 
 const JobDetail = types.model({

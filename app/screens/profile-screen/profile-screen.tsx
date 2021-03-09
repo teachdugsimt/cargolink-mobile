@@ -14,6 +14,7 @@ import { useNavigation } from "@react-navigation/native"
 import { translate } from "../../i18n"
 import { provinceListEn, provinceListTh, regionListEn, regionListTh } from '../home-screen/manage-vehicle/datasource'
 import i18n from 'i18n-js'
+import StatusStore from '../../store/post-job-store/job-status-store'
 
 const { width, height } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -420,8 +421,10 @@ export const ProfileScreen = observer(function ProfileScreen() {
   const _onPressEmpty = (link) => {
 
     let token = tokenStore?.token?.accessToken || null
-    if (token)
+    if (token) {
+      if(link == "postjob") StatusStore.setStatusScreen("add")
       navigation.navigate('Home', { screen: link })
+    }
     else navigation.navigate("signin")
   }
 

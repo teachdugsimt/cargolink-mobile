@@ -44,6 +44,7 @@ const isAutenticated = async () => {
 const UserTruckStore = types
   .model({
     list: types.maybeNull(types.array(types.maybeNull(CarriersJob))),
+    userId: types.maybeNull(types.string),
     loading: types.boolean,
     error: types.maybeNull(types.string),
   })
@@ -97,6 +98,10 @@ const UserTruckStore = types
 
     clearList() {
       self.list = cast([])
+    },
+
+    setUserId(userId: string) {
+      self.userId = userId
     }
 
   }))
