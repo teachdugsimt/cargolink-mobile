@@ -31,6 +31,7 @@ import { MapTruckImageName } from "../../utils/map-truck-image-name"
 import ImageView from 'react-native-image-view';
 import ShippersHistoryCallStore from '../../store/shippers-history-call-store/shippers-history-call-store'
 import UserTruckStore from '../../store/user-truck-store/user-truck-store'
+import UserJobStore from '../../store/user-job-store/user-job-store'
 import ProfileStore from '../../store/profile-store/profile-store'
 import i18n from 'i18n-js'
 import { GetRegion } from "../../utils/get-region"
@@ -260,18 +261,13 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
   }
 
   const onVisiblePorfile = () => {
-    // UserTruckStore.find({
-    //   userId: ShipperTruckStore.profile.userId,
-    //   page: 0,
-    // })
-    // navigation.navigate('shipperProfile')
-
     const userId = ShipperTruckStore.profile.userId
     ProfileStore.getProfileReporter(userId)
-    UserTruckStore.find({
-      userId: userId,
-      page: 0,
-    })
+    UserJobStore.setUserId(userId)
+    // UserTruckStore.find({
+    //   userId: userId,
+    //   page: 0,
+    // })
     if (route.name === 'favoriteTruckDetail') {
       navigation.navigate('favoriteShipperProfile')
     } else {

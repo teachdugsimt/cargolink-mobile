@@ -25,7 +25,7 @@ import {
   useNavigationPersistence,
 } from "./navigation"
 import { RootStore, RootStoreProvider, setupRootStore } from "./models"
-import { Linking } from 'react-native';
+import { Alert, Linking } from 'react-native';
 import VersionCheck from 'react-native-version-check';
 import ScreenOrientation, { PORTRAIT, LANDSCAPE } from "react-native-orientation-locker/ScreenOrientation";
 
@@ -35,6 +35,7 @@ import ScreenOrientation, { PORTRAIT, LANDSCAPE } from "react-native-orientation
 // stack navigation, use `createNativeStackNavigator` in place of `createStackNavigator`:
 // https://github.com/kmagiera/react-native-screens#using-native-stack-navigator
 import { enableScreens } from "react-native-screens"
+import { translate } from "./i18n";
 enableScreens()
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
@@ -87,7 +88,17 @@ function App(props: any) {
     console.log('Latest Version', res)
     console.log(res?.isNeeded);    // true
     if (res?.isNeeded) {
-      Linking.openURL(res.storeUrl);  // open store if update is needed.
+      Alert.alert(
+        translate('common.softwareUpdate'),
+        translate('common.pleaseUpdateNewVersion'),
+        [
+          {
+            text: translate('common.update'),
+            onPress: () => Linking.openURL(res.storeUrl)  // open store if update is needed.
+          }
+        ],
+        { cancelable: false }
+      );
     }
   }).catch(async err => {
     console.log(err)

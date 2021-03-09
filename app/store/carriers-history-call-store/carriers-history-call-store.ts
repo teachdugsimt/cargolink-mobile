@@ -31,7 +31,11 @@ const History = types.model({
     name: types.maybeNull(types.string)
   })),
   truckType: types.maybeNull(types.string),
-  weight: types.maybeNull(types.number)
+  weight: types.maybeNull(types.number),
+  avatar: types.maybeNull(types.model({
+    object: types.maybeNull(types.string),
+    token: types.maybeNull(types.string),
+  }))
 })
 
 const isAutenticated = async () => {

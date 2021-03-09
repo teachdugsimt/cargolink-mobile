@@ -1079,7 +1079,17 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     postBy: owner?.companyName || '',
     rating: '0',
     ratingCount: '0',
-    image: JSON.parse(CarriersJobStore.profile.imageProps),
+    image: JSON.parse(CarriersJobStore.profile.imageProps) || {
+      source: {
+        uri: CarriersJobStore.data?.owner?.avatar?.object,
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${CarriersJobStore.data?.owner?.avatar?.token || ''}`,
+          adminAuth: CarriersJobStore.data?.owner?.avatar?.token
+        },
+      },
+      resizeMode: 'cover'
+    },
   }
 
   const isLoaded = !!(CarriersJobStore.loading || CarriersJobStore.mapLoading)

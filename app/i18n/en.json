@@ -76,7 +76,9 @@
     "acceptBooking": "Confirm Approve",
     "noticeFastest": "We will notify the guest as soon as possible.",
     "noPhoneNumber": "No phone number",
-    "date": "Date"
+    "date": "Date",
+    "pleaseUpdateNewVersion": "Please update to the new version.",
+    "softwareUpdate": "Software Update"
   },
   "commentScreen": {
     "yourComment": "Your Comment",

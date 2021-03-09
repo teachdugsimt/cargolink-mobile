@@ -104,6 +104,7 @@ export const Item = (data) => {
     loadingWeight,
     // registrationNumber,
     callTime,
+    avatar,
   } = data
 
   // const navigation = useNavigation()
@@ -157,6 +158,18 @@ export const Item = (data) => {
     </View>
   )
 
+  const imgSource: ImageProps = avatar ? {
+    source: {
+      uri: avatar?.object,
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${avatar?.token || ''}`,
+        adminAuth: avatar?.token
+      },
+    },
+    resizeMode: 'cover'
+  } : null
+
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
       <ContactList
@@ -166,7 +179,7 @@ export const Item = (data) => {
         callTime={convertTime12to24(callTime)}
         contentRight={contentRight}
         footer={footer}
-        imageSource={''}
+        imageSource={imgSource}
       />
     </View>
   )

@@ -104,6 +104,7 @@ const Item = (data) => {
     to,
     truckType,
     // weight,
+    avatar,
   } = data
 
   // const navigation = useNavigation()
@@ -185,6 +186,18 @@ const Item = (data) => {
     </View>
   )
 
+  const imgSource: ImageProps = avatar ? {
+    source: {
+      uri: avatar?.object,
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${avatar?.token || ''}`,
+        adminAuth: avatar?.token
+      },
+    },
+    resizeMode: 'cover'
+  } : null
+
   return (
     <View style={{ paddingLeft: spacing[2], paddingRight: spacing[2] }}>
       <ContactList
@@ -194,6 +207,7 @@ const Item = (data) => {
         content={contentRender}
         contentRight={contentRight}
         footer={footer}
+        imageSource={imgSource}
       />
     </View>
   )
