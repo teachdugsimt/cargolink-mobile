@@ -13,7 +13,7 @@ import {
   CheckInformationScreen,
   PostSuccessScreen,
   ShipperProfileScreen,
-  CarrierProfileScreen, TruckDetailOnlyScreen
+  CarrierProfileScreen, TruckDetailOnlyScreen, TruckDetailWithProfile
 } from "../screens"
 import { color } from "../theme"
 /**
@@ -39,6 +39,7 @@ export type PrimaryMyJobParamList = {
   bookerProfile: undefined
   truckDetailOnly: undefined
   myJobDetailOwner: undefined
+  truckDetailWithProfile: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -127,6 +128,13 @@ export function MyJobNavigator() {
       <Stack.Screen name="myJobDetailOwner" component={JobDetailScreen}
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"jobDetailScreen.jobDetail"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+
+      <Stack.Screen name="truckDetailWithProfile" component={TruckDetailWithProfile}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"truckDetailScreen.truckDetail"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
       />

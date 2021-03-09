@@ -32,6 +32,7 @@ import MyVehicleStore from '../../store/my-vehicle-store/my-vehicle-store'
 import { GetRegion } from '../../utils/get-region'
 import { MapTruckImageName } from '../../utils/map-truck-image-name'
 import { GetTruckType } from '../../utils/get-truck-type'
+import TruckDetailStore from '../../store/free-store/truck-detail-store'
 
 interface JobDetailProps {
   booker?: Array<any>
@@ -227,6 +228,12 @@ const PHONE: ViewStyle = {
   padding: spacing[1],
   borderRadius: Dimensions.get('window').width / 2,
   backgroundColor: color.line,
+}
+const BTN_VIEW_TRUCK: ViewStyle = {
+  paddingHorizontal: spacing[2],
+  paddingVertical: spacing[1],
+  backgroundColor: color.primary,
+  borderRadius: 4,
 }
 
 const Dot = (data) => (<LottieView
@@ -605,26 +612,39 @@ const RenderOwnerTruck = ({ truck }) => {
     navigation.navigate('bookerProfile', { statusScreen })
   }
 
-  return (<TouchableOpacity
-    activeOpacity={1}
-    style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: spacing[2] }}
-    onPress={() => openProfile(truck?.owner?.userId)}
-  >
-    <View style={LOGO_ROOT}>
-      <Image
-        style={LOGO}
-        source={{
-          uri: truck?.owner?.avatar?.object || null,
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${truck?.owner?.avatar?.token || null}`,
-            adminAuth: truck?.owner?.avatar?.token || null
-          },
-        }}
-        resizeMode={'cover'} />
+  const openTruckDetail = (data: any) => {
+    navigation.navigate('truckDetailOnly', {
+      truckData: data
+    })
+  }
+
+  return (<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: spacing[2] }}>
+    <TouchableOpacity
+      activeOpacity={1}
+      style={[LOGO_ROOT, { flexDirection: 'row', alignItems: 'center', }]}
+      onPress={() => openProfile(truck?.owner?.userId)}
+    >
+      <View>
+        <Image
+          style={LOGO}
+          source={{
+            uri: truck?.owner?.avatar?.object || null,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${truck?.owner?.avatar?.token || null}`,
+              adminAuth: truck?.owner?.avatar?.token || null
+            },
+          }}
+          resizeMode={'cover'} />
+      </View>
+      <Text text={truck?.owner?.companyName || ''} style={{ paddingLeft: spacing[2] }} />
+    </TouchableOpacity>
+    <View>
+      <TouchableOpacity activeOpacity={1} style={BTN_VIEW_TRUCK} onPress={() => openTruckDetail(truck)}>
+        <Text tx={'jobDetailScreen.truckDetail'} />
+      </TouchableOpacity>
     </View>
-    <Text text={truck?.owner?.companyName || ''} style={{ paddingLeft: spacing[2] }} />
-  </TouchableOpacity>)
+  </View>)
 }
 
 let callDetector = undefined
@@ -839,31 +859,32 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   }
 
   const startListenerTapped = (jobId: string) => {
-    __DEV__ && console.tron.log('startListenerTapped')
+    __DEV__ && console.log('startListenerTapped')
     callDetector = new CallDetectorManager((event, phoneNumber) => {
-      __DEV__ && console.tron.log('phoneNumber', phoneNumber)
+      __DEV__ && console.log('phoneNumber', phoneNumber)
       if (event === 'Disconnected') {
-        __DEV__ && console.tron.log('Disconnected')
+        __DEV__ && console.log('Disconnected')
         stopListenerTapped()
         setIsCalling(false)
+        CarriersHistoryCallStore.add({ jobId })
         // route.name === 'jobDetail' ? navigation.navigate('feedback') : navigation.navigate('myFeedback')
         // setTimeout(() => {
         //   setIsCalling(false)
         //   route.name === 'jobDetail' ? navigation.navigate('feedback') : navigation.navigate('myFeedback')
         // }, 800)
       } else if (event === 'Connected') { //  for iOS
-        __DEV__ && console.tron.log('Connected')
+        __DEV__ && console.log('Connected')
       } else if (event === 'Incoming') {
-        __DEV__ && console.tron.log('Incoming')
+        __DEV__ && console.log('Incoming')
       } else if (event === 'Dialing') { //  for iOS
-        __DEV__ && console.tron.log('Dialing')
+        __DEV__ && console.log('Dialing')
         setIsCalling(true)
       } else if (event === 'Offhook') { // for Android
-        __DEV__ && console.tron.log('Offhook')
-        CarriersHistoryCallStore.add({ jobId })
+        __DEV__ && console.log('Offhook')
+        // CarriersHistoryCallStore.add({ jobId })
         setIsCalling(true)
       } else if (event === 'Missed') { // for Android
-        __DEV__ && console.tron.log('Missed')
+        __DEV__ && console.log('Missed')
       }
     },
       false,
@@ -952,6 +973,33 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
       isBooker: true,
       bookingId: id,
       statusScreen
+    })
+  }
+
+  const openTruckDetail = (bookerId: string, truckData: any, ownerData: any) => {
+
+    const imageSource = ownerData?.avatar?.object && ownerData?.avatar?.token ? {
+      source: {
+        uri: ownerData?.avatar?.object || '',
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${ownerData?.avatar?.token || ''}`,
+          adminAuth: ownerData?.avatar?.token
+        },
+      },
+      resizeMode: 'cover'
+    } : null
+
+    CarriersJobStore.setProfile({ ...ownerData, imageProps: JSON.stringify(imageSource) })
+    const userId = CarriersJobStore.profile.userId
+    ProfileStore.getProfileReporter(userId)
+    UserJobStore.setUserId(userId)
+
+    TruckDetailStore.setProfile(ownerData)
+    navigation.navigate('truckDetailWithProfile', {
+      bookerId,
+      truckData: truckData,
+      profile: ownerData,
     })
   }
 
@@ -1097,6 +1145,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   const myUserId = ProfileStore.data?.userId || ''
   console.log("Job Detail data :: ", JSON.parse(JSON.stringify(CarriersJobStore.data)))
   console.log('route.name', route.name)
+  console.log('actionStatus', actionStatus)
   return (
     <View style={CONTAINER}>
       {isLoaded && <ModalLoading size={'large'} color={color.primary} visible={isLoaded} />}
@@ -1270,7 +1319,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
               detailStyle={{ color: color.line }}
               btnStyle={{ paddingVertical: 2, paddingHorizontal: spacing[2] }}
               btnTextStyle={{ fontSize: 12, paddingLeft: spacing[1] }}
-              onToggle={() => visibleProfile(booker?.owner)}
+              onToggle={() => openTruckDetail(booker?.id, booker?.truck, booker?.owner)}
             />)}
           </View>}
 

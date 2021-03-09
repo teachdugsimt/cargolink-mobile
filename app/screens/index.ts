@@ -43,3 +43,4 @@ export * from './job-detail-screen/select-truck-screen/select-truck-screen'
 
 export * from './free-screen/truck-detail-only-screen'
 
+export * from './truck-detail-with-profile-screen/truck-detail-with-profile-screen'
