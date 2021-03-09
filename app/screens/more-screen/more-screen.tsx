@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { View, ViewStyle, TextStyle, TouchableOpacity, Linking, Alert, Image, Platform } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Text, RoundedButton, HeaderCenter, Button } from "../../components"
+import { Text, RoundedButton, HeaderCenter, Button, RenderHeader } from "../../components"
 import { color, images, spacing } from "../../theme"
 import { useNavigation } from "@react-navigation/native"
 import Icon from "react-native-vector-icons/Ionicons"
@@ -127,12 +127,20 @@ export const MoreScreen = observer(function MoreScreen() {
   const [renderNew, setrenderNew] = useState(false)
 
   useEffect(() => {
-    navigation.setOptions({
-      headerCenter: () => (
-        <HeaderCenter tx={"moreScreen.moreMenu"} />
-      ),
-    });
-  }, [renderNew])
+    // navigation.setOptions({
+    //   headerCenter: () => (
+    //     <RenderHeader text={"moreScreen.moreMenu"} />
+    //   ),
+    // });
+  }, [])
+
+  // useEffect(() => {
+  //   navigation.setOptions({
+  //     headerCenter: () => (
+  //       <RenderHeader text={"moreScreen.moreMenu"} />
+  //     ),
+  //   });
+  // }, [renderNew])
 
   useEffect(() => {
     setrenderNew(!renderNew)

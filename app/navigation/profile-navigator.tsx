@@ -8,7 +8,7 @@ import React from "react"
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import { ProfileScreen, UpdateProfileScreen } from "../screens"
 import { color } from "../theme"
-import { HeaderCenter, HeaderLeft, HeaderRight } from "../components"
+import { HeaderCenter, HeaderLeft, HeaderRight, RenderHeader, RenderHeaderProfile } from "../components"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
  * as well as what properties (if any) they might take when navigating to them.
@@ -37,16 +37,16 @@ export function ProfileNavigator() {
       screenOptions={{
         headerShown: true,
         gestureEnabled: true,
-        headerStyle: {
-          backgroundColor: color.mainTheme,
-        },
+        // headerStyle: { backgroundColor: color.mainTheme, },
         stackAnimation: 'slide_from_right',
       }}
     >
       <Stack.Screen name="profile" component={ProfileScreen}
         options={({ navigation, route }) => ({
-          headerRight: () => <HeaderRight tx={"common.edit"} />,
-          headerCenter: () => <HeaderCenter tx={"profileScreen.profile"} />,
+          // headerStyle: { backgroundColor: color.primary },
+          headerTitle: '',
+          headerRight: () => <RenderHeaderProfile text={"common.edit"} />,
+          headerCenter: () => <RenderHeader text={"profileScreen.profile"} />,
           headerHideShadow: true,
           // headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
@@ -55,7 +55,7 @@ export function ProfileNavigator() {
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"profileScreen.profile"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
-          headerHideShadow: true,
+          // headerHideShadow: true,
         })}
       />
       {/* <Stack.Screen name="detail" component={DetailScreen} /> */}

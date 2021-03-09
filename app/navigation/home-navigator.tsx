@@ -68,23 +68,15 @@ export function HomeNavigator() {
         gestureEnabled: true,
         headerShown: true,
         // gestureEnabled: true,
-        headerStyle: {
-          backgroundColor: color.primary,
-        },
+        // headerStyle: {
+        //   backgroundColor: color.primary,
+        // },
         stackAnimation: 'slide_from_right',
       }}
     >
       <Stack.Screen name="home" component={HomeScreen}
         options={({ navigation, route }) => {
           return {
-            // headerRight: () => (
-            //   <Ionicons
-            //     onPress={() => console.log("++ Press notofication icon ++")}
-            //     name={"notifications-outline"}
-            //     color={color.black}
-            //     size={24}
-            //   />
-            // ),
             headerTitle: '',
             headerHideShadow: true
           }

@@ -6,10 +6,11 @@
  */
 import React from "react"
 import { StatusBar } from 'react-native'
-import { NavigationContainer, NavigationContainerRef } from "@react-navigation/native"
+import { NavigationContainer, NavigationContainerRef, DefaultTheme } from "@react-navigation/native"
 
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import { PrimaryNavigator } from "./primary-navigator"
+import { color } from '../theme'
 
 // import BottomNavigator from './bottom-navigator'
 /**
@@ -27,7 +28,15 @@ export type RootParamList = {
 }
 
 const Stack = createNativeStackNavigator<RootParamList>()
-
+const MyTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    // background: 'red'
+    // primary: 'red'  // don't thtis
+    card: color.primary
+  }
+}
 const RootStack = () => {
   return (
     <>
@@ -35,6 +44,7 @@ const RootStack = () => {
         screenOptions={{
           headerShown: false,
           gestureEnabled: true,
+          // headerStyle: { backgroundColor: color.primary }
           // stackPresentation: "modal",
         }}
         initialRouteName={"primaryStack"}
@@ -56,7 +66,7 @@ export const RootNavigator = React.forwardRef<
   Partial<React.ComponentProps<typeof NavigationContainer>>
 >((props, ref) => {
   return (
-    <NavigationContainer {...props} ref={ref}>
+    <NavigationContainer {...props} theme={MyTheme} ref={ref}>
       <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" animated={true} />
       <RootStack />
     </NavigationContainer>

@@ -4,7 +4,7 @@ import {
   SectionList, Dimensions, Image, ImageStyle, FlatList, Platform, LayoutAnimation, Alert,
 } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Text, Icon, HeaderCenter, HeaderRight } from "../../components"
+import { Text, Icon } from "../../components"
 import { color, images, typography } from "../../theme"
 import ProfileStore from '../../store/profile-store/profile-store'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -160,25 +160,30 @@ export const ProfileScreen = observer(function ProfileScreen() {
   const [profileState, setprofileState] = useState(null)
 
   useEffect(() => {
-    let showRedDot = null
-    if (!ProfileStore.data || !ProfileStore.data.fullName && !tokenStore.token || !tokenStore.token.accessToken) {
-      showRedDot = false
-    } else if (!ProfileStore.data || !ProfileStore.data.fullName) {
-      showRedDot = true
-    } else {
-      showRedDot = false
-    }
-    navigation.setOptions({
-      // headerStyle: { backgroundColor: color.mainTheme },
-      headerCenter: () => (
-        <HeaderCenter tx={"profileScreen.profile"} />
-      ),
-      headerRight: () => (
-        <HeaderRight showRedDot={showRedDot} onRightPress={() => _pressEditProfiel()} tx={"common.edit"} />
-      ),
-      // headerHideShadow: true,
-    });
-    // ProfileStore.getProfileRequest()
+    // let showRedDot = null
+    // if (!ProfileStore.data || !ProfileStore.data.fullName && !tokenStore.token || !tokenStore.token.accessToken) {
+    //   showRedDot = false
+    // } else if (!ProfileStore.data || !ProfileStore.data.fullName) {
+    //   showRedDot = true
+    // } else {
+    //   showRedDot = false
+    // }
+    // navigation.setOptions({
+    //   // headerStyle: { backgroundColor: color.mainTheme },
+    //   headerCenter: () => (
+    //     <HeaderCenter tx={"profileScreen.profile"} />
+    //   ),
+    //   headerRight: () => (
+    //     <HeaderRight showRedDot={showRedDot} onRightPress={() => _pressEditProfiel()} tx={"common.edit"} />
+    //   ),
+    //   // headerHideShadow: true,
+    // });
+
+    // navigation.setOptions({
+    //   headerRight: () => <RenderHeaderProfile text={"common.edit"} />,
+    //   headerCenter: () => <RenderHeader text={"profileScreen.profile"} />,
+    // })
+    
     ProfileStore.getTruckSummary()
   }, [])
 
@@ -206,26 +211,26 @@ export const ProfileScreen = observer(function ProfileScreen() {
     }
   }, [versatileStore.language])
 
-  useEffect(() => {
-    let showRedDot = null
-    if (!ProfileStore.data || !ProfileStore.data.fullName && !tokenStore.token || !tokenStore.token.accessToken) {
-      showRedDot = false
-    } else if (!ProfileStore.data || !ProfileStore.data.fullName) {
-      showRedDot = true
-    } else {
-      showRedDot = false
-    }
-    navigation.setOptions({
-      // headerStyle: { backgroundColor: color.mainTheme },
-      headerCenter: () => (
-        <HeaderCenter tx={"profileScreen.profile"} />
-      ),
-      headerRight: () => (
-        <HeaderRight showRedDot={showRedDot} onRightPress={() => _pressEditProfiel()} tx={"common.edit"} />
-      ),
-      // headerHideShadow: true,
-    });
-  }, [lang])
+  // useEffect(() => {
+  //   let showRedDot = null
+  //   if (!ProfileStore.data || !ProfileStore.data.fullName && !tokenStore.token || !tokenStore.token.accessToken) {
+  //     showRedDot = false
+  //   } else if (!ProfileStore.data || !ProfileStore.data.fullName) {
+  //     showRedDot = true
+  //   } else {
+  //     showRedDot = false
+  //   }
+  //   navigation.setOptions({
+  //     // headerStyle: { backgroundColor: color.mainTheme },
+  //     headerCenter: () => (
+  //       <HeaderCenter tx={"profileScreen.profile"} />
+  //     ),
+  //     headerRight: () => (
+  //       <HeaderRight showRedDot={showRedDot} onRightPress={() => _pressEditProfiel()} tx={"common.edit"} />
+  //     ),
+  //     // headerHideShadow: true,
+  //   });
+  // }, [lang])
 
   const _onPressMenu = (menu) => {
     if (menu == "menu1") {

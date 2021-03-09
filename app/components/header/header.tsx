@@ -4,7 +4,7 @@ import { HeaderProps } from "./header.props"
 import { Button } from "../button/button"
 import { Text } from "../text/text"
 import { Icon } from "../icon/icon"
-import { spacing } from "../../theme"
+import { spacing, color } from "../../theme"
 import { translate } from "../../i18n/"
 import Icon2 from 'react-native-vector-icons/Ionicons'
 // static styles
@@ -15,6 +15,7 @@ const ROOT: ViewStyle = {
   paddingTop: spacing[4],
   paddingBottom: spacing[4],
   justifyContent: "flex-start",
+  backgroundColor: color.primary
 }
 const SHADOW: ViewStyle = {
   borderBottomRightRadius: 5,
@@ -86,7 +87,7 @@ export function Header(props: HeaderProps) {
 
 
       <View style={TITLE_MIDDLE}>
-        <Text style={{ ...TITLE, ...titleStyle }} text={header} />
+        <Text style={{ ...TITLE, ...titleStyle }} text={header} preset="topic" />
       </View>
 
 

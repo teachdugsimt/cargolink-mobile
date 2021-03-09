@@ -7,7 +7,7 @@
 import React from "react"
 
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
-import { Icon, Text, HeaderCenter, HeaderLeft, HeaderRight } from "../components"
+import { Icon, Text, HeaderCenter, HeaderLeft, RenderHeader } from "../components"
 import { MoreScreen, ReportScreen } from "../screens"
 import { color } from '../theme'
 /**
@@ -37,15 +37,15 @@ export function MoreNavigator() {
       screenOptions={{
         headerShown: true,
         gestureEnabled: true,
-        headerStyle: {
-          backgroundColor: color.mainTheme,
-        },
+        // headerStyle: { backgroundColor: color.mainTheme, },
         stackAnimation: 'slide_from_right',
       }}
     >
       <Stack.Screen name="more" component={MoreScreen}
         options={({ navigation, route }) => ({
-          headerCenter: () => <HeaderCenter tx={"moreScreen.moreMenu"} />,
+          // headerStyle: { backgroundColor: color.primary },
+          headerTitle: '',
+          headerCenter: () => <RenderHeader text={"moreScreen.moreMenu"} />,
           headerHideShadow: false,
         })}
       />
