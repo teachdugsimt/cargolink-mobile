@@ -296,7 +296,8 @@
     "rejectSuccess": "Reject job success",
     "bookATruck": "Book a truck",
     "contact": "Contact",
-    "mobileNo": "Tel"
+    "mobileNo": "Tel",
+    "truckDetail": "Truck detail"
   },
   "acceptPolicyScreen": {
     "termAndCondition": "Term and condition",

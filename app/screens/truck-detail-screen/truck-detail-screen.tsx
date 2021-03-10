@@ -202,6 +202,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
       if (event === 'Disconnected') {
         __DEV__ && console.tron.log('Disconnected')
         stopListenerTapped()
+        ShippersHistoryCallStore.add({ truckId })
       } else if (event === 'Connected') { //  for iOS
         __DEV__ && console.tron.log('Connected')
       } else if (event === 'Incoming') {
@@ -210,7 +211,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
         __DEV__ && console.tron.log('Dialing')
       } else if (event === 'Offhook') { // for Android
         __DEV__ && console.tron.log('Offhook')
-        ShippersHistoryCallStore.add({ truckId })
+        // ShippersHistoryCallStore.add({ truckId })
       } else if (event === 'Missed') { // for Android
         __DEV__ && console.tron.log('Missed')
       }

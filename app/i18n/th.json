@@ -298,7 +298,8 @@
     "rejectSuccess": "คุณปฏิเสธงานสำเร็จ",
     "bookATruck": "จองรถ",
     "contact": "ผู้ติดต่อ",
-    "mobileNo": "เบอร์โทรศัพท์"
+    "mobileNo": "เบอร์โทรศัพท์",
+    "truckDetail": "รายละเอียดรถ"
   },
   "acceptPolicyScreen": {
     "termAndCondition": "เงื่อนไขและข้อตกลงการใช้บริการ",

@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from "react"
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { observer } from "mobx-react-lite"
 import {
   Dimensions,
@@ -9,9 +9,9 @@ import {
   ScrollView,
   TextStyle,
   View,
-  ViewStyle, Platform, Linking, Alert
+  ViewStyle, Platform, Linking, Alert, FlatList
 } from "react-native"
-import { Button, HeaderCenter, ModalLoading, Text, PostingBy, ModalAlert } from "../../components"
+import { Button, HeaderCenter, ModalLoading, Text, PostingBy, ModalAlert, Icon, } from "../../components"
 import { translate } from "../../i18n"
 import { color, images as imageComponent, spacing } from "../../theme"
 import { useNavigation, useRoute } from "@react-navigation/native"
@@ -23,13 +23,14 @@ import ImageView from 'react-native-image-view';
 import i18n from 'i18n-js'
 import { GetRegion } from "../../utils/get-region"
 import CallDetectorManager from 'react-native-call-detection'
-
 import { useStores } from "../../models/root-store/root-store-context";
 import UserTruckStore from '../../store/user-truck-store/user-truck-store'
 import ProfileStore from '../../store/profile-store/profile-store'
-import TruckDetailStore from '../../store/free-store/truck-detail-store'
 import FavoriteTruckStore from "../../store/shipper-truck-store/favorite-truck-store"
 import UserJobStore from "../../store/user-job-store/user-job-store"
+import BookingStore from "../../store/booking-store/booking-store"
+import TruckDetailStore from "../../store/free-store/truck-detail-store"
+import LottieView from 'lottie-react-native';
 import ShippersHistoryCallStore from '../../store/shippers-history-call-store/shippers-history-call-store'
 
 interface ImageInfo {
@@ -45,9 +46,13 @@ interface TruckDetailProps {
   truckData?: any
   headerName?: string
   profile?: any
+  isBooker?: boolean
+  statusScreen?: number
+  bookerId?: string
 }
 
 const deviceWidht = Dimensions.get("window").width
+const deviceHeight = Dimensions.get('window').height
 
 const BOTTOM_ROOT: ViewStyle = {
   backgroundColor: color.backgroundWhite,
@@ -125,6 +130,46 @@ const BTN_STYLE: ViewStyle = {
   borderRadius: Dimensions.get('window').width / 2,
   marginHorizontal: spacing[3]
 }
+const SPACE_BOTTOM: ViewStyle = {
+  marginBottom: spacing[1]
+}
+const PROFILE_IMAGE: ImageStyle = {
+  width: 70,
+  height: 70,
+  borderRadius: Math.round(deviceWidht + deviceHeight) / 2,
+}
+const SMALL_ICON: ImageStyle = {
+  width: 13,
+  height: 13,
+}
+const TRUCK_IMAGE: ImageStyle = {
+  width: 55,
+  height: 55,
+  borderRadius: Math.round(deviceWidht + deviceHeight) / 2,
+  backgroundColor: color.disable,
+}
+const OUTER_CIRCLE: ViewStyle = {
+  borderRadius: Math.round(deviceWidht + deviceHeight) / 2,
+  width: 58,
+  height: 58,
+  backgroundColor: color.primary,
+  justifyContent: "center",
+  alignItems: "center",
+}
+const SECTION: ViewStyle = {
+  padding: spacing[4],
+  backgroundColor: color.backgroundWhite,
+  ...SPACE_BOTTOM
+}
+const SHOW_MORE: ViewStyle = {
+  justifyContent: 'center',
+  alignItems: 'center',
+  paddingTop: spacing[4],
+}
+const SHOW_MORE_TEXT: TextStyle = {
+  color: color.primary,
+  textDecorationLine: 'underline',
+}
 
 const initialState = {
   openViewer: false,
@@ -134,13 +179,86 @@ const initialState = {
 
 let callDetector = undefined
 
-export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
+const CheckMark = (data) => (<LottieView
+  source={require('../../AnimationJson/check-mark.json')}
+  style={{ height: 100, width: 100, }}
+  autoPlay={data.autoPlay}
+  loop={false}
+  speed={0.7}
+  onAnimationFinish={data.onAnimationFinish()}
+/>)
+
+const RenderButtonAlert = ({ onCloseModal, onConfirmJob }) => {
+
+  const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.line, backgroundColor: color.transparent }
+  const btnConfirmStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.primary, backgroundColor: color.primary }
+  return (
+    <View style={{ ...BOTTOM_ROOT, paddingVertical: spacing[2] }}>
+      <Button
+        testID="btn-cancel"
+        style={btnCancleStyle}
+        textStyle={{ ...CALL_TEXT, color: color.line }}
+        text={translate("common.cancel")}
+        onPress={() => onCloseModal()}
+      />
+      <Button
+        testID="btn-ok"
+        style={btnConfirmStyle}
+        textStyle={{ ...CALL_TEXT, color: color.textWhite }}
+        text={translate("common.confirm")}
+        onPress={() => onConfirmJob()}
+      />
+    </View>
+  )
+}
+
+const Truck = ({ truckType, total }) => {
+  const truckTypeName = GetTruckType(+truckType)?.name || translate('common.notSpecified')
+  const truckImage = MapTruckImageName(+truckType)
+
+  return (<View style={{ ...ROW, paddingHorizontal: spacing[2], paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.disable }}>
+    <View style={{ flex: 2 }}>
+      <View style={OUTER_CIRCLE}>
+        <Image source={imageComponent[truckImage && truckImage !== 'greyMock' ? truckImage : '']} style={TRUCK_IMAGE} />
+      </View>
+    </View>
+    <View style={{ flex: 5 }}>
+      <Text text={truckTypeName} />
+    </View>
+    <View style={{ flex: 1, alignItems: 'flex-end' }}>
+      <Text text={total} />
+    </View>
+    <View style={{ flex: 1, alignItems: 'flex-end' }}>
+      <Text tx={'jobDetailScreen.unit'} />
+    </View>
+  </View>)
+}
+
+const Verified = ({ isVerified }) => {
+  const label = isVerified ? translate('shipperProfileScreen.verified') : translate('shipperProfileScreen.notVerified')
+  const iconName = isVerified ? "checkActive" : "checkInactive"
+  return (
+    <View style={[ROW, { alignItems: 'center' }]}>
+      <Text text={label} style={TEXT} />
+      <Icon icon={iconName} style={SMALL_ICON} containerStyle={{ paddingLeft: spacing[1] }} />
+    </View>
+  )
+}
+
+const RenderImageAlert = () => (<Image source={imageComponent['workYellowIcon']} width={75} height={75} />)
+
+export const TruckDetailWithProfile = observer(function TruckDetailWithProfile() {
   const navigation = useNavigation()
 
   const { tokenStore, versatileStore } = useStores()
   const route = useRoute()
   const { truckID, truckData, headerName = "truckDetailScreen.truckDetail",
-    profile }: TruckDetailProps = route?.params || {}
+    profile, bookerId }: TruckDetailProps = route?.params || {}
+
+  const [visibleModal, setVisibleModal] = useState<boolean>(false)
+  const [isBokking, setIsBooking] = useState<boolean>(false)
+  const [showMore, setShowMore] = useState<boolean>(false)
+  const scrollRef = useRef<FlatList>(null);
 
   const [{ openViewer, indexOfImage, liked }, setState] = useState(initialState)
 
@@ -165,15 +283,6 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
     TruckDetailStore.setProfile({ ...profile, imageProps: JSON.stringify(imageSource) })
   }, [profile])
 
-  const ownerProfile = {
-    postBy: TruckDetailStore.profile?.companyName || '',
-    isVerified: false,
-    rating: '0',
-    ratingCount: '0',
-    isCrown: false,
-    image: JSON.parse(TruckDetailStore.profile?.imageProps),
-  }
-
   const {
     id,
     truckType,
@@ -183,13 +292,12 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
     truckPhotos,
     phoneNumber,
     workingZones,
-    owner
   } = truckData || TruckDetailStore.data
 
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      // headerStyle: { backgroundColor: color.mainTheme },
+      headerStyle: { backgroundColor: color.mainTheme },
       headerCenter: () => <HeaderCenter tx={headerName} />,
       headerRight: () => (<TouchableOpacity onPress={() => onSelectedHeart(id)}>
         <MaterialCommunityIcons name={liked ? 'heart' : 'heart-outline'} size={24} color={liked ? color.red : color.line} />
@@ -220,26 +328,25 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
     }))
   }
 
-
   const startListenerTapped = (truckId: string) => {
-    __DEV__ && console.tron.log('startListenerTapped')
+    __DEV__ && console.log('startListenerTapped')
     callDetector = new CallDetectorManager((event, phoneNumber) => {
-      __DEV__ && console.tron.log('phoneNumber', phoneNumber)
+      __DEV__ && console.log('phoneNumber', phoneNumber)
       if (event === 'Disconnected') {
-        __DEV__ && console.tron.log('Disconnected')
+        __DEV__ && console.log('Disconnected')
         stopListenerTapped()
         ShippersHistoryCallStore.add({ truckId })
       } else if (event === 'Connected') { //  for iOS
-        __DEV__ && console.tron.log('Connected')
+        __DEV__ && console.log('Connected')
       } else if (event === 'Incoming') {
-        __DEV__ && console.tron.log('Incoming')
+        __DEV__ && console.log('Incoming')
       } else if (event === 'Dialing') { //  for iOS
-        __DEV__ && console.tron.log('Dialing')
+        __DEV__ && console.log('Dialing')
       } else if (event === 'Offhook') { // for Android
-        __DEV__ && console.tron.log('Offhook')
+        __DEV__ && console.log('Offhook')
         // ShippersHistoryCallStore.add({ truckId })
       } else if (event === 'Missed') { // for Android
-        __DEV__ && console.tron.log('Missed')
+        __DEV__ && console.log('Missed')
       }
     },
       false,
@@ -250,49 +357,26 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
       }
     )
   }
+
   const stopListenerTapped = () => {
-    __DEV__ && console.tron.log('stopListenerTapped')
     callDetector && callDetector.dispose();
   }
+
   const onCall = (truckId: string, phone: string) => {
-    if (ProfileStore.data && tokenStore?.token?.accessToken) {
-      const phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
-      __DEV__ && console.tron.log('phoneNumber', phoneNumber)
-      Linking.canOpenURL(phoneNumber)
-        .then(supported => {
-          if (!supported) {
-            __DEV__ && console.tron.log('Phone number is not available');
-            Alert.alert('Phone number is not available')
-            return false;
-          } else {
-            return startListenerTapped(truckId)
-          }
-        })
-        .then(() => {
-          return Linking.openURL(phoneNumber);
-        })
-        .catch(err => __DEV__ && console.tron.log('err', err));
-    } else {
-      navigation.navigate('signin')
-    }
+    const phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
+    Linking.canOpenURL(phoneNumber)
+      .then(supported => {
+        if (!supported) {
+          Alert.alert('Phone number is not available')
+          return false;
+        } else {
+          return startListenerTapped(truckId)
+        }
+      })
+      .then(() => {
+        return Linking.openURL(phoneNumber);
+      })
   };
-
-
-  const onVisiblePorfile = () => {
-    const userId = TruckDetailStore.profile.userId
-    ProfileStore.getProfileReporter(userId)
-    UserJobStore.setUserId(userId)
-    // UserTruckStore.find({
-    //   userId: userId,
-    //   page: 0,
-    // })
-    // if (route.name === 'favoriteTruckDetail') {
-    //   navigation.navigate('favoriteShipperProfile')
-    // } else {
-    //   navigation.navigate('shipperProfile')
-    // }
-    navigation.navigate("bookerProfile")
-  }
 
   const onSelectedHeart = (id: string) => {
     if (tokenStore?.token?.accessToken) {
@@ -305,6 +389,44 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
     } else {
       navigation.navigate('signin')
     }
+  }
+
+  const confirmBookAJob = () => {
+    setVisibleModal(true)
+  }
+
+  const cancelBookAJob = () => {
+    BookingStore.approveBooking('shipper', 'reject', bookerId)
+    navigation.navigate('myjob')
+  }
+
+  const onApproveJobBooking = () => {
+    BookingStore.approveBooking('shipper', 'accept', bookerId)
+  }
+
+  const onConfirmJobSuccess = () => {
+    onApproveJobBooking()
+    setIsBooking(true)
+  }
+
+  const onCloseModal = () => {
+    setVisibleModal(false)
+  }
+
+  const onAnimationFinish = () => {
+    setIsBooking(false)
+    onCloseModal()
+    navigation.navigate('myjob')
+  }
+
+  const onToggle = () => {
+    if (showMore) {
+      scrollRef?.current?.scrollToOffset({
+        animated: true,
+        offset: 0,
+      })
+    }
+    setShowMore(!showMore)
   }
 
   useEffect(() => {
@@ -343,7 +465,6 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
       }
       return imageInfo
     }) : []
-  __DEV__ && console.tron.log("Transform Image :: ", transformImage)
   const truckImage = MapTruckImageName(+truckType)
 
   const workingZoneStr = workingZones?.length ? workingZones.map(zone => {
@@ -351,8 +472,46 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
     return reg?.label || ''
   }).join(', ') : translate('common.notSpecified')
 
-  const ownerUserId = owner?.userId || ''
-  const myUserId = ProfileStore.data?.userId || ''
+  const profileReport = ProfileStore.data_report_profile
+
+  const truckCountAll = profileReport?.trucks?.reduce((curr, next) => (curr + next.total), 0) || 0
+
+  const showLessTruck = JSON.parse(JSON.stringify(profileReport))?.trucks?.splice(0, 4) || []
+
+  const imageProps = {
+    source: {
+      uri: truckData?.owner?.avatar?.object,
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${truckData?.owner?.avatar?.token || ''}`,
+        adminAuth: truckData?.owner?.avatar?.token
+      },
+    },
+    resizeMode: 'cover'
+  }
+
+  const modalProps = {
+    containerStyle: {
+      paddingTop: spacing[5],
+      paddingBottom: spacing[2]
+    },
+    imageComponent: !isBokking ? RenderImageAlert : () => CheckMark({ autoPlay: isBokking, onAnimationFinish: () => onAnimationFinish }),
+    header: !isBokking ? translate('jobDetailScreen.confirmJob') : translate('jobDetailScreen.bookedSuccess'),
+    headerStyle: {
+      paddingTop: spacing[3],
+      color: color.primary
+    },
+    content: translate('jobDetailScreen.callbackForOwner'),
+    contentStyle: {
+      paddingTop: spacing[1],
+      paddingBottom: spacing[5],
+      paddingHorizontal: spacing[7],
+      color: color.line
+    },
+    buttonContainerStyle: !isBokking ? { width: '90%' } : {},
+    buttonComponent: !isBokking ? () => <RenderButtonAlert onCloseModal={onCloseModal} onConfirmJob={onConfirmJobSuccess} /> : null,
+    visible: visibleModal,
+  }
 
   return (
     <View style={CONTAINER}>
@@ -421,28 +580,65 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
           </View>
 
         </View>
-        {!!profile && !!TruckDetailStore.profile && <View style={COLUMN}>
-          <View style={[ROW, { justifyContent: 'space-between', alignItems: 'center' }]}>
-            <Text style={{ color: color.line }}>{translate('jobDetailScreen.postBy')}</Text>
-            <PostingBy {...ownerProfile} onToggle={() => onVisiblePorfile()} />
+
+        <View style={[COLUMN, { paddingHorizontal: 0 }]}>
+          <View style={[ROW, { paddingHorizontal: spacing[4] }]}>
+            <Text style={[TOPIC, { color: color.primary }]} tx={'profileScreen.profile'} preset={'topic'} />
           </View>
-        </View>}
+
+          <View style={[ROW, { paddingHorizontal: spacing[5], paddingVertical: spacing[3], ...SPACE_BOTTOM, alignItems: 'center' }]}>
+            <View style={{ flex: 1 }} >
+              <Image {...imageProps} style={PROFILE_IMAGE} resizeMode={'cover'} />
+            </View>
+            <View style={{ flex: 3 }}>
+              <Text text={profile?.companyName} style={TEXT} preset={'topicExtra'} />
+              <Verified isVerified={false} />
+            </View>
+            <View style={{}}>
+              <TouchableOpacity style={{ backgroundColor: color.success, borderRadius: deviceHeight / 2 }} onPress={() => onCall(id, phoneNumber)} >
+                <MaterialCommunityIcons name={'phone'} size={30} color={color.textBlack} style={{ margin: spacing[2] }} />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={SECTION}>
+            <View style={[TOPIC, { flexDirection: 'row', justifyContent: 'space-between' }]}>
+              <Text text={translate('profileScreen.allVehicle')} />
+              <Text text={`${truckCountAll.toString()}  ${translate('jobDetailScreen.unit')}`} style={{ paddingRight: spacing[1] + 2 }} />
+            </View>
+            <View>
+              {!showMore ? showLessTruck.map((vehicle, index) => {
+                return <Truck key={index} {...vehicle} />
+              }) : profileReport?.trucks?.map((vehicle, index) => {
+                return <Truck key={index} {...vehicle} />
+              })}
+            </View>
+            {profileReport?.trucks?.length > 4 && <TouchableOpacity style={SHOW_MORE} onPress={onToggle}>
+              <Text text={showMore ? translate('shipperProfileScreen.showLess') : translate('shipperProfileScreen.showMore')} style={SHOW_MORE_TEXT} />
+            </TouchableOpacity>}
+          </View>
+        </View>
 
       </ScrollView>
 
-      {ownerUserId !== myUserId && <View style={BOTTOM_ROOT}>
+      <View style={BOTTOM_ROOT}>
         <Button
-          testID="call-with-owner"
+          testID="cancel"
           style={[BTN_STYLE, { backgroundColor: color.line }]}
-          children={
-            <View style={{ alignItems: 'center', flexDirection: 'row' }}>
-              <MaterialCommunityIcons name={'phone'} size={24} color={color.textWhite} style={{ paddingRight: spacing[2] }} />
-              <Text style={CALL_TEXT} tx={'jobDetailScreen.call'} />
-            </View>
-          }
-          onPress={() => onCall(id, phoneNumber)}
+          tx={'common.reject'}
+          textStyle={CALL_TEXT}
+          onPress={cancelBookAJob}
         />
-      </View>}
+        <Button
+          testID="confirm"
+          style={[BTN_STYLE, { backgroundColor: color.primary }]}
+          tx={'common.confirm'}
+          textStyle={CALL_TEXT}
+          onPress={confirmBookAJob}
+        />
+      </View>
+      <ModalAlert {...modalProps} />
+
     </View>
   )
 })
