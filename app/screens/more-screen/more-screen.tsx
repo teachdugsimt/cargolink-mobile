@@ -120,9 +120,11 @@ const RADIO_VIEW: ViewStyle = {
 export const MoreScreen = observer(function MoreScreen() {
   const navigation = useNavigation()
   const { versatileStore, tokenStore } = useStores()
+  console.log("Versatile store language :: ", versatileStore.language)
+  console.log("Locale language :: ", i18n.locale)
   const [list, setlist] = useState([
-    { label: 'moreScreen.Thai', value: 'th', active: versatileStore.language == "th" ? true : false },
-    { label: 'moreScreen.English', value: 'en', active: versatileStore.language == "th" ? false : true },
+    { label: 'moreScreen.Thai', value: 'th', active: (!versatileStore.language || versatileStore.language == "th") ? true : false },
+    { label: 'moreScreen.English', value: 'en', active: (versatileStore.language && versatileStore.language == "th") ? false : true },
   ])
   const [renderNew, setrenderNew] = useState(false)
 
