@@ -41,7 +41,9 @@ const ICON_VIEW: ViewStyle = { alignItems: 'center', justifyContent: 'center', m
 
 const TEXT_TOPIC: TextStyle = { color: color.success }
 const TEXT_SUB_TITLE: TextStyle = { color: color.line }
-const TEXT_BUTTTON_STYLE: TextStyle = { color: color.textWhite }
+const TEXT_BUTTTON_STYLE: TextStyle = {
+  // color: color.textWhite 
+}
 export const SuccessUpload = observer(function SuccessUpload() {
   const navigation = useNavigation()
 

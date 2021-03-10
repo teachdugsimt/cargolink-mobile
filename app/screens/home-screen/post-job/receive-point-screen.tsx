@@ -20,7 +20,7 @@ import StatusStore from '../../../store/post-job-store/job-status-store'
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
-
+const PRIMARY_COLOR: ViewStyle = { backgroundColor: color.primary }
 const GREY_TEXT: ViewStyle = { backgroundColor: color.line }
 const BORDER_RADIUS_20: ViewStyle = {
   borderRadius: 20,
@@ -68,6 +68,9 @@ const ROUND_BUTTON_CONTAINER: ViewStyle = {
 }
 const ROUND_BUTTON_TEXT: TextStyle = {
   color: color.textWhite
+}
+const ROUND_BUTTON_TEXT_BACLK: TextStyle = {
+  color: color.textBlack
 }
 const MARGIN_MEDIUM: ViewStyle = {
   marginVertical: 10
@@ -258,12 +261,12 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
   return (
     <Screen unsafe>
 
-    <View testID="ReceivePointScreen" style={FULL}>
-      <View style={TOP_VIEW}>
-        <AddJobElement data={list_status} />
-      </View>
+      <View testID="ReceivePointScreen" style={FULL}>
+        <View style={TOP_VIEW}>
+          <AddJobElement data={list_status} />
+        </View>
 
-      <View style={BOTTOM_VIEW}>
+        <View style={BOTTOM_VIEW}>
           <ScrollView style={FULL}>
             <Modal
               visible={visibleMap}
@@ -580,9 +583,9 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
               <RoundedButton
                 style={ADD_NEW_POINT}
                 onPress={() => _addFieldInputShipping()} text={"postJobScreen.addShippingPoint"}
-                textStyle={{ color: color.textWhite }}
+                textStyle={{ color: color.textBlack }}
                 leftIconName="add-circle-outline"
-                leftIconColor={color.textWhite}
+                leftIconColor={color.textBlack}
               />
             </View>
 
@@ -594,15 +597,15 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                   <RoundedButton style={[FULL, BORDER_RADIUS_20, GREY_TEXT]} onPress={() => navigation.goBack()} text={"common.back"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
                 </View>
                 <View style={[WRAPPER_TOP, FULL]}>
-                  <RoundedButton style={[FULL, BORDER_RADIUS_20]} onPress={handleSubmit(onSubmit)} text={"common.next"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
+                  <RoundedButton style={[FULL, BORDER_RADIUS_20, PRIMARY_COLOR]} onPress={handleSubmit(onSubmit)} text={"common.next"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT_BACLK} />
                 </View>
               </View>
             </View>
 
 
           </ScrollView>
+        </View>
       </View>
-    </View>
-        </Screen>
+    </Screen>
   )
 })

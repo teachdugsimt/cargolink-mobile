@@ -54,7 +54,7 @@ const BUTTON_CONTAINER: ViewStyle = {
 
 const TEXT_TOPIC: TextStyle = { color: color.black }
 const TEXT_SUB_TITLE: TextStyle = { color: color.primary }
-const TEXT_BUTTTON_STYLE: TextStyle = { color: color.textWhite }
+const TEXT_BUTTTON_STYLE: TextStyle = { color: color.textBlack }
 export const PostSuccessScreen = observer(function PostSuccessScreen() {
   const navigation = useNavigation()
 
