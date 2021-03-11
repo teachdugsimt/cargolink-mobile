@@ -11,6 +11,7 @@ import {
   Dimensions,
   TouchableWithoutFeedback,
   TouchableOpacity,
+  Alert,
 } from "react-native"
 import { observer } from "mobx-react-lite"
 import { Button, HeaderLeft, Icon, ModalAlert, Screen, Text } from "../../components"
@@ -20,6 +21,7 @@ import { color, spacing, images } from '../../theme'
 import { translate } from '../../i18n'
 import i18n from 'i18n-js'
 import AuthStore from '../../store/auth-store/auth-store'
+import { AlertMessage } from "../../utils/alert-form";
 
 i18n.defaultLocale = 'th'
 i18n.locale = 'th'
@@ -107,10 +109,12 @@ export const SigninScreen = observer(function SigninScreen() {
   const [{ disabled, buttonColor, value, visibleModal }, setState] = useState(initialState)
   const [countryCode, setCountryCode] = useState<CountryCode>('TH')
   const [callingCode, setCallingCode] = useState<string>('+66')
+  const [pressSignin, setPressSignin] = useState<boolean>(false)
 
   useFocusEffect(
     useCallback(() => {
       return () => {
+        setPressSignin(false)
         setState(initialState)
         setCountryCode('TH')
         // setCountry(null)
@@ -194,12 +198,21 @@ export const SigninScreen = observer(function SigninScreen() {
     }))
   }
 
+  useEffect(() => {
+    let error_signin = AuthStore.error
+    let data_signin = AuthStore.data
+    console.log("Auth Store in signin screen :: ", AuthStore)
+    if (pressSignin && !error_signin && data_signin && !AuthStore.loading)
+      navigation.navigate("confirmCode")
+    else if (pressSignin && error_signin && !AuthStore.loading) AlertMessage("common.somethingWrong", "common.InvalidPhoneNumber", true)
+  }, [pressSignin, AuthStore.error, JSON.stringify(AuthStore.data)])
+
   const onPress = (mobileNo: string, countryCode: string) => {
     const phoneNumber = normalizeMobileNo(mobileNo).substr(1)
     AuthStore.setPhoneNumber(phoneNumber, countryCode)
     AuthStore.signInRequest({ phoneNumber, countryCode, userType: 7 })
     setState(initialState)
-    navigation.navigate("confirmCode")
+    setPressSignin(true)
   }
 
   const onCloseModal = () => {

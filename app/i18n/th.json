@@ -76,6 +76,7 @@
     "acceptBooking": "ยืนยันการตอบรับ",
     "noticeFastest": "เราจะแจ้งให้ผู้จองทราบโดยเร็วที่สุด",
     "noPhoneNumber": "ไม่มีเบอร์โทรศัพท์",
+    "InvalidPhoneNumber": "ไม่มีหมายเลขนี้ หรือหมายเลขผิดพลาด",
     "date": "วันที่",
     "pleaseUpdateNewVersion": "กรุณาอัพเดทเป็นเวอร์ชันใหม่",
     "softwareUpdate": "อัพเดทซอฟต์แวร์",
