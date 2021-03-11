@@ -132,7 +132,7 @@ const ROUND_BUTTON_CONTAINER: ViewStyle = {
   backgroundColor: color.primary, borderColor: color.transparent
 }
 const ROUND_BUTTON_TEXT: TextStyle = {
-  color: color.textWhite
+  // color: color.textWhite
 }
 const WRAP_DROPDOWN: ViewStyle = {
   flex: 1, borderColor: color.line, borderWidth: 1, padding: Platform.OS == "ios" ? 7.5 : 0,

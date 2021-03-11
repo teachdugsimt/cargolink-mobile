@@ -3,6 +3,8 @@ import { AuthAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
 const apiAuth = new AuthAPI()
 
+const InvalidPhone = "Invalid entry for your phone number"
+
 const SignIn = types.model({
   status: types.maybeNull(types.boolean),
   tokenCheckPhone: types.maybeNull(types.string),
@@ -82,14 +84,18 @@ const AuthStore = types
         console.log("response signInRequest :>> ", response)
         if (response.kind === 'ok') {
           self.data = response.data || {}
+          self.error = ""
         } else {
-          self.error = response?.data?.message || response?.kind
+          if (response.data && response.data.validMsgList && response.data.validMsgList['phoneNumber'] &&
+            response.data.validMsgList['phoneNumber'][0] && response.data.validMsgList['phoneNumber'][0] == InvalidPhone) {
+            self.error = InvalidPhone
+          } else self.error = response?.data?.message || response?.kind
         }
         self.loading = false
       } catch (error) {
         console.log('error signInRequest :>> ', error);
         self.loading = false
-        self.error = "error fetch api sign in"
+        self.error = "error to save api sign in"
       }
     }),
 

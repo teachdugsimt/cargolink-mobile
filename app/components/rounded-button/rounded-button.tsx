@@ -14,8 +14,8 @@ import { RoundedButtonProps } from './rounded-button.props'
 const { width, height } = Dimensions.get('window')
 
 const CONTENT_TEXT: TextStyle = {
-  fontFamily: 'Kanit-Medium',
-  fontSize: typography.title
+  // fontFamily: 'Kanit-Medium',
+  // fontSize: typography.title
 }
 
 const ADD_VEHICLE_BUTTON: ViewStyle = {
