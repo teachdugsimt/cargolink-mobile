@@ -24,16 +24,17 @@ const SCROLL: ViewStyle = {
 }
 const BUTTON_ADD: ViewStyle = {
   backgroundColor: color.primary,
-  borderRadius: 20,
+  borderRadius: 25,
   borderColor: color.primary,
   borderWidth: 1,
+  height: 50,
   marginLeft: spacing[3],
   marginRight: spacing[3],
   marginTop: spacing[2],
   marginBottom: spacing[2],
 }
 const TEXT_ADD: TextStyle = {
-  color: color.textWhite,
+  color: color.textBlack,
   fontSize: 16,
 }
 const EMPTY_CONTAINER_STYLE: ViewStyle = {

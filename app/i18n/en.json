@@ -76,6 +76,7 @@
     "acceptBooking": "Confirm Approve",
     "noticeFastest": "We will notify the guest as soon as possible.",
     "noPhoneNumber": "No phone number",
+    "InvalidPhoneNumber": "Invalid phone number",
     "date": "Date",
     "pleaseUpdateNewVersion": "Please update to the new version.",
     "softwareUpdate": "Software Update"

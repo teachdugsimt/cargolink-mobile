@@ -69,7 +69,7 @@ const ROUND_BUTTON_CONTAINER: ViewStyle = {
   backgroundColor: color.primary, borderColor: color.transparent
 }
 const ROUND_BUTTON_TEXT: TextStyle = {
-  color: color.textWhite
+  // color: color.textWhite
 }
 const MARGIN_MEDIUM: ViewStyle = {
   marginVertical: 10
