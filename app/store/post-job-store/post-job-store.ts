@@ -106,8 +106,8 @@ const PostJobStore = types.model({
           self.loading = false
           __DEV__ && console.tron.log("Response ERROR POST JOB :: ", response)
           if (response.data && response.data.validMsgList && response.data.validMsgList['from.datetime'] &&
-            response.data.validMsgList['from.datetime'][0] && response.data.validMsgList['from.datetime'][0]
-            == dateError) {
+            response.data.validMsgList['from.datetime'][0] && (response.data.validMsgList['from.datetime'][0]
+              == dateError || response.data.validMsgList['from.datetime'][0] == dateError2)) {
             __DEV__ && console.tron.log("Error : : Call API post job :: ", response)
             self.error = response.data.validMsgList['from.datetime'][0]
           } else
