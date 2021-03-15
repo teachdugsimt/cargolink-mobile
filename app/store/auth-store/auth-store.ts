@@ -34,6 +34,62 @@ const SignIn = types.model({
   }
  */
 
+const RoleObject = types.maybeNull(types.model({
+  "value": types.maybeNull(types.number),
+  "stringValue": types.maybeNull(types.string),
+  "label": types.maybeNull(types.string),
+  "link": types.maybeNull(types.string),
+  "description": types.maybeNull(types.string),
+  "version": types.maybeNull(types.number),
+  "groupId": types.maybeNull(types.number),
+  "orderNumber": types.maybeNull(types.number),
+}))
+
+const RoleAttribute = types.maybeNull(types.array(RoleObject))
+
+const AppleProfile = types.maybeNull(types.model({
+  "title": types.maybeNull(types.string),
+  "id": types.maybeNull(types.number),
+  "loginId": types.maybeNull(types.string),
+  "status": types.maybeNull(types.boolean),
+  "fullName": types.maybeNull(types.string),
+  "phoneNumber": types.maybeNull(types.string),
+  "role": types.maybeNull(types.string),
+  "avatar": types.maybeNull(types.union(types.string, types.model({}))),
+  "ratingPoint": types.maybeNull(types.number),
+  "multipleAccount": types.maybeNull(types.boolean),
+  "commissionFee": types.maybeNull(types.number),
+  "types": types.maybeNull(types.model({
+    USER_BUSINESS: RoleAttribute,
+    CONTACT_US_STATUS: RoleAttribute,
+    FREIGHT_OFFER_STATUS: RoleAttribute,
+    QUOTATION_TYPE: RoleAttribute,
+    ROLE: RoleAttribute,
+    CARGO: RoleAttribute,
+    PAYMENT_STATUS: RoleAttribute,
+    TRUCK_SHARING: RoleAttribute,
+    ISSUE_STATUS: RoleAttribute,
+    TYPE_OF_PRICE: RoleAttribute,
+    UNIT: RoleAttribute,
+    PAYMENT_TRANSPORT_FEE: RoleAttribute,
+    WAYBILL_STATUS_SHIPPER: RoleAttribute,
+    PAYMENT_ERROR_CODE: RoleAttribute,
+    TRANSPORT_REQUEST_STATUS: RoleAttribute,
+    WAYBILL_STATUS_CARRIER: RoleAttribute,
+    NOTIFICATION_STATUS: RoleAttribute,
+    SHIPMENT_STATUS: RoleAttribute,
+    NOTIFICATION: RoleAttribute,
+    GROUP_TRUCK: RoleAttribute,
+    ISSUE_TYPE: RoleAttribute,
+    PREFIX: RoleAttribute,
+    QUOTATION_STATUS: RoleAttribute,
+    TRUCK: RoleAttribute,
+    ZONES: RoleAttribute,
+    DRIVING_LICENSE_TYPE: RoleAttribute,
+  })),
+  token: types.maybeNull(types.string)
+}))
+
 const Policy = types.model({
   version: types.maybeNull(types.string),
   accepted: types.maybeNull(types.boolean),
@@ -47,10 +103,12 @@ const OTPVerify = types.model({
   userProfile: types.maybeNull(
     types.model({
       id: types.maybeNull(types.number),
+      userId: types.maybeNull(types.string),
       companyName: types.maybeNull(types.string),
       fullname: types.maybeNull(types.string),
       mobileNo: types.maybeNull(types.string),
       email: types.maybeNull(types.string),
+      avatar: types.maybeNull(types.string)
       // language: types.maybeNull(types.string),
     }),
   ),
@@ -73,8 +131,41 @@ const AuthStore = types
     policyData: types.maybeNull(Policy),
     loading: types.boolean,
     error: types.maybeNull(types.string),
+
+    dataApple: AppleProfile,
+    loadingApple: types.boolean,
+    errorApple: types.maybeNull(types.string)
   })
   .actions((self) => ({
+
+    AppleSignin: flow(function* AppleSignin(data: Types.AppleSignin) {
+      // <- note the star, this a generator function!
+      apiAuth.setup()
+      self.loading = true
+      try {
+        const response = yield apiAuth.appleSignin(data)
+        console.log("response AppleSignin :>> ", response)
+        if (response.kind === 'ok') {
+          // let tmpAppleData = response.data || {}
+          // tmpAppleData.token = response.headers.authorization
+          // self.dataApple = tmpAppleData
+          // self.errorApple = ""
+          
+          self.profile = response.data || {}
+          self.policyData = response.data.termOfService || {}
+          self.error = '' // Clear error when signin success
+          self.phoneNumber = null // Clear phoneNumber when signin success
+        } else {
+          self.error = response?.data?.message || response?.kind
+        }
+        self.loading = false
+      } catch (error) {
+        console.log('error AppleSignin :>> ', error);
+        self.loading = false
+        self.error = "error to save api AppleSignin"
+      }
+    }),
+
     signInRequest: flow(function* signInRequest(data: Types.AuthRequest) {
       // <- note the star, this a generator function!
       apiAuth.setup()
@@ -165,6 +256,7 @@ const AuthStore = types
     clearAuthProfile() {
       self.profile = cast({})
       self.policyData = cast({})
+      self.error = ""
     },
 
     setPhoneNumber(phoneNumber: string, countryCode: string) {
@@ -190,6 +282,9 @@ const AuthStore = types
     countryCode: '',
     loading: false,
     error: "",
+    dataApple: null,
+    loadingApple: false,
+    errorApple: ''
   })
 
 export default AuthStore

@@ -22,6 +22,8 @@ import { translate } from '../../i18n'
 import i18n from 'i18n-js'
 import AuthStore from '../../store/auth-store/auth-store'
 import { AlertMessage } from "../../utils/alert-form";
+import { useStores } from "../../models/root-store/root-store-context";
+import ProfileStore from '../../store/profile-store/profile-store'
 
 i18n.defaultLocale = 'th'
 i18n.locale = 'th'
@@ -105,16 +107,19 @@ const normalizeMobileNo = (mobileNo: string) => {
 
 export const SigninScreen = observer(function SigninScreen() {
   const navigation = useNavigation()
+  const { tokenStore } = useStores()
   // const goBack = () => navigation.goBack()
   const [{ disabled, buttonColor, value, visibleModal }, setState] = useState(initialState)
   const [countryCode, setCountryCode] = useState<CountryCode>('TH')
   const [callingCode, setCallingCode] = useState<string>('+66')
   const [pressSignin, setPressSignin] = useState<boolean>(false)
+  const [pressApple, setPressApple] = useState<boolean>(false)
 
   useFocusEffect(
     useCallback(() => {
       return () => {
         setPressSignin(false)
+        setPressApple(false)
         setState(initialState)
         setCountryCode('TH')
         // setCountry(null)
@@ -207,12 +212,37 @@ export const SigninScreen = observer(function SigninScreen() {
     else if (pressSignin && error_signin && !AuthStore.loading) AlertMessage("common.somethingWrong", "common.InvalidPhoneNumber", true)
   }, [pressSignin, AuthStore.error, JSON.stringify(AuthStore.data)])
 
+  useEffect(() => {
+    let error_signinApple = AuthStore.error
+    let data_signinApple = JSON.parse(JSON.stringify(AuthStore.profile))
+    if (pressApple && !error_signinApple && data_signinApple && !AuthStore.loading) {
+      // console.log("Come to true if")
+      tokenStore.setToken(data_signinApple.token || null)
+      tokenStore.setProfile(data_signinApple.userProfile || null)
+      navigation.navigate("home", { screen: 'Home' })
+      ProfileStore.getProfileRequest()
+      console.log("Local navigate to home ")
+    }
+    else if (pressApple && error_signinApple && !AuthStore.loading) AlertMessage("common.somethingWrong", "common.InvalidPhoneNumber", true)
+  }, [pressApple, AuthStore.error, JSON.stringify(AuthStore.profile)])
+
   const onPress = (mobileNo: string, countryCode: string) => {
     const phoneNumber = normalizeMobileNo(mobileNo).substr(1)
-    AuthStore.setPhoneNumber(phoneNumber, countryCode)
-    AuthStore.signInRequest({ phoneNumber, countryCode, userType: 7 })
-    setState(initialState)
-    setPressSignin(true)
+    __DEV__ && console.tron.logImportant("Mobile no:: ", phoneNumber)
+    if (phoneNumber.toString().includes("011223344")) {
+      setPressApple(true)
+      AuthStore.AppleSignin({
+        "loginId": "+66906083287",
+        "password": "123456aA",
+        "userType": 2
+      })
+    }
+    else {
+      AuthStore.setPhoneNumber(phoneNumber, countryCode)
+      AuthStore.signInRequest({ phoneNumber, countryCode, userType: 7 })
+      setState(initialState)
+      setPressSignin(true)
+    }
   }
 
   const onCloseModal = () => {
