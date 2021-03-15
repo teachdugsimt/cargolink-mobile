@@ -24,6 +24,7 @@ import AuthStore from '../../store/auth-store/auth-store'
 import { AlertMessage } from "../../utils/alert-form";
 import { useStores } from "../../models/root-store/root-store-context";
 import ProfileStore from '../../store/profile-store/profile-store'
+import { APPLE_USER } from '../../config/env'
 
 i18n.defaultLocale = 'th'
 i18n.locale = 'th'
@@ -232,7 +233,7 @@ export const SigninScreen = observer(function SigninScreen() {
     if (phoneNumber.toString().includes("011223344")) {
       setPressApple(true)
       AuthStore.AppleSignin({
-        "loginId": "+66906083287",
+        "loginId": APPLE_USER || "+66906083288",
         "password": "123456aA",
         "userType": 2
       })
