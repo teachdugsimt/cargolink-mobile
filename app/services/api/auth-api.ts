@@ -147,4 +147,22 @@ export class AuthAPI {
       return error
     }
   }
+
+  async appleSignin(data: Types.AppleSignin): Promise<any> {
+    // make the api call
+    try {
+      const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/users/auth/login`, data)
+      // the typical ways to die when calling an api
+      console.log("Response call api appleSignin (MOCK) : ", response)
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+      return { kind: "ok", data: response.data }
+      // transform the data into the format we are expecting
+    } catch (error) {
+      console.log("Error call api appleSignin (MOCK): ", error)
+      return error
+    }
+  }
 }
