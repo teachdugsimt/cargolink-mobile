@@ -1,6 +1,7 @@
 export const MapTruckImageName = (id) => {
   if (id == 13 || id == "6WheelsLiquidTank") return "truck13" // SS
   else if (id == 17 || id == "4WheelsCabinetPickup") return "truck2"  // SS
+  else if (id == 1 || id == "4WheelsCabinetPickup") return "truck"  // SS
   else if (id == 18 || id == "4WheelsRefrigeratorPickup") return "truck4"  // SS
   else if (id == 21 || id == "6WheelsCabinet") return "truck10"  // SS
   else if (id == 22 || id == "6WheelsFlatbed") return "truck9"  // SS

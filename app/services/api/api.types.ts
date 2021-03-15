@@ -53,6 +53,12 @@ export interface TermAndService {
   accept: boolean
   version: string
 }
+export interface AppleSignin {
+  loginId: string
+  password: string
+  userType: number
+}
+
 
 export interface VehicleRequest {
   registrationNumber?: string[] | string
