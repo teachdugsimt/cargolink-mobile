@@ -55,6 +55,8 @@ buck-out/
 
 /CargoLinkMobile.app.dSYM.zip
 
+/vendor
+
 # Bundle artifact
 *.jsbundle
 
