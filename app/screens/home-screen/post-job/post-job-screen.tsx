@@ -22,7 +22,7 @@ const BACK_CHEVRON: ViewStyle = { position: 'absolute', left: 0, top: -10 }
 const TOP_VIEW: ViewStyle = {
   paddingTop: Platform.OS == "ios" ? 10 : 0,
   flex: Platform.OS == "ios" ? 0.65 : 0.85,
-  backgroundColor: color.mainTheme,
+  backgroundColor: color.textWhite,
   justifyContent: 'center',
 }
 const BOTTOM_VIEW: ViewStyle = {
