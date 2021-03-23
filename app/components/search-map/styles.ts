@@ -5,7 +5,7 @@ export default StyleSheet.create({
     flex: 1
   },
   marker: {
-    width: 30, height: 30
+    width: 30, height: 45
   },
   markerFixed: {
     left: "50%",
@@ -16,10 +16,16 @@ export default StyleSheet.create({
   },
   addressText: {
     color: "black",
-    marginLeft: 3,
-    marginTop: 12,
+    marginLeft: 12.5,
+    marginTop: 5,
     fontSize: 18,
     fontFamily: "Kanit-Medium",
+  },
+  star: {
+    marginTop: 5,
+    fontSize: 18,
+    color: color.red,
+    marginLeft: 3,
   },
   footer: {
     backgroundColor: "white",
@@ -74,6 +80,7 @@ export default StyleSheet.create({
     alignContent: "flex-start",
     textAlignVertical: "top",
     fontFamily: "Kanit-Medium",
+    backgroundColor: color.disable
   }
 });
 

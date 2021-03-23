@@ -62,6 +62,9 @@ export const images = {
   findJob: require("../images/home-icon-2/iconfindwork.png"),
   postjob: require("../images/home-icon-2/iconpostwork.png"),
   findTruck: require("../images/home-icon-2/iconfindtruck.png"),
+  pinMap: require("../images/pin_location.png"),
+  callCenter: require("../images/call4x.png"),
+  facebookLogo: require("../images/facebookbanner4x.png"),
 }
 
 // export default images

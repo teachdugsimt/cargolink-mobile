@@ -129,15 +129,19 @@
     "postJob": "โพสงาน",
     "findCar": "หารถ",
     "carriers": "ผู้ให้บริการขนส่ง / Carriers",
-    "shippers": "เจ้าของสินค้า / Shippers"
+    "shippers": "เจ้าของสินค้า / Shippers",
+    "wannaFindCar": "คุณต้องการหารถใช่ไหม?",
+    "postJobNow": "โพสต์งานเลย"
   },
   "postJobScreen": {
     "postjob": "เพิ่มงาน",
     "vehicleDetailAndProduct": "ข้อมูลรถและสินค้า",
     "getProductLocation": "จุดขึ้นลงสินค้า",
     "checkInformation": "ตรวจสอบข้อมูล",
+    "currentPin": "ตำแหน่งหมุดปัจจุบัน",
     "success": "สำเร็จ",
     "selectVehicleType": "เลือกประเภทของรถที่คุณต้องการ",
+    "allProductType": "ประเภทสินค้าทั้งหมด",
     "pleaseSelectVehicleType": "กรุณาเลือกประเภทรถ",
     "vehicleNum": "จำนวนคันรถที่ต้องการ",
     "itemDetail": "ข้อมูลสินค้าที่ต้องการส่ง",
@@ -211,6 +215,8 @@
     "reqHeight": "กรุณาเลือกความสูงคอกรถ"
   },
   "profileScreen": {
+    "everLogin": "คุณยังไม่ได้เข้าสู่ระบบ?",
+    "loginRegister": " เข้าสู่ระบบ/สมัครสมาชิก",
     "nophone": "ไม่ระบุ",
     "noname": "ไม่ระบุ",
     "profile": "โปรไฟล์",

@@ -4,9 +4,9 @@ import { useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
 import { images, color, spacing } from '../../theme'
 import { useStores } from "../../models/root-store/root-store-context";
-import { GridView } from '../../components/home-element/home-element'
+// import { GridView } from '../../components/home-element/home-element'
+import { GridNew } from '../../components'
 import { ModalLoading, Text } from '../../components/'
-import MyVehicleStore from "../../store/my-vehicle-store/my-vehicle-store"
 import TruckTypeStore from "../../store/truck-type-store/truck-type-store"
 import ProductTypeStore from "../../store/product-type-store/product-type-store"
 import StatusStore from '../../store/post-job-store/job-status-store'
@@ -21,7 +21,7 @@ const FULL: ViewStyle = { flex: 1 }
 const ROW: ViewStyle = { flexDirection: 'row' }
 const ALL_CENTER: ViewStyle = { justifyContent: 'center', alignItems: Platform.OS == "android" ? 'flex-start' : 'center' }
 
-const backgrounTopHeight = 160
+const backgrounTopHeight = Platform.OS == 'android' ? 200 : 240
 
 const TOP_VIEW: ViewStyle = {
   height: backgrounTopHeight,
@@ -34,7 +34,8 @@ const TOP_VIEW: ViewStyle = {
 const BOTTOM_VIEW: ViewStyle = {
   flex: 2,
   // backgroundColor: 'red',
-  paddingTop: spacing[5]
+  // paddingTop: spacing[5]
+  marginTop: Platform.OS == 'android' ? -56 : -68
 }
 
 const IMAGE_LOGO: ImageStyle = {
@@ -50,14 +51,20 @@ const ROOT_HOME: ViewStyle = {
   ...FULL,
 }
 const VIEW_ICON: ViewStyle = {
-  borderRadius: 20, height: 40, width: 40,
+  borderRadius: 20,
   justifyContent: 'center', alignItems: 'center',
   backgroundColor: color.disable,
-  marginHorizontal: 15
+  marginLeft: 15, marginRight: 10
+}
+const VIEW_ICON2: ViewStyle = {
+  borderRadius: 20,
+  justifyContent: 'center', alignItems: 'center',
+  backgroundColor: color.disable,
+  marginLeft: 10, marginRight: 15
 }
 
 const CONTACT_VIEW: ViewStyle = {
-  flex: Platform.OS == "android" ? 0.5 : 0.6,
+  flex: Platform.OS == "android" ? 0.9 : 0.6,
   alignItems: 'center'
 }
 export const HomeScreen = observer((props) => {
@@ -156,39 +163,43 @@ export const HomeScreen = observer((props) => {
   const dataTest: List[] = [
     {
       title: "homeScreen.carriers",
-      data: [{
-        id: 1, name: "homeScreen.manageCar", onPressButton: () => {
-          if (!token || !ProfileStore.data) navigation.navigate("signin")
-          else {
-            MyVehicleStore.findRequest({ page: 1 })
-            navigation.navigate("myVehicle")
-          }
+      data: [
+        // {
+        //   id: 1, name: "homeScreen.manageCar", onPressButton: () => {
+        //     if (!token || !ProfileStore.data) navigation.navigate("signin")
+        //     else {
+        //       MyVehicleStore.findRequest({ page: 1 })
+        //       navigation.navigate("myVehicle")
+        //     }
+        //   },
+        //   img: images.manageTruck
+        // },
+        {
+          id: 4, name: "homeScreen.findCar", onPressButton: () => {
+            navigation.navigate("searchTruck")
+          }, img: images.findTruck
         },
-        img: images.manageTruck
-      },
-      {
-        id: 2, name: "homeScreen.findJob", onPressButton: () => {
-          navigation.navigate("searchJob")
-        }, img: images.findJob
-      }]
+        {
+          id: 2, name: "homeScreen.findJob", onPressButton: () => {
+            navigation.navigate("searchJob")
+          }, img: images.findJob
+        }]
     },
     {
       title: "homeScreen.shippers",
-      data: [{
-        id: 3, name: "homeScreen.postJob", onPressButton: () => {
-          if (!token || !ProfileStore.data) navigation.navigate("signin")
-          else {
-            StatusStore.setStatusScreen('add')
-            navigation.navigate("postjob")
-          }
+      data: [
+        {
+          id: 3, name: "homeScreen.postJob", onPressButton: () => {
+            if (!token || !ProfileStore.data) navigation.navigate("signin")
+            else {
+              StatusStore.setStatusScreen('add')
+              navigation.navigate("postjob")
+            }
+          },
+          img: images.postjob
         },
-        img: images.postjob
-      },
-      {
-        id: 4, name: "homeScreen.findCar", onPressButton: () => {
-          navigation.navigate("searchTruck")
-        }, img: images.findTruck
-      }]
+
+      ]
     }
   ]
 
@@ -240,8 +251,7 @@ export const HomeScreen = observer((props) => {
         </Animated.View>
         <View style={BOTTOM_VIEW}>
           <View style={VIEW_GRID_BOX}>
-            {/* {swipe ? <GridView data={dataTest} /> : <GridView data={dataTest} />} */}
-            <GridView data={dataTest} />
+            <GridNew data={dataTest} />
           </View>
         </View>
 
@@ -252,22 +262,28 @@ export const HomeScreen = observer((props) => {
             versatileStore.list_group_loading || versatileStore.product_type_loading || ProfileStore.loading} />
 
         <View style={CONTACT_VIEW}>
-          <View style={[ROW, ALL_CENTER, { height: 40 }]}>
+          <Text tx={'moreScreen.contactUs'} style={{ marginBottom: 20, alignSelf: 'flex-start', marginLeft: 20 }}></Text>
+          <View style={[ROW, ALL_CENTER]}>
             <Animated.View style={{ transform: [{ translateX: leftValue }] }} >
               <TouchableOpacity style={VIEW_ICON} onPress={() => Linking.openURL(versatileStore.fblink)}>
-                <FontIcon name={"facebook"} size={40} color={color.facebook} />
+                {/* <FontIcon name={"facebook"} size={40} color={color.facebook} /> */}
+                <Image source={images.facebookLogo} style={{ height: 65, width: 181 }} resizeMode="stretch" />
               </TouchableOpacity>
             </Animated.View>
-            {/* <TouchableOpacity style={VIEW_ICON} onPress={() => console.log("LINE PRESS")}>
-              <FontIcon name={"line"} size={24} />
-            </TouchableOpacity> */}
             <Animated.View style={{ transform: [{ translateX: rightValue }] }} >
-              <TouchableOpacity style={VIEW_ICON} onPress={() => onCall(versatileStore.phoneNumber)}>
-                <Ionicons name={"call"} size={22} color={color.primary} />
+              <TouchableOpacity style={VIEW_ICON2} onPress={() => onCall(versatileStore.phoneNumber)}>
+                {/* <Ionicons name={"call"} size={22} color={color.primary} /> */}
+                <View style={{ position: 'absolute', top: 13, left: 5, zIndex: 5 }}>
+                  <Text style={{ color: color.textWhite }} preset="small">Call Center</Text>
+                  <View style={ROW}>
+                    <Ionicons name="call" size={14} color={color.textWhite} />
+                    <Text style={{ color: color.textWhite, paddingLeft: 2.5 }} preset="small">02-106-5312</Text>
+                  </View>
+                </View>
+                <Image source={images.callCenter} style={{ height: 65, width: 181 }} resizeMode="stretch" />
               </TouchableOpacity>
             </Animated.View>
           </View>
-          <Text tx={'moreScreen.contactUs'} style={{ marginTop: 10 }}></Text>
         </View>
 
         {/* <TouchableOpacity onPress={() => navigation.navigate("comment")}>

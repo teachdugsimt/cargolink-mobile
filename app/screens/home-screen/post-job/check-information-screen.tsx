@@ -446,16 +446,18 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
       ]
     }
   ]
-  const list_product_type = [
-    {
-      title: 'postJobScreen.popular',
-      data: [{ id: 1, name: 'วัสดุก่อสร้าง', image: 'greyMock' },
-      { id: 2, name: 'สินค้าเกษตร', image: 'greyMock' },
-      { id: 3, name: 'อาหาร และสินค้าบริโภค', image: 'greyMock' }]
-    }
-  ]
+ 
 
   const list_product_type_all = JSON.parse(JSON.stringify(AdvanceSearchStore.productTypes))
+  let list_product_type = [
+    {
+      title: 'postJobScreen.allProductType',
+      data: []
+    }
+  ]
+  if (list_product_type_all && list_product_type_all.length > 0) {
+    list_product_type[0].data = list_product_type_all
+  }
   let formControllerValue = control.getValues()
   let dropdown_item_type, dropdown_vehicle_type
   if (formControllerValue['item-type']) {
@@ -563,6 +565,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                                   renderSectionHeader={({ section: { title } }) => (
                                     <Text style={PADDING_TOP} >{title}</Text>
                                   )}
+                                  stickySectionHeadersEnabled={false}
                                   ListFooterComponent={
                                     <View style={{ height: 50 }}></View>
                                   }
@@ -616,7 +619,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                     {!dropdown_item_type && <><Text style={{ padding: 10 }} tx={"postJobScreen.selectItemType"} />
                       <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} />
                     </>}
-                    {dropdown_item_type && list_product_type_all && _renderSelectedList(list_product_type_all.find(e => e.id == dropdown_item_type), 2)}
+                    {dropdown_item_type && !!list_product_type_all && _renderSelectedList(list_product_type_all.find(e => e.id == dropdown_item_type), 2)}
 
                   </TouchableOpacity>
 
@@ -652,14 +655,16 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                               </View>
 
                               <View>
-                                <SectionList
+                                {!!list_product_type_all && list_product_type_all.length > 0 && <SectionList
                                   sections={list_product_type}
                                   keyExtractor={(item, index) => 'section-list-' + item.name + index}
                                   renderItem={({ item, index }) => _renderSectionModal(item, index, onChange, 2)}
                                   renderSectionHeader={({ section: { title } }) => (
                                     <Text tx={title} style={PADDING_TOP} />
                                   )}
-                                />
+                                  stickySectionHeadersEnabled={false}
+                                  renderSectionFooter={() => <View style={{ height: 70 }} />}
+                                />}
                               </View>
                             </SafeAreaView>
 

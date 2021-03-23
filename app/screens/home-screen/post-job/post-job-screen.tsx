@@ -39,7 +39,12 @@ const WRAPPER_TOP: ViewStyle = {
 }
 
 const BORDER_GREY: ViewStyle = {
-  borderColor: color.line, borderWidth: 1
+  // borderColor: color.line, 
+  borderBottomColor: color.line,
+  borderLeftColor: color.transparent2,
+  borderRightColor: color.transparent2,
+  borderTopColor: color.transparent2,
+  borderWidth: 1
 }
 
 const PADDING_TOP_20: ViewStyle = { paddingTop: 20 }
@@ -149,8 +154,9 @@ export const PostJobScreen = observer(function PostJobScreen() {
           {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
             <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} />}
         </View>
-        <View style={{ flexDirection: 'row', flex: 1 }}>
-          <Text style={{ paddingLeft: 40 }}>{item.name}</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+          <Text style={{ width: '50%', paddingLeft: 20 }}>{item.name}</Text>
+          <Ionicons name="chevron-forward" size={24} style={{ marginRight: 5 }} />
         </View>
       </View>
     </TouchableOpacity>
@@ -204,12 +210,12 @@ export const PostJobScreen = observer(function PostJobScreen() {
   let list_product_type_all = JSON.parse(JSON.stringify(AdvanceSearchStore.productTypes))
   let list_product_type = [
     {
-      title: 'postJobScreen.popular',
+      title: 'postJobScreen.allProductType',
       data: []
     }
   ]
   if (list_product_type_all && list_product_type_all.length > 0) {
-    list_product_type[0].data = list_product_type_all.slice(1, 4)
+    list_product_type[0].data = list_product_type_all
   }
 
   return (
@@ -236,7 +242,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
                   <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible0(true)}>
                     {!dropdown_vehicle_type && <><Text style={{ padding: Platform.OS == "ios" ? 5 : 10 }} tx={"postJobScreen.pleaseSelectVehicleType"} />
-                      <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} /></>}
+                      <Ionicons name="chevron-forward" size={24} style={PADDING_CHEVRON} /></>}
                     {dropdown_vehicle_type && !!versatileStore.list && _renderSelectedList(JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == dropdown_vehicle_type), 1)}
 
                   </TouchableOpacity>
@@ -303,7 +309,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
                   <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible(true)}>
                     {!dropdown_item_type && <><Text style={{ padding: Platform.OS == "ios" ? 5 : 10 }} tx={"postJobScreen.selectItemType"} />
-                      <Ionicons name="chevron-down" size={24} style={PADDING_CHEVRON} />
+                      <Ionicons name="chevron-forward" size={24} style={PADDING_CHEVRON} />
                     </>}
                     {dropdown_item_type && !!list_product_type_all && _renderSelectedList(list_product_type_all.find(e => e.id == dropdown_item_type), 2)}
 
@@ -353,6 +359,8 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                   renderSectionHeader={({ section: { title } }) => (
                                     <Text tx={title} style={PADDING_TOP} />
                                   )}
+                                  stickySectionHeadersEnabled={false}
+                                  renderSectionFooter={() => <View style={{ height: 70 }} />}
                                 />}
                               </View>
                             </SafeAreaView>

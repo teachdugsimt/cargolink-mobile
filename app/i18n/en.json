@@ -128,15 +128,19 @@
     "postJob": "Post Jobs",
     "findCar": "Find Trucks",
     "carriers": "Carriers",
-    "shippers": "Shippers"
+    "shippers": "Shippers",
+    "wannaFindCar": "You want to find truck?",
+    "postJobNow": "Post job now"
   },
   "postJobScreen": {
     "postjob": "post job",
     "vehicleDetailAndProduct": "product detail",
     "getProductLocation": "Pickup Point",
     "checkInformation": "check detail",
+    "currentPin": "Current pin",
     "success": "success",
     "selectVehicleType": "Select truck type",
+    "allProductType": "All productt type",
     "pleaseSelectVehicleType": "please select truck type",
     "vehicleNum": "How many cars",
     "itemDetail": "Product detail",
@@ -210,6 +214,8 @@
     "reqHeight": "please select truck height"
   },
   "profileScreen": {
+    "everLogin": "You are not logged in ",
+    "loginRegister": " Login / Register",
     "nophone": "none specified",
     "noname": "none specified",
     "profile": "Profile",
