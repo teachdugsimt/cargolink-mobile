@@ -40,7 +40,7 @@ const BORDER_RADIUS_20: ViewStyle = {
 const TOP_VIEW: ViewStyle = {
   paddingTop: Platform.OS == "ios" ? 10 : 0,
   flex: Platform.OS == "ios" ? 0.65 : 0.85,
-  backgroundColor: color.mainTheme,
+  backgroundColor: color.textWhite,
   justifyContent: 'center',
 }
 const BOTTOM_VIEW: ViewStyle = {
