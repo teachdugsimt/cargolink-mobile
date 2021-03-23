@@ -8,7 +8,11 @@
     "next": "Next",
     "from": "From",
     "to": "To",
+    "dump": "dump",
+    "notDump": "not dump",
     "confirm": "Confirm",
+    "perBill": "per round",
+    "perTon": "per ton",
     "searchLocation": "Search for Location",
     "pleaseInputCorrect": "Please input correct data",
     "regionField": "region",
@@ -79,7 +83,10 @@
     "InvalidPhoneNumber": "Invalid phone number",
     "date": "Date",
     "pleaseUpdateNewVersion": "Please update to the new version.",
-    "softwareUpdate": "Software Update"
+    "softwareUpdate": "Software Update",
+    "inputValue": "Please input value",
+    "price": "price",
+    "bath": "THB"
   },
   "commentScreen": {
     "yourComment": "Your Comment",
@@ -133,6 +140,13 @@
     "postJobNow": "Post job now"
   },
   "postJobScreen": {
+    "fromMap": "Please input location from map",
+    "weightProduct": "Product weight",
+    "wantTruck": "Want truck",
+    "rateShipping": "Shipping rate",
+    "inputRateShipping": "please input shipping rate",
+    "pleaseInputProductName": "Please input product name",
+    "productName": "Product name",
     "postjob": "post job",
     "vehicleDetailAndProduct": "product detail",
     "getProductLocation": "Pickup Point",

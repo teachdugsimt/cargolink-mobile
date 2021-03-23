@@ -4,7 +4,11 @@ import { useNavigation } from "@react-navigation/native"
 import { useForm, Controller } from "react-hook-form";
 import { observer } from "mobx-react-lite"
 import { translate } from "../../../i18n"
-import { Text, AddJobElement, TextInputTheme, RoundedButton, MultiSelector, ModalTruckType, Screen } from '../../../components'
+import {
+  Text, AddJobElement, TextInputNew,
+  TextInputColumn, RadioButton,
+  RoundedButton, MultiSelector, ModalTruckType, Screen, TimePickerRemake
+} from '../../../components'
 import PostJobStore from '../../../store/post-job-store/post-job-store'
 import AdvanceSearchStore from '../../../store/shipper-job-store/advance-search-store'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -50,7 +54,7 @@ const BORDER_GREY: ViewStyle = {
 const PADDING_TOP_20: ViewStyle = { paddingTop: 20 }
 
 const WRAP_DROPDOWN_VALUE: ViewStyle = {
-  flex: 1, padding: Platform.OS == "ios" ? 7.5 : 0,
+  flex: 1, padding: Platform.OS == "ios" ? 7.5 : 0, paddingLeft: 0,
   borderRadius: 2.5
 }
 const WRAP_DROPDOWN: ViewStyle = {
@@ -61,7 +65,6 @@ const WRAP_DROPDOWN: ViewStyle = {
 const CONTENT_TEXT: TextStyle = {
   fontFamily: 'Kanit-Medium',
   color: color.black,
-  fontSize: typography.title
 }
 const MARGIN_TOP: ViewStyle = { marginTop: 5 }
 
@@ -89,7 +92,7 @@ const RED_DOT: TextStyle = {
   color: color.red,
   paddingTop: 10, paddingLeft: 7.5
 }
-const PADDING_CHEVRON: ViewStyle = { paddingTop: Platform.OS == "ios" ? 2.5 : 7.5, paddingRight: 5 }
+const PADDING_CHEVRON: TextStyle = { paddingTop: Platform.OS == "ios" ? 2.5 : 7.5, paddingRight: 5, color: color.line }
 const PADDING_TOP: ViewStyle = { marginTop: 10 }
 
 const ROOT_FLAT_LIST: ViewStyle = {
@@ -115,10 +118,19 @@ const IMAGE_LIST: ImageStyle = {
   borderRadius: 30,
   borderColor: color.primary, borderWidth: 2,
 }
+const MAX_LENGTH: number = 120
+const dump = [{ id: 1, label: 'common.dump', active: true },
+{ id: 2, label: 'common.notDump', active: false }]
+
+const unitRate = [{ id: 1, label: 'common.perBill', active: true },
+{ id: 2, label: 'common.perTon', active: false }]
 
 export const PostJobScreen = observer(function PostJobScreen() {
   const { versatileStore, tokenStore } = useStores()
   const navigation = useNavigation()
+
+  const [arrDump, setArrDump] = useState(dump)
+  const [arrUnit, setArrUnit] = useState(unitRate)
 
   const { control, handleSubmit, errors } = useForm({
     defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : (PostJobStore.postjob1 || {})
@@ -217,7 +229,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
   if (list_product_type_all && list_product_type_all.length > 0) {
     list_product_type[0].data = list_product_type_all
   }
-
+  console.log("From control :: ", formControllerValue)
   return (
     <Screen unsafe>
       <View testID="PostJobScreen" style={FULL}>
@@ -236,12 +248,12 @@ export const PostJobScreen = observer(function PostJobScreen() {
                   <Text preset={'topic'} style={RED_DOT}>*</Text>
                 </View>
 
-                <View style={[PADDING_TOP, !dropdown_vehicle_type ? { ...WRAP_DROPDOWN } : { ...WRAP_DROPDOWN_VALUE }]}>
+                <View style={[!dropdown_vehicle_type ? { ...WRAP_DROPDOWN, ...PADDING_TOP } : { ...WRAP_DROPDOWN_VALUE }]}>
 
 
 
                   <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible0(true)}>
-                    {!dropdown_vehicle_type && <><Text style={{ padding: Platform.OS == "ios" ? 5 : 10 }} tx={"postJobScreen.pleaseSelectVehicleType"} />
+                    {!dropdown_vehicle_type && <><Text style={{ padding: Platform.OS == "ios" ? 5 : 10, paddingLeft: 0, color: color.line }} tx={"postJobScreen.pleaseSelectVehicleType"} />
                       <Ionicons name="chevron-forward" size={24} style={PADDING_CHEVRON} /></>}
                     {dropdown_vehicle_type && !!versatileStore.list && _renderSelectedList(JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == dropdown_vehicle_type), 1)}
 
@@ -266,15 +278,18 @@ export const PostJobScreen = observer(function PostJobScreen() {
                 {errors['vehicle-type'] && <Text style={{ color: color.red }} tx={"postJobScreen.validateTruckType"} />}
 
 
-                <Text tx={"postJobScreen.vehicleNum"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                {/* <Text tx={"postJobScreen.vehicleNum"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} /> */}
                 <Controller
                   control={control}
                   render={({ onChange, onBlur, value }) => (
-                    <TextInputTheme
-                      testID={"car-num"}
-                      placeholder={'คัน'}
+                    <TextInputNew
+                      key="text-input-car-num"
                       keyboardType="numeric"
-                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                      prefix="postJobScreen.vehicleNum"
+                      icon="ios-information-circle-outline"
+                      underline={true}
+                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
+                      value={value} onChangeText={(text) => onChange(text)} />
                   )}
                   key={'text-input-car-num'}
                   name={"car-num"}
@@ -282,6 +297,31 @@ export const PostJobScreen = observer(function PostJobScreen() {
                   defaultValue=""
                 />
                 {errors['car-num'] && <Text style={{ color: color.red }} tx={"common.noSignAndCharacter"} />}
+
+                <Controller
+                  control={control}
+                  render={({ onChange, onBlur, value }) => (
+                    <View style={[ROW_TEXT, JUSTIFY_BETWEEN, { marginTop: 20, marginBottom: 10 }]}>
+                      <View style={[FULL, { justifyContent: 'center' }]}>
+                        <Text tx="postJobScreen.wantTruck" />
+                      </View>
+                      <View style={FULL}>
+                        <RadioButton onPress={(item, index) => {
+                          onChange(item.id)
+                          let tmp = arrDump
+                          tmp.map((e, i) => {
+                            if (e.id == item.id) e.active = true
+                            else e.active = false
+                          })
+                          setArrDump(tmp)
+                        }} data={arrDump} />
+                      </View>
+                    </View>
+                  )}
+                  key={'text-input-dump-field'}
+                  name={"dump-field"}
+                  defaultValue=""
+                />
               </View>
             </View>
 
@@ -308,7 +348,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                 <View style={[PADDING_TOP, !dropdown_item_type ? { ...WRAP_DROPDOWN } : { ...WRAP_DROPDOWN_VALUE }]}>
 
                   <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible(true)}>
-                    {!dropdown_item_type && <><Text style={{ padding: Platform.OS == "ios" ? 5 : 10 }} tx={"postJobScreen.selectItemType"} />
+                    {!dropdown_item_type && <><Text style={{ padding: Platform.OS == "ios" ? 5 : 10, paddingLeft: 0, color: color.line }} tx={"postJobScreen.selectItemType"} />
                       <Ionicons name="chevron-forward" size={24} style={PADDING_CHEVRON} />
                     </>}
                     {dropdown_item_type && !!list_product_type_all && _renderSelectedList(list_product_type_all.find(e => e.id == dropdown_item_type), 2)}
@@ -383,16 +423,18 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
 
 
-                <View style={ROW_TEXT}>
-                  <Text tx={"postJobScreen.inputYourItem"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
-                  <Text preset={'topic'} style={[RED_DOT, PADDING_TOP_20]}>*</Text>
-                </View>
+                <View style={MARGIN_TOP_EXTRA} />
                 <Controller
                   control={control}
                   render={({ onChange, onBlur, value }) => (
-                    <TextInputTheme
+                    <TextInputColumn
                       testID={"item-name"}
-                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                      topic={"postJobScreen.productName"}
+                      actualPlaceholder="postJobScreen.pleaseInputProductName"
+                      underline={true}
+                      length={value ? value.length : 0} maxLength={MAX_LENGTH}
+                      inputStyle={{ ...MARGIN_MEDIUM, ...CONTENT_TEXT }}
+                      value={value} onChangeText={(text) => onChange(text)} />
                   )}
                   key={'text-input-item-name'}
                   name={"item-name"}
@@ -401,14 +443,18 @@ export const PostJobScreen = observer(function PostJobScreen() {
                 />
                 {errors['item-name'] && <Text style={{ color: color.red }} tx={"common.productName"} />}
 
-                <Text tx={"postJobScreen.weightNumber"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
                 <Controller
                   control={control}
                   render={({ onChange, onBlur, value }) => (
-                    <TextInputTheme
-                      testID={"item-weight"}
+                    <TextInputNew
+                      key="text-input-item-weight"
                       keyboardType="numeric"
-                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                      prefix="postJobScreen.weightProduct"
+                      suffix="searchJobScreen.ton"
+                      icon="ios-information-circle-outline"
+                      underline={false}
+                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
+                      value={value} onChangeText={(text) => onChange(text)} />
                   )}
                   key={'text-input-item-weight'}
                   name={"item-weight"}
@@ -417,6 +463,64 @@ export const PostJobScreen = observer(function PostJobScreen() {
                   defaultValue=""
                 />
                 {errors['item-weight'] && <Text style={{ color: color.red }} tx={"common.noSignAndCharacter"} />}
+              </View>
+            </View>
+
+
+            <View style={[TOP_VIEW_2, MARGIN_TOP]}>
+              <View style={WRAPPER_TOP}>
+
+                <View style={[ROW_TEXT]}>
+                  <Text tx={"postJobScreen.rateShipping"} preset={'topic'} style={MARGIN_TOP_BIG} />
+                  <Text preset={'topic'} style={RED_DOT} >*</Text>
+                  <TouchableOpacity onPress={() => { }} style={{ justifyContent: 'center', paddingTop: 7.5 }}>
+                    <Ionicons name={"ios-information-circle-outline"} size={18} color={color.primary} />
+                  </TouchableOpacity>
+                </View>
+                <View style={ROW_TEXT}>
+                  <View style={[FULL, { justifyContent: 'center' }]}>
+                    <Controller
+                      control={control}
+                      render={({ onChange, onBlur, value }) => (
+                        <TextInputNew
+                          keyboardType="numeric"
+                          prefix="common.price"
+                          suffix="common.bath"
+                          actualPlaceholder="common.price"
+                          underline={false}
+                          inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
+                          value={value} onChangeText={(text) => onChange(text)} />
+                      )}
+                      key={'text-input-shipping-rate'}
+                      name={"shipping-rate"}
+                      rules={{ required: true }}
+                      defaultValue=""
+                    />
+                  </View>
+
+                  <View style={[FULL, { justifyContent: 'center' }]}>
+                    <Controller
+                      control={control}
+                      render={({ onChange, onBlur, value }) => (
+                        <RadioButton onPress={(item, index) => {
+                          onChange(item.id)
+                          let tmp = arrUnit
+                          tmp.map((e, i) => {
+                            if (e.id == item.id) e.active = true
+                            else e.active = false
+                          })
+                          console.log("Ttmpm unit shipp rate :: ", tmp)
+                          setArrUnit(tmp)
+                        }} data={arrUnit} />
+                      )}
+                      key={'text-input-shipping-type'}
+                      name={"shipping-type"}
+                      defaultValue=""
+                    />
+                  </View>
+                </View>
+                {errors['shipping-rate'] && <Text style={{ color: color.red }} tx={"postJobScreen.inputRateShipping"} />}
+
               </View>
             </View>
 

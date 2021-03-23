@@ -75,7 +75,6 @@ const IMAGE_LIST: ImageStyle = {
 const CONTENT_TEXT: TextStyle = {
   fontFamily: 'Kanit-Medium',
   color: color.black,
-  fontSize: typography.title
 }
 const MARGIN_HORIZONTTAL_MEDIUM: ViewStyle = { paddingHorizontal: 10 }
 const MARGIN_LEFT_SMALL: ViewStyle = { paddingLeft: 5 }

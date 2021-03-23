@@ -264,23 +264,18 @@ export const HomeScreen = observer((props) => {
         <View style={CONTACT_VIEW}>
           <Text tx={'moreScreen.contactUs'} style={{ marginBottom: 20, alignSelf: 'flex-start', marginLeft: 20 }}></Text>
           <View style={[ROW, ALL_CENTER]}>
-            <Animated.View style={{ transform: [{ translateX: leftValue }] }} >
-              <TouchableOpacity style={VIEW_ICON} onPress={() => Linking.openURL(versatileStore.fblink)}>
-                {/* <FontIcon name={"facebook"} size={40} color={color.facebook} /> */}
-                <Image source={images.facebookLogo} style={{ height: 65, width: 181 }} resizeMode="stretch" />
+            <Animated.View style={{ transform: [{ translateX: leftValue }] }}>
+              <TouchableOpacity style={VIEW_ICON} onPress={() => onCall(versatileStore.phoneNumber)}>
+                <View style={{ position: 'absolute', justifyContent: 'center', left: 5, zIndex: 5 }}>
+                  <Text style={{ color: color.textWhite, paddingLeft: 2.5 }} preset="small">02-106-5312</Text>
+                </View>
+                <Image source={images.callCenter} style={{ height: 37.5, width: (width / 2) - 30 }} resizeMode="stretch" />
               </TouchableOpacity>
             </Animated.View>
             <Animated.View style={{ transform: [{ translateX: rightValue }] }} >
-              <TouchableOpacity style={VIEW_ICON2} onPress={() => onCall(versatileStore.phoneNumber)}>
-                {/* <Ionicons name={"call"} size={22} color={color.primary} /> */}
-                <View style={{ position: 'absolute', top: 13, left: 5, zIndex: 5 }}>
-                  <Text style={{ color: color.textWhite }} preset="small">Call Center</Text>
-                  <View style={ROW}>
-                    <Ionicons name="call" size={14} color={color.textWhite} />
-                    <Text style={{ color: color.textWhite, paddingLeft: 2.5 }} preset="small">02-106-5312</Text>
-                  </View>
-                </View>
-                <Image source={images.callCenter} style={{ height: 65, width: 181 }} resizeMode="stretch" />
+              <TouchableOpacity style={VIEW_ICON2} onPress={() => Linking.openURL(versatileStore.fblink)}>
+                <Image source={images.facebookLogo} style={{ height: 37.5, width: (width / 2) - 30 }} resizeMode="stretch" />
+
               </TouchableOpacity>
             </Animated.View>
           </View>

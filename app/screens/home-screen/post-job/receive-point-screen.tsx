@@ -17,14 +17,22 @@ import _ from 'lodash'
 import { Modal, ModalContent } from 'react-native-modals';
 import { AlertForm, AlertFormDate } from "../../../utils/alert-form";
 import StatusStore from '../../../store/post-job-store/job-status-store'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
+const JUSTIFY_CENTER: ViewStyle = { justifyContent: 'center' }
+const ALIGN_ITEMS: ViewStyle = { alignItems: 'center' }
 const PRIMARY_COLOR: ViewStyle = { backgroundColor: color.primary }
 const GREY_TEXT: ViewStyle = { backgroundColor: color.line }
+const LINE_TEXT: TextStyle = { color: color.line }
+const JUSTIFY_BETWEEN: ViewStyle = { justifyContent: 'space-between', alignItems: 'center' }
 const BORDER_RADIUS_20: ViewStyle = {
   borderRadius: 20,
 }
+const VERTICAL_10: TextStyle = { paddingVertical: 10 }
+const VIEW_VERTICAL_10: ViewStyle = { paddingVertical: 10 }
 const ADD_NEW_POINT: ViewStyle = {
   backgroundColor: color.primary,
   borderWidth: 1,
@@ -53,13 +61,13 @@ const WRAPPER_TOP: ViewStyle = {
 const CONTENT_TEXT: TextStyle = {
   fontFamily: 'Kanit-Medium',
   color: color.black,
-  fontSize: typography.title
 }
 const MARGIN_HORIZONTTAL_MEDIUM: ViewStyle = { paddingHorizontal: 10 }
 const MARGIN_LEFT_SMALL: ViewStyle = { paddingLeft: 5 }
 const MARGIN_TOP: ViewStyle = { marginTop: 5 }
 const MARGIN_TOP_BIG: ViewStyle = { marginTop: 10 }
 const MARGIN_TOP_EXTRA: ViewStyle = { marginTop: 20 }
+const BORDER_BOTTOM_STYLE: ViewStyle = { borderBottomColor: color.line, borderBottomWidth: 1 }
 const LAYOUT_REGISTRATION_FIELD: TextStyle = {
   textAlign: 'right', paddingRight: 10,
 }
@@ -82,13 +90,13 @@ const RED_DOT: TextStyle = {
   color: color.red,
   paddingTop: 10, paddingLeft: 7.5
 }
-const ICON_PIN_YELLOW: ImageStyle = {
-  height: 20, width: 20,
-  marginTop: 10
-}
+const ICON_PIN_YELLOW: ImageStyle = { height: 45, width: 40, }
 const PADDING_RIGHT_SMALL: ViewStyle = { paddingRight: 5 }
 const PADDING_LEFT_SMALL: ViewStyle = { paddingLeft: 5 }
-const BUTTON_MAP: ViewStyle = { padding: 10, borderWidth: 1, borderRadius: 2.5, borderColor: color.line }
+const BUTTON_MAP: ViewStyle = {
+  padding: 10, paddingLeft: 0,
+  borderBottomWidth: 1, borderBottomColor: color.line
+}
 const initField = [{
   id: 1,
   showDate: false,
@@ -302,9 +310,6 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                   <Text tx={"postJobScreen.acceptPointProduct"} preset={'topic'} style={[MARGIN_TOP_BIG, MARGIN_LEFT_SMALL]} />
                   <Text preset={'topic'} style={RED_DOT} >*</Text>
                 </View>
-                <View style={ROW_TEXT}>
-                  <Text tx={"postJobScreen.inputLocationReceive"} preset={'topic'} style={[MARGIN_TOP_BIG, MARGIN_LEFT_SMALL]} />
-                </View>
 
                 <Controller
                   control={control}
@@ -326,8 +331,11 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                           setstatusMap('receive-location')
                         }}
                         style={BUTTON_MAP}>
-                        {!formControllerValue["receive-location"] && <Text tx={"postJobScreen.receiveLocation"} />}
-                        {!!formControllerValue["receive-location"] && <Text>{formControllerValue["receive-location"]}</Text>}
+                        {!formControllerValue["receive-location"] && <View style={[ROW_TEXT, JUSTIFY_BETWEEN, VIEW_VERTICAL_10]}>
+                          <Text tx={"postJobScreen.fromMap"} style={LINE_TEXT} />
+                          <Ionicons name="chevron-forward" size={24} color={color.line} />
+                        </View>}
+                        {!!formControllerValue["receive-location"] && <Text style={VERTICAL_10}>{formControllerValue["receive-location"]}</Text>}
                       </TouchableOpacity>
                     </>
                   )}
@@ -339,9 +347,22 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                 {(errors['receive-location'] && !formControllerValue["receive-location"]) && <Text style={{ color: color.red }} tx={"postJobScreen.validateReceiveLocation"} />}
 
 
-                <View style={ROW_TEXT}>
-                  <View style={[FULL, PADDING_RIGHT_SMALL]}>
-                    <Text tx={"postJobScreen.dateReceive"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+
+
+
+
+
+
+
+
+
+
+                <View style={[ROW_TEXT, JUSTIFY_BETWEEN, BORDER_BOTTOM_STYLE]}>
+                  <View style={[FULL, ROW_TEXT, ALIGN_ITEMS]}>
+                    <FontAwesome name="calendar-o" size={22} />
+                    <Text tx={"postJobScreen.dateReceive"} style={{ ...CONTENT_TEXT, paddingLeft: 10 }} />
+                  </View>
+                  <View style={FULL}>
                     <Controller
                       control={control}
                       render={({ onChange, onBlur, value }) => (
@@ -362,8 +383,13 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                       defaultValue={fromNow2Days}
                     />
                   </View>
-                  <View style={[FULL, PADDING_LEFT_SMALL]}>
-                    <Text tx={"postJobScreen.timeReceive"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                </View>
+                <View style={[ROW_TEXT, JUSTIFY_BETWEEN, BORDER_BOTTOM_STYLE]}>
+                  <View style={[FULL, ROW_TEXT, ALIGN_ITEMS]}>
+                    <FontAwesome name="clock-o" size={22} />
+                    <Text tx={"postJobScreen.timeReceive"} style={{ ...CONTENT_TEXT, paddingLeft: 10 }} />
+                  </View>
+                  <View style={FULL}>
                     <Controller
                       control={control}
                       render={({ onChange, onBlur, value }) => (
@@ -385,6 +411,12 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                     />
                   </View>
                 </View>
+
+
+
+
+
+
 
 
 
@@ -453,7 +485,6 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                     <Text preset={'topic'} style={RED_DOT} >*</Text>
                   </View>
 
-                  <Text tx={"postJobScreen.shippingAddr"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
                   <Controller
                     control={control}
                     render={({ onChange, onBlur, value }) => (
@@ -474,8 +505,11 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                             setstatusMap("shipping-address-" + e.id)
                           }}
                           style={BUTTON_MAP}>
-                          {!formControllerValue["shipping-address-" + e.id] && <Text tx={"postJobScreen.shippingLocation"} />}
-                          {!!formControllerValue["shipping-address-" + e.id] && <Text>{formControllerValue["shipping-address-" + e.id]}</Text>}
+                          {!formControllerValue["shipping-address-" + e.id] && <View style={[ROW_TEXT, JUSTIFY_BETWEEN, VIEW_VERTICAL_10]}>
+                            <Text tx={"postJobScreen.fromMap"} style={{ color: color.line }} />
+                            <Ionicons name="chevron-forward" size={24} color={color.line} />
+                          </View>}
+                          {!!formControllerValue["shipping-address-" + e.id] && <Text style={VERTICAL_10}>{formControllerValue["shipping-address-" + e.id]}</Text>}
                         </TouchableOpacity>
                       </>
                     )}
