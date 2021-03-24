@@ -8,6 +8,7 @@
     "next": "ต่อไป",
     "from": "จุดขึ้น",
     "to": "จุดลง",
+    "delete": "ลบ",
     "dump": "ดัมพ์",
     "notDump": "ไม่ดัมพ์",
     "confirm": "ยืนยัน",
@@ -85,7 +86,7 @@
     "pleaseUpdateNewVersion": "กรุณาอัพเดทเป็นเวอร์ชันใหม่",
     "softwareUpdate": "อัพเดทซอฟต์แวร์",
     "update": "อัพเดท",
-    "inputValue": "กรุณาใส่ข้อมูล" ,
+    "inputValue": "กรุณาใส่ข้อมูล",
     "price": "ราคา",
     "bath": "บาท"
   },
@@ -130,6 +131,7 @@
     "enterYourPhoneNumber": "ใส่ข้อมูลเบอร์โทรศัพท์ของคุณ"
   },
   "homeScreen": {
+    "newPromotion": "ข่าวสารและโปรโมชั่น",
     "logout": "ออกจากระบบ",
     "manageCar": "รถของฉัน",
     "findJob": "หางาน",
@@ -141,6 +143,15 @@
     "postJobNow": "โพสต์งานเลย"
   },
   "postJobScreen": {
+    "mockPhoneAndroid": "xx-xxx-xxxx    ",
+    "checkPickupDate": "กรุณาเช็ควันขึ้น-ลงสินค้า",
+    "typeYouWant": "ประเภทของรถที่คุณต้องการ",
+    "productInformation": "ข้อมูลสินค้า",
+    "productWeight": "น้ำหนักสินค้า",
+    "addDelivery": "เพิ่มจุดลง",
+    "mockPhoneNumber": "xx-xxx-xxxx",
+    "contactName": "ชื่อผู้ติดต่อ",
+    "inputName": "ระบุชื่อ",
     "fromMap": "ระบุตำแหน่งจากแผนที่",
     "weightProduct": "น้ำหนักสินค้า",
     "wantTruck": "ต้องการรถ",
@@ -170,8 +181,10 @@
     "timeReceive": "เวลารับสินค้า",
     "receiverInfo": "ข้อมูลติดต่อจุดขึ้นสินค้า",
     "receiverName": "ผู้ติดต่อจุดขึ้น",
+    "phoneNumber": "เบอร์โทรศัพท์",
     "receiverTel": "เบอร์ติดต่อ",
     "shipingPoint": "จุดลงสินค้าที่",
+    "shipingPointNew": "จุดลงสินค้า",
     "shippingAddr": "ระบุสถานที่ส่งสินค้า",
     "dateShipping": "วันส่งสินค้า",
     "timeShipping": "เวลาส่งสินค้า",

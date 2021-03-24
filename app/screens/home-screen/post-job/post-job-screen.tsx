@@ -22,9 +22,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
-const BACK_CHEVRON: ViewStyle = { position: 'absolute', left: 0, top: -10 }
+const BACK_CHEVRON: ViewStyle = { position: 'absolute', left: 0 }
 const TOP_VIEW: ViewStyle = {
-  paddingTop: Platform.OS == "ios" ? 10 : 0,
+  paddingTop: Platform.OS == "ios" ? 10 : 10,
   flex: Platform.OS == "ios" ? 0.65 : 0.85,
   backgroundColor: color.textWhite,
   justifyContent: 'center',
@@ -96,7 +96,7 @@ const PADDING_CHEVRON: TextStyle = { paddingTop: Platform.OS == "ios" ? 2.5 : 7.
 const PADDING_TOP: ViewStyle = { marginTop: 10 }
 
 const ROOT_FLAT_LIST: ViewStyle = {
-  width: '98%',
+  width: '100%',
   height: 100,
   flexDirection: 'row',
   justifyContent: 'center', alignItems: 'center'
@@ -118,14 +118,14 @@ const IMAGE_LIST: ImageStyle = {
   borderRadius: 30,
   borderColor: color.primary, borderWidth: 2,
 }
-const MAX_LENGTH: number = 120
-const dump = [{ id: 1, label: 'common.dump', active: true },
-{ id: 2, label: 'common.notDump', active: false }]
-
-const unitRate = [{ id: 1, label: 'common.perBill', active: true },
-{ id: 2, label: 'common.perTon', active: false }]
 
 export const PostJobScreen = observer(function PostJobScreen() {
+  const MAX_LENGTH: number = 120
+  const dump = [{ id: 1, label: 'common.dump', active: true },
+  { id: 2, label: 'common.notDump', active: false }]
+
+  const unitRate = [{ id: 1, label: 'common.perBill', active: true },
+  { id: 2, label: 'common.perTon', active: false }]
   const { versatileStore, tokenStore } = useStores()
   const navigation = useNavigation()
 
@@ -168,7 +168,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
           <Text style={{ width: '50%', paddingLeft: 20 }}>{item.name}</Text>
-          <Ionicons name="chevron-forward" size={24} style={{ marginRight: 5 }} />
+          <Ionicons name="chevron-forward" size={24} style={{ marginRight: 5 }} color={color.line} />
         </View>
       </View>
     </TouchableOpacity>
@@ -194,6 +194,10 @@ export const PostJobScreen = observer(function PostJobScreen() {
       </View>
     </TouchableOpacity>
   }
+
+  // const _showDumpField = (truckType: number) => {
+  //   if
+  // }
 
 
 
@@ -286,6 +290,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                       key="text-input-car-num"
                       keyboardType="numeric"
                       prefix="postJobScreen.vehicleNum"
+                      suffix="profileScreen.unit"
                       icon="ios-information-circle-outline"
                       underline={true}
                       inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
@@ -320,7 +325,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                   )}
                   key={'text-input-dump-field'}
                   name={"dump-field"}
-                  defaultValue=""
+                  defaultValue={1}
                 />
               </View>
             </View>
@@ -363,15 +368,15 @@ export const PostJobScreen = observer(function PostJobScreen() {
                         visible={visible}
                         onTouchOutside={() => setvisible(false)}
                         onSwipeOut={() => setvisible(false)}
-                        swipeDirection={['up', 'down']} // can be string or an array
-                        swipeThreshold={200} // default 100
+                      // swipeDirection={['up', 'down']} // can be string or an array
+                      // swipeThreshold={200} // default 100
                       >
                         <ModalContent >
                           <View style={{ width: (width / 1.1), height: '100%', justifyContent: 'flex-start' }}>
                             <SafeAreaView style={{ flex: 1 }}>
-                              <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
+                              <View style={{ height: 60, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                                 <TouchableOpacity style={BACK_CHEVRON} onPress={() => setvisible(false)}>
-                                  <Ionicons name="chevron-back" size={20} />
+                                  <Ionicons name="chevron-back" size={28} color={color.primary} />
                                 </TouchableOpacity>
                                 <Text style={{ color: color.primary }} preset={"topic"} tx={"postJobScreen.selectItemType"} />
                               </View>
@@ -397,7 +402,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                                   keyExtractor={(item, index) => 'section-list-' + item.name + item.id + index}
                                   renderItem={({ item, index }) => _renderSectionModal(item, index, onChange, 2)}
                                   renderSectionHeader={({ section: { title } }) => (
-                                    <Text tx={title} style={PADDING_TOP} />
+                                    <Text tx={title} style={[MARGIN_TOP_EXTRA]} />
                                   )}
                                   stickySectionHeadersEnabled={false}
                                   renderSectionFooter={() => <View style={{ height: 70 }} />}
@@ -509,13 +514,12 @@ export const PostJobScreen = observer(function PostJobScreen() {
                             if (e.id == item.id) e.active = true
                             else e.active = false
                           })
-                          console.log("Ttmpm unit shipp rate :: ", tmp)
                           setArrUnit(tmp)
                         }} data={arrUnit} />
                       )}
                       key={'text-input-shipping-type'}
                       name={"shipping-type"}
-                      defaultValue=""
+                      defaultValue={1}
                     />
                   </View>
                 </View>

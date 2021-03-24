@@ -34,7 +34,6 @@ const CONTENT_TEXT: TextStyle = {
 const RADIO_BUTTON: ViewStyle = {
   height: 40
 }
-const WIDTH_ROW: ViewStyle = { width: '50%', flexDirection: 'row' }
 
 export function RadioButton(props: RadioProps) {
   const { containerStyle, buttonStyle, data, onPress } = props

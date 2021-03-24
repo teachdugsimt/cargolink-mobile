@@ -80,5 +80,7 @@ export const color = {
 
   sky: palette.sky,
   registration: palette.regisGrey,
-  facebook: palette.facebook
+  facebook: palette.facebook,
+  blue: palette.blueAnswer,
+  mainBackgrorund: palette.mainBackground,
 }

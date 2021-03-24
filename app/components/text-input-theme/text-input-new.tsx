@@ -1,5 +1,5 @@
 import React from "react"
-import { TextInput, ViewStyle, View, TextStyle, Dimensions, TouchableOpacity, TextInputProps } from "react-native"
+import { TextInput, ViewStyle, View, TextStyle, Dimensions, TouchableOpacity, TextInputProps, Platform } from "react-native"
 import { Text } from '../text/text'
 import { color } from "../../theme"
 import { translate } from "../../i18n"
@@ -22,6 +22,8 @@ interface TextInputNew {
   icon?: string
   value?: any
   onChangeText?: any
+  prefixIconColor?: string
+  prefixIcon?: any
 }
 
 const ROOT_VIEW: ViewStyle = { flexDirection: 'row', flex: 1, width: '100%' }
@@ -29,7 +31,7 @@ const ROOT_VIEW: ViewStyle = { flexDirection: 'row', flex: 1, width: '100%' }
 const ROOT_STYLE: ViewStyle = {
   height: 40,
   // paddingLeft: width / 3,
-  paddingLeft: 10,
+  paddingLeft: Platform.OS == "ios" ? 10 : 0,
   flexShrink: 1,
   // backgroundColor: 'green'
 }
@@ -40,7 +42,7 @@ const TEXT_SUFFIX: TextStyle = { color: color.textBlack }
 
 export function TextInputNew(props: TextInputNew) {
   const { inputStyle, actualPlaceholder, editable, prefix = "common.inputValue",
-    icon, suffix = "profileScreen.unit",
+    icon, suffix, prefixIcon, prefixIconColor,
     underline, ...rest } = props
   let underline_style: ViewStyle = {}
   if (underline) underline_style = {
@@ -51,6 +53,7 @@ export function TextInputNew(props: TextInputNew) {
     <TouchableOpacity style={{ ...ROOT_VIEW, ...underline_style }} onPress={() => { if (forwardedRef) forwardedRef.focus() }}>
       <View style={ROW_CENTER}>
         <View style={ROW}>
+          {prefixIcon && <Ionicons name={prefixIcon} size={18} color={prefixIconColor} style={Platform.OS == "ios" ? { paddingHorizontal: 10 } : { paddingRight: 10 }} />}
           <Text style={TEXT_PREFIX} tx={prefix} />
           {!!icon && <TouchableOpacity onPress={() => { }} >
             <Ionicons name={icon} size={18} color={color.primary} />
@@ -66,7 +69,7 @@ export function TextInputNew(props: TextInputNew) {
           style={{ ...ROOT_STYLE, ...inputStyle }}
           ref={ref => forwardedRef = ref}
         />
-        <Text style={TEXT_SUFFIX} tx={suffix} />
+        {suffix && <Text style={TEXT_SUFFIX} tx={suffix} />}
       </View>
     </TouchableOpacity >
 

@@ -20,13 +20,13 @@ const FULL: ViewStyle = {
 }
 
 const TOP_VIEW: ViewStyle = {
-  paddingTop: Platform.OS == "ios" ? 10 : 0,
+  paddingTop: Platform.OS == "ios" ? 10 : 10,
   flex: Platform.OS == "ios" ? 0.65 : 0.85,
   backgroundColor: color.textWhite,
   justifyContent: 'center',
 }
 const BOTTOM_VIEW: ViewStyle = {
-  flex: Platform.OS == "ios" ? 5 : 5.5,
+  flex: Platform.OS == "ios" ? 5 : 4.8,
 }
 const ROW_TEXT: TextStyle = {
   flexDirection: 'row',
@@ -66,6 +66,7 @@ export const PostSuccessScreen = observer(function PostSuccessScreen() {
     { key: 4, no: 4, id: 4, name: 'postJobScreen.success', active: true },
   ]
   const id_post = (JSON.parse(JSON.stringify(PostJobStore.data_postjob))) || ''
+  console.log("ID post here : ", id_post)
 
   useEffect(() => {
     navigation.setOptions({

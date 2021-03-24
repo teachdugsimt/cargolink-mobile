@@ -8,6 +8,7 @@
     "next": "Next",
     "from": "From",
     "to": "To",
+    "delete": "Delete",
     "dump": "dump",
     "notDump": "not dump",
     "confirm": "Confirm",
@@ -129,6 +130,7 @@
     "enterYourPhoneNumber": "Enter your phone number"
   },
   "homeScreen": {
+    "newPromotion": "News & Promotion",
     "logout": "Log out",
     "manageCar": "My Trucks",
     "findJob": "Find Jobs",
@@ -140,6 +142,14 @@
     "postJobNow": "Post job now"
   },
   "postJobScreen": {
+    "mockPhoneAndroid": "xx-xxx-xxxx    ",
+    "typeYouWant": "Vehicle type",
+    "productInformation": "Product information",
+    "productWeight": "Product weight",
+    "addDelivery": "Add shipping point",
+    "mockPhoneNumber": "xx-xxx-xxxx",
+    "contactName": "Contact Name",
+    "inputName": "Input name",
     "fromMap": "Please input location from map",
     "weightProduct": "Product weight",
     "wantTruck": "Want truck",
@@ -169,8 +179,10 @@
     "timeReceive": "Loading time",
     "receiverInfo": "Receiver information",
     "receiverName": "Receiver name",
+    "phoneNumber": "Phone number",
     "receiverTel": "Mobile number",
     "shipingPoint": "Delivery point ",
+    "shipingPointNew": "Delivery point ",
     "shippingAddr": "Input delivery location",
     "dateShipping": "Delivery date",
     "timeShipping": "Delivery time",
@@ -228,6 +240,7 @@
     "reqHeight": "please select truck height"
   },
   "profileScreen": {
+    "checkPickupDate": "please check pickup-loading date",
     "everLogin": "You are not logged in ",
     "loginRegister": " Login / Register",
     "nophone": "none specified",

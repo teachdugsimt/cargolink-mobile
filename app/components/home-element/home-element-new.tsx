@@ -77,7 +77,6 @@ export function GridNew(props: any) {
       itemDimension={(width / 2) - 60}
       sections={props.data}
       renderItem={({ item, index }) => {
-        console.log("Item : ", item)
         if (item.id != 3)
           return <TouchableOpacity testID={'touch-home-grid'} onPress={() => item.onPressButton()} style={[VIEW_CARD, { marginLeft: index % 2 == 0 ? 10 : 0 }]}>
             <View style={SUB_VIEW}>

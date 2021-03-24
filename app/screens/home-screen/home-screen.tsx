@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react"
 import { View, ViewStyle, TouchableOpacity, Image, ImageStyle, Dimensions, Platform, Linking, Alert, Animated } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
-import { images, color, spacing } from '../../theme'
+import { images, color } from '../../theme'
 import { useStores } from "../../models/root-store/root-store-context";
 // import { GridView } from '../../components/home-element/home-element'
-import { GridNew } from '../../components'
-import { ModalLoading, Text } from '../../components/'
+import { GridNew, Screen } from '../../components'
+import { ModalLoading, Text, SponserHome } from '../../components/'
 import TruckTypeStore from "../../store/truck-type-store/truck-type-store"
 import ProductTypeStore from "../../store/product-type-store/product-type-store"
 import StatusStore from '../../store/post-job-store/job-status-store'
@@ -65,7 +65,8 @@ const VIEW_ICON2: ViewStyle = {
 
 const CONTACT_VIEW: ViewStyle = {
   flex: Platform.OS == "android" ? 0.9 : 0.6,
-  alignItems: 'center'
+  alignItems: 'center',
+  paddingVertical: 20,
 }
 export const HomeScreen = observer((props) => {
   const { tokenStore, versatileStore } = useStores()
@@ -233,7 +234,7 @@ export const HomeScreen = observer((props) => {
 
 
   return (
-    <>
+    <Screen preset="scroll" unsafe backgroundColor={color.mainBackgrorund}>
       <View testID="HomeScreen" style={ROOT_HOME}>
         {/* <View style={TOP_VIEW}>
           <Image style={IMAGE_LOGO} width={width / 1.5} height={width / 3.24}
@@ -255,6 +256,7 @@ export const HomeScreen = observer((props) => {
           </View>
         </View>
 
+        <SponserHome />
 
         <ModalLoading
           containerStyle={{ zIndex: 2 }}
@@ -262,7 +264,7 @@ export const HomeScreen = observer((props) => {
             versatileStore.list_group_loading || versatileStore.product_type_loading || ProfileStore.loading} />
 
         <View style={CONTACT_VIEW}>
-          <Text tx={'moreScreen.contactUs'} style={{ marginBottom: 20, alignSelf: 'flex-start', marginLeft: 20 }}></Text>
+          <Text tx={'moreScreen.contactUs'} style={{ paddingBottom: 10, alignSelf: 'flex-start', marginLeft: 20 }}></Text>
           <View style={[ROW, ALL_CENTER]}>
             <Animated.View style={{ transform: [{ translateX: leftValue }] }}>
               <TouchableOpacity style={VIEW_ICON} onPress={() => onCall(versatileStore.phoneNumber)}>
@@ -286,6 +288,6 @@ export const HomeScreen = observer((props) => {
         </TouchableOpacity> */}
 
       </View>
-    </>
+    </Screen>
   )
 })

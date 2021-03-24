@@ -24,7 +24,7 @@ const ROOT_FLAT_LIST: ViewStyle = {
   flexDirection: 'row',
   justifyContent: 'center', alignItems: 'center'
 }
-const BACK_CHEVRON: ViewStyle = { position: 'absolute', left: 0, top: -10 }
+const BACK_CHEVRON: ViewStyle = { position: 'absolute', left: 0 }
 const BORDER_BOTTOM: ViewStyle = {
   ...ROOT_FLAT_LIST,
   width: '100%',
@@ -32,7 +32,7 @@ const BORDER_BOTTOM: ViewStyle = {
   borderBottomWidth: 1, borderBottomColor: color.line, marginHorizontal: 10,
 }
 const VIEW_LIST_IMAGE: ViewStyle = { alignSelf: 'flex-start', justifyContent: 'center', height: '100%' }
-const VIEW_TITLE_MODAL: ViewStyle = { height: 60, alignItems: 'center', justifyContent: 'center' }
+const VIEW_TITLE_MODAL: ViewStyle = { height: 60, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }
 const IMAGE_LIST: ImageStyle = {
   // width: 50, height: 50,
   backgroundColor: color.line, padding: 10,
@@ -118,8 +118,9 @@ export const ModalTruckType = (props: ModalTruckProps) => {
           {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
             <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} />}
         </View>
-        <View style={{ flexDirection: 'row', flex: 1 }}>
-          <Text style={{ paddingLeft: 40 }}>{item.name}</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1 }}>
+          <Text style={{ paddingLeft: 40, maxWidth: '70%' }}>{item.name}</Text>
+          <Icon name="chevron-forward" size={28} style={{ marginRight: 5 }} color={color.line}/>
         </View>
       </View>
     </TouchableOpacity>
@@ -131,15 +132,15 @@ export const ModalTruckType = (props: ModalTruckProps) => {
     visible={visible}
     onTouchOutside={() => _closeTruckType()}
     onSwipeOut={() => _closeTruckType()}
-    swipeDirection={['up', 'down']} // can be string or an array
-    swipeThreshold={200} // default 100
+  // swipeDirection={['up', 'down']} // can be string or an array
+  // swipeThreshold={200} // default 100
   >
     <ModalContent >
       <View style={ROOT_MODAL_VIEW}>
         <SafeAreaView style={FULL}>
           <View style={VIEW_TITLE_MODAL}>
             <TouchableOpacity style={BACK_CHEVRON} onPress={_closeTruckType}>
-              <Icon name="chevron-back" size={20} />
+              <Icon name="chevron-back" size={28} color={color.primary} />
             </TouchableOpacity>
             <Text style={COLOR_PRIMARY} preset={"topic"} tx={"postJobScreen.selectVehicleType"} />
           </View>

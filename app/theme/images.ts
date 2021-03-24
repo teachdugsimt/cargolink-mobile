@@ -49,7 +49,6 @@ export const images = {
   addTruck2B: require("../images/add-truck-icon/FTruck.png"),
   defaultImage: require("../images/default_image.png"),
   bell: require("../images/bell.png"),
-  postJobSuccess: require("../images/post-job-success.png"),
   noImageAvailable: require("../images/no-image-available.jpg"),
   greyMock: require("../images/just_grey_light_grey.jpg"),
   addProfilePic: require("../images/profileaddpic.png"),
@@ -65,6 +64,7 @@ export const images = {
   pinMap: require("../images/pin_location.png"),
   callCenter: require("../images/call4x.png"),
   facebookLogo: require("../images/facebookbanner4x.png"),
+  sponser: require("../images/sponser/sponser.jpg"),
 }
 
 // export default images
