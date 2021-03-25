@@ -1,6 +1,11 @@
 import { StyleSheet } from 'react-native'
 import { color } from '../../theme';
 export default StyleSheet.create({
+  rowCenter: { flexDirection: 'row', justifyContent: 'center' },
+  buttonBack: {
+    borderRadius: 11, backgroundColor: color.disable, position: 'absolute', left: 10, top: 10
+  },
+  paddingTop10: { paddingTop: 7.5 },
   map: {
     flex: 1
   },

@@ -87,7 +87,8 @@
     "softwareUpdate": "Software Update",
     "inputValue": "Please input value",
     "price": "price",
-    "bath": "THB"
+    "bath": "THB",
+    "add": "add "
   },
   "commentScreen": {
     "yourComment": "Your Comment",

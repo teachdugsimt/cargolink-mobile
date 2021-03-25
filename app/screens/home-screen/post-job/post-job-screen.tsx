@@ -121,6 +121,7 @@ const IMAGE_LIST: ImageStyle = {
 
 export const PostJobScreen = observer(function PostJobScreen() {
   const MAX_LENGTH: number = 120
+  const truckIsDump: Array<number> = [26, 42, 36]
   const dump = [{ id: 1, label: 'common.dump', active: true },
   { id: 2, label: 'common.notDump', active: false }]
 
@@ -195,9 +196,11 @@ export const PostJobScreen = observer(function PostJobScreen() {
     </TouchableOpacity>
   }
 
-  // const _showDumpField = (truckType: number) => {
-  //   if
-  // }
+  const _showDumpField = (truckType: number) => {
+    let showDump = false
+    if (truckIsDump.find(e => e == truckType)) showDump = true
+    return showDump
+  }
 
 
 
@@ -303,30 +306,31 @@ export const PostJobScreen = observer(function PostJobScreen() {
                 />
                 {errors['car-num'] && <Text style={{ color: color.red }} tx={"common.noSignAndCharacter"} />}
 
-                <Controller
-                  control={control}
-                  render={({ onChange, onBlur, value }) => (
-                    <View style={[ROW_TEXT, JUSTIFY_BETWEEN, { marginTop: 20, marginBottom: 10 }]}>
-                      <View style={[FULL, { justifyContent: 'center' }]}>
-                        <Text tx="postJobScreen.wantTruck" />
+                {!!formControllerValue['vehicle-type'] &&
+                  _showDumpField(formControllerValue['vehicle-type']) == true && <Controller
+                    control={control}
+                    render={({ onChange, onBlur, value }) => (
+                      <View style={[ROW_TEXT, JUSTIFY_BETWEEN, { marginTop: 20, marginBottom: 10 }]}>
+                        <View style={[FULL, { justifyContent: 'center' }]}>
+                          <Text tx="postJobScreen.wantTruck" />
+                        </View>
+                        <View style={FULL}>
+                          <RadioButton onPress={(item, index) => {
+                            onChange(item.id)
+                            let tmp = arrDump
+                            tmp.map((e, i) => {
+                              if (e.id == item.id) e.active = true
+                              else e.active = false
+                            })
+                            setArrDump(tmp)
+                          }} data={arrDump} />
+                        </View>
                       </View>
-                      <View style={FULL}>
-                        <RadioButton onPress={(item, index) => {
-                          onChange(item.id)
-                          let tmp = arrDump
-                          tmp.map((e, i) => {
-                            if (e.id == item.id) e.active = true
-                            else e.active = false
-                          })
-                          setArrDump(tmp)
-                        }} data={arrDump} />
-                      </View>
-                    </View>
-                  )}
-                  key={'text-input-dump-field'}
-                  name={"dump-field"}
-                  defaultValue={1}
-                />
+                    )}
+                    key={'text-input-dump-field'}
+                    name={"dump-field"}
+                    defaultValue={1}
+                  />}
               </View>
             </View>
 

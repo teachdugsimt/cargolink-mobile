@@ -88,7 +88,8 @@
     "update": "อัพเดท",
     "inputValue": "กรุณาใส่ข้อมูล",
     "price": "ราคา",
-    "bath": "บาท"
+    "bath": "บาท",
+    "add": "เพิ่ม"
   },
   "commentScreen": {
     "yourComment": "ความคิดเห็นของคุณ",
