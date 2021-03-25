@@ -144,6 +144,7 @@
     "postJobNow": "โพสต์งานเลย"
   },
   "postJobScreen": {
+    "selectMap": "กรุณาเลือกสถานที่",
     "mockPhoneAndroid": "xx-xxx-xxxx    ",
     "checkPickupDate": "กรุณาเช็ควันขึ้น-ลงสินค้า",
     "typeYouWant": "ประเภทของรถที่คุณต้องการ",

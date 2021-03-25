@@ -256,6 +256,13 @@ export function HomeNavigator() {
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
       />
+      {/* <Stack.Screen
+        name="locationPicker"
+        component={LocationPickerScreen}
+        options={({ navigation, route }) => ({
+          headerShown: false,
+        })}
+      /> */}
     </Stack.Navigator>
   )
 }

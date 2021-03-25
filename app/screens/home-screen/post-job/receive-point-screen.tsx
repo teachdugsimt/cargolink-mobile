@@ -133,6 +133,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
   });
 
   const _submitLocation = (addr, region) => {
+    console.log("SUbmit Location Field HERERERER TRIGGER :: =>>>>", statusMap, addr, region)
     if (statusMap.includes('receive')) {
       control.setValue("receive-location", addr)
       control.setValue("receive-region", region)
@@ -354,6 +355,10 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                         onPress={() => {
                           setvisibleMap(true)
                           setstatusMap('receive-location')
+                          // navigation.navigate("locationPicker", {
+                          //   banner: "postJobScreen.receiveLocation",
+                          //   onSubmitMap: (addr, region) => _submitLocation(addr, region)
+                          // })
                         }}
                         style={BUTTON_MAP}>
                         {!formControllerValue["receive-location"] && <View style={[ROW_TEXT, JUSTIFY_BETWEEN, VIEW_VERTICAL_10]}>

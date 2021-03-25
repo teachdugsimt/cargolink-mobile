@@ -143,6 +143,7 @@
     "postJobNow": "Post job now"
   },
   "postJobScreen": {
+    "selectMap": "Please select location",
     "mockPhoneAndroid": "xx-xxx-xxxx    ",
     "typeYouWant": "Vehicle type",
     "productInformation": "Product information",

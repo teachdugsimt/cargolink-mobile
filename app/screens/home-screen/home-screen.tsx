@@ -276,8 +276,10 @@ export const HomeScreen = observer((props) => {
             </Animated.View>
             <Animated.View style={{ transform: [{ translateX: rightValue }] }} >
               <TouchableOpacity style={VIEW_ICON2} onPress={() => Linking.openURL(versatileStore.fblink)}>
+              <View style={{ position: 'absolute', justifyContent: 'center', left: 5, zIndex: 5 }}>
+                  <Text style={{ color: color.textWhite, paddingLeft: 2.5 }} preset="small">Facebook</Text>
+                </View>
                 <Image source={images.facebookLogo} style={{ height: 37.5, width: (width / 2) - 30 }} resizeMode="stretch" />
-
               </TouchableOpacity>
             </Animated.View>
           </View>
