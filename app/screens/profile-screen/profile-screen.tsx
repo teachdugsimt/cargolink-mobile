@@ -93,7 +93,7 @@ const IMAGE_LIST: ImageStyle = {
   borderRadius: 30,
   borderColor: color.primary, borderWidth: 2,
 }
-const BORDER_BOTTOM: ViewStyle = { borderBottomColor: color.line }
+const BORDER_BOTTOM: ViewStyle = { borderBottomColor: color.mainGrey }
 const NORMAL_WRAPPER_LIST: ViewStyle = {
   ...ROOT_FLAT_LIST,
   marginHorizontal: 10,

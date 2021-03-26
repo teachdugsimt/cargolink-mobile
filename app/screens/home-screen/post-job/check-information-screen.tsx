@@ -73,7 +73,7 @@ const JUSTIFY_BETWEEN: ViewStyle = {
 const PADDING_LEFT_SMALL: ViewStyle = { paddingLeft: 5 }
 const BLUE_ANSWER: TextStyle = { color: color.blue }
 const BORDER_BOTTOM_NEW: ViewStyle = {
-  borderBottomColor: color.line, borderBottomWidth: 1
+  borderBottomColor: color.mainGrey, borderBottomWidth: 1
 }
 const PADDING_VERTICAL_10: ViewStyle = { paddingVertical: 10 }
 const PADDING_TOP_10: ViewStyle = { paddingTop: 10 }

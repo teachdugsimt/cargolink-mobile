@@ -25,7 +25,7 @@ const TOP_VIEW_2: ViewStyle = { backgroundColor: color.textWhite, }
 const ROUND_BUTTON_CONTAINER: ViewStyle = { backgroundColor: color.primary, borderColor: color.transparent }
 const ROUND_BUTTON_TEXT: TextStyle = { color: color.textWhite }
 const WRAPPER_TOP: ViewStyle = { padding: 10 }
-const TEXT_INPUT: ViewStyle = { height: 80, borderWidth: 1, borderRadius: 2.5, borderColor: color.line, padding: 10 }
+const TEXT_INPUT: ViewStyle = { height: 80, borderWidth: 1, borderRadius: 2.5, borderColor: color.mainGrey, padding: 10 }
 
 export const ReportScreen = observer(function ReportScreen() {
   const navigation = useNavigation()

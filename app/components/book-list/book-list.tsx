@@ -24,7 +24,7 @@ const ROUND_BUTTON_TEXT: TextStyle = {
   marginLeft: 5,
   marginTop: -2.5
 }
-const MAIN_VIEW: ViewStyle = { ...FULL, borderBottomColor: color.line, borderBottomWidth: 1 }
+const MAIN_VIEW: ViewStyle = { ...FULL, borderBottomColor: color.mainGrey, borderBottomWidth: 1 }
 const SUB_VIEW: ViewStyle = { ...FULL, flexDirection: 'row', alignItems: 'center' }
 const IMG_VIEW: ViewStyle = { width: 60, height: 60 }
 const IMG_PURE_VIEW: ImageStyle = { height: 60, width: 60, borderRadius: 30 }

@@ -17,7 +17,7 @@ const FULL: ViewStyle = { flex: 1 }
 const ROW: ViewStyle = { flexDirection: 'row' }
 const MARGIN_HOR_10: ViewStyle = { marginHorizontal: 10 }
 const BACKGROUND_MAIN_ELEMENT: ViewStyle = {
-  borderBottomColor: color.line,
+  borderBottomColor: color.mainGrey,
   borderBottomWidth: 1,
 }
 

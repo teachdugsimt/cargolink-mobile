@@ -40,7 +40,7 @@ const MARGIN_TOP_10: ViewStyle = { marginTop: 10 }
 const MARGIN_TOP_20: ViewStyle = { marginTop: 20 }
 const MARGIN_TOP_40: ViewStyle = { marginTop: 40 }
 const VIEW_TEXT_INPUT2: ViewStyle = { marginHorizontal: 20, width: '100%' }
-const TEXT_INPUT: ViewStyle = { height: 80, width: '90%', borderWidth: 1, borderRadius: 2.5, borderColor: color.line, paddingLeft: 10, paddingTop: Platform.OS == "ios" ? 1.5 : 0 }
+const TEXT_INPUT: ViewStyle = { height: 80, width: '90%', borderWidth: 1, borderRadius: 2.5, borderColor: color.mainGrey, paddingLeft: 10, paddingTop: Platform.OS == "ios" ? 1.5 : 0 }
 const WRAPPER_BUTTON2: ViewStyle = { flexDirection: 'row', justifyContent: 'space-evenly', width: '90%' }
 
 const TOP_VIEW_2: ViewStyle = { backgroundColor: color.textWhite, }

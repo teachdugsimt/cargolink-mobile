@@ -17,7 +17,7 @@ const CONTENT_TEXT: TextStyle = {
 }
 
 const WRAP_DROPDOWN: ViewStyle = {
-    flex: 1, borderColor: color.line, borderWidth: 1, padding: Platform.OS == "ios" ? 12 : 0,
+    flex: 1, borderColor: color.mainGrey, borderWidth: 1, padding: Platform.OS == "ios" ? 12 : 0,
     borderRadius: 2.5, marginTop: 20
 }
 const DROPDOWN_ICON_CONTAINER: ViewStyle = {

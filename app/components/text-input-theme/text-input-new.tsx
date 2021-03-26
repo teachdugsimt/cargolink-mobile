@@ -47,7 +47,7 @@ export function TextInputNew(props: TextInputNew) {
     underline, ...rest } = props
   let underline_style: ViewStyle = {}
   if (underline) underline_style = {
-    borderBottomColor: color.line, borderBottomWidth: 1
+    borderBottomColor: color.mainGrey, borderBottomWidth: 1
   }
   let forwardedRef: any
   return (

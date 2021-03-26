@@ -43,8 +43,8 @@ const WRAPPER_TOP: ViewStyle = {
 }
 
 const BORDER_GREY: ViewStyle = {
-  // borderColor: color.line, 
-  borderBottomColor: color.line,
+  // borderColor: color.mainGrey, 
+  borderBottomColor: color.mainGrey,
   borderLeftColor: color.transparent2,
   borderRightColor: color.transparent2,
   borderTopColor: color.transparent2,
@@ -108,7 +108,7 @@ const BORDER_BOTTOM: ViewStyle = {
   ...ROOT_FLAT_LIST,
   width: '100%',
   flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-  borderBottomWidth: 1, borderBottomColor: color.line, marginHorizontal: 10,
+  borderBottomWidth: 1, borderBottomColor: color.mainGrey, marginHorizontal: 10,
 }
 const IMAGE_LIST: ImageStyle = {
   // width: 50, height: 50,

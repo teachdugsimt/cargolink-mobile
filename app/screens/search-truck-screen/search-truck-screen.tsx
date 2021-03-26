@@ -41,7 +41,7 @@ const SEARCH_BAR_ROW: ViewStyle = {
   ...ROW_ALIGN_CENTER,
   paddingBottom: spacing[2],
   borderBottomWidth: 1,
-  borderBottomColor: color.line,
+  borderBottomColor: color.mainGrey,
 }
 const RESULT_CONTAINER: ViewStyle = {
   flex: 1,
@@ -61,7 +61,7 @@ const DROPDOWN_TEXT: TextStyle = {
 const BOTTOM_LINE: ViewStyle = {
   ...ROW_ALIGN_CENTER,
   borderBottomWidth: 1,
-  borderBottomColor: color.line,
+  borderBottomColor: color.mainGrey,
   paddingVertical: spacing[3],
 }
 const ZONE: TextStyle = {
@@ -74,7 +74,7 @@ const SELECTED: ViewStyle = {
   flexDirection: 'row',
   alignItems: 'center',
   borderWidth: 1,
-  borderColor: color.line,
+  borderColor: color.mainGrey,
   borderRadius: Dimensions.get('window').width / 2,
   paddingVertical: spacing[1],
   paddingHorizontal: spacing[2],

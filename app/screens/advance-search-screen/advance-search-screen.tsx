@@ -20,10 +20,10 @@ const SEARCH_ITEM_ROOT: ViewStyle = {
   flex: 5,
   // backgroundColor: "lightblue",
   // borderBottomWidth: 1,
-  // borderColor: color.line,
+  // borderColor: color.mainGrey,
 }
 const ITEM: ViewStyle = {
-  borderBottomColor: color.disable,
+  borderBottomColor: color.mainGrey,
   borderBottomWidth: 1,
   paddingTop: spacing[2],
 }

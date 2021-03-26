@@ -22,7 +22,7 @@ const DROPDOWN_ICON_CONTAINER: ViewStyle = {
   paddingTop: 7.5, paddingRight: 5
 }
 const WRAP_DROPDOWN: ViewStyle = {
-  height: 40, borderColor: color.line, borderWidth: 1, padding: Platform.OS == "ios" ? 7.5 : 0,
+  height: 40, borderColor: color.mainGrey, borderWidth: 1, padding: Platform.OS == "ios" ? 7.5 : 0,
   borderRadius: 2.5
 }
 export function NormalDropdown(props: NormalDropdownProps) {
