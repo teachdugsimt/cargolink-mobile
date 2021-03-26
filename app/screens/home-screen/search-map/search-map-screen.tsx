@@ -123,7 +123,7 @@ export const LocationPickerScreen = observer(function LocationPickerScreen(props
                 onMapReady={() => goToInitialLocation(region)}
                 style={[styles.map]}
                 provider={PROVIDER_GOOGLE}
-                // initialRegion={region}
+                initialRegion={region}
                 region={region}
                 onRegionChangeComplete={onRegionChange}
               />
@@ -274,7 +274,7 @@ export const LocationPickerScreen = observer(function LocationPickerScreen(props
                     </View>
 
                     {/* <TouchableOpacity onPress={() => navigation.navigate("addAddress")}> */}
-                    <TouchableOpacity onPress={() => {}}>
+                    <TouchableOpacity onPress={() => { }}>
                       <Feather name={'edit'} color={color.disable} size={22} />
                     </TouchableOpacity>
                   </View>

@@ -30,6 +30,7 @@ const ROOT_VIEW: ViewStyle = { flexDirection: 'row', flex: 1, width: '100%' }
 
 const ROOT_STYLE: ViewStyle = {
   height: 40,
+  flex: 1,
   // paddingLeft: width / 3,
   paddingLeft: Platform.OS == "ios" ? 10 : 0,
   flexShrink: 1,
