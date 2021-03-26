@@ -18,6 +18,8 @@ export * from "./home-screen/post-job/check-information-screen"
 export * from "./home-screen/post-job/post-success-screen"
 export * from "./home-screen/manage-vehicle/upload-vehicle-screen"
 export * from "./home-screen/comment-screen"
+export * from "./home-screen/search-map/search-map-screen"
+export * from "./home-screen/search-map/add-address-screen"
 
 export * from "./accept-policy-screen/accept-policy-screen"
 export * from "./confirm-code-screen/confirm-code-screen"

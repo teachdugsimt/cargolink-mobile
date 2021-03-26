@@ -1,7 +1,7 @@
-import { StyleSheet } from 'react-native'
-import { color } from '../../theme';
+import { Platform, StyleSheet } from 'react-native'
+import { color } from '../../../theme';
 export default StyleSheet.create({
-  rowCenter: { flexDirection: 'row', justifyContent: 'center' },
+  rowCenter: { flexDirection: 'row', justifyContent: 'center', marginTop: 0 },
   buttonBack: {
     borderRadius: 11, backgroundColor: color.disable, position: 'absolute', left: 10, top: 10
   },

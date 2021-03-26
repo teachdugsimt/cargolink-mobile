@@ -41,7 +41,9 @@ export const color = {
    * A subtle color used for borders and lines.
    */
   // line: palette.lightGray,
-  line: palette.mainGrey,
+  // line: palette.mainGrey,
+  line: palette.gray,
+  mainGrey: palette.mainGrey,
   /**
    * Warning message and background color.
    */

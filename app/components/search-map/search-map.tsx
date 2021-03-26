@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback, Dimensions, ViewStyle } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { GOOGLE_API_KEY } from '../../config/env'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { Text, Screen } from '../../components/'
-import { color, images } from "../../theme";
+import { color, images, spacing } from "../../theme";
 import i18n from 'i18n-js'
 import { translate } from "../../i18n"
 import styles from './styles'
@@ -13,6 +13,8 @@ import Geolocation from '@react-native-community/geolocation';
 import { SearchMapProps } from './search-map.props'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Feather from 'react-native-vector-icons/Feather'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import { Modalize } from 'react-native-modalize';
 
 const FULL: ViewStyle = { flex: 1 }
 const { height } = Dimensions.get('window')
@@ -49,6 +51,7 @@ let initialState = {
 }
 
 export const LocationPicker = (props: SearchMapProps) => {
+  const modalizeRef = useRef<Modalize>(null);
   const [region, setregion] = useState(initialData)
   const [tmpCurrentRegion, settmpCurrentRegion] = useState(null)
   const [{ address, listViewDisplayed,
@@ -81,7 +84,6 @@ export const LocationPicker = (props: SearchMapProps) => {
       setregion(initialData)
     }
   }, [])
-
 
   const { onSubmitMap, banner, onCloseModal } = props
 
@@ -119,7 +121,6 @@ export const LocationPicker = (props: SearchMapProps) => {
       <Screen unsafe>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
           <View style={FULL}>
-
             <MapView
               ref={(ref) => mapView = ref}
               onMapReady={() => goToInitialLocation(region)}
@@ -131,16 +132,29 @@ export const LocationPicker = (props: SearchMapProps) => {
             />
 
 
-
-
-
-
-
-
             <View style={styles.panel}>
 
               <View style={[styles.panelHeader,
-              listViewDisplayed ? styles.panelFill : styles.panel,]}>
+              listViewDisplayed ? styles.panelFill : styles.panel]}>
+
+
+
+
+
+
+                <View style={styles.rowCenter}>
+                  <TouchableOpacity onPress={() => onCloseModal()} style={styles.buttonBack}>
+                    <Ionicons name={'chevron-back'} size={20} color={color.line} />
+                  </TouchableOpacity>
+                  <View style={{ ...styles.paddingTop10, flexDirection: 'row' }}>
+                    <Text tx={"common.add"} preset="topic" />
+                    <Text tx={banner} preset="topic" />
+                  </View>
+                </View>
+
+
+
+
                 <GooglePlacesAutocomplete
                   // renderRightButton={() => <View style={{ backgroundColor: 'white', height: 44 }}><Icon name="home" size={20} /></View>}
                   currentLocation={false}
@@ -190,12 +204,15 @@ export const LocationPicker = (props: SearchMapProps) => {
                     language: i18n.locale, // language of the results
                     components: i18n.locale == "th" ? "country:tha" : "country:tha",
                   }}
+                  // renderRightButton={() => <TouchableOpacity style={{
+                  //   position: 'absolute', right: 5, top: 5
+                  // }}><Text>Button</Text></TouchableOpacity>}
                   styles={{
                     container: {
-                      // borderRadius: 20,
-                      paddingTop: 20,
+                      paddingTop: 10,
                       paddingHorizontal: 10
                     },
+                    textInput: { borderRadius: 20 },
                     description: {
                       fontFamily: "Kanit-Medium",
                       color: "black",
@@ -265,9 +282,9 @@ export const LocationPicker = (props: SearchMapProps) => {
                     <Text tx="postJobScreen.currentPin" />
                   </View>
 
-                  <View>
+                  <TouchableOpacity onPress={() => {}}>
                     <Feather name={'edit'} color={color.disable} size={22} />
-                  </View>
+                  </TouchableOpacity>
                 </View>
               </View>
 
@@ -280,8 +297,16 @@ export const LocationPicker = (props: SearchMapProps) => {
                   value={address}
                 />
               </View>
-
             </View>
+
+
+
+
+
+
+
+
+
           </View>
         </TouchableWithoutFeedback>
       </Screen>

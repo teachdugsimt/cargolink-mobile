@@ -54,6 +54,7 @@ export type PrimaryHomeParamList = {
   carrierProfile: undefined
   jobDetailOwner: undefined
   truckDetailOwner: undefined
+  // addAddress: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -256,6 +257,14 @@ export function HomeNavigator() {
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
       />
+      {/* <Stack.Screen
+        name="addAddress"
+        component={AddAddressScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"addAddressScreen.isSaveAddress"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      /> */}
     </Stack.Navigator>
   )
 }

@@ -7,7 +7,11 @@
 import React from "react"
 
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
-import { ConfirmCodeScreen, AcceptPolicyScreen, SigninScreen } from "../screens"
+import {
+  ConfirmCodeScreen, AcceptPolicyScreen, SigninScreen, LocationPickerScreen,
+  AddAddressScreen
+} from "../screens"
+import { Text, HeaderCenter, HeaderLeft } from "../components"
 import BottomNavigator from './bottom-navigator'
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -26,6 +30,8 @@ export type PrimaryParamList = {
   confirmCode: undefined
   acceptPolicy: undefined
   home: undefined
+  locationPicker: undefined
+  addAddress: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -46,6 +52,16 @@ export function PrimaryNavigator() {
       <Stack.Screen name="confirmCode" component={ConfirmCodeScreen} />
       <Stack.Screen name="acceptPolicy" component={AcceptPolicyScreen} />
       <Stack.Screen name="home" component={BottomNavigator} />
+      <Stack.Screen name="locationPicker" component={LocationPickerScreen} />
+      <Stack.Screen
+        name="addAddress"
+        component={AddAddressScreen}
+        options={({ navigation, route }) => ({
+          headerShown: true,
+          headerCenter: () => <HeaderCenter tx={"addAddressScreen.isSaveAddress"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
     </Stack.Navigator>
   )
 }

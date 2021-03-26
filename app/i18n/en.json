@@ -87,7 +87,8 @@
     "softwareUpdate": "Software Update",
     "inputValue": "Please input value",
     "price": "price",
-    "bath": "THB"
+    "bath": "THB",
+    "add": "add "
   },
   "commentScreen": {
     "yourComment": "Your Comment",
@@ -141,7 +142,11 @@
     "wannaFindCar": "You want to find truck?",
     "postJobNow": "Post job now"
   },
+  "addAddressScreen": {
+    "isSaveAddress":  "saved address"
+  },
   "postJobScreen": {
+    "selectMap": "Please select location",
     "mockPhoneAndroid": "xx-xxx-xxxx    ",
     "typeYouWant": "Vehicle type",
     "productInformation": "Product information",
