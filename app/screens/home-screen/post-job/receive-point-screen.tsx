@@ -132,18 +132,18 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
     defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : initialData
   });
 
-  const _submitLocation = (addr, region) => {
-    console.log("SUbmit Location Field HERERERER TRIGGER :: =>>>>", statusMap, addr, region)
-    if (statusMap.includes('receive')) {
+  const _submitLocation = (addr, region, pathControl) => {
+    console.log("SUbmit Location Field HERERERER TRIGGER :: =>>>>", pathControl, addr, region)
+    if (pathControl.includes('receive')) {
       control.setValue("receive-location", addr)
       control.setValue("receive-region", region)
-      setvisibleMap(false)
+      setswipe(!swipe)
     } else {
-      let splitPath = statusMap.split("-")
+      let splitPath = pathControl.split("-")
       let path = "shipping-region-" + splitPath[splitPath.length - 1]
-      control.setValue(statusMap, addr)
+      control.setValue(pathControl, addr)
       control.setValue(path, region)
-      setvisibleMap(false)
+      setswipe(!swipe)
     }
   }
 
@@ -291,6 +291,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
   let formControllerValue = control.getValues()
   let fromNow2Days = addDays(initDatePicker, 2)
   let addOneHours = new Date(fromNow2Days.setHours(fromNow2Days.getHours() + 1))
+  console.log("Form Control :: ", formControllerValue)
   // const { longitude, latitude } = position?.coords || {}
   return (
     <Screen unsafe>
@@ -302,31 +303,6 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
 
         <View style={BOTTOM_VIEW}>
           <ScrollView style={FULL}>
-            <Modal
-              visible={visibleMap}
-              onTouchOutside={() => setvisibleMap(false)}
-              onSwipeOut={() => setvisibleMap(false)}>
-              <ModalContent >
-                <View style={{ width: (width / 1), height: '100%', justifyContent: 'flex-start' }}>
-                  <SafeAreaView style={{ flex: 1 }}>
-                    <View style={{ flex: 1, position: 'relative' }}>
-
-                      {statusMap && <LocationPicker
-                        onCloseModal={() => setvisibleMap(false)}
-                        banner={statusMap.includes('receive') ? "postJobScreen.receiveLocation" : "postJobScreen.shippingLocation"}
-                        onSubmitMap={(addr, region) => _submitLocation(addr, region)} />}
-
-                    </View>
-
-                  </SafeAreaView>
-
-                </View>
-              </ModalContent>
-            </Modal>
-
-
-
-
 
 
             <View style={TOP_VIEW_2}>
@@ -353,12 +329,13 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                     <>
                       <TouchableOpacity
                         onPress={() => {
-                          setvisibleMap(true)
+                          // setvisibleMap(true)
                           setstatusMap('receive-location')
-                          // navigation.navigate("locationPicker", {
-                          //   banner: "postJobScreen.receiveLocation",
-                          //   onSubmitMap: (addr, region) => _submitLocation(addr, region)
-                          // })
+                          navigation.navigate("locationPicker", {
+                            banner: "postJobScreen.receiveLocation",
+                            path: "receive-location",
+                            onSubmitMap: (addr, region, path) => _submitLocation(addr, region, path)
+                          })
                         }}
                         style={BUTTON_MAP}>
                         {!formControllerValue["receive-location"] && <View style={[ROW_TEXT, JUSTIFY_BETWEEN, VIEW_VERTICAL_10]}>
@@ -554,8 +531,13 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                       <>
                         <TouchableOpacity
                           onPress={() => {
-                            setvisibleMap(true)
+                            // setvisibleMap(true)
                             setstatusMap("shipping-address-" + e.id)
+                            navigation.navigate("locationPicker", {
+                              banner: "postJobScreen.shipingPoint",
+                              path: "shipping-address-" + e.id,
+                              onSubmitMap: (addr, region, path) => _submitLocation(addr, region, path)
+                            })
                           }}
                           style={BUTTON_MAP}>
                           {!formControllerValue["shipping-address-" + e.id] && <View style={[ROW_TEXT, JUSTIFY_BETWEEN, VIEW_VERTICAL_10]}>

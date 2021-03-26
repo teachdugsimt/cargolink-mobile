@@ -54,7 +54,7 @@ const BORDER_GREY: ViewStyle = {
 const PADDING_TOP_20: ViewStyle = { paddingTop: 20 }
 
 const WRAP_DROPDOWN_VALUE: ViewStyle = {
-  flex: 1, padding: Platform.OS == "ios" ? 7.5 : 0, paddingLeft: 0,
+  flex: 1, padding: Platform.OS == "ios" ? 7.5 : 0, paddingLeft: 0, paddingRight:  0,
   borderRadius: 2.5
 }
 const WRAP_DROPDOWN: ViewStyle = {

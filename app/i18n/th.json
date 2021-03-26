@@ -143,6 +143,9 @@
     "wannaFindCar": "คุณต้องการหารถใช่ไหม?",
     "postJobNow": "โพสต์งานเลย"
   },
+  "addAddressScreen": {
+    "isSaveAddress":  "ที่อยู่ที่บันทึกไว้"
+  },
   "postJobScreen": {
     "selectMap": "กรุณาเลือกสถานที่",
     "mockPhoneAndroid": "xx-xxx-xxxx    ",
