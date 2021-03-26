@@ -49,6 +49,7 @@ const VIEW_GRID_BOX: ViewStyle = {
 
 const ROOT_HOME: ViewStyle = {
   ...FULL,
+  backgroundColor: color.mainBackgrorund
 }
 const VIEW_ICON: ViewStyle = {
   borderRadius: 20,
@@ -234,7 +235,10 @@ export const HomeScreen = observer((props) => {
 
 
   return (
-    <Screen preset="scroll" unsafe backgroundColor={color.mainBackgrorund}>
+    <Screen preset="scroll" unsafe backgroundColor={color.mainBackgrorund}
+      statusBar={'dark-content'} bounch={false}
+      showsVerticalScrollIndicator={false}
+    >
       <View testID="HomeScreen" style={ROOT_HOME}>
         {/* <View style={TOP_VIEW}>
           <Image style={IMAGE_LOGO} width={width / 1.5} height={width / 3.24}
@@ -246,7 +250,7 @@ export const HomeScreen = observer((props) => {
             translateY: topBackgroundValue
           }]
         }]}>
-          <Image style={IMAGE_LOGO} width={width / 1.5} height={width / 3.24}
+          <Image style={IMAGE_LOGO} width={width / 1.8} height={width / 3.22}
             resizeMode='stretch'
             source={images.logoNew} />
         </Animated.View>
@@ -269,15 +273,15 @@ export const HomeScreen = observer((props) => {
             <Animated.View style={{ transform: [{ translateX: leftValue }] }}>
               <TouchableOpacity style={VIEW_ICON} onPress={() => onCall(versatileStore.phoneNumber)}>
                 <View style={{ position: 'absolute', justifyContent: 'center', left: 5, zIndex: 5 }}>
-                  <Text style={{ color: color.textWhite, paddingLeft: 2.5 }} preset="small">02-106-5312</Text>
+                  <Text style={{ color: color.textWhite, paddingLeft: 2.5, fontSize: 16 }} preset="small">02-106-5312</Text>
                 </View>
                 <Image source={images.callCenter} style={{ height: 37.5, width: (width / 2) - 30 }} resizeMode="stretch" />
               </TouchableOpacity>
             </Animated.View>
             <Animated.View style={{ transform: [{ translateX: rightValue }] }} >
               <TouchableOpacity style={VIEW_ICON2} onPress={() => Linking.openURL(versatileStore.fblink)}>
-              <View style={{ position: 'absolute', justifyContent: 'center', left: 5, zIndex: 5 }}>
-                  <Text style={{ color: color.textWhite, paddingLeft: 2.5 }} preset="small">Facebook</Text>
+                <View style={{ position: 'absolute', justifyContent: 'center', left: 5, zIndex: 5 }}>
+                  <Text style={{ color: color.textWhite, paddingLeft: 2.5, fontSize: 18 }} preset='small'>Facebook</Text>
                 </View>
                 <Image source={images.facebookLogo} style={{ height: 37.5, width: (width / 2) - 30 }} resizeMode="stretch" />
               </TouchableOpacity>
