@@ -182,6 +182,9 @@ export const ProfileScreen = observer(function ProfileScreen() {
       ProfileStore.getProfileReporterScreen(tmp_profile.userId)
       setprofileState(tmp_profile)
       setrenderNewProfile(!renderNewProfile)
+    } else if (!tmp_profile || Object.keys(tmp_profile).length < 1) {
+      ProfileStore.clearDataReportProfileScreen()
+      ProfileStore.clearTruckSummary()
     }
   }, [ProfileStore.data])
 
@@ -228,6 +231,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
   const onRefreshTruckSummary = () => {
     let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
+    ProfileStore.getProfileRequest()
     if (tmp_profile && tmp_profile.userId) ProfileStore.getProfileReporterScreen(tmp_profile.userId)
     ProfileStore.getTruckSummary()
   }
@@ -438,12 +442,12 @@ export const ProfileScreen = observer(function ProfileScreen() {
               Authorization: `Bearer ${token}`
             },
           }} style={PROFILE_IMG} /> : <View>
-              <Ionicons name="person-circle-sharp" size={85} color={color.line} />
-            </View>}
+            <Ionicons name="person-circle-sharp" size={85} color={color.line} />
+          </View>}
 
           <View style={VIEW_NAME_NAD_PHONE}>
 
-            {!token || !ProfileStore.data ? _renderSigninButtonGroup() :
+            {(!token || !ProfileStore.data) ? _renderSigninButtonGroup() :
               <>
                 {<View style={ROW_LAYOUT}>
                   <Ionicons name={"person-outline"} size={typography.mediumIcon} style={{ lineHeight: 30 }} />
@@ -482,7 +486,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
         {menu1 && <>
           <View style={MAIN_FLAT_LIST}>
-            <FlatList
+            {!!ProfileStore.data ? <FlatList
               data={reportWorking}
               renderItem={({ item, index }) => _renderVehice(item, index)}
               keyExtractor={(item, index) => 'key-' + index.toString()}
@@ -494,12 +498,24 @@ export const ProfileScreen = observer(function ProfileScreen() {
               }
               ListEmptyComponent={() => _renderEmptyList("profileScreen.noEnoughWork", "profileScreen.fromAddWorkScreen",
                 "profileScreen.goAddWorkScreen", "postjob")}
-            />
+            /> : <FlatList
+              data={[]}
+              renderItem={({ item, index }) => _renderVehice(item, index)}
+              keyExtractor={(item, index) => 'key-' + index.toString()}
+              refreshControl={
+                <RefreshControl
+                  refreshing={ProfileStore.loading_report_profile_screen || ProfileStore.loading || ProfileStore.loading_truck_summary}
+                  onRefresh={onRefresh}
+                />
+              }
+              ListEmptyComponent={() => _renderEmptyList("profileScreen.noEnoughWork", "profileScreen.fromAddWorkScreen",
+                "profileScreen.goAddWorkScreen", "postjob")}
+            />}
           </View></>}
 
         {menu2 && <>
           <View style={[FULL, { paddingTop: Platform.OS == "ios" ? 10 : 0 }]}>
-            {ProfileStore.data_report_profile_screen && arrSection && arrSection[0].data.length > 0 ? <SectionList
+            {!!ProfileStore.data && ProfileStore.data_report_profile_screen && arrSection && arrSection[0].data.length > 0 ? <SectionList
               sections={arrSection}
               keyExtractor={(item: any, index: any) => 'section-list-' + (item.id.toString()) + index}
               renderItem={({ item, index }) => _renderSectionList(item, index)}
@@ -535,16 +551,22 @@ export const ProfileScreen = observer(function ProfileScreen() {
               ListEmptyComponent={() => _renderEmptyList("profileScreen.noEnoughCar", "profileScreen.fromManageCar",
                 "profileScreen.goManageCar", "myVehicle")}
             /> : <SectionList
-                sections={[]}
-                keyExtractor={(item: any, index: any) => 'section-list-' + (item.id.toString()) + index}
-                renderItem={({ item, index }) => _renderSectionList(item, index)}
-                stickySectionHeadersEnabled={false}
-                ListFooterComponent={
-                  <View style={{ height: 50 }}></View>
-                }
-                ListEmptyComponent={() => _renderEmptyList("profileScreen.noEnoughCar", "profileScreen.fromManageCar",
-                  "profileScreen.goManageCar", "myVehicle")}
-              />}
+              sections={[]}
+              keyExtractor={(item: any, index: any) => 'section-list-' + (item.id.toString()) + index}
+              renderItem={({ item, index }) => _renderSectionList(item, index)}
+              stickySectionHeadersEnabled={false}
+              refreshControl={
+                <RefreshControl
+                  refreshing={ProfileStore.loading_report_profile_screen || ProfileStore.loading_truck_summary}
+                  onRefresh={onRefreshTruckSummary}
+                />
+              }
+              ListFooterComponent={
+                <View style={{ height: 50 }}></View>
+              }
+              ListEmptyComponent={() => _renderEmptyList("profileScreen.noEnoughCar", "profileScreen.fromManageCar",
+                "profileScreen.goManageCar", "myVehicle")}
+            />}
           </View>
         </>}
 
