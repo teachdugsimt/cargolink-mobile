@@ -9,7 +9,7 @@ const BULLET_ITEM: ViewStyle = {
   marginTop: spacing[4],
   paddingBottom: spacing[4],
   borderBottomWidth: 1,
-  borderBottomColor: "#3A3048",
+  borderBottomColor: "mainGrey",
 }
 const BULLET_CONTAINER: ViewStyle = {
   marginRight: spacing[4] - 1,

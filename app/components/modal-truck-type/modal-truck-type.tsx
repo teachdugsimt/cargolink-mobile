@@ -29,7 +29,7 @@ const BORDER_BOTTOM: ViewStyle = {
   ...ROOT_FLAT_LIST,
   width: '100%',
   flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-  borderBottomWidth: 1, borderBottomColor: color.line, marginHorizontal: 10,
+  borderBottomWidth: 1, borderBottomColor: color.mainGrey, marginHorizontal: 10,
 }
 const VIEW_LIST_IMAGE: ViewStyle = { alignSelf: 'flex-start', justifyContent: 'center', height: '100%' }
 const VIEW_TITLE_MODAL: ViewStyle = { height: 60, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }

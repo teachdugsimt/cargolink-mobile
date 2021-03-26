@@ -51,7 +51,7 @@ const MENU: ViewStyle = {
   paddingTop: spacing[2],
   marginBottom: spacing[2],
   borderBottomWidth: 1,
-  borderColor: color.line
+  borderColor: color.mainGrey
 }
 const ROUND_BUTTON_CONTAINER: ViewStyle = {
   backgroundColor: color.primary, borderColor: color.transparent

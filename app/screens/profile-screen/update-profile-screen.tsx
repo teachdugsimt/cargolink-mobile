@@ -25,7 +25,7 @@ const PADDING_VERTICAL: TextStyle = { paddingVertical: 10 }
 const PADDING_TOP_10: ViewStyle = { paddingTop: 10 }
 const PADDING_TOP_20: ViewStyle = { paddingTop: 20 }
 const MARGIN_HORI_10: ViewStyle = { marginHorizontal: 10 }
-const BORDER_BOTTOM: ViewStyle = { borderBottomWidth: 1, borderBottomColor: color.line }
+const BORDER_BOTTOM: ViewStyle = { borderBottomWidth: 1, borderBottomColor: color.mainGrey }
 const VIEW_SUGGEST: ViewStyle = { ...MARGIN_HORI_10, ...BORDER_BOTTOM }
 const ROW_TEXT: ViewStyle = {
   flexDirection: 'row',
@@ -56,7 +56,7 @@ const CONTAINER_MODAL: ViewStyle = {
 const MARGIN_TOP_EXTRA: ViewStyle = { marginTop: 20 }
 const BORDER_MODAL_BUTTON: ViewStyle = {
   borderBottomWidth: 1,
-  borderBottomColor: color.line
+  borderBottomColor: color.mainGrey
 }
 const WRAPPER_TOP: ViewStyle = {
   padding: 10

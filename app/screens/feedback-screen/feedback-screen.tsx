@@ -21,14 +21,14 @@ const ROW: ViewStyle = {
 }
 const TEXT_INPUT: TextStyle = {
   padding: spacing[3],
-  borderColor: color.line,
+  borderColor: color.mainGrey,
   borderWidth: 1,
   borderRadius: spacing[1],
 }
 const TEXT_AREA: TextStyle = {
   height: 120,
   borderWidth: 1,
-  borderColor: color.line,
+  borderColor: color.mainGrey,
   borderRadius: spacing[1],
   padding: spacing[3],
   textAlignVertical: 'top'

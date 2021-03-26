@@ -41,7 +41,7 @@ const TOP_ROOT: ViewStyle = {
   flexDirection: "row",
   paddingBottom: spacing[2],
   borderBottomWidth: 1,
-  borderBottomColor: color.disable,
+  borderBottomColor: color.mainGrey,
   marginLeft: spacing[1],
   marginRight: spacing[1],
   ...PADDING_LEFT,

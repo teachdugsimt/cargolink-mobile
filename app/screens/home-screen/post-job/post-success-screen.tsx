@@ -48,7 +48,7 @@ const VIEW_BUTTON: ViewStyle = {
 }
 
 const BUTTON_CONTAINER: ViewStyle = {
-  // borderColor: color.line,
+  // borderColor: color.mainGrey,
   backgroundColor: color.primary
 }
 

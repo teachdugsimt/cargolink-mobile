@@ -190,7 +190,7 @@ const CheckMark = (data) => (<LottieView
 
 const RenderButtonAlert = ({ onCloseModal, onConfirmJob }) => {
 
-  const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.line, backgroundColor: color.transparent }
+  const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.mainGrey, backgroundColor: color.transparent }
   const btnConfirmStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.primary, backgroundColor: color.primary }
   return (
     <View style={{ ...BOTTOM_ROOT, paddingVertical: spacing[2] }}>
@@ -216,7 +216,7 @@ const Truck = ({ truckType, total }) => {
   const truckTypeName = GetTruckType(+truckType)?.name || translate('common.notSpecified')
   const truckImage = MapTruckImageName(+truckType)
 
-  return (<View style={{ ...ROW, paddingHorizontal: spacing[2], paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.disable }}>
+  return (<View style={{ ...ROW, paddingHorizontal: spacing[2], paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.mainGrey }}>
     <View style={{ flex: 2 }}>
       <View style={OUTER_CIRCLE}>
         <Image source={imageComponent[truckImage && truckImage !== 'greyMock' ? truckImage : '']} style={TRUCK_IMAGE} />

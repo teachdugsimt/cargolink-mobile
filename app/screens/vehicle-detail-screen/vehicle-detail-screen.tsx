@@ -78,7 +78,7 @@ const TEXT_OF_VALUE: TextStyle = {
   textAlign: "right",
   borderWidth: 1,
   borderRadius: 4,
-  borderColor: color.line,
+  borderColor: color.mainGrey,
   padding: spacing[3],
 }
 const SUB_TOPIC_ROOT: ViewStyle = {
@@ -331,7 +331,7 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
           topic={booker.fullName}
           detail={booker.bookingDatetime}
           btnTxt={translate('myJobScreen.accept')}
-          containerStyle={{ paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.disable, backgroundColor: color.textWhite }}
+          containerStyle={{ paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.mainGrey, backgroundColor: color.textWhite }}
           topicStyle={{ fontSize: 14, paddingBottom: spacing[1] }}
           detailStyle={{ color: color.line }}
           btnStyle={{ paddingVertical: 2, paddingHorizontal: spacing[2] }}

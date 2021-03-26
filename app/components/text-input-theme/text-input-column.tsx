@@ -38,7 +38,7 @@ export function TextInputColumn(props: TextInputColumnProps) {
     actualPlaceholder = translate("common.count"), editable, ...rest } = props
   let underline_style: ViewStyle = {}
   if (underline) underline_style = {
-    borderBottomColor: color.line, borderBottomWidth: 1
+    borderBottomColor: color.mainGrey, borderBottomWidth: 1
   }
   return (
     <View style={underline_style}>

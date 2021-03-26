@@ -42,8 +42,8 @@ export const color = {
    */
   // line: palette.lightGray,
   // line: palette.mainGrey,
-  line: palette.gray,
-  mainGrey: palette.mainGrey,
+  line: palette.mainGrey,   // Dark grey
+  mainGrey: palette.gray,   // Light grey
   /**
    * Warning message and background color.
    */

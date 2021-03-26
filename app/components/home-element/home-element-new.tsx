@@ -16,7 +16,7 @@ const POST_CARD: ViewStyle = {
   borderRadius: 17.5,
 }
 
-const BOTTOM_LINE: ViewStyle = { marginTop: 2.5, height: 2.5, width: 25, borderColor: color.line, borderWidth: 1.5, borderRadius: 2 }
+const BOTTOM_LINE: ViewStyle = { marginTop: 2.5, height: 2.5, width: 25, borderColor: color.mainGrey, borderWidth: 1.5, borderRadius: 2 }
 
 const VIEW_CARD: ViewStyle = {
   height: 110, flex: 1,

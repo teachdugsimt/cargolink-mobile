@@ -67,7 +67,7 @@ const MARGIN_LEFT_SMALL: ViewStyle = { paddingLeft: 5 }
 const MARGIN_TOP: ViewStyle = { marginTop: 5 }
 const MARGIN_TOP_BIG: ViewStyle = { marginTop: 10 }
 const MARGIN_TOP_EXTRA: ViewStyle = { marginTop: 20 }
-const BORDER_BOTTOM_STYLE: ViewStyle = { borderBottomColor: color.line, borderBottomWidth: 1 }
+const BORDER_BOTTOM_STYLE: ViewStyle = { borderBottomColor: color.mainGrey, borderBottomWidth: 1 }
 const LAYOUT_REGISTRATION_FIELD: TextStyle = {
   textAlign: 'right', paddingRight: 10,
 }
@@ -95,7 +95,7 @@ const PADDING_RIGHT_SMALL: ViewStyle = { paddingRight: 5 }
 const PADDING_LEFT_SMALL: ViewStyle = { paddingLeft: 5 }
 const BUTTON_MAP: ViewStyle = {
   padding: 10, paddingLeft: 0,
-  borderBottomWidth: 1, borderBottomColor: color.line
+  borderBottomWidth: 1, borderBottomColor: color.mainGrey
 }
 const initField = [{
   id: 1,
