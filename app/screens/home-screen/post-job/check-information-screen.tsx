@@ -329,9 +329,9 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                   <View style={[ROW_TEXT, JUSTIFY_BETWEEN, PADDING_VERTICAL_10, BORDER_BOTTOM_NEW]}>
                     <View style={[ROW_TEXT]}>
                       <Text>{vehicleObject?.name || ""}</Text>
-                      <Text style={BLUE_ANSWER}> ( </Text>
+                      {/* <Text style={BLUE_ANSWER}> ( </Text>
                       <Text style={BLUE_ANSWER} tx={initialData['dump-field'] == 1 ? "common.dump" : "common.notDump"} />
-                      <Text style={BLUE_ANSWER}> ) </Text>
+                      <Text style={BLUE_ANSWER}> ) </Text> */}
                     </View>
                     {!!initialData['car-num'] && <View style={[ROW_TEXT]}>
                       <Text style={BLUE_ANSWER}>{initialData['car-num'] + " "}</Text>
@@ -347,9 +347,9 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                   {_renderNormalText("postJobScreen.productWeight", initialData['item-weight'], "searchJobScreen.ton", true)}
                 </View>
 
-                <View style={[PADDING_VERTICAL_20]}>
+                {/* <View style={[PADDING_VERTICAL_20]}>
                   {_renderNormalText("postJobScreen.rateShipping", initialData['shipping-rate'], 'common.bath', false, initialData['shipping-rate'] == 1 ? 'common.perBill' : 'common.perTon')}
-                </View>
+                </View> */}
 
               </View>
             </View>
