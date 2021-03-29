@@ -306,7 +306,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                       keyboardType="numeric"
                       prefix="postJobScreen.vehicleNum"
                       suffix="profileScreen.unit"
-                      icon="ios-information-circle-outline"
+                      // icon="ios-information-circle-outline"
                       underline={true}
                       inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
                       value={value} onChangeText={(text) => onChange(text)} />
@@ -419,7 +419,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                       keyboardType="numeric"
                       prefix="postJobScreen.weightProduct"
                       suffix="searchJobScreen.ton"
-                      icon="ios-information-circle-outline"
+                      // icon="ios-information-circle-outline"
                       underline={false}
                       inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
                       value={value} onChangeText={(text) => onChange(text)} />
@@ -441,9 +441,9 @@ export const PostJobScreen = observer(function PostJobScreen() {
                 <View style={[ROW_TEXT]}>
                   <Text tx={"postJobScreen.rateShipping"} preset={'topic'} style={MARGIN_TOP_BIG} />
                   <Text preset={'topic'} style={RED_DOT} >*</Text>
-                  <TouchableOpacity onPress={() => { }} style={{ justifyContent: 'center', paddingTop: 7.5 }}>
+                  {/* <TouchableOpacity onPress={() => { }} style={{ justifyContent: 'center', paddingTop: 7.5 }}>
                     <Ionicons name={"ios-information-circle-outline"} size={18} color={color.primary} />
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                 </View>
                 <View style={ROW_TEXT}>
                   <View style={[FULL, { justifyContent: 'center' }]}>
