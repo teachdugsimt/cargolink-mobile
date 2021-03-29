@@ -18,7 +18,7 @@ const ROW: ViewStyle = { flexDirection: 'row' }
 const MARGIN_HOR_10: ViewStyle = { marginHorizontal: 10 }
 const BACKGROUND_MAIN_ELEMENT: ViewStyle = {
   borderBottomColor: color.mainGrey,
-  borderBottomWidth: 1,
+  borderBottomWidth: 1,  paddingBottom: 10
 }
 
 const MAIN_WRAP_LINE: ViewStyle = {

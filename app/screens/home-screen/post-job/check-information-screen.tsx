@@ -307,14 +307,14 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
   const shippingObject = initialData['shipping-information'] ? JSON.parse(JSON.stringify(initialData['shipping-information'])) : []
 
   return (
-    <Screen unsafe>
+    <Screen unsafe keyboardOffset="little" preset="scroll" bounch={false}>
       <View testID="CheckInformationScreen" style={FULL}>
         <View style={TOP_VIEW}>
           <AddJobElement data={list_status} />
         </View>
 
         <View style={BOTTOM_VIEW}>
-          <ScrollView style={FULL}>
+          <View style={FULL}>
 
 
 
@@ -389,7 +389,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
             </View>
 
 
-          </ScrollView>
+          </View>
         </View>
       </View>
     </Screen>

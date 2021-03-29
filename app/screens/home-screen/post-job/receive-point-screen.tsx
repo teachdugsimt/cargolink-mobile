@@ -294,7 +294,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
   console.log("Form Control :: ", formControllerValue)
   // const { longitude, latitude } = position?.coords || {}
   return (
-    <Screen unsafe>
+    <Screen unsafe keyboardOffset="little" preset="scroll" bounch={false}>
 
       <View testID="ReceivePointScreen" style={FULL}>
         <View style={TOP_VIEW}>
@@ -302,7 +302,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
         </View>
 
         <View style={BOTTOM_VIEW}>
-          <ScrollView style={FULL}>
+          <View style={FULL}>
 
 
             <View style={TOP_VIEW_2}>
@@ -369,7 +369,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                     {Platform.OS == "ios" && <FontAwesome name="calendar-o" size={22} />}
                     <Text tx={"postJobScreen.dateReceive"} style={{ ...CONTENT_TEXT, paddingLeft: Platform.OS == "ios" ? 10 : 0 }} />
                   </View>
-                  <View style={FULL}>
+                  <View style={[FULL]}>
                     <Controller
                       control={control}
                       render={({ onChange, onBlur, value }) => (
@@ -706,7 +706,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
             </View>
 
 
-          </ScrollView>
+          </View>
         </View>
       </View>
     </Screen>

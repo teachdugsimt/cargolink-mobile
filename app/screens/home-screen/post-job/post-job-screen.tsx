@@ -253,9 +253,10 @@ export const PostJobScreen = observer(function PostJobScreen() {
   }
 
   console.log("From control :: ", formControllerValue)
+  console.log("Error From control :: ", errors)
 
   return (
-    <Screen unsafe>
+    <Screen unsafe keyboardOffset="little" preset="scroll" bounch={false}>
       <View testID="PostJobScreen" style={FULL}>
         <View style={TOP_VIEW}>
           <AddJobElement data={list_status} />
@@ -263,7 +264,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
         <View style={BOTTOM_VIEW}>
 
-          <ScrollView style={FULL}>
+          <View style={FULL}>
 
             <View style={TOP_VIEW_2}>
               <View style={WRAPPER_TOP}>
@@ -295,7 +296,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                     defaultValue=""
                   />
                 </View>
-                {errors['vehicle-type'] && <Text style={{ color: color.red }} tx={"postJobScreen.validateTruckType"} />}
+                {errors['vehicle-type'] && !dropdown_vehicle_type && <Text style={{ color: color.red }} tx={"postJobScreen.validateTruckType"} />}
 
 
                 <Controller
@@ -386,7 +387,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                   />
 
                 </View>
-                {errors['item-type'] && <Text style={{ color: color.red }} tx={"postJobScreen.validateProductType"} />}
+                {errors['item-type'] && !formControllerValue['item-type'] && <Text style={{ color: color.red }} tx={"postJobScreen.validateProductType"} />}
 
 
 
@@ -409,7 +410,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                   rules={{ required: true }}
                   defaultValue=""
                 />
-                {errors['item-name'] && <Text style={{ color: color.red }} tx={"common.productName"} />}
+                {errors['item-name'] && !formControllerValue['item-name'] && <Text style={{ color: color.red }} tx={"common.productName"} />}
 
                 <Controller
                   control={control}
@@ -486,7 +487,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                     />
                   </View>
                 </View>
-                {errors['shipping-rate'] && <Text style={{ color: color.red }} tx={"postJobScreen.inputRateShipping"} />}
+                {errors['shipping-rate'] && !formControllerValue['shipping-rate'] && <Text style={{ color: color.red }} tx={"postJobScreen.inputRateShipping"} />}
 
               </View>
             </View>
@@ -499,7 +500,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
               </View>
             </View>
 
-          </ScrollView>
+          </View>
         </View>
       </View>
     </Screen>
