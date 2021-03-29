@@ -141,7 +141,7 @@ export const LocationPickerScreen = observer(function LocationPickerScreen(props
 
                   <View style={styles.rowCenter}>
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.buttonBack}>
-                      <Ionicons name={'chevron-back'} size={20} color={color.mainGrey} />
+                      <Ionicons name={'chevron-back'} size={20} color={color.line} />
                     </TouchableOpacity>
                     <View style={{ ...styles.paddingTop10, flexDirection: 'row' }}>
                       <Text tx={"common.add"} preset="topic" />

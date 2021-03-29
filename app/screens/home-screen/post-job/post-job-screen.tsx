@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useCallback } from "react"
 import { View, ViewStyle, TextStyle, Dimensions, Platform, ImageStyle, Image, SectionList, TouchableOpacity, ScrollView, KeyboardAvoidingView } from "react-native"
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation, useFocusEffect } from "@react-navigation/native"
 import { useForm, Controller } from "react-hook-form";
 import { observer } from "mobx-react-lite"
 import { translate } from "../../../i18n"
@@ -54,7 +54,7 @@ const BORDER_GREY: ViewStyle = {
 const PADDING_TOP_20: ViewStyle = { paddingTop: 20 }
 
 const WRAP_DROPDOWN_VALUE: ViewStyle = {
-  flex: 1, padding: Platform.OS == "ios" ? 7.5 : 0, paddingLeft: 0, paddingRight:  0,
+  flex: 1, padding: Platform.OS == "ios" ? 7.5 : 0, paddingLeft: 0, paddingRight: 0,
   borderRadius: 2.5
 }
 const WRAP_DROPDOWN: ViewStyle = {
@@ -177,8 +177,10 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
   const _renderSelectedList = (item, section) => {
     return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name} style={ROOT_FLAT_LIST} onPress={() => {
-      if (section == 1) setvisible0(true)
-      else if (section == 2) setvisible(true)
+      if (section == 1) navigation.navigate("selectTruckType", {
+        selectedItem: [item.id.toString()], onSubmitVehicle: (val) => _onSubmitVehicle(val)
+      })
+      else if (section == 2) navigation.navigate("selectProductType", { selectedItem: [item.id.toString()], onSubmitProductType: (val) => _onSubmitProductType(val) })
     }}>
       <View style={{ ...BORDER_BOTTOM }}>
         <View style={VIEW_LIST_IMAGE}>
@@ -206,6 +208,19 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
   const [visible, setvisible] = useState(false)
   const [visible0, setvisible0] = useState(false)
+  const _onSubmitVehicle = (params: number) => {
+    control.setValue("vehicle-type", params)
+    setvisible0(!visible0)
+  }
+  useEffect(() => {
+    _onSubmitVehicle(JSON.parse(JSON.stringify(PostJobStore.vehicle_type)))
+  }, [PostJobStore.vehicle_type])
+
+  const _onSubmitProductType = (params: any) => {
+    control.setValue("item-type", params)
+    setvisible(!visible)
+  }
+
   const list_status = [
     { key: 1, ID: 1, no: 1, id: 1, name: 'postJobScreen.vehicleDetailAndProduct', active: true },
     { key: 2, ID: 2, no: 2, id: 2, name: 'postJobScreen.getProductLocation', active: false },
@@ -236,7 +251,9 @@ export const PostJobScreen = observer(function PostJobScreen() {
   if (list_product_type_all && list_product_type_all.length > 0) {
     list_product_type[0].data = list_product_type_all
   }
+
   console.log("From control :: ", formControllerValue)
+
   return (
     <Screen unsafe>
       <View testID="PostJobScreen" style={FULL}>
@@ -259,22 +276,18 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
 
 
-                  <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible0(true)}>
-                    {!dropdown_vehicle_type && <><Text style={{ padding: Platform.OS == "ios" ? 5 : 10, paddingLeft: 0, color: color.line }} tx={"postJobScreen.pleaseSelectVehicleType"} />
-                      <Ionicons name="chevron-forward" size={24} style={PADDING_CHEVRON} /></>}
-                    {dropdown_vehicle_type && !!versatileStore.list && _renderSelectedList(JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == dropdown_vehicle_type), 1)}
-
-                  </TouchableOpacity>
-
                   <Controller
                     control={control}
                     render={({ onChange, onBlur, value }) => (
-                      <ModalTruckType
-                        visible={visible0}
-                        onTouchOutside={() => setvisible0(false)}
-                        selectedItems={[value]}
-                        onChange={onChange}
-                      />
+                      <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => {
+                        navigation.navigate("selectTruckType", {
+                          selectedItem: [value], onSubmitVehicle: (val) => _onSubmitVehicle(val)
+                        })
+                      }}>
+                        {!dropdown_vehicle_type && <><Text style={{ padding: Platform.OS == "ios" ? 5 : 10, paddingLeft: 0, color: color.line }} tx={"postJobScreen.pleaseSelectVehicleType"} />
+                          <Ionicons name="chevron-forward" size={24} style={PADDING_CHEVRON} /></>}
+                        {dropdown_vehicle_type && !!versatileStore.list && _renderSelectedList(JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == dropdown_vehicle_type), 1)}
+                      </TouchableOpacity>
                     )}
                     key={'controller-dropdown-vehicle-type'}
                     name={"vehicle-type"}
@@ -285,7 +298,6 @@ export const PostJobScreen = observer(function PostJobScreen() {
                 {errors['vehicle-type'] && <Text style={{ color: color.red }} tx={"postJobScreen.validateTruckType"} />}
 
 
-                {/* <Text tx={"postJobScreen.vehicleNum"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} /> */}
                 <Controller
                   control={control}
                   render={({ onChange, onBlur, value }) => (
@@ -356,69 +368,16 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
                 <View style={[PADDING_TOP, !dropdown_item_type ? { ...WRAP_DROPDOWN } : { ...WRAP_DROPDOWN_VALUE }]}>
 
-                  <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => setvisible(true)}>
-                    {!dropdown_item_type && <><Text style={{ padding: Platform.OS == "ios" ? 5 : 10, paddingLeft: 0, color: color.line }} tx={"postJobScreen.selectItemType"} />
-                      <Ionicons name="chevron-forward" size={24} style={PADDING_CHEVRON} />
-                    </>}
-                    {dropdown_item_type && !!list_product_type_all && _renderSelectedList(list_product_type_all.find(e => e.id == dropdown_item_type), 2)}
-
-                  </TouchableOpacity>
-
-
                   <Controller
                     control={control}
                     render={({ onChange, onBlur, value }) => (
-                      <Modal
-                        visible={visible}
-                        onTouchOutside={() => setvisible(false)}
-                        onSwipeOut={() => setvisible(false)}
-                      // swipeDirection={['up', 'down']} // can be string or an array
-                      // swipeThreshold={200} // default 100
-                      >
-                        <ModalContent >
-                          <View style={{ width: (width / 1.1), height: '100%', justifyContent: 'flex-start' }}>
-                            <SafeAreaView style={{ flex: 1 }}>
-                              <View style={{ height: 60, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                                <TouchableOpacity style={BACK_CHEVRON} onPress={() => setvisible(false)}>
-                                  <Ionicons name="chevron-back" size={28} color={color.primary} />
-                                </TouchableOpacity>
-                                <Text style={{ color: color.primary }} preset={"topic"} tx={"postJobScreen.selectItemType"} />
-                              </View>
+                      <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => navigation.navigate("selectProductType", { selectedItem: [value], onSubmitProductType: (val) => _onSubmitProductType(val) })}>
+                        {!dropdown_item_type && <><Text style={{ padding: Platform.OS == "ios" ? 5 : 10, paddingLeft: 0, color: color.line }} tx={"postJobScreen.selectItemType"} />
+                          <Ionicons name="chevron-forward" size={24} style={PADDING_CHEVRON} />
+                        </>}
+                        {dropdown_item_type && !!list_product_type_all && _renderSelectedList(list_product_type_all.find(e => e.id == dropdown_item_type), 2)}
 
-                              <View style={[PADDING_TOP]}>
-
-                                {!!list_product_type_all && list_product_type_all.length > 0 && <MultiSelector
-                                  items={list_product_type_all}
-                                  keyer={"list-item-type-01"}
-                                  selectedItems={[value]}
-                                  selectText={translate("postJobScreen.validateProductType")}
-                                  onSelectedItemsChange={(val: any) => {
-                                    onChange(val[0])
-                                    setvisible(false)
-                                  }}
-                                />}
-
-                              </View>
-
-                              <View>
-                                {!!list_product_type_all && list_product_type_all.length > 0 && <SectionList
-                                  sections={list_product_type}
-                                  keyExtractor={(item, index) => 'section-list-' + item.name + item.id + index}
-                                  renderItem={({ item, index }) => _renderSectionModal(item, index, onChange, 2)}
-                                  renderSectionHeader={({ section: { title } }) => (
-                                    <Text tx={title} style={[MARGIN_TOP_EXTRA]} />
-                                  )}
-                                  stickySectionHeadersEnabled={false}
-                                  renderSectionFooter={() => <View style={{ height: 70 }} />}
-                                />}
-                              </View>
-                            </SafeAreaView>
-
-                          </View>
-                        </ModalContent>
-                      </Modal>
-
-
+                      </TouchableOpacity>
                     )}
                     key={'controller-dropdown-item-type'}
                     name={"item-type"}

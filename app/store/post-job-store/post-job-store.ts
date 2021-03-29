@@ -53,8 +53,12 @@ const PostJobStore = types.model({
   data_postjob: types.maybeNull(types.union(types.string, types.number)),
 
   job_id: types.maybeNull(types.string),
+  vehicle_type: types.maybeNull(types.number)
 })
   .actions(self => ({
+    setVehicleType(params: number){
+      self.vehicle_type = params
+    },
     setPostJob(params: number, data: any) {
       if (params == 1) {
         self.postjob1 = data
@@ -194,6 +198,7 @@ const PostJobStore = types.model({
     loading: false,
     error: '',
     data_postjob: null,
+    vehicle_type: null,
   })
 
 export default PostJobStore

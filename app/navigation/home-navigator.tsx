@@ -15,7 +15,7 @@ import {
   VehicleDetailScreen, CheckInformationScreen,
   ShipperProfileScreen, ReceivePointScreen, FeedbackScreen, SearchTruckScreen,
   PostSuccessScreen, AdvanceSearchTruckScreen, TruckDetailScreen, SelectJobScreen, CommentScreen,
-  CarrierProfileScreen, SelectTruckScreen
+  CarrierProfileScreen, SelectTruckScreen, SelectTruckTypeScreen, SelectProductTypeScreen
 } from "../screens"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -54,6 +54,8 @@ export type PrimaryHomeParamList = {
   carrierProfile: undefined
   jobDetailOwner: undefined
   truckDetailOwner: undefined
+  selectTruckType: undefined
+  selectProductType: undefined
   // addAddress: undefined
 }
 
@@ -257,14 +259,22 @@ export function HomeNavigator() {
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
       />
-      {/* <Stack.Screen
-        name="addAddress"
-        component={AddAddressScreen}
+      <Stack.Screen
+        name="selectTruckType"
+        component={SelectTruckTypeScreen}
         options={({ navigation, route }) => ({
-          headerCenter: () => <HeaderCenter tx={"addAddressScreen.isSaveAddress"} />,
+          headerCenter: () => <HeaderCenter tx={"postJobScreen.selectVehicleType"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
-      /> */}
+      />
+      <Stack.Screen
+        name="selectProductType"
+        component={SelectProductTypeScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"postJobScreen.selectItemType"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
     </Stack.Navigator>
   )
 }

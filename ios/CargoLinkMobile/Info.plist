@@ -24,6 +24,8 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>61</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -41,11 +43,11 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>App needs Camera Access Permission</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>App needs location access</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>App needs always location access when usage</string>
 	<key>NSLocationAlwaysUsageDescription</key>
+	<string>App needs location access</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>App needs location access</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>App needs photo library Access</string>
@@ -102,8 +104,6 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>

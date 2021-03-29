@@ -113,12 +113,12 @@ export default class MultiSelect extends Component {
     fixedHeight: false,
     hideTags: false,
     hideDropdown: false,
-    onChangeInput: () => {},
+    onChangeInput: () => { },
     displayKey: 'name',
     canAddItems: false,
-    onAddItem: () => {},
-    onClearSelector: () => {},
-    onToggleList: () => {},
+    onAddItem: () => { },
+    onClearSelector: () => { },
+    onToggleList: () => { },
     removeSelected: false
   };
 
@@ -505,6 +505,7 @@ export default class MultiSelect extends Component {
           extraData={selectedItems}
           keyExtractor={item => item[uniqueKey]}
           listKey={item => item[uniqueKey]}
+          ListFooterComponent={() => <View style={{ height: 30 }}></View>}
           renderItem={rowData => this._getRow(rowData.item)}
           {...flatListProps}
           nestedScrollEnabled
@@ -578,8 +579,8 @@ export default class MultiSelect extends Component {
           {
             flexDirection: 'column'
           } &&
-            styleMainWrapper &&
-            styleMainWrapper
+          styleMainWrapper &&
+          styleMainWrapper
         ]}
       >
         {selector ? (
@@ -681,29 +682,29 @@ export default class MultiSelect extends Component {
                       style={
                         !selectedItems || selectedItems.length === 0
                           ? [
-                              {
-                                flex: 1,
-                                fontSize: fontSize || 16,
-                                color:
-                                  textColor || colorPack.placeholderTextColor
-                              },
-                              styleTextDropdown && styleTextDropdown,
-                              altFontFamily
-                                ? { fontFamily: altFontFamily }
-                                : fontFamily
+                            {
+                              flex: 1,
+                              fontSize: fontSize || 16,
+                              color:
+                                textColor || colorPack.placeholderTextColor
+                            },
+                            styleTextDropdown && styleTextDropdown,
+                            altFontFamily
+                              ? { fontFamily: altFontFamily }
+                              : fontFamily
                                 ? { fontFamily }
                                 : {}
-                            ]
+                          ]
                           : [
-                              {
-                                flex: 1,
-                                fontSize: fontSize || 16,
-                                color:
-                                  textColor || colorPack.placeholderTextColor
-                              },
-                              styleTextDropdownSelected &&
-                                styleTextDropdownSelected
-                            ]
+                            {
+                              flex: 1,
+                              fontSize: fontSize || 16,
+                              color:
+                                textColor || colorPack.placeholderTextColor
+                            },
+                            styleTextDropdownSelected &&
+                            styleTextDropdownSelected
+                          ]
                       }
                       numberOfLines={1}
                     >
