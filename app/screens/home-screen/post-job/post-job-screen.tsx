@@ -298,7 +298,6 @@ export const PostJobScreen = observer(function PostJobScreen() {
                 </View>
                 {errors['vehicle-type'] && !dropdown_vehicle_type && <Text style={{ color: color.red }} tx={"postJobScreen.validateTruckType"} />}
 
-
                 <Controller
                   control={control}
                   render={({ onChange, onBlur, value }) => (
@@ -331,12 +330,15 @@ export const PostJobScreen = observer(function PostJobScreen() {
                           <RadioButton onPress={(item, index) => {
                             onChange(item.id)
                             let tmp = arrDump
-                            tmp.map((e, i) => {
+                            tmp.forEach((e, i) => {
                               if (e.id == item.id) e.active = true
                               else e.active = false
                             })
                             setArrDump(tmp)
-                          }} data={arrDump} />
+                          }} data={arrDump}
+                            buttonStyle={{ height: 30, padding: 0 }}
+                            textStyle={{ lineHeight: 19 }}
+                          />
                         </View>
                       </View>
                     )}
@@ -346,12 +348,6 @@ export const PostJobScreen = observer(function PostJobScreen() {
                   />}
               </View>
             </View>
-
-
-
-
-
-
 
 
             <View style={[TOP_VIEW_2, MARGIN_TOP]}>
@@ -474,12 +470,17 @@ export const PostJobScreen = observer(function PostJobScreen() {
                         <RadioButton onPress={(item, index) => {
                           onChange(item.id)
                           let tmp = arrUnit
-                          tmp.map((e, i) => {
+                          tmp.forEach((e, i) => {
                             if (e.id == item.id) e.active = true
                             else e.active = false
                           })
+                          // console.log("TEMP", tmp)
                           setArrUnit(tmp)
-                        }} data={arrUnit} />
+                        }}
+                          data={arrUnit}
+                          buttonStyle={{ height: 30, padding: 0 }}
+                          textStyle={{ lineHeight: 19 }}
+                        />
                       )}
                       key={'text-input-shipping-type'}
                       name={"shipping-type"}
@@ -494,7 +495,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
 
 
-            <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_EXTRA }}>
+            <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_BIG }}>
               <View style={WRAPPER_TOP}>
                 <RoundedButton onPress={handleSubmit(onSubmit)} text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
               </View>

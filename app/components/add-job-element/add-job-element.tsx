@@ -9,7 +9,7 @@ const CIRCLE_RADIUS = CIRCLE_WIDTH / 2
 const MIN_CIRCLE_VIEW_WIDTH = CIRCLE_WIDTH + 5
 
 const BINDING = -5
-const LINE_HEIGHT = 2
+const LINE_HEIGHT = 0.5
 const LINE_WIDTH = CIRCLE_WIDTH - 10
 const LINE_POSITION_FROM_CIRCLE = CIRCLE_WIDTH - ((CIRCLE_WIDTH * 2) - (CIRCLE_RADIUS - BINDING))
 
@@ -18,7 +18,7 @@ const ROW: ViewStyle = { flexDirection: 'row' }
 const MARGIN_HOR_10: ViewStyle = { marginHorizontal: 10 }
 const BACKGROUND_MAIN_ELEMENT: ViewStyle = {
   borderBottomColor: color.mainGrey,
-  borderBottomWidth: 1,  paddingBottom: 10
+  borderBottomWidth: 1, paddingBottom: 10
 }
 
 const MAIN_WRAP_LINE: ViewStyle = {
@@ -54,7 +54,7 @@ const TEXT_STATUS: TextStyle = { alignSelf: 'center', fontSize: 12 }
 const ColumnNumber = (props) => {
   const { number, active, name } = props
   const backgroundC = active ? color.primary : color.transparent2
-  const borderW = active ? 0 : 2
+  const borderW = active ? 0 : 0.5
   const borderC = active ? color.transparent2 : color.line
   const NUMBER_COLORRR: TextStyle = active ? { color: color.textWhite } : { color: color.line }
   return (
