@@ -74,6 +74,7 @@ const LAYOUT_REGISTRATION_FIELD: TextStyle = {
   textAlign: 'right', paddingRight: 10,
 }
 const ROUND_BUTTON_CONTAINER: ViewStyle = {
+  height:40,
   backgroundColor: color.primary, borderColor: color.transparent
 }
 const ROUND_BUTTON_TEXT: TextStyle = {

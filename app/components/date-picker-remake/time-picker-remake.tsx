@@ -38,7 +38,6 @@ export const TimePickerRemake = (props) => {
     rerender, rerenderFunction, mode, iconName, keyer
   } = props
   // __DEV__ && console.tron.log("Show time status :: ", show)
-
   return (
 
     <View key={"root-time-picker-" + keyer} style={[FULL, MARGIN_MEDIUM, {
