@@ -41,17 +41,25 @@ export const TimePickerRemake = (props) => {
   // __DEV__ && console.tron.log("Show time status :: ", show)
   return (
 
-    <View key={"root-time-picker-" + keyer} style={[FULL, MARGIN_MEDIUM]}>
+    <View key={"root-time-picker-" + keyer} style={[FULL, MARGIN_MEDIUM, {
+      // justifyContent: 'flex-end',
+      // backgroundColor: 'green'
+    }]}>
 
       {Platform.OS == "android" && <Button keyer={keyer} label={label} value={value} iconName={iconName} openDatePicker={_openDatePicker} />}
 
       {!!value && show &&
         <DateTimePicker
+          onTouchStart={(e) => {
+            console.log("On Touch Start :: ", e)
+          }}
+          style={{ width: 73, alignSelf: 'flex-end' }}
+          focusable={true}
           testID={testID}
           value={value}
           mode={mode}
           is24Hour={true}
-          display="default"
+          display={Platform.OS === 'android' ? "spinner" : "default"}
           timeZoneOffsetInMinutes={420}
           timeZoneOffsetInSeconds={25200}
           textColor={color.primary}
@@ -78,12 +86,12 @@ const Button = (props) => {
   const { keyer, label, iconName, openDatePicker, value } = props
 
   return <TouchableOpacity key={"button-time-picker-" + keyer} style={DATE_BUTTON} onPress={openDatePicker}>
-    <View style={[ROW_TEXT, SPACE_BETWEEN]} key={'v-time-' + keyer}>
+    <View style={[ROW_TEXT, SPACE_BETWEEN, { paddingTop: 3 }]} key={'v-time-' + keyer}>
       <View key={"v-time2-" + keyer}>
         <Text style={PADDING_PURE}>{label && typeof label != undefined ?
           date.format(label, "HH:mm") : value ? date.format(value, "HH:mm") : ''}</Text>
       </View>
-      <Ionicons name={iconName} size={20} style={PADDING_PURE} />
+      <Ionicons name={iconName} size={20} style={[PADDING_PURE]} />
     </View>
   </TouchableOpacity>
 }

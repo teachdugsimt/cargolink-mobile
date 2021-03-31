@@ -44,7 +44,7 @@ export const DatePickerRemake = (props) => {
     <View key={"root-date-picker-" + keyer} style={[FULL, MARGIN_MEDIUM]}>
 
       {Platform.OS == "android" && <TouchableOpacity key={"button-date-picker-" + keyer} style={DATE_BUTTON} onPress={_openDatePicker}>
-        <View style={[ROW_TEXT, SPACE_BETWEEN]}>
+        <View style={[ROW_TEXT, SPACE_BETWEEN, { paddingTop: 3 }]}>
           <View>
             {rerender ? <Text style={PADDING_PURE}>{label && typeof label != undefined ?
               date.format(label, "YYYY-MM-DD") : (value ? date.format(value, "YYYY-MM-DD") : '')}</Text> :
@@ -63,6 +63,7 @@ export const DatePickerRemake = (props) => {
             mode={mode}
             is24Hour={true}
             display="default"
+            style={{ alignSelf: 'flex-end', width: 130 }}
             timeZoneOffsetInMinutes={420}
             timeZoneOffsetInSeconds={25200}
             textColor={color.primary}

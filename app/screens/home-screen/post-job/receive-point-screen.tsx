@@ -369,7 +369,8 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                     {Platform.OS == "ios" && <FontAwesome name="calendar-o" size={22} />}
                     <Text tx={"postJobScreen.dateReceive"} style={{ ...CONTENT_TEXT, paddingLeft: Platform.OS == "ios" ? 10 : 0 }} />
                   </View>
-                  <View style={[FULL]}>
+                  <View style={FULL}></View>
+                  <View style={{}}>
                     <Controller
                       control={control}
                       render={({ onChange, onBlur, value }) => (
@@ -396,7 +397,8 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                     {Platform.OS == "ios" && <FontAwesome name="clock-o" size={22} />}
                     <Text tx={"postJobScreen.timeReceive"} style={{ ...CONTENT_TEXT, paddingLeft: Platform.OS == "ios" ? 10 : 0 }} />
                   </View>
-                  <View style={FULL}>
+                  <View style={FULL}></View>
+                  <View style={{}}>
                     <Controller
                       control={control}
                       render={({ onChange, onBlur, value }) => (
@@ -501,7 +503,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                     <View style={ROW_TEXT}>
                       <Icon icon={'pinDropGreen'} style={ICON_PIN_YELLOW} />
                       <Text tx={"postJobScreen.shipingPoint"} preset={'topic'} style={MARGIN_TOP_BIG} />
-                      <Text preset={'topic'} style={MARGIN_TOP_BIG}>{i + 1}</Text>
+                      <Text preset={'topic'} style={MARGIN_TOP_BIG}>{" "}{i + 1}</Text>
                       <Text preset={'topic'} style={RED_DOT} >*</Text>
                     </View>
 
@@ -565,7 +567,8 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                       {Platform.OS == "ios" && <FontAwesome name="calendar-o" size={22} />}
                       <Text tx={"postJobScreen.dateShipping"} style={{ ...CONTENT_TEXT, paddingLeft: Platform.OS == "ios" ? 10 : 0 }} />
                     </View>
-                    <View style={FULL}>
+                    <View style={FULL}></View>
+                    <View style={{}}>
                       <Controller
                         control={control}
                         render={({ onChange, onBlur, value }) => (
@@ -595,7 +598,8 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                       {Platform.OS == "ios" && <FontAwesome name="clock-o" size={22} />}
                       <Text tx={"postJobScreen.timeShipping"} style={{ ...CONTENT_TEXT, paddingLeft: Platform.OS == "ios" ? 10 : 0 }} />
                     </View>
-                    <View style={FULL}>
+                    <View style={FULL}></View>
+                    <View style={{}}>
                       <Controller
                         control={control}
                         render={({ onChange, onBlur, value }) => (
@@ -694,7 +698,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
 
 
 
-            <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_EXTRA }}>
+            <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_BIG }}>
               <View style={ROW_TEXT}>
                 <View style={[WRAPPER_TOP, FULL]}>
                   <RoundedButton style={[FULL, BORDER_RADIUS_20, GREY_TEXT]} onPress={() => navigation.goBack()} text={"common.back"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />

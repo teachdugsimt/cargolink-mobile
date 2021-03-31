@@ -50,7 +50,7 @@ const PADDING_TOP_20: ViewStyle = { paddingTop: 20 }
 
 const MARGIN_HORIZONTTAL_MEDIUM: ViewStyle = { paddingHorizontal: 10 }
 
-const MARGIN_TOP_EXTRA: ViewStyle = { marginTop: 20 }
+const MARGIN_TOP_BIG: ViewStyle = { marginTop: 10 }
 
 const ROUND_BUTTON_CONTAINER: ViewStyle = {
   backgroundColor: color.primary, borderColor: color.transparent
@@ -387,7 +387,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
 
 
 
-            <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_EXTRA }}>
+            <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_BIG }}>
               <View style={ROW_TEXT}>
                 <View style={[WRAPPER_TOP, FULL]}>
                   <RoundedButton style={[FULL, BORDER_RADIUS_20, GREY_TEXT]} onPress={() => navigation.goBack()} text={"common.back"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
