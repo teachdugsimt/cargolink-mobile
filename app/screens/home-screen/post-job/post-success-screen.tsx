@@ -43,7 +43,7 @@ const VIEW_BUTTON: ViewStyle = {
   justifyContent: 'center',
   alignItems: 'center',
   borderTopColor: color.line,
-  borderTopWidth: 1,
+  borderTopWidth: 0,
   padding: 10,
 }
 
@@ -73,7 +73,7 @@ export const PostSuccessScreen = observer(function PostSuccessScreen() {
       headerCenter: () => (
         <HeaderCenter tx={"postJobScreen.updateJob"} />
       ),
-      headerLeft: () => {}
+      headerLeft: () => { }
     });
     return () => {
       PostJobStore.clearDataPostjob()
@@ -100,15 +100,17 @@ export const PostSuccessScreen = observer(function PostSuccessScreen() {
             </View>
 
           </View>
+
         </View>
 
-        <View style={VIEW_BUTTON}>
-          <RoundedButton testID={"success-vehicle-detail"} onPress={() => {
-            if (status_action == "add")
-              navigation.navigate("home")
-            else navigation.navigate("MyJob", { screen: "myjob" })
-          }} text={"common.ok"} containerStyle={BUTTON_CONTAINER} textStyle={TEXT_BUTTTON_STYLE} />
-        </View>
+
+      </View>
+      <View style={VIEW_BUTTON}>
+        <RoundedButton testID={"success-vehicle-detail"} onPress={() => {
+          if (status_action == "add")
+            navigation.navigate("home")
+          else navigation.navigate("MyJob", { screen: "myjob" })
+        }} text={"common.ok"} containerStyle={BUTTON_CONTAINER} textStyle={TEXT_BUTTTON_STYLE} />
       </View>
     </View>
   )

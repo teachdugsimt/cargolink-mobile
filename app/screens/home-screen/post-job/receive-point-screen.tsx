@@ -698,7 +698,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
 
 
 
-            <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_EXTRA }}>
+            <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_BIG }}>
               <View style={ROW_TEXT}>
                 <View style={[WRAPPER_TOP, FULL]}>
                   <RoundedButton style={[FULL, BORDER_RADIUS_20, GREY_TEXT]} onPress={() => navigation.goBack()} text={"common.back"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
