@@ -60,6 +60,7 @@ export const DatePickerRemake = (props) => {
             mode={mode}
             is24Hour={true}
             display="default"
+            style={{ width: 120, alignSelf: 'flex-end' }}
             timeZoneOffsetInMinutes={420}
             timeZoneOffsetInSeconds={25200}
             textColor={color.primary}

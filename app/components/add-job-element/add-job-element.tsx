@@ -50,7 +50,7 @@ const MAIN_COLUMN: ViewStyle = { ...FULL, alignItems: 'center', minWidth: MIN_CI
 const SUB_COLUMN: ViewStyle = { ...ALL_CENTER, width: CIRCLE_WIDTH, height: CIRCLE_HEIGHT, borderRadius: CIRCLE_RADIUS }
 const TEXT_WHITE: TextStyle = { color: color.line }
 const TEXT_STATUS_VIEW: ViewStyle = { ...ALL_CENTER, paddingTop: 5 }
-const TEXT_STATUS: TextStyle = { alignSelf: 'center', fontSize: 12 }
+const TEXT_STATUS: TextStyle = { alignSelf: 'center', textAlign: 'center', fontSize: 12 }
 const ColumnNumber = (props) => {
   const { number, active, name } = props
   const backgroundC = active ? color.primary : color.transparent2

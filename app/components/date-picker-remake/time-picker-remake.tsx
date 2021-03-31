@@ -41,7 +41,10 @@ export const TimePickerRemake = (props) => {
 
   return (
 
-    <View key={"root-time-picker-" + keyer} style={[FULL, MARGIN_MEDIUM]}>
+    <View key={"root-time-picker-" + keyer} style={[FULL, MARGIN_MEDIUM, {
+      // justifyContent: 'flex-end',
+      // backgroundColor: 'green'
+    }]}>
 
       {Platform.OS == "android" && <Button keyer={keyer} label={label} value={value} iconName={iconName} openDatePicker={_openDatePicker} />}
 
@@ -50,12 +53,13 @@ export const TimePickerRemake = (props) => {
           onTouchStart={(e) => {
             console.log("On Touch Start :: ", e)
           }}
+          style={{ width: 73, alignSelf: 'flex-end' }}
           focusable={true}
           testID={testID}
           value={value}
           mode={mode}
           is24Hour={true}
-          display="default"
+          display={Platform.OS === 'android' ? "spinner" : "default"}
           timeZoneOffsetInMinutes={420}
           timeZoneOffsetInSeconds={25200}
           textColor={color.primary}
