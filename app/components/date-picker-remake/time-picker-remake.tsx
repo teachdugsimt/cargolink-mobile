@@ -38,7 +38,6 @@ export const TimePickerRemake = (props) => {
     rerender, rerenderFunction, mode, iconName, keyer
   } = props
   // __DEV__ && console.tron.log("Show time status :: ", show)
-
   return (
 
     <View key={"root-time-picker-" + keyer} style={[FULL, MARGIN_MEDIUM]}>
@@ -47,10 +46,6 @@ export const TimePickerRemake = (props) => {
 
       {!!value && show &&
         <DateTimePicker
-          onTouchStart={(e) => {
-            console.log("On Touch Start :: ", e)
-          }}
-          focusable={true}
           testID={testID}
           value={value}
           mode={mode}
