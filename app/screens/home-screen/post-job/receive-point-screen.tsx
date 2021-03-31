@@ -563,7 +563,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                   <View style={[ROW_TEXT, JUSTIFY_BETWEEN, BORDER_BOTTOM_STYLE]}>
                     <View style={[FULL, ROW_TEXT, ALIGN_ITEMS]}>
                       {Platform.OS == "ios" && <FontAwesome name="calendar-o" size={22} />}
-                      <Text tx={"postJobScreen.dateReceive"} style={{ ...CONTENT_TEXT, paddingLeft: Platform.OS == "ios" ? 10 : 0 }} />
+                      <Text tx={"postJobScreen.dateShipping"} style={{ ...CONTENT_TEXT, paddingLeft: Platform.OS == "ios" ? 10 : 0 }} />
                     </View>
                     <View style={FULL}>
                       <Controller
@@ -593,7 +593,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                   <View style={[ROW_TEXT, JUSTIFY_BETWEEN, BORDER_BOTTOM_STYLE]}>
                     <View style={[FULL, ROW_TEXT, ALIGN_ITEMS]}>
                       {Platform.OS == "ios" && <FontAwesome name="clock-o" size={22} />}
-                      <Text tx={"postJobScreen.timeReceive"} style={{ ...CONTENT_TEXT, paddingLeft: Platform.OS == "ios" ? 10 : 0 }} />
+                      <Text tx={"postJobScreen.timeShipping"} style={{ ...CONTENT_TEXT, paddingLeft: Platform.OS == "ios" ? 10 : 0 }} />
                     </View>
                     <View style={FULL}>
                       <Controller
