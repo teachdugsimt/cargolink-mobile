@@ -307,7 +307,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                       prefix="postJobScreen.vehicleNum"
                       suffix="profileScreen.unit"
                       // icon="ios-information-circle-outline"
-                      underline={true}
+                      underline={_showDumpField(formControllerValue['vehicle-type']) == true  ? true : false}
                       inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
                       value={value} onChangeText={(text) => onChange(text)} />
                   )}
