@@ -503,7 +503,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                     <View style={ROW_TEXT}>
                       <Icon icon={'pinDropGreen'} style={ICON_PIN_YELLOW} />
                       <Text tx={"postJobScreen.shipingPoint"} preset={'topic'} style={MARGIN_TOP_BIG} />
-                      <Text preset={'topic'} style={MARGIN_TOP_BIG}>{i + 1}</Text>
+                      <Text preset={'topic'} style={MARGIN_TOP_BIG}>{" "}{i + 1}</Text>
                       <Text preset={'topic'} style={RED_DOT} >*</Text>
                     </View>
 
