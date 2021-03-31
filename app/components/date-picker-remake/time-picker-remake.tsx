@@ -28,7 +28,6 @@ const ROW_TEXT: ViewStyle = {
 const SPACE_BETWEEN: ViewStyle = { justifyContent: 'space-between' }
 const showing = Platform.OS == "ios" ? true : false
 export const TimePickerRemake = (props) => {
-
   const [show, setShow] = useState(showing);
 
   const _openDatePicker = () => {
@@ -48,6 +47,10 @@ export const TimePickerRemake = (props) => {
 
       {!!value && show &&
         <DateTimePicker
+          onTouchStart={(e) => {
+            console.log("On Touch Start :: ", e)
+          }}
+          focusable={true}
           testID={testID}
           value={value}
           mode={mode}

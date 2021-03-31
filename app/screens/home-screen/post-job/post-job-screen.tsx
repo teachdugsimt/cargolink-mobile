@@ -319,7 +319,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                 />
                 {errors['car-num'] && <Text style={{ color: color.red }} tx={"common.noSignAndCharacter"} />}
 
-                {/* {!!formControllerValue['vehicle-type'] &&
+                {!!formControllerValue['vehicle-type'] &&
                   _showDumpField(formControllerValue['vehicle-type']) == true && <Controller
                     control={control}
                     render={({ onChange, onBlur, value }) => (
@@ -343,7 +343,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                     key={'text-input-dump-field'}
                     name={"dump-field"}
                     defaultValue={1}
-                  />} */}
+                  />}
               </View>
             </View>
 
@@ -436,15 +436,15 @@ export const PostJobScreen = observer(function PostJobScreen() {
             </View>
 
 
-            {/* <View style={[TOP_VIEW_2, MARGIN_TOP]}>
+            <View style={[TOP_VIEW_2, MARGIN_TOP]}>
               <View style={WRAPPER_TOP}>
 
                 <View style={[ROW_TEXT]}>
                   <Text tx={"postJobScreen.rateShipping"} preset={'topic'} style={MARGIN_TOP_BIG} />
                   <Text preset={'topic'} style={RED_DOT} >*</Text>
-                  <TouchableOpacity onPress={() => { }} style={{ justifyContent: 'center', paddingTop: 7.5 }}>
+                  {/* <TouchableOpacity onPress={() => { }} style={{ justifyContent: 'center', paddingTop: 7.5 }}>
                     <Ionicons name={"ios-information-circle-outline"} size={18} color={color.primary} />
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                 </View>
                 <View style={ROW_TEXT}>
                   <View style={[FULL, { justifyContent: 'center' }]}>
@@ -490,7 +490,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                 {errors['shipping-rate'] && !formControllerValue['shipping-rate'] && <Text style={{ color: color.red }} tx={"postJobScreen.inputRateShipping"} />}
 
               </View>
-            </View> */}
+            </View>
 
 
 

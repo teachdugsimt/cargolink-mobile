@@ -82,6 +82,15 @@ const PADDING_BOTTOM_20: ViewStyle = { paddingBottom: 20 }
 const PADDING_LEFT_10: ViewStyle = { paddingLeft: 10 }
 const PADDING_RIGHT_10: ViewStyle = { paddingRight: 10 }
 const PADDING_TOP_SMALL: ViewStyle = { marginTop: 5 }
+const shipping_type = {
+  1: "PER_TRIP",
+  2: "PER_TON"
+}
+
+const dump_field = {
+  1: true,
+  2: false
+}
 
 export const CheckInformationScreen = observer(function CheckInformationScreen(props) {
   const navigation = useNavigation()
@@ -193,7 +202,9 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
       // "productName": "string",
       "productName": final["item-name"],
       "weight": final['item-weight'],
-      "price": 0, // No need now 
+      "price": final['shipping-rate'], // No need now 
+      "tipper": dump_field[final['dump-field']],
+      "priceType": shipping_type[final['shipping-type']],
       "expiredTime": expirationDate, // No need now
       "note": 'note text',
       "from": {
@@ -329,9 +340,9 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                   <View style={[ROW_TEXT, JUSTIFY_BETWEEN, PADDING_VERTICAL_10, BORDER_BOTTOM_NEW]}>
                     <View style={[ROW_TEXT]}>
                       <Text>{vehicleObject?.name || ""}</Text>
-                      {/* <Text style={BLUE_ANSWER}> ( </Text>
+                      <Text style={BLUE_ANSWER}> ( </Text>
                       <Text style={BLUE_ANSWER} tx={initialData['dump-field'] == 1 ? "common.dump" : "common.notDump"} />
-                      <Text style={BLUE_ANSWER}> ) </Text> */}
+                      <Text style={BLUE_ANSWER}> ) </Text>
                     </View>
                     {!!initialData['car-num'] && <View style={[ROW_TEXT]}>
                       <Text style={BLUE_ANSWER}>{initialData['car-num'] + " "}</Text>
@@ -347,9 +358,9 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                   {_renderNormalText("postJobScreen.productWeight", initialData['item-weight'], "searchJobScreen.ton", true)}
                 </View>
 
-                {/* <View style={[PADDING_VERTICAL_20]}>
-                  {_renderNormalText("postJobScreen.rateShipping", initialData['shipping-rate'], 'common.bath', false, initialData['shipping-rate'] == 1 ? 'common.perBill' : 'common.perTon')}
-                </View> */}
+                <View style={[PADDING_VERTICAL_20]}>
+                  {_renderNormalText("postJobScreen.rateShipping", initialData['shipping-rate'], 'common.bath', false, initialData['shipping-type'] == 1 ? 'common.perBill' : 'common.perTon')}
+                </View>
 
               </View>
             </View>
