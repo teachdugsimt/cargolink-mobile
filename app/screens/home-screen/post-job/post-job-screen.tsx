@@ -74,7 +74,7 @@ const LAYOUT_REGISTRATION_FIELD: TextStyle = {
   textAlign: 'right', paddingRight: 10,
 }
 const ROUND_BUTTON_CONTAINER: ViewStyle = {
-  height:40,
+  height: 40,
   backgroundColor: color.primary, borderColor: color.transparent
 }
 const ROUND_BUTTON_TEXT: TextStyle = {
@@ -117,7 +117,7 @@ const IMAGE_LIST: ImageStyle = {
   resizeMode: "cover",
   aspectRatio: 2 / 2,
   borderRadius: 30,
-  borderColor: color.primary, borderWidth: 2,
+  borderColor: color.primary, borderWidth: 1,
 }
 
 export const PostJobScreen = observer(function PostJobScreen() {
@@ -185,7 +185,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
     }}>
       <View style={{ ...BORDER_BOTTOM }}>
         <View style={VIEW_LIST_IMAGE}>
-          {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images.greyMock} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
+          {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images.greyMock} style={IMAGE_LIST} height={60} width={60} resizeMode={section == 1 ? "contain" : "stretch"} /> :
             <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images.greyMock} style={IMAGE_LIST} height={60} width={60} />}
         </View>
         <View style={{ flexDirection: 'row', flex: 1, width: '100%', justifyContent: 'space-between' }}>
@@ -308,7 +308,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                       prefix="postJobScreen.vehicleNum"
                       suffix="profileScreen.unit"
                       // icon="ios-information-circle-outline"
-                      underline={_showDumpField(formControllerValue['vehicle-type']) == true  ? true : false}
+                      underline={_showDumpField(formControllerValue['vehicle-type']) == true ? true : false}
                       inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
                       value={value} onChangeText={(text) => onChange(text)} />
                   )}

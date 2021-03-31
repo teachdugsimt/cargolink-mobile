@@ -31,7 +31,10 @@ export const DatePickerRemake = (props) => {
 
   const [show, setShow] = useState(showing);
 
-  const _openDatePicker = () => setShow(true)
+  const _openDatePicker = () => {
+    setShow(true)
+    // if(Platform.OS == "android") rerenderFunction()
+  }
 
   const { testID, value, onChange, label,
     rerender, rerenderFunction, mode, iconName, keyer
@@ -66,8 +69,10 @@ export const DatePickerRemake = (props) => {
             locale={i18n.locale == "th" ? 'th-TH' : 'en-EN'}
             onTouchCancel={() => setShow(Platform.OS === 'ios')}
             onChange={(event, selectedDate) => {
+              // console.log("Event date picker : ",event)
+              // console.log("Select day date picker : ",selectedDate)
+              setShow(Platform.OS === 'ios');
               if (selectedDate) {
-                setShow(Platform.OS === 'ios');
                 onChange(selectedDate)
                 rerenderFunction()
               }

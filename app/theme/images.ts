@@ -50,7 +50,7 @@ export const images = {
   defaultImage: require("../images/default_image.png"),
   bell: require("../images/bell.png"),
   noImageAvailable: require("../images/no-image-available.jpg"),
-  greyMock: require("../images/just_grey_light_grey.jpg"),
+  greyMock: require("../images/grey-mock.png"),
   addProfilePic: require("../images/profileaddpic.png"),
   // clearLogo: require('../Images/top_logo.png'),
   workYellowIcon: require('../images/work-yellow-icon.png'),

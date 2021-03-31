@@ -32,6 +32,7 @@ export const TimePickerRemake = (props) => {
 
   const _openDatePicker = () => {
     setShow(true)
+    // if(Platform.OS == "android") rerenderFunction()
   }
 
   const { testID, value, onChange, label,
@@ -57,8 +58,10 @@ export const TimePickerRemake = (props) => {
           locale={i18n.locale == "th" ? 'th-TH' : 'en-EN'}
           onTouchCancel={() => setShow(Platform.OS === 'ios')}
           onChange={(event, selectedDate) => {
+            // console.log("Event time picker : ",event)
+            // console.log("Select day time picker : ",selectedDate)
+            setShow(Platform.OS === 'ios');
             if (selectedDate) {
-              setShow(Platform.OS === 'ios');
               onChange(selectedDate)
               rerenderFunction()  // for render text show time
             }

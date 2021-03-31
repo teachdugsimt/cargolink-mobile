@@ -35,7 +35,7 @@ const IMAGE_LIST: ImageStyle = {
   resizeMode: "cover",
   aspectRatio: 2 / 2,
   borderRadius: 30,
-  borderColor: color.primary, borderWidth: 2,
+  borderColor: color.primary, borderWidth: 1,
 }
 export const SelectProductTypeScreen = () => {
   const navigation = useNavigation()
@@ -44,15 +44,16 @@ export const SelectProductTypeScreen = () => {
   const route = useRoute()
   const { selectedItems, onSubmitProductType }: any = route?.params || {}
 
-  const _renderSectionModal = (item: any, index: any, section: any) => {
+  const _renderSectionModal = (item: any, index: any) => {
+
     return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name + index} style={ROOT_FLAT_LIST} onPress={() => {
       navigation.goBack()
       onSubmitProductType(item.id)
     }}>
       <View style={BORDER_BOTTOM}>
         <View style={VIEW_LIST_IMAGE}>
-          {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
-            <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} />}
+          {Platform.OS == "ios" ? <Image source={images['greyMock']} style={IMAGE_LIST} height={60} width={60} resizeMode="stretch" /> :
+            <Image source={images['greyMock']} style={IMAGE_LIST} height={60} width={60} />}
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
           <Text style={{ width: '50%', paddingLeft: 20 }}>{item.name}</Text>
@@ -85,7 +86,7 @@ export const SelectProductTypeScreen = () => {
             items={list_product_type_all}
             keyer={"list-item-type-01"}
             selectedItems={selectedItems}
-            selectText={translate("postJobScreen.validateProductType")}
+            // selectText={translate("postJobScreen.validateProductType")}
             onSelectedItemsChange={(val: any) => {
               onSubmitProductType(val[0])
               navigation.goBack()
@@ -99,7 +100,7 @@ export const SelectProductTypeScreen = () => {
           {!!list_product_type_all && list_product_type_all.length > 0 && <SectionList
             sections={list_product_type}
             keyExtractor={(item, index) => 'section-list-' + item.name + item.id + index}
-            renderItem={({ item, index }) => _renderSectionModal(item, index, 2)}
+            renderItem={({ item, index }) => _renderSectionModal(item, index)}
             renderSectionHeader={({ section: { title } }) => (
               <Text tx={title} style={[MARGIN_TOP_EXTRA]} />
             )}

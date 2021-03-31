@@ -17,6 +17,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import styles, { colorPack } from './styles';
 import nodeTypes from './helpers/nodeTypes';
+import { color } from 'react-native-reanimated';
 
 // set UIManager LayoutAnimationEnabledExperimental
 if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -659,6 +660,7 @@ export default class MultiSelect extends Component {
           <View>
             <View
               style={[
+                { borderWidth: 1, borderColor: "#E5E5E5", borderRadius: 5 },
                 styles.dropdownView,
                 styleDropdownMenu && styleDropdownMenu
               ]}
@@ -678,6 +680,9 @@ export default class MultiSelect extends Component {
                       alignItems: 'center'
                     }}
                   >
+                    <View style={{ paddingHorizontal: 5 }}>
+                      <Icon name="magnify" size={20} color={"#FBBC12"} />
+                    </View>
                     <Text
                       style={
                         !selectedItems || selectedItems.length === 0
@@ -710,10 +715,10 @@ export default class MultiSelect extends Component {
                     >
                       {this._getSelectLabel()}
                     </Text>
-                    <Icon
+                    {/* <Icon
                       name={hideSubmitButton ? 'menu-right' : 'menu-down'}
                       style={styles.indicator}
-                    />
+                    /> */}
                   </View>
                 </TouchableWithoutFeedback>
               </View>

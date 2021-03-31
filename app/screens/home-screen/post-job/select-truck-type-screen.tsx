@@ -30,7 +30,7 @@ const IMAGE_LIST: ImageStyle = {
   resizeMode: "cover",
   aspectRatio: 2 / 2,
   borderRadius: 30,
-  borderColor: color.primary, borderWidth: 2,
+  borderColor: color.primary, borderWidth: 1,
 }
 
 interface ModalTruckProps {
@@ -142,7 +142,7 @@ export const SelectTruckTypeScreen = (props: ModalTruckProps) => {
         {!!defaultVehicleType && defaultVehicleType.length > 0 && <MultiSelector
           items={vehicleType && vehicleType.length > 0 ? vehicleType : defaultVehicleType}
           selectedItems={selectedItems}
-          selectText={translate("postJobScreen.pleaseSelectVehicleType")}
+          // selectText={translate("postJobScreen.pleaseSelectVehicleType")}
           onSelectedItemsChange={(val: any) => {
             onSubmitVehicle(val[0])
             _closeTruckType()

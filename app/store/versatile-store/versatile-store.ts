@@ -25,6 +25,7 @@ export const VersatileStore = types.model({
   fblink: 'https://www.facebook.com/cargolinkthailand/',
   lineOfficial: '',
   phoneNumber: '021065312',
+  partnerPhoneNumber: '021065312',
 
   data: types.optional(types.model(InitialType), {}),
   list: types.optional(types.array(TruckTypeGroup), []),
