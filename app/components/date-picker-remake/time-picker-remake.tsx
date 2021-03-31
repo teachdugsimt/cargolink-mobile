@@ -83,12 +83,12 @@ const Button = (props) => {
   const { keyer, label, iconName, openDatePicker, value } = props
 
   return <TouchableOpacity key={"button-time-picker-" + keyer} style={DATE_BUTTON} onPress={openDatePicker}>
-    <View style={[ROW_TEXT, SPACE_BETWEEN]} key={'v-time-' + keyer}>
+    <View style={[ROW_TEXT, SPACE_BETWEEN, { paddingTop: 3 }]} key={'v-time-' + keyer}>
       <View key={"v-time2-" + keyer}>
         <Text style={PADDING_PURE}>{label && typeof label != undefined ?
           date.format(label, "HH:mm") : value ? date.format(value, "HH:mm") : ''}</Text>
       </View>
-      <Ionicons name={iconName} size={20} style={PADDING_PURE} />
+      <Ionicons name={iconName} size={20} style={[PADDING_PURE]} />
     </View>
   </TouchableOpacity>
 }

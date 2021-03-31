@@ -144,17 +144,17 @@
     "postJobNow": "โพสต์งานเลย"
   },
   "addAddressScreen": {
-    "isSaveAddress":  "ที่อยู่ที่บันทึกไว้"
+    "isSaveAddress": "ที่อยู่ที่บันทึกไว้"
   },
   "postJobScreen": {
     "selectMap": "กรุณาเลือกสถานที่",
-    "mockPhoneAndroid": "xx-xxx-xxxx    ",
+    "mockPhoneAndroid": "XX-XXX-XXXX",
     "checkPickupDate": "กรุณาเช็ควันขึ้น-ลงสินค้า",
     "typeYouWant": "ประเภทของรถที่คุณต้องการ",
     "productInformation": "ข้อมูลสินค้า",
     "productWeight": "น้ำหนักสินค้า",
     "addDelivery": "เพิ่มจุดลง",
-    "mockPhoneNumber": "xx-xxx-xxxx",
+    "mockPhoneNumber": "XX-XXX-XXXX",
     "contactName": "ชื่อผู้ติดต่อ",
     "inputName": "ระบุชื่อ",
     "fromMap": "ระบุตำแหน่งจากแผนที่",
