@@ -19,7 +19,7 @@ const HEIGHT_50: ViewStyle = { height: 50 }
 const MARGIN_TOP_EXTRA: ViewStyle = { marginTop: 20 }
 const ROOT_FLAT_LIST: ViewStyle = {
   width: '100%',
-  height: 70,
+  height: 60,
   flexDirection: 'row',
   justifyContent: 'center', alignItems: 'center'
 }
@@ -55,8 +55,8 @@ export const SelectProductTypeScreen = () => {
           {Platform.OS == "ios" ? <Image source={images['greyMock']} style={IMAGE_LIST} height={40} width={40} resizeMode="stretch" /> :
             <Image source={images['greyMock']} style={IMAGE_LIST} height={40} width={40} />}
         </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-          <Text style={{ width: '50%', paddingLeft: 20 }}>{item.name}</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1 }}>
+          <Text style={{ flex: 1, paddingLeft: 20 }}>{item.name}</Text>
           <Ionicons name="chevron-forward" size={24} style={{ marginRight: 5 }} color={color.line} />
         </View>
       </View>
