@@ -50,11 +50,7 @@ export const TimePickerRemake = (props) => {
 
       {!!value && show &&
         <DateTimePicker
-          onTouchStart={(e) => {
-            console.log("On Touch Start :: ", e)
-          }}
           style={{ width: 73, alignSelf: 'flex-end' }}
-          focusable={true}
           testID={testID}
           value={value}
           mode={mode}

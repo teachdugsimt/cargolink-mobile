@@ -17,7 +17,7 @@ export default StyleSheet.create({
     marginLeft: -24,
     marginTop: -48,
     position: "absolute",
-    top: "50%",
+    top: "38%",
   },
   addressText: {
     color: "black",

@@ -79,6 +79,8 @@ export const LocationPickerScreen = observer(function LocationPickerScreen(props
     })
   }, [])
 
+  const [checkPressList, setcheckPressList] = useState<boolean>(false)
+
   useEffect(() => {
 
     console.log("___________ Commponent Did mount Search map ___________")
@@ -86,6 +88,7 @@ export const LocationPickerScreen = observer(function LocationPickerScreen(props
     Geolocation.getCurrentPosition(info => _currentRegion(info))
     getAddress()
     return () => {
+      setcheckPressList(false)
       Geolocation.stopObserving()
       setState(initialState)
       setregion(initialData)
@@ -102,11 +105,18 @@ export const LocationPickerScreen = observer(function LocationPickerScreen(props
     initialRegion["longitudeDelta"] = 0.0005;      // zoom out
   };
   const onRegionChange = (regionParam) => {
-    console.log("__________ On Region Change __________")
-    mapView.animateToRegion(regionParam, 2000);
-    setregion(regionParam)
-    setState(prev => ({ ...prev, forceRefresh: Math.floor(Math.random() * 100) }))
-    getAddress();
+    console.log("Region in  state :: ", region)
+    console.log("__________ On Region Change __________", regionParam)
+    if (region.latitude != regionParam.latitude && region.longitude != regionParam.longitude) {
+      if (checkPressList == true) {
+        setcheckPressList(false)
+      } else {
+        mapView.animateToRegion(regionParam, 2000);
+        setregion(regionParam)
+        setState(prev => ({ ...prev, forceRefresh: Math.floor(Math.random() * 100) }))
+        getAddress()
+      }
+    }
   };
 
   const _currentRegion = (info) => {
@@ -120,7 +130,6 @@ export const LocationPickerScreen = observer(function LocationPickerScreen(props
   // console.log("MapView :", mapView)
   // console.log("Autocomplete Google :: ", searchText)
   console.log("Region in render Function :: ", region)
-  console.log("Banner :: ", path)
   return (
     // <SafeAreaView style={[FULL, { backgroundColor: color.textWhite }]}>
     <Screen unsafe keyboardOffset="little">
@@ -178,10 +187,12 @@ export const LocationPickerScreen = observer(function LocationPickerScreen(props
                   enablePoweredByContainer={false}
                   listUnderlayColor="lightgrey"
                   onPress={(data, details) => {
+                    setcheckPressList(true)
+                    console.log("ADDRESS GOOGLE AUTO COMPLETE !! => ", data, details);
                     setState(prevState => ({
                       ...prevState,
                       listViewDisplayed: false,
-                      // address: data.description,
+                      address: data.description,
                       currentLat: details.geometry.location.lat,
                       currentLng: details.geometry.location.lng,
                     }))
@@ -296,7 +307,10 @@ export const LocationPickerScreen = observer(function LocationPickerScreen(props
                   multiline={true}
                   clearButtonMode="while-editing"
                   style={styles.inputAddressFinal}
-                  onChangeText={(text) => setState(prev => ({ ...prev, address: text }))}
+                  onChangeText={(text) => {
+                    // setcheckPressList(true)
+                    setState(prev => ({ ...prev, address: text }))
+                  }}
                   value={address}
                 />
               </View>
