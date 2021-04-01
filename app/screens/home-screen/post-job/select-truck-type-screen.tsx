@@ -128,7 +128,7 @@ export const SelectTruckTypeScreen = (props: ModalTruckProps) => {
             <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={40} width={40} />}
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1 }}>
-          <Text style={{ paddingLeft: 40, maxWidth: '70%' }}>{item.name}</Text>
+          <Text style={{ paddingLeft: 20, maxWidth: '70%' }}>{item.name}</Text>
           <Icon name="chevron-forward" size={28} style={{ marginRight: 5 }} color={color.line} />
         </View>
       </View>
