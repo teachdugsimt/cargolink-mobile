@@ -459,5 +459,12 @@
   "selectTruckScreen": {
     "selectBooking": "เลือกรถของคุณสำหรับการจองนี้",
     "addNewTruck": "เพิ่มรถใหม่"
+  },
+  "advanceSearchScreen": {
+    "search": "ค้นหา",
+    "chooseTruckType": "ประเภทรถที่ต้องการ",
+    "chooseWeightMoreThanOne": "น้ำหนักสินค้าเลือกได้มากกว่า 1",
+    "zoneForDesiredJob": "โซนวิ่งงานที่ต้องการ",
+    "weight": "น้ำหนัก"
   }
 }

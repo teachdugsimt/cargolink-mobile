@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite';
 import { Dimensions, FlatList, ImageStyle, TextStyle, View, ViewStyle, SafeAreaView, ScrollView, TouchableOpacity, RefreshControl, ImageProps } from 'react-native';
-import { AdvanceSearchTab, Text, SearchItemTruck, EmptyListMessage } from '../../components';
+import { AdvanceSearchTab, Text, SearchItemTruck, EmptyListMessage, ButtonAdvanceSearch } from '../../components';
 import { color, spacing, images as imageComponent } from '../../theme';
 import { useFocusEffect, useNavigation, useIsFocused } from '@react-navigation/native';
 import { translate } from '../../i18n';
@@ -45,6 +45,7 @@ const SEARCH_BAR_ROW: ViewStyle = {
 }
 const RESULT_CONTAINER: ViewStyle = {
   flex: 1,
+  paddingTop: spacing[2],
 }
 const BUTTON_CONTAINER: ViewStyle = {
   ...ROW_ALIGN_CENTER,
@@ -105,6 +106,15 @@ const CIRCLE_VISIBLE_BUTTON: ViewStyle = {
 // const CIRCLE_VISIBLE_BUTTON_TEXT: TextStyle = {
 //   color: color.textWhite,
 // }
+
+const ADVANCE_SEARCH: ViewStyle = {
+  position: 'absolute',
+  left: 0,
+  right: 0,
+  bottom: 0,
+  alignItems: 'center',
+  paddingBottom: spacing[2]
+}
 
 const Item = (data) => {
   const {
@@ -348,31 +358,31 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
     }
   }
 
-  const onPress = (id: number) => {
-    let idx = []
-    const newMenu = JSON.parse(JSON.stringify(AdvanceSearchStore.menu))
-    const indexMenu = newMenu.findIndex(({ type }) => type === 'truckTypes')
-    const indexSubmenu = newMenu[indexMenu]?.subMenu.findIndex(({ id: idx }) => idx === id)
-    const mainSelect = newMenu[indexMenu].subMenu[indexSubmenu]
-    const activeMenu = newMenu[indexMenu].subMenu[indexSubmenu].subMenu.map(data => {
-      idx.push(data.value)
-      return { ...data, isChecked: !selectSearch[id] }
-    })
-    newMenu[indexMenu].subMenu.splice(indexSubmenu, 1, { ...mainSelect, isChecked: !mainSelect.isChecked, subMenu: activeMenu })
+  // const onPress = (id: number) => {
+  //   let idx = []
+  //   const newMenu = JSON.parse(JSON.stringify(AdvanceSearchStore.menu))
+  //   const indexMenu = newMenu.findIndex(({ type }) => type === 'truckTypes')
+  //   const indexSubmenu = newMenu[indexMenu]?.subMenu.findIndex(({ id: idx }) => idx === id)
+  //   const mainSelect = newMenu[indexMenu].subMenu[indexSubmenu]
+  //   const activeMenu = newMenu[indexMenu].subMenu[indexSubmenu].subMenu.map(data => {
+  //     idx.push(data.value)
+  //     return { ...data, isChecked: !selectSearch[id] }
+  //   })
+  //   newMenu[indexMenu].subMenu.splice(indexSubmenu, 1, { ...mainSelect, isChecked: !mainSelect.isChecked, subMenu: activeMenu })
 
-    AdvanceSearchStore.mapMenu(newMenu)
+  //   AdvanceSearchStore.mapMenu(newMenu)
 
-    let truckTypes = JSON.parse(JSON.stringify(AdvanceSearchStore.filter))?.truckTypes || []
+  //   let truckTypes = JSON.parse(JSON.stringify(AdvanceSearchStore.filter))?.truckTypes || []
 
-    if (newMenu[indexMenu].subMenu[indexSubmenu].isChecked) {
-      truckTypes = [...truckTypes, ...mainSelect.subMenu.map(menu => menu.value)]
-    } else {
-      truckTypes = truckTypes.filter(type => !idx.includes(type))
-    }
-    AdvanceSearchStore.setFilter({ ...AdvanceSearchStore.filter, truckTypes: truckTypes })
+  //   if (newMenu[indexMenu].subMenu[indexSubmenu].isChecked) {
+  //     truckTypes = [...truckTypes, ...mainSelect.subMenu.map(menu => menu.value)]
+  //   } else {
+  //     truckTypes = truckTypes.filter(type => !idx.includes(type))
+  //   }
+  //   AdvanceSearchStore.setFilter({ ...AdvanceSearchStore.filter, truckTypes: truckTypes })
 
-    setSelectSearch({ ...selectSearch, [id]: !mainSelect.isChecked })
-  }
+  //   setSelectSearch({ ...selectSearch, [id]: !mainSelect.isChecked })
+  // }
 
   const onAdvanceSeach = () => {
     navigation.navigate('advanceSearchJob')
@@ -458,11 +468,15 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
     PAGE = 0
   }
 
+  const onPressAdvanceSearch = () => {
+    navigation.navigate('newAdvanceSearch')
+  }
+
   const isSelected = zones.find(zone => zone.isSelected === true)
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={SEARCH_BAR}>
+      {/* <View style={SEARCH_BAR}>
         <View style={SEARCH_BAR_ROW}>
           <MaterialIcons name={'pin-drop'} color={color.primary} size={25} style={PIN_ICON} />
           <Text
@@ -542,8 +556,8 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
             }
           })}
         </ScrollView>
-      </View>
-      <View style={BUTTON_CONTAINER}>
+      </View> */}
+      {/* <View style={BUTTON_CONTAINER}>
         <AdvanceSearchTab
           mainText={translate('searchJobScreen.fullSearch')}
           // subButtons={subButtons?.length ? subButtons : []}
@@ -559,7 +573,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
           onAdvanceSeach={onAdvanceSeach}
           count={filterLength}
         />
-      </View>
+      </View> */}
       <View style={RESULT_CONTAINER}>
         {
           <FlatList
@@ -579,6 +593,13 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
             }
           />
         }
+      </View>
+      <View style={ADVANCE_SEARCH}>
+        <ButtonAdvanceSearch
+          label={translate('advanceSearchScreen.search')}
+          count={AdvanceSearchStore.filterCount}
+          onPress={onPressAdvanceSearch}
+        />
       </View>
     </View>
   )
