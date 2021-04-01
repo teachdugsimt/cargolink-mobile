@@ -55,6 +55,7 @@ export const LocationPickerScreen = observer(function LocationPickerScreen(props
   }
   const navigation = useNavigation()
   const [region, setregion] = useState(initialData)
+  const [showSearchBar, setShowSearchBar] = useState(false)
   const [tmpCurrentRegion, settmpCurrentRegion] = useState(null)
   const [{ address, listViewDisplayed,
     showAddress, search, currentLat, currentLng, forceRefresh }, setState] = useState(initialState)
@@ -132,30 +133,35 @@ export const LocationPickerScreen = observer(function LocationPickerScreen(props
   console.log("Region in render Function :: ", region)
   return (
     // <SafeAreaView style={[FULL, { backgroundColor: color.textWhite }]}>
-    <Screen unsafe keyboardOffset="little">
+    <Screen unsafe keyboardOffset="little" statusBar="dark-content">
       <View style={styles.map}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
+        <TouchableWithoutFeedback onPress={() => {
+          setShowSearchBar(false)
+          Keyboard.dismiss
+        }} accessible={false} >
           <View style={FULL}>
-            <MapView
-              ref={(ref) => mapView = ref}
-              onMapReady={() => goToInitialLocation(region)}
-              style={[styles.map]}
-              provider={PROVIDER_GOOGLE}
-              initialRegion={region}
-              region={region}
-              onRegionChangeComplete={onRegionChange}
-            />
+            <View style={{ flex: 1 }}>
+              <MapView
+                ref={(ref) => mapView = ref}
+                onMapReady={() => goToInitialLocation(region)}
+                style={[styles.map]}
+                provider={PROVIDER_GOOGLE}
+                initialRegion={region}
+                region={region}
+                onRegionChangeComplete={onRegionChange}
+              />
 
+              <View style={styles.markerFixed}>
+                <Image
+                  style={styles.marker}
+                  source={images.pinMap}
+                  resizeMode="stretch" />
+              </View>
+            </View>
 
-            <View style={styles.panel}>
-
+            {showSearchBar && <View style={styles.panel}>
               <View style={[styles.panelHeader,
               listViewDisplayed ? styles.panelFill : styles.panel]}>
-
-
-
-
-
 
                 {/* <View style={styles.rowCenter}>
                   <TouchableOpacity onPress={() => navigation.goBack()} style={styles.buttonBack}>
@@ -167,9 +173,6 @@ export const LocationPickerScreen = observer(function LocationPickerScreen(props
                     {path && path.includes("shipping") && <Text text={" " + path.split("-")[path.split("-").length - 1]} preset="topic" />}
                   </View>
                 </View> */}
-
-
-
 
                 <GooglePlacesAutocomplete
                   // renderRightButton={() => <View style={{ backgroundColor: 'white', height: 44 }}><Icon name="home" size={20} /></View>}
@@ -189,6 +192,7 @@ export const LocationPickerScreen = observer(function LocationPickerScreen(props
                   onPress={(data, details) => {
                     setcheckPressList(true)
                     console.log("ADDRESS GOOGLE AUTO COMPLETE !! => ", data, details);
+                    setShowSearchBar(false)
                     setState(prevState => ({
                       ...prevState,
                       listViewDisplayed: false,
@@ -206,6 +210,7 @@ export const LocationPickerScreen = observer(function LocationPickerScreen(props
                     goToInitialLocation(region);
                   }}
                   textInputProps={{
+                    autoFocus: true,
                     onChangeText: (text) => {
                       console.log(text);
                       setState(prev => ({ ...prev, listViewDisplayed: true }));
@@ -248,83 +253,76 @@ export const LocationPickerScreen = observer(function LocationPickerScreen(props
                   debounce={200} />
               </View>
             </View>
+            }
 
-
-
-
-
-
-
-
-
-
-            <View style={styles.markerFixed}>
+            {/* <View style={styles.markerFixed}>
               <Image
                 style={styles.marker}
                 source={images.pinMap}
                 resizeMode="stretch" />
-            </View>
+            </View> */}
 
-
-
-            <View style={[ROOT_BOTTOM, { minHeight: Platform.OS == "ios" ? height / 4.25 : height / 3.8 }]}>
-
-
-              <View style={[MAIN_VIEW_BOTTOM]}>
-                <View style={ROW_1}>
-                  <Text style={styles.addressText} tx={banner} />
-                  {path && path.includes("shipping") && <Text style={styles.addressText} text={path.split("-")[path.split("-").length - 1]} preset="topic" />}
-                  <Text style={styles.star} text={" *"} />
-                </View>
-                <View style={BUTTON_VIEW}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      onSubmitMap(address, region, path)
-                      navigation.goBack()
-                    }}
-                    style={styles.buttonSubmit}>
-                    <Text style={PADDING_VERTICAL} tx={"common.confirm"} />
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <View style={{ paddingLeft: 17.5, paddingRight: 17.5, paddingTop: 10 }}>
-                <View style={[ROW, SPACE_BETWEEN]}>
-                  <View style={ROW}>
-                    <MaterialIcons name={'pin-drop'} color={color.primary} size={22} />
-                    <Text tx="postJobScreen.currentPin" />
+            {!showSearchBar &&
+              <View style={[ROOT_BOTTOM, { minHeight: 280 }]}>
+                <View style={[MAIN_VIEW_BOTTOM]}>
+                  <View style={ROW_1}>
+                    <Text style={styles.addressText} tx={banner} />
+                    {path && path.includes("shipping") && <Text style={styles.addressText} text={path.split("-")[path.split("-").length - 1]} preset="topic" />}
+                    <Text style={styles.star} text={" *"} />
                   </View>
+                  <View style={BUTTON_VIEW}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        onSubmitMap(address, region, path)
+                        navigation.goBack()
+                      }}
+                      style={styles.buttonSubmit}>
+                      <Text style={PADDING_VERTICAL} tx={"common.confirm"} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
 
-                  {/* <TouchableOpacity onPress={() => navigation.navigate("addAddress")}> */}
-                  <TouchableOpacity onPress={() => { }}>
-                    <Feather name={'edit'} color={color.disable} size={22} />
+                {/* Search Location */}
+
+                <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
+                  <TouchableOpacity style={{
+                    height: 40, backgroundColor: color.grey, borderRadius: 5,
+                    borderWidth: 1, borderColor: color.mainGrey,
+                    justifyContent: 'center', paddingLeft: 5
+                  }}
+                    onPress={() => { setShowSearchBar(true) }}
+                  >
+                    <Text style={{ fontFamily: 'Kanit-Regular', color: color.palette.lighterGrey }} tx={"common.searchLocation"} />
                   </TouchableOpacity>
                 </View>
+
+                <View style={{ paddingLeft: 17.5, paddingRight: 17.5, paddingTop: 10 }}>
+                  <View style={[ROW, SPACE_BETWEEN]}>
+                    <View style={ROW}>
+                      <MaterialIcons name={'pin-drop'} color={color.primary} size={22} />
+                      <Text tx="postJobScreen.currentPin" />
+                    </View>
+
+                    {/* <TouchableOpacity onPress={() => navigation.navigate("addAddress")}> */}
+                    <TouchableOpacity onPress={() => { }}>
+                      <Feather name={'edit'} color={color.disable} size={22} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                <View style={VIEW_TEXT_ADDRESS}>
+                  <TextInput
+                    multiline={true}
+                    clearButtonMode="while-editing"
+                    style={styles.inputAddressFinal}
+                    onChangeText={(text) => setState(prev => ({ ...prev, address: text }))}
+                    value={address}
+                  />
+                </View>
               </View>
-
-              <View style={VIEW_TEXT_ADDRESS}>
-                <TextInput
-                  multiline={true}
-                  clearButtonMode="while-editing"
-                  style={styles.inputAddressFinal}
-                  onChangeText={(text) => {
-                    // setcheckPressList(true)
-                    setState(prev => ({ ...prev, address: text }))
-                  }}
-                  value={address}
-                />
-              </View>
-            </View>
-
-
-
-
-
-
-
-
-
+            }
           </View>
+
         </TouchableWithoutFeedback>
       </View>
     </Screen>

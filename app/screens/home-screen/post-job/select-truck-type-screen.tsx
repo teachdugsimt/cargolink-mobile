@@ -13,8 +13,8 @@ const PADDING_TOP: ViewStyle = { marginTop: 10 }
 const FULL: ViewStyle = { flex: 1 }
 const HEIGHT_50: ViewStyle = { height: 50 }
 const ROOT_FLAT_LIST: ViewStyle = {
-  width: '98%',
-  height: 100,
+  width: '100%',
+  height: 60,
   flexDirection: 'row',
   justifyContent: 'center', alignItems: 'center'
 }
@@ -26,7 +26,7 @@ const BORDER_BOTTOM: ViewStyle = {
 }
 const VIEW_LIST_IMAGE: ViewStyle = { alignSelf: 'flex-start', justifyContent: 'center', height: '100%' }
 const IMAGE_LIST: ImageStyle = {
-  backgroundColor: color.line, padding: 10,
+  backgroundColor: color.mainGrey, padding: 10,
   resizeMode: "cover",
   aspectRatio: 2 / 2,
   borderRadius: 30,
@@ -103,14 +103,15 @@ export const SelectTruckTypeScreen = (props: ModalTruckProps) => {
 
   const _renderGroupTruck = (list) => {
     return <FlatGrid
-      itemDimension={100}
+      itemDimension={72}
       data={list}
+      spacing={8}
       // fixed={true}
       renderItem={({ item }) => (<TouchableOpacity
-        style={{ flex: 1, borderColor: color.primary, borderRadius: 15, borderWidth: 1 }}
+        style={{ flex: 1, borderColor: color.primary, borderRadius: 16, borderWidth: 1 }}
         onPress={() => _filterGroupTruck(item)}>
         <View style={{ flex: 1, width: '100%', height: 30, justifyContent: 'center' }}>
-          <Text style={{ alignSelf: 'center' }}>{item.name}</Text>
+          <Text style={{ alignSelf: 'center' }}>{item.name == 'รถเทรลเลอร์' ? 'เทรลเลอร์' : item.name}</Text>
         </View>
       </TouchableOpacity>)}
     />
@@ -123,8 +124,8 @@ export const SelectTruckTypeScreen = (props: ModalTruckProps) => {
     }}>
       <View style={BORDER_BOTTOM}>
         <View style={VIEW_LIST_IMAGE}>
-          {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
-            <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} />}
+          {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={40} width={40} resizeMode={"contain"} /> :
+            <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={40} width={40} />}
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1 }}>
           <Text style={{ paddingLeft: 40, maxWidth: '70%' }}>{item.name}</Text>
@@ -136,7 +137,7 @@ export const SelectTruckTypeScreen = (props: ModalTruckProps) => {
 
 
   return (<View style={[FULL, { backgroundColor: color.textWhite }]}>
-    <View style={[FULL, { marginHorizontal: 20 }]}>
+    <View style={[{ height: 160 }, { paddingHorizontal: 10 }]}>
 
       <View style={PADDING_TOP}>
         {!!defaultVehicleType && defaultVehicleType.length > 0 && <MultiSelector
@@ -154,23 +155,23 @@ export const SelectTruckTypeScreen = (props: ModalTruckProps) => {
         {_renderGroupTruck(listGroup)}
       </View>}
 
-      <View style={FULL}>
+    </View>
 
-        <SectionList
-          style={{ zIndex: 5 }}
-          sections={sectionTruckType}
-          stickySectionHeadersEnabled={false}
-          keyExtractor={(item, index) => 'section-list-' + (item.name || item.title) + index}
-          renderItem={({ item, index }) => _renderSectionModal(item, index, 1)}
-          renderSectionHeader={({ section: { title } }) => (
-            <Text style={PADDING_TOP} >{title}</Text>
-          )}
-          ListFooterComponent={
-            <View style={HEIGHT_50}></View>
-          }
-        />
+    <View style={[FULL]}>
 
-      </View>
+      <SectionList
+        style={{ zIndex: 5, paddingLeft: 10 }}
+        sections={sectionTruckType}
+        stickySectionHeadersEnabled={false}
+        keyExtractor={(item, index) => 'section-list-' + (item.name || item.title) + index}
+        renderItem={({ item, index }) => _renderSectionModal(item, index, 1)}
+        renderSectionHeader={({ section: { title } }) => (
+          <Text style={PADDING_TOP} >{title}</Text>
+        )}
+        ListFooterComponent={
+          <View style={HEIGHT_50}></View>
+        }
+      />
 
     </View>
 

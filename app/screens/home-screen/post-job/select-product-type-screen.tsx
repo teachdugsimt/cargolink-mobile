@@ -18,8 +18,8 @@ const FULL: ViewStyle = { flex: 1 }
 const HEIGHT_50: ViewStyle = { height: 50 }
 const MARGIN_TOP_EXTRA: ViewStyle = { marginTop: 20 }
 const ROOT_FLAT_LIST: ViewStyle = {
-  width: '98%',
-  height: 100,
+  width: '100%',
+  height: 70,
   flexDirection: 'row',
   justifyContent: 'center', alignItems: 'center'
 }
@@ -52,8 +52,8 @@ export const SelectProductTypeScreen = () => {
     }}>
       <View style={BORDER_BOTTOM}>
         <View style={VIEW_LIST_IMAGE}>
-          {Platform.OS == "ios" ? <Image source={images['greyMock']} style={IMAGE_LIST} height={60} width={60} resizeMode="stretch" /> :
-            <Image source={images['greyMock']} style={IMAGE_LIST} height={60} width={60} />}
+          {Platform.OS == "ios" ? <Image source={images['greyMock']} style={IMAGE_LIST} height={40} width={40} resizeMode="stretch" /> :
+            <Image source={images['greyMock']} style={IMAGE_LIST} height={40} width={40} />}
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
           <Text style={{ width: '50%', paddingLeft: 20 }}>{item.name}</Text>
@@ -78,9 +78,9 @@ export const SelectProductTypeScreen = () => {
 
   return (
     <View style={{ flex: 1, height: '100%', justifyContent: 'flex-start', backgroundColor: color.textWhite }}>
-      <View style={{ flex: 1, marginHorizontal: 20 }}>
+      <View style={{ flex: 1, }}>
 
-        <View style={[PADDING_TOP]}>
+        <View style={[PADDING_TOP, { paddingHorizontal: 10 }]}>
 
           {!!list_product_type_all && list_product_type_all.length > 0 && <MultiSelector
             items={list_product_type_all}
@@ -98,6 +98,7 @@ export const SelectProductTypeScreen = () => {
 
         <View>
           {!!list_product_type_all && list_product_type_all.length > 0 && <SectionList
+            style={{ paddingLeft: 10 }}
             sections={list_product_type}
             keyExtractor={(item, index) => 'section-list-' + item.name + item.id + index}
             renderItem={({ item, index }) => _renderSectionModal(item, index)}

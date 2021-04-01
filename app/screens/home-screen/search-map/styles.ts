@@ -10,14 +10,15 @@ export default StyleSheet.create({
     flex: 1
   },
   marker: {
-    width: 30, height: 45
+    width: 30, height: 49,
+    // backgroundColor: 'green'
   },
   markerFixed: {
     left: "50%",
-    marginLeft: -24,
-    marginTop: -48,
+    marginLeft: -15,
+    marginTop: -49,
     position: "absolute",
-    top: "38%",
+    top: "50%",
   },
   addressText: {
     color: "black",
@@ -77,15 +78,15 @@ export default StyleSheet.create({
     width: "90%",
     minHeight: 80,
     alignSelf: "center",
-    borderColor: "lightgrey",
-    borderWidth: 1.5,
+    borderColor: color.mainGrey,
+    borderWidth: 1,
     fontSize: 15,
     borderRadius: 5,
     flex: 0.5,
     alignContent: "flex-start",
     textAlignVertical: "top",
     fontFamily: "Kanit-Medium",
-    backgroundColor: color.disable
+    backgroundColor: color.grey
   }
 });
 

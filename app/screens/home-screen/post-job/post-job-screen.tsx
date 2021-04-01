@@ -98,7 +98,7 @@ const PADDING_TOP: ViewStyle = { marginTop: 10 }
 
 const ROOT_FLAT_LIST: ViewStyle = {
   width: '100%',
-  height: 100,
+  height: 60,
   flexDirection: 'row',
   justifyContent: 'center', alignItems: 'center'
 }
@@ -113,7 +113,7 @@ const BORDER_BOTTOM: ViewStyle = {
 }
 const IMAGE_LIST: ImageStyle = {
   // width: 50, height: 50,
-  backgroundColor: color.line, padding: 10,
+  backgroundColor: color.mainGrey, padding: 10,
   resizeMode: "cover",
   aspectRatio: 2 / 2,
   borderRadius: 30,
@@ -164,7 +164,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
       onChange(item.id)
     }}>
       <View style={BORDER_BOTTOM}>
-        <View style={VIEW_LIST_IMAGE}>
+        <View style={[VIEW_LIST_IMAGE]}>
           {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
             <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} />}
         </View>
@@ -184,13 +184,16 @@ export const PostJobScreen = observer(function PostJobScreen() {
       else if (section == 2) navigation.navigate("selectProductType", { selectedItem: [item.id.toString()], onSubmitProductType: (val) => _onSubmitProductType(val) })
     }}>
       <View style={{ ...BORDER_BOTTOM }}>
-        <View style={VIEW_LIST_IMAGE}>
-          {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images.greyMock} style={IMAGE_LIST} height={60} width={60} resizeMode={section == 1 ? "contain" : "stretch"} /> :
-            <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images.greyMock} style={IMAGE_LIST} height={60} width={60} />}
+        <View style={[VIEW_LIST_IMAGE]}>
+          {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images.greyMock} style={IMAGE_LIST} height={40} width={40} resizeMode={section == 1 ? "contain" : "stretch"} /> :
+            <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images.greyMock} style={IMAGE_LIST} height={40} width={40} />}
         </View>
-        <View style={{ flexDirection: 'row', flex: 1, width: '100%', justifyContent: 'space-between' }}>
-          <View style={{ width: '80%', alignItems: 'center' }}>
-            <Text style={{ marginLeft: 20 }}>{item.name}</Text>
+        <View style={{
+          flexDirection: 'row', flex: 1, width: '100%',
+          justifyContent: 'space-between'
+        }}>
+          <View style={{ width: '80%', alignItems: 'flex-start' }}>
+            <Text style={{ fontSize: 15, marginLeft: 20 }}>{item.name}</Text>
           </View>
 
           <Ionicons name="chevron-forward" size={24} style={{}} />

@@ -12,7 +12,7 @@ export const MultiSelector = (props) => {
   const { onSelectedItemsChange, items, searchIcon, selectText, selectedItems,
     searchInputPlaceholderText, uniqueKey, ...rest } = props
 
-    __DEV__ && console.tron.log("multi select data :: ", multiSelect)
+  __DEV__ && console.tron.log("multi select data :: ", multiSelect)
 
   return (
     <MultiSelect
