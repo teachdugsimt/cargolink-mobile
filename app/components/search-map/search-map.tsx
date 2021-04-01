@@ -282,7 +282,7 @@ export const LocationPicker = (props: SearchMapProps) => {
                     <Text tx="postJobScreen.currentPin" />
                   </View>
 
-                  <TouchableOpacity onPress={() => {}}>
+                  <TouchableOpacity onPress={() => { }}>
                     <Feather name={'edit'} color={color.disable} size={22} />
                   </TouchableOpacity>
                 </View>

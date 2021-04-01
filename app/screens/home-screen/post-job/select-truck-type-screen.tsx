@@ -14,7 +14,7 @@ const FULL: ViewStyle = { flex: 1 }
 const HEIGHT_50: ViewStyle = { height: 50 }
 const ROOT_FLAT_LIST: ViewStyle = {
   width: '100%',
-  height: 70,
+  height: 60,
   flexDirection: 'row',
   justifyContent: 'center', alignItems: 'center'
 }
@@ -103,14 +103,15 @@ export const SelectTruckTypeScreen = (props: ModalTruckProps) => {
 
   const _renderGroupTruck = (list) => {
     return <FlatGrid
-      itemDimension={85}
+      itemDimension={72}
       data={list}
+      spacing={8}
       // fixed={true}
       renderItem={({ item }) => (<TouchableOpacity
-        style={{ flex: 1, borderColor: color.primary, borderRadius: 15, borderWidth: 1 }}
+        style={{ flex: 1, borderColor: color.primary, borderRadius: 16, borderWidth: 1 }}
         onPress={() => _filterGroupTruck(item)}>
         <View style={{ flex: 1, width: '100%', height: 30, justifyContent: 'center' }}>
-          <Text style={{ alignSelf: 'center' }}>{item.name}</Text>
+          <Text style={{ alignSelf: 'center' }}>{item.name == 'รถเทรลเลอร์' ? 'เทรลเลอร์' : item.name}</Text>
         </View>
       </TouchableOpacity>)}
     />
