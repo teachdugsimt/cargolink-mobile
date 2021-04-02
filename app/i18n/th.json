@@ -465,6 +465,7 @@
     "chooseTruckType": "ประเภทรถที่ต้องการ",
     "chooseWeightMoreThanOne": "น้ำหนักสินค้าเลือกได้มากกว่า 1",
     "zoneForDesiredJob": "โซนวิ่งงานที่ต้องการ",
-    "weight": "น้ำหนัก"
+    "weight": "น้ำหนัก",
+    "truckType": "ประเภทรถ"
   }
 }

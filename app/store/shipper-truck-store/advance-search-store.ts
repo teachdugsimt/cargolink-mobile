@@ -52,6 +52,12 @@ const FilterTypeId = types.model({
   weight: types.maybeNull(types.array(types.string)),
 })
 
+const FilterSelected = types.model({
+  workZones: types.maybeNull(types.array(types.model(SubMenu))),
+  truckTypes: types.maybeNull(types.array(types.model(SubMenu))),
+  weight: types.maybeNull(types.array(types.model(SubMenu))),
+})
+
 const loadVersatileStore = async (key) => {
   const root = await storage.load('root')
   return root?.versatileStore[key]
@@ -62,7 +68,7 @@ const mappingDefaultZone = (regions, provinces) => {
     const resultProvinces = provinces
       .filter(prov => prov.region === reg.value)
       .map((prov, i) => ({
-        id: i + 1,
+        id: prov.value,
         value: prov.value,
         parentValue: prov.region,
         name: prov.label,
@@ -93,6 +99,8 @@ const AdvanceSearchStore = types
     selected: types.maybeNull(types.string),
     filterTypeId: types.maybeNull(FilterTypeId),
     filterCount: types.maybeNull(types.number),
+    filterSelected: types.maybeNull(FilterSelected),
+    parentTruckTypeSelected: types.maybeNull(types.string),
     loading: types.boolean,
     error: types.string
   })
@@ -127,6 +135,7 @@ const AdvanceSearchStore = types
               ...subType,
               showSubColumn: 2,
               value: subType.id,
+              parentValue: type.id,
               isChecked: oldMenu[1]?.subMenu[index]?.subMenu[indx]?.isChecked || false
             }))
             return {
@@ -188,6 +197,35 @@ const AdvanceSearchStore = types
     setFilterCount: function (count: number) {
       self.filterCount = count
     },
+
+    setParentTruckTypeSelected: function (truckTypeId: number, selected: boolean) {
+      const truckSelected = JSON.parse(self.parentTruckTypeSelected)
+      self.parentTruckTypeSelected = JSON.stringify({
+        ...truckSelected,
+        [truckTypeId]: selected
+      })
+    },
+
+    replaceParentTruckTypeSelected: function (truckTypeString: string) {
+      self.parentTruckTypeSelected = truckTypeString
+    },
+
+    setFilterSelected: function (data: any) {
+      const newFilterSelected = self.filterSelected ? JSON.parse(JSON.stringify(self.filterSelected)) : {}
+      self.filterSelected = { ...newFilterSelected, ...data }
+    },
+
+    clearFilterSelected: function () {
+      self.filterSelected = null
+    },
+
+    clearSelected: function () {
+      self.selected = null
+    },
+
+    clearFilterCount: function () {
+      self.filterCount = 0
+    }
 
   }))
   .views((self) => ({
@@ -252,6 +290,8 @@ const AdvanceSearchStore = types
     productTypes: [],
     filterTypeId: null,
     filterCount: 0,
+    filterSelected: null,
+    parentTruckTypeSelected: null,
     selected: null,
     loading: false,
     error: ''

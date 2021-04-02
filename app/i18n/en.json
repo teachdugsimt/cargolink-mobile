@@ -461,6 +461,7 @@
     "chooseTruckType": "Choose truck type",
     "chooseWeight": "Product weight can be selected more than 1",
     "zoneForDesiredJob": "Zone for the desired job",
-    "weight": "Weight"
+    "weight": "Weight",
+    "truckType": "Truck type"
   }
 }

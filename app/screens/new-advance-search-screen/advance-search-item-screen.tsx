@@ -99,34 +99,47 @@ export const AdvanceSearchItemScreen = observer(function AdvanceSearchItemScreen
 
   const navigation = useNavigation()
   const route = useRoute()
-  const { data, topic, type } = JSON.parse(JSON.stringify(route.params))
+  const { data, topic, type, header } = JSON.parse(JSON.stringify(route.params))
 
   const [items, setItems] = useState<Array<ItemsProps>>([])
-  const [truckTypeSelected, setTruckTypeSelected] = useState<any>({})
   const [itemSelected, setItemSelected] = useState<any>({})
 
   useLayoutEffect(() => {
     navigation.setOptions({
       // headerLeft: () => <HeaderLeft onLeftPress={() => onConfirm()} />,
-      headerCenter: () => <HeaderCenter tx={"searchJobScreen.settingSearch"} />,
+      headerCenter: () => <HeaderCenter tx={header} />,
     })
   }, [navigation]);
 
   useEffect(() => {
     setItemSelected(AdvanceSearchStore.selected ? JSON.parse(AdvanceSearchStore.selected) : {})
+    const parseSelected = AdvanceSearchStore.selected ? JSON.parse(AdvanceSearchStore.selected)['truckTypes'] : null
+    if (
+      AdvanceSearchStore.selected
+      && parseSelected
+      && Object.keys(parseSelected).length
+    ) {
+      const arrSelected = Object.keys(parseSelected).filter(key => Object.values(parseSelected[key]).length)
+      if (arrSelected.length) {
+        const filtered = data.filter(({ id }) => arrSelected.includes(id.toString()));
+        let truckTypeWithoutFalse = {}
+        filtered.forEach(({ id }) => {
+          truckTypeWithoutFalse = { ...truckTypeWithoutFalse, [id]: true }
+        })
+        setItems(filtered)
+        AdvanceSearchStore.replaceParentTruckTypeSelected(JSON.stringify(truckTypeWithoutFalse))
+      }
+    }
   }, [])
 
   // useFocusEffect(
   //   useCallback(() => {
-  //     return () => {
-  //       let arrayTypes = []
-  //       data.forEach(({ type }) => arrayTypes.push(setFilterTypeId(type)))
-  //       console.log('arrayTypes :>> ', arrayTypes);
-  //     }
+
   //   }, [])
   // );
 
   const selectTruckType = (id: number) => {
+    const truckTypeSelected = AdvanceSearchStore.parentTruckTypeSelected ? JSON.parse(AdvanceSearchStore.parentTruckTypeSelected) : {}
     if (!truckTypeSelected[id]) {
       const selectData = data.filter(({ id: idx }) => idx === id)
       const newItems = [...items, ...selectData]
@@ -138,64 +151,111 @@ export const AdvanceSearchItemScreen = observer(function AdvanceSearchItemScreen
       parseItems[index]?.subMenu?.forEach((item: any) => {
         clearCheck = {
           ...clearCheck,
-          [item.id]: false
+          [item.id]: undefined
         }
       })
       delete parseItems[index]
       const newItems = parseItems.filter(Boolean)
       setItems(newItems)
-      setItemSelected(prevState => ({
-        ...prevState,
-        [type]: {
-          ...prevState[type],
-          // ...clearCheck,
-          [id]: {
-            // ...prevState[type][id] || undefined,
-            ...clearCheck,
+      setItemSelected(prevState => {
+        const state: any = {
+          ...prevState,
+          [type]: {
+            ...prevState[type],
+            [id]: clearCheck
           }
         }
-      }))
+        AdvanceSearchStore.setSelected(JSON.parse(JSON.stringify(state)))
+        return state
+      })
+      const clearSelected = AdvanceSearchStore.filterSelected[type].filter(({ parentValue }) => parentValue !== id)
+      AdvanceSearchStore.setFilterSelected({
+        [type]: clearSelected
+      })
     }
-    setTruckTypeSelected(prevState => ({
-      ...prevState,
-      [id]: !!!truckTypeSelected[id]
-    }))
+    AdvanceSearchStore.setParentTruckTypeSelected(id, !!!truckTypeSelected[id])
   }
 
-  const selectTruckTypeItem = (id: number, parentTruckId: number) => {
+  const selectTruckTypeItem = (id: number, parentTruckId: number, data: any) => {
     setItemSelected(prevState => {
       const prevTruckId = prevState[type] ? prevState[type][parentTruckId] : {}
+      const truckId = itemSelected[type]
+        && itemSelected[type][parentTruckId]
+        ? (!!!itemSelected[type][parentTruckId][id] || undefined)
+        : true
       const state = {
         ...prevState,
         [type]: {
           ...prevState[type],
           [parentTruckId]: {
             ...prevTruckId,
-            [id]: itemSelected[type] && itemSelected[type][parentTruckId] ? !!!itemSelected[type][parentTruckId][id] : true
+            [id]: truckId
           }
         }
       }
-      AdvanceSearchStore.setSelected(state)
+      AdvanceSearchStore.setSelected(JSON.parse(JSON.stringify(state)))
       return state
     })
+
+    const filterSelected = AdvanceSearchStore.filterSelected ? (JSON.parse(JSON.stringify(AdvanceSearchStore.filterSelected))[type] || []) : []
+    const index = filterSelected.findIndex(({ id: idx }) => idx === id)
+
+    if (index >= 0) {
+      const dataFilterSelected = JSON.parse(JSON.stringify(filterSelected))
+      delete dataFilterSelected[index]
+      AdvanceSearchStore.setFilterSelected({
+        [type]: dataFilterSelected.filter(Boolean)
+      })
+    } else {
+      const newData = [...filterSelected, data]
+      AdvanceSearchStore.setFilterSelected({
+        [type]: newData
+      })
+    }
   }
 
-  const selectItem = (id: number) => {
+  const selectItem = (id: number, data: any) => {
     setItemSelected(prevState => {
+      const ids = itemSelected[type]
+        && itemSelected[type][id]
+        ? (!!!itemSelected[type][id] || undefined)
+        : true
       const state = {
         ...prevState,
         [type]: {
           ...prevState[type],
-          [id]: itemSelected[type] ? !!!itemSelected[type][id] : true
+          [id]: ids
         }
       }
-      AdvanceSearchStore.setSelected(state)
+      AdvanceSearchStore.setSelected(JSON.parse(JSON.stringify(state)))
       return state
     })
+    // console.log('selectItem data :>> ', data);
+    let index = -1
+    const filterSelected = AdvanceSearchStore.filterSelected ? (JSON.parse(JSON.stringify(AdvanceSearchStore.filterSelected))[type] || []) : []
+    if (type === 'workZones') {
+      index = filterSelected.findIndex(({ value }) => value === id)
+    } else {
+      index = filterSelected.findIndex(({ id: idx }) => idx === id)
+    }
+
+    if (index >= 0) {
+      const dataFilterSelected = JSON.parse(JSON.stringify(filterSelected))
+      delete dataFilterSelected[index]
+      AdvanceSearchStore.setFilterSelected({
+        [type]: dataFilterSelected.filter(Boolean)
+      })
+    } else {
+      const newData = [...filterSelected, data]
+      AdvanceSearchStore.setFilterSelected({
+        [type]: newData
+      })
+    }
   }
 
-  console.log('itemSelected :>> ', itemSelected);
+  // console.log('itemSelected :>> ', itemSelected);
   console.log('AdvanceSearchStore.selected :>> ', AdvanceSearchStore.selected);
+  // console.log('AdvanceSearchStore.parentTruckTypeSelected :>> ', AdvanceSearchStore.parentTruckTypeSelected);
 
   return (
     <View style={ROOT}>
@@ -217,7 +277,7 @@ export const AdvanceSearchItemScreen = observer(function AdvanceSearchItemScreen
                   <View style={{ paddingHorizontal: spacing[4] }}>
                     {zone?.subMenu?.map((province: any, i: number) => {
                       return (
-                        <TouchableOpacity key={`province-${i}`} style={[LIST_PROVINCE]} activeOpacity={0.8} onPress={() => selectItem(province.value)}>
+                        <TouchableOpacity key={`province-${i}`} style={[LIST_PROVINCE]} activeOpacity={0.8} onPress={() => selectItem(province.value, province)}>
                           <Text text={province.name} style={ITEM_TEXT} />
                           {itemSelected[type] && itemSelected[type][province.value] && <MaterialCommunityIcons name={'check'} color={color.success} size={16} style={{ marginLeft: 'auto' }} />}
                         </TouchableOpacity>
@@ -234,8 +294,9 @@ export const AdvanceSearchItemScreen = observer(function AdvanceSearchItemScreen
           <>
             <View style={ROW}>
               {data?.map((menu: any, index: number) => {
-                // const bgColor = truckTypeSelected && truckTypeSelected[menu.id] ? color.primary : color.transparent
-                const bgColor = itemSelected[type] && itemSelected[type][menu.id] ? color.primary : color.transparent
+                const truckTypeSelected = AdvanceSearchStore.parentTruckTypeSelected ? JSON.parse(AdvanceSearchStore.parentTruckTypeSelected) : {}
+                const bgColor = truckTypeSelected && truckTypeSelected[menu.id] ? color.primary : color.transparent
+                // const bgColor = itemSelected[type] && itemSelected[type][menu.id] ? color.primary : color.transparent
                 return (
                   <TouchableOpacity key={index} style={[ITEM, { backgroundColor: bgColor }]} onPress={() => selectTruckType(menu.id)}>
                     <Text text={menu.name} style={ITEM_TEXT} />
@@ -254,7 +315,7 @@ export const AdvanceSearchItemScreen = observer(function AdvanceSearchItemScreen
                     {item?.subMenu?.map((subMenu: any, i: number) => {
                       const bgColor = itemSelected[type] && itemSelected[type][item.id] && itemSelected[type][item.id][subMenu.id] ? color.primary : color.transparent
                       return (
-                        <TouchableOpacity key={`${index}-${i}`} style={[ITEM, { backgroundColor: bgColor }]} onPress={() => selectTruckTypeItem(subMenu.id, item.id)}>
+                        <TouchableOpacity key={`${index}-${i}`} style={[ITEM, { backgroundColor: bgColor }]} onPress={() => selectTruckTypeItem(subMenu.id, item.id, subMenu)}>
                           <Text text={subMenu.name} />
                         </TouchableOpacity>
                       )
@@ -272,7 +333,7 @@ export const AdvanceSearchItemScreen = observer(function AdvanceSearchItemScreen
               {data?.map((menu: any, index: number) => {
                 const bgColor = itemSelected[type] && itemSelected[type][menu.id] ? color.primary : color.transparent
                 return (
-                  <TouchableOpacity key={index} style={[ITEM, { backgroundColor: bgColor }]} onPress={() => selectItem(menu.id)}>
+                  <TouchableOpacity key={index} style={[ITEM, { backgroundColor: bgColor }]} onPress={() => selectItem(menu.id, menu)}>
                     <Text text={menu.name} style={ITEM_TEXT} />
                   </TouchableOpacity>
                 )
