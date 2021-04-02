@@ -138,7 +138,8 @@ export const LocationPickerScreen = observer(function LocationPickerScreen(props
     <Screen unsafe keyboardOffset="little" statusBar="dark-content">
       <View style={styles.map}>
         <TouchableWithoutFeedback onPressOut={Keyboard.dismiss}
-          onPress={() => setShowSearchBar(false)} accessible={false} >
+          onPress={() => { setShowSearchBar(false) }}
+          accessible={false} >
           <View style={FULL}>
             <View style={FULL}>
               <MapView
