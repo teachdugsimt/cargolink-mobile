@@ -42,17 +42,17 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>App needs Camera Access Permission</string>
+	<string>The app needs a camera to take your photo to set as a personal profile or photo of trucks when you want to add your trucks. </string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>App needs always location access when usage</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>App needs location access</string>
+	<string>App needs location access to get your current location and automatically set to pick up point or drop point.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>App needs location access</string>
+	<string>App needs location access to get your current location and automatically set to pick up point or drop point.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>App needs photo library Access</string>
+	<string>App needs photo library access to set as a personal profile or photo of trucks when you want to add your trucks. </string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Photo Library Access Warning</string>
+	<string>App needs photo library access to set as a personal profile or photo of trucks when you want to add your trucks. </string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
