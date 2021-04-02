@@ -22,6 +22,7 @@ interface TextInputColumnProps {
   length?: number
   maxLength?: number
   showTopic?: boolean
+  textAlign?: string
 }
 const ROOT_STYLE: ViewStyle = {
   height: 40,

@@ -113,11 +113,12 @@ const BORDER_BOTTOM: ViewStyle = {
 }
 const IMAGE_LIST: ImageStyle = {
   // width: 50, height: 50,
-  backgroundColor: color.mainGrey, padding: 10,
-  resizeMode: "cover",
-  aspectRatio: 2 / 2,
-  borderRadius: 30,
-  borderColor: color.primary, borderWidth: 1,
+  // backgroundColor: color.mainGrey,
+  // padding: 10,
+  // resizeMode: "cover",
+  // aspectRatio: 2 / 2,
+  // borderRadius: 30,
+  // borderColor: color.primary, borderWidth: 1,
 }
 
 export const PostJobScreen = observer(function PostJobScreen() {
@@ -185,8 +186,12 @@ export const PostJobScreen = observer(function PostJobScreen() {
     }}>
       <View style={{ ...BORDER_BOTTOM }}>
         <View style={[VIEW_LIST_IMAGE]}>
-          {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images.greyMock} style={IMAGE_LIST} height={40} width={40} resizeMode={section == 1 ? "contain" : "stretch"} /> :
-            <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images.greyMock} style={IMAGE_LIST} height={40} width={40} />}
+          {/* {Platform.OS == "ios" ? */}
+          <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[`${item.id}${item.image}`]}
+            style={[IMAGE_LIST, { borderRadius: 0, backgroundColor: '#ffff', borderWidth: 0 }]} height={40} width={section == 1 ? 40 : 40}
+            resizeMode={section == 1 ? "contain" : "stretch"} />
+          {/* : <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[`${item.id}${item.image}`]}
+            style={IMAGE_LIST} height={40} width={40} /> */}
         </View>
         <View style={{
           flexDirection: 'row', flex: 1, width: '100%',
@@ -278,9 +283,6 @@ export const PostJobScreen = observer(function PostJobScreen() {
                 </View>
 
                 <View style={[!dropdown_vehicle_type ? { ...WRAP_DROPDOWN, ...PADDING_TOP } : { ...WRAP_DROPDOWN_VALUE }]}>
-
-
-
                   <Controller
                     control={control}
                     render={({ onChange, onBlur, value }) => (
@@ -312,7 +314,10 @@ export const PostJobScreen = observer(function PostJobScreen() {
                       suffix="profileScreen.unit"
                       // icon="ios-information-circle-outline"
                       underline={_showDumpField(formControllerValue['vehicle-type']) == true ? true : false}
-                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
+                      inputStyle={{
+                        ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD,
+                        ...CONTENT_TEXT, fontSize: 18
+                      }}
                       value={value} onChangeText={(text) => onChange(text)} />
                   )}
                   key={'text-input-car-num'}
@@ -361,19 +366,16 @@ export const PostJobScreen = observer(function PostJobScreen() {
                   <Text preset={'topic'} style={RED_DOT} >*</Text>
                 </View>
 
-
-
-
-
-
-
                 <View style={[PADDING_TOP, !dropdown_item_type ? { ...WRAP_DROPDOWN } : { ...WRAP_DROPDOWN_VALUE }]}>
 
                   <Controller
                     control={control}
                     render={({ onChange, onBlur, value }) => (
-                      <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN]} onPress={() => navigation.navigate("selectProductType", { selectedItem: [value], onSubmitProductType: (val) => _onSubmitProductType(val) })}>
-                        {!dropdown_item_type && <><Text style={{ padding: Platform.OS == "ios" ? 5 : 10, paddingLeft: 0, color: color.line }} tx={"postJobScreen.selectItemType"} />
+                      <TouchableOpacity
+                        style={[ROW_TEXT, JUSTIFY_BETWEEN]}
+                        onPress={() => navigation.navigate("selectProductType", { selectedItem: [value], onSubmitProductType: (val) => _onSubmitProductType(val) })}>
+                        {!dropdown_item_type && <>
+                          <Text style={{ padding: Platform.OS == "ios" ? 5 : 10, paddingLeft: 0, color: color.line }} tx={"postJobScreen.selectItemType"} />
                           <Ionicons name="chevron-forward" size={24} style={PADDING_CHEVRON} />
                         </>}
                         {dropdown_item_type && !!list_product_type_all && _renderSelectedList(list_product_type_all.find(e => e.id == dropdown_item_type), 2)}
@@ -402,7 +404,11 @@ export const PostJobScreen = observer(function PostJobScreen() {
                       actualPlaceholder="postJobScreen.pleaseInputProductName"
                       underline={true}
                       length={value ? value.length : 0} maxLength={MAX_LENGTH}
-                      inputStyle={{ ...MARGIN_MEDIUM, ...CONTENT_TEXT }}
+                      inputStyle={{
+                        ...MARGIN_MEDIUM, ...CONTENT_TEXT,
+                        marginBottom: 0, width: '100%', padding: 0,
+                        fontSize: 18
+                      }}
                       value={value} onChangeText={(text) => onChange(text)} />
                   )}
                   key={'text-input-item-name'}
@@ -422,7 +428,10 @@ export const PostJobScreen = observer(function PostJobScreen() {
                       suffix="searchJobScreen.ton"
                       // icon="ios-information-circle-outline"
                       underline={false}
-                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
+                      inputStyle={{
+                        ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD,
+                        ...CONTENT_TEXT, fontSize: 18
+                      }}
                       value={value} onChangeText={(text) => onChange(text)} />
                   )}
                   key={'text-input-item-weight'}
@@ -457,7 +466,10 @@ export const PostJobScreen = observer(function PostJobScreen() {
                           suffix="common.bath"
                           actualPlaceholder="common.price"
                           underline={false}
-                          inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
+                          inputStyle={{
+                            ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD,
+                            ...CONTENT_TEXT, fontSize: 18
+                          }}
                           value={value} onChangeText={(text) => onChange(text)} />
                       )}
                       key={'text-input-shipping-rate'}

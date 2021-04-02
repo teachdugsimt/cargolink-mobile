@@ -31,11 +31,11 @@ const BORDER_BOTTOM: ViewStyle = {
 }
 const VIEW_LIST_IMAGE: ViewStyle = { alignSelf: 'flex-start', justifyContent: 'center', height: '100%' }
 const IMAGE_LIST: ImageStyle = {
-  backgroundColor: color.line, padding: 10,
-  resizeMode: "cover",
-  aspectRatio: 2 / 2,
-  borderRadius: 30,
-  borderColor: color.primary, borderWidth: 1,
+  // backgroundColor: color.line, padding: 10,
+  // resizeMode: "cover",
+  // aspectRatio: 2 / 2,
+  // borderRadius: 30,
+  // borderColor: color.primary, borderWidth: 1,
 }
 export const SelectProductTypeScreen = () => {
   const navigation = useNavigation()
@@ -45,15 +45,16 @@ export const SelectProductTypeScreen = () => {
   const { selectedItems, onSubmitProductType }: any = route?.params || {}
 
   const _renderSectionModal = (item: any, index: any) => {
-
     return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name + index} style={ROOT_FLAT_LIST} onPress={() => {
       navigation.goBack()
       onSubmitProductType(item.id)
     }}>
       <View style={BORDER_BOTTOM}>
         <View style={VIEW_LIST_IMAGE}>
-          {Platform.OS == "ios" ? <Image source={images['greyMock']} style={IMAGE_LIST} height={40} width={40} resizeMode="stretch" /> :
-            <Image source={images['greyMock']} style={IMAGE_LIST} height={40} width={40} />}
+          {/* {Platform.OS == "ios" ?  */}
+          <Image source={images[`${item.id}${item.image}`]} style={IMAGE_LIST} height={40} width={40} resizeMode="stretch" />
+          {/* : <Image source={images[`${item.id}${item.image}`]} style={IMAGE_LIST} height={40} width={40} /> */}
+
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1 }}>
           <Text style={{ flex: 1, paddingLeft: 20 }}>{item.name}</Text>

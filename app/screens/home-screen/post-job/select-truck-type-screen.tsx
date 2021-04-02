@@ -26,11 +26,11 @@ const BORDER_BOTTOM: ViewStyle = {
 }
 const VIEW_LIST_IMAGE: ViewStyle = { alignSelf: 'flex-start', justifyContent: 'center', height: '100%' }
 const IMAGE_LIST: ImageStyle = {
-  backgroundColor: color.mainGrey, padding: 10,
-  resizeMode: "cover",
-  aspectRatio: 2 / 2,
-  borderRadius: 30,
-  borderColor: color.primary, borderWidth: 1,
+  // backgroundColor: color.mainGrey, padding: 10,
+  // resizeMode: "cover",
+  // aspectRatio: 2 / 2,
+  // borderRadius: 30,
+  // borderColor: color.primary, borderWidth: 1,
 }
 
 interface ModalTruckProps {
@@ -124,8 +124,9 @@ export const SelectTruckTypeScreen = (props: ModalTruckProps) => {
     }}>
       <View style={BORDER_BOTTOM}>
         <View style={VIEW_LIST_IMAGE}>
-          {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={40} width={40} resizeMode={"contain"} /> :
-            <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={40} width={40} />}
+          {/* {Platform.OS == "ios" ?  */}
+          <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={40} width={80} resizeMode={"contain"} />
+          {/* : <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={40} width={40} /> */}
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1 }}>
           <Text style={{ paddingLeft: 20, maxWidth: '70%' }}>{item.name}</Text>
@@ -154,11 +155,9 @@ export const SelectTruckTypeScreen = (props: ModalTruckProps) => {
       {listGroup && listGroup.length > 1 && <View>
         {_renderGroupTruck(listGroup)}
       </View>}
-
     </View>
 
     <View style={[FULL]}>
-
       <SectionList
         style={{ zIndex: 5, paddingLeft: 10 }}
         sections={sectionTruckType}
@@ -172,8 +171,6 @@ export const SelectTruckTypeScreen = (props: ModalTruckProps) => {
           <View style={HEIGHT_50}></View>
         }
       />
-
     </View>
-
   </View>)
 }
