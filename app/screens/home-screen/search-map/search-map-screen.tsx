@@ -89,6 +89,7 @@ export const LocationPickerScreen = observer(function LocationPickerScreen(props
     Geolocation.getCurrentPosition(info => _currentRegion(info))
     getAddress()
     return () => {
+      setShowSearchBar(false)
       setcheckPressList(false)
       Geolocation.stopObserving()
       setState(initialState)
@@ -107,7 +108,8 @@ export const LocationPickerScreen = observer(function LocationPickerScreen(props
   };
   const onRegionChange = (regionParam) => {
     console.log("Region in  state :: ", region)
-    console.log("__________ On Region Change __________", regionParam)
+    console.log("Region param object :: ", regionParam)
+    console.log("__________ On Region Change __________", checkPressList)
     if (region.latitude != regionParam.latitude && region.longitude != regionParam.longitude) {
       if (checkPressList == true) {
         setcheckPressList(false)
@@ -135,12 +137,10 @@ export const LocationPickerScreen = observer(function LocationPickerScreen(props
     // <SafeAreaView style={[FULL, { backgroundColor: color.textWhite }]}>
     <Screen unsafe keyboardOffset="little" statusBar="dark-content">
       <View style={styles.map}>
-        <TouchableWithoutFeedback onPress={() => {
-          setShowSearchBar(false)
-          Keyboard.dismiss
-        }} accessible={false} >
+        <TouchableWithoutFeedback onPressOut={Keyboard.dismiss}
+          onPress={() => setShowSearchBar(false)} accessible={false} >
           <View style={FULL}>
-            <View style={{ flex: 1 }}>
+            <View style={FULL}>
               <MapView
                 ref={(ref) => mapView = ref}
                 onMapReady={() => goToInitialLocation(region)}
@@ -315,7 +315,10 @@ export const LocationPickerScreen = observer(function LocationPickerScreen(props
                     multiline={true}
                     clearButtonMode="while-editing"
                     style={styles.inputAddressFinal}
-                    onChangeText={(text) => setState(prev => ({ ...prev, address: text }))}
+                    onChangeText={(text) => {
+                      setState(prev => ({ ...prev, address: text }))
+                      setcheckPressList(true)
+                    }}
                     value={address}
                   />
                 </View>
