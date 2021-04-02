@@ -162,6 +162,9 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
       AdvanceSearchStore.clearMenu()
       AdvanceSearchStore.setFilter({})
       ShipperTruckStore.setDefaultOfList()
+      AdvanceSearchStore.clearFilterSelected()
+      AdvanceSearchStore.clearSelected()
+      AdvanceSearchStore.clearFilterCount()
     }
   }, [])
 
