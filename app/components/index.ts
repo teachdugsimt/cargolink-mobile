@@ -20,6 +20,8 @@ export * from "./header-right/header-right"
 export * from "./header-left/header-left"
 export * from "./add-job-element/add-job-element"
 export * from "./text-input-theme/text-input-theme"
+export * from "./text-input-theme/text-input-new"
+export * from "./text-input-theme/text-input-column"
 export * from "./upload-vehicle/upload-vehicle"
 export * from "./rounded-button/rounded-button"
 export * from "./dropdown-theme/dropdown-theme"
@@ -45,3 +47,5 @@ export * from './book-list/book-list'
 export * from './contact-list/contact-list'
 export * from './tab-bar/tab-bar'
 export * from './button-advance-search/button-advance-search'
+export * from './home-element/home-element-new'
+export * from './home-element/sponser-home'

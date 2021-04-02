@@ -20,13 +20,13 @@ const FULL: ViewStyle = {
 }
 
 const TOP_VIEW: ViewStyle = {
-  paddingTop: Platform.OS == "ios" ? 10 : 0,
+  paddingTop: Platform.OS == "ios" ? 10 : 10,
   flex: Platform.OS == "ios" ? 0.65 : 0.85,
-  backgroundColor: color.mainTheme,
+  backgroundColor: color.textWhite,
   justifyContent: 'center',
 }
 const BOTTOM_VIEW: ViewStyle = {
-  flex: Platform.OS == "ios" ? 5 : 5.5,
+  flex: Platform.OS == "ios" ? 5 : 4.8,
 }
 const ROW_TEXT: TextStyle = {
   flexDirection: 'row',
@@ -43,12 +43,12 @@ const VIEW_BUTTON: ViewStyle = {
   justifyContent: 'center',
   alignItems: 'center',
   borderTopColor: color.line,
-  borderTopWidth: 1,
+  borderTopWidth: 0,
   padding: 10,
 }
 
 const BUTTON_CONTAINER: ViewStyle = {
-  // borderColor: color.line,
+  // borderColor: color.mainGrey,
   backgroundColor: color.primary
 }
 
@@ -66,13 +66,14 @@ export const PostSuccessScreen = observer(function PostSuccessScreen() {
     { key: 4, no: 4, id: 4, name: 'postJobScreen.success', active: true },
   ]
   const id_post = (JSON.parse(JSON.stringify(PostJobStore.data_postjob))) || ''
+  console.log("ID post here : ", id_post)
 
   useEffect(() => {
     navigation.setOptions({
       headerCenter: () => (
         <HeaderCenter tx={"postJobScreen.updateJob"} />
       ),
-      headerLeft: () => {}
+      headerLeft: () => { }
     });
     return () => {
       PostJobStore.clearDataPostjob()
@@ -99,15 +100,17 @@ export const PostSuccessScreen = observer(function PostSuccessScreen() {
             </View>
 
           </View>
+
         </View>
 
-        <View style={VIEW_BUTTON}>
-          <RoundedButton testID={"success-vehicle-detail"} onPress={() => {
-            if (status_action == "add")
-              navigation.navigate("home")
-            else navigation.navigate("MyJob", { screen: "myjob" })
-          }} text={"common.ok"} containerStyle={BUTTON_CONTAINER} textStyle={TEXT_BUTTTON_STYLE} />
-        </View>
+
+      </View>
+      <View style={VIEW_BUTTON}>
+        <RoundedButton testID={"success-vehicle-detail"} onPress={() => {
+          if (status_action == "add")
+            navigation.navigate("home")
+          else navigation.navigate("MyJob", { screen: "myjob" })
+        }} text={"common.ok"} containerStyle={BUTTON_CONTAINER} textStyle={TEXT_BUTTTON_STYLE} />
       </View>
     </View>
   )

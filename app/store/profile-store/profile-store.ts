@@ -91,7 +91,7 @@ const ProfileStore = types.model({
     self.loading = true
     try {
       const response = yield apiUsers.getProfile()
-      __DEV__ && console.tron.log("Response call getProfileRequest : : ", response)
+      console.log("Response call getProfileRequest : : ", response)
       if (response.ok) {
         self.data = response.data || null
         self.loading = false
@@ -107,6 +107,9 @@ const ProfileStore = types.model({
     }
   }),
 
+  clearDataReportProfileScreen() {
+    self.data_report_profile_screen = null
+  },
   getProfileReporterScreen: flow(function* getProfileReporterScreen(id) { // <- note the star, this a generator function!
     yield apiUsers.setup()
     self.loading_report_profile_screen = true
@@ -147,7 +150,9 @@ const ProfileStore = types.model({
     }
   }),
 
-
+  clearTruckSummary() {
+    self.data_truck_summary = null
+  },
   getTruckSummary: flow(function* getTruckSummary() { // <- note the star, this a generator function!
     yield apiUsers.setup()
     self.loading_truck_summary = true
@@ -228,6 +233,7 @@ const ProfileStore = types.model({
   clearAllData() {
     self.data = null
     self.data_truck_summary = null
+    self.data_report_profile_screen = null
     self.data_update_profile = null
     self.data_upload_picture = null
     self.data_report_profile = null

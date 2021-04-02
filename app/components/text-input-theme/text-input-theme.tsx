@@ -10,7 +10,7 @@ const ROOT_STYLE: ViewStyle = {
     borderRadius: spacing[1],
     height: 40,
     borderWidth: 1,
-    borderColor: color.line,
+    borderColor: color.mainGrey,
     paddingLeft: 10
 }
 

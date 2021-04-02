@@ -46,7 +46,7 @@ const CONTAINER_MODAL: ViewStyle = {
 }
 const BORDER_MODAL_BUTTON: ViewStyle = {
   borderBottomWidth: 1,
-  borderBottomColor: color.line
+  borderBottomColor: color.mainGrey
 }
 const BUTTON_MODAL1: ViewStyle = {
   ...WIDTH_WITH_MARGIN,
@@ -120,7 +120,7 @@ const ADD_VEHICLE_BUTTON: ViewStyle = {
   height: 40,
   borderRadius: 20,
   borderWidth: 1,
-  borderColor: color.line,
+  borderColor: color.mainGrey,
   backgroundColor: color.textWhite
 }
 const RED_COLOR: ViewStyle = { color: color.red }
@@ -135,7 +135,7 @@ const ROUND_BUTTON_TEXT: TextStyle = {
   // color: color.textWhite
 }
 const WRAP_DROPDOWN: ViewStyle = {
-  flex: 1, borderColor: color.line, borderWidth: 1, padding: Platform.OS == "ios" ? 7.5 : 0,
+  flex: 1, borderColor: color.mainGrey, borderWidth: 1, padding: Platform.OS == "ios" ? 7.5 : 0,
   borderRadius: 2.5
 }
 const PLACEHOLDER_IMAGE: ImageStyle = {
@@ -183,7 +183,7 @@ const BORDER_BOTTOM: ViewStyle = {
   ...ROOT_FLAT_LIST,
   width: '100%',
   flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-  borderBottomWidth: 1, borderBottomColor: color.line, marginHorizontal: 10,
+  borderBottomWidth: 1, borderBottomColor: color.mainGrey, marginHorizontal: 10,
 }
 const ERROR_REGION: TextStyle = { color: color.error, paddingLeft: 5, marginTop: -10, marginBottom: 5 }
 const UPLOAD_IMG_STY: ViewStyle = { padding: 5, minHeight: 120 }
@@ -833,7 +833,7 @@ export const UploadVehicleScreen = observer(() => {
       onChange(item.id)
       _updateVisibleModal(false, indexX)
     }}>
-      <View style={{ borderBottomWidth: 1, borderBottomColor: color.line, flex: 1 }}>
+      <View style={{ borderBottomWidth: 1, borderBottomColor: color.mainGrey, flex: 1 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1, marginVertical: 20 }}>
           <Text style={{ width: '50%' }}>{item.name}</Text>
           <Ionicons name="chevron-forward" size={24} color={color.line} style={{ marginRight: 5 }} />

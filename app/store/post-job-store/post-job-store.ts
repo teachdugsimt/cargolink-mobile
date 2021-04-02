@@ -16,7 +16,10 @@ const PostJob1 = types.model({
   "item-name": types.maybeNull(types.string),
   "item-type": types.maybeNull(types.number),
   "item-weight": types.maybeNull(types.string),
-  "vehicle-type": types.maybeNull(types.number)
+  "vehicle-type": types.maybeNull(types.number),
+  "dump-field": types.maybeNull(types.number),
+  "shipping-rate": types.maybeNull(types.string),
+  "shipping-type": types.maybeNull(types.number)
 })
 
 const Shipping = types.model({
@@ -50,8 +53,12 @@ const PostJobStore = types.model({
   data_postjob: types.maybeNull(types.union(types.string, types.number)),
 
   job_id: types.maybeNull(types.string),
+  vehicle_type: types.maybeNull(types.number)
 })
   .actions(self => ({
+    setVehicleType(params: number){
+      self.vehicle_type = params
+    },
     setPostJob(params: number, data: any) {
       if (params == 1) {
         self.postjob1 = data
@@ -75,8 +82,7 @@ const PostJobStore = types.model({
           self.loading = false
           __DEV__ && console.tron.log("Response ERROR POST JOB :: ", response)
           if (response.data && response.data.validMsgList && response.data.validMsgList['from.datetime'] &&
-            response.data.validMsgList['from.datetime'][0] && (response.data.validMsgList['from.datetime'][0]
-              == dateError || response.data.validMsgList['from.datetime'][0] == dateError2)) {
+            response.data.validMsgList['from.datetime'][0]) {
             __DEV__ && console.tron.log("Error : : Call API post job :: ", response)
             self.error = response.data.validMsgList['from.datetime'][0]
           } else
@@ -106,8 +112,7 @@ const PostJobStore = types.model({
           self.loading = false
           __DEV__ && console.tron.log("Response ERROR POST JOB :: ", response)
           if (response.data && response.data.validMsgList && response.data.validMsgList['from.datetime'] &&
-            response.data.validMsgList['from.datetime'][0] && (response.data.validMsgList['from.datetime'][0]
-              == dateError || response.data.validMsgList['from.datetime'][0] == dateError2)) {
+            response.data.validMsgList['from.datetime'][0]) {
             __DEV__ && console.tron.log("Error : : Call API post job :: ", response)
             self.error = response.data.validMsgList['from.datetime'][0]
           } else
@@ -193,6 +198,7 @@ const PostJobStore = types.model({
     loading: false,
     error: '',
     data_postjob: null,
+    vehicle_type: null,
   })
 
 export default PostJobStore

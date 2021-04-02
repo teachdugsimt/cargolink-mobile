@@ -15,10 +15,10 @@ export const AlertForm = (field) => {
   return;
 }
 
-export const AlertFormDate = () => {
+export const AlertFormDate = (param = true) => {
   Alert.alert(
     translate('common.pleaseInputCorrect'),
-    translate("postJobScreen.receiveDateMoreThan"),
+    translate(param ? "postJobScreen.receiveDateMoreThan": "postJobScreen.checkPickupDate"),
     [
       {
         text: translate('common.ok'), onPress: () => { }

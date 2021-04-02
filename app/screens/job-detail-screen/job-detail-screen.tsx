@@ -53,7 +53,7 @@ const PADDING_LEFT = { paddingLeft: spacing[1] }
 const MARGIN_BOTTOM = { marginBottom: spacing[1] }
 const BACKGROUND_COLOR = { backgroundColor: color.backgroundWhite }
 const BOTTOM_LINE = {
-  borderBottomColor: color.disable,
+  borderBottomColor: color.mainGrey,
   borderBottomWidth: 1,
 }
 
@@ -423,7 +423,7 @@ const PickUpPointSmall = ({ to, from, distances, containerStyle = {} }) => {
 }
 
 const RenderButtonAlert = ({ onConfirm, onCloseModal }) => {
-  const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.line, backgroundColor: color.transparent }
+  const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.mainGrey, backgroundColor: color.transparent }
   const btnConfirmStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.primary, backgroundColor: color.primary }
   return (
     <View style={{ ...BOTTOM_ROOT, paddingVertical: spacing[2] }}>
@@ -1014,7 +1014,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   }
 
   const RenderButtonAlert = () => {
-    const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.line, backgroundColor: color.transparent }
+    const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.mainGrey, backgroundColor: color.transparent }
     const btnConfirmStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.primary, backgroundColor: color.primary }
     return (
       <View style={{ ...BOTTOM_ROOT, paddingVertical: spacing[2] }}>
@@ -1036,7 +1036,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     )
   }
   const RenderButtonAlertReject = () => {
-    const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.line, backgroundColor: color.transparent }
+    const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.mainGrey, backgroundColor: color.transparent }
     const btnRejectStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.red, backgroundColor: color.red }
     return (
       <View style={{ ...BOTTOM_ROOT, paddingVertical: spacing[2] }}>
@@ -1314,7 +1314,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
               topic={booker.name}
               detail={booker.date}
               btnTxt={translate('myJobScreen.accept')}
-              containerStyle={{ paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.disable }}
+              containerStyle={{ paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.mainGrey }}
               topicStyle={{ fontSize: 14, paddingBottom: spacing[1] }}
               detailStyle={{ color: color.line }}
               btnStyle={{ paddingVertical: 2, paddingHorizontal: spacing[2] }}

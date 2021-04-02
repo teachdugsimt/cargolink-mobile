@@ -87,7 +87,7 @@ export default {
   dropdownView: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 40,
+    height: 42.5,
     marginBottom: 10,
   },
 };

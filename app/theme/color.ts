@@ -41,7 +41,9 @@ export const color = {
    * A subtle color used for borders and lines.
    */
   // line: palette.lightGray,
-  line: palette.mainGrey,
+  // line: palette.mainGrey,
+  line: palette.mainGrey,   // Dark grey
+  mainGrey: palette.gray,   // Light grey
   /**
    * Warning message and background color.
    */
@@ -80,5 +82,7 @@ export const color = {
 
   sky: palette.sky,
   registration: palette.regisGrey,
-  facebook: palette.facebook
+  facebook: palette.facebook,
+  blue: palette.blueAnswer,
+  mainBackgrorund: palette.mainBackground,
 }

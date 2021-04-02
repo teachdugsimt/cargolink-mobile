@@ -15,7 +15,7 @@ import {
   VehicleDetailScreen, CheckInformationScreen,
   ShipperProfileScreen, ReceivePointScreen, FeedbackScreen, SearchTruckScreen,
   PostSuccessScreen, AdvanceSearchTruckScreen, TruckDetailScreen, SelectJobScreen, CommentScreen,
-  CarrierProfileScreen, SelectTruckScreen, NewAdvanceSearchScreen, AdvanceSearchItemScreen
+  CarrierProfileScreen, SelectTruckScreen, NewAdvanceSearchScreen, AdvanceSearchItemScreen, SelectTruckTypeScreen, SelectProductTypeScreen
 } from "../screens"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -56,6 +56,9 @@ export type PrimaryHomeParamList = {
   truckDetailOwner: undefined
   newAdvanceSearch: undefined
   advanceSearchItem: undefined
+  selectTruckType: undefined
+  selectProductType: undefined
+  // addAddress: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -269,6 +272,22 @@ export function HomeNavigator() {
           headerCenter: () => <HeaderCenter tx={"searchJobScreen.settingSearch"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })} />
+      <Stack.Screen
+        name="selectTruckType"
+        component={SelectTruckTypeScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"postJobScreen.selectVehicleType"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+      <Stack.Screen
+        name="selectProductType"
+        component={SelectProductTypeScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"postJobScreen.selectItemType"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
     </Stack.Navigator>
   )
 }

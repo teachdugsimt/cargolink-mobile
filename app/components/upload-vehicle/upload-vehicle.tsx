@@ -20,7 +20,7 @@ const UPLOAD_VIEW: ViewStyle = {
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: color.line,
+    borderColor: color.mainGrey,
     borderRadius: 10,
     overflow: 'hidden',
     borderStyle: 'dashed',

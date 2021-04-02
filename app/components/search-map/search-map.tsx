@@ -1,27 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback, Dimensions, ViewStyle } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { GOOGLE_API_KEY } from '../../config/env'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { Text, Screen } from '../../components/'
-import { color, images } from "../../theme";
+import { color, images, spacing } from "../../theme";
 import i18n from 'i18n-js'
 import { translate } from "../../i18n"
 import styles from './styles'
 import Geolocation from '@react-native-community/geolocation';
 import { SearchMapProps } from './search-map.props'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import Feather from 'react-native-vector-icons/Feather'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import { Modalize } from 'react-native-modalize';
 
 const FULL: ViewStyle = { flex: 1 }
 const { height } = Dimensions.get('window')
 const PADDING_VERTICAL: ViewStyle = { paddingVertical: 2.5 }
 const ROW: ViewStyle = { flexDirection: "row" }
-const MAIN_VIEW_BOTTOM: ViewStyle = { ...ROW, marginHorizontal: 10, justifyContent: 'space-between' }
+const SPACE_BETWEEN: ViewStyle = { justifyContent: 'space-between' }
+const MAIN_VIEW_BOTTOM: ViewStyle = { ...ROW, marginHorizontal: 10, paddingTop: 7.5, justifyContent: 'space-between' }
 const ROW_1: ViewStyle = { ...ROW, ...FULL }
 const FLEX_END: ViewStyle = { justifyContent: 'flex-end' }
 const ROOT_BOTTOM: ViewStyle = { ...FLEX_END, backgroundColor: color.textWhite }
 const BUTTON_VIEW: ViewStyle = { ...ROW, ...FULL, ...FLEX_END }
-const PADDING_PURE_10: ViewStyle = { padding: 10 }
+const VIEW_TEXT_ADDRESS: ViewStyle = { flex: 1, marginTop: 10 }
 const latitudeDelta = 0.005;
 const longitudeDelta = 0.005;
 
@@ -46,6 +51,7 @@ let initialState = {
 }
 
 export const LocationPicker = (props: SearchMapProps) => {
+  const modalizeRef = useRef<Modalize>(null);
   const [region, setregion] = useState(initialData)
   const [tmpCurrentRegion, settmpCurrentRegion] = useState(null)
   const [{ address, listViewDisplayed,
@@ -78,7 +84,6 @@ export const LocationPicker = (props: SearchMapProps) => {
       setregion(initialData)
     }
   }, [])
-
 
   const { onSubmitMap, banner, onCloseModal } = props
 
@@ -116,7 +121,6 @@ export const LocationPicker = (props: SearchMapProps) => {
       <Screen unsafe>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
           <View style={FULL}>
-
             <MapView
               ref={(ref) => mapView = ref}
               onMapReady={() => goToInitialLocation(region)}
@@ -128,17 +132,31 @@ export const LocationPicker = (props: SearchMapProps) => {
             />
 
 
-
-
-
-
-
-
             <View style={styles.panel}>
 
               <View style={[styles.panelHeader,
-              listViewDisplayed ? styles.panelFill : styles.panel,]}>
+              listViewDisplayed ? styles.panelFill : styles.panel]}>
+
+
+
+
+
+
+                <View style={styles.rowCenter}>
+                  <TouchableOpacity onPress={() => onCloseModal()} style={styles.buttonBack}>
+                    <Ionicons name={'chevron-back'} size={20} color={color.line} />
+                  </TouchableOpacity>
+                  <View style={{ ...styles.paddingTop10, flexDirection: 'row' }}>
+                    <Text tx={"common.add"} preset="topic" />
+                    <Text tx={banner} preset="topic" />
+                  </View>
+                </View>
+
+
+
+
                 <GooglePlacesAutocomplete
+                  // renderRightButton={() => <View style={{ backgroundColor: 'white', height: 44 }}><Icon name="home" size={20} /></View>}
                   currentLocation={false}
                   enableHighAccuracyLocation={true}
                   ref={(c) => (searchText = c)}
@@ -186,7 +204,15 @@ export const LocationPicker = (props: SearchMapProps) => {
                     language: i18n.locale, // language of the results
                     components: i18n.locale == "th" ? "country:tha" : "country:tha",
                   }}
+                  // renderRightButton={() => <TouchableOpacity style={{
+                  //   position: 'absolute', right: 5, top: 5
+                  // }}><Text>Button</Text></TouchableOpacity>}
                   styles={{
+                    container: {
+                      paddingTop: 10,
+                      paddingHorizontal: 10
+                    },
+                    textInput: { borderRadius: 20 },
                     description: {
                       fontFamily: "Kanit-Medium",
                       color: "black",
@@ -195,13 +221,13 @@ export const LocationPicker = (props: SearchMapProps) => {
                     predefinedPlacesDescription: {
                       color: "black",
                     },
-                    listView: {
-                      position: "absolute",
-                      marginTop: 44,
-                      backgroundColor: "white",
-                      borderBottomEndRadius: 15,
-                      elevation: 2,
-                    },
+                    // listView: {
+                    //   position: "absolute",
+                    //   marginTop: 44,
+                    //   backgroundColor: "white",
+                    //   // borderBottoEndRadius: 15,
+                    //   elevation: 2,
+                    // },
                   }}
                   nearbyPlacesAPI="GooglePlacesSearch"
                   GooglePlacesSearchQuery={{
@@ -226,25 +252,21 @@ export const LocationPicker = (props: SearchMapProps) => {
             <View style={styles.markerFixed}>
               <Image
                 style={styles.marker}
-                source={images.pinbox} />
+                source={images.pinMap}
+                resizeMode="stretch" />
             </View>
 
 
 
-            <View style={[ROOT_BOTTOM, { minHeight: Platform.OS == "ios" ? height / 6.5 : height / 5 }]}>
+            <View style={[ROOT_BOTTOM, { minHeight: Platform.OS == "ios" ? height / 5 : height / 3.8 }]}>
 
 
-              <View style={MAIN_VIEW_BOTTOM}>
+              <View style={[MAIN_VIEW_BOTTOM]}>
                 <View style={ROW_1}>
-                  <Icon name="home" size={24} color={color.primary} style={PADDING_PURE_10} />
                   <Text style={styles.addressText} tx={banner} />
+                  <Text style={styles.star} text={" *"} />
                 </View>
                 <View style={BUTTON_VIEW}>
-                  <TouchableOpacity
-                    onPress={() => onCloseModal()}
-                    style={styles.buttonSubmit}>
-                    <Text style={PADDING_VERTICAL} tx={"common.back"} />
-                  </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => onSubmitMap(address, region)}
                     style={styles.buttonSubmit}>
@@ -253,16 +275,38 @@ export const LocationPicker = (props: SearchMapProps) => {
                 </View>
               </View>
 
-              <TextInput
-                multiline={true}
-                clearButtonMode="while-editing"
-                style={styles.inputAddressFinal}
-                onChangeText={(text) => setState(prev => ({ ...prev, address: text }))}
-                value={address}
-              />
+              <View style={{ paddingLeft: 17.5, paddingRight: 17.5, paddingTop: 10 }}>
+                <View style={[ROW, SPACE_BETWEEN]}>
+                  <View style={ROW}>
+                    <MaterialIcons name={'pin-drop'} color={color.primary} size={22} />
+                    <Text tx="postJobScreen.currentPin" />
+                  </View>
 
+                  <TouchableOpacity onPress={() => { }}>
+                    <Feather name={'edit'} color={color.disable} size={22} />
+                  </TouchableOpacity>
+                </View>
+              </View>
 
+              <View style={VIEW_TEXT_ADDRESS}>
+                <TextInput
+                  multiline={true}
+                  clearButtonMode="while-editing"
+                  style={styles.inputAddressFinal}
+                  onChangeText={(text) => setState(prev => ({ ...prev, address: text }))}
+                  value={address}
+                />
+              </View>
             </View>
+
+
+
+
+
+
+
+
+
           </View>
         </TouchableWithoutFeedback>
       </Screen>
