@@ -244,7 +244,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
       if (data_postjob) {
         let status_action = JSON.parse(JSON.stringify(StatusStore.status))
         if (status_action == "add")
-          navigation.navigate("postSuccess")
+          navigation.navigate("Home", { screen: "postSuccess" })
         else navigation.navigate("MyJob", { screen: "postSuccess" })
       }
     }
@@ -317,19 +317,23 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
     list_product_type[0].data = list_product_type_all
   }
 
-  const vehicleObject = JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == initialData['vehicle-type'])
-  const productObject = JSON.parse(JSON.stringify(versatileStore.listProductType)).find(e => e.id == initialData['item-type'])
+  let vehicleObject
+  if (versatileStore.list && versatileStore.list.length > 0 && initialData['vehicle-type'])
+    vehicleObject = JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == initialData['vehicle-type'])
+  let productObject
+  if (versatileStore.listProductType && versatileStore.listProductType.length > 0 && initialData['item-type'])
+    productObject = JSON.parse(JSON.stringify(versatileStore.listProductType)).find(e => e.id == initialData['item-type'])
   const shippingObject = initialData['shipping-information'] ? JSON.parse(JSON.stringify(initialData['shipping-information'])) : []
 
   return (
     <Screen unsafe keyboardOffset="little" preset="scroll" bounch={false}>
       <View testID="CheckInformationScreen" style={FULL}>
-        {/* <View style={TOP_VIEW}>
+        <View style={TOP_VIEW}>
           <AddJobElement data={list_status} />
-        </View> */}
-  <View><Text>Step  3 render</Text></View>
+        </View>
 
-        {/* <View style={BOTTOM_VIEW}>
+
+        <View style={BOTTOM_VIEW}>
           <View style={FULL}>
 
 
@@ -344,27 +348,30 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                   {_renderTopic('postJobScreen.typeYouWant')}
                   <View style={[ROW_TEXT, JUSTIFY_BETWEEN, PADDING_VERTICAL_10, BORDER_BOTTOM_NEW]}>
                     <View style={[ROW_TEXT]}>
-                      <Text>{vehicleObject?.name || ""}</Text>
+                      <Text>{!!vehicleObject && !!vehicleObject.name ? vehicleObject.name : ""}</Text>
                       <Text style={BLUE_ANSWER}> ( </Text>
-                      <Text style={BLUE_ANSWER} tx={initialData['dump-field'] == 1 ? "common.dump" : "common.notDump"} />
+                      <Text style={BLUE_ANSWER} tx={!!initialData['dump-field'] && initialData['dump-field'] == 1 ? "common.dump" : "common.notDump"} />
                       <Text style={BLUE_ANSWER}> ) </Text>
                     </View>
-                    {!!initialData['car-num'] && <View style={[ROW_TEXT]}>
-                      <Text style={BLUE_ANSWER}>{initialData['car-num'] + " "}</Text>
+                    <View style={[ROW_TEXT]}>
+                      <Text style={BLUE_ANSWER}>{(initialData['car-num'] ? initialData['car-num'] : "") + " "}</Text>
                       <Text tx={"profileScreen.unit"} />
-                    </View>}
+                    </View>
                   </View>
                 </View>
 
 
                 <View style={[PADDING_VERTICAL_10, BORDER_BOTTOM_NEW]}>
-                  {_renderNormalText("postJobScreen.productInformation", productObject?.name || "", null, true)}
-                  {_renderNormalText("postJobScreen.productName", initialData['item-name'] || "", null, true)}
-                  {_renderNormalText("postJobScreen.productWeight", initialData['item-weight'] || "", "searchJobScreen.ton", true)}
+                  {_renderNormalText("postJobScreen.productInformation", (productObject && productObject.name ? productObject.name : " "), null, true)}
+                  {_renderNormalText("postJobScreen.productName", (initialData['item-name'] ? initialData['item-name'] : " "), null, true)}
+                  {_renderNormalText("postJobScreen.productWeight", (initialData['item-weight'] ? initialData['item-weight'] : " "), "searchJobScreen.ton", true)}
                 </View>
 
                 <View style={[PADDING_VERTICAL_20]}>
-                  {_renderNormalText("postJobScreen.rateShipping", initialData['shipping-rate'] || "", 'common.bath', false, initialData['shipping-type'] == 1 ? 'common.perBill' : 'common.perTon')}
+                  {_renderNormalText("postJobScreen.rateShipping", (initialData['shipping-rate'] ? initialData['shipping-rate'] : " "), 'common.bath', false,
+                    (initialData['shipping-type'] && initialData['shipping-type'] == 1 ? 'common.perBill' :
+                      (initialData['shipping-type'] && initialData['shipping-type'] == 2 ? 'common.perTon' : "common.notHave")
+                    ))}
                 </View>
 
               </View>
@@ -376,7 +383,11 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
 
             <View style={[TOP_VIEW_2, PADDING_TOP_SMALL]}>
               <View key="PICKUP_POINT" style={MARGIN_HORIZONTTAL_MEDIUM}>
-                {_renderPickupPoint("pickup", initialData['receive-location'] || "", initialData['receive-date'] || "", initialData['receive-time'] || "", initialData['receive-name'] || "", initialData['receive-tel-no'] || "")}
+                {_renderPickupPoint("pickup", initialData['receive-location'] || " "
+                  , initialData['receive-date'] || " "
+                  , initialData['receive-time'] || " "
+                  , initialData['receive-name'] || " "
+                  , initialData['receive-tel-no'] || " ")}
               </View>
             </View>
 
@@ -384,7 +395,11 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
             {!!shippingObject && shippingObject.length > 0 && shippingObject.map((e, i) => {
               return <View key={"shipping-information-" + i} style={[TOP_VIEW_2, PADDING_TOP_SMALL]}>
                 <View key="PICKUP_POINT" style={MARGIN_HORIZONTTAL_MEDIUM}>
-                  {_renderPickupPoint("shipping", e['shipping-address'] || "", e['shipping-date'] || "", e['shipping-time'] || "", e['shipping-name'] || "", e['shipping-tel-no'] || "")}
+                  {_renderPickupPoint("shipping", e['shipping-address'] || " "
+                    , e['shipping-date'] || " "
+                    , e['shipping-time'] || " "
+                    , e['shipping-name'] || " "
+                    , e['shipping-tel-no'] || " ")}
                 </View>
               </View>
             })}
@@ -405,7 +420,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
 
 
           </View>
-        </View> */}
+        </View>
       </View>
     </Screen>
   )
