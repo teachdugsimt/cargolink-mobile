@@ -26,7 +26,7 @@ export * from "./home-screen/search-map/add-address-screen"
 export * from "./accept-policy-screen/accept-policy-screen"
 export * from "./confirm-code-screen/confirm-code-screen"
 export * from "./search-job-screen/search-job-screen"
-export * from "./advance-search-screen/advance-search-screen"
+// export * from "./old-advance-search-screen/old-advance-search-screen"
 export * from "./job-detail-screen/job-detail-screen"
 export * from "./search-truck-screen/search-truck-screen"
 
@@ -36,7 +36,7 @@ export * from "./home-screen/success-upload/success-upload"
 
 export * from "./shipper-profile-screen/shipper-profile-screen"
 export * from "./feedback-screen/feedback-screen"
-export * from "./advance-search-truck-screen/advance-search-truck-screen"
+// export * from "./old-advance-search-truck-screen/old-advance-search-truck-screen"
 export * from "./truck-detail-screen/truck-detail-screen"
 
 export * from './truck-detail-screen/select-job-screen/select-job-screen'
@@ -49,5 +49,7 @@ export * from './free-screen/truck-detail-only-screen'
 
 export * from './truck-detail-with-profile-screen/truck-detail-with-profile-screen'
 
-export * from './new-advance-search-screen/advance-search-screen'
-export * from './new-advance-search-screen/advance-search-item-screen'
+export * from './advance-search-screen/advance-search-job-screen'
+export * from './advance-search-screen/advance-search-truck-screen'
+export * from './advance-search-screen/advance-search-truck-item-screen'
+export * from './advance-search-screen/advance-search-job-item-screen'

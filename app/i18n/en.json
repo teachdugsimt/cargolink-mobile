@@ -88,7 +88,9 @@
     "inputValue": "Please input value",
     "price": "Price",
     "bath": "THB",
-    "add": "add "
+    "add": "add ",
+    "round": "Round",
+    "ton": "Ton"
   },
   "commentScreen": {
     "yourComment": "Your Comment",
@@ -500,6 +502,13 @@
     "chooseWeight": "Product weight can be selected more than 1",
     "zoneForDesiredJob": "Zone for the desired job",
     "weight": "Weight",
-    "truckType": "Truck type"
+    "truckType": "Truck type",
+    "provinceUpProduct": "Province up product",
+    "provinceDownProduct": "Product down product",
+    "productType": "Product type",
+    "truckAmount": "Truck count",
+    "truckAmountRequired": "Amount of truck required",
+    "allProductType":"All productt type",
+    "ton": "Ton"
   }
 }

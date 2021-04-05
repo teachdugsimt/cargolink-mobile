@@ -50,6 +50,10 @@ export interface SearchItemProps {
 
   requiredTouchableOpacityGesture?: boolean
 
+  price?: number
+
+  priceType?: string
+
   customContent?: (props) => ReactNode
 
   bottomComponent?: (props) => ReactNode

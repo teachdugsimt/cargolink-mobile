@@ -252,34 +252,34 @@ const AdvanceSearchStore = types
           isMultiSelect: true,
           subMenu: []
         },
-        {
-          id: 3,
-          type: 'weight',
-          topic: translate('advanceSearchScreen.weight'),
-          showSubColumn: 3,
-          isChecked: false,
-          isMultiSelect: true,
-          subMenu: [
-            {
-              id: 15,
-              name: `1-5 ${translate('jobDetailScreen.unit')}`.trim(),
-              value: [1, 5],
-              isChecked: false,
-            },
-            {
-              id: 510,
-              name: `5-10 ${translate('jobDetailScreen.unit')}`.trim(),
-              value: [5, 10],
-              isChecked: false,
-            },
-            {
-              id: 1000,
-              name: `${translate('searchJobScreen.moreThan')} 10 ${translate('jobDetailScreen.unit')}`.trim(),
-              value: [11, 9999999],
-              isChecked: false,
-            },
-          ]
-        },
+        // {
+        //   id: 3,
+        //   type: 'weight',
+        //   topic: translate('advanceSearchScreen.weight'),
+        //   showSubColumn: 3,
+        //   isChecked: false,
+        //   isMultiSelect: true,
+        //   subMenu: [
+        //     {
+        //       id: 15,
+        //       name: `1-5 ${translate('advanceSearchScreen.ton')}`.trim(),
+        //       value: [1, 5],
+        //       isChecked: false,
+        //     },
+        //     {
+        //       id: 510,
+        //       name: `5-10 ${translate('advanceSearchScreen.ton')}`.trim(),
+        //       value: [5, 10],
+        //       isChecked: false,
+        //     },
+        //     {
+        //       id: 1000,
+        //       name: `${translate('searchJobScreen.moreThan')} 10 ${translate('advanceSearchScreen.ton')}`.trim(),
+        //       value: [11, 9999999],
+        //       isChecked: false,
+        //     },
+        //   ]
+        // },
       ]
       return menu
     }

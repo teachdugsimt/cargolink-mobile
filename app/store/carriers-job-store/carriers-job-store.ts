@@ -131,7 +131,9 @@ const CarriersJob = types.model({
   })),
   isLiked: types.maybeNull(types.optional(types.boolean, false)),
   quotations: types.maybeNull(types.array(QuotationField)),
-  truck: types.maybeNull(truckModal)
+  truck: types.maybeNull(truckModal),
+  price: types.maybeNull(types.number),
+  priceType: types.maybeNull(types.string),
 })
 
 const CarriersJobList = types.model({
@@ -428,6 +430,8 @@ const CarriersJobStore = types
           mobileNo: '',
           email: null
         },
+        price: 0,
+        priceType: null,
       })
     },
 
