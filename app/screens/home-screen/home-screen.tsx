@@ -15,6 +15,7 @@ import FontIcon from 'react-native-vector-icons/FontAwesome5'
 import ProfileStore from "../../store/profile-store/profile-store"
 import jwtDecode, { JwtPayload } from "jwt-decode";
 import i18n from 'i18n-js'
+import 'moment/locale/th';
 
 const { width } = Dimensions.get('window')
 const FULL: ViewStyle = { flex: 1 }

@@ -87,8 +87,9 @@ export const LocationPickerScreen = observer(function LocationPickerScreen(props
     console.log("___________ Commponent Did mount Search map ___________")
     // Geolocation.getCurrentPosition(info => _currentRegion(info), error => __DEV__ && console.tron.log(error))
     Geolocation.getCurrentPosition(info => _currentRegion(info))
-    getAddress()
+    // getAddress()
     return () => {
+      console.log("Component Will Unmount Search MAP SCREEN")
       setShowSearchBar(false)
       setcheckPressList(false)
       Geolocation.stopObserving()
@@ -122,11 +123,25 @@ export const LocationPickerScreen = observer(function LocationPickerScreen(props
     }
   };
 
+  const getInitAddress = (latParam, lngParam) => {
+    fetch("https://maps.googleapis.com/maps/api/geocode/json?address=" + latParam || region.latitude + "," + lngParam || region.longitude + "&region=th" + "&key=" + GOOGLE_API_KEY + "&language=" + i18n.locale)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        console.log("ADDRESS GEOCODE is BACK!! => ", responseJson);
+        setState(prevState => ({
+          ...prevState,
+          address: responseJson?.results[0] ? JSON.stringify(responseJson.results[0].formatted_address).replace(/"/g, "") : ""
+        }))
+      });
+  }
+
   const _currentRegion = (info) => {
     settmpCurrentRegion(info)
     let tmp = Object.assign({}, region);
     tmp.latitude = info.coords.latitude
     tmp.longitude = info.coords.longitude
+    getInitAddress(info.coords.latitude, info.coords.longitude)
+    mapView?.animateToRegion(tmp, 2000);
     setregion(tmp)
   }
 

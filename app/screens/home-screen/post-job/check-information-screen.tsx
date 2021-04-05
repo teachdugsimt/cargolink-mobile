@@ -81,6 +81,7 @@ const PADDING_VERTICAL_20: ViewStyle = { paddingVertical: 20 }
 const PADDING_BOTTOM_20: ViewStyle = { paddingBottom: 20 }
 const PADDING_LEFT_10: ViewStyle = { paddingLeft: 10 }
 const PADDING_RIGHT_10: ViewStyle = { paddingRight: 10 }
+const MARGIN_RIGHT_10: ViewStyle = { marginRight: 10 }
 const PADDING_TOP_SMALL: ViewStyle = { marginTop: 5 }
 const shipping_type = {
   1: "PER_TRIP",
@@ -269,15 +270,18 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
   }
 
   const _renderPickupPoint = (status: string, address: string, date: any, time: any, name: string, phoneNumber: string) => {
-
-    let tmpDate = moment(date).locale(versatileStore.language).add(543, 'year').format("LL")
+    let tmpDate
+    if (versatileStore.language == "en")
+      tmpDate = moment(date).locale(versatileStore.language).format("LL")
+    else
+      tmpDate = moment(date).locale(versatileStore.language).add(543, 'year').format("LL")
     let tmpTime = moment(time).locale(versatileStore.language).format("HH:mm")
     const compare = tmpDate + " " + tmpTime
     return <View style={PADDING_TOP_20}>
       <Text tx={status == "pickup" ? "postJobScreen.acceptPointProduct" : "postJobScreen.shipingPointNew"} preset="topic" />
       <View style={[ROW_TEXT, PADDING_TOP_10]}>
         <Icon icon={status == "pickup" ? 'pinDropYellow' : 'pinDropGreen'} style={ICON_PIN_YELLOW} />
-        <Text style={[PADDING_LEFT_SMALL, BLUE_ANSWER, PADDING_RIGHT_10]}>{address}</Text>
+        <Text style={[PADDING_LEFT_SMALL, BLUE_ANSWER, PADDING_RIGHT_10, FULL]}>{address}</Text>
       </View>
       <View style={[ROW_TEXT, PADDING_TOP_10]}>
         <FontAwesome name="calendar-o" size={18} />
