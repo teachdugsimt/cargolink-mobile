@@ -15,7 +15,7 @@ import {
   VehicleDetailScreen, CheckInformationScreen,
   ShipperProfileScreen, ReceivePointScreen, FeedbackScreen, SearchTruckScreen,
   PostSuccessScreen, AdvanceSearchTruckScreen, TruckDetailScreen, SelectJobScreen, CommentScreen,
-  CarrierProfileScreen, SelectTruckScreen, SelectTruckTypeScreen, SelectProductTypeScreen
+  CarrierProfileScreen, SelectTruckScreen, NewAdvanceSearchScreen, AdvanceSearchItemScreen, SelectTruckTypeScreen, SelectProductTypeScreen
 } from "../screens"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -54,6 +54,8 @@ export type PrimaryHomeParamList = {
   carrierProfile: undefined
   jobDetailOwner: undefined
   truckDetailOwner: undefined
+  newAdvanceSearch: undefined
+  advanceSearchItem: undefined
   selectTruckType: undefined
   selectProductType: undefined
   // addAddress: undefined
@@ -259,6 +261,17 @@ export function HomeNavigator() {
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
       />
+      <Stack.Screen name="newAdvanceSearch" component={NewAdvanceSearchScreen}
+        options={({ navigation, route }) => ({
+          headerRight: () => <Text tx={"searchJobScreen.clear"} onPress={() => console.log('Clear all!!')} />,
+          headerCenter: () => <HeaderCenter tx={"searchJobScreen.settingSearch"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })} />
+      <Stack.Screen name="advanceSearchItem" component={AdvanceSearchItemScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"searchJobScreen.settingSearch"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })} />
       <Stack.Screen
         name="selectTruckType"
         component={SelectTruckTypeScreen}
