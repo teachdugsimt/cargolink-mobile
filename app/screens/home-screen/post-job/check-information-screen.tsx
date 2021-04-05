@@ -272,11 +272,12 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
   const _renderPickupPoint = (status: string, address: string, date: any, time: any, name: string, phoneNumber: string) => {
     let tmpDate
     if (versatileStore.language == "en")
-      tmpDate = moment(date).locale(versatileStore.language).format("LL")
+      tmpDate = date ? moment(date).locale(versatileStore.language).format("LL") : " "
     else
-      tmpDate = moment(date).locale(versatileStore.language).add(543, 'year').format("LL")
-    let tmpTime = moment(time).locale(versatileStore.language).format("HH:mm")
+      tmpDate = date ? moment(date).locale(versatileStore.language).add(543, 'year').format("LL") : " "
+    let tmpTime = time ? moment(time).locale(versatileStore.language).format("HH:mm") : " "
     const compare = tmpDate + " " + tmpTime
+
     return <View style={PADDING_TOP_20}>
       <Text tx={status == "pickup" ? "postJobScreen.acceptPointProduct" : "postJobScreen.shipingPointNew"} preset="topic" />
       <View style={[ROW_TEXT, PADDING_TOP_10]}>
@@ -341,7 +342,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
 
 
 
-            <View style={TOP_VIEW_2}>
+            {/* <View style={TOP_VIEW_2}>
 
               <View key="TRUCK_INFORMATION" style={MARGIN_HORIZONTTAL_MEDIUM}>
                 <View style={PADDING_TOP_20}>
@@ -375,7 +376,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                 </View>
 
               </View>
-            </View>
+            </View> */}
 
 
 
@@ -384,8 +385,8 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
             <View style={[TOP_VIEW_2, PADDING_TOP_SMALL]}>
               <View key="PICKUP_POINT" style={MARGIN_HORIZONTTAL_MEDIUM}>
                 {_renderPickupPoint("pickup", initialData['receive-location'] || " "
-                  , initialData['receive-date'] || " "
-                  , initialData['receive-time'] || " "
+                  , initialData['receive-date'] || ""
+                  , initialData['receive-time'] || ""
                   , initialData['receive-name'] || " "
                   , initialData['receive-tel-no'] || " ")}
               </View>
@@ -396,8 +397,8 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
               return <View key={"shipping-information-" + i} style={[TOP_VIEW_2, PADDING_TOP_SMALL]}>
                 <View key="PICKUP_POINT" style={MARGIN_HORIZONTTAL_MEDIUM}>
                   {_renderPickupPoint("shipping", e['shipping-address'] || " "
-                    , e['shipping-date'] || " "
-                    , e['shipping-time'] || " "
+                    , e['shipping-date'] || ""
+                    , e['shipping-time'] || ""
                     , e['shipping-name'] || " "
                     , e['shipping-tel-no'] || " ")}
                 </View>
