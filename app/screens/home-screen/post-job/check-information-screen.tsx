@@ -354,12 +354,12 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
 
                 <View style={[PADDING_VERTICAL_10, BORDER_BOTTOM_NEW]}>
                   {_renderNormalText("postJobScreen.productInformation", productObject?.name, null, true)}
-                  {_renderNormalText("postJobScreen.productName", initialData['item-name'], null, true)}
-                  {_renderNormalText("postJobScreen.productWeight", initialData['item-weight'], "searchJobScreen.ton", true)}
+                  {_renderNormalText("postJobScreen.productName", initialData['item-name'] || "", null, true)}
+                  {_renderNormalText("postJobScreen.productWeight", initialData['item-weight'] || "", "searchJobScreen.ton", true)}
                 </View>
 
                 <View style={[PADDING_VERTICAL_20]}>
-                  {_renderNormalText("postJobScreen.rateShipping", initialData['shipping-rate'], 'common.bath', false, initialData['shipping-type'] == 1 ? 'common.perBill' : 'common.perTon')}
+                  {_renderNormalText("postJobScreen.rateShipping", initialData['shipping-rate'] || "", 'common.bath', false, initialData['shipping-type'] == 1 ? 'common.perBill' : 'common.perTon')}
                 </View>
 
               </View>
@@ -371,7 +371,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
 
             <View style={[TOP_VIEW_2, PADDING_TOP_SMALL]}>
               <View key="PICKUP_POINT" style={MARGIN_HORIZONTTAL_MEDIUM}>
-                {_renderPickupPoint("pickup", initialData['receive-location'], initialData['receive-date'], initialData['receive-time'], initialData['receive-name'], initialData['receive-tel-no'])}
+                {_renderPickupPoint("pickup", initialData['receive-location'] || "", initialData['receive-date'] || "", initialData['receive-time'] || "", initialData['receive-name'] || "", initialData['receive-tel-no'] || "")}
               </View>
             </View>
 
@@ -379,7 +379,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
             {!!shippingObject && shippingObject.length > 0 && shippingObject.map((e, i) => {
               return <View key={"shipping-information-" + i} style={[TOP_VIEW_2, PADDING_TOP_SMALL]}>
                 <View key="PICKUP_POINT" style={MARGIN_HORIZONTTAL_MEDIUM}>
-                  {_renderPickupPoint("shipping", e['shipping-address'], e['shipping-date'], e['shipping-time'], e['shipping-name'], e['shipping-tel-no'])}
+                  {_renderPickupPoint("shipping", e['shipping-address'] || "", e['shipping-date'] || "", e['shipping-time'] || "", e['shipping-name'] || "", e['shipping-tel-no'] || "")}
                 </View>
               </View>
             })}

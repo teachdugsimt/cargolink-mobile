@@ -442,6 +442,7 @@ export const MyJobScreen = observer(function MyJobScreen(props: any) {
     // navigation.setOptions({
     //   headerCenter: () => (<RenderHeader text={"myJobScreen.myJob"} />),
     // });
+    onRefresh()
     if (!TruckTypeStore.list.length) {
       TruckTypeStore.find()
     }
@@ -506,7 +507,7 @@ export const MyJobScreen = observer(function MyJobScreen(props: any) {
       onEndReached={() => onScrollList()}
       onEndReachedThreshold={0.1}
       // contentContainerStyle={{ flexGrow: 1 }}
-      ListEmptyComponent={<EmptyListMessage />}
+      ListEmptyComponent={<EmptyListMessage containerStyle={{ marginTop: 50 }} />}
       onMomentumScrollBegin={() => setOnEndReachedCalledDuringMomentum(false)}
       refreshControl={
         <RefreshControl

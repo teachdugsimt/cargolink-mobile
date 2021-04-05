@@ -138,7 +138,7 @@ export const SelectTruckTypeScreen = (props: ModalTruckProps) => {
 
 
   return (<View style={[FULL, { backgroundColor: color.textWhite }]}>
-    <View style={[{ height: 160 }, { paddingHorizontal: 10 }]}>
+    <View style={[{ paddingHorizontal: 10 }]}>
 
       <View style={PADDING_TOP}>
         {!!defaultVehicleType && defaultVehicleType.length > 0 && <MultiSelector
