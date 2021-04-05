@@ -324,11 +324,12 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
   return (
     <Screen unsafe keyboardOffset="little" preset="scroll" bounch={false}>
       <View testID="CheckInformationScreen" style={FULL}>
-        <View style={TOP_VIEW}>
+        {/* <View style={TOP_VIEW}>
           <AddJobElement data={list_status} />
-        </View>
+        </View> */}
+  <View><Text>Step  3 render</Text></View>
 
-        <View style={BOTTOM_VIEW}>
+        {/* <View style={BOTTOM_VIEW}>
           <View style={FULL}>
 
 
@@ -357,7 +358,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
 
 
                 <View style={[PADDING_VERTICAL_10, BORDER_BOTTOM_NEW]}>
-                  {_renderNormalText("postJobScreen.productInformation", productObject?.name, null, true)}
+                  {_renderNormalText("postJobScreen.productInformation", productObject?.name || "", null, true)}
                   {_renderNormalText("postJobScreen.productName", initialData['item-name'] || "", null, true)}
                   {_renderNormalText("postJobScreen.productWeight", initialData['item-weight'] || "", "searchJobScreen.ton", true)}
                 </View>
@@ -397,7 +398,6 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                   <RoundedButton style={[FULL, BORDER_RADIUS_20, GREY_TEXT]} onPress={() => navigation.goBack()} text={"common.back"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
                 </View>
                 <View style={[WRAPPER_TOP, FULL]}>
-                  {/* <RoundedButton style={[FULL, BORDER_RADIUS_20, ROUND_BUTTON_CONTAINER_CONFIRM]} onPress={handleSubmit(onSubmit)} text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER_CONFIRM} textStyle={ROUND_BUTTON_TEXT} /> */}
                   <RoundedButton style={[FULL, BORDER_RADIUS_20, ROUND_BUTTON_CONTAINER_CONFIRM]} onPress={() => onSubmit(initialData)} text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER_CONFIRM} textStyle={ROUND_BUTTON_TEXT} />
                 </View>
               </View>
@@ -405,7 +405,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
 
 
           </View>
-        </View>
+        </View> */}
       </View>
     </Screen>
   )
