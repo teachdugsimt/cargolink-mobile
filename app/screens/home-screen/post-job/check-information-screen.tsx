@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import {
   View, ViewStyle, TextStyle,
-  Platform, ImageStyle, ScrollView,
+  Platform, ImageStyle,
 } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
@@ -10,7 +10,6 @@ import { translate } from "../../../i18n"
 import { AddJobElement, Screen, RoundedButton, Icon, } from '../../../components'
 import { AlertMessage } from "../../../utils/alert-form";
 import moment from 'moment-timezone'
-// import 'moment/locale/th';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { color } from "../../../theme"
 import date from 'date-and-time';
@@ -81,7 +80,6 @@ const PADDING_VERTICAL_20: ViewStyle = { paddingVertical: 20 }
 const PADDING_BOTTOM_20: ViewStyle = { paddingBottom: 20 }
 const PADDING_LEFT_10: ViewStyle = { paddingLeft: 10 }
 const PADDING_RIGHT_10: ViewStyle = { paddingRight: 10 }
-const MARGIN_RIGHT_10: ViewStyle = { marginRight: 10 }
 const PADDING_TOP_SMALL: ViewStyle = { marginTop: 5 }
 const shipping_type = {
   1: "PER_TRIP",
@@ -271,11 +269,11 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
 
   const _renderPickupPoint = (status: string, address: string, date: any, time: any, name: string, phoneNumber: string) => {
     let tmpDate
-    if (versatileStore.language == "en")
-      tmpDate = date ? moment(date).locale(versatileStore.language).format("LL") : " "
+    if (versatileStore.language && versatileStore.language == "en")
+      tmpDate = date ? moment(date).locale("en").format("LL") : " "
     else
-      tmpDate = date ? moment(date).locale(versatileStore.language).add(543, 'year').format("LL") : " "
-    let tmpTime = time ? moment(time).locale(versatileStore.language).format("HH:mm") : " "
+      tmpDate = date ? moment(date).locale("th").add(543, 'year').format("LL") : " "
+    let tmpTime = time ? moment(time).locale(versatileStore.language ? versatileStore.language : "th").format("HH:mm") : " "
     const compare = tmpDate + " " + tmpTime
 
     return <View style={PADDING_TOP_20}>
@@ -324,7 +322,11 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
   let productObject
   if (versatileStore.listProductType && versatileStore.listProductType.length > 0 && initialData['item-type'])
     productObject = JSON.parse(JSON.stringify(versatileStore.listProductType)).find(e => e.id == initialData['item-type'])
-  const shippingObject = initialData['shipping-information'] ? JSON.parse(JSON.stringify(initialData['shipping-information'])) : []
+
+  console.log("Raw loadingpoint array :: ", initialData['shipping-information'].length)
+  const shippingObject = !!initialData['shipping-information'] && initialData['shipping-information']
+    && initialData['shipping-information'].length && initialData['shipping-information'].length > 0
+    ? JSON.parse(JSON.stringify(initialData['shipping-information'])) : []
 
   return (
     <Screen unsafe keyboardOffset="little" preset="scroll" bounch={false}>
@@ -380,15 +382,15 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
 
 
 
-{/* 
+
 
             <View style={[TOP_VIEW_2, PADDING_TOP_SMALL]}>
               <View key="PICKUP_POINT" style={MARGIN_HORIZONTTAL_MEDIUM}>
-                {_renderPickupPoint("pickup", initialData['receive-location'] || " "
-                  , initialData['receive-date'] || ""
-                  , initialData['receive-time'] || ""
-                  , initialData['receive-name'] || " "
-                  , initialData['receive-tel-no'] || " ")}
+                {_renderPickupPoint("pickup", initialData['receive-location'] ? initialData['receive-location'] : " "
+                  , initialData['receive-date'] ? initialData['receive-date'] : null
+                  , initialData['receive-time'] ? initialData['receive-time'] : null
+                  , initialData['receive-name'] ? initialData['receive-name'] : " "
+                  , initialData['receive-tel-no'] ? initialData['receive-tel-no'] : " ")}
               </View>
             </View>
 
@@ -396,14 +398,14 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
             {!!shippingObject && shippingObject.length > 0 && shippingObject.map((e, i) => {
               return <View key={"shipping-information-" + i} style={[TOP_VIEW_2, PADDING_TOP_SMALL]}>
                 <View key="PICKUP_POINT" style={MARGIN_HORIZONTTAL_MEDIUM}>
-                  {_renderPickupPoint("shipping", e['shipping-address'] || " "
-                    , e['shipping-date'] || ""
-                    , e['shipping-time'] || ""
-                    , e['shipping-name'] || " "
-                    , e['shipping-tel-no'] || " ")}
+                  {_renderPickupPoint("shipping", e['shipping-address'] ? e['shipping-address'] : " "
+                    , e['shipping-date'] ? e['shipping-date'] : null
+                    , e['shipping-time'] ? e['shipping-time'] : null
+                    , e['shipping-name'] ? e['shipping-name'] : " "
+                    , e['shipping-tel-no'] ? e['shipping-tel-no'] : " ")}
                 </View>
               </View>
-            })} */}
+            })}
 
 
 
