@@ -178,16 +178,16 @@ export const PostJobScreen = observer(function PostJobScreen() {
   }
 
   const _renderSelectedList = (item, section) => {
-    return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name} style={ROOT_FLAT_LIST} onPress={() => {
+    return <TouchableOpacity key={"view-list-section-vehicle-type-" + (item?.name || "")} style={ROOT_FLAT_LIST} onPress={() => {
       if (section == 1) navigation.navigate("selectTruckType", {
-        selectedItem: [item.id.toString()], onSubmitVehicle: (val) => _onSubmitVehicle(val)
+        selectedItem: [item?.id.toString()], onSubmitVehicle: (val) => _onSubmitVehicle(val)
       })
-      else if (section == 2) navigation.navigate("selectProductType", { selectedItem: [item.id.toString()], onSubmitProductType: (val) => _onSubmitProductType(val) })
+      else if (section == 2) navigation.navigate("selectProductType", { selectedItem: [item?.id.toString()], onSubmitProductType: (val) => _onSubmitProductType(val) })
     }}>
       <View style={{ ...BORDER_BOTTOM }}>
         <View style={[VIEW_LIST_IMAGE]}>
           {/* {Platform.OS == "ios" ? */}
-          <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[`${item.id}${item.image}`]}
+          <Image source={section == 1 ? images[MapTruckImageName(item?.id)] : images[`${item?.id}${item?.image}`]}
             style={[IMAGE_LIST, { borderRadius: 0, backgroundColor: '#ffff', borderWidth: 0 }]} height={40} width={section == 1 ? 40 : 40}
             resizeMode={section == 1 ? "contain" : "stretch"} />
           {/* : <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[`${item.id}${item.image}`]}
@@ -198,7 +198,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
           justifyContent: 'space-between'
         }}>
           <View style={{ width: '80%', alignItems: 'flex-start' }}>
-            <Text style={{ fontSize: 15, marginLeft: 20 }}>{item.name}</Text>
+            <Text style={{ fontSize: 15, marginLeft: 20 }}>{item?.name || ""}</Text>
           </View>
 
           <Ionicons name="chevron-forward" size={24} style={{}} />
@@ -298,11 +298,11 @@ export const PostJobScreen = observer(function PostJobScreen() {
                     )}
                     key={'controller-dropdown-vehicle-type'}
                     name={"vehicle-type"}
-                    rules={{ required: true, pattern: /^[a-zA-Z0-9 .!?"-]+$/ }}
+                    rules={{ required: true, pattern: /^\d+$/ }}
                     defaultValue=""
                   />
                 </View>
-                {errors['vehicle-type'] && !dropdown_vehicle_type && <Text style={{ color: color.red }} tx={"postJobScreen.validateTruckType"} />}
+                {errors['vehicle-type'] && (!dropdown_vehicle_type || typeof dropdown_vehicle_type == 'string') && <Text style={{ color: color.red }} tx={"postJobScreen.validateTruckType"} />}
 
                 <Controller
                   control={control}
@@ -316,7 +316,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                       underline={_showDumpField(formControllerValue['vehicle-type']) == true ? true : false}
                       inputStyle={{
                         ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD,
-                        ...CONTENT_TEXT, fontSize: 18
+                        ...CONTENT_TEXT,
                       }}
                       value={value} onChangeText={(text) => onChange(text)} />
                   )}
@@ -407,7 +407,6 @@ export const PostJobScreen = observer(function PostJobScreen() {
                       inputStyle={{
                         ...MARGIN_MEDIUM, ...CONTENT_TEXT,
                         marginBottom: 0, width: '100%', padding: 0,
-                        fontSize: 18
                       }}
                       value={value} onChangeText={(text) => onChange(text)} />
                   )}
@@ -430,7 +429,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                       underline={false}
                       inputStyle={{
                         ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD,
-                        ...CONTENT_TEXT, fontSize: 18
+                        ...CONTENT_TEXT
                       }}
                       value={value} onChangeText={(text) => onChange(text)} />
                   )}
@@ -468,7 +467,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
                           underline={false}
                           inputStyle={{
                             ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD,
-                            ...CONTENT_TEXT, fontSize: 18
+                            ...CONTENT_TEXT
                           }}
                           value={value} onChangeText={(text) => onChange(text)} />
                       )}
