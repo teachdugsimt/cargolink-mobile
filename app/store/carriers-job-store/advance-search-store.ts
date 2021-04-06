@@ -147,6 +147,7 @@ const AdvanceSearchStore = types
           const subMenu = type.subTypes.map((subType, indx) => ({
             ...subType,
             value: subType.id,
+            parentValue: type.id,
             isChecked: false
           }))
           return {
@@ -262,7 +263,12 @@ const AdvanceSearchStore = types
 
     setLocale: function setLocale(locale) {
       self.locale = locale
+    },
+
+    clearParentTruckTypeSelected: function () {
+      self.parentTruckTypeSelected = null
     }
+
   }))
   .views((self) => ({
     get getFilter() {

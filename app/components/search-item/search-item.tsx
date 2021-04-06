@@ -248,7 +248,7 @@ export function SearchItem(props: SearchItemProps) {
         </View>
 
         <View style={PRICE}>
-          <Text text={`${price.toString()} ${'\u0E3F'} / ${priceType}`} style={PRICE_TEXT} preset={'topic'} />
+          <Text text={`${price ? price.toString() : '-'} ${'\u0E3F'} / ${priceType}`} style={PRICE_TEXT} preset={'topic'} />
         </View>
 
       </MainTouchableOpacity>

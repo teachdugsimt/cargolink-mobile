@@ -165,6 +165,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
       AdvanceSearchStore.clearFilterSelected()
       AdvanceSearchStore.clearSelected()
       AdvanceSearchStore.clearFilterCount()
+      AdvanceSearchStore.clearParentTruckTypeSelected()
     }
   }, [])
 

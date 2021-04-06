@@ -142,6 +142,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
       AdvanceSearchStore.clearFilterSelected()
       AdvanceSearchStore.clearSelected()
       AdvanceSearchStore.clearFilterCount()
+      AdvanceSearchStore.clearParentTruckTypeSelected()
     }
   }, [])
 
