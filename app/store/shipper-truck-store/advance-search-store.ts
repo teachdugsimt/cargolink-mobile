@@ -225,6 +225,10 @@ const AdvanceSearchStore = types
 
     clearFilterCount: function () {
       self.filterCount = 0
+    },
+
+    clearParentTruckTypeSelected: function () {
+      self.parentTruckTypeSelected = null
     }
 
   }))

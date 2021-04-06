@@ -1209,7 +1209,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
           <TouchableOpacity activeOpacity={1} style={PRICE} onPress={onOpenModalize} onPressOut={onOpenModalize}>
             <Text
-              text={`${price.toString()} ${'\u0E3F'} / ${priceType === 'PER_TRIP' ? translate('common.round') : translate('common.ton')}`}
+              text={`${price ? price.toString() : '-'} ${'\u0E3F'} / ${priceType === 'PER_TRIP' ? translate('common.round') : translate('common.ton')}`}
               style={PRICE_TEXT} preset={'topicExtra'}
             />
           </TouchableOpacity>
@@ -1293,7 +1293,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
             <View style={PRICE}>
               <Text
-                text={`${price.toString()} ${'\u0E3F'} / ${priceType === 'PER_TRIP' ? translate('common.round') : translate('common.ton')}`}
+                text={`${price ? price.toString() : '-'} ${'\u0E3F'} / ${priceType === 'PER_TRIP' ? translate('common.round') : translate('common.ton')}`}
                 style={PRICE_TEXT} preset={'topicExtra'}
               />
             </View>

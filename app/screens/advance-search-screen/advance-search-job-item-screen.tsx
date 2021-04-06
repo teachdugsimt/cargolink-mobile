@@ -154,7 +154,9 @@ export const AdvanceSearchJobItemScreen = observer(function AdvanceSearchJobItem
         AdvanceSearchJobStore.setSelected(JSON.parse(JSON.stringify(state)))
         return state
       })
-      const clearSelected = AdvanceSearchJobStore.filterSelected[type].filter(({ parentValue }) => parentValue !== id)
+      const clearSelected = AdvanceSearchJobStore.filterSelected
+        && AdvanceSearchJobStore.filterSelected[type]
+          .filter(({ parentValue }) => parentValue !== id)
       AdvanceSearchJobStore.setFilterSelected({
         [type]: clearSelected
       })

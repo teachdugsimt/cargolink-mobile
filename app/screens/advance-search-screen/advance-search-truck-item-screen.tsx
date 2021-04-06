@@ -144,7 +144,9 @@ export const AdvanceSearchTruckItemScreen = observer(function AdvanceSearchTruck
         AdvanceSearchTruckStore.setSelected(JSON.parse(JSON.stringify(state)))
         return state
       })
-      const clearSelected = AdvanceSearchTruckStore.filterSelected[type].filter(({ parentValue }) => parentValue !== id)
+      const clearSelected = AdvanceSearchTruckStore.filterSelected
+        && AdvanceSearchTruckStore.filterSelected[type]
+          .filter(({ parentValue }) => parentValue !== id)
       AdvanceSearchTruckStore.setFilterSelected({
         [type]: clearSelected
       })
