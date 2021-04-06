@@ -342,7 +342,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
 
 
 
-            {/* <View style={TOP_VIEW_2}>
+            <View style={TOP_VIEW_2}>
 
               <View key="TRUCK_INFORMATION" style={MARGIN_HORIZONTTAL_MEDIUM}>
                 <View style={PADDING_TOP_20}>
@@ -376,11 +376,11 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                 </View>
 
               </View>
-            </View> */}
+            </View>
 
 
 
-
+{/* 
 
             <View style={[TOP_VIEW_2, PADDING_TOP_SMALL]}>
               <View key="PICKUP_POINT" style={MARGIN_HORIZONTTAL_MEDIUM}>
@@ -403,7 +403,7 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
                     , e['shipping-tel-no'] || " ")}
                 </View>
               </View>
-            })}
+            })} */}
 
 
 
