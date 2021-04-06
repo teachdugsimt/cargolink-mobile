@@ -200,6 +200,7 @@ const AdvanceSearchStore = types
 
     setParentTruckTypeSelected: function (truckTypeId: number, selected: boolean) {
       const truckSelected = JSON.parse(self.parentTruckTypeSelected)
+      console.log('truckSelected :>> ', truckSelected);
       self.parentTruckTypeSelected = JSON.stringify({
         ...truckSelected,
         [truckTypeId]: selected
