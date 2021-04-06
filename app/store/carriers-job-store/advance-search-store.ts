@@ -40,6 +40,8 @@ const Filter = types.model({
   truckAmountMin: types.maybeNull(types.number),
   truckType: types.maybeNull(types.array(types.number)),
   weight: types.maybeNull(types.number),
+  minWeight: types.maybeNull(types.number),
+  maxWeight: types.maybeNull(types.number),
 })
 
 const ProductType = types.model({
@@ -271,7 +273,7 @@ const AdvanceSearchStore = types
         {
           id: 1,
           type: 'workZonesFrom',
-          topic: translate('advanceSearchScreen.zoneForDesiredJob'),
+          topic: translate('advanceSearchScreen.provinceUpProduct'),
           showSubColumn: 3,
           isChecked: false,
           isMultiSelect: true,
@@ -280,7 +282,7 @@ const AdvanceSearchStore = types
         {
           id: 2,
           type: 'workZonesTo',
-          topic: translate('advanceSearchScreen.zoneForDesiredJob'),
+          topic: translate('advanceSearchScreen.provinceDownProduct'),
           showSubColumn: 3,
           isChecked: false,
           isMultiSelect: true,

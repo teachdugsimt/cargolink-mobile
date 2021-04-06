@@ -186,7 +186,7 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
   useEffect(() => {
     if (versatileStore.list.length) {
       console.log('versatileStore.list.length :>> ', versatileStore.list.length);
-      AdvanceSearchStore.mapMenu()
+      AdvanceSearchStore.mapMenu(versatileStore.language)
     }
   }, [JSON.stringify(versatileStore.list)])
 

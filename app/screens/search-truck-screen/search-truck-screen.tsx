@@ -170,7 +170,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
 
   useEffect(() => {
     if (versatileStore.list.length) {
-      AdvanceSearchStore.mapMenu()
+      AdvanceSearchStore.mapMenu(versatileStore.language)
     }
   }, [JSON.stringify(versatileStore.list)])
 

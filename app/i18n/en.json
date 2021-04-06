@@ -499,7 +499,7 @@
   "advanceSearchScreen": {
     "search": "Search",
     "chooseTruckType": "Choose truck type",
-    "chooseWeight": "Product weight can be selected more than 1",
+    "chooseWeightMoreThanOne": "Product weight can be selected more than 1",
     "zoneForDesiredJob": "Zone for the desired job",
     "weight": "Weight",
     "truckType": "Truck type",

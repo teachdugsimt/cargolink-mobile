@@ -1052,6 +1052,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
       </View>
     )
   }
+
   const RenderButtonAlertReject = () => {
     const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.mainGrey, backgroundColor: color.transparent }
     const btnRejectStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.red, backgroundColor: color.red }
@@ -1203,6 +1204,13 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
               containerStyle={{
                 overflow: 'hidden'
               }}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity activeOpacity={1} style={PRICE} onPress={onOpenModalize} onPressOut={onOpenModalize}>
+            <Text
+              text={`${price.toString()} ${'\u0E3F'} / ${priceType === 'PER_TRIP' ? translate('common.round') : translate('common.ton')}`}
+              style={PRICE_TEXT} preset={'topicExtra'}
             />
           </TouchableOpacity>
 

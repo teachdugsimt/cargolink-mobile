@@ -10,6 +10,8 @@ import { translate } from '../../i18n';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { HeaderLeft, RoundedButton } from '../../components';
 import CarriersJobStore from '../../store/carriers-job-store/carriers-job-store'
+import i18n from 'i18n-js'
+import { useStores } from '../../models';
 
 const { width, height } = Dimensions.get('window')
 
@@ -141,10 +143,11 @@ const getIdFromArraySelected = (arr: Array<any>) => arr.map((attr: any) => attr.
 
 const getRegionId = (arr: Array<any>) => [...new Set(arr.map((attr: any) => attr.parentValue))];
 
-const getValueProductType = (arr: Array<any>) => {
+const getValuesOfArrayAndSorting = (arr: Array<any>) => {
   let result: Array<any> = []
   arr.forEach(({ value }) => result.push(...value))
-  return result.sort()
+  result.sort((a: number, b: number) => a - b)
+  return result
 }
 
 export const AdvanceSearchJobScreen = observer(function AdvanceSearchScreen() {
@@ -154,6 +157,8 @@ export const AdvanceSearchJobScreen = observer(function AdvanceSearchScreen() {
   const navigation = useNavigation()
   const route = useRoute()
 
+  const { versatileStore } = useStores()
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => <Text tx={"searchJobScreen.clear"} onPress={onClear} />,
@@ -162,10 +167,10 @@ export const AdvanceSearchJobScreen = observer(function AdvanceSearchScreen() {
   }, [navigation]);
 
   useEffect(() => {
-    console.log('JSON.parse(JSON.stringify(AdvanceSearchStore.menu)) :>> ', JSON.parse(JSON.stringify(AdvanceSearchStore.menu)));
-    if (!AdvanceSearchStore.menu.length) {
-      AdvanceSearchStore.mapMenu()
-    }
+    // console.log('JSON.parse(JSON.stringify(AdvanceSearchStore.menu)) :>> ', JSON.parse(JSON.stringify(AdvanceSearchStore.menu)));
+    // if (!AdvanceSearchStore.menu.length) {
+    //   AdvanceSearchStore.mapMenu()
+    // }
 
     return () => {
       const values = AdvanceSearchStore.filterSelected ? Object.values(AdvanceSearchStore.filterSelected) : []
@@ -184,6 +189,12 @@ export const AdvanceSearchJobScreen = observer(function AdvanceSearchScreen() {
       console.log('JSON.parse(JSON.stringify(AdvanceSearchStore.filterSelected)) :>> ', JSON.parse(JSON.stringify(AdvanceSearchStore.filterSelected)));
     }, [])
   );
+
+  // useEffect(() => {
+  //   console.log('i18n.locale :>> ', i18n.locale);
+  //   console.log('versatileStore.language :>> ', versatileStore.language);
+  //   AdvanceSearchStore.mapMenu(i18n.locale)
+  // }, [i18n.locale])
 
   const onGoBack = () => {
     AdvanceSearchStore.clearFilterSelected()
@@ -213,19 +224,7 @@ export const AdvanceSearchJobScreen = observer(function AdvanceSearchScreen() {
       page: 0,
       rowsPerPage: 10,
     }
-    /*
-    descending: types.maybeNull(types.boolean),
-    from: types.maybeNull(types.string),
-    page: types.optional(types.number, 0),
-    productType: types.maybeNull(types.array(types.number)),
-    rowsPerPage: types.maybe(types.number),
-    sortBy: types.maybeNull(types.string),
-    to: types.maybeNull(types.string),
-    truckAmountMax: types.maybeNull(types.number),
-    truckAmountMin: types.maybeNull(types.number),
-    truckType: types.maybeNull(types.array(types.number)),
-    weight: types.maybeNull(types.number),
-    */
+
     if (parseItems) {
       const truckTypeValues = parseItems['truckTypes'] ? Object.values(parseItems['truckTypes']) : []
       const arrTruckTypeId = getIdFromArraySelected(truckTypeValues)
@@ -234,20 +233,32 @@ export const AdvanceSearchJobScreen = observer(function AdvanceSearchScreen() {
       const arrProductTypeId = getIdFromArraySelected(productTypeValues)
 
       const truckAmountValues = parseItems['truckAmount'] ? Object.values(parseItems['truckAmount']) : []
-      const arrTruckAmount = getValueProductType(truckAmountValues)
+      const arrTruckAmount = getValuesOfArrayAndSorting(truckAmountValues)
       const truckAmountMin: number = arrTruckAmount[0]
       const truckAmountMax: number = arrTruckAmount[arrTruckAmount.length - 1]
 
       // const workingZones = parseItems['workZones'] ? Object.values(parseItems['workZones']) : []
       // const arrWorkingZoneId = getRegionId(workingZones)
 
+      const workingZoneFrom = parseItems['workZonesFrom'] && parseItems['workZonesFrom'][0] ? parseItems['workZonesFrom'][0].value : null
+      const workingZoneTo = parseItems['workZonesTo'] && parseItems['workZonesTo'][0] ? parseItems['workZonesTo'][0].value : null
+
+      const weightValues = parseItems['weight'] ? Object.values(parseItems['weight']) : []
+      const arrWeight = getValuesOfArrayAndSorting(weightValues)
+      const weightMin: number = arrWeight[0]
+      const weightMax: number = arrWeight[arrWeight.length - 1]
+
+
       filter = {
         ...filter,
+        from: workingZoneFrom,
+        to: workingZoneTo,
         truckType: arrTruckTypeId,
-        // workingZones: arrWorkingZoneId,
         productType: arrProductTypeId,
         truckAmountMin: truckAmountMin,
         truckAmountMax: truckAmountMax,
+        minWeight: weightMin,
+        maxWeight: weightMax,
       }
     }
 

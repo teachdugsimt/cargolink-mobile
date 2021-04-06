@@ -80,6 +80,8 @@ const JobModel = {
       token: types.maybeNull(types.string),
     }))
   })),
+  price: types.maybeNull(types.number),
+  priceType: types.maybeNull(types.string),
 }
 
 const ShipperJob = types.maybeNull(types.model({
