@@ -195,6 +195,7 @@ export const AdvanceSearchJobScreen = observer(function AdvanceSearchScreen() {
     AdvanceSearchStore.clearFilterSelected()
     AdvanceSearchStore.clearSelected()
     AdvanceSearchStore.clearFilterCount()
+    AdvanceSearchStore.clearParentTruckTypeSelected()
     navigation.goBack()
   }
 
@@ -268,9 +269,10 @@ export const AdvanceSearchJobScreen = observer(function AdvanceSearchScreen() {
     AdvanceSearchStore.clearFilterSelected()
     AdvanceSearchStore.clearSelected()
     AdvanceSearchStore.clearFilterCount()
+    AdvanceSearchStore.clearParentTruckTypeSelected()
   }
 
-  const deleteTypeSelected = (id: number, type: string) => {
+  const deleteTypeSelected = (id: number, type: string, parentId?: number) => {
     const index = AdvanceSearchStore.filterSelected[type].findIndex(({ id: idx }) => idx === id)
     const parseItems = JSON.parse(JSON.stringify(AdvanceSearchStore.filterSelected))
     delete parseItems[type][index]
@@ -279,7 +281,11 @@ export const AdvanceSearchJobScreen = observer(function AdvanceSearchScreen() {
       [type]: newItemSelected
     })
     const parseSelectedItems = JSON.parse(AdvanceSearchStore.selected)
-    delete parseSelectedItems[type][id]
+    if (type === 'truckTypes') {
+      delete parseSelectedItems[type][parentId][id]
+    } else {
+      delete parseSelectedItems[type][id]
+    }
     AdvanceSearchStore.setSelected(parseSelectedItems)
   }
 
@@ -308,7 +314,7 @@ export const AdvanceSearchJobScreen = observer(function AdvanceSearchScreen() {
               <View style={SUB_MENU_SELECTED}>
                 {AdvanceSearchStore.filterSelected && AdvanceSearchStore.filterSelected[type]?.map((data: any, i: number) => {
                   return (
-                    <TouchableOpacity key={`selected-item-${i}`} style={ITEM} onPress={() => deleteTypeSelected(data.id, type)}>
+                    <TouchableOpacity key={`selected-item-${i}`} style={ITEM} onPress={() => deleteTypeSelected(data.id, type, data.parentValue)}>
                       <Text text={data.name} style={ITEM_TEXT} />
                       <MaterialCommunityIcons name={'close-circle'} size={18} color={color.line} style={ICON} />
                     </TouchableOpacity>
