@@ -446,6 +446,7 @@ export const MyJobScreen = observer(function MyJobScreen(props: any) {
     // navigation.setOptions({
     //   headerCenter: () => (<RenderHeader text={"myJobScreen.myJob"} />),
     // });
+    onRefresh()
     if (!TruckTypeStore.list.length) {
       TruckTypeStore.find()
     }
@@ -500,6 +501,8 @@ export const MyJobScreen = observer(function MyJobScreen(props: any) {
   //   });
   // }, [lang])
 
+  console.log("Loading Booking Store :: ", BookingStore.loading)
+
   const _renderFlatList = (data) => (
     <FlatList
       data={data}
@@ -507,11 +510,12 @@ export const MyJobScreen = observer(function MyJobScreen(props: any) {
       keyExtractor={item => item.id}
       onEndReached={() => onScrollList()}
       onEndReachedThreshold={0.1}
-      contentContainerStyle={{ flexGrow: 1 }}
-      ListEmptyComponent={<EmptyListMessage />}
+      // contentContainerStyle={{ flexGrow: 1 }}
+      ListEmptyComponent={<EmptyListMessage containerStyle={{ marginTop: 50 }} />}
       onMomentumScrollBegin={() => setOnEndReachedCalledDuringMomentum(false)}
       refreshControl={
         <RefreshControl
+          style={!BookingStore.loading ? { display: 'none' } : {}}
           refreshing={BookingStore.loading}
           onRefresh={onRefresh}
         />

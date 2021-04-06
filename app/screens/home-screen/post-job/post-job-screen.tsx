@@ -153,7 +153,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
     PostJobStore.setPostJob(1, data)
     let status_action = JSON.parse(JSON.stringify(StatusStore.status))
     if (status_action == "add")
-      navigation.navigate("receivePoint")
+      navigation.navigate("Home", { screen: "receivePoint" })
     else navigation.navigate("MyJob", { screen: "receivePoint" })
   }
 

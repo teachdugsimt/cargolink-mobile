@@ -21,7 +21,7 @@ const FULL: ViewStyle = {
 
 const TOP_VIEW: ViewStyle = {
   paddingTop: Platform.OS == "ios" ? 10 : 10,
-  flex: Platform.OS == "ios" ? 0.65 : 0.85,
+  flex: Platform.OS == "ios" ? 0.7 : 0.85,
   backgroundColor: color.textWhite,
   justifyContent: 'center',
 }
@@ -38,7 +38,7 @@ const TEXT_VIEW: ViewStyle = {
   backgroundColor: color.textWhite,
 }
 const VIEW_BUTTON: ViewStyle = {
-  flex: 1,
+  // flex: 1,
   backgroundColor: color.textWhite,
   justifyContent: 'center',
   alignItems: 'center',
@@ -49,6 +49,7 @@ const VIEW_BUTTON: ViewStyle = {
 
 const BUTTON_CONTAINER: ViewStyle = {
   // borderColor: color.mainGrey,
+  height: 40,
   backgroundColor: color.primary
 }
 

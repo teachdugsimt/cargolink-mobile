@@ -254,7 +254,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
     console.log("position final for REACEIVE POINT :: => ,", final)
     let status_action = JSON.parse(JSON.stringify(StatusStore.status))
     if (status_action == "add")
-      navigation.navigate("checkInformation")
+      navigation.navigate("Home", { screen: "checkInformation" })
     else navigation.navigate("MyJob", { screen: "checkInformation" })
   }
 
