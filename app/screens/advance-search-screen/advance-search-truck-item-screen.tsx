@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { Dimensions, ScrollView, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native'
 import { Text } from '../../components/text/text'
 import { color, spacing } from '../../theme'
 import { observer } from 'mobx-react-lite';
-import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/core';
+import { useNavigation, useRoute } from '@react-navigation/core';
 import { HeaderCenter } from '../../components';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import AdvanceSearchTruckStore from '../../store/shipper-truck-store/advance-search-store'

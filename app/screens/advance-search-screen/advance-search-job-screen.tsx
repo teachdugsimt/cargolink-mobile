@@ -10,8 +10,6 @@ import { translate } from '../../i18n';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { HeaderLeft, RoundedButton } from '../../components';
 import CarriersJobStore from '../../store/carriers-job-store/carriers-job-store'
-import i18n from 'i18n-js'
-import { useStores } from '../../models';
 
 const { width, height } = Dimensions.get('window')
 
@@ -155,9 +153,6 @@ export const AdvanceSearchJobScreen = observer(function AdvanceSearchScreen() {
   // const [selectedCount, setSelectedCount] = useState<any>({})
 
   const navigation = useNavigation()
-  const route = useRoute()
-
-  const { versatileStore } = useStores()
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -184,11 +179,11 @@ export const AdvanceSearchJobScreen = observer(function AdvanceSearchScreen() {
     }
   }, [])
 
-  useFocusEffect(
-    useCallback(() => {
-      console.log('JSON.parse(JSON.stringify(AdvanceSearchStore.filterSelected)) :>> ', JSON.parse(JSON.stringify(AdvanceSearchStore.filterSelected)));
-    }, [])
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     console.log('JSON.parse(JSON.stringify(AdvanceSearchStore.filterSelected)) :>> ', JSON.parse(JSON.stringify(AdvanceSearchStore.filterSelected)));
+  //   }, [])
+  // );
 
   // useEffect(() => {
   //   console.log('i18n.locale :>> ', i18n.locale);
@@ -240,8 +235,8 @@ export const AdvanceSearchJobScreen = observer(function AdvanceSearchScreen() {
       // const workingZones = parseItems['workZones'] ? Object.values(parseItems['workZones']) : []
       // const arrWorkingZoneId = getRegionId(workingZones)
 
-      const workingZoneFrom = parseItems['workZonesFrom'] && parseItems['workZonesFrom'][0] ? parseItems['workZonesFrom'][0].value : null
-      const workingZoneTo = parseItems['workZonesTo'] && parseItems['workZonesTo'][0] ? parseItems['workZonesTo'][0].value : null
+      const workingZoneFrom = parseItems['workZonesFrom'] && parseItems['workZonesFrom'][0] ? parseItems['workZonesFrom'][0].name : null
+      const workingZoneTo = parseItems['workZonesTo'] && parseItems['workZonesTo'][0] ? parseItems['workZonesTo'][0].name : null
 
       const weightValues = parseItems['weight'] ? Object.values(parseItems['weight']) : []
       const arrWeight = getValuesOfArrayAndSorting(weightValues)

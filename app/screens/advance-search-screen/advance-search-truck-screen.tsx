@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect } from 'react'
 import { observer } from 'mobx-react-lite';
 import { Dimensions, ScrollView, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { Text } from '../../components/text/text';
 import Icon from "react-native-vector-icons/Ionicons"
 import { color, spacing } from '../../theme';
 import AdvanceSearchStore from '../../store/shipper-truck-store/advance-search-store';
-import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/core';
 import { translate } from '../../i18n';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { HeaderLeft, RoundedButton } from '../../components';
@@ -102,33 +102,6 @@ const getTopicByType = (type: string) => {
   }
 }
 
-const setFilterTypeId = (type: string) => {
-  try {
-    const selected = JSON.parse(AdvanceSearchStore.selected)
-    const dataWithType = selected[type]
-    // console.log('dataWithType :>> ', dataWithType);
-    if (!dataWithType) return []
-    let arrTypes = []
-    if (type === 'truckTypes') {
-      const values = Object.values(dataWithType)
-      values.forEach(v => {
-        const res = Object.keys(v).filter(k => v[k])
-        arrTypes.push(...res)
-      })
-    } else if (type === 'weight') {
-      console.log('weight')
-      const res = Object.keys(dataWithType).filter(k => dataWithType[k])
-      arrTypes.push(...res)
-    } else {
-      const res = Object.keys(dataWithType).filter(k => dataWithType[k])
-      arrTypes.push(...res)
-    }
-    return arrTypes
-  } catch (e) {
-    return []
-  }
-}
-
 const getIdFromArraySelected = (arr: Array<any>) => arr.map((attr: any) => attr.value)
 
 const getRegionId = (arr: Array<any>) => [...new Set(arr.map((attr: any) => attr.parentValue))];
@@ -156,7 +129,6 @@ export const AdvanceSearchTruckScreen = observer(function AdvanceSearchScreen() 
   // const [selectedCount, setSelectedCount] = useState<any>({})
 
   const navigation = useNavigation()
-  const route = useRoute()
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -183,35 +155,11 @@ export const AdvanceSearchTruckScreen = observer(function AdvanceSearchScreen() 
     }
   }, [])
 
-  useFocusEffect(
-    useCallback(() => {
-      // let objType: any = {}
-      // let objCountType: any = {}
-      // let countType: number = 0
-      // AdvanceSearchStore.menu.forEach(({ type }) => {
-      //   const arrTypeId = setFilterTypeId(type)
-      //   objType = {
-      //     ...objType,
-      //     [type]: arrTypeId
-      //   }
-      //   objCountType = {
-      //     ...objCountType,
-      //     [type]: arrTypeId.length
-      //   }
-      //   countType += arrTypeId.length
-      // })
-
-      // AdvanceSearchStore.setFilterTypeId(objType)
-      // AdvanceSearchStore.setFilterCount(countType)
-      // setSelectedCount(prevState => ({
-      //   ...prevState,
-      //   ...objCountType
-      // }))
-
-      console.log('JSON.parse(JSON.stringify(AdvanceSearchStore.filterSelected)) :>> ', JSON.parse(JSON.stringify(AdvanceSearchStore.filterSelected)));
-
-    }, [])
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     console.log('JSON.parse(JSON.stringify(AdvanceSearchStore.filterSelected)) :>> ', JSON.parse(JSON.stringify(AdvanceSearchStore.filterSelected)));
+  //   }, [])
+  // );
 
   const onGoBack = () => {
     AdvanceSearchStore.clearFilterSelected()

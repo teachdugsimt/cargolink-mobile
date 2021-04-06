@@ -123,60 +123,22 @@ const Item = (data) => {
   )
 }
 
-const initialState = {
-  listLength: 0,
-  filterLength: 0,
-  arrayFilter: [],
-}
-
 let PAGE = 0;
 
 export const SearchJobScreen = observer(function SearchJobScreen() {
   const navigation = useNavigation()
 
-  const [{ listLength, filterLength, arrayFilter }, setState] = useState(initialState)
   const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState<boolean>(true)
-  const [selectSearch, setSelectSearch] = useState({})
 
   const { versatileStore } = useStores()
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     const { productType, truckAmountMax, truckAmountMin, truckType, weight } = JSON.parse(JSON.stringify(AdvanceSearchStore.filter))
-  //     const arrayFilter = [
-  //       ...[...productType || []],
-  //       ...[...truckType || []],
-  //       weight,
-  //       truckAmountMax || truckAmountMin
-  //     ].filter(Boolean)
-
-  //     const length = arrayFilter.length
-
-  //     setState(prevState => ({
-  //       ...prevState,
-  //       filterLength: length,
-  //       arrayFilter: arrayFilter
-  //     }))
-  //   }, [])
-  // );
-
   useEffect(() => {
-    CarriersJobStore.setDefaultOfList()
-    if (!arrayFilter.length) {
-      CarriersJobStore.find()
-    } else {
-      CarriersJobStore.find(AdvanceSearchStore.filter)
-    }
-  }, [JSON.stringify(arrayFilter)])
-
-  useEffect(() => {
-
+    CarriersJobStore.find(AdvanceSearchStore.filter)
     return () => {
       PAGE = 0
       // AdvanceSearchStore.clearMenu()
       AdvanceSearchStore.setFilter({})
       CarriersJobStore.setDefaultOfList()
-      setState(initialState)
       AdvanceSearchStore.clearFilterSelected()
       AdvanceSearchStore.clearSelected()
       AdvanceSearchStore.clearFilterCount()
@@ -189,33 +151,6 @@ export const SearchJobScreen = observer(function SearchJobScreen() {
       AdvanceSearchStore.mapMenu(versatileStore.language)
     }
   }, [JSON.stringify(versatileStore.list)])
-
-  useEffect(() => {
-    if (Object.keys(selectSearch)) {
-      const { productType, truckAmountMax, truckAmountMin, truckType, weight } = JSON.parse(JSON.stringify(AdvanceSearchStore.filter))
-      const arrayFilter = [
-        ...[...productType || []],
-        ...[...truckType || []],
-        weight,
-        truckAmountMax || truckAmountMin
-      ].filter(Boolean)
-
-      const length = arrayFilter.length
-
-      setState(prevState => ({
-        ...prevState,
-        filterLength: length,
-        arrayFilter: arrayFilter
-      }))
-    }
-  }, [selectSearch])
-
-  useEffect(() => {
-    setState(prevState => ({
-      ...prevState,
-      listLength: CarriersJobStore.list.length,
-    }))
-  }, [CarriersJobStore.loading])
 
   const renderItem = ({ item }) => (
     <Item {...item} />
