@@ -89,7 +89,9 @@
     "inputValue": "กรุณาใส่ข้อมูล",
     "price": "ราคา",
     "bath": "บาท",
-    "add": "เพิ่ม"
+    "add": "เพิ่ม",
+    "round": "เที่ยว",
+    "ton": "ตัน"
   },
   "commentScreen": {
     "yourComment": "ความคิดเห็นของคุณ",
@@ -504,6 +506,13 @@
     "chooseWeightMoreThanOne": "น้ำหนักสินค้าเลือกได้มากกว่า 1",
     "zoneForDesiredJob": "โซนวิ่งงานที่ต้องการ",
     "weight": "น้ำหนัก",
-    "truckType": "ประเภทรถ"
+    "truckType": "ประเภทรถ",
+    "provinceUpProduct": "จังหวัดขึ้นสินค้า",
+    "provinceDownProduct": "จังหวัดลงสินค้า",
+    "productType": "ประเภทสินค้า",
+    "truckAmount": "จำนวนรถ",
+    "truckAmountRequired": "จำนวนรถที่ต้องการ",
+    "allProductType": "ประเภทสินค้าทั้งหมด",
+    "ton": "ตัน"
   }
 }

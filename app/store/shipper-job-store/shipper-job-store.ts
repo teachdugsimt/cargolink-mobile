@@ -45,7 +45,9 @@ const ShipperJob = types.model({
   })),
   status: types.maybeNull(types.number),
   quotationNumber: types.maybeNull(types.number),
-  isLiked: types.maybeNull(types.optional(types.boolean, false))
+  isLiked: types.maybeNull(types.optional(types.boolean, false)),
+  price: types.maybeNull(types.number),
+  priceType: types.maybeNull(types.string),
 })
 
 const Directions = types.model({
@@ -276,7 +278,9 @@ const ShipperJobStore = types
           fullName: null,
           mobileNo: '',
           email: null
-        }
+        },
+        price: 0,
+        priceType: null
       })
     },
 

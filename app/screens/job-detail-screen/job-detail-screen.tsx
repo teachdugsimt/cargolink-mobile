@@ -83,6 +83,7 @@ const LOCATION_BOX: ViewStyle = {
   paddingRight: spacing[0]
 }
 const PRODUCT_ROOT: ViewStyle = {
+  position: 'relative',
   flexDirection: 'column',
   paddingVertical: spacing[3],
   paddingHorizontal: spacing[5],
@@ -138,7 +139,7 @@ const BOTTOM_ROOT: ViewStyle = {
 }
 const BTN_STYLE: ViewStyle = {
   flex: 1,
-  borderRadius: Dimensions.get('window').width / 2,
+  borderRadius: deviceWidht / 2,
   marginHorizontal: spacing[3]
 }
 const CALL_TEXT: TextStyle = {
@@ -166,14 +167,14 @@ const CONTENT_SMALL: ViewStyle = {
   paddingTop: spacing[1],
 }
 const FLOAT_CONTAINER: ViewStyle = {
-  width: Math.floor(Dimensions.get('window').width * (3 / 4)),
+  width: Math.floor(deviceWidht * (3 / 4)),
   position: 'absolute',
   justifyContent: 'center',
   alignItems: 'center',
   top: -18,
   left: '50%',
   transform: [{
-    translateX: -Math.floor(Dimensions.get('window').width / 3),
+    translateX: -Math.floor(deviceWidht / 3),
   }],
   height: 0,
   borderBottomWidth: 100,
@@ -211,7 +212,7 @@ const LOGO_ROOT: ViewStyle = {
 const LOGO: ImageStyle = {
   width: 40,
   height: 40,
-  borderRadius: Math.round(Dimensions.get('window').width + Dimensions.get('window').height) / 2,
+  borderRadius: Math.round(deviceWidht + deviceHeight) / 2,
 }
 const TRANSPORT_BY: ViewStyle = {
   flexDirection: 'row',
@@ -226,7 +227,7 @@ const PHONE: ViewStyle = {
   alignItems: 'center',
   marginLeft: spacing[2],
   padding: spacing[1],
-  borderRadius: Dimensions.get('window').width / 2,
+  borderRadius: deviceWidht / 2,
   backgroundColor: color.line,
 }
 const BTN_VIEW_TRUCK: ViewStyle = {
@@ -234,6 +235,20 @@ const BTN_VIEW_TRUCK: ViewStyle = {
   paddingVertical: spacing[1],
   backgroundColor: color.primary,
   borderRadius: 4,
+}
+const PRICE: ViewStyle = {
+  position: 'absolute',
+  right: 0,
+  top: 0,
+  backgroundColor: color.blue,
+  borderTopLeftRadius: deviceWidht / 2,
+  borderBottomLeftRadius: deviceWidht / 2,
+  paddingVertical: spacing[1] + 2,
+  paddingHorizontal: spacing[4],
+  marginTop: spacing[3],
+}
+const PRICE_TEXT: TextStyle = {
+  color: color.textWhite
 }
 
 const Dot = (data) => (<LottieView
@@ -288,7 +303,7 @@ const PickUpPoint = ({ to, from, distances, onPress, containerStyle = {}, status
           <Dot color={color.primary} />
           <Text
             text={`${translate('common.from')}  :`}
-            style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 40 : 48, justifyContent: 'flex-end' }}
+            style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 50 : 48, justifyContent: 'flex-end' }}
           />
           <View style={{ flexShrink: 1 }}>
             <View style={{ width: '80%' }}>
@@ -326,7 +341,7 @@ const PickUpPoint = ({ to, from, distances, onPress, containerStyle = {}, status
                 <Dot color={color.success} />
                 <Text
                   text={`${translate('common.to')}  :`}
-                  style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 40 : 48 }}
+                  style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 50 : 48 }}
                 />
                 <View style={{ flexShrink: 1 }}>
                   <View>
@@ -393,7 +408,7 @@ const PickUpPointSmall = ({ to, from, distances, containerStyle = {} }) => {
           <Dot color={color.primary} />
           <Text
             text={`${translate('common.from')}  :`}
-            style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 40 : 48, justifyContent: 'flex-end' }}
+            style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 50 : 48, justifyContent: 'flex-end' }}
           />
           <View style={{ flexShrink: 1, flexDirection: 'row' }}>
             <Text text={fromProvinceHeader} style={[LOCATION_TEXT, { width: '80%' }]} numberOfLines={1} />
@@ -405,7 +420,7 @@ const PickUpPointSmall = ({ to, from, distances, containerStyle = {} }) => {
             <Dot color={color.success} />
             <Text
               text={`${translate('common.to')}  :`}
-              style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 40 : 48 }}
+              style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 50 : 48 }}
             />
             <View style={{ flexShrink: 1, flexDirection: 'row' }}>
               <Text text={toProvinceHeader} style={LOCATION_TEXT} numberOfLines={1} />
@@ -675,6 +690,8 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     owner,
     quotations,
     truck,
+    price,
+    priceType = translate('common.round'),
   } = JSON.parse(JSON.stringify(CarriersJobStore.data))
 
   const route = useRoute()
@@ -1035,6 +1052,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
       </View>
     )
   }
+
   const RenderButtonAlertReject = () => {
     const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.mainGrey, backgroundColor: color.transparent }
     const btnRejectStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.red, backgroundColor: color.red }
@@ -1189,6 +1207,13 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             />
           </TouchableOpacity>
 
+          <TouchableOpacity activeOpacity={1} style={PRICE} onPress={onOpenModalize} onPressOut={onOpenModalize}>
+            <Text
+              text={`${price.toString()} ${'\u0E3F'} / ${priceType === 'PER_TRIP' ? translate('common.round') : translate('common.ton')}`}
+              style={PRICE_TEXT} preset={'topicExtra'}
+            />
+          </TouchableOpacity>
+
           <TouchableOpacity style={{ position: 'absolute', right: -spacing[5], top: -spacing[4] }} onPress={onOpenModalize} onPressOut={onOpenModalize}>
             <SwipeUpArrows color={color.disable} />
           </TouchableOpacity>
@@ -1265,6 +1290,14 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                 <Text text={`${translate('jobDetailScreen.weightTon')} : ${weight}`} style={TEXT} />
               </View>
             </View>
+
+            <View style={PRICE}>
+              <Text
+                text={`${price.toString()} ${'\u0E3F'} / ${priceType === 'PER_TRIP' ? translate('common.round') : translate('common.ton')}`}
+                style={PRICE_TEXT} preset={'topicExtra'}
+              />
+            </View>
+
           </View>
 
         </View>
@@ -1425,7 +1458,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
       {showOwnerAccount && (<View style={BOTTOM_ROOT}>
         <Button
           testID="call-with-owner"
-          style={[BTN_STYLE, { backgroundColor: color.line }]}
+          style={[BTN_STYLE, { backgroundColor: color.blue }]}
           children={
             <View style={{ alignItems: 'center', flexDirection: 'row' }}>
               <MaterialCommunityIcons name={'phone'} size={24} color={color.textWhite} style={{ paddingRight: spacing[2] }} />

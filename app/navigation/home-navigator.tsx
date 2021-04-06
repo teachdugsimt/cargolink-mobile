@@ -10,12 +10,12 @@ import { Text, HeaderCenter, HeaderLeft } from "../components"
 import { color } from '../theme'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import {
-  DetailScreen, HomeScreen, JobDetailScreen, MyVehicle, PostJobScreen, SearchJobScreen, AdvanceSearchScreen,
+  DetailScreen, HomeScreen, JobDetailScreen, MyVehicle, PostJobScreen, SearchJobScreen,
   UploadVehicleScreen, SuccessUpload,
   VehicleDetailScreen, CheckInformationScreen,
   ShipperProfileScreen, ReceivePointScreen, FeedbackScreen, SearchTruckScreen,
-  PostSuccessScreen, AdvanceSearchTruckScreen, TruckDetailScreen, SelectJobScreen, CommentScreen,
-  CarrierProfileScreen, SelectTruckScreen, NewAdvanceSearchScreen, AdvanceSearchItemScreen, SelectTruckTypeScreen, SelectProductTypeScreen
+  PostSuccessScreen, TruckDetailScreen, SelectJobScreen, CommentScreen,
+  CarrierProfileScreen, SelectTruckScreen, AdvanceSearchJobScreen, AdvanceSearchTruckItemScreen, SelectTruckTypeScreen, SelectProductTypeScreen, AdvanceSearchTruckScreen, AdvanceSearchJobItemScreen
 } from "../screens"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -34,7 +34,7 @@ export type PrimaryHomeParamList = {
   home: undefined
   postjob: undefined
   searchJob: undefined
-  advanceSearch: undefined
+  // advanceSearch: undefined
   jobDetail: undefined
   searchTruck: undefined
   uploadVehicle: undefined
@@ -44,7 +44,7 @@ export type PrimaryHomeParamList = {
   shipperProfile: undefined
   receivePoint: undefined
   feedback: undefined
-  advanceSearchJob: undefined
+  // advanceSearchJob: undefined
   truckDetail: undefined,
   checkInformation: undefined
   postSuccess: undefined
@@ -54,8 +54,10 @@ export type PrimaryHomeParamList = {
   carrierProfile: undefined
   jobDetailOwner: undefined
   truckDetailOwner: undefined
-  newAdvanceSearch: undefined
-  advanceSearchItem: undefined
+  advanceSearchJob: undefined
+  advanceSearchTruck: undefined
+  advanceSearchTruckItem: undefined
+  advanceSearchJobItem: undefined
   selectTruckType: undefined
   selectProductType: undefined
   // addAddress: undefined
@@ -143,12 +145,12 @@ export function HomeNavigator() {
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
           headerHideShadow: true
         })} />
-      <Stack.Screen name="advanceSearch" component={AdvanceSearchScreen}
+      {/* <Stack.Screen name="advanceSearch" component={AdvanceSearchScreen}
         options={({ navigation, route }) => ({
           headerRight: () => <Text tx={"searchJobScreen.clear"} onPress={() => console.log('Clear all!!')} />,
           headerCenter: () => <HeaderCenter tx={"searchJobScreen.settingSearch"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
-        })} />
+        })} /> */}
       <Stack.Screen name="jobDetail" component={JobDetailScreen}
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"jobDetailScreen.jobDetail"} />,
@@ -223,12 +225,12 @@ export function HomeNavigator() {
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
       />
-      <Stack.Screen name="advanceSearchJob" component={AdvanceSearchTruckScreen}
+      {/* <Stack.Screen name="advanceSearchJob" component={AdvanceSearchTruckScreen}
         options={({ navigation, route }) => ({
           headerRight: () => <Text tx={"searchJobScreen.clear"} onPress={() => console.log('Clear all!!')} />,
           headerCenter: () => <HeaderCenter tx={"searchJobScreen.settingSearch"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
-        })} />
+        })} /> */}
       <Stack.Screen
         name="truckDetail"
         component={TruckDetailScreen}
@@ -261,13 +263,24 @@ export function HomeNavigator() {
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
       />
-      <Stack.Screen name="newAdvanceSearch" component={NewAdvanceSearchScreen}
+      <Stack.Screen name="advanceSearchJob" component={AdvanceSearchJobScreen}
         options={({ navigation, route }) => ({
           headerRight: () => <Text tx={"searchJobScreen.clear"} onPress={() => console.log('Clear all!!')} />,
           headerCenter: () => <HeaderCenter tx={"searchJobScreen.settingSearch"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })} />
-      <Stack.Screen name="advanceSearchItem" component={AdvanceSearchItemScreen}
+      <Stack.Screen name="advanceSearchTruck" component={AdvanceSearchTruckScreen}
+        options={({ navigation, route }) => ({
+          headerRight: () => <Text tx={"searchJobScreen.clear"} onPress={() => console.log('Clear all!!')} />,
+          headerCenter: () => <HeaderCenter tx={"searchJobScreen.settingSearch"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })} />
+      <Stack.Screen name="advanceSearchTruckItem" component={AdvanceSearchTruckItemScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"searchJobScreen.settingSearch"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })} />
+      <Stack.Screen name="advanceSearchJobItem" component={AdvanceSearchJobItemScreen}
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"searchJobScreen.settingSearch"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),

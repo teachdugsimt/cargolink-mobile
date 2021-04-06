@@ -119,7 +119,9 @@ const Item = (data) => {
     quotationNumber,
     actionStatus,
     statusScreen,
-    onConfirm
+    onConfirm,
+    price,
+    priceType,
   } = data
 
   const myUserId = ProfileStore.data?.userId || ''
@@ -399,6 +401,8 @@ const Item = (data) => {
             paddingTop: spacing[2],
             borderRadius: 6
           },
+          price: price,
+          priceType: priceType === 'PER_TRIP' ? translate('common.round') : translate('common.ton'),
           requiredTouchableOpacityGesture: true,
           onPress: () => onVisible(),
           bottomComponent: () => <RenderFooter />

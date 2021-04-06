@@ -159,7 +159,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
 
     return () => {
       PAGE = 0
-      AdvanceSearchStore.clearMenu()
+      // AdvanceSearchStore.clearMenu()
       AdvanceSearchStore.setFilter({})
       ShipperTruckStore.setDefaultOfList()
       AdvanceSearchStore.clearFilterSelected()
@@ -170,7 +170,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
 
   useEffect(() => {
     if (versatileStore.list.length) {
-      AdvanceSearchStore.mapMenu()
+      AdvanceSearchStore.mapMenu(versatileStore.language)
     }
   }, [JSON.stringify(versatileStore.list)])
 
@@ -198,10 +198,8 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
   }
 
   const onPressAdvanceSearch = () => {
-    navigation.navigate('newAdvanceSearch')
+    navigation.navigate('advanceSearchTruck')
   }
-
-  console.log('AdvanceSearchStore.filterCount :>> ', AdvanceSearchStore.filterCount);
 
   return (
     <View style={{ flex: 1 }}>
