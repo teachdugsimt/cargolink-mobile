@@ -168,39 +168,6 @@ export function HomeNavigator() {
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })} />
 
-      <Stack.Screen name="uploadVehicle" component={UploadVehicleScreen}
-        options={({ navigation, route }) => ({
-          // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
-          headerCenter: () => <HeaderCenter tx={"uploadVehicleScreen.addVehicle"} />,
-          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
-        })} />
-
-      <Stack.Screen
-        name="myVehicle"
-        component={MyVehicle}
-        options={({ navigation, route }) => ({
-          // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
-          headerCenter: () => <HeaderCenter tx={"myVehicleScreen.myTruckHeader"} />,
-          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
-        })}
-      />
-      <Stack.Screen
-        name="vehicleDetail"
-        component={VehicleDetailScreen}
-        options={({ navigation, route }) => ({
-          // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
-          headerCenter: () => <HeaderCenter tx={"myVehicleScreen.myTruckHeader"} />,
-          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
-        })}
-      />
-      <Stack.Screen
-        name="uploadSuccess"
-        component={SuccessUpload}
-        options={({ navigation, route }) => ({
-          headerCenter: () => <HeaderCenter tx={"myVehicleScreen.addNewCar"} />,
-          headerLeft: () => (null),
-        })}
-      />
       <Stack.Screen
         name="shipperProfile"
         component={ShipperProfileScreen}
