@@ -105,6 +105,18 @@ export const AdvanceSearchJobItemScreen = observer(function AdvanceSearchJobItem
         })
         setItems(filtered)
         AdvanceSearchJobStore.replaceParentTruckTypeSelected(JSON.stringify(truckTypeWithoutFalse))
+      } else {
+        AdvanceSearchJobStore.clearParentTruckTypeSelected()
+      }
+    }
+
+    return () => {
+      if (type === 'truckTypes') {
+        // console.log('JSON.parse(JSON.stringify(AdvanceSearchJobStore.filterSelected)) :>> ', JSON.parse(JSON.stringify(AdvanceSearchJobStore.filterSelected)));
+        // console.log('JSON.parse(JSON.stringify(AdvanceSearchJobStore.parentTruckTypeSelected)) :>> ', JSON.parse(JSON.stringify(AdvanceSearchJobStore.parentTruckTypeSelected)));
+        if (!AdvanceSearchJobStore.filterSelected || !AdvanceSearchJobStore.filterSelected[type] || !AdvanceSearchJobStore.filterSelected[type].length) {
+          AdvanceSearchJobStore.clearParentTruckTypeSelected()
+        }
       }
     }
   }, [])
@@ -156,9 +168,11 @@ export const AdvanceSearchJobItemScreen = observer(function AdvanceSearchJobItem
       })
       const clearSelected = AdvanceSearchJobStore.filterSelected
         && AdvanceSearchJobStore.filterSelected[type]
+        && AdvanceSearchJobStore.filterSelected[type].length
+        && AdvanceSearchJobStore.filterSelected[type]
           .filter(({ parentValue }) => parentValue !== id)
       AdvanceSearchJobStore.setFilterSelected({
-        [type]: clearSelected
+        [type]: clearSelected || null
       })
     }
     AdvanceSearchJobStore.setParentTruckTypeSelected(id, !!!truckTypeSelected[id])
@@ -315,7 +329,7 @@ export const AdvanceSearchJobItemScreen = observer(function AdvanceSearchJobItem
               {data?.map((menu: any, index: number) => {
                 const truckTypeSelected = AdvanceSearchJobStore.parentTruckTypeSelected ? JSON.parse(AdvanceSearchJobStore.parentTruckTypeSelected) : {}
                 const bgColor = truckTypeSelected && truckTypeSelected[menu.id] ? color.primary : color.transparent
-                // const bgColor = itemSelected[type] && itemSelected[type][menu.id] ? color.primary : color.transparent
+
                 return (
                   <TouchableOpacity key={index} style={[ITEM, { backgroundColor: bgColor }]} onPress={() => selectTruckType(menu.id)}>
                     <Text text={menu.name} style={ITEM_TEXT} />

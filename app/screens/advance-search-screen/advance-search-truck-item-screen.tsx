@@ -104,6 +104,18 @@ export const AdvanceSearchTruckItemScreen = observer(function AdvanceSearchTruck
         })
         setItems(filtered)
         AdvanceSearchTruckStore.replaceParentTruckTypeSelected(JSON.stringify(truckTypeWithoutFalse))
+      } else {
+        AdvanceSearchTruckStore.clearParentTruckTypeSelected()
+      }
+    }
+
+    return () => {
+      if (type === 'truckTypes') {
+        // console.log('JSON.parse(JSON.stringify(AdvanceSearchTruckStore.filterSelected)) :>> ', JSON.parse(JSON.stringify(AdvanceSearchTruckStore.filterSelected)));
+        // console.log('JSON.parse(JSON.stringify(AdvanceSearchTruckStore.parentTruckTypeSelected)) :>> ', JSON.parse(JSON.stringify(AdvanceSearchTruckStore.parentTruckTypeSelected)));
+        if (!AdvanceSearchTruckStore.filterSelected || !AdvanceSearchTruckStore.filterSelected[type] || !AdvanceSearchTruckStore.filterSelected[type].length) {
+          AdvanceSearchTruckStore.clearParentTruckTypeSelected()
+        }
       }
     }
   }, [])
@@ -146,9 +158,11 @@ export const AdvanceSearchTruckItemScreen = observer(function AdvanceSearchTruck
       })
       const clearSelected = AdvanceSearchTruckStore.filterSelected
         && AdvanceSearchTruckStore.filterSelected[type]
+        && AdvanceSearchTruckStore.filterSelected[type].length
+        && AdvanceSearchTruckStore.filterSelected[type]
           .filter(({ parentValue }) => parentValue !== id)
       AdvanceSearchTruckStore.setFilterSelected({
-        [type]: clearSelected
+        [type]: clearSelected || null
       })
     }
     AdvanceSearchTruckStore.setParentTruckTypeSelected(id, !!!truckTypeSelected[id])
@@ -272,7 +286,7 @@ export const AdvanceSearchTruckItemScreen = observer(function AdvanceSearchTruck
               {data?.map((menu: any, index: number) => {
                 const truckTypeSelected = AdvanceSearchTruckStore.parentTruckTypeSelected ? JSON.parse(AdvanceSearchTruckStore.parentTruckTypeSelected) : {}
                 const bgColor = truckTypeSelected && truckTypeSelected[menu.id] ? color.primary : color.transparent
-                // const bgColor = itemSelected[type] && itemSelected[type][menu.id] ? color.primary : color.transparent
+
                 return (
                   <TouchableOpacity key={index} style={[ITEM, { backgroundColor: bgColor }]} onPress={() => selectTruckType(menu.id)}>
                     <Text text={menu.name} style={ITEM_TEXT} />
