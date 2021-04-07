@@ -3,7 +3,7 @@
 
 import React from "react"
 import { TextStyle, ViewStyle, Dimensions, View } from "react-native"
-import { color, spacing, typography } from "../../theme"
+import { color, spacing } from "../../theme"
 import { Button } from '../button/button'
 import { Text } from '../text/text'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -49,4 +49,19 @@ export function RoundedButton(props: RoundedButtonProps) {
       </View>
     </Button>
   )
+}
+
+const WRAPPER_TOP: ViewStyle = {
+  padding: 10
+}
+const ROUND_BUTTON_CONTAINER: ViewStyle = {
+  height: 40,
+  backgroundColor: color.primary, borderColor: color.transparent
+}
+export function RoundedButtonStandard(props: RoundedButtonProps) {
+  const { onPress, text } = props
+  return (<View style={WRAPPER_TOP}>
+    <RoundedButton onPress={onPress} text={text} containerStyle={ROUND_BUTTON_CONTAINER} />
+  </View>)
+
 }

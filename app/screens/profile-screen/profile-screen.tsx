@@ -4,7 +4,7 @@ import {
   SectionList, Dimensions, Image, ImageStyle, FlatList, Platform, LayoutAnimation, Alert,
 } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Text, Icon } from "../../components"
+import { Text, Icon, RoundedButtonStandard } from "../../components"
 import { color, images, typography } from "../../theme"
 import ProfileStore from '../../store/profile-store/profile-store'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -15,6 +15,7 @@ import { translate } from "../../i18n"
 import { provinceListEn, provinceListTh, regionListEn, regionListTh } from '../home-screen/manage-vehicle/datasource'
 import i18n from 'i18n-js'
 import StatusStore from '../../store/post-job-store/job-status-store'
+import { CommonActions } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -567,6 +568,10 @@ export const ProfileScreen = observer(function ProfileScreen() {
               ListEmptyComponent={() => _renderEmptyList("profileScreen.noEnoughCar", "profileScreen.fromManageCar",
                 "profileScreen.goManageCar", "myVehicle")}
             />}
+
+            <RoundedButtonStandard onPress={() => navigation.navigate("myVehicle", { formScreen: 'profile' })}
+              text={"homeScreen.manageCar"} />
+
           </View>
         </>}
 

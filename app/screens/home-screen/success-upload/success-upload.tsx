@@ -82,7 +82,7 @@ export const SuccessUpload = observer(function SuccessUpload() {
       </View>
 
       <View style={VIEW_BUTTON}>
-        <RoundedButton testID={"success-vehicle-detail"} onPress={() => navigation.navigate("home")} text={"common.ok"} containerStyle={BUTTON_CONTAINER} textStyle={TEXT_BUTTTON_STYLE} />
+        <RoundedButton testID={"success-vehicle-detail"} onPress={() => navigation.navigate("profile")} text={"common.ok"} containerStyle={BUTTON_CONTAINER} textStyle={TEXT_BUTTTON_STYLE} />
       </View>
     </View>
   )

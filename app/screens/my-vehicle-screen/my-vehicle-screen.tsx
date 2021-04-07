@@ -27,7 +27,7 @@ const BUTTON_ADD: ViewStyle = {
   borderRadius: 25,
   borderColor: color.primary,
   borderWidth: 1,
-  height: 50,
+  height: 40,
   marginLeft: spacing[3],
   marginRight: spacing[3],
   marginTop: spacing[2],
@@ -35,7 +35,7 @@ const BUTTON_ADD: ViewStyle = {
 }
 const TEXT_ADD: TextStyle = {
   color: color.textBlack,
-  fontSize: 16,
+  fontSize: 14,
 }
 const EMPTY_CONTAINER_STYLE: ViewStyle = {
   flex: Platform.OS == "ios" ? 1 : 1.5,
