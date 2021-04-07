@@ -370,7 +370,7 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
           <Image {...imageProps} style={PROFILE_IMAGE} resizeMode={'cover'} />
         </View>
         <View style={{ flex: 3 }}>
-          <Text text={ShipperTruckStore.profile?.companyName || ''} style={TEXT} preset={'topicExtra'} />
+          <Text text={ShipperTruckStore.profile?.companyName || ShipperTruckStore.data?.owner?.companyName || translate('common.anonymous')} style={TEXT} preset={'topicExtra'} />
           <Verified isVerified={false} />
         </View>
       </View>

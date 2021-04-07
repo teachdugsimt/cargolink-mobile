@@ -90,7 +90,8 @@
     "bath": "THB",
     "add": "add ",
     "round": "Round",
-    "ton": "Ton"
+    "ton": "Ton",
+    "anonymous": "Anonymous"
   },
   "commentScreen": {
     "yourComment": "Your Comment",
