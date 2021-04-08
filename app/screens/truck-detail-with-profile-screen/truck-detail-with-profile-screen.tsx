@@ -591,7 +591,7 @@ export const TruckDetailWithProfile = observer(function TruckDetailWithProfile()
               <Image {...imageProps} style={PROFILE_IMAGE} resizeMode={'cover'} />
             </View>
             <View style={{ flex: 3 }}>
-              <Text text={profile?.companyName} style={TEXT} preset={'topicExtra'} />
+              <Text text={profile?.companyName || translate('common.anonymous')} style={TEXT} preset={'topicExtra'} />
               <Verified isVerified={false} />
             </View>
             <View style={{}}>
@@ -624,7 +624,7 @@ export const TruckDetailWithProfile = observer(function TruckDetailWithProfile()
       <View style={BOTTOM_ROOT}>
         <Button
           testID="cancel"
-          style={[BTN_STYLE, { backgroundColor: color.line }]}
+          style={[BTN_STYLE, { backgroundColor: color.blue }]}
           tx={'common.reject'}
           textStyle={CALL_TEXT}
           onPress={cancelBookAJob}

@@ -86,8 +86,6 @@ const BOTTOM_ROOT: ViewStyle = {
   flexDirection: 'row',
   alignItems: 'center',
   paddingVertical: spacing[3],
-  borderTopWidth: 0.5,
-  borderTopColor: color.line,
 }
 const CALL_TEXT: TextStyle = {
   color: color.textWhite,
@@ -416,7 +414,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
       <View style={BOTTOM_ROOT}>
         <Button
           testID="call-with-owner"
-          style={[BTN_STYLE, { backgroundColor: color.line }]}
+          style={[BTN_STYLE, { backgroundColor: color.blue }]}
           children={
             <View style={{ alignItems: 'center', flexDirection: 'row' }}>
               <MaterialCommunityIcons name={'phone'} size={24} color={color.textWhite} style={{ paddingRight: spacing[2] }} />
