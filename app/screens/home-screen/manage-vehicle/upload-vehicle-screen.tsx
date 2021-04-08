@@ -273,7 +273,7 @@ export const UploadVehicleScreen = observer(() => {
 
   const captureImage = async (type, status: string) => {
     setSelectCapture(false)
-    let options = {
+    let options: any = {
       mediaType: type,
       maxWidth: 1024,
       maxHeight: 1024,
@@ -285,7 +285,7 @@ export const UploadVehicleScreen = observer(() => {
     let isCameraPermitted = await requestCameraPermission();
     let isStoragePermitted = await requestExternalWritePermission();
     if (isCameraPermitted && isStoragePermitted) {
-      launchCamera(options, (response) => {
+      launchCamera(options, (response: any) => {
         console.log('Response = ', response);
 
         if (response.didCancel) {
@@ -342,13 +342,13 @@ export const UploadVehicleScreen = observer(() => {
   }
   const chooseFile = (type, status: string) => {
     setSelectCapture(false)
-    let options = {
+    let options: any = {
       mediaType: type,
       maxWidth: 1024,
       maxHeight: 1024,
       quality: 1,
     };
-    launchImageLibrary(options, (response) => {
+    launchImageLibrary(options, (response: any) => {
       console.log('Response = ', response);
 
       if (response.didCancel) {
@@ -409,7 +409,7 @@ export const UploadVehicleScreen = observer(() => {
   const [visible, setvisible] = useState(false)
   const [visible0, setvisible0] = useState(false)
 
-  const [fileFront, setfileFront] = useState({});
+  const [fileFront, setfileFront] = useState<any>({});
   const [fileBack, setfileBack] = useState({});
   const [fileLeft, setfileLeft] = useState({});
   const [fileRight, setfileRight] = useState({});
@@ -465,7 +465,7 @@ export const UploadVehicleScreen = observer(() => {
       return;
     }
 
-    const data_mock_call = {
+    const data_mock_call: any = {
       carrierId: editStatus == "add" ? tokenStore.profile.id : MyVehicleStore.data.id,
       truckType: data['vehicle-type'],
 
@@ -800,8 +800,8 @@ export const UploadVehicleScreen = observer(() => {
   const _deleteDropdown = (regionObj) => {
     let tmpDropdownRegion = ddRegion
     let tmpDropdownProvince = ddProvince
-    let last_province_data = tmpDropdownProvince[tmpDropdownProvince.length-1]
-    if(last_province_data && last_province_data.id && last_province_data.id == regionObj.id){
+    let last_province_data = tmpDropdownProvince[tmpDropdownProvince.length - 1]
+    if (last_province_data && last_province_data.id && last_province_data.id == regionObj.id) {
       tmpDropdownProvince.pop()
     }
     tmpDropdownRegion.pop()
@@ -912,6 +912,11 @@ export const UploadVehicleScreen = observer(() => {
     setrenderNew(!renderNew)
   }
 
+  const _onSubmitVehicle = (params: number) => {
+    control.setValue("vehicle-type", params)
+    setvisible0(!visible0)
+  }
+
   const [selectCapture, setSelectCapture] = useState(false)
 
   let formControllerValue = control.getValues()
@@ -978,21 +983,27 @@ export const UploadVehicleScreen = observer(() => {
             <Text tx={"uploadVehicleScreen.selectVehicleType"} style={{ ...TITLE_TOPIC, ...MARGIN_TOP_BIG }} />
             <View style={WRAP_DROPDOWN}>
 
-              <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN, { alignItems: 'center' }]} onPress={() => setvisible0(true)}>
-                {!dropdown_vehicle_type && <Text style={{ padding: Platform.OS == "android" ? 9 : 0 }} tx={"postJobScreen.pleaseSelectVehicleType"} />}
-                {dropdown_vehicle_type && versatileStore.list && <Text style={{ padding: Platform.OS == "android" ? 9 : 0 }}>{JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == dropdown_vehicle_type).name}</Text>}
-                <Ionicons name="chevron-down" size={20} style={[PADDING_CHEVRON, { paddingTop: Platform.OS == "android" ? 2.5 : 0 }]} />
-              </TouchableOpacity>
+
+
+
 
               <Controller
                 control={control}
                 render={({ onChange, onBlur, value }) => (
-                  <ModalTruckType
-                    visible={visible0}
-                    onTouchOutside={() => setvisible0(false)}
-                    selectedItems={[value]}
-                    onChange={onChange}
-                  />
+                  <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN, { alignItems: 'center' }]} onPress={() =>
+                    navigation.navigate("selectTruckTypeProfile", {
+                      selectedItem: [value], onSubmitVehicle: (val) => _onSubmitVehicle(val)
+                    })}>
+                    {!dropdown_vehicle_type && <Text style={{ padding: Platform.OS == "android" ? 9 : 0 }} tx={"postJobScreen.pleaseSelectVehicleType"} />}
+                    {dropdown_vehicle_type && versatileStore.list && <Text style={{ padding: Platform.OS == "android" ? 9 : 0 }}>{JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == dropdown_vehicle_type).name}</Text>}
+                    <Ionicons name="chevron-down" size={20} style={[PADDING_CHEVRON, { paddingTop: Platform.OS == "android" ? 2.5 : 0 }]} />
+                  </TouchableOpacity>
+                  // <ModalTruckType
+                  //   visible={visible0}
+                  //   onTouchOutside={() => setvisible0(false)}
+                  //   selectedItems={[value]}
+                  //   onChange={onChange}
+                  // />
                 )}
                 key={'controller-dropdown-vehicle-type'}
                 name={"vehicle-type"}
