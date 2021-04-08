@@ -366,6 +366,8 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
     ? 'done-booker'
     : (route.name === 'favoriteCarrierProfile' ? 'done-favorite' : 'done-carrier')
 
+  console.log('Hello world')
+
   return (
     <View style={CONTAINER}>
 
@@ -374,7 +376,7 @@ export const CarrierProfileScreen = observer(function CarrierProfileScreen() {
           <Image {...imageProps} style={PROFILE_IMAGE} resizeMode={'cover'} />
         </View>
         <View style={{ flex: 3 }}>
-          <Text text={CarriersJobStore.profile?.companyName || CarriersJobStore.data?.owner?.companyName} style={TEXT} preset={'topicExtra'} />
+          <Text text={CarriersJobStore.profile?.companyName || CarriersJobStore.data?.owner?.companyName || translate('common.anonymous')} style={TEXT} preset={'topicExtra'} />
           <Verified isVerified={false} />
         </View>
       </View>

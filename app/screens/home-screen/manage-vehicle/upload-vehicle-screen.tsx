@@ -129,6 +129,7 @@ const ROW_UPLOAD: ViewStyle = {
   justifyContent: 'center',
 }
 const ROUND_BUTTON_CONTAINER: ViewStyle = {
+  height: 40,
   backgroundColor: color.primary, borderColor: color.transparent
 }
 const ROUND_BUTTON_TEXT: TextStyle = {
