@@ -6,7 +6,8 @@
  */
 import React from "react"
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
-import { ProfileScreen, UpdateProfileScreen, UploadVehicleScreen, SuccessUpload, MyVehicle, VehicleDetailScreen } from "../screens"
+import { ProfileScreen, UpdateProfileScreen, UploadVehicleScreen, SuccessUpload, MyVehicle, 
+  VehicleDetailScreen, SelectTruckTypeScreen } from "../screens"
 import { HeaderCenter, HeaderLeft, RenderHeader, RenderHeaderProfile } from "../components"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -26,7 +27,8 @@ export type PrimaryProfileParamList = {
   uploadVehicle: undefined
   uploadSuccess: undefined
   vehicleDetail: undefined
-  myVehicle: undefineds
+  myVehicle: undefined
+  selectTruckTypeProfile: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -93,6 +95,14 @@ export function ProfileNavigator() {
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"myVehicleScreen.addNewCar"} />,
           headerLeft: () => (null),
+        })}
+      />
+      <Stack.Screen
+        name="selectTruckTypeProfile"
+        component={SelectTruckTypeScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"postJobScreen.selectVehicleType"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
       />
       {/* <Stack.Screen name="detail" component={DetailScreen} /> */}

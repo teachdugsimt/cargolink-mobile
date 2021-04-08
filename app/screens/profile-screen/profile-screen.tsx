@@ -569,8 +569,8 @@ export const ProfileScreen = observer(function ProfileScreen() {
                 "profileScreen.goManageCar", "myVehicle")}
             />}
 
-            <RoundedButtonStandard onPress={() => navigation.navigate("myVehicle", { formScreen: 'profile' })}
-              text={"homeScreen.manageCar"} />
+            {(!!ProfileStore.data && !!token) && <RoundedButtonStandard onPress={() => navigation.navigate("myVehicle", { formScreen: 'profile' })}
+              text={"homeScreen.manageCar"} />}
 
           </View>
         </>}
