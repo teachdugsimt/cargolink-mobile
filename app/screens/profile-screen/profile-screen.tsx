@@ -394,8 +394,10 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
     let token = tokenStore?.token?.accessToken || null
     if (ProfileStore.data && token) {
-      if (link == "postjob") StatusStore.setStatusScreen("add")
-      navigation.navigate('Home', { screen: link })
+      if (link == "postjob") {
+        StatusStore.setStatusScreen("add")
+        navigation.navigate('Home', { screen: link })
+      } else navigation.navigate("myVehicle", { formScreen: 'profile' })
     }
     else Alert.alert(translate("common.pleaseLogin"))
   }
