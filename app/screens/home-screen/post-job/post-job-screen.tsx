@@ -139,11 +139,43 @@ export const PostJobScreen = observer(function PostJobScreen() {
     defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : (PostJobStore.postjob1 || {})
   });
 
+  const _setRadioDefault = (item) => {
+    let tmp = arrUnit
+    tmp.forEach((e, i) => {
+      if (e.id == item) e.active = true
+      else e.active = false
+    })
+    setArrUnit(tmp)
+  }
+  const _setRadioDump = (item: number) => {
+    let tmp = arrDump
+    tmp.forEach((e, i) => {
+      if (e.id == item) e.active = true
+      else e.active = false
+    })
+    setArrDump(tmp)
+  }
+
+  const [swipe, setswipe] = useState<boolean>(false)
   useEffect(() => {
     AdvanceSearchStore.getProductTypes()
     let token = tokenStore?.token?.accessToken || null
     if (!token) navigation.navigate("signin")
   }, [])
+
+  useEffect(() => {
+    let status_action = JSON.parse(JSON.stringify(StatusStore.status))
+    let data_init = JSON.parse(JSON.stringify(PostJobStore.postjob1))
+    if (status_action != "add" && data_init && Object.keys(data_init).length != 0) {
+      console.log("Data  init On  Edit  Post job : ", data_init)
+      _setRadioDefault(data_init["shipping-type"])
+      if(data_init['dump-field']) _setRadioDump(data_init['dump-field'])
+      setTimeout(() => {
+        control.setValue("vehicle-type", data_init['vehicle-type'])
+        setswipe(!swipe)
+      }, 500);
+    }
+  }, [PostJobStore.postjob1])
 
   const onSubmit = (data) => {
     __DEV__ && console.tron.log("Data Form Post job 1 : ", data)
@@ -155,26 +187,6 @@ export const PostJobScreen = observer(function PostJobScreen() {
     if (status_action == "add")
       navigation.navigate("Home", { screen: "receivePoint" })
     else navigation.navigate("MyJob", { screen: "receivePoint" })
-  }
-
-
-  const _renderSectionModal = (item: any, index: any, onChange: any, section: any) => {
-    return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name + index} style={ROOT_FLAT_LIST} onPress={() => {
-      if (section == 1) setvisible0(false)
-      else if (section == 2) setvisible(false)
-      onChange(item.id)
-    }}>
-      <View style={BORDER_BOTTOM}>
-        <View style={[VIEW_LIST_IMAGE]}>
-          {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
-            <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} />}
-        </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-          <Text style={{ width: '50%', paddingLeft: 20 }}>{item.name}</Text>
-          <Ionicons name="chevron-forward" size={24} style={{ marginRight: 5 }} color={color.line} />
-        </View>
-      </View>
-    </TouchableOpacity>
   }
 
   const _renderSelectedList = (item, section) => {
@@ -263,6 +275,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
   console.log("From control :: ", formControllerValue)
   console.log("Error From control :: ", errors)
+  console.log("Versatile List : ", JSON.parse(JSON.stringify(versatileStore.list)))
 
   return (
     <Screen unsafe keyboardOffset="little" preset="scroll" bounch={false}>

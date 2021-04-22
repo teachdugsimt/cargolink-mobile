@@ -122,6 +122,7 @@ const Item = (data) => {
     onConfirm,
     price,
     priceType,
+    tipper
   } = data
 
   const myUserId = ProfileStore.data?.userId || ''
@@ -156,13 +157,21 @@ const Item = (data) => {
   }
 
   const onEdit = () => {
-    const jobInfoFirstTab = {
+    const shipping_type = {
+      "PER_TRIP": 1,
+      "PER_TON": 2
+    }
+    console.log("Vehicle Types  : ", truckType)
+    const jobInfoFirstTab: any = {
       "vehicle-type": +truckType,
       "car-num": requiredTruckAmount.toString(),
       "item-type": productTypeId,
       "item-name": productName,
       "item-weight": weight.toString(),
+      "shipping-rate": price + "",
+      "shipping-type": shipping_type[priceType],
     }
+    if (tipper == true || tipper == false) jobInfoFirstTab['dump-field'] = tipper == true ? 1 : 2
 
     const shippings = to?.map(shipping => {
       return {

@@ -9,6 +9,7 @@ import { Text } from "../../../components"
 import { translate } from "../../../i18n"
 import { AddJobElement, Screen, RoundedButton, Icon, } from '../../../components'
 import { AlertMessage } from "../../../utils/alert-form";
+import 'moment/locale/th';
 import moment from 'moment-timezone'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { color } from "../../../theme"

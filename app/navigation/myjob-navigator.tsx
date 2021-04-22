@@ -12,7 +12,7 @@ import {
   FeedbackScreen, JobDetailScreen, MyJobScreen, ReceivePointScreen, PostJobScreen,
   CheckInformationScreen,
   PostSuccessScreen,
-  ShipperProfileScreen,
+  ShipperProfileScreen, SelectTruckTypeScreen, SelectProductTypeScreen,
   CarrierProfileScreen, TruckDetailOnlyScreen, TruckDetailWithProfile
 } from "../screens"
 import { color } from "../theme"
@@ -40,6 +40,8 @@ export type PrimaryMyJobParamList = {
   truckDetailOnly: undefined
   myJobDetailOwner: undefined
   truckDetailWithProfile: undefined
+  selectTruckType: undefined
+  selectProductType: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -135,6 +137,23 @@ export function MyJobNavigator() {
       <Stack.Screen name="truckDetailWithProfile" component={TruckDetailWithProfile}
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"truckDetailScreen.truckDetail"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+
+      <Stack.Screen
+        name="selectTruckType"
+        component={SelectTruckTypeScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"postJobScreen.selectVehicleType"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+      <Stack.Screen
+        name="selectProductType"
+        component={SelectProductTypeScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"postJobScreen.selectItemType"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
       />
