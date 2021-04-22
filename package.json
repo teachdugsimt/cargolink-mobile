@@ -1,6 +1,6 @@
 {
   "name": "cargo-link-mobile",
-  "version": "1.1.2",
+  "version": "1.1.12",
   "private": true,
   "rnpm": {
     "assets": [
