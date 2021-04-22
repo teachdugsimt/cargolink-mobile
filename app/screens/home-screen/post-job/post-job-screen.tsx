@@ -135,6 +135,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
   const [arrDump, setArrDump] = useState(dump)
   const [arrUnit, setArrUnit] = useState(unitRate)
 
+  console.log("Put Post job value to Form Control :: ", JSON.parse(JSON.stringify(PostJobStore.postjob1)))
   const { control, handleSubmit, errors } = useForm({
     defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : (PostJobStore.postjob1 || {})
   });
@@ -169,7 +170,8 @@ export const PostJobScreen = observer(function PostJobScreen() {
     if (status_action != "add" && data_init && Object.keys(data_init).length != 0) {
       console.log("Data  init On  Edit  Post job : ", data_init)
       _setRadioDefault(data_init["shipping-type"])
-      if(data_init['dump-field']) _setRadioDump(data_init['dump-field'])
+      if (data_init['dump-field']) _setRadioDump(data_init['dump-field'])
+      control.setValue("dump-field", data_init['dump-field'])
       setTimeout(() => {
         control.setValue("vehicle-type", data_init['vehicle-type'])
         setswipe(!swipe)
