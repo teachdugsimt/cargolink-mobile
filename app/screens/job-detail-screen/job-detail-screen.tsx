@@ -1402,7 +1402,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
         {/* {actionStatus === 'IM_OWN_JOB' && (<View></View>)} */}
 
-        {statusScreen === 1 && jobStatus !== 2 && (<View>
+        {statusScreen === 1 && jobStatus !== 2 && truck && (<View>
           <View style={TRANSPORT_BY}>
             <View>
               <Text tx={'myJobScreen.transportBy'} style={{ color: color.line }} />
@@ -1428,7 +1428,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         </View>)}
 
         {/* render carrier profile and truck list */}
-        {statusScreen === 2 && jobStatus !== 2 && (<View>
+        {statusScreen === 2 && jobStatus !== 2 && truck && (<View>
           <View style={TRANSPORT_BY}>
             <View>
               <Text tx={'myJobScreen.transportBy'} style={{ color: color.line }} />

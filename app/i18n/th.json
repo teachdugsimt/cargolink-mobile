@@ -222,7 +222,8 @@
     "checkShippingDate": "กรุตรวจสอบวันที่",
     "shippingDateMoreThan": " วันส่งสินค้าต้องมากกว่าวันรับสินค้า",
     "updateJob": "แก้ไขงาน",
-    "updateJobSucess": "แก้ไขงานสำเร็จ"
+    "updateJobSucess": "แก้ไขงานสำเร็จ",
+    "confirmRemoveJob": "ยืนยันการลบงานนี้"
   },
   "uploadVehicleScreen": {
     "addVehicle": "เพิ่มรถ",

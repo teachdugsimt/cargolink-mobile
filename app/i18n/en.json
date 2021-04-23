@@ -220,7 +220,8 @@
     "checkShippingDate": "please check date",
     "shippingDateMoreThan": "Date of delivery should not be a date before the date of loading",
     "updateJob": "update job",
-    "updateJobSucess": "update job success"
+    "updateJobSucess": "update job success",
+    "confirmRemoveJob": "Confirm delete of this job."
   },
   "uploadVehicleScreen": {
     "addVehicle": "Add Vehicle",

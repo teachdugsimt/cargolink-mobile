@@ -209,6 +209,27 @@ const ShipperJobStore = types
       }
     }),
 
+    delete: flow(function* deleteJob(id: string) {
+      yield apiShipperJob.setup()
+      self.loading = true
+      try {
+        const response = yield apiShipperJob.delete(id)
+        console.log("Response call api delete user : : ", response)
+        if (response.kind === 'ok') {
+          self.loading = false
+        } else {
+          self.error = response.data.message
+          self.loading = false
+        }
+      } catch (error) {
+        // ... including try/catch error handling
+        console.error("Failed to fetch delete shipper job : ", error)
+        // self.data = []
+        self.loading = false
+        self.error = "error fetch api delete shipper job"
+      }
+    }),
+
     getDirections: flow(function* getDirections(coordinates: Array<Types.MapDirectionsRequest>) {
       yield apiGoogleMap.setup()
       self.mapLoading = true

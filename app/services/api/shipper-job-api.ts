@@ -126,4 +126,22 @@ export class ShipperJobAPI {
       return error
     }
   }
+
+  async delete(id: string): Promise<any> {
+    // make the api call
+    try {
+      const response: ApiResponse<any> = await this.apisauce.delete(`/api/v1/mobile/shippers/jobs/delete/${id}`)
+      // the typical ways to die when calling an api
+      console.log("Shipper job api [delete] : ", JSON.stringify(response))
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+      return { kind: "ok", data: response.data }
+      // transform the data into the format we are expecting
+    } catch (error) {
+      console.log("Error call api delete shipper job : ", error)
+      return error
+    }
+  }
 }

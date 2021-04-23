@@ -248,7 +248,10 @@ const Item = (data) => {
         break;
       case 'IM_OWN_JOB_AND_HAVE_CAR_ASK_FOR_BOOKING':
         footer = (<>
-          <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={quotationNumber == 0 ? onEdit : null}>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN]} onPress={() => onFinishJob(id)}>
+            <Text tx={'myJobScreen.finishJob'} style={{ color: color.success, paddingLeft: spacing[2] }} />
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={quotationNumber == 0 ? onEdit : null}>
             <Text tx={'myJobScreen.editJob'} style={{ color: quotationNumber == 0 ? color.primary : color.line }} />
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onVisible}>
@@ -267,7 +270,11 @@ const Item = (data) => {
         break;
       case 'IM_OWN_JOB':
         footer = (<>
-          <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={quotationNumber == 0 ? onEdit : null}>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN]} onPress={() => onFinishJob(id)}>
+            {/* <MaterialCommunityIcons name={'checkbox-marked-circle-outline'} color={color.success} size={20} /> */}
+            <Text tx={'myJobScreen.finishJob'} style={{ color: color.success, paddingLeft: spacing[2] }} />
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={quotationNumber == 0 ? onEdit : null}>
             <Text tx={'myJobScreen.editJob'} style={{ color: color.primary }} />
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onVisible}>
@@ -277,7 +284,10 @@ const Item = (data) => {
         break;
       case 'IM_OWN_JOB_AND_ASK_FOR_BOOKING_HIM_CAR':
         footer = (<>
-          <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={onEdit}>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN]} onPress={() => onFinishJob(id)}>
+            <Text tx={'myJobScreen.finishJob'} style={{ color: color.success, paddingLeft: spacing[2] }} />
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onEdit}>
             <Text tx={'myJobScreen.editJob'} style={{ color: color.primary }} />
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]}>
