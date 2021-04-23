@@ -1,8 +1,9 @@
 import React from "react"
-import { TextInput, ViewStyle, View, TextStyle } from "react-native"
+import { TextInput, ViewStyle, View, TextStyle, TouchableOpacity } from "react-native"
 import { color, spacing } from "../../theme"
 import { Text } from '../text/text'
 import { translate } from "../../i18n"
+
 /**
  * A component which has a label and an input together.
  */
@@ -33,14 +34,14 @@ const ROW: ViewStyle = { flexDirection: 'row' }
 const SPACE_BETWEEN: ViewStyle = { justifyContent: 'space-between' }
 const RED: TextStyle = { color: color.error }
 const LINE: TextStyle = { color: color.line }
-let forwardedRef: any
 export function TextInputColumn(props: TextInputColumnProps) {
   const { inputStyle, length, maxLength, underline, topic, showTopic = true,
     actualPlaceholder = translate("common.count"), editable, ...rest } = props
-  let underline_style: ViewStyle = {}
+  let underline_style: ViewStyle = { backgroundColor: 'red' }
   if (underline) underline_style = {
     borderBottomColor: color.mainGrey, borderBottomWidth: 1
   }
+  let forwardedRef: any
   return (
     <View style={underline_style}>
       {showTopic && <View style={[ROW, SPACE_BETWEEN]}>
@@ -53,17 +54,19 @@ export function TextInputColumn(props: TextInputColumnProps) {
           <Text style={LINE}>/{maxLength}</Text>
         </View>
       </View>}
-      <TextInput
-        maxLength={maxLength}
-        editable={editable === false ? false : true}
-        testID={"vehicle-upload-input"}
-        placeholder={translate(actualPlaceholder)}
-        placeholderTextColor={color.line}
-        underlineColorAndroid={color.transparent}
-        {...rest}
-        style={{ ...ROOT_STYLE, ...inputStyle }}
-        ref={ref => forwardedRef = ref}
-      />
+      <TouchableOpacity onPress={() => forwardedRef?.focus()}>
+        <TextInput
+          maxLength={maxLength}
+          editable={editable === false ? false : true}
+          testID={"vehicle-upload-input"}
+          placeholder={translate(actualPlaceholder)}
+          placeholderTextColor={color.line}
+          underlineColorAndroid={color.transparent}
+          {...rest}
+          style={{ ...ROOT_STYLE, ...inputStyle }}
+          ref={ref => forwardedRef = ref}
+        />
+      </TouchableOpacity>
     </View>
   )
 }
