@@ -8,7 +8,7 @@ import { useForm, Controller } from "react-hook-form";
 import { observer } from "mobx-react-lite"
 import {
   Text, TextInputTheme, Button, UploadVehicle, RoundedButton, HeaderCenter, MultiSelector, ModalLoading,
-  ModalTruckType, NormalDropdown
+  ModalTruckType, NormalDropdown, RadioButton, TextInputNew
 } from "../../../components"
 import { spacing, color, typography, images } from "../../../theme"
 import { translate } from "../../../i18n"
@@ -16,7 +16,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import CreateVehicleStore from '../../../store/my-vehicle-store/create-vehicle-store'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { MapTruckImageName } from '../../../utils/map-truck-image-name'
-import { provinceListEn, provinceListTh } from './datasource'
+import { provinceListEn, provinceListTh, regionListEn, regionListTh } from './datasource'
 import i18n from 'i18n-js'
 import { useNavigation } from "@react-navigation/native"
 import MyVehicleStore from '../../../store/my-vehicle-store/my-vehicle-store'
@@ -27,8 +27,10 @@ import { Modal, ModalContent } from 'react-native-modals';
 import { useStores } from "../../../models/root-store/root-store-context";
 import { FlatList } from "react-native-gesture-handler";
 import { AlertMessage } from "../../../utils/alert-form";
+import _ from 'lodash'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
-const { width } = Dimensions.get("window")
+const { width, height } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
 const GREY_TEXT: TextStyle = { color: color.line }
 
@@ -82,7 +84,6 @@ const WRAPPER_TOP: ViewStyle = {
   padding: 10
 }
 const ALIGN_RIGHT: TextStyle = {
-  alignSelf: 'flex-end',
   color: color.line
 }
 const PRIMARY_COLOR: TextStyle = { color: color.primary }
@@ -136,7 +137,8 @@ const ROUND_BUTTON_TEXT: TextStyle = {
   // color: color.textWhite
 }
 const WRAP_DROPDOWN: ViewStyle = {
-  flex: 1, borderColor: color.mainGrey, borderWidth: 1, padding: Platform.OS == "ios" ? 7.5 : 0,
+  flex: 1, borderColor: color.mainGrey, borderBottomWidth: 1, padding: Platform.OS == "ios" ? 7.5 : 0,
+  // paddingVertical: 10,
   borderRadius: 2.5
 }
 const PLACEHOLDER_IMAGE: ImageStyle = {
@@ -169,7 +171,7 @@ const PADDING_TOP: ViewStyle = { marginTop: 10 }
 const PADDING_CHEVRON: ViewStyle = { paddingRight: Platform.OS == "ios" ? 0 : 5 }
 const ROOT_FLAT_LIST: ViewStyle = {
   width: '100%',
-  height: 100,
+  height: 80,
   flexDirection: 'row',
   justifyContent: 'center', alignItems: 'center'
 }
@@ -184,7 +186,8 @@ const BORDER_BOTTOM: ViewStyle = {
   ...ROOT_FLAT_LIST,
   width: '100%',
   flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-  borderBottomWidth: 1, borderBottomColor: color.mainGrey, marginHorizontal: 10,
+  // borderBottomWidth: 1, borderBottomColor: color.mainGrey,
+  marginHorizontal: 10,
 }
 const ERROR_REGION: TextStyle = { color: color.error, paddingLeft: 5, marginTop: -10, marginBottom: 5 }
 const UPLOAD_IMG_STY: ViewStyle = { padding: 5, minHeight: 120 }
@@ -196,7 +199,30 @@ const IMAGE_LIST: ImageStyle = {
   borderColor: color.primary, borderWidth: 2,
 }
 const DELETE_RERGIS_BUTTON: ViewStyle = { justifyContent: 'center', paddingHorizontal: 5 }
-const VIEW_REGISTRATION: ViewStyle = { backgroundColor: color.registration, paddingHorizontal: 7.5, borderRadius: 2.5 }
+const VIEW_REGISTRATION: ViewStyle = { borderRadius: 2.5 }
+
+
+const ITEM: ViewStyle = {
+  flexDirection: 'row',
+  alignItems: 'center',
+  borderRadius: height / 2,
+  borderWidth: 1,
+  borderColor: color.line,
+  paddingVertical: spacing[1],
+  paddingHorizontal: spacing[3],
+  marginVertical: spacing[1],
+  marginHorizontal: spacing[1],
+}
+const ITEM_TEXT: TextStyle = {
+  color: color.line,
+}
+const ICON: ViewStyle = {
+  paddingLeft: spacing[2],
+}
+const SUB_MENU_SELECTED: ViewStyle = {
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+}
 
 let initForm = 0
 let initModal = Array(77).fill(false)
@@ -205,8 +231,11 @@ export const UploadVehicleScreen = observer(() => {
   const [toggleDump, settoggleDump] = useState(false)
   const { tokenStore, versatileStore } = useStores()
 
+  const dump = [{ id: 1, label: 'common.dump', active: true },
+  { id: 2, label: 'common.notDump', active: false }]
+  const truckIsDump: Array<number> = [26, 42, 36]
   const [visibleModal, setvisibleModal] = useState(initModal)
-
+  const [arrDump, setArrDump] = useState(dump)
   const [reqHeight, setreqHeight] = useState(false)
 
 
@@ -454,7 +483,9 @@ export const UploadVehicleScreen = observer(() => {
   const onSubmit = data => {
     let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
     setinputRegistration(data)
-    __DEV__ && console.tron.log("Raw Form Data :: => ", data)
+    console.log("Raw Form Data :: => ", data)
+    let activeProvince = _getActiveProvince(JSON.parse(JSON.stringify(AddressStore.workZone)))
+
 
     if (!data['vehicle-type']) {
       _alert(translate('common.vehicleTypeField'))
@@ -462,6 +493,10 @@ export const UploadVehicleScreen = observer(() => {
     }
     else if (!data['registration-0']) {
       _alert(translate('common.registrationVehicleField'))
+      return;
+    }
+    else if (!activeProvince) {
+      _alert(translate('uploadVehicleScreen.region'))
       return;
     }
 
@@ -472,7 +507,7 @@ export const UploadVehicleScreen = observer(() => {
       loadingWeight: 1,
       stallHeight: data['vehicle-height'] ? data['vehicle-height'].toUpperCase() : "",
 
-      tipper: toggleDump,
+      tipper: data['dump-field'] && data['dump-field'] == 1 ? true : false,
       registrationNumber: [],
 
       truckPhotos: {
@@ -483,6 +518,18 @@ export const UploadVehicleScreen = observer(() => {
       },
       workingZones: [],
     }
+
+    const tmp_address = JSON.parse(JSON.stringify(AddressStore.workZone))
+    tmp_address.map((e: any) => {
+      e?.subMenu.map((sub: any) => {
+        if (sub.active) {
+          data_mock_call['workingZones'].push({
+            region: e.value || "",
+            province: sub.value || ""
+          })
+        }
+      })
+    })
 
     let uploadData = JSON.parse(JSON.stringify(UploadFileStore.data))
     __DEV__ && console.tron.log("Upload file data onSubmit Form :: ", uploadData)
@@ -588,34 +635,14 @@ export const UploadVehicleScreen = observer(() => {
       }
       if (cnt == 4) data_mock_call.truckPhotos = null
     }
-    let tmp_region = []
-    let tmp_province = []
+
     let tmp_registration = []
     Object.keys(data).map(function (key) {
-      if (key.includes("region"))
-        tmp_region.push(data[key])
-      if (key.includes("province"))
-        tmp_province.push(data[key])
       if (key.includes('registration'))
         tmp_registration.push(data[key])
     })
 
     data_mock_call.registrationNumber = tmp_registration
-
-
-    tmp_region.map((reg, ir) => {
-      if (reg == 7) {
-        data_mock_call['workingZones'].push({
-          region: reg,
-        })
-      } else {
-        data_mock_call['workingZones'].push({
-          region: reg || "",
-          province: tmp_province[ir] || ""
-        })
-      }
-
-    })
 
     __DEV__ && console.tron.log("Finish FINAL submit data :: ", data_mock_call)
     if (editStatus && editStatus == "add") {
@@ -668,35 +695,83 @@ export const UploadVehicleScreen = observer(() => {
 
   const addTextInput = (index) => {
     let textInputTmp = textInput;
-    textInputTmp.push(<><Controller
-      control={control}
-      render={({ onChange, onBlur, value }) => (
-        <TextInputTheme
-          testID={"registration-vehicle-input"}
-          inputStyle={{ ...FULL, ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
-          onBlur={onBlur}
-          onChangeText={value => onChange(value)}
-          value={value}
-        />
-      )}
-      key={"registration-key-" + index}
-      name={"registration-" + index}
-      rules={{ required: true }}
-      defaultValue=""
-    />
-    </>);
+    textInputTmp.push({
+      id: index,
+      name: 'text-input-new-' + index
+    });
     settextInput(textInputTmp);
     setrenderNew(!renderNew)
   }
 
+  const _setWorkZone = () => {
+    let data_region: any = versatileStore.language == "th" ? regionListTh : regionListEn
+    let data_province: any = versatileStore.language == "th" ? provinceListTh : provinceListEn
+    let new_data_province = data_province.map((e: any) => {
+      let slot = e
+      slot.active = false
+      return slot
+    })
+    let new_data_region = data_region.map((e: any) => {
+      let slot = e
+      slot.subMenu = new_data_province.filter((pro: any) => pro.region == e.value)
+      if (e.value == 7) {
+        slot.subMenu = [{
+          "label": versatileStore.language == "th" ? " ทั่วประเทศ" : "Nationwide",
+          "value": 7, region: 7, active: false
+        }]
+      }
+      return e
+    })
+    AddressStore.setWorkZone(new_data_region)
+  }
+
+  const _getDataInitialAddress = () => {
+    let data_region: any = versatileStore.language == "th" ? regionListTh : regionListEn
+    let data_province: any = versatileStore.language == "th" ? provinceListTh : provinceListEn
+    let new_data_province = data_province.map((e: any) => {
+      let slot = e
+      slot.active = false
+      return slot
+    })
+    let new_data_region = data_region.map((e: any) => {
+      let slot = e
+      slot.subMenu = new_data_province.filter((pro: any) => pro.region == e.value)
+      if (e.value == 7) {
+        slot.subMenu = [{
+          "label": versatileStore.language == "th" ? " ทั่วประเทศ" : "Nationwide",
+          "value": 7, region: 7, active: false
+        }]
+      }
+      return e
+    })
+    return new_data_region
+  }
+
+  const _setWorkZoneForEdit = (data: any) => {
+    let tmp_data = data
+    let address = _getDataInitialAddress()
+    console.log("Address FLUX :: ", address)
+    let new_address = JSON.parse(JSON.stringify(address))
+    new_address.forEach((e, i) => {
+      e.subMenu.forEach((sub, subi) => {
+        let findData = tmp_data?.workingZones?.find((sec: any) => sec && sec.province == sub.value)
+        sub.active = findData ? true : false
+      })
+    })
+    console.log("MAPPING REGION & PROVINCE :: ", new_address)
+    AddressStore.setWorkZone(new_address)
+  }
 
   useEffect(() => {
-
     let initData = JSON.parse(JSON.stringify(MyVehicleStore.data))
     let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
+    console.log("Initial data : ", initData)
+
     if (!editStatus) navigation.goBack()
 
     if (editStatus && editStatus == "edit") {
+      _setRadioDump(initData['tipper'])
+      _setWorkZoneForEdit(initData)
       settoggleDump(initData.tipper)
       if (initData.truckPhotos) {
         if (initData.truckPhotos.front) setfileFront({
@@ -753,6 +828,9 @@ export const UploadVehicleScreen = observer(() => {
       }
       console.log("INITIAL DATA UPLOAD SCREEN :: ", initData)
       console.log("INITIAL DATA UPLOAD SCREEN :: ", initData)
+    } else {
+      _setWorkZone()
+      _setRadioDump(false)
     }
 
     if (initForm == 0) {
@@ -814,30 +892,31 @@ export const UploadVehicleScreen = observer(() => {
     onChange(item.id)
     setvisible0(false)
   }
-  const _renderSectionModal = (item: any, index: any, onChange: any) => {
-    return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name + index}
-      style={ROOT_FLAT_LIST} onPress={() => _onPressSectionModal(onChange, item)}>
-      <View style={BORDER_BOTTOM}>
-        <View style={VIEW_LIST_IMAGE}>
-          {Platform.OS == "ios" ? <Image source={images[MapTruckImageName(item.id)]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
-            <Image source={images[MapTruckImageName(item.id)]} style={IMAGE_LIST} height={60} width={60} />}
-        </View>
-        <View style={{ flexDirection: 'row', flex: 1 }}>
-          <Text style={{ paddingLeft: 40 }}>{item.name}</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  }
 
-  const _renderSectionModalProvince = (item: any, index: any, onChange: any, indexX: number) => {
-    return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name + index} style={{ ...ROOT_FLAT_LIST2 }} onPress={() => {
-      onChange(item.id)
-      _updateVisibleModal(false, indexX)
+  const _renderSelectedList = (item, section) => {
+    return <TouchableOpacity key={"view-list-section-vehicle-type-" + (item?.name || "")} style={ROOT_FLAT_LIST} onPress={() => {
+      if (section == 1) navigation.navigate("selectTruckTypeProfile", {
+        selectedItem: [item?.id.toString()], onSubmitVehicle: (val) => _onSubmitVehicle(val)
+      })
     }}>
-      <View style={{ borderBottomWidth: 1, borderBottomColor: color.mainGrey, flex: 1 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1, marginVertical: 20 }}>
-          <Text style={{ width: '50%' }}>{item.name}</Text>
-          <Ionicons name="chevron-forward" size={24} color={color.line} style={{ marginRight: 5 }} />
+      <View style={{ ...BORDER_BOTTOM }}>
+        <View style={[VIEW_LIST_IMAGE]}>
+          {/* {Platform.OS == "ios" ? */}
+          <Image source={section == 1 ? images[MapTruckImageName(item?.id)] : images[`${item?.id}${item?.image}`]}
+            style={[IMAGE_LIST, { borderRadius: 0, backgroundColor: '#ffff', borderWidth: 0 }]} height={40} width={section == 1 ? 40 : 40}
+            resizeMode={section == 1 ? "contain" : "stretch"} />
+          {/* : <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[`${item.id}${item.image}`]}
+            style={IMAGE_LIST} height={40} width={40} /> */}
+        </View>
+        <View style={{
+          flexDirection: 'row', flex: 1, width: '100%',
+          justifyContent: 'space-between'
+        }}>
+          <View style={{ width: '80%', alignItems: 'flex-start' }}>
+            <Text style={{ fontSize: 15, marginLeft: 20 }}>{item?.name || ""}</Text>
+          </View>
+
+          <Ionicons name="chevron-forward" size={20} style={{}} />
         </View>
       </View>
     </TouchableOpacity>
@@ -917,6 +996,62 @@ export const UploadVehicleScreen = observer(() => {
     setvisible0(!visible0)
   }
 
+  const _navigationToSelectProvince = () => {
+    navigation.navigate("selectProvinceScreen")
+  }
+
+  const _deleteProvince = (data: any) => {
+    let tmp = JSON.parse(JSON.stringify(AddressStore.workZone))
+    tmp.forEach((e, i) => {
+      e?.subMenu.forEach((sub, subi) => {
+        if (sub.value == data.value) sub.active = false
+      })
+    })
+    AddressStore.setWorkZone(tmp)
+  }
+
+  const _getActiveProvince = (regionList: any) => {
+    let data_show = []
+    let tmp = JSON.parse(JSON.stringify(regionList))
+    if (tmp && tmp.length > 0) {
+      tmp.map((e, i) => {
+        e?.subMenu.map((sub, subi) => {
+          if (sub.active) data_show.push(sub)
+        })
+      })
+      if (data_show.length > 0)
+        return data_show;
+      else return false;
+    } else return false;
+  }
+
+  const _setRadioDump = (item: boolean) => {
+    let tmp = arrDump
+    if (item == true) {
+      tmp[0].active = true
+      tmp[1].active = false
+    }
+    else {
+      tmp[0].active = false
+      tmp[1].active = true
+    }
+    setArrDump(tmp)
+  }
+
+  useEffect(() => {
+    let tmpWorkingZone = JSON.parse(JSON.stringify(AddressStore.workZone))
+    let activeProvince = _getActiveProvince(tmpWorkingZone)
+    if (tmpWorkingZone && activeProvince) {
+      control.setValue("work-zone", JSON.stringify(activeProvince))
+    }
+  }, [JSON.stringify(AddressStore.workZone)])
+
+  const _showDumpField = (truckType: number) => {
+    let showDump = false
+    if (truckIsDump.find(e => e == truckType)) showDump = true
+    return showDump
+  }
+
   const [selectCapture, setSelectCapture] = useState(false)
 
   let formControllerValue = control.getValues()
@@ -931,6 +1066,7 @@ export const UploadVehicleScreen = observer(() => {
     { label: translate("common.medium"), value: "MEDIUM" },
     { label: translate("common.height"), value: "HEIGHT" },
   ]
+  const addressZone = _getActiveProvince(AddressStore.workZone)
 
   console.log("Form control Vehicle Height :: ", formControllerValue['vehicle-height'])
   console.log("Dropdown Region :: ", ddRegion)
@@ -990,20 +1126,15 @@ export const UploadVehicleScreen = observer(() => {
               <Controller
                 control={control}
                 render={({ onChange, onBlur, value }) => (
-                  <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN, { alignItems: 'center' }]} onPress={() =>
+                  <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN, { paddingVertical: !dropdown_vehicle_type ? 10 : 0 }]} onPress={() => {
                     navigation.navigate("selectTruckTypeProfile", {
                       selectedItem: [value], onSubmitVehicle: (val) => _onSubmitVehicle(val)
-                    })}>
-                    {!dropdown_vehicle_type && <Text style={{ padding: Platform.OS == "android" ? 9 : 0 }} tx={"postJobScreen.pleaseSelectVehicleType"} />}
-                    {dropdown_vehicle_type && versatileStore.list && <Text style={{ padding: Platform.OS == "android" ? 9 : 0 }}>{JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == dropdown_vehicle_type).name}</Text>}
-                    <Ionicons name="chevron-down" size={20} style={[PADDING_CHEVRON, { paddingTop: Platform.OS == "android" ? 2.5 : 0 }]} />
+                    })
+                  }}>
+                    {!dropdown_vehicle_type && <><Text style={{ padding: Platform.OS == "ios" ? 5 : 10, paddingLeft: 0, color: color.line }} tx={"postJobScreen.pleaseSelectVehicleType"} />
+                      <Ionicons name="chevron-forward" size={20} style={PADDING_CHEVRON} /></>}
+                    {dropdown_vehicle_type && !!versatileStore.list && _renderSelectedList(JSON.parse(JSON.stringify(versatileStore.list)).find(e => e.id == dropdown_vehicle_type), 1)}
                   </TouchableOpacity>
-                  // <ModalTruckType
-                  //   visible={visible0}
-                  //   onTouchOutside={() => setvisible0(false)}
-                  //   selectedItems={[value]}
-                  //   onChange={onChange}
-                  // />
                 )}
                 key={'controller-dropdown-vehicle-type'}
                 name={"vehicle-type"}
@@ -1011,22 +1142,10 @@ export const UploadVehicleScreen = observer(() => {
                 defaultValue=""
               />
             </View>
-            {errors['vehicle-type'] && <Text style={RED_COLOR} tx={"postJobScreen.validateTruckType"} />}
+            {errors['vehicle-type'] && !dropdown_vehicle_type && <Text style={RED_COLOR} tx={"postJobScreen.validateTruckType"} />}
 
 
-
-            <View style={HAVE_DUMP_VIEW}>
-              <Text tx={"uploadVehicleScreen.haveDump"} style={CONTENT_TEXT} />
-              <Switch
-                trackColor={{ false: "#767577", true: color.darkGreen }}
-                thumbColor={toggleDump ? color.success : "#f4f3f4"}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={() => settoggleDump(!toggleDump)}
-                value={toggleDump}
-              />
-            </View>
             <Text tx={"uploadVehicleScreen.heightVehicle"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
-
             <Controller
               control={control}
               render={({ onChange, onBlur, value }) => (
@@ -1036,6 +1155,7 @@ export const UploadVehicleScreen = observer(() => {
                   onChange={onChange}
                   items={dropdown_vehicle_type ? _getStallHeightList(dropdown_vehicle_type) : default_stallHeightList}
                   placeholder={"uploadVehicleScreen.heightVehicleSelect"}
+                // underline={dropdown_vehicle_type ? true : false}
                 />
               )}
               key={'text-input-vehicle-height'}
@@ -1044,13 +1164,53 @@ export const UploadVehicleScreen = observer(() => {
               defaultValue=""
             />
             {reqHeight == true && errors['vehicle-height'] && <Text style={RED_COLOR} tx={reqHeight == true ? "uploadVehicleScreen.reqHeight" : "common.acceptOnlyCharacter"} />}
+
+
+
+            {!!formControllerValue['vehicle-type'] &&
+              _showDumpField(formControllerValue['vehicle-type']) == true &&
+              <View style={[FULL, { width: '100%' }]}><Controller
+                control={control}
+                render={({ onChange, onBlur, value }) => (
+                  <View style={[ROW_TEXT, JUSTIFY_BETWEEN, { marginTop: 20, marginBottom: 10 }]}>
+                    <View style={[FULL, { justifyContent: 'center' }]}>
+                      <Text tx="uploadVehicleScreen.haveDump" />
+                    </View>
+                    <View style={FULL}>
+                      <RadioButton onPress={(item, index) => {
+                        onChange(item.id)
+                        let tmp = arrDump
+                        tmp.forEach((e, i) => {
+                          if (e.id == item.id) e.active = true
+                          else e.active = false
+                        })
+                        setArrDump(tmp)
+                      }} data={arrDump}
+                        buttonStyle={{ height: 30, padding: 0 }}
+                        textStyle={{ lineHeight: 19 }}
+                      />
+                    </View>
+                  </View>
+                )}
+                key={'text-input-dump-field'}
+                name={"dump-field"}
+                defaultValue={2}
+              /></View>}
+
+
+
           </View>
         </View>
 
         <View style={{ ...TOP_VIEW, ...MARGIN_TOP }}>
           <View style={WRAPPER_TOP}>
-            <Text tx={"uploadVehicleScreen.detailVehicle"} style={TITLE_TOPIC} />
-            <Text tx={"uploadVehicleScreen.atLeastOneRegister"} style={{ ...CONTENT_TEXT, ...ALIGN_RIGHT }}></Text>
+            <View style={ROW_TEXT}>
+              <Text tx={"uploadVehicleScreen.detailVehicle"} style={[TITLE_TOPIC, { paddingRight: 5 }]} />
+
+              <Ionicons name={"ios-information-circle-outline"} size={18} color={color.primary} style={{ paddingTop: 2.5 }} />
+
+            </View>
+            <Text tx={"uploadVehicleScreen.atLeastOneRegister"} style={{ ...CONTENT_TEXT, ...ALIGN_RIGHT, ...MARGIN_TOP }}></Text>
 
 
 
@@ -1060,11 +1220,30 @@ export const UploadVehicleScreen = observer(() => {
 
 
             <View style={VIEW_REGISTRATION}>
-              <Text tx={"uploadVehicleScreen.carRegistration"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_BIG }} />
+              {/* <Text tx={"uploadVehicleScreen.carRegistration"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_BIG }} /> */}
               {textInput.map((e, index) => {
                 return (<View key={"uploadVehicleScreen.carRegistration" + index}>
-                  <View style={[ROW_TEXT, { flex: 1, }]}>
-                    {e}
+                  <View style={[ROW_TEXT, { flex: 1 }]}>
+                    <Controller
+                      control={control}
+                      render={({ onChange, onBlur, value }) => (
+                        <TextInputNew
+                          key={"registration-" + index}
+                          keyboardType="numeric"
+                          actualPlaceholder="uploadVehicleScreen.placeholderRegistration"
+                          prefixWithoutTranslate={translate("uploadVehicleScreen.carRegistration") + " " + (index + 1)}
+                          underline={true}
+                          inputStyle={{
+                            ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD,
+                            ...CONTENT_TEXT
+                          }}
+                          value={value} onChangeText={(text) => onChange(text)} />
+                      )}
+                      key={"registration-key-" + index}
+                      name={"registration-" + index}
+                      rules={{ required: true }}
+                      defaultValue=""
+                    />
                     {index != 0 && index == textInput.length - 1 && <TouchableOpacity style={DELETE_RERGIS_BUTTON} onPress={() => _deleteRregistration(index)}>
                       <Ionicons name={'remove-circle-outline'} size={20} color={color.red} />
                     </TouchableOpacity>}
@@ -1076,7 +1255,7 @@ export const UploadVehicleScreen = observer(() => {
             </View>
             <Button onPress={() => addTextInput(textInput.length)} style={{ ...ADD_VEHICLE_BUTTON, ...MARGIN_TOP_EXTRA }}>
               <Ionicons name={"add-circle-outline"} size={spacing[5]} color={color.line} />
-              <Text tx={"uploadVehicleScreen.addVehicleRegistration"} style={{ ...CONTENT_TEXT, ...GREY_TEXT, ...PADDING_LEFT5 }} />
+              <Text text={translate("uploadVehicleScreen.addVehicleRegistration") + " " + (textInput.length + 1)} style={{ ...CONTENT_TEXT, ...GREY_TEXT, ...PADDING_LEFT5 }} />
             </Button>
 
 
@@ -1088,6 +1267,60 @@ export const UploadVehicleScreen = observer(() => {
 
           </View>
         </View>
+
+
+
+
+
+        <View style={{ ...TOP_VIEW, ...MARGIN_TOP }}>
+          <View style={WRAPPER_TOP}>
+            <TouchableOpacity onPress={() => _navigationToSelectProvince()}>
+              <View style={[ROW_TEXT, JUSTIFY_BETWEEN]}>
+                <View style={ROW_TEXT}>
+                  <Text tx="uploadVehicleScreen.workZone" style={{ paddingRight: 10 }} />
+                  <TouchableOpacity onPress={() => { }}>
+                    <Ionicons name={"ios-information-circle-outline"} size={18} color={color.primary} />
+                  </TouchableOpacity>
+                </View>
+                <View>
+                  <Ionicons name="chevron-forward" size={20} color={color.dim} />
+                </View>
+              </View>
+            </TouchableOpacity>
+
+
+            <Controller
+              control={control}
+              render={({ onChange, onBlur, value }) => (<>
+                {!!addressZone && <View style={[SUB_MENU_SELECTED, {
+                  paddingTop: !!addressZone
+                    && addressZone.length > 0 ? 10 : 0
+                }]}>
+                  {addressZone.map((data: any, i: number) => {
+                    return (
+                      <TouchableOpacity key={`selected-item-${i}`} style={ITEM} onPress={() => _deleteProvince(data)}>
+                        <Text text={data.label} style={ITEM_TEXT} />
+                        <MaterialCommunityIcons name={'close-circle'} size={18} color={color.line} style={ICON} />
+                      </TouchableOpacity>
+                    )
+                  })}
+
+                </View>}
+              </>)}
+              key={"work-zone-key"}
+              name={"work-zone"}
+              rules={{ required: true }}
+              defaultValue=""
+            />
+            {errors['work-zone'] && !addressZone && <Text style={RED_COLOR} tx={"uploadVehicleScreen.pleaseSelectRegion"} />}
+
+          </View>
+        </View>
+
+
+
+
+
         <View style={{ ...TOP_VIEW, ...MARGIN_TOP }}>
           <View style={WRAPPER_TOP}>
             <Text tx={"uploadVehicleScreen.uploadVehicleImage"} style={{ ...TITLE_TOPIC, ...MARGIN_TOP_EXTRA }} />
@@ -1151,205 +1384,6 @@ export const UploadVehicleScreen = observer(() => {
 
 
 
-        <View style={{ ...TOP_VIEW, ...MARGIN_TOP }}>
-          <View style={WRAPPER_TOP}>
-            {/* <Text tx={"uploadVehicleScreen.workZone"} style={TITLE_TOPIC}>Upload Vehicle 15151515</Text> */}
-
-
-
-
-
-
-
-
-
-
-
-            {/* ********************** DROPDOWN ZONE ********************** */}
-            {ddRegion.length && AddressStore.region && AddressStore.region.length ? ddRegion.map((regionObj, index) => {
-              return <View key={'view-dropdown-region-' + index}><View key={'view-dropdown-region-' + index} style={[WRAPPER_REGION_DROPDOWN, { height: 40 }]}>
-                <View style={{ ...FULL, marginLeft: 5 }} key={'view-dropdown-province-' + index}>
-                  <Controller
-                    control={control}
-                    render={({ onChange, onBlur, value }) => {
-                      return (
-                        <NormalDropdown
-                          keyer={index}
-                          value={value}
-                          onChange={(val) => {
-                            onChange(val)
-
-                            console.log("Select Value Drpodown Regions : ", value)
-
-                            let valRegionTmp = valRegion
-                            valRegionTmp.splice(index, 1, value)
-                            setvalRegion(valRegionTmp)
-
-                            let tmpDropdownProvince = ddProvince
-                            tmpDropdownProvince.splice(index, 1, {
-                              id: index + 1,
-                              index: index,
-                              type: 'province'
-                            })
-                            setddProvince(tmpDropdownProvince)
-
-                            setrenderProvince(!renderProvince)
-
-                          }}
-                          items={JSON.parse(JSON.stringify(AddressStore.region))}
-                          placeholder={"uploadVehicleScreen.pleaseSelectRegion"}
-                        />
-                      )
-                    }}
-                    key={'controller-dropdown-region-' + index}
-                    name={"controller-region-" + index}
-                    rules={{ required: true }}
-                    defaultValue=""
-                  />
-
-                </View>
-                {ddProvince.length ? ddProvince.map((pro, indexPro) => {
-
-
-
-
-
-
-
-
-
-
-
-
-                  if (indexPro == index && valRegion[index] != 7) {
-                    let arrRegion = JSON.parse(JSON.stringify(AddressStore.region)) || []
-                    let objReg = arrRegion.find(e => e.value == formControllerValue[`controller-region-${index}`])
-                    let regionName = objReg ? `common.${objReg.label}` : ''
-
-                    return (<View style={{ ...WRAP_DROPDOWN, marginLeft: 5 }} key={'view-dropdown-province-' + index}>
-
-
-
-                      <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN, Platform.OS == "ios" ? { flex: 1 } : {
-                        alignItems: 'center', height: 40
-                      }]} onPress={async () => {
-                        await AddressStore.getProvince({ regionId: valRegion[index] }, i18n.locale)
-                        _updateVisibleModal(true, index)
-                      }}>
-                        {!formControllerValue["controller-province-" + index] && <Text style={CONTENT_TEXT} tx={"uploadVehicleScreen.pleaseSelectProvince"} />}
-
-                        {!!formControllerValue["controller-province-" + index] && <Text style={[CONTENT_TEXT, { paddingLeft: Platform.OS == "android" ? 5 : 0 }]} >{
-                          i18n.locale == 'th' ?
-                            provinceListTh.find(e => e.value == formControllerValue["controller-province-" + index]).label :
-                            provinceListEn.find(e => e.value == formControllerValue["controller-province-" + index]).label
-                        }</Text>}
-
-                        <Ionicons name="chevron-down" size={20} style={PADDING_CHEVRON} />
-                      </TouchableOpacity>
-
-                      <Controller
-                        control={control}
-                        render={({ onChange, onBlur, value }) => (
-                          <Modal
-                            visible={visibleModal[index]}
-                            onTouchOutside={() => _updateVisibleModal(false, index)}
-                            onSwipeOut={() => _updateVisibleModal(false, index)}
-                            swipeDirection={['up', 'down']} // can be string or an array
-                            swipeThreshold={200} // default 100
-                          >
-                            <ModalContent >
-                              <View style={{ width: (width / 1.1), height: '100%', justifyContent: 'flex-start' }}>
-                                <SafeAreaView style={{ flex: 1 }}>
-                                  <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
-                                    <Text style={{ color: color.primary }} preset={"topic"} tx={"uploadVehicleScreen.pleaseSelectProvince"} />
-                                  </View>
-
-                                  <View style={PADDING_TOP}>
-                                    {AddressStore.province && AddressStore.province.length && <MultiSelector
-                                      key={"dd-province-" + index}
-                                      items={JSON.parse(JSON.stringify(AddressStore.province))}
-                                      keyer={"list-province-" + index}
-                                      selectedItems={[value]}
-                                      selectText={translate("uploadVehicleScreen.pleaseSelectProvince")}
-                                      onSelectedItemsChange={(val: any) => {
-                                        onChange(val[0])
-                                        _updateVisibleModal(false, index)
-                                      }}
-                                    />}
-                                  </View>
-
-                                  <View>
-                                    {!!formControllerValue[`controller-region-${index}`] && !!AddressStore.region && <FlatList
-                                      style={{ zIndex: 50 }} contentContainerStyle={{ zIndex: 50 }}
-                                      ListHeaderComponent={<View style={[PADDING_TOP_10, ALIGN_CENTER]}><Text preset={'topic'} tx={regionName} style={PRIMARY_COLOR}></Text></View>}
-                                      ListFooterComponent={<View style={{ height: Platform.OS == 'ios' ? 100 : 20 }}></View>}
-                                      data={JSON.parse(JSON.stringify(AddressStore.province))}
-                                      keyExtractor={(item, indexX) => 'section-list-' + item.name + indexX}
-                                      renderItem={(data) => _renderSectionModalProvince(data.item, data.index, onChange, index)}
-                                    />}
-                                  </View>
-                                </SafeAreaView>
-
-                              </View>
-                            </ModalContent>
-                          </Modal>
-
-
-                        )}
-                        key={'controller-dropdown-province-' + index}
-                        name={"controller-province-" + index}
-                        defaultValue=""
-                      />
-
-
-
-
-
-
-                    </View>)
-                  }
-                }) : <></>
-
-
-
-
-
-
-
-
-
-
-
-
-
-                }
-                {index == ddRegion.length - 1 && <View><TouchableOpacity key={'icon-add-circle-' + index} style={[ADD_DROPDOWN_REGION, { height: index == 0 ? 40 : null }]} onPress={() => _addRowDropdown()}>
-                  <Ionicons size={20} color={color.darkGreen} name={"add-circle-outline"} />
-                </TouchableOpacity>
-                  {index >= 1 && <TouchableOpacity key={'icon-remove-circle-' + index} style={[ADD_DROPDOWN_REGION]} onPress={() => _deleteDropdown(regionObj)}>
-                    <Ionicons name={'remove-circle-outline'} size={20} color={color.red} />
-                  </TouchableOpacity>}
-                </View>}
-              </View>
-                {errors["controller-region-" + index] && <Text style={ERROR_REGION} tx={"common.pleaseCheckYourData"} />}
-              </View>
-            }) : <></>}
-            {/* ********************** DROPDOWN ZONE ********************** */}
-
-
-
-
-
-
-
-
-
-
-
-
-
-          </View>
-        </View>
 
 
 

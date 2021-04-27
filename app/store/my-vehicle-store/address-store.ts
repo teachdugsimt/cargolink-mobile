@@ -11,15 +11,27 @@ const regionModel = types.model({
   value: types.maybeNull(types.number)
 })
 
+
 const provinceModel = types.model({
   id: types.maybeNull(types.number),
   name: types.maybeNull(types.string),
-
   // label: types.maybeNull(types.string),
   // value: types.maybeNull(types.number)
 })
 
+const SubMenu = types.maybeNull(types.array(types.maybeNull(types.model({
+  label: types.maybeNull(types.string),
+  value: types.maybeNull(types.number),
+  region: types.maybeNull(types.number),
+  active: types.maybeNull(types.boolean),
 
+}))))
+
+const FullRegion = types.maybeNull(types.array(types.maybeNull(types.model({
+  label: types.maybeNull(types.string),
+  value: types.maybeNull(types.number),
+  subMenu: SubMenu
+}))))
 
 const AddressStore = types.model({
   region: types.maybeNull(types.array(regionModel)),
@@ -28,8 +40,14 @@ const AddressStore = types.model({
 
   province: types.maybeNull(types.array(provinceModel)),
   loadingProvince: types.boolean,
-  errorProvince: types.maybeNull(types.string)
+  errorProvince: types.maybeNull(types.string),
+
+  workZone: FullRegion
 }).actions(self => ({
+
+  setWorkZone(data: any) {
+    self.workZone = data
+  },
 
   getRegion: flow(function* getRegion(params) {
     yield apiAddress.setup(params)
@@ -108,6 +126,8 @@ const AddressStore = types.model({
     province: null,
     loadingProvince: false,
     errorProvince: '',
+
+    workZone: null
   })
 
 
