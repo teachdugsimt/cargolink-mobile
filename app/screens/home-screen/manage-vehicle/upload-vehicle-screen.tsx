@@ -704,8 +704,8 @@ export const UploadVehicleScreen = observer(() => {
   }
 
   const _setWorkZone = () => {
-    let data_region: any = versatileStore.language == "th" ? regionListTh : regionListEn
-    let data_province: any = versatileStore.language == "th" ? provinceListTh : provinceListEn
+    let data_region: any = versatileStore.language && versatileStore.language == "th" ? regionListTh : (!versatileStore.language ? regionListTh : regionListEn)
+    let data_province: any = versatileStore.language && versatileStore.language == "th" ? provinceListTh : (!versatileStore.language ? provinceListTh : provinceListEn)
     let new_data_province = data_province.map((e: any) => {
       let slot = e
       slot.active = false
@@ -716,7 +716,7 @@ export const UploadVehicleScreen = observer(() => {
       slot.subMenu = new_data_province.filter((pro: any) => pro.region == e.value)
       if (e.value == 7) {
         slot.subMenu = [{
-          "label": versatileStore.language == "th" ? " ทั่วประเทศ" : "Nationwide",
+          "label": versatileStore.language && versatileStore.language == "th" ? "ทั่วประเทศ" : (!versatileStore.language ? "ทั่วประเทศ" : "Nationwide"),
           "value": 7, region: 7, active: false
         }]
       }
@@ -726,8 +726,8 @@ export const UploadVehicleScreen = observer(() => {
   }
 
   const _getDataInitialAddress = () => {
-    let data_region: any = versatileStore.language == "th" ? regionListTh : regionListEn
-    let data_province: any = versatileStore.language == "th" ? provinceListTh : provinceListEn
+    let data_region: any = versatileStore.language && versatileStore.language == "th" ? regionListTh : (!versatileStore.language ? regionListTh : regionListEn)
+    let data_province: any = versatileStore.language && versatileStore.language == "th" ? provinceListTh : (!versatileStore.language ? provinceListTh : provinceListEn)
     let new_data_province = data_province.map((e: any) => {
       let slot = e
       slot.active = false
@@ -738,7 +738,7 @@ export const UploadVehicleScreen = observer(() => {
       slot.subMenu = new_data_province.filter((pro: any) => pro.region == e.value)
       if (e.value == 7) {
         slot.subMenu = [{
-          "label": versatileStore.language == "th" ? " ทั่วประเทศ" : "Nationwide",
+          "label": versatileStore.language && versatileStore.language == "th" ? "ทั่วประเทศ" : (!versatileStore.language ? "ทั่วประเทศ" : "Nationwide"),
           "value": 7, region: 7, active: false
         }]
       }
@@ -1229,7 +1229,6 @@ export const UploadVehicleScreen = observer(() => {
                       render={({ onChange, onBlur, value }) => (
                         <TextInputNew
                           key={"registration-" + index}
-                          keyboardType="numeric"
                           actualPlaceholder="uploadVehicleScreen.placeholderRegistration"
                           prefixWithoutTranslate={translate("uploadVehicleScreen.carRegistration") + " " + (index + 1)}
                           underline={true}
