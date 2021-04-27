@@ -93,6 +93,9 @@ platform :android do
   end
 end
 
-after_all do
-  push_to_git_remote
+after_all do |lane|
+  ignore_lanes = [:bump_version]
+  if !ignore_lanes.include?(lane)
+    push_to_git_remote
+  end
 end
