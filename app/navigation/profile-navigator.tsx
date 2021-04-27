@@ -7,7 +7,7 @@
 import React from "react"
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import { ProfileScreen, UpdateProfileScreen, UploadVehicleScreen, SuccessUpload, MyVehicle, 
-  VehicleDetailScreen, SelectTruckTypeScreen } from "../screens"
+  VehicleDetailScreen, SelectTruckTypeScreen, SelectProvinceScreen } from "../screens"
 import { HeaderCenter, HeaderLeft, RenderHeader, RenderHeaderProfile } from "../components"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -29,6 +29,7 @@ export type PrimaryProfileParamList = {
   vehicleDetail: undefined
   myVehicle: undefined
   selectTruckTypeProfile: undefined
+  selectProvinceScreen:  undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -87,6 +88,12 @@ export function ProfileNavigator() {
         options={({ navigation, route }) => ({
           // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
           headerCenter: () => <HeaderCenter tx={"uploadVehicleScreen.addVehicle"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })} />
+      <Stack.Screen name="selectProvinceScreen" component={SelectProvinceScreen}
+        options={({ navigation, route }) => ({
+          // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
+          headerCenter: () => <HeaderCenter tx={"uploadVehicleScreen.workZone"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })} />
       <Stack.Screen

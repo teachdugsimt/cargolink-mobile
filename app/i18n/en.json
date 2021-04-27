@@ -224,6 +224,7 @@
     "confirmRemoveJob": "Confirm delete of this job."
   },
   "uploadVehicleScreen": {
+    "placeholderRegistration": "xx - xxxx",
     "addVehicle": "Add Vehicle",
     "selectVehicleType": "Select your truck type",
     "haveDump": "Vehicle have dump ? ",

@@ -226,8 +226,9 @@
     "confirmRemoveJob": "ยืนยันการลบงานนี้"
   },
   "uploadVehicleScreen": {
+    "placeholderRegistration": "xx - xxxx",
     "addVehicle": "เพิ่มรถ",
-    "selectVehicleType": "เลือกรถของคุณ",
+    "selectVehicleType": "ประเภทรถที่ต้องการ",
     "haveDump": "รถมีที่ดั้มหรือไม่",
     "heightVehicle": "ความสูงของคอกรถ",
     "heightVehicleSelect": "กรุณาเลือกความสูงคอกรถ",
