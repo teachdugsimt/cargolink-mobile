@@ -266,5 +266,13 @@ export interface BookingBody {
   truckId: string
 }
 
+export interface RatingBody {
+  jobId: string
+  doneFrom: "CARGOLINK" | "OTHER" | "CANCELJOB"
+  rating?: number
+  dealingPrice?: number
+  opinion?: string
+}
+
 export type GetUsersResult = { kind: "ok"; users: User[] } | GeneralApiProblem
 export type GetUserResult = { kind: "ok"; user: User } | GeneralApiProblem

@@ -76,6 +76,7 @@ const isAutenticated = async () => {
 
 const ShipperJobStore = types
   .model({
+    jobId: types.maybeNull(types.string),
     list: types.maybeNull(types.array(types.maybeNull(ShipperJob))),
     data: types.maybeNull(ShipperJob),
     profile: types.model(Profile),
@@ -209,6 +210,48 @@ const ShipperJobStore = types
       }
     }),
 
+    delete: flow(function* deleteJob(id: string) {
+      yield apiShipperJob.setup()
+      self.loading = true
+      try {
+        const response = yield apiShipperJob.delete(id)
+        console.log("Response call api delete user : : ", response)
+        if (response.kind === 'ok') {
+          self.loading = false
+        } else {
+          self.error = response.data.message
+          self.loading = false
+        }
+      } catch (error) {
+        // ... including try/catch error handling
+        console.error("Failed to fetch delete shipper job : ", error)
+        // self.data = []
+        self.loading = false
+        self.error = "error fetch api delete shipper job"
+      }
+    }),
+
+    rating: flow(function* rating(data: Types.RatingBody) {
+      yield apiShipperJob.setup()
+      self.loading = true
+      try {
+        const response = yield apiShipperJob.rating(data)
+        console.log("Response call api rating user : : ", response)
+        if (response.kind === 'ok') {
+          self.loading = false
+        } else {
+          self.error = response.data.message
+          self.loading = false
+        }
+      } catch (error) {
+        // ... including try/catch error handling
+        console.error("Failed to fetch rating shipper job : ", error)
+        // self.data = []
+        self.loading = false
+        self.error = "error fetch api rating shipper job"
+      }
+    }),
+
     getDirections: flow(function* getDirections(coordinates: Array<Types.MapDirectionsRequest>) {
       yield apiGoogleMap.setup()
       self.mapLoading = true
@@ -245,6 +288,10 @@ const ShipperJobStore = types
         self.error = "error fetch api google map"
       }
     }),
+
+    setJobId: function setJobId(id: string | null) {
+      self.jobId = id
+    },
 
     setDefaultOfData: function setDefaultOfData() {
       self.data = cast({
@@ -304,6 +351,7 @@ const ShipperJobStore = types
     setDefaultOfList: function setDefaultOfList() {
       self.list = cast([])
     },
+
     clearDataByName(name) {
       // __DEV__ && console.tron.log('types of list :: ', typeof self[name]) // list => object 
       self[name] = []
@@ -319,6 +367,7 @@ const ShipperJobStore = types
   }))
   .create({
     // IMPORTANT !!
+    jobId: null,
     list: [],
     data: {},
     profile: {},

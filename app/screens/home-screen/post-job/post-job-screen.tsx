@@ -7,18 +7,19 @@ import { translate } from "../../../i18n"
 import {
   Text, AddJobElement, TextInputNew,
   TextInputColumn, RadioButton,
-  RoundedButton, MultiSelector, ModalTruckType, Screen, TimePickerRemake
+  RoundedButton, MultiSelector, ModalTruckType, Screen, TimePickerRemake, Button, ModalAlert
 } from '../../../components'
 import PostJobStore from '../../../store/post-job-store/post-job-store'
 import AdvanceSearchStore from '../../../store/shipper-job-store/advance-search-store'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { color, typography, images } from "../../../theme"
+import { color, typography, images, spacing } from "../../../theme"
 import { Modal, ModalContent } from 'react-native-modals';
 import { MapTruckImageName } from '../../../utils/map-truck-image-name'
 import { AlertForm } from '../../../utils/alert-form'
 import { useStores } from "../../../models/root-store/root-store-context";
 import StatusStore from '../../../store/post-job-store/job-status-store'
 import { SafeAreaView } from "react-native-safe-area-context";
+import ShipperJobStore from "../../../store/shipper-job-store/shipper-job-store";
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -83,6 +84,11 @@ const ROUND_BUTTON_TEXT: TextStyle = {
 const MARGIN_MEDIUM: ViewStyle = {
   marginVertical: 10
 }
+const BUTTON_CONTAINER: ViewStyle = {
+  ...ROUND_BUTTON_CONTAINER,
+  flex: 1,
+  borderRadius: width / 2
+}
 const ROW_TEXT: ViewStyle = {
   flexDirection: 'row',
 }
@@ -121,6 +127,20 @@ const IMAGE_LIST: ImageStyle = {
   // borderColor: color.primary, borderWidth: 1,
 }
 
+const BOTTOM_ROOT: ViewStyle = {
+  flexDirection: 'row',
+  paddingVertical: spacing[1]
+}
+const BTN_STYLE: ViewStyle = {
+  flex: 1,
+  borderRadius: Dimensions.get('window').width / 2,
+  marginHorizontal: spacing[3]
+}
+const CALL_TEXT: TextStyle = {
+  color: color.textWhite,
+  fontSize: 18,
+}
+
 export const PostJobScreen = observer(function PostJobScreen() {
   const MAX_LENGTH: number = 120
   const truckIsDump: Array<number> = [26, 42, 36]
@@ -135,15 +155,49 @@ export const PostJobScreen = observer(function PostJobScreen() {
   const [arrDump, setArrDump] = useState(dump)
   const [arrUnit, setArrUnit] = useState(unitRate)
 
+  console.log("Put Post job value to Form Control :: ", JSON.parse(JSON.stringify(PostJobStore.postjob1)))
   const { control, handleSubmit, errors } = useForm({
     defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : (PostJobStore.postjob1 || {})
   });
 
+  const _setRadioDefault = (item) => {
+    let tmp = arrUnit
+    tmp.forEach((e, i) => {
+      if (e.id == item) e.active = true
+      else e.active = false
+    })
+    setArrUnit(tmp)
+  }
+  const _setRadioDump = (item: number) => {
+    let tmp = arrDump
+    tmp.forEach((e, i) => {
+      if (e.id == item) e.active = true
+      else e.active = false
+    })
+    setArrDump(tmp)
+  }
+
+  const [swipe, setswipe] = useState<boolean>(false)
   useEffect(() => {
     AdvanceSearchStore.getProductTypes()
     let token = tokenStore?.token?.accessToken || null
     if (!token) navigation.navigate("signin")
   }, [])
+
+  useEffect(() => {
+    let status_action = JSON.parse(JSON.stringify(StatusStore.status))
+    let data_init = JSON.parse(JSON.stringify(PostJobStore.postjob1))
+    if (status_action != "add" && data_init && Object.keys(data_init).length != 0) {
+      console.log("Data  init On  Edit  Post job : ", data_init)
+      _setRadioDefault(data_init["shipping-type"])
+      if (data_init['dump-field']) _setRadioDump(data_init['dump-field'])
+      control.setValue("dump-field", data_init['dump-field'])
+      setTimeout(() => {
+        control.setValue("vehicle-type", data_init['vehicle-type'])
+        setswipe(!swipe)
+      }, 500);
+    }
+  }, [PostJobStore.postjob1])
 
   const onSubmit = (data) => {
     __DEV__ && console.tron.log("Data Form Post job 1 : ", data)
@@ -155,26 +209,6 @@ export const PostJobScreen = observer(function PostJobScreen() {
     if (status_action == "add")
       navigation.navigate("Home", { screen: "receivePoint" })
     else navigation.navigate("MyJob", { screen: "receivePoint" })
-  }
-
-
-  const _renderSectionModal = (item: any, index: any, onChange: any, section: any) => {
-    return <TouchableOpacity key={"view-list-section-vehicle-type-" + item.name + index} style={ROOT_FLAT_LIST} onPress={() => {
-      if (section == 1) setvisible0(false)
-      else if (section == 2) setvisible(false)
-      onChange(item.id)
-    }}>
-      <View style={BORDER_BOTTOM}>
-        <View style={[VIEW_LIST_IMAGE]}>
-          {Platform.OS == "ios" ? <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} resizeMode={"contain"} /> :
-            <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[item.image]} style={IMAGE_LIST} height={60} width={60} />}
-        </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-          <Text style={{ width: '50%', paddingLeft: 20 }}>{item.name}</Text>
-          <Ionicons name="chevron-forward" size={24} style={{ marginRight: 5 }} color={color.line} />
-        </View>
-      </View>
-    </TouchableOpacity>
   }
 
   const _renderSelectedList = (item, section) => {
@@ -205,6 +239,30 @@ export const PostJobScreen = observer(function PostJobScreen() {
         </View>
       </View>
     </TouchableOpacity>
+  }
+
+
+  const RenderButtonAlert = ({ onConfirmJob, onCloseModal }) => {
+    const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.mainGrey, backgroundColor: color.transparent }
+    const btnConfirmStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.primary, backgroundColor: color.primary }
+    return (
+      <View style={{ ...BOTTOM_ROOT, paddingVertical: spacing[2] }}>
+        <Button
+          testID="btn-cancel"
+          style={btnCancleStyle}
+          textStyle={{ ...CALL_TEXT, color: color.line }}
+          text={translate("common.cancel")}
+          onPress={() => onCloseModal()}
+        />
+        <Button
+          testID="btn-ok"
+          style={btnConfirmStyle}
+          textStyle={{ ...CALL_TEXT, color: color.textWhite }}
+          text={translate("common.confirm")}
+          onPress={() => onConfirmJob()}
+        />
+      </View>
+    )
   }
 
   const _showDumpField = (truckType: number) => {
@@ -261,8 +319,50 @@ export const PostJobScreen = observer(function PostJobScreen() {
     list_product_type[0].data = list_product_type_all
   }
 
+  const [visibleModal, setVisibleModal] = useState<boolean>(false)
+
+  const onConfirm = (id: string) => {
+    ShipperJobStore.delete(id)
+    // navigation.navigate('myJob')
+    navigation.goBack()
+  }
+
+  const onConfirmJob = (id: string) => {
+    onConfirm(id)
+    setVisibleModal(false)
+  }
+
+  const onCloseModal = () => {
+    console.log('onCloseModal')
+    setVisibleModal(false)
+  }
+
+  const modalProps = {
+    containerStyle: {
+      paddingTop: spacing[5],
+      paddingBottom: spacing[2]
+    },
+    // imageComponent: onAnimationFinish: () => onAnimationFinish }),
+    header: translate('postJobScreen.confirmRemoveJob'),
+    headerStyle: {
+      paddingTop: spacing[3],
+      color: color.primary
+    },
+    content: translate('postJobScreen.confirmRemoveJob'),
+    contentStyle: {
+      paddingTop: spacing[1],
+      paddingBottom: spacing[5],
+      paddingHorizontal: spacing[7],
+      color: color.line
+    },
+    buttonContainerStyle: { width: '90%' },
+    buttonComponent: () => <RenderButtonAlert onConfirmJob={() => onConfirmJob(PostJobStore.job_id)} onCloseModal={() => onCloseModal()} />,
+    visible: visibleModal,
+  }
+
   console.log("From control :: ", formControllerValue)
   console.log("Error From control :: ", errors)
+  console.log("Versatile List : ", JSON.parse(JSON.stringify(versatileStore.list)))
 
   return (
     <Screen unsafe keyboardOffset="little" preset="scroll" bounch={false}>
@@ -511,10 +611,37 @@ export const PostJobScreen = observer(function PostJobScreen() {
 
 
             <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_BIG }}>
-              <View style={WRAPPER_TOP}>
-                <RoundedButton onPress={handleSubmit(onSubmit)} text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
-              </View>
+              {JSON.parse(JSON.stringify(StatusStore.status)) === 'edit' ? (
+                <View style={[WRAPPER_TOP, { flexDirection: 'row' }]}>
+                  <Button
+                    testID="confirm"
+                    style={[BUTTON_CONTAINER, { marginRight: spacing[1], backgroundColor: color.error }]}
+                    children={
+                      <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+                        <Text style={[ROUND_BUTTON_TEXT, { color: color.textWhite }]} tx={'common.delete'} />
+                      </View>
+                    }
+                    onPress={() => setVisibleModal(true)}
+                  />
+                  <Button
+                    testID="confirm"
+                    style={[BUTTON_CONTAINER, { marginLeft: spacing[1] }]}
+                    children={
+                      <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+                        <Text style={ROUND_BUTTON_TEXT} tx={'common.confirm'} />
+                      </View>
+                    }
+                    onPress={handleSubmit(onSubmit)}
+                  />
+                </View>
+              ) : (
+                <View style={WRAPPER_TOP}>
+                  <RoundedButton onPress={handleSubmit(onSubmit)} text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
+                </View>
+              )}
             </View>
+
+            <ModalAlert {...modalProps} />
 
           </View>
         </View>

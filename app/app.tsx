@@ -9,7 +9,7 @@
  * The app navigation resides in ./app/navigation, so head over there
  * if you're interested in adding screens and navigators.
  */
-import "./i18n"
+
 import "./utils/ignore-warnings"
 import { ModalPortal } from 'react-native-modals';
 import React, { useState, useEffect, useRef } from "react"
@@ -35,6 +35,8 @@ import ScreenOrientation, { PORTRAIT, LANDSCAPE } from "react-native-orientation
 // stack navigation, use `createNativeStackNavigator` in place of `createStackNavigator`:
 // https://github.com/kmagiera/react-native-screens#using-native-stack-navigator
 import { enableScreens } from "react-native-screens"
+import 'moment/locale/th';
+import "./i18n"
 import { translate } from "./i18n";
 enableScreens()
 

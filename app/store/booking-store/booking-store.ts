@@ -82,6 +82,7 @@ const JobModel = {
   })),
   price: types.maybeNull(types.number),
   priceType: types.maybeNull(types.string),
+  tipper: types.maybeNull(types.boolean)
 }
 
 const ShipperJob = types.maybeNull(types.model({

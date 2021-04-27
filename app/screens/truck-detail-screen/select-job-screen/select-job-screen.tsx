@@ -98,6 +98,8 @@ const Item = (data) => {
     from,
     to,
     owner,
+    price,
+    priceType,
     onVisibleModal
   } = data
 
@@ -138,6 +140,8 @@ const Item = (data) => {
             paddingTop: spacing[2],
             borderRadius: 6
           },
+          price: price,
+          priceType: priceType === 'PER_TRIP' ? translate('common.round') : translate('common.ton'),
           onPress: () => onVisibleModal(id),
           onToggleHeart,
           bottomComponent: () => <RenderBottom />

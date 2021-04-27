@@ -18,6 +18,7 @@ interface TextInputNew {
   underline?: boolean
   testID?: any
   prefix?: string
+  prefixWithoutTranslate?: string
   suffix?: string
   icon?: string
   value?: any
@@ -43,19 +44,20 @@ const TEXT_SUFFIX: TextStyle = { color: color.textBlack }
 
 export function TextInputNew(props: TextInputNew) {
   const { inputStyle, actualPlaceholder, editable, prefix = "common.inputValue",
-    icon, suffix, prefixIcon, prefixIconColor,
+    icon, suffix, prefixIcon, prefixIconColor, prefixWithoutTranslate,
     underline, ...rest } = props
   let underline_style: ViewStyle = {}
   if (underline) underline_style = {
     borderBottomColor: color.mainGrey, borderBottomWidth: 1
   }
   let forwardedRef: any
+  let prefixProps = prefixWithoutTranslate ? { text: prefixWithoutTranslate } : { tx: prefix }
   return (
     <TouchableOpacity style={{ ...ROOT_VIEW, ...underline_style }} onPress={() => { if (forwardedRef) forwardedRef.focus() }}>
       <View style={ROW_CENTER}>
         <View style={ROW}>
           {prefixIcon && <Ionicons name={prefixIcon} size={18} color={prefixIconColor} style={Platform.OS == "ios" ? { paddingHorizontal: 10 } : { paddingRight: 10 }} />}
-          <Text style={TEXT_PREFIX} tx={prefix} />
+          <Text style={TEXT_PREFIX} {...prefixProps} />
           {!!icon && <TouchableOpacity onPress={() => { }} >
             <Ionicons name={icon} size={18} color={color.primary} />
           </TouchableOpacity>}

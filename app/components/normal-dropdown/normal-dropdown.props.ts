@@ -5,4 +5,5 @@ export interface NormalDropdownProps {
   onValueChange?: (val: any) => any
   onChange?: any
   placeholder?: string
+  underline?: boolean | number
 }

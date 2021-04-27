@@ -220,9 +220,11 @@
     "checkShippingDate": "please check date",
     "shippingDateMoreThan": "Date of delivery should not be a date before the date of loading",
     "updateJob": "update job",
-    "updateJobSucess": "update job success"
+    "updateJobSucess": "update job success",
+    "confirmRemoveJob": "Confirm delete of this job."
   },
   "uploadVehicleScreen": {
+    "placeholderRegistration": "xx - xxxx",
     "addVehicle": "Add Vehicle",
     "selectVehicleType": "Select your truck type",
     "haveDump": "Vehicle have dump ? ",
@@ -444,13 +446,15 @@
   },
   "feedbackScreen": {
     "yourOpinion": "Your opinion",
-    "canYouAgreeJob": "Can you agree the work through this app?",
-    "rightFromApp": "Right from app",
-    "notFromApp": "Not from app",
-    "canYouHowMuch": "Can you tell us about how much you fall in price?",
-    "countRating": "Help me rate your satisfaction with this one on a scale of 1 - 5 stars.",
+    "canYouAgreeJob": "The reason for finishing this job ?",
+    "rightFromApp": "Right from Cargolink App",
+    "notFromApp": "Right from other",
+    "canYouHowMuch": "How much you fall in price ?",
+    "countRating": "To what extent is your satisfaction with this service ?",
     "moreAdvice": "More advice",
-    "price": "Price"
+    "moreAdviceNotMandatory": "More advice (Not mandatory)",
+    "price": "Price",
+    "cancel": "Cancel this job"
   },
   "searchTruckScreen": {
     "findTruck": "Find truck",

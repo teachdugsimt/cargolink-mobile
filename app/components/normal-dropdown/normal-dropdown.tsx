@@ -16,21 +16,24 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 const CONTENT_TEXT: TextStyle = {
   fontFamily: 'Kanit-Medium',
   color: color.black,
-  fontSize: typography.content
+  fontSize: typography.content,
+  textAlignVertical: 'center'
 }
 const DROPDOWN_ICON_CONTAINER: ViewStyle = {
   paddingTop: 7.5, paddingRight: 5
 }
 const WRAP_DROPDOWN: ViewStyle = {
-  height: 40, borderColor: color.mainGrey, borderWidth: 1, padding: Platform.OS == "ios" ? 7.5 : 0,
-  borderRadius: 2.5
+  height: 80, padding: Platform.OS == "ios" ? 7.5 : 0,
+}
+const UNDER_LINE: ViewStyle = {
+  borderBottomColor: color.mainGrey, borderBottomWidth: 1
 }
 export function NormalDropdown(props: NormalDropdownProps) {
 
-  const { value, onChange, items, placeholder, keyer } = props
+  const { value, onChange, items, placeholder, keyer, underline = true } = props
 
   return (
-    <View style={{ ...WRAP_DROPDOWN }} key={'view-dropdown-vehicle-height-' + keyer}>
+    <View style={[WRAP_DROPDOWN, underline ? UNDER_LINE : {}]} key={'view-dropdown-vehicle-height-' + keyer}>
       <RNPickerSelect
         value={value || ''}
         onValueChange={(val) => {
@@ -46,6 +49,7 @@ export function NormalDropdown(props: NormalDropdownProps) {
         style={{
           inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
           iconContainer: Platform.OS == "ios" ? {} : { ...DROPDOWN_ICON_CONTAINER },
+          viewContainer: { flex: 1, justifyContent: 'center' },
           placeholder: { color: color.black }
         }}
         Icon={() => {

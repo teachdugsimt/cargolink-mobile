@@ -73,6 +73,46 @@ const LOGO: ImageStyle = {
   height: 40,
   borderRadius: Math.round(Dimensions.get('window').width + Dimensions.get('window').height) / 2,
 }
+const OPN_ROW: ViewStyle = {
+  paddingTop: spacing[4],
+  paddingBottom: spacing[1],
+  paddingHorizontal: spacing[4],
+  marginVertical: spacing[1] - 2,
+  backgroundColor: color.backgroundWhite,
+}
+const OPN_BUTTON: ViewStyle = {
+  // flex: 1,
+  minWidth: '45%',
+  borderRadius: Dimensions.get('window').height / 2,
+  marginHorizontal: spacing[1],
+  marginVertical: spacing[1],
+  paddingVertical: spacing[1] + 2,
+  borderWidth: 1,
+  borderColor: color.dim,
+}
+const OPN_BUTTON_TEXT: TextStyle = {
+  color: color.textBlack,
+  fontSize: 12,
+}
+const OPN_ROW_CONTENT: ViewStyle = {
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  justifyContent: 'center',
+  paddingTop: spacing[4],
+  paddingBottom: spacing[2],
+}
+const OPN_BOTTOM_CONTAINER: ViewStyle = {
+  backgroundColor: color.backgroundWhite,
+  paddingHorizontal: spacing[4],
+  paddingTop: spacing[1],
+  paddingBottom: spacing[3],
+  marginTop: spacing[1] - 2,
+}
+const OPN_CALL_BUTTON: ViewStyle = {
+  width: '100%',
+  borderRadius: Dimensions.get('window').width / 2,
+  backgroundColor: color.success,
+}
 
 const dateFormat = (date: string) => {
   if (!date) return ''
@@ -104,6 +144,59 @@ const RenderButtonAlert = ({ onConfirmJob, onCloseModal }) => {
   )
 }
 
+const RenderOpinionButton = ({ onSubmit }) => {
+  const [doneFrom, setDoneFrom] = useState<"CARGOLINK" | "OTHER" | "CANCELJOB">(null)
+
+  const BUTTON_SLECTE = [
+    {
+      id: 0,
+      value: 'CARGOLINK',
+      label: translate('feedbackScreen.rightFromApp'),
+    }, {
+      id: 1,
+      value: 'OTHER',
+      label: translate('feedbackScreen.notFromApp'),
+    }, {
+      id: 2,
+      value: 'CANCELJOB',
+      label: translate('feedbackScreen.cancel')
+    }
+  ]
+
+  return (
+    <View style={OPN_ROW}>
+      <Text text={translate('feedbackScreen.canYouAgreeJob')} style={{ textAlign: 'center' }} preset={'topic'} />
+      <View style={OPN_ROW_CONTENT}>
+        {BUTTON_SLECTE.length && BUTTON_SLECTE.map((button: any, index: number) => (
+          <Button
+            key={index}
+            activeOpacity={1}
+            testID={`btn-select-${index + 1}`}
+            text={button.label}
+            style={{
+              ...OPN_BUTTON,
+              backgroundColor: button.value === doneFrom ? color.primary : color.transparent,
+              borderColor: button.value === doneFrom ? color.primary : color.disable,
+            }}
+            textStyle={OPN_BUTTON_TEXT}
+            onPress={() => setDoneFrom(button.value)} />)
+        )}
+      </View>
+
+      <View style={OPN_BOTTOM_CONTAINER}>
+        <Button
+          disabled={!doneFrom}
+          testID="call-with-owner"
+          style={[OPN_CALL_BUTTON, { backgroundColor: !doneFrom ? color.line : color.success }]}
+          textStyle={CALL_TEXT}
+          text={translate('common.confirm')}
+          onPress={() => onSubmit(doneFrom)}
+        />
+      </View>
+    </View>
+  )
+}
+
 const Item = (data) => {
   const {
     id,
@@ -122,12 +215,15 @@ const Item = (data) => {
     onConfirm,
     price,
     priceType,
+    tipper,
+    onSubmitOpinion,
   } = data
 
   const myUserId = ProfileStore.data?.userId || ''
   const ownerUserId = owner?.userId || null
 
   const [visible, setVisible] = useState<boolean>(false)
+  const [isFinishedJob, setIsFinishedJob] = useState<boolean>(false)
 
   const navigation = useNavigation()
   const { tokenStore } = useStores()
@@ -156,13 +252,21 @@ const Item = (data) => {
   }
 
   const onEdit = () => {
-    const jobInfoFirstTab = {
+    const shipping_type = {
+      "PER_TRIP": 1,
+      "PER_TON": 2
+    }
+    console.log("Vehicle Types  : ", truckType)
+    const jobInfoFirstTab: any = {
       "vehicle-type": +truckType,
       "car-num": requiredTruckAmount.toString(),
       "item-type": productTypeId,
       "item-name": productName,
       "item-weight": weight.toString(),
+      "shipping-rate": price + "",
+      "shipping-type": shipping_type[priceType],
     }
+    if (tipper == true || tipper == false) jobInfoFirstTab['dump-field'] = tipper == true ? 1 : 2
 
     const shippings = to?.map(shipping => {
       return {
@@ -211,10 +315,16 @@ const Item = (data) => {
 
   const onConfirmJob = (id: string) => {
     onConfirm(id)
-    setVisible(false)
+    // setVisible(false)
+    setIsFinishedJob(true)
   }
 
   const onCloseModal = () => {
+    setVisible(false)
+  }
+
+  const onSubmit = (value: any) => {
+    onSubmitOpinion({ id, value })
     setVisible(false)
   }
 
@@ -248,7 +358,10 @@ const Item = (data) => {
         break;
       case 'IM_OWN_JOB_AND_HAVE_CAR_ASK_FOR_BOOKING':
         footer = (<>
-          <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={quotationNumber == 0 ? onEdit : null}>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN]} onPress={() => onFinishJob(id)}>
+            <Text tx={'myJobScreen.finishJob'} style={{ color: color.success, paddingLeft: spacing[2] }} />
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={quotationNumber == 0 ? onEdit : null}>
             <Text tx={'myJobScreen.editJob'} style={{ color: quotationNumber == 0 ? color.primary : color.line }} />
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onVisible}>
@@ -267,7 +380,11 @@ const Item = (data) => {
         break;
       case 'IM_OWN_JOB':
         footer = (<>
-          <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={quotationNumber == 0 ? onEdit : null}>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN]} onPress={() => onFinishJob(id)}>
+            {/* <MaterialCommunityIcons name={'checkbox-marked-circle-outline'} color={color.success} size={20} /> */}
+            <Text tx={'myJobScreen.finishJob'} style={{ color: color.success, paddingLeft: spacing[2] }} />
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={quotationNumber == 0 ? onEdit : null}>
             <Text tx={'myJobScreen.editJob'} style={{ color: color.primary }} />
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onVisible}>
@@ -277,7 +394,10 @@ const Item = (data) => {
         break;
       case 'IM_OWN_JOB_AND_ASK_FOR_BOOKING_HIM_CAR':
         footer = (<>
-          <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={onEdit}>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN]} onPress={() => onFinishJob(id)}>
+            <Text tx={'myJobScreen.finishJob'} style={{ color: color.success, paddingLeft: spacing[2] }} />
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onEdit}>
             <Text tx={'myJobScreen.editJob'} style={{ color: color.primary }} />
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]}>
@@ -291,29 +411,6 @@ const Item = (data) => {
     }
 
     return footer
-  }
-
-  const modalProps = {
-    containerStyle: {
-      paddingTop: spacing[5],
-      paddingBottom: spacing[2]
-    },
-    // imageComponent: onAnimationFinish: () => onAnimationFinish }),
-    header: translate('myJobScreen.confirmFinishJob'),
-    headerStyle: {
-      paddingTop: spacing[3],
-      color: color.primary
-    },
-    content: translate('myJobScreen.confirmFinishJob'),
-    contentStyle: {
-      paddingTop: spacing[1],
-      paddingBottom: spacing[5],
-      paddingHorizontal: spacing[7],
-      color: color.line
-    },
-    buttonContainerStyle: { width: '90%' },
-    buttonComponent: () => <RenderButtonAlert onConfirmJob={() => onConfirmJob(id)} onCloseModal={onCloseModal} />,
-    visible: visible,
   }
 
   const RenderFooter = () => (
@@ -374,9 +471,41 @@ const Item = (data) => {
         </View>)}
       </>)}
 
-      <ModalAlert {...modalProps} />
     </View>
   )
+
+  const modalProps = {
+    containerStyle: {
+      paddingTop: spacing[5],
+      paddingBottom: spacing[2]
+    },
+    // imageComponent: onAnimationFinish: () => onAnimationFinish }),
+    header: translate('myJobScreen.confirmFinishJob'),
+    headerStyle: {
+      paddingTop: spacing[3],
+      color: color.primary
+    },
+    content: translate('myJobScreen.confirmFinishJob'),
+    contentStyle: {
+      paddingTop: spacing[1],
+      paddingBottom: spacing[5],
+      paddingHorizontal: spacing[7],
+      color: color.line
+    },
+    buttonContainerStyle: { width: '90%' },
+    buttonComponent: () => <RenderButtonAlert onConfirmJob={() => onConfirmJob(id)} onCloseModal={onCloseModal} />,
+    visible: visible,
+  }
+
+  const modalOpinionProps = {
+    containerStyle: {
+      paddingTop: spacing[2],
+      // paddingBottom: spacing[2]
+    },
+    buttonContainerStyle: { width: '100%' },
+    buttonComponent: () => <RenderOpinionButton onSubmit={onSubmit} />,
+    visible: visible,
+  }
 
   const typeOfTruck = GetTruckType(+truckType)?.name || `${translate('jobDetailScreen.truckType')} : ${translate('common.notSpecified')}`
 
@@ -409,6 +538,9 @@ const Item = (data) => {
         }
         }
       />
+
+      {!isFinishedJob ? <ModalAlert {...modalProps} /> : <ModalAlert {...modalOpinionProps} />}
+
     </View>
   )
 }
@@ -452,12 +584,20 @@ export const MyJobScreen = observer(function MyJobScreen(props: any) {
     }
   }, [])
 
-  const renderItem = ({ item }) => <Item {...item} statusScreen={index} onConfirm={(id: string) => onConfirm(id)} />
+  const renderItem = ({ item }) => <Item {...item} statusScreen={index} onConfirm={(id: string) => onConfirm(id)} onSubmitOpinion={onSubmitOpinion} />
 
   const onConfirm = (id: string) => {
     BookingStore.finishJob(id)
+    // onRefresh()
+    // navigation.navigate('myFeedback')
+  }
+
+  const onSubmitOpinion = ({ id, value }) => {
+    ShipperJobStore.rating({
+      jobId: id,
+      doneFrom: value
+    })
     onRefresh()
-    navigation.navigate('myFeedback')
   }
 
   const onScrollList = () => {
