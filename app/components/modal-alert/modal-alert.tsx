@@ -67,10 +67,10 @@ export function ModalAlert(props: ModalAlertProps) {
             {renderImage}
           </View>
           <View>
-            <Text style={headerTextStyle} text={headerText} preset={'topicExtra'} />
+            {headerText && <Text style={headerTextStyle} text={headerText} preset={'topicExtra'} />}
           </View>
           <View>
-            <Text style={contentTextStyle} text={contentText} />
+            {contentText && <Text style={contentTextStyle} text={contentText} />}
           </View>
           <View style={buttonContainerStyle}>
             {renderButton}

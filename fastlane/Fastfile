@@ -5,7 +5,7 @@ package = load_json(json_path: "./package.json")
 version = package['version']
 build_number = nil
 
-before_all do
+before_all do |lane|
   ensure_git_branch
   ensure_git_status_clean
   git_pull
@@ -41,8 +41,8 @@ lane :bump_version do
   inc_ver_and
   build_number = get_build_number(xcodeproj: "./ios/CargoLinkMobile.xcodeproj")  
   tag_string = "v" + version + "(" + build_number + ")"
-  git_commit(path: ".", message: "Bump build " + tag_string)
-  add_git_tag(tag: tag_string)
+  git_commit(path: ".", message: "build(bump): " + tag_string)
+  # add_git_tag(tag: tag_string)
 end
 
 platform :ios do
