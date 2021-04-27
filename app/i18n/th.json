@@ -447,13 +447,15 @@
   },
   "feedbackScreen": {
     "yourOpinion": "ความคิดเห็นของคุณ",
-    "canYouAgreeJob": "คุณตกลงงานผ่านแอปนี้ได้หรือไม่",
-    "rightFromApp": "ได้จากแอป",
-    "notFromApp": "ไม่ได้จากแอป",
-    "canYouHowMuch": "บอกเราหน่อยได้ไหมว่าคุณตกลงราคาได้ประมาณเท่าไหร่",
-    "countRating": "ช่วยให้คะแนนความพึงพอใจของคุณต่อการบริการครั้งนี้ในระดับ 1 - 5 ดาว",
+    "canYouAgreeJob": "เหตุผลที่ปิดงานนี้ ?",
+    "rightFromApp": "ได้รถวิ่งจาก Cargolink",
+    "notFromApp": "ได้รถวิ่งจากที่อื่น",
+    "canYouHowMuch": "ตกลงราคาได้ประมาณเท่าไหร่ ?",
+    "countRating": "ความพึงพอใจของคุณต่อการบริการครั้งนี้ในระดับใด ?",
     "moreAdvice": "คำแนะนำเพิ่มเติม",
-    "price": "ราคา"
+    "moreAdviceNotMandatory": "คำแนะนำเพิ่มเติม (ไม่บังคับ)",
+    "price": "ราคา",
+    "cancel": "ยกเลิกงานนี้"
   },
   "searchTruckScreen": {
     "findTruck": "หารถ",
