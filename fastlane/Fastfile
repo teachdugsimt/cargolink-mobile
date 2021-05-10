@@ -6,9 +6,12 @@ version = package['version']
 build_number = nil
 
 before_all do |lane|
-  ensure_git_branch
-  ensure_git_status_clean
-  git_pull
+  ignore_lanes = [:bump_version]
+  if !ignore_lanes.include?(lane)
+    ensure_git_branch
+    ensure_git_status_clean
+    git_pull
+  end
 end
 
 desc 'Android: Increment versionCode and set versionName to package.json version.'
@@ -90,6 +93,9 @@ platform :android do
   end
 end
 
-after_all do
-  push_to_git_remote
+after_all do |lane|
+  ignore_lanes = [:bump_version]
+  if !ignore_lanes.include?(lane)
+    push_to_git_remote
+  end
 end
