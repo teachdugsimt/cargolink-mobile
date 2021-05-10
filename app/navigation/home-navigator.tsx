@@ -12,7 +12,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import {
   DetailScreen, HomeScreen, JobDetailScreen, MyVehicle, PostJobScreen, SearchJobScreen,
   UploadVehicleScreen, SuccessUpload,
-  VehicleDetailScreen, CheckInformationScreen,
+  VehicleDetailScreen, CheckInformationScreen, SelectProvinceScreen,
   ShipperProfileScreen, ReceivePointScreen, FeedbackScreen, SearchTruckScreen,
   PostSuccessScreen, TruckDetailScreen, SelectJobScreen, CommentScreen,
   CarrierProfileScreen, SelectTruckScreen, AdvanceSearchJobScreen, AdvanceSearchTruckItemScreen, SelectTruckTypeScreen, SelectProductTypeScreen, AdvanceSearchTruckScreen, AdvanceSearchJobItemScreen
@@ -37,10 +37,10 @@ export type PrimaryHomeParamList = {
   // advanceSearch: undefined
   jobDetail: undefined
   searchTruck: undefined
-  uploadVehicle: undefined
+  uploadVehicleHome: undefined
   myVehicle: undefined
   vehicleDetail: undefined
-  uploadSuccess: undefined
+  uploadSuccessHome: undefined
   shipperProfile: undefined
   receivePoint: undefined
   feedback: undefined
@@ -60,6 +60,7 @@ export type PrimaryHomeParamList = {
   advanceSearchJobItem: undefined
   selectTruckType: undefined
   selectProductType: undefined
+  selectProvinceHome:  undefined
   // addAddress: undefined
 }
 
@@ -266,6 +267,26 @@ export function HomeNavigator() {
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"postJobScreen.selectItemType"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+       <Stack.Screen name="selectProvinceHome" component={SelectProvinceScreen}
+        options={({ navigation, route }) => ({
+          // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
+          headerCenter: () => <HeaderCenter tx={"uploadVehicleScreen.workZone"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })} />
+      <Stack.Screen name="uploadVehicleHome" component={UploadVehicleScreen}
+        options={({ navigation, route }) => ({
+          // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
+          headerCenter: () => <HeaderCenter tx={"uploadVehicleScreen.addVehicle"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })} />
+      <Stack.Screen
+        name="uploadSuccessHome"
+        component={SuccessUpload}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"myVehicleScreen.addNewCar"} />,
+          headerLeft: () => (null),
         })}
       />
     </Stack.Navigator>

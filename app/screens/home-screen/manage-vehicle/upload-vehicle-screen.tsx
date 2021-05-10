@@ -18,7 +18,7 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { MapTruckImageName } from '../../../utils/map-truck-image-name'
 import { provinceListEn, provinceListTh, regionListEn, regionListTh } from './datasource'
 import i18n from 'i18n-js'
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation, useRoute } from "@react-navigation/native"
 import MyVehicleStore from '../../../store/my-vehicle-store/my-vehicle-store'
 import StatusStore from '../../../store/my-vehicle-store/status-vehicle-store'
 import UploadFileStore from '../../../store/my-vehicle-store/upload-file-store'
@@ -228,6 +228,8 @@ let initForm = 0
 let initModal = Array(77).fill(false)
 export const UploadVehicleScreen = observer(() => {
   const navigation = useNavigation()
+  const route = useRoute()
+  const { from = null }: any = route?.params || {}
   const [toggleDump, settoggleDump] = useState(false)
   const { tokenStore, versatileStore } = useStores()
 
@@ -675,7 +677,8 @@ export const UploadVehicleScreen = observer(() => {
   useEffect(() => {
     let data_create = JSON.parse(JSON.stringify(CreateVehicleStore.data))
     if (data_create && data_create != null && submitReady) {
-      navigation.navigate('uploadSuccess')
+      if (from && from == "home") navigation.navigate('uploadSuccessHome', { from: 'home' })
+      else navigation.navigate('uploadSuccess')
     }
   }, [CreateVehicleStore.data])
 
@@ -683,7 +686,8 @@ export const UploadVehicleScreen = observer(() => {
     let data_patch = JSON.parse(JSON.stringify(CreateVehicleStore.patchMyVehicle))
 
     if (data_patch && data_patch != null && submitReady) {
-      navigation.navigate('uploadSuccess')
+      if (from && from == "home") navigation.navigate('uploadSuccessHome', { from: 'home' })
+      else navigation.navigate('uploadSuccess')
     }
 
   }, [CreateVehicleStore.patchMyVehicle])
@@ -895,9 +899,11 @@ export const UploadVehicleScreen = observer(() => {
 
   const _renderSelectedList = (item, section) => {
     return <TouchableOpacity key={"view-list-section-vehicle-type-" + (item?.name || "")} style={ROOT_FLAT_LIST} onPress={() => {
-      if (section == 1) navigation.navigate("selectTruckTypeProfile", {
-        selectedItem: [item?.id.toString()], onSubmitVehicle: (val) => _onSubmitVehicle(val)
-      })
+      if (section == 1) {
+        navigation.navigate(from && from == "home" ? "selectTruckType" : "selectTruckTypeProfile", {
+          selectedItem: [item?.id.toString()], onSubmitVehicle: (val) => _onSubmitVehicle(val)
+        })
+      }
     }}>
       <View style={{ ...BORDER_BOTTOM }}>
         <View style={[VIEW_LIST_IMAGE]}>
@@ -997,7 +1003,7 @@ export const UploadVehicleScreen = observer(() => {
   }
 
   const _navigationToSelectProvince = () => {
-    navigation.navigate("selectProvinceScreen")
+    navigation.navigate(from && from == "home" ? "selectProvinceHome" : "selectProvinceScreen")
   }
 
   const _deleteProvince = (data: any) => {
@@ -1127,7 +1133,7 @@ export const UploadVehicleScreen = observer(() => {
                 control={control}
                 render={({ onChange, onBlur, value }) => (
                   <TouchableOpacity style={[ROW_TEXT, JUSTIFY_BETWEEN, { paddingVertical: !dropdown_vehicle_type ? 10 : 0 }]} onPress={() => {
-                    navigation.navigate("selectTruckTypeProfile", {
+                    navigation.navigate(from && from == "home" ? "selectTruckType" : "selectTruckTypeProfile", {
                       selectedItem: [value], onSubmitVehicle: (val) => _onSubmitVehicle(val)
                     })
                   }}>

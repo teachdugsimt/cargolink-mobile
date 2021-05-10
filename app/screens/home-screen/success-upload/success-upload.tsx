@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import { View, ViewStyle, TextStyle, Platform } from "react-native"
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation, useRoute } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
 import { Text, RoundedButton, HeaderCenter } from "../../../components"
 import { color } from "../../../theme"
@@ -46,7 +46,8 @@ const TEXT_BUTTTON_STYLE: TextStyle = {
 }
 export const SuccessUpload = observer(function SuccessUpload() {
   const navigation = useNavigation()
-
+  const route = useRoute()
+  const { from = null }: any = route?.params || {}
   useEffect(() => {
     let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
     if (editStatus && editStatus == "edit") {
@@ -82,7 +83,7 @@ export const SuccessUpload = observer(function SuccessUpload() {
       </View>
 
       <View style={VIEW_BUTTON}>
-        <RoundedButton testID={"success-vehicle-detail"} onPress={() => navigation.navigate("profile")} text={"common.ok"} containerStyle={BUTTON_CONTAINER} textStyle={TEXT_BUTTTON_STYLE} />
+        <RoundedButton testID={"success-vehicle-detail"} onPress={() => navigation.navigate(from && from == "home" ? "home" : "profile")} text={"common.ok"} containerStyle={BUTTON_CONTAINER} textStyle={TEXT_BUTTTON_STYLE} />
       </View>
     </View>
   )
