@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [1.1.15](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v1.1.14...v1.1.15) (2021-05-10)
 
+* bug fixes: crash in my job screen
+
 ### [1.1.14](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v1.1.13...v1.1.14) (2021-04-27)
 
 ### [1.1.13](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v1.1.12...v1.1.13) (2021-04-27)
