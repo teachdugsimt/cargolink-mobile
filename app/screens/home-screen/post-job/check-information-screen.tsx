@@ -324,7 +324,6 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
   if (versatileStore.listProductType && versatileStore.listProductType.length > 0 && initialData['item-type'])
     productObject = JSON.parse(JSON.stringify(versatileStore.listProductType)).find(e => e.id == initialData['item-type'])
 
-  console.log("Raw loadingpoint array :: ", initialData['shipping-information'].length)
   const shippingObject = !!initialData['shipping-information'] && initialData['shipping-information']
     && initialData['shipping-information'].length && initialData['shipping-information'].length > 0
     ? JSON.parse(JSON.stringify(initialData['shipping-information'])) : []
