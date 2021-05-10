@@ -155,7 +155,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
     console.log("Postjob 2 data :: => ", data_post2)
     console.log("Actions status 2 data :: => ", status_action)
     if (status_action && status_action == "edit") {
-      if (data_post2 && data_post2 != null && data_post2['shipping-information'] && data_post2['shipping-information'].length > 0) {
+      if (data_post2 && data_post2 != null && data_post2['shipping-information'] && Array.isArray(data_post2['shipping-information']) && data_post2['shipping-information'].length > 0) {
 
         let tmp_field_level = []
         data_post2['shipping-information'].map((e, i) => {
