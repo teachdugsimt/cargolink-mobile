@@ -221,7 +221,7 @@ export const SelectTruckScreen = observer(function MyJobScreen() {
 
   const addNewTruck = () => {
     StatusVehicleStore.setStatusScreen('add')
-    navigation.navigate('uploadVehicle')
+    navigation.navigate('uploadVehicleHome', { from: 'home' })
   }
 
   const modalProps = {
