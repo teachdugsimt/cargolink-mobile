@@ -20,6 +20,8 @@
 		2DCD954D1E0B4F2C00145EB5 /* CargoLinkMobileTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* CargoLinkMobileTests.m */; };
 		38C8024AE5E9436DA21A9F1D /* Kanit-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CFF24329B62448679DE0FBCB /* Kanit-Regular.ttf */; };
 		5550563425D8DED5003AB15C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5550563325D8DED5003AB15C /* GoogleService-Info.plist */; };
+		5564150F26492418001AEAD6 /* CargoLinkMobile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5564150E26492418001AEAD6 /* CargoLinkMobile.swift */; };
+		55641511264926BB001AEAD6 /* CargoLinkMobile.m in Sources */ = {isa = PBXBuildFile; fileRef = 55641510264926BB001AEAD6 /* CargoLinkMobile.m */; };
 		6718618E3BFA4EBEAC557568 /* Kanit-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 330B2F901C2646FE87B2DCB4 /* Kanit-Bold.ttf */; };
 		6EF56A8962744A22B22F0E11 /* Kanit-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 294504687FEC4AD59B9B5319 /* Kanit-ExtraLight.ttf */; };
 		7C1A7C2DA5F44B0BA5F7F180 /* Kanit-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AEBABC449B794FC185F3AD21 /* Kanit-MediumItalic.ttf */; };
@@ -87,6 +89,9 @@
 		4AB028F77EE0432F8DF1FFA3 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		50B9D6B922454EA4B133B26B /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		5550563325D8DED5003AB15C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		5564150D26492418001AEAD6 /* CargoLinkMobile-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CargoLinkMobile-Bridging-Header.h"; sourceTree = "<group>"; };
+		5564150E26492418001AEAD6 /* CargoLinkMobile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CargoLinkMobile.swift; sourceTree = "<group>"; };
+		55641510264926BB001AEAD6 /* CargoLinkMobile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CargoLinkMobile.m; sourceTree = "<group>"; };
 		5DE538AA4EAB44DB9AEC2386 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		62B8703B822642F5839E467A /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		67B10FF43AF64779824093B4 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
@@ -179,6 +184,8 @@
 		13B07FAE1A68108700A75B9A /* CargoLinkMobile */ = {
 			isa = PBXGroup;
 			children = (
+				5564150E26492418001AEAD6 /* CargoLinkMobile.swift */,
+				55641510264926BB001AEAD6 /* CargoLinkMobile.m */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -187,6 +194,7 @@
 				5550563325D8DED5003AB15C /* GoogleService-Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				5564150D26492418001AEAD6 /* CargoLinkMobile-Bridging-Header.h */,
 			);
 			name = CargoLinkMobile;
 			sourceTree = "<group>";
@@ -393,7 +401,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = 24JTRGFS23;
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1250;
 						ProvisioningStyle = Automatic;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
@@ -781,6 +789,8 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				55641511264926BB001AEAD6 /* CargoLinkMobile.m in Sources */,
+				5564150F26492418001AEAD6 /* CargoLinkMobile.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -821,6 +831,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4224DF4FA151550575A40BA2 /* Pods-CargoLinkMobile-CargoLinkMobileTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -844,6 +855,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D80A1B928D8B4EA8E6109D98 /* Pods-CargoLinkMobile-CargoLinkMobileTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = CargoLinkMobileTests/Info.plist;
@@ -879,6 +891,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = th.co.cargolink.mobile;
 				PRODUCT_NAME = CargoLinkMobile;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "CargoLinkMobile-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -904,6 +917,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = th.co.cargolink.mobile;
 				PRODUCT_NAME = CargoLinkMobile;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "CargoLinkMobile-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1076,6 +1090,8 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "CargoLinkMobile-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "CargoLinkMobile-Swift.h";
 			};
 			name = Debug;
 		};
@@ -1128,6 +1144,8 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "CargoLinkMobile-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "CargoLinkMobile-Swift.h";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
