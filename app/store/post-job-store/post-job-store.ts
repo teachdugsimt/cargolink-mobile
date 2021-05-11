@@ -56,7 +56,7 @@ const PostJobStore = types.model({
   vehicle_type: types.maybeNull(types.number)
 })
   .actions(self => ({
-    setVehicleType(params: number){
+    setVehicleType(params: number) {
       self.vehicle_type = params
     },
     setPostJob(params: number, data: any) {
@@ -73,18 +73,14 @@ const PostJobStore = types.model({
       try {
         // ... yield can be used in async/await style
         const response = yield postjobAPI.createPostJob(params)
-        __DEV__ && console.tron.log("Response call create post job : : ", response)
         console.log("Response call create post job : : ", response)
         if (response.ok) {
           self.data_postjob = response.data || "success"
           self.loading = false
         } else {
           self.loading = false
-          __DEV__ && console.tron.log("Response ERROR POST JOB :: ", response)
-          if (response.data && response.data.validMsgList && response.data.validMsgList['from.datetime'] &&
-            response.data.validMsgList['from.datetime'][0]) {
-            __DEV__ && console.tron.log("Error : : Call API post job :: ", response)
-            self.error = response.data.validMsgList['from.datetime'][0]
+          if (response.data && response.data.validMsgList) {
+            self.error = JSON.stringify(response.data.validMsgList)
           } else
             self.error = "error fetch create post job"
         }
@@ -111,10 +107,8 @@ const PostJobStore = types.model({
         } else {
           self.loading = false
           __DEV__ && console.tron.log("Response ERROR POST JOB :: ", response)
-          if (response.data && response.data.validMsgList && response.data.validMsgList['from.datetime'] &&
-            response.data.validMsgList['from.datetime'][0]) {
-            __DEV__ && console.tron.log("Error : : Call API post job :: ", response)
-            self.error = response.data.validMsgList['from.datetime'][0]
+          if (response.data && response.data.validMsgList) {
+            self.error = JSON.stringify(response.data.validMsgList)
           } else
             self.error = "error fetch update post job"
         }

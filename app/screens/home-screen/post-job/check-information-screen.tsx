@@ -224,19 +224,25 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
     else PostJobStore.updateJob(request_data)
   }
 
+  const _processErrorText = (error: any) => {
+    let messageContent: string = ''
+    if (error && typeof error == 'string' && error.includes(":") && error.includes('"')) {
+      let parseString = error
+      messageContent = parseString.replace(/[|&;$%@"{}()<>]/g, "").replace(":", " => ")
+    }
+    else {
+      messageContent = translate('common.pleaseCheckYourData')
+    }
+    return messageContent
+  }
 
   useEffect(() => {
     let data_postjob = JSON.parse(JSON.stringify(PostJobStore.data_postjob))
     let error = JSON.parse(JSON.stringify(PostJobStore.error))
     if (error && error != errorPostJob) {
-      const dateErrorMessage: string = "Date of delivery should not be a date before the date of loading"
-      const dateErrorMessage2: string = "วันที่ส่งมอบ ไม่สามารถลงวันที่ก่อนวันที่ทำการขนส่ง"
-      let messageTitle = error && (error == dateErrorMessage || error == dateErrorMessage2) ?
-        "postJobScreen.checkShippingDate" : "common.somethingWrong"
-      let messageContent = error && (error == dateErrorMessage || error == dateErrorMessage2) ?
-        "postJobScreen.shippingDateMoreThan" : "common.pleaseCheckYourData"
+      let message_error = _processErrorText(error)
       seterrorPostJob(error)
-      AlertMessage(translate(messageTitle), translate(messageContent))
+      AlertMessage(translate('common.somethingWrong'), message_error)
       seterrorPostJob(null)
       PostJobStore.setError()
     } else {
