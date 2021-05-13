@@ -96,8 +96,7 @@ platform :android do
       firebase_app_distribution(
         app: "1:575219363673:android:fa1f26df874f84b865a648",
         testers_file: "./fastlane/testers.txt",
-        release_notes: "Fix something",
-        firebase_cli_token: "4/1AY0e-g4ZkamjllIAkbq93S7Wf4cBl7RcwyleUEd9TzQPGGZmAgM376n3XVk"
+        release_notes: "Fix something"
       )
     end
 
