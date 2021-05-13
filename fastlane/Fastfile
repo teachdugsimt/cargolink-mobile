@@ -91,13 +91,13 @@ platform :android do
 
   desc "Distribute app to firebase"
     lane :distribute do
-      gradle(task: 'assemble', build_type: 'Debug', project_dir: 'android/')
+      # gradle(task: 'assemble', build_type: 'Debug', project_dir: 'android/')
 
       firebase_app_distribution(
         app: "1:575219363673:android:fa1f26df874f84b865a648",
         testers: "ubalee.k@gmail.com",
         release_notes: "Fix something",
-        firebase_cli_token: "4/1AY0e-g5yZw52WZreY-nw8IOUcvI086kdgjc7mLdZdcecUlvVCYpSre3PXNo"
+        # firebase_cli_token: "4/1AY0e-g5yZw52WZreY-nw8IOUcvI086kdgjc7mLdZdcecUlvVCYpSre3PXNo"
       )
     end
 
