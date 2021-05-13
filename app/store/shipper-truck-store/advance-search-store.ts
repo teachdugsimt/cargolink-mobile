@@ -145,7 +145,7 @@ const AdvanceSearchStore = types
               subMenu,
             }
           } else {
-            const subMenu = type.subTypes.map(subType => ({ ...subType, showSubColumn: 2, value: subType.id, isChecked: false }))
+            const subMenu = type.subTypes.map(subType => ({ ...subType, showSubColumn: 2, value: subType.id, isChecked: false, parentValue: type.id }))
             return {
               ...type,
               value: type.id,
