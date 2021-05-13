@@ -43,6 +43,11 @@ Ship to Testflight.
 fastlane android beta
 ```
 Ship to Playstore Beta.
+### android distribute
+```
+fastlane android distribute
+```
+Distribute app to firebase
 
 ----
 

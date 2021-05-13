@@ -89,6 +89,17 @@ platform :android do
     supply(track: 'beta', track_promote_to: 'beta')
   end
 
+  desc "Distribute app to firebase"
+    lane :distribute do
+      gradle(task: 'assemble', build_type: 'Debug', project_dir: 'android/')
+
+      firebase_app_distribution(
+        app: "1:575219363673:android:fa1f26df874f84b865a648",
+        testers_file: "./fastlane/testers.txt",
+        release_notes: "Fix something"
+      )
+    end
+
   after_all do |lane|
   end
 end
