@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { View, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback, Dimensions, ViewStyle } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import { GOOGLE_API_KEY } from '../../config/env'
+// import { GOOGLE_API_KEY } from '../../config/env'
+import { GOOGLE_API_KEY } from '../../config'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { Text, Screen } from '../../components/'
 import { color, images, spacing } from "../../theme";

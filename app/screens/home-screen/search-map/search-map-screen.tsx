@@ -2,7 +2,8 @@ import React, { useState, useEffect, useLayoutEffect } from "react";
 import { View, Image, TouchableOpacity, TextInput, SafeAreaView, Platform, Keyboard, TouchableWithoutFeedback, Dimensions, ViewStyle } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import { GooglePlacesAutocomplete, GooglePlacesAutocompleteRef } from "react-native-google-places-autocomplete";
-import { GOOGLE_API_KEY } from '../../../config/env'
+// import { GOOGLE_API_KEY } from '../../../config/env'
+import { GOOGLE_API_KEY } from '../../../config'
 import { observer } from "mobx-react-lite"
 import { Text, Screen, HeaderCenter, HeaderLeft } from '../../../components'
 import { color, images } from "../../../theme";

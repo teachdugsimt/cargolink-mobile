@@ -2,7 +2,8 @@
 // const { API_URL } = require("../../config/env")
 // Or just specify it directly like this:
 // const API_URL = "https://jsonplaceholder.typicode.com/"
-const { API_URL } = require("../../config/env")
+// const { API_URL } = require("../../config/env")
+import { API_URL } from '../../config'
 
 console.log('process.env.NODE_ENV :>> ', process.env.NODE_ENV);
 

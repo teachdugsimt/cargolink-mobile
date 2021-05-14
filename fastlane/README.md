@@ -34,6 +34,11 @@ Fetch certificates and provisioning profiles
 fastlane ios beta
 ```
 Ship to Testflight.
+### ios distribute
+```
+fastlane ios distribute
+```
+Distribute app to firebase
 
 ----
 

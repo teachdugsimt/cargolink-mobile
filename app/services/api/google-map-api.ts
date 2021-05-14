@@ -2,7 +2,8 @@ import { ApisauceInstance, create, ApiResponse } from "apisauce"
 import { getGeneralApiProblem } from "./api-problem"
 import { ApiConfig, DEFAULT_API_CONFIG } from "./api-config"
 import i18n from 'i18n-js'
-import { GOOGLE_API_KEY } from '../../config/env'
+// import { GOOGLE_API_KEY } from '../../config/env'
+import { GOOGLE_API_KEY } from '../../config'
 /**
  * Manages all requests to the API.
  */

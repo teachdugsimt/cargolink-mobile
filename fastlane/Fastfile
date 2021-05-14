@@ -6,7 +6,7 @@ version = package['version']
 build_number = nil
 
 before_all do |lane|
-  ignore_lanes = [:bump_version]
+  ignore_lanes = [:bump_version, :distribute]
   if !ignore_lanes.include?(lane)
     ensure_git_branch
     ensure_git_status_clean
@@ -70,6 +70,17 @@ platform :ios do
     deliver
   end
 
+  desc "Distribute app to firebase"
+  lane :distribute do
+    build
+
+    firebase_app_distribution(
+      app: "1:575219363673:android:fa1f26df874f84b865a648",
+      testers_file: "./fastlane/testers/ios.txt",
+      release_notes: "./fastlane/metadata/ios/th/release_notes.txt"
+    )
+  end
+  
   after_all do |lane|
     clean_build_artifacts
   end
@@ -90,22 +101,34 @@ platform :android do
   end
 
   desc "Distribute app to firebase"
-    lane :distribute do
-      gradle(task: 'assemble', build_type: 'Release', project_dir: 'android/')
+  lane :distribute do
 
-      firebase_app_distribution(
-        app: "1:575219363673:android:fa1f26df874f84b865a648",
-        testers_file: "./fastlane/testers.txt",
-        release_notes: "Fix something"
-      )
+    api_environment = "staging"
+    if ENV["IS_PRODUCTION"] == "true"
+      api_environment = "production"
     end
+    ENV["ENVFILE"]=".env.#{api_environment}"
+
+    puts "API_URL: #{ENV['API_URL']}"
+    puts "IS_PRODUCTION: #{ENV['IS_PRODUCTION']}"
+    puts "ENVFILE: #{ENV['ENVFILE']}"
+
+    gradle(task: 'clean', project_dir: 'android/')
+    gradle(task: 'assemble', build_type: 'Release', project_dir: 'android/')
+
+    firebase_app_distribution(
+      app: "1:575219363673:android:fa1f26df874f84b865a648",
+      testers_file: "./fastlane/testers/android.txt",
+      release_notes: "Fix something"
+    )
+  end
 
   after_all do |lane|
   end
 end
 
 after_all do |lane|
-  ignore_lanes = [:bump_version]
+  ignore_lanes = [:bump_version, :distribute]
   if !ignore_lanes.include?(lane)
     push_to_git_remote
   end
