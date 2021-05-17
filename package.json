@@ -9,7 +9,7 @@
   },
   "scripts": {
     "android": "react-native run-android",
-    "android:build": "cd android && ENVFILE=.env.production ./gradlew assembleRelease",
+    "android:build": "cd android && ./gradlew assembleRelease",
     "android:shake": "$ANDROID_HOME/platform-tools/adb devices | grep '\\t' | awk '{print $1}' | sed 's/\\s//g' | xargs -I {} $ANDROID_HOME/platform-tools/adb -s {} shell input keyevent 82",
     "android:beta": "bundle exec fastlane android beta",
     "ios": "react-native run-ios",
@@ -124,7 +124,7 @@
     "react-native-svg": "^12.1.0",
     "react-native-swipe-list-view": "^3.2.6",
     "react-native-tab-view": "^2.15.2",
-    "react-native-vector-icons": "^7.1.0",
+    "react-native-vector-icons": "^8.1.0",
     "react-native-version-check": "^3.4.2",
     "reactotron-mst": "^3.1.1",
     "reactotron-react-native": "^5.0.0",

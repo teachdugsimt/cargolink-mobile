@@ -1,5 +1,5 @@
 apply plugin: "com.android.application"
-apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+
 apply plugin: 'com.google.gms.google-services' // Google Services Gradle plugin
 
 // Apply the Crashlytics Gradle plugin
@@ -82,14 +82,15 @@ import com.android.build.OutputFile
  * ]
  */
 
-project.ext.react = [
-    enableHermes: false,  // clean and rebuild if changing
-]
-
 project.ext.envConfigFiles = [
     debug: ".env",
     staging: ".env.staging",
     release: ".env.production"
+]
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+
+project.ext.react = [
+    enableHermes: false,  // clean and rebuild if changing
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -210,12 +211,9 @@ android {
 
             proguardFile "${rootProject.projectDir}/../node_modules/detox/android/detox/proguard-rules-app.pro"
         }
-        staging {
-            initWith release
-            setMatchingFallbacks('release')
-
-            proguardFile "${rootProject.projectDir}/../node_modules/detox/android/detox/proguard-rules-app.pro"
-        }
+        // staging {
+        //     initWith release
+        // }
     }
 
     // applicationVariants are e.g. debug, release
