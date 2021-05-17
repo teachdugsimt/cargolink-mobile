@@ -52,14 +52,14 @@ platform :ios do
 
   desc 'Fetch certificates and provisioning profiles'
   lane :certificates do
-    match(app_identifier: 'th.co.cargolink.mobile', type: 'development', readonly: false)
-    match(app_identifier: 'th.co.cargolink.mobile', type: 'appstore', readonly: false)
+    match(app_identifier: 'th.co.cargolink.mobile', type: 'development', readonly: true)
+    match(app_identifier: 'th.co.cargolink.mobile', type: 'appstore', readonly: true)
   end
 
   desc 'Build the iOS application.'
   private_lane :build do
     certificates
-    build_app(workspace: "./ios/CargoLinkMobile.xcworkspace", scheme: "CargoLinkMobile.staging")
+    build_app(workspace: "./ios/CargoLinkMobile.xcworkspace", scheme: "CargoLinkMobile.production")
     # gym(scheme: 'CargoLinkMobile', project: './ios/CargoLinkMobile.xcodeproj')
   end
 
@@ -72,12 +72,23 @@ platform :ios do
 
   desc "Distribute app to firebase"
   lane :distribute do
-    build
+
+    match(app_identifier: 'th.co.cargolink.mobile', type: 'adhoc', readonly: false)
+    build_app(
+      workspace: "./ios/CargoLinkMobile.xcworkspace", 
+      scheme: "CargoLinkMobile.staging",
+      export_options: {
+        method: "ad-hoc",
+        provisioningProfile: {
+          "th.co.cargolink.mobile" => "match Development th.co.cargolink.mobile" 
+        }
+      }
+    )
 
     firebase_app_distribution(
       app: "1:575219363673:ios:ec1599b72966cfe465a648",
       testers_file: "./fastlane/testers/ios.txt",
-      release_notes: "./fastlane/metadata/ios/th/release_notes.txt"
+      release_notes_file: "./fastlane/metadata/ios/th/release_notes.txt"
     )
   end
   
