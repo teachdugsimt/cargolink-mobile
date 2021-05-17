@@ -235,7 +235,7 @@ export function SearchItem(props: SearchItemProps) {
           </View>
         </View>
         <View style={CONTENT_RIGHT}>
-          {showFavoriteIcon && <MainTouchableOpacity onPress={onSelectedHeart}>
+          {showFavoriteIcon && <MainTouchableOpacity style={{ backgroundColor: color.backgroundWhite }} onPress={onSelectedHeart}>
             <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} size={24} color={isLike ? color.red : color.line} />
           </MainTouchableOpacity>}
           {isRecommened &&
