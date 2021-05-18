@@ -154,6 +154,7 @@ android {
         versionName "1.1.15"
         testBuildType System.getProperty('testBuildType', 'debug')  // This will later be used to control the test apk build type
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        resValue "string", "build_config_package", "th.co.cargolink.mobile"
     }
     splits {
         abi {
@@ -236,6 +237,7 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation project(':react-native-config')
     implementation project(':react-native-vector-icons')
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     implementation project(':react-native-reanimated')

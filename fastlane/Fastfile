@@ -52,15 +52,23 @@ platform :ios do
 
   desc 'Fetch certificates and provisioning profiles'
   lane :certificates do
-    match(app_identifier: 'th.co.cargolink.mobile', type: 'development', readonly: true)
-    match(app_identifier: 'th.co.cargolink.mobile', type: 'appstore', readonly: true)
+    match(app_identifier: 'th.co.cargolink.mobile', type: 'development', readonly: false)
+    match(app_identifier: 'th.co.cargolink.mobile', type: 'appstore', readonly: false)
   end
 
   desc 'Build the iOS application.'
   private_lane :build do
     certificates
-    build_app(workspace: "./ios/CargoLinkMobile.xcworkspace", scheme: "CargoLinkMobile.production")
-    # gym(scheme: 'CargoLinkMobile', project: './ios/CargoLinkMobile.xcodeproj')
+    build_app(
+      workspace: "./ios/CargoLinkMobile.xcworkspace", 
+      scheme: "CargoLinkMobile.production",
+      # export_options: {
+      #   method: "app-store",
+      #   provisioningProfile: {
+      #     "th.co.cargolink.mobile" => "match AppStore th.co.cargolink.mobile" 
+      #   }
+      # }
+    )
   end
 
   desc 'Ship to Testflight.'
@@ -130,7 +138,7 @@ platform :android do
     firebase_app_distribution(
       app: "1:575219363673:android:fa1f26df874f84b865a648",
       testers_file: "./fastlane/testers/android.txt",
-      release_notes: "Fix something"
+      release_notes_file: "./fastlane/metadata/android/en-GB/changelogs/77.txt"
     )
   end
 
