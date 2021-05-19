@@ -150,8 +150,8 @@ android {
         applicationId "th.co.cargolink.mobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 77
-        versionName "1.1.15"
+        versionCode 79
+        versionName "1.1.17"
         testBuildType System.getProperty('testBuildType', 'debug')  // This will later be used to control the test apk build type
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         resValue "string", "build_config_package", "th.co.cargolink.mobile"

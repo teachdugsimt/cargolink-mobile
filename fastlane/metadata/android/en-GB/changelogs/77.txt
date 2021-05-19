@@ -1,2 +1,6 @@
-- ปิดการจองรถ กรณีที่รถถูกสร้างจาก Web platform
-- แก้ไขข้อผิดพลาดอื่นๆ
+Features:
+- show button book job when status createdFrom = 1 (app)
+- add version into react-native-maps
+
+Bug fixes:
+- fastlane: conventional changelog

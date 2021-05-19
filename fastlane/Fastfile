@@ -8,45 +8,41 @@ build_number = android_get_version_code(
 )
 
 before_all do |lane|
-  ignore_lanes = [:bump_version, :distribute, :send_notify, ]
-  if !ignore_lanes.include?(lane)
-
-  end
 end
 
 desc 'Preparing and ensure git repository'
-lane :ensure_git do
+private_lane :ensure_git do
   ensure_git_branch
   ensure_git_status_clean
   git_pull
 end
 
-desc 'Android: Increment versionCode and set versionName to package.json version.'
-private_lane :inc_ver_and do
-  increment_version_code(
-    gradle_file_path: "./android/app/build.gradle"
-  )
+# desc 'Android: Increment versionCode and set versionName to package.json version.'
+# private_lane :inc_ver_and do
+#   increment_version_code(
+#     gradle_file_path: "./android/app/build.gradle"
+#   )
 
-  android_set_version_name(
-    gradle_file: "./android/app/build.gradle",
-    version_name: version
-  )
-end
+#   android_set_version_name(
+#     gradle_file: "./android/app/build.gradle",
+#     version_name: version
+#   )
+# end
 
-desc 'iOS: Increment build number and set the version to package.json version.'
-private_lane :inc_ver_ios do
-  increment_build_number(xcodeproj: './ios/CargoLinkMobile.xcodeproj')
+# desc 'iOS: Increment build number and set the version to package.json version.'
+# private_lane :inc_ver_ios do
+#   increment_build_number(xcodeproj: './ios/CargoLinkMobile.xcodeproj')
 
-  increment_version_number(
-    xcodeproj: './ios/CargoLinkMobile.xcodeproj',
-    version_number: version
-  )
-  # version = get_version_number(xcodeproj: "./ios/CargoLinkMobile.xcodeproj", target: "CargoLinkMobile")
-end
+#   increment_version_number(
+#     xcodeproj: './ios/CargoLinkMobile.xcodeproj',
+#     version_number: version
+#   )
+#   # version = get_version_number(xcodeproj: "./ios/CargoLinkMobile.xcodeproj", target: "CargoLinkMobile")
+# end
 
 
 desc 'Bump build numbers'
-lane :bump_build do
+private_lane :bump_build do
   # ios
   increment_build_number(xcodeproj: './ios/CargoLinkMobile.xcodeproj')
 
@@ -54,6 +50,11 @@ lane :bump_build do
   increment_version_code(
     gradle_file_path: "./android/app/build.gradle"
   )
+
+  build_number = android_get_version_code(
+    gradle_file: "./android/app/build.gradle",
+  )
+
 end
 
 desc 'Bump version numbers, and set the version to match the pacakage.json version.'
@@ -71,49 +72,82 @@ lane :bump_version do
     version_name: version
   )
 
-  build_number = get_build_number(xcodeproj: "./ios/CargoLinkMobile.xcodeproj")  
-  tag_string = "v" + version + "(" + build_number + ")"
-  git_commit(path: ".", message: "build(bump): " + tag_string)
+  # build_number = get_build_number(xcodeproj: "./ios/CargoLinkMobile.xcodeproj")  
+  # tag_string = "v" + version + "(" + build_number + ")"
+  # git_commit(path: ".", message: "build(bump): " + tag_string)
   # add_git_tag(tag: tag_string)
 end
 
 desc 'Distribute app to firebase'
 lane :distribute do
+  precheck
   bump_build
+  cl = changelog
   sh "fastlane ios distribute"
   sh "fastlane android distribute"
-  send_notify
+  send_notify(changelog: cl)
 end
 
 desc 'Get change logs'
-lane :changelogs do
+private_lane :generate_changelog do
 
-  isReleasable = analyze_commits(
-    match: 'v'+version,
+  tag = last_git_tag()
+
+  analyze_commits(
+    match: tag,
     releases: { fix: "alpha", feat: "alpha"},
-    commit_format: 'angular'
+    commit_format: 'angular',
   )
 
   notes = conventional_changelog(
     format: 'plain', 
-    title: 'Changelog (build ' + build_number + ')', 
+    # title: 'Changelog (build ' + build_number + ')', 
+    display_title: false,
     display_links: false,
+    order: ['feat', 'fix']
   )
+end
 
-  UI.message(notes)
+lane :changelog do |options|
+  if !options[:message]
+    cl = generate_changelog
+  else
+    cl = options[:message]
+  end
+
+  display = "\n===========Changelog===========\n" + 
+  cl + 
+  "\n===============================\n"
+
+  if !UI.confirm(display + "\nIs this correct changelog ?" )
+    cl = prompt(
+      text: "Input your Changelog : ",
+      multi_line_end_keyword: "END"
+    )
+    cl = changelog(message: cl)
+  end
+
+  ios_release_notes = './metadata/ios/th/release_notes.txt'
+  File.write(ios_release_notes, cl)
+
+  android_release_notes = './metadata/android/en-GB/changelogs/' + build_number + '.txt'
+  File.write(android_release_notes, cl)
+
+  cl
 end
 
 desc 'Notify to related persons'
-lane :send_notify do
-  build_number = android_get_version_code(
-    gradle_file: "./android/app/build.gradle",
-  )
+private_lane :send_notify do |options|
+  cl = options[:changelog]
+  message = "\nมีการอัพเดท Mobile Application\n\n🚀 v" + 
+    version + " build " + build_number + "\n" + 
+    cl + 
+    "\n\n📨 แอ็พพลิเคชันได้ถูกส่งไปให้ผู้ทดสอบทุกท่านที่เกี่ยวข้องแล้ว\nกรุณาตรวจสอบ Email และเริ่มทำการทดสอบได้เลยครับ"
+  UI.important(message)
+  
   line_notify(
     access_token: ENV["LINE_TOKEN"],
-    message: "\nมีการอัพเดท Mobile Application\n\n🚀 v" + 
-    version + " build " + build_number + "\n" + 
-    output + 
-    "\n📨 แอ็พพลิเคชันได้ถูกส่งไปให้ผู้ทดสอบทุกท่านที่เกี่ยวข้องแล้ว\nกรุณาตรวจสอบ Email และเริ่มทำการทดสอบได้เลยครับ",
+    message: message
   )
 end
 
@@ -209,10 +243,6 @@ platform :android do
     gradle(task: 'clean', project_dir: 'android/')
     gradle(task: 'assemble', build_type: 'Release', project_dir: 'android/')
 
-    build_number = android_get_version_code(
-      gradle_file: "./android/app/build.gradle",
-    )
-
     firebase_app_distribution(
       app: "1:575219363673:android:fa1f26df874f84b865a648",
       testers_file: "./fastlane/testers/android.txt",
@@ -225,8 +255,4 @@ platform :android do
 end
 
 after_all do |lane|
-  ignore_lanes = [:bump_version, :distribute, :send_notify]
-  if !ignore_lanes.include?(lane)
-    # push_to_git_remote
-  end
 end
