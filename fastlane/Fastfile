@@ -6,12 +6,17 @@ version = package['version']
 build_number = nil
 
 before_all do |lane|
-  ignore_lanes = [:bump_version, :distribute, :send_notify]
+  ignore_lanes = [:bump_version, :distribute, :send_notify, ]
   if !ignore_lanes.include?(lane)
-    ensure_git_branch
-    ensure_git_status_clean
-    git_pull
+
   end
+end
+
+desc 'Preparing and ensure git repository'
+lane :ensure_git do
+  ensure_git_branch
+  ensure_git_status_clean
+  git_pull
 end
 
 desc 'Android: Increment versionCode and set versionName to package.json version.'
@@ -51,6 +56,7 @@ end
 
 desc 'Bump version numbers, and set the version to match the pacakage.json version.'
 lane :bump_version do
+  # ensure_git
   # ios
   increment_version_number(
     xcodeproj: './ios/CargoLinkMobile.xcodeproj',
@@ -77,9 +83,29 @@ lane :distribute do
   send_notify
 end
 
+desc 'Get change logs'
+lane :changelogs do
+  # changelog = changelog_from_git_commits(
+  #   between: ["v1.1.15", "HEAD"],  # Optional, lets you specify a revision/tag range between which to collect commit info
+  #   pretty: "- %B",# Optional, lets you provide a custom format to apply to each commit when generating the changelog text
+  #   date_format: "short",# Optional, lets you provide an additional date format to dates within the pretty-formatted string
+  #   match_lightweight_tag: false,  # Optional, lets you ignore lightweight (non-annotated) tags when searching for the last tag
+  #   merge_commit_filtering: "exclude_merges" # Optional, lets you filter out merge commits
+  # )
+  isReleasable = analyze_commits(match: 'v1.1.15')
+  # next_version = lane_context[SharedValues::RELEASE_IS_NEXT_VERSION_HIGHER]
+  # UI.message(next_version)
+  notes = conventional_changelog(
+    format: 'plain', 
+    title: 'Changelog', 
+    display_links: false,
+  )
+
+  UI.message(notes)
+end
+
 desc 'Notify to related persons'
 lane :send_notify do
-  output = sh('cat ./metadata/ios/th/release_notes.txt')
   build_number = android_get_version_code(
     gradle_file: "./android/app/build.gradle",
   )
@@ -89,8 +115,6 @@ lane :send_notify do
     version + " build " + build_number + "\n" + 
     output + 
     "\n📨 แอ็พพลิเคชันได้ถูกส่งไปให้ผู้ทดสอบทุกท่านที่เกี่ยวข้องแล้ว\nกรุณาตรวจสอบ Email และเริ่มทำการทดสอบได้เลยครับ",
-    # sticker_package_id: "446",
-    # sticker_id: "2021"
   )
 end
 
@@ -119,9 +143,12 @@ platform :ios do
 
   desc 'Ship to Testflight.'
   lane :beta do
+    ensure_git
     build
     # pilot
     deliver
+    clean_build_artifacts
+    push_to_git_remote
   end
 
   desc "Distribute app to firebase"
@@ -161,8 +188,11 @@ platform :android do
 
   desc 'Ship to Playstore Beta.'
   lane :beta do
+    ensure_git
     build
     supply(track: 'beta', track_promote_to: 'beta')
+    gradle(task: 'clean', project_dir: 'android/')
+    push_to_git_remote
   end
 
   desc "Distribute app to firebase"
@@ -180,10 +210,14 @@ platform :android do
     gradle(task: 'clean', project_dir: 'android/')
     gradle(task: 'assemble', build_type: 'Release', project_dir: 'android/')
 
+    build_number = android_get_version_code(
+      gradle_file: "./android/app/build.gradle",
+    )
+
     firebase_app_distribution(
       app: "1:575219363673:android:fa1f26df874f84b865a648",
       testers_file: "./fastlane/testers/android.txt",
-      release_notes_file: "./fastlane/metadata/android/en-GB/changelogs/77.txt"
+      release_notes_file: "./fastlane/metadata/android/en-GB/changelogs/" + build_number + ".txt"
     )
   end
 
@@ -194,6 +228,6 @@ end
 after_all do |lane|
   ignore_lanes = [:bump_version, :distribute, :send_notify]
   if !ignore_lanes.include?(lane)
-    push_to_git_remote
+    # push_to_git_remote
   end
 end

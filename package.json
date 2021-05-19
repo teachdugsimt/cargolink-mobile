@@ -48,12 +48,11 @@
     "storybook": "start-storybook -p 9001 -c ./storybook",
     "adb": "adb reverse tcp:9090 tcp:9090 && adb reverse tcp:3000 tcp:3000 && adb reverse tcp:9001 tcp:9001 && adb reverse tcp:8081 tcp:8081",
     "test:CI": "set CI=true && react-scripts test --env=jsdom --testResultsProcessor=./node_modules/jest-html-reporter",
-    "release": "standard-version",
     "release:major": "standard-version --release-as major & bundle exec fastlane bump_version",
     "release:minor": "standard-version --release-as minor & bundle exec fastlane bump_version",
     "release:patch": "standard-version --release-as patch & bundle exec fastlane bump_version",
-    "release:alpha": "standard-version --prerelease alpha",
-    "release:beta": "standard-version --prerelease beta"
+    "prerelease:alpha": "standard-version --prerelease alpha",
+    "prerelease:beta": "standard-version --prerelease beta"
   },
   "dependencies": {
     "@mapbox/polyline": "^1.1.1",
