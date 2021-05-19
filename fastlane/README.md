@@ -15,11 +15,26 @@ Install _fastlane_ using
 or alternatively using `brew install fastlane`
 
 # Available Actions
+### bump_build
+```
+fastlane bump_build
+```
+Bump build numbers
 ### bump_version
 ```
 fastlane bump_version
 ```
-Bump build numbers, and set the version to match the pacakage.json version.
+Bump version numbers, and set the version to match the pacakage.json version.
+### distribute
+```
+fastlane distribute
+```
+Distribute app to firebase
+### send_notify
+```
+fastlane send_notify
+```
+Notify to related persons
 
 ----
 

@@ -6,7 +6,7 @@ version = package['version']
 build_number = nil
 
 before_all do |lane|
-  ignore_lanes = [:bump_version, :distribute]
+  ignore_lanes = [:bump_version, :distribute, :send_notify]
   if !ignore_lanes.include?(lane)
     ensure_git_branch
     ensure_git_status_clean
@@ -38,14 +38,60 @@ private_lane :inc_ver_ios do
 end
 
 
-desc 'Bump build numbers, and set the version to match the pacakage.json version.'
+desc 'Bump build numbers'
+lane :bump_build do
+  # ios
+  increment_build_number(xcodeproj: './ios/CargoLinkMobile.xcodeproj')
+
+  # android
+  increment_version_code(
+    gradle_file_path: "./android/app/build.gradle"
+  )
+end
+
+desc 'Bump version numbers, and set the version to match the pacakage.json version.'
 lane :bump_version do
-  inc_ver_ios
-  inc_ver_and
+  # ios
+  increment_version_number(
+    xcodeproj: './ios/CargoLinkMobile.xcodeproj',
+    version_number: version
+  )
+
+  # android
+  android_set_version_name(
+    gradle_file: "./android/app/build.gradle",
+    version_name: version
+  )
+
   build_number = get_build_number(xcodeproj: "./ios/CargoLinkMobile.xcodeproj")  
   tag_string = "v" + version + "(" + build_number + ")"
   git_commit(path: ".", message: "build(bump): " + tag_string)
   # add_git_tag(tag: tag_string)
+end
+
+desc 'Distribute app to firebase'
+lane :distribute do
+  bump_build
+  sh "fastlane ios distribute"
+  sh "fastlane android distribute"
+  send_notify
+end
+
+desc 'Notify to related persons'
+lane :send_notify do
+  output = sh('cat ./metadata/ios/th/release_notes.txt')
+  build_number = android_get_version_code(
+    gradle_file: "./android/app/build.gradle",
+  )
+  line_notify(
+    access_token: ENV["LINE_TOKEN"],
+    message: "\nมีการอัพเดท Mobile Application\n\n🚀 v" + 
+    version + " build " + build_number + "\n" + 
+    output + 
+    "\n📨 แอ็พพลิเคชันได้ถูกส่งไปให้ผู้ทดสอบทุกท่านที่เกี่ยวข้องแล้ว\nกรุณาตรวจสอบ Email และเริ่มทำการทดสอบได้เลยครับ",
+    # sticker_package_id: "446",
+    # sticker_id: "2021"
+  )
 end
 
 platform :ios do
@@ -121,7 +167,6 @@ platform :android do
 
   desc "Distribute app to firebase"
   lane :distribute do
-
     api_environment = "staging"
     if ENV["IS_PRODUCTION"] == "true"
       api_environment = "production"
@@ -147,7 +192,7 @@ platform :android do
 end
 
 after_all do |lane|
-  ignore_lanes = [:bump_version, :distribute]
+  ignore_lanes = [:bump_version, :distribute, :send_notify]
   if !ignore_lanes.include?(lane)
     push_to_git_remote
   end
