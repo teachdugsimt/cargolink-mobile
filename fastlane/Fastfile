@@ -3,7 +3,9 @@ fastlane_version '2.175.0'
 
 package = load_json(json_path: "./package.json")
 version = package['version']
-build_number = nil
+build_number = android_get_version_code(
+  gradle_file: "./android/app/build.gradle",
+)
 
 before_all do |lane|
   ignore_lanes = [:bump_version, :distribute, :send_notify, ]
@@ -92,12 +94,16 @@ lane :changelogs do
   #   match_lightweight_tag: false,  # Optional, lets you ignore lightweight (non-annotated) tags when searching for the last tag
   #   merge_commit_filtering: "exclude_merges" # Optional, lets you filter out merge commits
   # )
-  isReleasable = analyze_commits(match: 'v1.1.15')
+  isReleasable = analyze_commits(
+    match: 'v'+version,
+    releases: { fix: "alpha", feat: "alpha"},
+    commit_format: 'angular'
+  )
   # next_version = lane_context[SharedValues::RELEASE_IS_NEXT_VERSION_HIGHER]
   # UI.message(next_version)
   notes = conventional_changelog(
     format: 'plain', 
-    title: 'Changelog', 
+    title: 'Changelog (build ' + build_number + ')', 
     display_links: false,
   )
 
