@@ -87,20 +87,13 @@ end
 
 desc 'Get change logs'
 lane :changelogs do
-  # changelog = changelog_from_git_commits(
-  #   between: ["v1.1.15", "HEAD"],  # Optional, lets you specify a revision/tag range between which to collect commit info
-  #   pretty: "- %B",# Optional, lets you provide a custom format to apply to each commit when generating the changelog text
-  #   date_format: "short",# Optional, lets you provide an additional date format to dates within the pretty-formatted string
-  #   match_lightweight_tag: false,  # Optional, lets you ignore lightweight (non-annotated) tags when searching for the last tag
-  #   merge_commit_filtering: "exclude_merges" # Optional, lets you filter out merge commits
-  # )
+
   isReleasable = analyze_commits(
     match: 'v'+version,
     releases: { fix: "alpha", feat: "alpha"},
     commit_format: 'angular'
   )
-  # next_version = lane_context[SharedValues::RELEASE_IS_NEXT_VERSION_HIGHER]
-  # UI.message(next_version)
+
   notes = conventional_changelog(
     format: 'plain', 
     title: 'Changelog (build ' + build_number + ')', 
