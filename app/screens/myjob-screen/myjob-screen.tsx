@@ -314,7 +314,7 @@ const Item = (data) => {
   }
 
   const onConfirmJob = (id: string) => {
-    onConfirm(id)
+    onConfirm(id, statusScreen)
     // setVisible(false)
     setIsFinishedJob(true)
   }
@@ -539,7 +539,7 @@ const Item = (data) => {
         }
       />
 
-      {!isFinishedJob ? <ModalAlert {...modalProps} /> : <ModalAlert {...modalOpinionProps} />}
+      {!isFinishedJob ? <ModalAlert {...modalProps} /> : (statusScreen === 0 && <ModalAlert {...modalOpinionProps} />)}
 
     </View>
   )
@@ -584,11 +584,13 @@ export const MyJobScreen = observer(function MyJobScreen(props: any) {
     }
   }, [])
 
-  const renderItem = ({ item }) => <Item {...item} statusScreen={index} onConfirm={(id: string) => onConfirm(id)} onSubmitOpinion={onSubmitOpinion} />
+  const renderItem = ({ item }) => <Item {...item} statusScreen={index} onConfirm={(id: string, statusScreen?: number) => onConfirm(id, statusScreen)} onSubmitOpinion={onSubmitOpinion} />
 
-  const onConfirm = (id: string) => {
+  const onConfirm = (id: string, statusScreen?: number) => {
     BookingStore.finishJob(id)
-    // onRefresh()
+    if (statusScreen && statusScreen === 1) {
+      onSubmitOpinion({ id: id, value: 'CARGOLINK' })
+    }
     // navigation.navigate('myFeedback')
   }
 
