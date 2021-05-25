@@ -81,6 +81,7 @@ const ShipperJobFull = types.model({
     right: types.maybeNull(ImageModel),
   })),
   truckTypeName: types.maybeNull(types.string),
+  createdFrom: types.maybeNull(types.number),
 })
 
 const Profile = {
@@ -233,6 +234,7 @@ const ShipperTruckStore = types
         tipper: false,
         isLiked: false,
         truckTypeName: null,
+        createdFrom: null,
       }
     },
 

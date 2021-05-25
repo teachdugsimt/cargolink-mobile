@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import { View, FlatList, TouchableOpacity, TextInput, SafeAreaView, Platform, Keyboard, TouchableWithoutFeedback, Dimensions, ViewStyle } from "react-native";
-import { GooglePlacesAutocomplete, GooglePlacesAutocompleteRef } from "react-native-google-places-autocomplete";
-import { GOOGLE_API_KEY } from '../../../config/env'
+import { View, Dimensions, ViewStyle } from "react-native";
+// import { GooglePlacesAutocomplete, GooglePlacesAutocompleteRef } from "react-native-google-places-autocomplete";
+// import { GOOGLE_API_KEY } from '../../../config/env'
+// import { GOOGLE_API_KEY } from '../../../config'
 import { observer } from "mobx-react-lite"
 import { Text, Screen } from '../../../components'
-import { color, images } from "../../../theme";
+// import { color, images } from "../../../theme";
 import { SwipeListView } from 'react-native-swipe-list-view';
-import { array } from 'mobx-state-tree/dist/internal';
+// import { array } from 'mobx-state-tree/dist/internal';
 
 const FULL: ViewStyle = { flex: 1 }
-const { height } = Dimensions.get('window')
+// const { height } = Dimensions.get('window')
 interface AddressProps {
   id?: number
   houseNo?: string

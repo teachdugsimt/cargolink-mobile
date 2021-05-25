@@ -144,7 +144,8 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
     truckPhotos,
     phoneNumber,
     workingZones,
-    owner
+    owner,
+    createdFrom
   } = ShipperTruckStore.data
 
   const route = useRoute()
@@ -423,7 +424,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
           }
           onPress={() => onCall(id, phoneNumber)}
         />
-        {ownerUserId !== myUserId && <Button
+        {ownerUserId !== myUserId && createdFrom === 1 && <Button
           testID="book-a-job"
           style={[BTN_STYLE, { backgroundColor: color.primary }]}
           children={

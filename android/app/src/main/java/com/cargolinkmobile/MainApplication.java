@@ -36,6 +36,7 @@ public class MainApplication extends Application implements ReactApplication {
           // packages.add(new VectorIconsPackage());
           // packages.add(new SvgPackage());
           // packages.add(new RNDateTimePickerPackage());
+          // new ReactNativeConfigPackage()
           packages.add(new LottiePackage());
           return packages;
         }

@@ -204,7 +204,7 @@ export function SearchItemTruck(props: SearchItemProps) {
 
         </View>
         <View style={CONTENT_RIGHT}>
-          {showFavoriteIcon && <MainTouchableOpacity onPress={onSelectedHeart}>
+          {showFavoriteIcon && <MainTouchableOpacity style={{ backgroundColor: color.backgroundWhite }} onPress={onSelectedHeart}>
             <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} size={26} color={isLike ? color.red : color.line} />
           </MainTouchableOpacity>}
           {isRecommened &&

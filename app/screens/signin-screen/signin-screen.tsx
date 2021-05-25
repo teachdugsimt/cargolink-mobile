@@ -24,7 +24,8 @@ import AuthStore from '../../store/auth-store/auth-store'
 import { AlertMessage } from "../../utils/alert-form";
 import { useStores } from "../../models/root-store/root-store-context";
 import ProfileStore from '../../store/profile-store/profile-store'
-import { APPLE_USER } from '../../config/env'
+// import { APPLE_USER } from '../../config/env'
+import { APPLE_USER } from '../../config'
 
 i18n.defaultLocale = 'th'
 i18n.locale = 'th'

@@ -19,7 +19,17 @@ or alternatively using `brew install fastlane`
 ```
 fastlane bump_version
 ```
-Bump build numbers, and set the version to match the pacakage.json version.
+Bump version numbers, and set the version to match the pacakage.json version.
+### distribute
+```
+fastlane distribute
+```
+Distribute app to firebase
+### changelog
+```
+fastlane changelog
+```
+
 
 ----
 
@@ -34,6 +44,11 @@ Fetch certificates and provisioning profiles
 fastlane ios beta
 ```
 Ship to Testflight.
+### ios distribute
+```
+fastlane ios distribute
+```
+Distribute app to firebase
 
 ----
 
@@ -43,6 +58,11 @@ Ship to Testflight.
 fastlane android beta
 ```
 Ship to Playstore Beta.
+### android distribute
+```
+fastlane android distribute
+```
+Distribute app to firebase
 
 ----
 

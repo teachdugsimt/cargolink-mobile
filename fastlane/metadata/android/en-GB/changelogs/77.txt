@@ -1,1 +1,6 @@
-- แก้ไขข้อผิดพลาดเล็กน้อย
+Features:
+- show button book job when status createdFrom = 1 (app)
+- add version into react-native-maps
+
+Bug fixes:
+- fastlane: conventional changelog
