@@ -236,6 +236,7 @@ export const UploadVehicleScreen = observer(() => {
   const dump = [{ id: 1, label: 'common.dump', active: true },
   { id: 2, label: 'common.notDump', active: false }]
   const truckIsDump: Array<number> = [26, 42, 36]
+  const truckReqHeight: Array<number> = [3, 26, 36, 42, 49]
   const [visibleModal, setvisibleModal] = useState(initModal)
   const [arrDump, setArrDump] = useState(dump)
   const [reqHeight, setreqHeight] = useState(false)
@@ -966,7 +967,7 @@ export const UploadVehicleScreen = observer(() => {
         height.label = height.label + height6Wheels
         res.push(low, height)
       } else if (tmpTruckType.includes("10wheels") || tmpTruckType.includes("10ล้อ")) {
-        if (Number(truckType) == 26) requiredStallHeight = true
+        if (Number(truckType) == 26 || Number(truckType) == 36) requiredStallHeight = true
         let medium10Wheels = " (~ 2.5 m)"
         medium.label = medium.label + medium10Wheels
         res.push(medium)
@@ -1074,7 +1075,7 @@ export const UploadVehicleScreen = observer(() => {
   ]
   const addressZone = _getActiveProvince(AddressStore.workZone)
 
-  console.log("Form control Vehicle Height :: ", formControllerValue['vehicle-height'])
+  console.log("Form control Vehicle Height :: ", formControllerValue)
   console.log("Dropdown Region :: ", ddRegion)
   console.log("Dropown province :: ", ddProvince)
   return (
@@ -1151,26 +1152,27 @@ export const UploadVehicleScreen = observer(() => {
             {errors['vehicle-type'] && !dropdown_vehicle_type && <Text style={RED_COLOR} tx={"postJobScreen.validateTruckType"} />}
 
 
-            <Text tx={"uploadVehicleScreen.heightVehicle"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
-            <Controller
-              control={control}
-              render={({ onChange, onBlur, value }) => (
-                <NormalDropdown
-                  key={'uploadVehicleScreen.heightVehicleSelect'}
-                  value={value || ""}
-                  onChange={onChange}
-                  items={dropdown_vehicle_type ? _getStallHeightList(dropdown_vehicle_type) : default_stallHeightList}
-                  placeholder={"uploadVehicleScreen.heightVehicleSelect"}
-                // underline={dropdown_vehicle_type ? true : false}
+            {dropdown_vehicle_type && truckReqHeight.includes(Number(dropdown_vehicle_type)) &&
+              <><Text tx={"uploadVehicleScreen.heightVehicle"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                <Controller
+                  control={control}
+                  render={({ onChange, onBlur, value }) => (
+                    <NormalDropdown
+                      key={'uploadVehicleScreen.heightVehicleSelect'}
+                      value={value || ""}
+                      onChange={onChange}
+                      items={dropdown_vehicle_type ? _getStallHeightList(dropdown_vehicle_type) : default_stallHeightList}
+                      placeholder={"uploadVehicleScreen.heightVehicleSelect"}
+                    // underline={dropdown_vehicle_type ? true : false}
+                    />
+                  )}
+                  key={'text-input-vehicle-height'}
+                  name={"vehicle-height"}
+                  rules={{ required: reqHeight }}
+                  defaultValue=""
                 />
-              )}
-              key={'text-input-vehicle-height'}
-              name={"vehicle-height"}
-              rules={{ required: reqHeight }}
-              defaultValue=""
-            />
-            {reqHeight == true && errors['vehicle-height'] && <Text style={RED_COLOR} tx={reqHeight == true ? "uploadVehicleScreen.reqHeight" : "common.acceptOnlyCharacter"} />}
-
+                {reqHeight == true && errors['vehicle-height'] && <Text style={RED_COLOR} tx={reqHeight == true ? "uploadVehicleScreen.reqHeight" : "common.acceptOnlyCharacter"} />}
+              </>}
 
 
             {!!formControllerValue['vehicle-type'] &&
