@@ -67,6 +67,7 @@ export const DatePickerRemake = (props) => {
             timeZoneOffsetInMinutes={420}
             timeZoneOffsetInSeconds={25200}
             textColor={color.primary}
+            minimumDate={new  Date()}
             locale={i18n.locale == "th" ? 'th-TH' : 'en-EN'}
             onTouchCancel={() => setShow(Platform.OS === 'ios')}
             onChange={(event, selectedDate) => {

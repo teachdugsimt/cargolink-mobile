@@ -466,7 +466,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                   )}
                   key={'text-input-receive-tel-no'}
                   name={"receive-tel-no"}
-                  rules={{ pattern: /^\(?([0]{1})\)?([0-9]{9})$/ }}
+                  rules={{ pattern: /^\(?([0]{1})\)?([0-9]{8,10})$/ }}
                   defaultValue=""
                 />
                 {errors['receive-tel-no'] && <Text style={{ color: color.red }} tx={"postJobScreen.validateReceiveTel"} />}
@@ -667,7 +667,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                     )}
                     key={'text-input-shipping-tel-no-' + e.id}
                     name={"shipping-tel-no-" + e.id}
-                    rules={{ pattern: /^\(?([0]{1})\)?([0-9]{9})$/ }}
+                    rules={{ pattern: /^\(?([0]{1})\)?([0-9]{8,10})$/ }}
                     defaultValue=""
                   />
                   {errors["shipping-tel-no-" + e.id] && <Text style={{ color: color.red }} tx={"postJobScreen.validateReceiveTel"} />}
