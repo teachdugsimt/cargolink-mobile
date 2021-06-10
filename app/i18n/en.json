@@ -337,7 +337,7 @@
     "unit": "",
     "callbackForOwner": "When the owner presses to accept, there will be a response.",
     "bookedSuccess": "You have successfully booked the job.",
-    "rejectSuccess": "Reject job success",
+    "rejectSuccess": "Reject success",
     "bookATruck": "Book a truck",
     "contact": "Contact",
     "mobileNo": "Tel",
@@ -494,7 +494,7 @@
     "transportBy": "Transport by"
   },
   "selectJobScreen": {
-    "selectBooking": "Select your event for this booking.",
+    "selectBooking": "Select your job for this booking.",
     "addNewJob": "Add new job"
   },
   "selectTruckScreen": {
@@ -505,15 +505,15 @@
     "search": "Search",
     "chooseTruckType": "Choose truck type",
     "chooseWeightMoreThanOne": "Product weight can be selected more than 1",
-    "zoneForDesiredJob": "Zone for the desired job",
+    "zoneForDesiredJob": "Transportation zone",
     "weight": "Weight",
     "truckType": "Truck type",
-    "provinceUpProduct": "Province up product",
-    "provinceDownProduct": "Product down product",
+    "provinceUpProduct": "Pick up point",
+    "provinceDownProduct": "Delivery point",
     "productType": "Product type",
     "truckAmount": "Truck count",
     "truckAmountRequired": "Amount of truck required",
-    "allProductType":"All productt type",
+    "allProductType": "All productt type",
     "ton": "Ton"
   }
 }
