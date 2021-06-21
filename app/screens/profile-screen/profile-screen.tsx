@@ -16,6 +16,7 @@ import { provinceListEn, provinceListTh, regionListEn, regionListTh } from '../h
 import i18n from 'i18n-js'
 import StatusStore from '../../store/post-job-store/job-status-store'
 import { CommonActions } from '@react-navigation/native';
+import AuthStore from "../../store/auth-store/auth-store"
 
 const { width, height } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -227,12 +228,12 @@ export const ProfileScreen = observer(function ProfileScreen() {
   const onRefresh = () => {
     let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
     if (tmp_profile && tmp_profile.userId) ProfileStore.getProfileReporterScreen(tmp_profile.userId)
-    ProfileStore.getProfileRequest()
+    ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId)
   }
 
   const onRefreshTruckSummary = () => {
     let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
-    ProfileStore.getProfileRequest()
+    ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId)
     if (tmp_profile && tmp_profile.userId) ProfileStore.getProfileReporterScreen(tmp_profile.userId)
     ProfileStore.getTruckSummary()
   }

@@ -8,7 +8,7 @@ const ObjectToken = types.model({
 
 const UserProfile = types.maybeNull(
   types.model({
-    id: types.maybeNull(types.number),
+    id: types.maybeNull(types.string),
     companyName: types.maybeNull(types.string),
     fullname: types.maybeNull(types.string),
     mobileNo: types.maybeNull(types.string),

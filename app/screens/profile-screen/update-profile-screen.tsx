@@ -16,6 +16,7 @@ import ProfileStore from '../../store/profile-store/profile-store'
 import { useStores } from "../../models/root-store/root-store-context";
 import { AlertMessage } from "../../utils/alert-form";
 import { translate } from "../../i18n"
+import AuthStore from "../../store/auth-store/auth-store"
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -253,7 +254,7 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
   useEffect(() => {
     return () => {
       ProfileStore.clearData()
-      ProfileStore.getProfileRequest()
+      ProfileStore.getProfileRequest(AuthStore.profile.userProfile.userId)
     }
   }, [])
 

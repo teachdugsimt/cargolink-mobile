@@ -14,12 +14,15 @@ export interface AuthReponse {
 export interface AuthRequest {
   phoneNumber: string
   countryCode: string
-  userType: number
+  userType?: number
 }
 
 export interface OTPVerifyRequest {
-  token: string
-  otp: string
+  // token: string
+  // otp: string
+  phoneNumber: string
+  countryCode: string
+  variant: string
 }
 
 export interface OTPVerifyResponse {
@@ -54,9 +57,8 @@ export interface TermAndService {
   version: string
 }
 export interface AppleSignin {
-  loginId: string
+  email: string
   password: string
-  userType: number
 }
 
 

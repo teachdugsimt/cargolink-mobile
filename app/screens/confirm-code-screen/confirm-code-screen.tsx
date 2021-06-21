@@ -10,6 +10,8 @@ import AuthStore from '../../store/auth-store/auth-store'
 import OTPInputView from '@twotalltotems/react-native-otp-input'
 import { useStores } from "../../models/root-store/root-store-context";
 import ProfileStore from '../../store/profile-store/profile-store'
+import './shim.js'
+import crypto from 'crypto'
 
 const ROOT: ViewStyle = {
   height: Dimensions.get("window").height,
@@ -137,17 +139,19 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
       isLoading: true,
     }))
     AuthStore.otpVerifyRequest({
-      token: AuthStore.getAuthData.token,
-      otp: value
+      variant: crypto.createHmac('sha256', `${AuthStore?.data?.refCode}${AuthStore.countryCode}${AuthStore.phoneNumber}${value}`).digest('hex'),
+      countryCode: AuthStore.countryCode,
+      phoneNumber: AuthStore.phoneNumber
     })
       .then(() => {
         let profile = JSON.parse(JSON.stringify(AuthStore.profile))
+        __DEV__ &&  console.tron.log(profile)
         if (profile && profile.termOfService) {
           tokenStore.setToken(profile.token || null)
           tokenStore.setProfile(profile.userProfile || null)
           let screen = 'acceptPolicy'
           if (profile.termOfService.accepted) {
-            ProfileStore.getProfileRequest()
+            ProfileStore.getProfileRequest(profile.userProfile.userId)
             screen = 'home'
           }
           clearState()
@@ -196,7 +200,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
   }, [resendCode, isExpired, autoFocus])
 
   useEffect(() => {
-    if (AuthStore.getAuthData && AuthStore.getAuthData.token) {
+    if (AuthStore.getAuthData && AuthStore.getAuthData.refCode) {
       console.log('AuthStore.getAuthData :>> ', JSON.parse(JSON.stringify(AuthStore.getAuthData)));
     }
   }, [AuthStore.getAuthData])
