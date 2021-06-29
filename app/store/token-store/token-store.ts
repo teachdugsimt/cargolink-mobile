@@ -13,6 +13,7 @@ const UserProfile = types.maybeNull(
     fullname: types.maybeNull(types.string),
     mobileNo: types.maybeNull(types.string),
     email: types.maybeNull(types.string),
+    userId: types.maybeNull(types.string)
     // language: types.maybeNull(types.string),
   }),
 )

@@ -32,7 +32,7 @@ const vehicleModel = {
   createdAt: types.maybeNull(types.string),
   id: types.maybeNull(types.string), // [PENDING] types.number
   updatedAt: types.maybeNull(types.string),
-  registrationNumber: types.maybeNull(types.array(types.string)),
+  registrationNumber: types.maybeNull(types.array(types.maybeNull(types.string))),
   truckType: types.maybeNull(types.number),
   stallHeight: types.maybeNull(types.string),
   tipper: types.maybeNull(types.boolean),
@@ -112,13 +112,14 @@ const MyVehicleStore = types
       try {
         const response = yield apiMyVehicle.find(filter)
         console.log("Response call api find My Vehicle Request ::  ", response)
-        const parseResponse = response.data || []
-        let tmp
+        const parseResponse = response.data?.data || []
 
+        let tmp
         if (filter.page == 0) {
           tmp = parseResponse
-        } else tmp = _.unionBy(self.list, parseResponse, 'id')
-
+        } else tmp = _.unionBy(JSON.parse(JSON.stringify(self.list)), parseResponse, 'id')
+        
+        console.log(":: After union array :: ", tmp)
         self.list = tmp
         self.loading = false
       } catch (error) {

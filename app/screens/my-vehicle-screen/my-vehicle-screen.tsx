@@ -47,8 +47,8 @@ const EMPTY_CONTAINER_STYLE: ViewStyle = {
 const EMPTY_TEXT_STYLE: TextStyle = {
   color: color.line,
 }
-let initCount = 0
-let count = 0
+let initCount = 1
+let count = 1
 
 export const MyVehicle = observer(function MyVehicle() {
   const navigation = useNavigation()

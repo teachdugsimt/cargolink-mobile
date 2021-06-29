@@ -51,7 +51,8 @@ export class ProfileApi {
       timeout: this.config.timeout,
       headers: {
         Accept: "application/json",
-        Authorization: `Bearer ${to}`
+        // Authorization: `Bearer ${to}`
+        Authorization: `${to}`
       },
     })
   }

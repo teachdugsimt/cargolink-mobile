@@ -81,8 +81,8 @@ export const HomeScreen = observer((props) => {
     versatileStore.findGroup()
     versatileStore.find()
     versatileStore.findProductType()
-    ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId)
-    console.log("TOKEN STORE :: => ", JSON.parse(JSON.stringify(tokenStore.token)))
+    ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore.profile.userId)
+    console.log("TOKEN STORE :: => ", JSON.parse(JSON.stringify(tokenStore.profile)))
   }, [])
 
   const [swipe, setswipe] = useState(false)

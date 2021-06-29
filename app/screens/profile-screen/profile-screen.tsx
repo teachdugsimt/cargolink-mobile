@@ -15,8 +15,8 @@ import { translate } from "../../i18n"
 import { provinceListEn, provinceListTh, regionListEn, regionListTh } from '../home-screen/manage-vehicle/datasource'
 import i18n from 'i18n-js'
 import StatusStore from '../../store/post-job-store/job-status-store'
-import { CommonActions } from '@react-navigation/native';
 import AuthStore from "../../store/auth-store/auth-store"
+import { API_URL } from '../../config/'
 
 const { width, height } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -228,12 +228,12 @@ export const ProfileScreen = observer(function ProfileScreen() {
   const onRefresh = () => {
     let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
     if (tmp_profile && tmp_profile.userId) ProfileStore.getProfileReporterScreen(tmp_profile.userId)
-    ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId)
+    ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore.profile.userId)
   }
 
   const onRefreshTruckSummary = () => {
     let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
-    ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId)
+    ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore.profile.userId)
     if (tmp_profile && tmp_profile.userId) ProfileStore.getProfileReporterScreen(tmp_profile.userId)
     ProfileStore.getTruckSummary()
   }
@@ -443,11 +443,32 @@ export const ProfileScreen = observer(function ProfileScreen() {
             uri: avatar,
             method: 'GET',
             headers: {
-              Authorization: `Bearer ${token}`
+              Authorization: `${token}`
             },
           }} style={PROFILE_IMG} /> : <View>
             <Ionicons name="person-circle-sharp" size={85} color={color.line} />
           </View>}
+
+          {/* https://cargolink-documents.s3.ap-southeast-1.amazonaws.com/USER_AVATAR/ACTIVE/testuser-USER_AVATAR-1623751247069 */}
+          {/* 27d5daa3f3418eb2eee36718795600fae3e5e79b5f6c4b574856feda6d8a1ea6bb31a6bdf1dbf482bd43ac2f24be30785afe10d4020d30e39c840877f17ea774 */}
+
+          {/* <Image source={{
+            // uri: `https://2kgrbiwfnc.execute-api.ap-southeast-1.amazonaws.com/prod/api/v1/media/file-stream?attach_code=27d5daa3f3418eb2eee36718795600fae3e5e79b5f6c4b574856feda6d8a1ea6bb31a6bdf1dbf482bd43ac2f24be30785afe10d4020d30e39c840877f17ea774`,
+            // uri: `${API_URL}/api/v1/media/file-stream?attach_code=27d5daa3f3418eb2eee36718795600fae3e5e79b5f6c4b574856feda6d8a1ea6bb31a6bdf1dbf482bd43ac2f24be30785afe10d4020d30e39c840877f17ea774`,
+            
+            // uri: `https://cargolink-documents.s3.ap-southeast-1.amazonaws.com/VEHICLE_IMAGE/BACK/ACTIVE/VEHICLE_IMAGE-BACK-1624537044500`,  // SS
+            // uri: `https://cargolink-documents.s3.ap-southeast-1.amazonaws.com/VEHICLE_IMAGE/FRONT/INPROGRESS/VEHICLE_IMAGE-FRONT-1624969284810.PNG`,  //SS
+
+            // uri: `https://2kgrbiwfnc.execute-api.ap-southeast-1.amazonaws.com/prod/api/v1/media/file-stream-two?attach_code=04957a62bff4edfc356e8ad85c9ff92e2ee64a868676bd5f66c80d4795d229760fd20705ba0be98c925c75ebbeec8be0233b08f1b22ca579b23654ebf9775f48`,
+            // uri: `https://2kgrbiwfnc.execute-api.ap-southeast-1.amazonaws.com/prod/api/v1/media/file-stream-four?attach_code=27d5daa3f3418eb2eee36718795600fae3e5e79b5f6c4b574856feda6d8a1ea6bb31a6bdf1dbf482bd43ac2f24be30785afe10d4020d30e39c840877f17ea774`,
+            uri: `https://2kgrbiwfnc.execute-api.ap-southeast-1.amazonaws.com/prod/api/v1/media/file-stream-two?attach_code=04957a62bff4edfc356e8ad85c9ff92e2ee64a868676bd5f66c80d4795d229760fd20705ba0be98c925c75ebbeec8be0233b08f1b22ca579b23654ebf9775f48`,
+            method: 'GET',
+            headers: {
+              "Content-Type": "image/png"
+              // Authorization: `${token}`,
+              // "Content-Type": "application/octet-stream"
+            },
+          }} style={PROFILE_IMG} /> */}
 
           <View style={VIEW_NAME_NAD_PHONE}>
 
