@@ -128,10 +128,16 @@ export class MyVehicleAPI {
       }
     }
   */
+  parseParameters(params: any) {
+    let tmpObject = params
+    if(tmpObject['carrierId']) tmpObject['carrierId'] = Number(params['carrierId'])
+    return tmpObject
+  }
+
   async createVehicleProfile(params: any): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.post(`api/v1/mobile/carriers/truck`, params)
+      const response: ApiResponse<any> = await this.apisauce.post(`api/v1/trucks`, this.parseParameters(params))
       // the typical ways to die when calling an api
       console.log("Response call api create upload vehicle profile (MOCK) : ", response)
       if (!response.ok) {
@@ -149,7 +155,7 @@ export class MyVehicleAPI {
   async patchMyVehicle(params: any): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.put(`api/v1/mobile/carriers/truck/edit/${params.carrierId}`, params)
+      const response: ApiResponse<any> = await this.apisauce.put(`/api/v1/trucks/${params.carrierId}`, params)
       // the typical ways to die when calling an api
       console.log("Response call api patch upload vehicle profile (MOCK) : ", response)
       if (!response.ok) {

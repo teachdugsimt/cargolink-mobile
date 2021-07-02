@@ -53,13 +53,17 @@ export class CarriersJobAPI {
       },
     })
   }
+
+
   /**
    * Gets a list of users.
    */
   async find(filter: Types.ShipperJobRequest | {} = {}): Promise<any> {
     // make the api call
+
     try {
-      const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/job/list', filter)
+      // const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/job/list', filter)
+      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/jobs', filter)
       console.log("Carriers job api [find] : ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
