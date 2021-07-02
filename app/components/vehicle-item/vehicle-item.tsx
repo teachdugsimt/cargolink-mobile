@@ -20,11 +20,13 @@ const CONTAINER: ViewStyle = {
   backgroundColor: color.backgroundWhite,
   marginBottom: spacing[3],
   padding: spacing[3],
-  shadowColor: color.line,
-  shadowOffset: { width: 0, height: 1 },
-  shadowOpacity: 0.8,
-  shadowRadius: 5,
-  elevation: 3,
+  // shadowColor: color.line,
+  // shadowOffset: { width: 0, height: 1 },
+  // shadowOpacity: 0.8,
+  // shadowRadius: 5,
+  // elevation: 3,
+  borderWidth: 1,
+  borderColor: color.disable,
   ...BORDER_RADIUS,
 }
 const ROW: ViewStyle = {

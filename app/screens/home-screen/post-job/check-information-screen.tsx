@@ -199,14 +199,12 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
       "truckType": final['vehicle-type'],
       "truckAmount": final['car-num'],
       "productTypeId": final['item-type'],
-      // "productName": "string",
       "productName": final["item-name"],
       "weight": final['item-weight'],
       "price": final['shipping-rate'], // No need now 
       "tipper": dump_field[final['dump-field']],
       "priceType": shipping_type[final['shipping-type']],
       "expiredTime": expirationDate, // No need now
-      "note": 'note text',
       "from": {
         "name": final['receive-location'],
         "dateTime": compareDateTime(final['receive-date'], final['receive-time']),

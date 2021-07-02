@@ -100,7 +100,7 @@ export const MyVehicle = observer(function MyVehicle() {
   const renderItem = ({ item }) => {
     const statusText = item.approveStatus === 'Approve' ? translate('myVehicleScreen.verified') : translate('myVehicleScreen.pending')
     const statusColor = item.approveStatus === 'Approve' ? color.success : color.primary
-    // const registrationNumber = item.registrationNumber.map((n: string) => `ทะเบียน ${n}`)
+    // // const registrationNumber = item.registrationNumber.map((n: string) => `ทะเบียน ${n}`)
     const registrationNumber = item.registrationNumber.join(', ')
     let list_all_truck = JSON.parse(JSON.stringify(versatileStore.list))
     let name = list_all_truck.find(e => item.truckType == e.id)

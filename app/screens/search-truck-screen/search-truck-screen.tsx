@@ -132,7 +132,8 @@ const Item = (data) => {
   )
 }
 
-let PAGE = 0
+let PAGE = 1
+const ROWS_PER_PAGE = 10
 
 export const SearchTruckScreen = observer(function SearchTruckScreen() {
   const navigation = useNavigation()
@@ -155,10 +156,11 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
   }, [isFocused])
 
   useEffect(() => {
-    ShipperTruckStore.find()
+    // ShipperTruckStore.find({ page: PAGE, rowsPerPage: ROWS_PER_PAGE })
+    ShipperTruckStore.find({ rowsPerPage: ROWS_PER_PAGE })
 
     return () => {
-      PAGE = 0
+      PAGE = 1
       // AdvanceSearchStore.clearMenu()
       AdvanceSearchStore.setFilter({})
       ShipperTruckStore.setDefaultOfList()
@@ -195,7 +197,7 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
   const onRefresh = () => {
     // ShipperTruckStore.setDefaultOfList()
     ShipperTruckStore.find(AdvanceSearchStore.filter)
-    PAGE = 0
+    PAGE = 1
   }
 
   const onPressAdvanceSearch = () => {

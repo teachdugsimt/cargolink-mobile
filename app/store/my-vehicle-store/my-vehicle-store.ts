@@ -118,8 +118,7 @@ const MyVehicleStore = types
         if (filter.page == 0) {
           tmp = parseResponse
         } else tmp = _.unionBy(JSON.parse(JSON.stringify(self.list)), parseResponse, 'id')
-        
-        console.log(":: After union array :: ", tmp)
+
         self.list = tmp
         self.loading = false
       } catch (error) {
@@ -144,7 +143,7 @@ const MyVehicleStore = types
           //         return { url: img[1] }
           //     }) : []
           const data = {
-            ...response.data,
+            ...response.data.data,
             // imageTransform: images
           }
           self.data = data || {}

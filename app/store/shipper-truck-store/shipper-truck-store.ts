@@ -3,7 +3,7 @@ import { ShipperTruckAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
 import FavoriteTruckStore from "./favorite-truck-store"
 import * as storage from "../../utils/storage"
-
+import _ from 'lodash'
 const shipperTruckApi = new ShipperTruckAPI()
 
 const defaultModel = {
@@ -116,6 +116,7 @@ const ShipperTruckStore = types
   })
   .actions((self) => ({
     find: flow(function* find(filter: Types.ShipperJobRequest = {}) {
+      console.log("Filter find truck :: ", filter)
       shipperTruckApi.setup()
       self.loading = true
       try {
@@ -128,9 +129,10 @@ const ShipperTruckStore = types
 
           let arrMerge = []
           if (!filter.page) {
-            arrMerge = [...response.data.content]
+            arrMerge = [...response.data.data]
           } else {
-            arrMerge = [...self.list, ...response.data.content]
+            arrMerge = _.unionBy(JSON.parse(JSON.stringify(self.list)), response.data.data, 'id')
+            // arrMerge = [...self.list, ...response.data.data]
           }
 
           if (!(yield isAutenticated())) {

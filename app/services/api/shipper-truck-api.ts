@@ -53,13 +53,25 @@ export class ShipperTruckAPI {
       },
     })
   }
+
+  parseFilter(filter: any) {
+    let newFilter = JSON.parse(JSON.stringify(filter))
+    if (filter && Object.keys(filter).length > 0 && (newFilter.workingZones || newFilter.truckTypes)) {
+      newFilter.workingZones =  JSON.stringify(filter.workingZones)
+      newFilter.truckTypes = JSON.stringify(filter.truckTypes)
+    }
+    return newFilter
+  }
   /**
    * Gets a list of users.
    */
   async find(filter: Types.ShipperTruckFilter | {} = {}): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/truck/list', filter)
+      const params = this.parseFilter(filter)
+      console.log("Filter on api :: ", params)
+      // const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/truck/list', filter)
+      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/trucks', params)
       console.log("Shipper truck api [find] : ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)

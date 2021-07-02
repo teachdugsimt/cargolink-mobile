@@ -29,7 +29,7 @@ const Menu = types.model({
 
 const Filter = types.model({
   descending: types.maybeNull(types.boolean),
-  page: types.optional(types.number, 0),
+  page: types.optional(types.number, 1),
   rowsPerPage: types.optional(types.number, 10),
   sortBy: types.maybeNull(types.string),
   // truckAmountMax: types.maybeNull(types.number),
