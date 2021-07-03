@@ -4,6 +4,7 @@ import * as Types from "../../services/api/api.types"
 import { decode } from "@mapbox/polyline";
 import FavoriteJobStore from "./favorite-job-store";
 import * as storage from "../../utils/storage"
+import _ from 'lodash'
 
 const apiMyVehicle = new MyVehicleAPI()
 const apiCarriersJob = new CarriersJobAPI()
@@ -137,7 +138,7 @@ const CarriersJob = types.model({
 })
 
 const CarriersJobList = types.model({
-  content: types.maybeNull(types.array(CarriersJob)),
+  data: types.maybeNull(types.array(CarriersJob)),
   pageable: types.maybeNull(types.model({
     sort: types.model({
       sorted: types.maybeNull(types.boolean),
@@ -224,16 +225,17 @@ const CarriersJobStore = types
       try {
         self.previousListLength = self.list.length
         const response = yield apiCarriersJob.find(filter)
-        console.log("Response call api get shipper jobs : : ", response)
+        console.log("Response call api get shipper jobs sj : : ", response)
         if (response.kind === 'ok') {
 
           self.mainList = response.data
 
           let arrMerge = []
           if (!filter.page) {
-            arrMerge = [...response.data.content]
+            arrMerge = [...response.data.data]
           } else {
-            arrMerge = [...self.list, ...response.data.content]
+            // arrMerge = [...self.list, ...response.data.content]
+            arrMerge = _.unionBy(JSON.parse(JSON.stringify(self.list)), response.data.data, 'id')
           }
 
           if (!(yield isAutenticated())) {

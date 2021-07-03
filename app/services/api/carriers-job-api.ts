@@ -54,16 +54,26 @@ export class CarriersJobAPI {
     })
   }
 
-
+  parseFilter(filter: any) {
+    let tmpFilter: any = JSON.parse(JSON.stringify(filter))
+    if (tmpFilter) {
+      Object.keys(tmpFilter).map(e=> {
+         if(tmpFilter[e] && Array.isArray(tmpFilter[e])){
+           tmpFilter[e] = JSON.stringify(tmpFilter[e])
+         }
+      })
+    }
+    return tmpFilter
+  }
   /**
    * Gets a list of users.
    */
   async find(filter: Types.ShipperJobRequest | {} = {}): Promise<any> {
     // make the api call
-
+    const parseFilter = this.parseFilter(filter)
     try {
       // const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/job/list', filter)
-      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/jobs', filter)
+      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/jobs', parseFilter)
       console.log("Carriers job api [find] : ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
@@ -79,7 +89,7 @@ export class CarriersJobAPI {
 
   async findOne(id: string): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/job/${id}`)
+      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/jobs/${id}`)
       console.log("Carriers job api [findOne] : ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)

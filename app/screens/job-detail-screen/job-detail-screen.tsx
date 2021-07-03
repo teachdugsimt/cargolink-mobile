@@ -640,7 +640,7 @@ const RenderOwnerTruck = ({ truck }) => {
       onPress={() => openProfile(truck?.owner?.userId)}
     >
       <View>
-        <Image
+        {truck?.owner?.avatar?.object && <Image
           style={LOGO}
           source={{
             uri: truck?.owner?.avatar?.object || null,
@@ -650,7 +650,7 @@ const RenderOwnerTruck = ({ truck }) => {
               adminAuth: truck?.owner?.avatar?.token || null
             },
           }}
-          resizeMode={'cover'} />
+          resizeMode={'cover'} />}
       </View>
       <Text text={truck?.owner?.companyName || ''} style={{ paddingLeft: spacing[2] }} />
     </TouchableOpacity>
@@ -1147,11 +1147,11 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     ratingCount: '0',
     image: JSON.parse(CarriersJobStore.profile.imageProps) || {
       source: {
-        uri: CarriersJobStore.data?.owner?.avatar?.object,
+        uri: CarriersJobStore.data?.owner?.avatar?.object || "",
         method: 'GET',
         headers: {
           Authorization: `Bearer ${CarriersJobStore.data?.owner?.avatar?.token || ''}`,
-          adminAuth: CarriersJobStore.data?.owner?.avatar?.token
+          adminAuth: CarriersJobStore.data?.owner?.avatar?.token || ""
         },
       },
       resizeMode: 'cover'
@@ -1164,6 +1164,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   console.log("Job Detail data :: ", JSON.parse(JSON.stringify(CarriersJobStore.data)))
   console.log('route.name', route.name)
   console.log('actionStatus', actionStatus)
+  console.log("JSON.parse(JSON.stringify(CarriersJobStore.directions)) : ",JSON.parse(JSON.stringify(CarriersJobStore.directions)))
   return (
     <View style={CONTAINER}>
       {isLoaded && <ModalLoading size={'large'} color={color.primary} visible={isLoaded} />}
@@ -1410,7 +1411,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} activeOpacity={1} onPress={() => visibleProfile(truck?.owner)} >
               <Text text={truck?.owner?.companyName || ''} style={{ paddingRight: spacing[2] }} />
               <View style={LOGO_ROOT}>
-                <Image
+                {truck?.owner?.avatar?.object && truck?.owner?.avatar?.token && <Image
                   style={LOGO}
                   source={{
                     uri: truck?.owner?.avatar?.object || null,
@@ -1420,7 +1421,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                       adminAuth: truck?.owner?.avatar?.token || null
                     },
                   }}
-                  resizeMode={'cover'} />
+                  resizeMode={'cover'} />}
               </View>
             </TouchableOpacity>
           </View>
