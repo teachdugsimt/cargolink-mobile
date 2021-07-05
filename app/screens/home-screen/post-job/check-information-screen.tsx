@@ -197,10 +197,10 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
 
     let request_data = {
       "truckType": final['vehicle-type'],
-      "truckAmount": final['car-num'],
+      "truckAmount": final['car-num'] || null,
       "productTypeId": final['item-type'],
       "productName": final["item-name"],
-      "weight": final['item-weight'],
+      "weight": final['item-weight'] || null,
       "price": final['shipping-rate'], // No need now 
       "tipper": dump_field[final['dump-field']],
       "priceType": shipping_type[final['shipping-type']],

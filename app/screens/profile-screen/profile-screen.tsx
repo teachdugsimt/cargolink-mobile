@@ -452,7 +452,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
           {/* https://cargolink-documents.s3.ap-southeast-1.amazonaws.com/USER_AVATAR/ACTIVE/testuser-USER_AVATAR-1623751247069 */}
           {/* 27d5daa3f3418eb2eee36718795600fae3e5e79b5f6c4b574856feda6d8a1ea6bb31a6bdf1dbf482bd43ac2f24be30785afe10d4020d30e39c840877f17ea774 */}
 
-          {/* <Image source={{
+          <Image source={{
             // uri: `https://2kgrbiwfnc.execute-api.ap-southeast-1.amazonaws.com/prod/api/v1/media/file-stream?attach_code=27d5daa3f3418eb2eee36718795600fae3e5e79b5f6c4b574856feda6d8a1ea6bb31a6bdf1dbf482bd43ac2f24be30785afe10d4020d30e39c840877f17ea774`,
             // uri: `${API_URL}/api/v1/media/file-stream?attach_code=27d5daa3f3418eb2eee36718795600fae3e5e79b5f6c4b574856feda6d8a1ea6bb31a6bdf1dbf482bd43ac2f24be30785afe10d4020d30e39c840877f17ea774`,
             
@@ -461,14 +461,14 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
             // uri: `https://2kgrbiwfnc.execute-api.ap-southeast-1.amazonaws.com/prod/api/v1/media/file-stream-two?attach_code=04957a62bff4edfc356e8ad85c9ff92e2ee64a868676bd5f66c80d4795d229760fd20705ba0be98c925c75ebbeec8be0233b08f1b22ca579b23654ebf9775f48`,
             // uri: `https://2kgrbiwfnc.execute-api.ap-southeast-1.amazonaws.com/prod/api/v1/media/file-stream-four?attach_code=27d5daa3f3418eb2eee36718795600fae3e5e79b5f6c4b574856feda6d8a1ea6bb31a6bdf1dbf482bd43ac2f24be30785afe10d4020d30e39c840877f17ea774`,
-            uri: `https://2kgrbiwfnc.execute-api.ap-southeast-1.amazonaws.com/prod/api/v1/media/file-stream-two?attach_code=04957a62bff4edfc356e8ad85c9ff92e2ee64a868676bd5f66c80d4795d229760fd20705ba0be98c925c75ebbeec8be0233b08f1b22ca579b23654ebf9775f48`,
+            uri: `https://d3c8ovmhhst6ne.cloudfront.net/api/v1/media/file-stream-six?attachCode=884ab658399f0b364f3e76bb9f8bde92dcc2010b16bc5f9e484ac5298ee3a1150dd5308da9a3b3c3043c2a3d143446f518d6525fe46155133473f6ad85b2d77a`,
             method: 'GET',
-            headers: {
-              "Content-Type": "image/png"
+            // headers: {
+              // "Content-Type": "image/png"
               // Authorization: `${token}`,
               // "Content-Type": "application/octet-stream"
-            },
-          }} style={PROFILE_IMG} /> */}
+            // },
+          }} style={PROFILE_IMG} />
 
           <View style={VIEW_NAME_NAD_PHONE}>
 
