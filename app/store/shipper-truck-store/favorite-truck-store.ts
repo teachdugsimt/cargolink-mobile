@@ -55,7 +55,7 @@ const FavoriteTruckStore = types
         try {
           const response = yield favoriteTruckApi.find(filter)
           console.log("Response call api get favorite jobs : : ", response)
-          self.list = response.data || []
+          self.list = response.data.data || []
           self.loading = false
         } catch (error) {
           console.error("Failed to fetch get favorite jobs : ", error)

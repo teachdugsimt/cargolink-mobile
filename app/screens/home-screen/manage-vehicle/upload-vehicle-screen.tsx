@@ -1248,7 +1248,7 @@ export const UploadVehicleScreen = observer(() => {
                       )}
                       key={"registration-key-" + index}
                       name={"registration-" + index}
-                      rules={{ required: true }}
+                      rules={{ required: true, pattern: /^\S+$/ }}
                       defaultValue=""
                     />
                     {index != 0 && index == textInput.length - 1 && <TouchableOpacity style={DELETE_RERGIS_BUTTON} onPress={() => _deleteRregistration(index)}>

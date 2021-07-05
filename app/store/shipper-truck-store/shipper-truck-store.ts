@@ -117,7 +117,7 @@ const ShipperTruckStore = types
   .actions((self) => ({
     find: flow(function* find(filter: Types.ShipperJobRequest = {}) {
       console.log("Filter find truck :: ", filter)
-      shipperTruckApi.setup()
+      yield shipperTruckApi.setup()
       self.loading = true
       try {
         self.previousListLength = self.list.length
@@ -167,14 +167,15 @@ const ShipperTruckStore = types
     }),
 
     findOne: flow(function* findOne(id: string) {
-      shipperTruckApi.setup()
+      yield shipperTruckApi.setup()
       self.loading = true
       try {
         yield FavoriteTruckStore.find()
         const response = yield shipperTruckApi.findOne(id)
         console.log("Response call api get shipper truck : : ", JSON.stringify(response))
         if (response.kind === 'ok') {
-          const result = response.data || {}
+          const parseResponse = JSON.parse(JSON.stringify(response.data))
+          const result = parseResponse.data || {}
           const isLiked = FavoriteTruckStore.list.find(({ id }) => id === result.id)?.isLiked
           self.data = { ...result, isLiked: isLiked || false, truckTypeName: self.truckTypeName }
         } else {
