@@ -171,7 +171,8 @@ const TruckDetailStore = types
         const response = yield shipperTruckApi.findOne(id)
         console.log("Response call api get shipper truck : : ", JSON.stringify(response))
         if (response.kind === 'ok') {
-          const result = response.data || {}
+          const parseResponse = JSON.parse(JSON.stringify(response.data))
+          const result = parseResponse.data || {}
           const isLiked = FavoriteTruckStore.list.find(({ id }) => id === result.id)?.isLiked
           self.data = { ...result, isLiked: isLiked || false, truckTypeName: self.truckTypeName }
         } else {
