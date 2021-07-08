@@ -55,6 +55,10 @@ const QuotationField = types.model({
   id: types.maybeNull(types.string),
   fullName: types.maybeNull(types.string),
   bookingDatetime: types.maybeNull(types.string),
+  avatar: types.maybeNull(types.model({
+    object: types.maybeNull(types.string),
+    token: types.maybeNull(types.string),
+  })),
   truck: types.maybeNull(types.model({
     id: types.maybeNull(types.string),
     truckType: types.maybeNull(types.number),
@@ -89,10 +93,7 @@ const QuotationField = types.model({
       }))
     })),
   })),
-  avatar: types.maybeNull(types.model({
-    object: types.maybeNull(types.string),
-    token: types.maybeNull(types.string),
-  }))
+ 
 })
 
 const CarriersJob = types.model({

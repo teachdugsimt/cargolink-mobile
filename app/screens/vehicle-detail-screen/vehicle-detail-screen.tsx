@@ -337,8 +337,9 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
           btnStyle={{ paddingVertical: 2, paddingHorizontal: spacing[2] }}
           btnTextStyle={{ fontSize: 12, paddingLeft: spacing[1] }}
           onToggle={() => {
+            console.log("When navigate to job detail quotation ID :: ", booker.id) // quotation id
             CarriersJobStore.getJobDetail(booker.id)
-            navigation.navigate('jobDetail', {
+            navigation.navigate('truckShowJobDetailScreen', {
               showOwnerAccount: false,
               fromManageCar: true,
               quotationsID: booker.id

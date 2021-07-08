@@ -244,7 +244,7 @@ const BookingStore = types
       self.loading_approve_booking = true
       try {
         if (who == "shipper") {
-          const response = status == "accept" ? yield bookingAPI.findShipperJobBookingAccept(id) : yield bookingAPI.findShipperJobBookingReject(id)
+          const response = status == "accept" ? yield bookingAPI.findShipperJobBookingAccept(id, "ACCEPTED") : yield bookingAPI.findShipperJobBookingReject(id, "REJECTED")
           console.log(`Response call api ${who} ${status}Booking :: `, response)
           if (response.kind === 'ok') {
             self.data_approve_booking = response.data || null
@@ -252,7 +252,7 @@ const BookingStore = types
             self.error_approve_booking = response?.data?.message || response.kind
           }
         } else if (who == "carrier") {
-          const response = status == "accept" ? yield bookingAPI.findCarrierTruckBookingAccept(id) : yield bookingAPI.findCarrierTruckBookingReject(id)
+          const response = status == "accept" ? yield bookingAPI.findCarrierTruckBookingAccept(id, "ACCEPTED") : yield bookingAPI.findCarrierTruckBookingReject(id, "REJECTED")
           console.log(`Response call api ${who} ${status}Booking :: `, response)
           if (response.kind === 'ok') {
             self.data_approve_booking = response.data || null

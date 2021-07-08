@@ -208,7 +208,8 @@ export const SelectTruckScreen = observer(function MyJobScreen() {
   const onConfirmJob = () => {
     BookingStore.addCarrierJobBookingOne({
       jobId: CarriersJobStore.data.id,
-      truckId: truckId
+      truckId: truckId,
+      accepterUserId: CarriersJobStore.data?.owner?.id
     })
     setIsBooking(true)
     // onCloseModal()
@@ -248,7 +249,7 @@ export const SelectTruckScreen = observer(function MyJobScreen() {
   }
 
   console.log('JSON.parse(JSON.stringify(MyVehicleStore.list))', JSON.parse(JSON.stringify(MyVehicleStore.list)))
-
+  // console.log("CarrierStore data parse json :: ", JSON.parse(JSON.stringify(CarriersJobStore.data)))
   return (
     <View style={FULL}>
       <View style={HEADER}>

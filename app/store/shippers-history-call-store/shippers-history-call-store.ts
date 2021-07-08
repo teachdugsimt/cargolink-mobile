@@ -46,7 +46,7 @@ const CarriersHistoryCallStore = types
           const response = yield shippersHistoryCallApi.find(filter)
 
           if (response.kind === 'ok') {
-            const data = response.data.map((history, index) => {
+            const data = response.data.data.map((history, index) => {
               return {
                 id: (index + 1).toString(),
                 ...history,

@@ -62,10 +62,12 @@ const CarriersHistoryCallStore = types
           const response = yield carriersHistoryCallApi.find(filter)
 
           if (response.kind === 'ok') {
-            const data = response.data.map((history, index) => {
+            const parseData = JSON.parse(JSON.stringify(response.data))
+            const data = parseData.data.map((history, index) => {
               return {
                 id: (index + 1).toString(),
                 ...history,
+                weight: Number(history.weight)
               }
             })
             self.list = data

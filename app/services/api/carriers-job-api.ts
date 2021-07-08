@@ -89,6 +89,7 @@ export class CarriersJobAPI {
 
   async findOne(id: string): Promise<any> {
     try {
+      // const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/job/${id}`)
       const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/jobs/${id}`)
       console.log("Carriers job api [findOne] : ", response)
       if (!response.ok) {

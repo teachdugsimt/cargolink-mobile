@@ -192,7 +192,7 @@ const Item = (data) => {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${avatar?.token || ''}`,
-        adminAuth: avatar?.token
+        adminAuth: avatar?.token || ''
       },
     },
     resizeMode: 'cover'

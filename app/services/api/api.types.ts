@@ -266,6 +266,7 @@ export interface UserTruckFilter {
 export interface BookingBody {
   jobId: string
   truckId: string
+  accepterUserId?: string | undefined | number
 }
 
 export interface RatingBody {

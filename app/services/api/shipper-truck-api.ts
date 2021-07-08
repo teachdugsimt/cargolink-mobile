@@ -88,7 +88,7 @@ export class ShipperTruckAPI {
   async findOne(id: string): Promise<any> {
     try {
       // const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/truck/${id}`)
-      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/trucks/${id}`)
+      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/trucks/view/${id}`)
       console.log("Shipper truck api [findOne] : ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
