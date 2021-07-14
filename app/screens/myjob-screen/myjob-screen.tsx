@@ -338,12 +338,12 @@ const Item = (data) => {
             method: 'GET',
             headers: {
               Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-              adminAuth: owner?.avatar?.token
+              adminAuth: owner?.avatar?.token || ''
             },
           }}
           resizeMode={'cover'} />
       </View>
-      <Text text={owner?.fullName || ''} style={reverse ? { paddingRight: spacing[2] } : { paddingLeft: spacing[5] }} />
+      <Text text={owner?.fullName || (owner?.companyName || '')} style={reverse ? { paddingRight: spacing[2] } : { paddingLeft: spacing[5] }} />
     </View>
   )
 
@@ -587,7 +587,7 @@ export const MyJobScreen = observer(function MyJobScreen(props: any) {
   const renderItem = ({ item }) => <Item {...item} statusScreen={index} onConfirm={(id: string) => onConfirm(id)} onSubmitOpinion={onSubmitOpinion} />
 
   const onConfirm = (id: string) => {
-    BookingStore.finishJob(id)
+    // BookingStore.finishJob(id)
     // onRefresh()
     // navigation.navigate('myFeedback')
   }

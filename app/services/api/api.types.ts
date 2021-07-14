@@ -254,6 +254,13 @@ export interface UserJobFilter {
   rowsPerPage?: number
 }
 
+export interface UserJobListFilter {
+  userId?: string
+  page?: number
+  rowsPerPage?: number
+  status?: 'NEW' | 'DONE' | 'INPROGRESS'
+}
+
 export interface UserTruckFilter {
   truckAmount?: number
   truckTypes?: number[]
@@ -267,6 +274,7 @@ export interface BookingBody {
   jobId: string
   truckId: string
   accepterUserId?: string | undefined | number
+  requesterType?: 'JOB_OWNER' | 'TRUCK_OWNER'
 }
 
 export interface RatingBody {

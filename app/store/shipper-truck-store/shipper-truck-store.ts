@@ -14,7 +14,7 @@ const defaultModel = {
   createdAt: types.maybeNull(types.string),
   updatedAt: types.maybeNull(types.string),
   approveStatus: types.maybeNull(types.string),
-  quotationNumber:types.maybeNull(types.number),
+  quotationNumber: types.maybeNull(types.string),
   registrationNumber: types.maybeNull(types.array(types.string)),
   tipper: types.maybeNull(types.boolean),
   phoneNumber: types.maybeNull(types.string),
@@ -139,7 +139,7 @@ const ShipperTruckStore = types
             arrMerge = _.unionBy(JSON.parse(JSON.stringify(self.list)), response.data.data, 'id')
             // arrMerge = [...self.list, ...response.data.data]
           }
-
+          console.log("Step 2 : ", self.mainList)
           if (!(yield isAutenticated())) {
             self.list = cast(arrMerge)
           } else {
@@ -154,12 +154,12 @@ const ShipperTruckStore = types
                   isLiked: favoriteList.some(val => val.id === attr.id)
                 }
               }))
+              console.log("Step 3 : ", JSON.parse(JSON.stringify(result)))
               self.list = JSON.parse(JSON.stringify(result))
             } else {
               self.list = cast(arrMerge)
             }
           }
-
           self.loading = false
         } else {
           self.loading = false

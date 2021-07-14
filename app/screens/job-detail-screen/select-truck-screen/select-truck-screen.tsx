@@ -209,7 +209,8 @@ export const SelectTruckScreen = observer(function MyJobScreen() {
     BookingStore.addCarrierJobBookingOne({
       jobId: CarriersJobStore.data.id,
       truckId: truckId,
-      accepterUserId: CarriersJobStore.data?.owner?.id
+      requesterType: 'TRUCK_OWNER',
+      accepterUserId: CarriersJobStore.data?.owner?.userId
     })
     setIsBooking(true)
     // onCloseModal()

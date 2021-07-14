@@ -96,7 +96,8 @@ export class ProfileApi {
   async updateProfile(params: any = {}): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/multi-roles/profile', params)
+      // const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/multi-roles/profile', params)
+      const response: ApiResponse<any> = await this.apisauce.patch('/api/v1/users/me', params)
       console.log("Response call api get PROFILE : ", response)
       // if (!response.ok) {
       //   const problem = getGeneralApiProblem(response)

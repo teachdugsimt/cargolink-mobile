@@ -28,6 +28,10 @@ const ShipperTruck = types.model({
       token: types.maybeNull(types.string),
     })),
   })),
+  workingZones: types.optional(types.array(types.model({
+    region: types.maybeNull(types.number),
+    province: types.maybeNull(types.number),
+  })), []),
 })
 
 const isAutenticated = async () => {

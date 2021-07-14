@@ -535,7 +535,7 @@ const TruckItem = (data) => {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-        adminAuth: owner?.avatar?.token
+        adminAuth: owner?.avatar?.token || ''
       },
     },
     resizeMode: 'cover'
@@ -608,7 +608,7 @@ const RenderOwnerTruck = ({ truck }) => {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${truck?.owner?.avatar?.token || ''}`,
-          adminAuth: truck?.owner?.avatar?.token
+          adminAuth: truck?.owner?.avatar?.token || ''
         },
       },
       resizeMode: 'cover'
@@ -677,6 +677,9 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   const [region, setRegion] = useState(null)
   const [scrollY, setScrollY] = useState<number>(0)
   const [visibleModalReject, setvisibleModalReject] = useState<boolean>(false)
+
+  console.log("CarriersJobStore.data :: ", JSON.parse(JSON.stringify(CarriersJobStore.data)))
+
   const {
     id,
     from,
@@ -814,7 +817,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-          adminAuth: owner?.avatar?.token
+          adminAuth: owner?.avatar?.token || ''
         },
       },
       resizeMode: 'cover'
@@ -831,12 +834,14 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     //   type: 1,
     // })
     modalizeRef.current?.close();
+    console.log("Route name my job screen : ", route)
     if (route.name === 'jobDetail') {
       navigation.navigate('carrierProfile')
     } else if (route.name === 'favoriteJobDetail') {
       navigation.navigate('favoriteCarrierProfile')
     } else {
-      navigation.navigate('bookerProfile', { statusScreen })
+      if (fromManageCar) navigation.navigate('bookerProfileScreen')
+      else navigation.navigate('bookerProfile', { statusScreen })
     }
   }
 
@@ -971,7 +976,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${imageToken}`,
-          adminAuth: imageToken
+          adminAuth: imageToken || ''
         },
       },
       resizeMode: 'cover'
@@ -1001,7 +1006,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${ownerData?.avatar?.token || ''}`,
-          adminAuth: ownerData?.avatar?.token
+          adminAuth: ownerData?.avatar?.token || ''
         },
       },
       resizeMode: 'cover'
@@ -1164,7 +1169,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   console.log("Job Detail data :: ", JSON.parse(JSON.stringify(CarriersJobStore.data)))
   console.log('route.name', route.name)
   console.log('actionStatus', actionStatus)
-  console.log("JSON.parse(JSON.stringify(CarriersJobStore.directions)) : ",JSON.parse(JSON.stringify(CarriersJobStore.directions)))
+  console.log("JSON.parse(JSON.stringify(CarriersJobStore.directions)) : ", JSON.parse(JSON.stringify(CarriersJobStore.directions)))
   return (
     <View style={CONTAINER}>
       {isLoaded && <ModalLoading size={'large'} color={color.primary} visible={isLoaded} />}

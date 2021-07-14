@@ -145,7 +145,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
     })
       .then(() => {
         let profile = JSON.parse(JSON.stringify(AuthStore.profile))
-        __DEV__ &&  console.tron.log(profile)
+        __DEV__ && console.tron.log(profile)
         if (profile && profile.termOfService) {
           tokenStore.setToken(profile.token || null)
           tokenStore.setProfile(profile.userProfile || null)
@@ -207,7 +207,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
 
   return (
     <Screen style={ROOT} statusBar={'dark-content'}>
-      <ModalLoading size={'large'} color={color.primary} visible={isLoading} />
+      <ModalLoading size={'large'} color={color.primary} visible={isLoading || (AuthStore.loading || AuthStore.loadingApple)} />
 
       <TouchableOpacity style={{ paddingLeft: spacing[4] + spacing[1] }} onPress={() => navigation.goBack()}>
         <HeaderLeft onLeftPress={() => navigation.goBack()} />

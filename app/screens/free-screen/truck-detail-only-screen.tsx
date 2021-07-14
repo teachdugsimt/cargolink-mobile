@@ -157,7 +157,7 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${profile?.avatar?.token || ''}`,
-          adminAuth: profile?.avatar?.token
+          adminAuth: profile?.avatar?.token || ''
         },
       },
       resizeMode: 'cover'
@@ -335,7 +335,7 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
           method: 'GET',
           headers: {
             Authorization: img[1].token,
-            adminAuth: img[1].token
+            adminAuth: img[1].token || ''
           }
         }
       } else {

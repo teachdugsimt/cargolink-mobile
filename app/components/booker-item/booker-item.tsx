@@ -68,7 +68,7 @@ export function BookerItem(props: BookerItemProps) {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${tokenUrl}`,
-            adminAuth: tokenUrl,
+            adminAuth: tokenUrl || '',
           },
         } : images.greyMock} style={imageViewStyle} resizeMode={'cover'} />
       </View>

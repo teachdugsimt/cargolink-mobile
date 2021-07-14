@@ -54,7 +54,7 @@ const Item = (data) => {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-          adminAuth: owner?.avatar?.token
+          adminAuth: owner?.avatar?.token || ''
         },
       },
       resizeMode: 'cover'
@@ -81,7 +81,7 @@ const Item = (data) => {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-        adminAuth: owner?.avatar?.token
+        adminAuth: owner?.avatar?.token || ''
       },
     },
     resizeMode: 'cover'

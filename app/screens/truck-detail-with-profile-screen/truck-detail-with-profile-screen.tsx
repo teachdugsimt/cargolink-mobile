@@ -275,7 +275,7 @@ export const TruckDetailWithProfile = observer(function TruckDetailWithProfile()
         method: 'GET',
         headers: {
           Authorization: `Bearer ${profile?.avatar?.token || ''}`,
-          adminAuth: profile?.avatar?.token
+          adminAuth: profile?.avatar?.token || ''
         },
       },
       resizeMode: 'cover'
@@ -457,7 +457,7 @@ export const TruckDetailWithProfile = observer(function TruckDetailWithProfile()
           method: 'GET',
           headers: {
             Authorization: img[1].token,
-            adminAuth: img[1].token
+            adminAuth: img[1].token || ''
           }
         }
       } else {
@@ -484,7 +484,7 @@ export const TruckDetailWithProfile = observer(function TruckDetailWithProfile()
       method: 'GET',
       headers: {
         Authorization: `Bearer ${truckData?.owner?.avatar?.token || ''}`,
-        adminAuth: truckData?.owner?.avatar?.token
+        adminAuth: truckData?.owner?.avatar?.token || ''
       },
     },
     resizeMode: 'cover'

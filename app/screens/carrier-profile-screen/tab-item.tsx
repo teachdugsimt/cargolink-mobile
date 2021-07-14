@@ -87,7 +87,8 @@ const JobItem = (data) => {
   )
 }
 
-let PAGE = 0
+// let PAGE = 0
+let PAGE = 1
 
 export const TabItem = observer(function TabItem() {
 
@@ -105,7 +106,7 @@ export const TabItem = observer(function TabItem() {
       })
 
       return () => {
-        PAGE = 0
+        PAGE = 1
         UserJobStore.clearList()
       }
     }, [])
@@ -123,9 +124,10 @@ export const TabItem = observer(function TabItem() {
   }
 
   const onRefresh = () => {
+    PAGE = 1
     UserJobStore.find({
       userId: UserJobStore.userId,
-      page: 0,
+      page: PAGE,
       type: status
     })
   }

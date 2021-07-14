@@ -58,7 +58,8 @@ export class BookingApi {
 
   async addCarrierJobBookingOne(body: BookingBody): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/mobile/carriers/job/booking`, body)
+      // const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/mobile/carriers/job/booking`, body)
+      const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/booking`, body)
       console.log("Response addCarrierJobBookingOne :: ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
@@ -88,7 +89,8 @@ export class BookingApi {
 
   async updateBooking(data: BookingBody): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/mobile/shippers/truck/booking`, data)
+      // const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/mobile/shippers/truck/booking`, data)
+      const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/booking`, data)
       console.log("Response updateBooking :: ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)

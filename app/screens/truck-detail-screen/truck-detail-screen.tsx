@@ -303,7 +303,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
           method: 'GET',
           headers: {
             Authorization: img[1].token,
-            adminAuth: img[1].token
+            adminAuth: img[1].token || ''
           }
         }
       } else {
@@ -330,7 +330,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
 
   const ownerUserId = owner?.userId || ''
   const myUserId = ProfileStore.data?.userId || ''
-
+  console.log("Truck detail screen :: ", JSON.parse(JSON.stringify(ShipperTruckStore.data)))
   return (
     <View style={CONTAINER}>
       {ShipperTruckStore.loading && <ModalLoading size={'large'} color={color.primary} visible={ShipperTruckStore.loading} />}

@@ -230,7 +230,7 @@ export function SearchItem(props: SearchItemProps) {
                 style={TEXT}
                 text={`${translate('common.amount')} : `}
               />
-              <Text style={TEXT} text={count.toString()} />
+              {!!count && <Text style={TEXT} text={count.toString()} />}
             </View>
           </View>
         </View>

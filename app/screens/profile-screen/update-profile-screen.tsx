@@ -245,7 +245,8 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
       "fullName": data["name-lastname"],
       "phoneNumber": data["phone-number"],
       "avatar": null,
-      "email": data["email"]
+      "email": data["email"],
+      "userId": tokenStore.profile.userId
     }
     if (imageProfile) finalData['avatar'] = ProfileStore?.data_upload_picture?.fileUrl || tmp_profile_store.avatar
     ProfileStore.updateProfile(finalData)

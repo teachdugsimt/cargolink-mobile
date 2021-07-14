@@ -60,7 +60,7 @@ export const Item = (data: JobProps) => {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-          adminAuth: owner?.avatar?.token
+          adminAuth: owner?.avatar?.token || ''
         },
       },
       resizeMode: 'cover'
@@ -91,7 +91,7 @@ export const Item = (data: JobProps) => {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-        adminAuth: owner?.avatar?.token
+        adminAuth: owner?.avatar?.token || ''
       },
     },
     resizeMode: 'cover'

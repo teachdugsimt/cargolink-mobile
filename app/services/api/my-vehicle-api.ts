@@ -173,7 +173,8 @@ export class MyVehicleAPI {
 
   async getJobDetailByQuotationId(id: string): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/carriers/quotation/${id}`)
+      // const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/carriers/quotation/${id}`)
+      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/booking/${id}`)
 
       console.log("Response call api get getJobDetailByQuotationId by id : ", response)
       if (!response.ok) {

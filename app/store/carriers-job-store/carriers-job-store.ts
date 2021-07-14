@@ -93,7 +93,41 @@ const QuotationField = types.model({
       }))
     })),
   })),
- 
+
+})
+
+const TripModel = types.model({
+  approveStatus: types.maybeNull(types.string),
+  bookingId: types.maybeNull(types.string), // here
+  createdAt: types.maybeNull(types.string),
+  id: types.maybeNull(types.string),
+  owner: types.maybeNull(types.model({
+    id: types.maybeNull(types.number),
+    userId: types.maybeNull(types.string),
+    companyName: types.maybeNull(types.string),
+    fullName: types.maybeNull(types.string),
+    mobileNo: types.maybeNull(types.string),
+    email: types.maybeNull(types.string),
+    avatar: types.maybeNull(types.model({
+      object: types.maybeNull(types.string),
+      token: types.maybeNull(types.string),
+    }))
+  })),
+  phoneNumber: types.maybeNull(types.string),
+  price: types.maybeNull(types.number),
+  priceType: types.maybeNull(types.string),
+  registrationNumber: types.maybeNull(types.array(types.string)),
+  stallHeight: types.maybeNull(types.string),
+  status: types.maybeNull(types.string),
+  tipper: types.maybeNull(types.boolean),
+  truckId: types.maybeNull(types.string),
+  truckType: types.maybeNull(types.number),
+  updatedAt: types.maybeNull(types.string),
+  weight: types.maybeNull(types.number),
+  workingZones: types.optional(types.array(types.model({
+    region: types.maybeNull(types.number),
+    province: types.maybeNull(types.number),
+  })), []),
 })
 
 const CarriersJob = types.model({
@@ -131,8 +165,10 @@ const CarriersJob = types.model({
       token: types.maybeNull(types.string),
     }))
   })),
+  tipper: types.maybeNull(types.boolean),
   isLiked: types.maybeNull(types.optional(types.boolean, false)),
   quotations: types.maybeNull(types.array(QuotationField)),
+  trips: types.optional(types.array(TripModel), []),
   truck: types.maybeNull(truckModal),
   price: types.maybeNull(types.number),
   priceType: types.maybeNull(types.string),
@@ -276,7 +312,7 @@ const CarriersJobStore = types
           CarriersJobStore.setDefaultOfData()
         }
         const response = yield apiCarriersJob.findOne(id)
-        console.log("Response call api get shipper job : : ", JSON.stringify(response))
+        console.log("Response call api get shipper job 22 : : ", JSON.stringify(response))
         if (response.kind === 'ok') {
           const result = response.data || {}
           if (!(yield isAutenticated())) {
@@ -284,7 +320,12 @@ const CarriersJobStore = types
           } else {
             yield FavoriteJobStore.find()
             const isLiked = FavoriteJobStore.list.find(({ id }) => id === result.id)?.isLiked
-            self.data = { ...result, isLiked: isLiked || false }
+            console.log("Step 2 : ", JSON.parse(JSON.stringify(result)))
+            const tmpResult = { ...result, isLiked: isLiked || false }
+            // tmpResult.trips = null
+            // tmpResult.quotations = null
+            self.data = tmpResult
+            // self.data = { ...result, isLiked: isLiked || false }
           }
         } else {
           self.error = response?.data?.message || response.kind
@@ -292,7 +333,7 @@ const CarriersJobStore = types
         self.loading = false
       } catch (error) {
         // ... including try/catch error handling
-        console.error("Failed to fetch get shipper job : ", error)
+        console.error("Failed to fetch get shipper job (view job id): ", error)
         // self.data = []
         self.loading = false
         self.error = "error fetch api get shipper job"
@@ -305,9 +346,9 @@ const CarriersJobStore = types
       self.loading = true
       try {
         const response = yield apiMyVehicle.getJobDetailByQuotationId(id)
-        console.log("Response call api getJobDetail : : ", response)
+        console.log("Response call api getJobDetail my vehicle detail : : ", response)
         if (response.kind === 'ok') {
-          self.data = response.data || null
+          self.data = JSON.parse(JSON.stringify(response.data)) || null
         } else {
           self.error = response.data.message || 'fail to fetch getJobDetail api'
         }
