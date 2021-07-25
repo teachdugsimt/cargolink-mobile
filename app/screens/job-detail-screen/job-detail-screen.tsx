@@ -33,6 +33,7 @@ import { GetRegion } from '../../utils/get-region'
 import { MapTruckImageName } from '../../utils/map-truck-image-name'
 import { GetTruckType } from '../../utils/get-truck-type'
 import TruckDetailStore from '../../store/free-store/truck-detail-store'
+import { API_URL } from '../../config/'
 
 interface JobDetailProps {
   booker?: Array<any>
@@ -529,13 +530,14 @@ const TruckItem = (data) => {
   }).join(', ') : translate('common.notSpecified')
 
   const truckImage = MapTruckImageName(+truckType)
-  const imageSource: ImageProps = owner?.avatar?.object && owner?.avatar?.token ? {
+  const imageSource: ImageProps = owner?.avatar?.object ? {
     source: {
-      uri: owner?.avatar?.object || '',
+      uri: (owner?.avatar?.object ? `${API_URL}/api/v1/media/file-stream?attachCode=` + owner?.avatar?.object : '') || '',
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-        adminAuth: owner?.avatar?.token || ''
+        Accept: 'image/*'
+        // Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+        // adminAuth: owner?.avatar?.token || ''
       },
     },
     resizeMode: 'cover'
@@ -602,13 +604,14 @@ const RenderOwnerTruck = ({ truck }) => {
   }: JobDetailProps = route?.params || {}
 
   const openProfile = (id: string) => {
-    const imageSource = truck?.owner?.avatar?.object && truck?.owner?.avatar?.token ? {
+    const imageSource = truck?.owner?.avatar?.object ? {
       source: {
-        uri: truck?.owner?.avatar?.object || '',
+        uri: (truck?.owner?.avatar?.object ? `${API_URL}/api/v1/media/file-stream?attachCode=` + truck?.owner?.avatar?.object : '') || '',
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${truck?.owner?.avatar?.token || ''}`,
-          adminAuth: truck?.owner?.avatar?.token || ''
+          Accept: 'image/*'
+          // Authorization: `Bearer ${truck?.owner?.avatar?.token || ''}`,
+          // adminAuth: truck?.owner?.avatar?.token || ''
         },
       },
       resizeMode: 'cover'
@@ -643,11 +646,12 @@ const RenderOwnerTruck = ({ truck }) => {
         {truck?.owner?.avatar?.object && <Image
           style={LOGO}
           source={{
-            uri: truck?.owner?.avatar?.object || null,
+            uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + truck?.owner?.avatar?.object || null,
             method: 'GET',
             headers: {
-              Authorization: `Bearer ${truck?.owner?.avatar?.token || null}`,
-              adminAuth: truck?.owner?.avatar?.token || null
+              Accept: 'image/*'
+              // Authorization: `Bearer ${truck?.owner?.avatar?.token || null}`,
+              // adminAuth: truck?.owner?.avatar?.token || null
             },
           }}
           resizeMode={'cover'} />}
@@ -811,13 +815,14 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   }
 
   const onPress = () => {
-    const imageSource = owner?.avatar?.object && owner?.avatar?.token ? {
+    const imageSource = owner?.avatar?.object ? {
       source: {
-        uri: owner?.avatar?.object || '',
+        uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + owner?.avatar?.object || '',
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-          adminAuth: owner?.avatar?.token || ''
+          Accept: 'image/*'
+          // Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+          // adminAuth: owner?.avatar?.token || ''
         },
       },
       resizeMode: 'cover'
@@ -972,11 +977,12 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     const imageToken = truckOwner?.avatar?.token
     const imageSource = imageUrl && imageToken ? {
       source: {
-        uri: imageUrl,
+        uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + imageUrl,
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${imageToken}`,
-          adminAuth: imageToken || ''
+          Accept: 'image/*'
+          // Authorization: `Bearer ${imageToken}`,
+          // adminAuth: imageToken || ''
         },
       },
       resizeMode: 'cover'
@@ -1002,11 +1008,12 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
     const imageSource = ownerData?.avatar?.object && ownerData?.avatar?.token ? {
       source: {
-        uri: ownerData?.avatar?.object || '',
+        uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + ownerData?.avatar?.object || '',
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${ownerData?.avatar?.token || ''}`,
-          adminAuth: ownerData?.avatar?.token || ''
+          Accept: 'image/*'
+          // Authorization: `Bearer ${ownerData?.avatar?.token || ''}`,
+          // adminAuth: ownerData?.avatar?.token || ''
         },
       },
       resizeMode: 'cover'
@@ -1152,11 +1159,12 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     ratingCount: '0',
     image: JSON.parse(CarriersJobStore.profile.imageProps) || {
       source: {
-        uri: CarriersJobStore.data?.owner?.avatar?.object || "",
+        uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + CarriersJobStore.data?.owner?.avatar?.object || "",
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${CarriersJobStore.data?.owner?.avatar?.token || ''}`,
-          adminAuth: CarriersJobStore.data?.owner?.avatar?.token || ""
+          Accept: 'image/*'
+          // Authorization: `Bearer ${CarriersJobStore.data?.owner?.avatar?.token || ''}`,
+          // adminAuth: CarriersJobStore.data?.owner?.avatar?.token || ""
         },
       },
       resizeMode: 'cover'
@@ -1416,14 +1424,15 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} activeOpacity={1} onPress={() => visibleProfile(truck?.owner)} >
               <Text text={truck?.owner?.companyName || ''} style={{ paddingRight: spacing[2] }} />
               <View style={LOGO_ROOT}>
-                {truck?.owner?.avatar?.object && truck?.owner?.avatar?.token && <Image
+                {truck?.owner?.avatar?.object && <Image
                   style={LOGO}
                   source={{
-                    uri: truck?.owner?.avatar?.object || null,
+                    uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + truck?.owner?.avatar?.object || null,
                     method: 'GET',
                     headers: {
-                      Authorization: `Bearer ${truck?.owner?.avatar?.token || null}`,
-                      adminAuth: truck?.owner?.avatar?.token || null
+                      Accept: 'image/*'
+                      // Authorization: `Bearer ${truck?.owner?.avatar?.token || null}`,
+                      // adminAuth: truck?.owner?.avatar?.token || null
                     },
                   }}
                   resizeMode={'cover'} />}
@@ -1445,11 +1454,12 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                 <Image
                   style={LOGO}
                   source={{
-                    uri: truck?.owner?.avatar?.object || null,
+                    uri: (truck?.owner?.avatar?.object ? `${API_URL}/api/v1/media/file-stream?attachCode=` + truck?.owner?.avatar?.object : '') || null,
                     method: 'GET',
                     headers: {
-                      Authorization: `Bearer ${truck?.owner?.avatar?.token || null}`,
-                      adminAuth: truck?.owner?.avatar?.token || null
+                      Accept: 'image/*'
+                      // Authorization: `Bearer ${truck?.owner?.avatar?.token || null}`,
+                      // adminAuth: truck?.owner?.avatar?.token || null
                     },
                   }}
                   resizeMode={'cover'} />

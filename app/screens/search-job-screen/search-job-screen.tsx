@@ -13,6 +13,7 @@ import AdvanceSearchStore from "../../store/carriers-job-store/advance-search-st
 import FavoriteJobStore from "../../store/carriers-job-store/favorite-job-store"
 import { MapTruckImageName } from '../../utils/map-truck-image-name';
 import { useStores } from "../../models/root-store/root-store-context";
+import { API_URL } from '../../config'
 
 const RESULT_CONTAINER: ViewStyle = {
   flex: 1,
@@ -48,13 +49,14 @@ const Item = (data) => {
   const navigation = useNavigation()
 
   const onPress = () => {
-    const imageSource = owner?.avatar?.object && owner?.avatar?.token ? {
+    const imageSource = owner?.avatar?.object ? {
       source: {
-        uri: owner?.avatar?.object || '',
+        uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + owner?.avatar?.object || '',
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-          adminAuth: owner?.avatar?.token || ''
+          Accept: 'image/*'
+          // Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+          // adminAuth: owner?.avatar?.token || ''
         },
       },
       resizeMode: 'cover'
@@ -75,13 +77,14 @@ const Item = (data) => {
   }
 
   const typeOfTruck = GetTruckType(+truckType)?.name || `${translate('jobDetailScreen.truckType')} : ${translate('common.notSpecified')}`
-  const imageSource: ImageProps = owner?.avatar?.object && owner?.avatar?.token ? {
+  const imageSource: ImageProps = owner?.avatar?.object ? {
     source: {
-      uri: owner?.avatar?.object || '',
+      uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + owner?.avatar?.object || '',
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-        adminAuth: owner?.avatar?.token || ''
+        Accept: 'image/*'
+        // Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+        // adminAuth: owner?.avatar?.token || ''
       },
     },
     resizeMode: 'cover'

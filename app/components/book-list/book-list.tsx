@@ -7,6 +7,7 @@ import { color, images } from "../../theme"
 import { RoundedButton } from '../rounded-button/rounded-button'
 import { Text } from '../text/text'
 import { BookListProps } from './book-list.props'
+import { API_URL } from '../../config/'
 /**
  * A component which has a label and an input together.
  */
@@ -41,8 +42,8 @@ export function BookList(props: BookListProps) {
       <View style={SUB_VIEW}>
 
         <View style={IMG_VIEW}>
-          {Platform.OS == "ios" ? <Image source={item.img ? { uri: item.img } : images.greyMock}
-            resizeMode={"stretch"} style={IMG_PURE_VIEW} /> : <Image source={item.img ? { uri: item.img } : images.greyMock}
+          {Platform.OS == "ios" ? <Image source={item.img ? { uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + item.img, method: 'GET', headers: { Accept: 'image/*' } } : images.greyMock}
+            resizeMode={"stretch"} style={IMG_PURE_VIEW} /> : <Image source={item.img ? { uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + item.img, method: 'GET', headers: { Accept: 'image/*' } } : images.greyMock}
               style={IMG_PURE_VIEW} />}
         </View>
 

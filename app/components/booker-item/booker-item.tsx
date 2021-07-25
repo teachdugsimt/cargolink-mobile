@@ -5,6 +5,7 @@ import { color, images, spacing } from "../../theme"
 import { Text } from "../"
 import { BookerItemProps } from './booker-item.props';
 import { Button } from '../button/button';
+import { API_URL } from '../../config/'
 
 const INITIAL_CONTAINER_STYLE: ViewStyle = {
   flex: 1,
@@ -64,11 +65,12 @@ export function BookerItem(props: BookerItemProps) {
     <View style={containerViewStyle}>
       <View style={imageStyle}>
         <Image source={imageUrl ? {
-          uri: imageUrl,
+          uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + imageUrl,
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${tokenUrl}`,
-            adminAuth: tokenUrl || '',
+            Accept: "image/*"
+            // Authorization: `Bearer ${tokenUrl}`,
+            // adminAuth: tokenUrl || '',
           },
         } : images.greyMock} style={imageViewStyle} resizeMode={'cover'} />
       </View>

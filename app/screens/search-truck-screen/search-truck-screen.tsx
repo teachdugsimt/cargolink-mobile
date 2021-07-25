@@ -14,6 +14,7 @@ import { MapTruckImageName } from '../../utils/map-truck-image-name';
 import { GetTruckType } from '../../utils/get-truck-type';
 import { useStores } from "../../models/root-store/root-store-context";
 import analytics from '@react-native-firebase/analytics';
+import { API_URL } from '../../config/'
 
 const RESULT_CONTAINER: ViewStyle = {
   flex: 1,
@@ -49,13 +50,14 @@ const Item = (data) => {
   const navigation = useNavigation()
 
   const onPress = () => {
-    const imageSource = owner?.avatar?.object && owner?.avatar?.token ? {
+    const imageSource = owner?.avatar?.object ? {
       source: {
-        uri: owner?.avatar?.object || '',
+        uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + owner?.avatar?.object || '',
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-          adminAuth: owner?.avatar?.token || ''
+          Accept: 'image/*'
+          // Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+          // adminAuth: owner?.avatar?.token || ''
         },
       },
       resizeMode: 'cover'
@@ -89,13 +91,14 @@ const Item = (data) => {
   }).join(', ') : translate('common.notSpecified')
 
   const truckImage = MapTruckImageName(+truckType)
-  const imageSource: ImageProps = owner?.avatar?.object && owner?.avatar?.token ? {
+  const imageSource: ImageProps = owner?.avatar?.object ? {
     source: {
-      uri: owner?.avatar?.object || '',
+      uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + owner?.avatar?.object || '',
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-        adminAuth: owner?.avatar?.token || ''
+        Accept: 'image/*'
+        // Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+        // adminAuth: owner?.avatar?.token || ''
       },
     },
     resizeMode: 'cover'

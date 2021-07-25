@@ -17,6 +17,7 @@ import { useStores } from "../../models/root-store/root-store-context";
 import { AlertMessage } from "../../utils/alert-form";
 import { translate } from "../../i18n"
 import AuthStore from "../../store/auth-store/auth-store"
+import { API_URL } from '../../config/'
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -117,10 +118,10 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
   useEffect(() => {
     let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
     if (tmp_profile && tmp_profile.avatar) setImageProfile({
-      uri: tmp_profile.avatar,
+      uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + tmp_profile.avatar,
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${tokenStore.token.accessToken}`
+        Accept: 'image/*'
       },
     })
   }, [ProfileStore.data])
@@ -248,7 +249,7 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
       "email": data["email"],
       "userId": tokenStore.profile.userId
     }
-    if (imageProfile) finalData['avatar'] = ProfileStore?.data_upload_picture?.fileUrl || tmp_profile_store.avatar
+    if (imageProfile) finalData['avatar'] = ProfileStore?.data_upload_picture?.token || tmp_profile_store.avatar
     ProfileStore.updateProfile(finalData)
   }
 

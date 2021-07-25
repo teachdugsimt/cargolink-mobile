@@ -12,6 +12,7 @@ import CallDetectorManager from 'react-native-call-detection'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import i18n from 'i18n-js'
 import { convertTime12to24 } from "../../../utils/convert-time-format";
+import { API_URL } from '../../../config/'
 
 const CONTAINER_LIST: ViewStyle = {
   marginVertical: spacing[1],
@@ -188,11 +189,12 @@ const Item = (data) => {
 
   const imgSource: ImageProps = avatar ? {
     source: {
-      uri: avatar?.object,
+      uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + avatar?.object,
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${avatar?.token || ''}`,
-        adminAuth: avatar?.token || ''
+        Accept: 'image/*'
+        // Authorization: `Bearer ${avatar?.token || ''}`,
+        // adminAuth: avatar?.token || ''
       },
     },
     resizeMode: 'cover'

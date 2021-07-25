@@ -156,7 +156,7 @@ export class MyVehicleAPI {
   async patchMyVehicle(params: any): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.put(`/api/v1/trucks/${params.carrierId}`, params)
+      const response: ApiResponse<any> = await this.apisauce.put(`/api/v1/trucks/${params.id}`, params)
       // the typical ways to die when calling an api
       console.log("Response call api patch upload vehicle profile (MOCK) : ", response)
       if (!response.ok) {

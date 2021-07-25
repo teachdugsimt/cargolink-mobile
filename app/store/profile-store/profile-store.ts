@@ -30,7 +30,10 @@ const DataUpdateProfile = types.model({
 })
 
 const PictureProfile = types.model({
+  attachCode: types.maybeNull(types.string),
   fileName: types.maybeNull(types.string),
+  status: types.maybeNull(types.string),
+  type: types.maybeNull(types.string),
   fileUrl: types.maybeNull(types.string),
   fileType: types.maybeNull(types.string),
   token: types.maybeNull(types.string),
@@ -208,6 +211,7 @@ const ProfileStore = types.model({
         width: file.width,
         size: file.fileSize
       })
+      formData.append("path", "USER_AVATAR/INPROGRESS/")
       const response = yield fileUploadApi.uploadVehiclePicture(formData)
       __DEV__ && console.tron.log("Response call uploadPicture : : ", response)
       if (response.ok) {
