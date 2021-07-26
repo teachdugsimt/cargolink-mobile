@@ -188,7 +188,7 @@ export function SearchItem(props: SearchItemProps) {
   const MainTouchableOpacity = requiredTouchableOpacityGesture ? TouchableOpacityGesture : TouchableOpacity
 
   return (
-    <View style={{ ...CONTAINER, ...containerStyle }}>
+    <View style={{ ...CONTAINER, ...containerStyle, overflow: 'hidden' }}>
       <MainTouchableOpacity style={TOP_ROOT} activeOpacity={1} onPress={onPress}>
         <ImageBackground source={truckBackImage} style={BACKGROUND} ></ImageBackground>
         <View style={CONTENT}>

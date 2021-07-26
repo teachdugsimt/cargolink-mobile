@@ -228,7 +228,11 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
     let messageContent: string = ''
     if (error && typeof error == 'string' && error.includes(":") && error.includes('"')) {
       let parseString = error
-      messageContent = parseString.replace(/[|&;$%@"{}()<>]/g, "").replace(":", " => ")
+      const rawMessage = parseString.replace(/[|&;$%@"{}()<>]/g, "").replace(":", " => ")
+      const splitMessage = rawMessage.split("[")
+      messageContent = splitMessage && splitMessage[1] ? splitMessage[1].slice(0, splitMessage[1].length - 1) :
+      rawMessage
+      console.log("Message content :: ", messageContent)
     }
     else {
       messageContent = translate('common.pleaseCheckYourData')
