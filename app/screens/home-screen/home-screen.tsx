@@ -167,24 +167,16 @@ export const HomeScreen = observer((props) => {
     {
       title: "homeScreen.carriers",
       data: [
-        // {
-        //   id: 1, name: "homeScreen.manageCar", onPressButton: () => {
-        //     if (!token || !ProfileStore.data) navigation.navigate("signin")
-        //     else {
-        //       MyVehicleStore.findRequest({ page: 1 })
-        //       navigation.navigate("myVehicle")
-        //     }
-        //   },
-        //   img: images.manageTruck
-        // },
         {
           id: 4, name: "homeScreen.findCar", onPressButton: () => {
-            navigation.navigate("searchTruck")
+            if (!token || !ProfileStore.data) navigation.navigate("signin")
+            else navigation.navigate("searchTruck")
           }, img: images.findTruck
         },
         {
           id: 2, name: "homeScreen.findJob", onPressButton: () => {
-            navigation.navigate("searchJob")
+            if (!token || !ProfileStore.data) navigation.navigate("signin")
+            else navigation.navigate("searchJob")
           }, img: images.findJob
         }]
     },
