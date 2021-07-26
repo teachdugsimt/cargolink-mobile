@@ -1,6 +1,6 @@
 {
   "name": "cargo-link-mobile",
-  "version": "1.1.18",
+  "version": "1.3.0",
   "private": true,
   "rnpm": {
     "assets": [
@@ -11,11 +11,11 @@
     "android": "react-native run-android",
     "android:build": "cd android && ENVFILE=.env.production ./gradlew assembleRelease",
     "android:shake": "$ANDROID_HOME/platform-tools/adb devices | grep '\\t' | awk '{print $1}' | sed 's/\\s//g' | xargs -I {} $ANDROID_HOME/platform-tools/adb -s {} shell input keyevent 82",
-    "android:beta": "bundle exec fastlane android beta",
+    "android:beta": "bundle exec fastlane android beta --env production",
     "ios": "react-native run-ios",
+    "ios:beta": "bundle exec fastlane ios beta --env production",
     "ios:renew-profile": "fastlane match adhoc --app_identifier 'th.co.cargolink.mobile'",
     "ios:rebuild-profile": "fastlane match adhoc --force --app_identifier 'th.co.cargolink.mobile'",
-    "ios:beta": "bundle exec fastlane ios beta",
     "start": "react-native start",
     "test": "jest --coverage",
     "lint": "eslint index.js app storybook test --fix --ext .js,.ts,.tsx",
