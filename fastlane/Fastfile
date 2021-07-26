@@ -85,7 +85,7 @@ lane :distribute do
   cl = changelog
   sh "fastlane ios distribute"
   sh "fastlane android distribute"
-  send_notify(changelog: cl)
+  # send_notify(changelog: cl)
 end
 
 desc 'Get change logs'
