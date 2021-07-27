@@ -29,6 +29,8 @@ target 'CargoLinkMobile' do
   pod 'Firebase/Crashlytics'
   pod 'Firebase/Analytics'
 
+  pod 'react-native-randombytes', :path => '../node_modules/react-native-randombytes'
+
   target 'CargoLinkMobileTests' do
     inherit! :complete
     # Pods for testing

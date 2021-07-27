@@ -31,6 +31,7 @@ import TruckDetailStore from '../../store/free-store/truck-detail-store'
 import FavoriteTruckStore from "../../store/shipper-truck-store/favorite-truck-store"
 import UserJobStore from "../../store/user-job-store/user-job-store"
 import ShippersHistoryCallStore from '../../store/shippers-history-call-store/shippers-history-call-store'
+import { API_URL } from '../../config/'
 
 interface ImageInfo {
   width: number
@@ -153,11 +154,12 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
   useEffect(() => {
     const imageSource = profile?.avatar?.object && profile?.avatar?.token ? {
       source: {
-        uri: profile?.avatar?.object || '',
+        uri: (profile?.avatar?.object ? `${API_URL}/api/v1/media/file-stream?attachCode=` + profile?.avatar?.object : '') || '',
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${profile?.avatar?.token || ''}`,
-          adminAuth: profile?.avatar?.token
+          Accept: 'image/*'
+          // Authorization: `Bearer ${profile?.avatar?.token || ''}`,
+          // adminAuth: profile?.avatar?.token || ''
         },
       },
       resizeMode: 'cover'
@@ -329,13 +331,14 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
         height: 720,
         title: `img-${img[0]}`
       }
-      if (img[1] && img[1].object) {
+      if (img[1] && img[1]) {
         imageInfo.source = {
-          uri: img[1].object,
+          uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + img[1],
           method: 'GET',
           headers: {
-            Authorization: img[1].token,
-            adminAuth: img[1].token
+            Accept: 'image/*'
+            // Authorization: img[1].token,
+            // adminAuth: img[1].token || ''
           }
         }
       } else {

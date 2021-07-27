@@ -17,6 +17,7 @@ const defaultModel = {
   registrationNumber: types.maybeNull(types.array(types.string)),
   tipper: types.maybeNull(types.boolean),
   phoneNumber: types.maybeNull(types.string),
+  quotationNumber: types.maybeNull(types.string),
   isLiked: types.optional(types.boolean, false),
   workingZones: types.optional(types.array(types.model({
     region: types.maybeNull(types.number),
@@ -52,6 +53,7 @@ const ShippersJobList = types.model({
     unpaged: types.maybeNull(types.boolean),
     paged: types.maybeNull(types.boolean),
   })),
+  currentPage: types.maybeNull(types.number),
   totalElements: types.maybeNull(types.number),
   totalPages: types.maybeNull(types.number),
   last: types.maybeNull(types.boolean),
@@ -171,7 +173,8 @@ const TruckDetailStore = types
         const response = yield shipperTruckApi.findOne(id)
         console.log("Response call api get shipper truck : : ", JSON.stringify(response))
         if (response.kind === 'ok') {
-          const result = response.data || {}
+          const parseResponse = JSON.parse(JSON.stringify(response.data))
+          const result = parseResponse.data || {}
           const isLiked = FavoriteTruckStore.list.find(({ id }) => id === result.id)?.isLiked
           self.data = { ...result, isLiked: isLiked || false, truckTypeName: self.truckTypeName }
         } else {

@@ -11,6 +11,10 @@ const SignIn = types.model({
   token: types.maybeNull(types.string),
 })
 
+const RefCode = types.model({
+  refCode: types.maybeNull(types.string)
+})
+
 /**
   "message": "",
   "responseCode": 1,
@@ -102,7 +106,7 @@ const OTPVerify = types.model({
   responseCode: types.maybeNull(types.number),
   userProfile: types.maybeNull(
     types.model({
-      id: types.maybeNull(types.number),
+      id: types.maybeNull(types.string),
       userId: types.maybeNull(types.string),
       companyName: types.maybeNull(types.string),
       fullname: types.maybeNull(types.string),
@@ -124,7 +128,8 @@ const OTPVerify = types.model({
 
 const AuthStore = types
   .model({
-    data: types.maybeNull(SignIn),
+    data: types.maybeNull(RefCode),
+    // data: types.maybeNull(SignIn),
     profile: types.maybeNull(OTPVerify),
     phoneNumber: types.maybeNull(types.string),
     countryCode: types.string,
@@ -134,7 +139,7 @@ const AuthStore = types
 
     dataApple: AppleProfile,
     loadingApple: types.boolean,
-    errorApple: types.maybeNull(types.string)
+    errorApple: types.maybeNull(types.string),
   })
   .actions((self) => ({
 
@@ -150,7 +155,7 @@ const AuthStore = types
           // tmpAppleData.token = response.headers.authorization
           // self.dataApple = tmpAppleData
           // self.errorApple = ""
-          
+
           self.profile = response.data || {}
           self.policyData = response.data.termOfService || {}
           self.error = '' // Clear error when signin success
@@ -174,7 +179,7 @@ const AuthStore = types
         const response = yield apiAuth.signIn(data)
         console.log("response signInRequest :>> ", response)
         if (response.kind === 'ok') {
-          self.data = response.data || {}
+          self.data = response.data.data || {}
           self.error = ""
         } else {
           if (response.data && response.data.validMsgList && response.data.validMsgList['phoneNumber'] &&
@@ -198,7 +203,7 @@ const AuthStore = types
         console.log("response otpVerifyRequest :>> ", response)
         if (response.kind === 'ok') {
           self.profile = response.data || {}
-          self.policyData = response.data.termOfService || {}
+          self.policyData = response.data?.termOfService || {}
           self.error = '' // Clear error when signin success
           self.phoneNumber = null // Clear phoneNumber when signin success
         } else {
@@ -231,8 +236,8 @@ const AuthStore = types
           }
         }),
     */
-    updatePolicyStatusRequest: flow(function* updatePolicyStatusRequest(id: number, data: Types.TermAndService) {
-      apiAuth.setup()
+    updatePolicyStatusRequest: flow(function* updatePolicyStatusRequest(accessToken: string, id: string, data: Types.TermAndService) {
+      apiAuth.setup(accessToken)
       self.loading = true
       try {
         const response = yield apiAuth.updatePolicy(id, data)

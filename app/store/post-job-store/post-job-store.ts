@@ -75,7 +75,7 @@ const PostJobStore = types.model({
         const response = yield postjobAPI.createPostJob(params)
         console.log("Response call create post job : : ", response)
         if (response.ok) {
-          self.data_postjob = response.data || "success"
+          self.data_postjob = response.data?.id || "success"
           self.loading = false
         } else {
           self.loading = false

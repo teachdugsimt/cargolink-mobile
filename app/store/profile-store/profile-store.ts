@@ -30,7 +30,10 @@ const DataUpdateProfile = types.model({
 })
 
 const PictureProfile = types.model({
+  attachCode: types.maybeNull(types.string),
   fileName: types.maybeNull(types.string),
+  status: types.maybeNull(types.string),
+  type: types.maybeNull(types.string),
   fileUrl: types.maybeNull(types.string),
   fileType: types.maybeNull(types.string),
   token: types.maybeNull(types.string),
@@ -86,11 +89,11 @@ const ProfileStore = types.model({
 
 
 }).actions(self => ({
-  getProfileRequest: flow(function* getProfileRequest() { // <- note the star, this a generator function!
+  getProfileRequest: flow(function* getProfileRequest(userId: string) { // <- note the star, this a generator function!
     yield apiUsers.setup()
     self.loading = true
     try {
-      const response = yield apiUsers.getProfile()
+      const response = yield apiUsers.getProfile(userId)
       console.log("Response call getProfileRequest : : ", response)
       if (response.ok) {
         self.data = response.data || null
@@ -208,6 +211,7 @@ const ProfileStore = types.model({
         width: file.width,
         size: file.fileSize
       })
+      formData.append("path", "USER_AVATAR/INPROGRESS/")
       const response = yield fileUploadApi.uploadVehiclePicture(formData)
       __DEV__ && console.tron.log("Response call uploadPicture : : ", response)
       if (response.ok) {

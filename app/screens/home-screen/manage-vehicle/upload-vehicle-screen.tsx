@@ -27,6 +27,7 @@ import { Modal, ModalContent } from 'react-native-modals';
 import { useStores } from "../../../models/root-store/root-store-context";
 import { FlatList } from "react-native-gesture-handler";
 import { AlertMessage } from "../../../utils/alert-form";
+import { API_URL } from '../../../config/'
 import _ from 'lodash'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
@@ -504,7 +505,8 @@ export const UploadVehicleScreen = observer(() => {
     }
 
     const data_mock_call: any = {
-      carrierId: editStatus == "add" ? tokenStore.profile.id : MyVehicleStore.data.id,
+      // carrierId: editStatus == "add" ? tokenStore.profile.id : MyVehicleStore.data.id,
+      carrierId: tokenStore.profile.id,
       truckType: data['vehicle-type'],
 
       loadingWeight: 1,
@@ -543,13 +545,14 @@ export const UploadVehicleScreen = observer(() => {
 
       // DELETE ZONE - NEW ZONE
       let initData = JSON.parse(JSON.stringify(MyVehicleStore.data))
+      data_mock_call.id = initData.id
       let objectTmpImage = {
         front: fileFront.uri ? fileFront.uri : null,
         back: fileBack.uri ? fileBack.uri : null,
         left: fileLeft.uri ? fileLeft.uri : null,
         right: fileRight.uri ? fileRight.uri : null
       }
-
+      console.log("-------------------- Step 1 : DELETE / NOCHANGE -----------------------")
       if (initData.truckPhotos.front && !objectTmpImage.front) {
         data_mock_call.truckPhotos.front = { url: null, action: 'DELETE' }
       } else if (initData.truckPhotos.front && objectTmpImage.front && initData.truckPhotos.front == objectTmpImage.front) {
@@ -576,11 +579,13 @@ export const UploadVehicleScreen = observer(() => {
 
       // REPLACE ZONE - NEW ZONE
       if (uploadData.length) {
+        console.log("-------------------- Step 2 : NEW / REPLACE -----------------------")
+        console.log("Upload data :: ", uploadData)
         uploadData.map((e, i) => {
           if (e.position == "front") {
 
             if (!initData.truckPhotos.front && objectTmpImage.front) {
-              data_mock_call.truckPhotos.front = { url: objectTmpImage.front, action: 'NEW' }
+              data_mock_call.truckPhotos.front = { url: e.url, action: 'NEW' }
             } else if (initData.truckPhotos.front && objectTmpImage.front) {
               data_mock_call.truckPhotos.front = { url: e.url, action: 'REPLACE' }
             }
@@ -588,7 +593,7 @@ export const UploadVehicleScreen = observer(() => {
           } else if (e.position == "back") {
 
             if (!initData.truckPhotos.back && objectTmpImage.back) {
-              data_mock_call.truckPhotos.back = { url: objectTmpImage.back, action: 'NEW' }
+              data_mock_call.truckPhotos.back = { url: e.url, action: 'NEW' }
             } else if (initData.truckPhotos.back && objectTmpImage.back) {
               data_mock_call.truckPhotos.back = { url: e.url, action: 'REPLACE' }
             }
@@ -596,7 +601,7 @@ export const UploadVehicleScreen = observer(() => {
           } else if (e.position == "left") {
 
             if (!initData.truckPhotos.left && objectTmpImage.left) {
-              data_mock_call.truckPhotos.left = { url: objectTmpImage.left, action: 'NEW' }
+              data_mock_call.truckPhotos.left = { url: e.url, action: 'NEW' }
             } else if (initData.truckPhotos.left && objectTmpImage.left) {
               data_mock_call.truckPhotos.left = { url: e.url, action: 'REPLACE' }
             }
@@ -604,7 +609,7 @@ export const UploadVehicleScreen = observer(() => {
           } else if (e.position == "right") {
 
             if (!initData.truckPhotos.right && objectTmpImage.right) {
-              data_mock_call.truckPhotos.right = { url: objectTmpImage.right, action: 'NEW' }
+              data_mock_call.truckPhotos.right = { url: e.url, action: 'NEW' }
             } else if (initData.truckPhotos.right && objectTmpImage.right) {
               data_mock_call.truckPhotos.right = { url: e.url, action: 'REPLACE' }
             }
@@ -780,31 +785,31 @@ export const UploadVehicleScreen = observer(() => {
       settoggleDump(initData.tipper)
       if (initData.truckPhotos) {
         if (initData.truckPhotos.front) setfileFront({
-          uri: initData.truckPhotos.front,
+          uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + initData.truckPhotos.front,
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${tokenStore.token.accessToken}`
+            Accept: "image/*"
           },
         })
         if (initData.truckPhotos.back) setfileBack({
-          uri: initData.truckPhotos.back,
+          uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + initData.truckPhotos.back,
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${tokenStore.token.accessToken}`
+            Accept: "image/*"
           },
         })
         if (initData.truckPhotos.left) setfileLeft({
-          uri: initData.truckPhotos.left,
+          uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + initData.truckPhotos.left,
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${tokenStore.token.accessToken}`
+            Accept: "image/*"
           },
         })
         if (initData.truckPhotos.right) setfileRight({
-          uri: initData.truckPhotos.right,
+          uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + initData.truckPhotos.right,
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${tokenStore.token.accessToken}`
+            Accept: "image/*"
           },
         })
       }
@@ -1248,7 +1253,7 @@ export const UploadVehicleScreen = observer(() => {
                       )}
                       key={"registration-key-" + index}
                       name={"registration-" + index}
-                      rules={{ required: true }}
+                      rules={{ required: true, pattern: /^\S+$/ }}
                       defaultValue=""
                     />
                     {index != 0 && index == textInput.length - 1 && <TouchableOpacity style={DELETE_RERGIS_BUTTON} onPress={() => _deleteRregistration(index)}>

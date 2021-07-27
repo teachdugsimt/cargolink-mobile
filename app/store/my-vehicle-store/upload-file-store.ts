@@ -1,4 +1,4 @@
-import { types, flow, destroy } from "mobx-state-tree"
+import { types, flow, cast } from "mobx-state-tree"
 import { Platform } from "react-native"
 import { FileUploadApi } from '../../services/api/'
 const fileUploadApi = new FileUploadApi()
@@ -41,6 +41,7 @@ const UploadFileStore = types
                     width: file.width,
                     size: file.fileSize
                 })
+                formData.append("path", `VEHICLE_IMAGE/${position.toUpperCase()}/INPROGRESS/`)
 
                 const response = yield fileUploadApi.uploadVehiclePicture(formData)
                 if (response.ok) {
@@ -49,14 +50,14 @@ const UploadFileStore = types
                     if (tmp.find(e => e.position == position)) {
                         tmp.map((e, i) => {
                             if (e.position == position) tmp.splice(i, 1, {
-                                url: response.data.fileUrl || '',
+                                url: response.data.attachCode || '',
                                 image: response.data,
                                 position
                             })
                         })
                     } else {
                         tmp.push({
-                            url: response.data.fileUrl || '',
+                            url: response.data.attachCode || '',
                             image: response.data,
                             position
                         })
@@ -76,7 +77,7 @@ const UploadFileStore = types
         }),
 
         deleteUploadData() {
-            self.data = []
+            self.data = cast([])
         }
     }))
     .create({

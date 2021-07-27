@@ -36,6 +36,7 @@ import ProfileStore from '../../store/profile-store/profile-store'
 import i18n from 'i18n-js'
 import { GetRegion } from "../../utils/get-region"
 import CallDetectorManager from 'react-native-call-detection'
+import { API_URL } from '../../config/'
 
 interface ImageInfo {
   width: number
@@ -147,6 +148,8 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
     owner,
     createdFrom
   } = ShipperTruckStore.data
+
+  console.log("shipper truck store :: ", JSON.parse(JSON.stringify(ShipperTruckStore.data)))
 
   const route = useRoute()
 
@@ -288,22 +291,25 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
     }
   }, [])
 
-  const transformImage = truckPhotos &&
-    Object.keys(truckPhotos).length ?
-    Object.entries(truckPhotos).map(img => {
+  console.log("Truck photos :: ", truckPhotos)
+  const parseJsonImage = JSON.parse(JSON.stringify(truckPhotos))
+  const transformImage = parseJsonImage &&
+    Object.keys(parseJsonImage).length ?
+    Object.entries(parseJsonImage).map(img => {
       //  __DEV__ &&  console.tron.log("Image MAPPING RAW :: ", img)
       let imageInfo: ImageInfo = {
         width: 1024,
         height: 720,
         title: `img-${img[0]}`
       }
-      if (img[1] && img[1].object) {
+      if (img[1] && img[1]) {
         imageInfo.source = {
-          uri: img[1].object,
+          uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + img[1],
           method: 'GET',
           headers: {
-            Authorization: img[1].token,
-            adminAuth: img[1].token
+            Accept: 'image/*'
+            // Authorization: img[1].token,
+            // adminAuth: img[1].token || ''
           }
         }
       } else {
@@ -311,7 +317,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
       }
       return imageInfo
     }) : []
-  __DEV__ && console.tron.log("Transform Image :: ", transformImage)
+  console.log("Transform Image :: ", transformImage)
   const truckImage = MapTruckImageName(+truckType)
 
   const ownerProfile = {
@@ -330,7 +336,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
 
   const ownerUserId = owner?.userId || ''
   const myUserId = ProfileStore.data?.userId || ''
-
+  console.log("Truck detail screen :: ", JSON.parse(JSON.stringify(ShipperTruckStore.data)))
   return (
     <View style={CONTAINER}>
       {ShipperTruckStore.loading && <ModalLoading size={'large'} color={color.primary} visible={ShipperTruckStore.loading} />}

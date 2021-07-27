@@ -19,7 +19,7 @@ import ProfileStore from "../../store/profile-store/profile-store"
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import BookingStore from "../../store/booking-store/booking-store";
 import { TabView, TabBar } from 'react-native-tab-view';
-
+import { API_URL } from '../../config/'
 
 const COLOR_WHITE: TextStyle = { color: color.textWhite }
 const FULL: ViewStyle = { flex: 1 }
@@ -229,13 +229,14 @@ const Item = (data) => {
   const { tokenStore } = useStores()
 
   const onVisible = () => {
-    const imageSource = owner?.avatar?.object && owner?.avatar?.token ? {
+    const imageSource = owner?.avatar?.object ? {
       source: {
-        uri: owner?.avatar?.object || '',
+        uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + owner?.avatar?.object || '',
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-          adminAuth: owner?.avatar?.token || '',
+          Accept: 'image/*'
+          // Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+          // adminAuth: owner?.avatar?.token || '',
         },
       },
       resizeMode: 'cover'
@@ -334,16 +335,17 @@ const Item = (data) => {
         <Image
           style={LOGO}
           source={{
-            uri: owner?.avatar?.object || '',
+            uri: (owner?.avatar?.object ? `${API_URL}/api/v1/media/file-stream?attachCode=` + owner?.avatar?.object : '') || '',
             method: 'GET',
             headers: {
-              Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-              adminAuth: owner?.avatar?.token
+              Accept: 'image/*'
+              // Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+              // adminAuth: owner?.avatar?.token || ''
             },
           }}
           resizeMode={'cover'} />
       </View>
-      <Text text={owner?.fullName || ''} style={reverse ? { paddingRight: spacing[2] } : { paddingLeft: spacing[5] }} />
+      <Text text={owner?.fullName || (owner?.companyName || '')} style={reverse ? { paddingRight: spacing[2] } : { paddingLeft: spacing[5] }} />
     </View>
   )
 

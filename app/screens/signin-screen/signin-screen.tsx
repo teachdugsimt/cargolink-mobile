@@ -25,7 +25,7 @@ import { AlertMessage } from "../../utils/alert-form";
 import { useStores } from "../../models/root-store/root-store-context";
 import ProfileStore from '../../store/profile-store/profile-store'
 // import { APPLE_USER } from '../../config/env'
-import { APPLE_USER } from '../../config'
+import { APPLE_USER, APPLE_PASSWORD } from '../../config'
 
 i18n.defaultLocale = 'th'
 i18n.locale = 'th'
@@ -207,11 +207,13 @@ export const SigninScreen = observer(function SigninScreen() {
 
   useEffect(() => {
     let error_signin = AuthStore.error
-    let data_signin = AuthStore.data
-    console.log("Auth Store in signin screen :: ", AuthStore)
-    if (pressSignin && !error_signin && data_signin && !AuthStore.loading)
+    let data_signin = AuthStore.data.refCode
+    if (pressSignin && !error_signin && data_signin && !AuthStore.loading) {
       navigation.navigate("confirmCode")
-    else if (pressSignin && error_signin && !AuthStore.loading) AlertMessage("common.somethingWrong", "common.InvalidPhoneNumber", true)
+    }
+    else if (pressSignin && error_signin && !AuthStore.loading) {
+      AlertMessage("common.somethingWrong", "common.InvalidPhoneNumber", true)
+    }
   }, [pressSignin, AuthStore.error, JSON.stringify(AuthStore.data)])
 
   useEffect(() => {
@@ -222,7 +224,7 @@ export const SigninScreen = observer(function SigninScreen() {
       tokenStore.setToken(data_signinApple.token || null)
       tokenStore.setProfile(data_signinApple.userProfile || null)
       navigation.navigate("home", { screen: 'Home' })
-      ProfileStore.getProfileRequest()
+      ProfileStore.getProfileRequest(AuthStore.profile.userProfile.userId)
       console.log("Local navigate to home ")
     }
     else if (pressApple && error_signinApple && !AuthStore.loading) AlertMessage("common.somethingWrong", "common.InvalidPhoneNumber", true)
@@ -234,14 +236,14 @@ export const SigninScreen = observer(function SigninScreen() {
     if (phoneNumber.toString().includes("011223344")) {
       setPressApple(true)
       AuthStore.AppleSignin({
-        "loginId": APPLE_USER || "+66906083288",
-        "password": "123456aA",
-        "userType": 2
+        "email": APPLE_USER || "admin.test@cargolink.co.th",
+        "password": APPLE_PASSWORD || "123456aQ@"
       })
     }
     else {
+      console.log("Counttry Code :: ", countryCode)
       AuthStore.setPhoneNumber(phoneNumber, countryCode)
-      AuthStore.signInRequest({ phoneNumber, countryCode, userType: 7 })
+      AuthStore.signInRequest({ phoneNumber, countryCode })
       setState(initialState)
       setPressSignin(true)
     }

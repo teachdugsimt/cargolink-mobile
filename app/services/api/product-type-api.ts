@@ -48,14 +48,14 @@ export class ProductTypeAPI {
       headers: {
         Accept: "application/json",
         "Accept-Language": params,
-        Authorization: `Bearer ${to}`
+        Authorization: `${to}`
       },
     })
   }
 
   async findAll(filter: any | {}): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/mobile/mst/product-type', filter)
+      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/master-data/product-type', filter)
       console.log("Response :: ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)

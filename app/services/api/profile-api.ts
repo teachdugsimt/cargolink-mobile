@@ -51,7 +51,8 @@ export class ProfileApi {
       timeout: this.config.timeout,
       headers: {
         Accept: "application/json",
-        Authorization: `Bearer ${to}`
+        // Authorization: `Bearer ${to}`
+        Authorization: `${to}`
       },
     })
   }
@@ -59,7 +60,7 @@ export class ProfileApi {
   async getProfile(params: any = null): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/mobile/multi-roles/profile', params)
+      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/users/me', { userId: params })
       __DEV__ && console.tron.log("Response call api get PROFILE : ", response)
       // if (!response.ok) {
       //   const problem = getGeneralApiProblem(response)
@@ -76,7 +77,8 @@ export class ProfileApi {
   async getTruckSummary(params: any = null): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/mobile/multi-roles/profile/truck-summary', params)
+      // const response: ApiResponse<any> = await this.apisauce.get('/api/v1/mobile/multi-roles/profile/truck-summary', params)
+      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/trucks/my-truck', params)
       console.log("Response call api get PROFILE : ", response)
       // if (!response.ok) {
       //   const problem = getGeneralApiProblem(response)
@@ -94,7 +96,8 @@ export class ProfileApi {
   async updateProfile(params: any = {}): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/multi-roles/profile', params)
+      // const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/multi-roles/profile', params)
+      const response: ApiResponse<any> = await this.apisauce.patch('/api/v1/users/me', params)
       console.log("Response call api get PROFILE : ", response)
       // if (!response.ok) {
       //   const problem = getGeneralApiProblem(response)
@@ -111,7 +114,8 @@ export class ProfileApi {
   async getUserReport(id: string | number): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/user/profile/${id}`)
+      // const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/user/profile/${id}`)
+      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/users/${id}/profile-trucks`)
       console.log("Response call api get getUserReport : ", response)
       // if (!response.ok) {
       //   const problem = getGeneralApiProblem(response)

@@ -186,7 +186,7 @@ export const AdvanceSearchTruckScreen = observer(function AdvanceSearchScreen() 
 
     let filter: any = {
       descending: true,
-      page: 0,
+      page: 1,
       rowsPerPage: 10,
     }
 

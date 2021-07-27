@@ -4,6 +4,7 @@ import * as Types from "../../services/api/api.types"
 import { decode } from "@mapbox/polyline";
 import FavoriteJobStore from "./favorite-job-store";
 import * as storage from "../../utils/storage"
+import _ from 'lodash'
 
 const apiMyVehicle = new MyVehicleAPI()
 const apiCarriersJob = new CarriersJobAPI()
@@ -54,6 +55,10 @@ const QuotationField = types.model({
   id: types.maybeNull(types.string),
   fullName: types.maybeNull(types.string),
   bookingDatetime: types.maybeNull(types.string),
+  avatar: types.maybeNull(types.model({
+    object: types.maybeNull(types.string),
+    token: types.maybeNull(types.string),
+  })),
   truck: types.maybeNull(types.model({
     id: types.maybeNull(types.string),
     truckType: types.maybeNull(types.number),
@@ -88,10 +93,41 @@ const QuotationField = types.model({
       }))
     })),
   })),
-  avatar: types.maybeNull(types.model({
-    object: types.maybeNull(types.string),
-    token: types.maybeNull(types.string),
-  }))
+
+})
+
+const TripModel = types.model({
+  approveStatus: types.maybeNull(types.string),
+  bookingId: types.maybeNull(types.string), // here
+  createdAt: types.maybeNull(types.string),
+  id: types.maybeNull(types.string),
+  owner: types.maybeNull(types.model({
+    id: types.maybeNull(types.number),
+    userId: types.maybeNull(types.string),
+    companyName: types.maybeNull(types.string),
+    fullName: types.maybeNull(types.string),
+    mobileNo: types.maybeNull(types.string),
+    email: types.maybeNull(types.string),
+    avatar: types.maybeNull(types.model({
+      object: types.maybeNull(types.string),
+      token: types.maybeNull(types.string),
+    }))
+  })),
+  phoneNumber: types.maybeNull(types.string),
+  price: types.maybeNull(types.number),
+  priceType: types.maybeNull(types.string),
+  registrationNumber: types.maybeNull(types.array(types.string)),
+  stallHeight: types.maybeNull(types.string),
+  status: types.maybeNull(types.string),
+  tipper: types.maybeNull(types.boolean),
+  truckId: types.maybeNull(types.string),
+  truckType: types.maybeNull(types.number),
+  updatedAt: types.maybeNull(types.string),
+  weight: types.maybeNull(types.number),
+  workingZones: types.optional(types.array(types.model({
+    region: types.maybeNull(types.number),
+    province: types.maybeNull(types.number),
+  })), []),
 })
 
 const CarriersJob = types.model({
@@ -129,15 +165,17 @@ const CarriersJob = types.model({
       token: types.maybeNull(types.string),
     }))
   })),
+  tipper: types.maybeNull(types.boolean),
   isLiked: types.maybeNull(types.optional(types.boolean, false)),
   quotations: types.maybeNull(types.array(QuotationField)),
+  trips: types.optional(types.array(TripModel), []),
   truck: types.maybeNull(truckModal),
   price: types.maybeNull(types.number),
   priceType: types.maybeNull(types.string),
 })
 
 const CarriersJobList = types.model({
-  content: types.maybeNull(types.array(CarriersJob)),
+  data: types.maybeNull(types.array(CarriersJob)),
   pageable: types.maybeNull(types.model({
     sort: types.model({
       sorted: types.maybeNull(types.boolean),
@@ -224,16 +262,17 @@ const CarriersJobStore = types
       try {
         self.previousListLength = self.list.length
         const response = yield apiCarriersJob.find(filter)
-        console.log("Response call api get shipper jobs : : ", response)
+        console.log("Response call api get shipper jobs sj : : ", response)
         if (response.kind === 'ok') {
 
           self.mainList = response.data
 
           let arrMerge = []
           if (!filter.page) {
-            arrMerge = [...response.data.content]
+            arrMerge = [...response.data.data]
           } else {
-            arrMerge = [...self.list, ...response.data.content]
+            // arrMerge = [...self.list, ...response.data.content]
+            arrMerge = _.unionBy(JSON.parse(JSON.stringify(self.list)), response.data.data, 'id')
           }
 
           if (!(yield isAutenticated())) {
@@ -273,7 +312,7 @@ const CarriersJobStore = types
           CarriersJobStore.setDefaultOfData()
         }
         const response = yield apiCarriersJob.findOne(id)
-        console.log("Response call api get shipper job : : ", JSON.stringify(response))
+        console.log("Response call api get shipper job 22 : : ", JSON.stringify(response))
         if (response.kind === 'ok') {
           const result = response.data || {}
           if (!(yield isAutenticated())) {
@@ -281,7 +320,12 @@ const CarriersJobStore = types
           } else {
             yield FavoriteJobStore.find()
             const isLiked = FavoriteJobStore.list.find(({ id }) => id === result.id)?.isLiked
-            self.data = { ...result, isLiked: isLiked || false }
+            console.log("Step 2 : ", JSON.parse(JSON.stringify(result)))
+            const tmpResult = { ...result, isLiked: isLiked || false }
+            // tmpResult.trips = null
+            // tmpResult.quotations = null
+            self.data = tmpResult
+            // self.data = { ...result, isLiked: isLiked || false }
           }
         } else {
           self.error = response?.data?.message || response.kind
@@ -289,7 +333,7 @@ const CarriersJobStore = types
         self.loading = false
       } catch (error) {
         // ... including try/catch error handling
-        console.error("Failed to fetch get shipper job : ", error)
+        console.error("Failed to fetch get shipper job (view job id): ", error)
         // self.data = []
         self.loading = false
         self.error = "error fetch api get shipper job"
@@ -302,9 +346,9 @@ const CarriersJobStore = types
       self.loading = true
       try {
         const response = yield apiMyVehicle.getJobDetailByQuotationId(id)
-        console.log("Response call api getJobDetail : : ", response)
+        console.log("Response call api getJobDetail my vehicle detail : : ", response)
         if (response.kind === 'ok') {
-          self.data = response.data || null
+          self.data = JSON.parse(JSON.stringify(response.data)) || null
         } else {
           self.error = response.data.message || 'fail to fetch getJobDetail api'
         }

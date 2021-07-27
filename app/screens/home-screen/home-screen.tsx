@@ -16,6 +16,7 @@ import ProfileStore from "../../store/profile-store/profile-store"
 import jwtDecode, { JwtPayload } from "jwt-decode";
 import i18n from 'i18n-js'
 import 'moment/locale/th';
+import AuthStore from "../../store/auth-store/auth-store"
 
 const { width } = Dimensions.get('window')
 const FULL: ViewStyle = { flex: 1 }
@@ -80,8 +81,9 @@ export const HomeScreen = observer((props) => {
     versatileStore.findGroup()
     versatileStore.find()
     versatileStore.findProductType()
-    ProfileStore.getProfileRequest()
-    console.log("TOKEN STORE :: => ", JSON.parse(JSON.stringify(tokenStore.token)))
+    if (AuthStore.profile?.userProfile?.userId || tokenStore?.profile?.userId)
+      ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore.profile.userId)
+    console.log("TOKEN STORE :: => ", JSON.parse(JSON.stringify(tokenStore.profile)))
   }, [])
 
   const [swipe, setswipe] = useState(false)

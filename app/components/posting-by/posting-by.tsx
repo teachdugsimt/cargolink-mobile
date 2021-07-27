@@ -5,6 +5,7 @@ import { color, spacing } from '../../theme';
 import { Icon } from '../icon/icon';
 import { Text } from '../text/text';
 import { translate } from '../../i18n';
+import { API_URL } from '../../config/'
 
 const PADDING_LEFT = { paddingLeft: spacing[1] }
 const PADDING_RIGHT = { paddingRight: spacing[1] }
@@ -64,7 +65,8 @@ export function PostingBy(props: PostingByProps) {
     style: LOGO,
     resizeMode: 'contain',
     source: {
-      uri: image
+      uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + image,
+      method: 'GET', headers: { Accept: 'image/*' }
     }
   } : {
     style: LOGO,

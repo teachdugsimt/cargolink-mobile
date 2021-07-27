@@ -53,7 +53,7 @@ const DELETE_BUTTON: ViewStyle = {
 }
 export function UploadVehicle(props: any) {
     const { uploadStyle, source, imageStyle, tx, onPress, viewImageStyle, txStyle, deleteImage, haveImage } = props
-
+    console.log("source :: ", source)
     return (
         <View style={{ ...ROOT_STYLE, ...uploadStyle }}>
             <TouchableOpacity style={UPLOAD_BUTTON} onPress={onPress} testID={"select-image"}>

@@ -15,7 +15,8 @@ import { translate } from "../../i18n"
 import { provinceListEn, provinceListTh, regionListEn, regionListTh } from '../home-screen/manage-vehicle/datasource'
 import i18n from 'i18n-js'
 import StatusStore from '../../store/post-job-store/job-status-store'
-import { CommonActions } from '@react-navigation/native';
+import AuthStore from "../../store/auth-store/auth-store"
+import { API_URL } from '../../config/'
 
 const { width, height } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -227,12 +228,12 @@ export const ProfileScreen = observer(function ProfileScreen() {
   const onRefresh = () => {
     let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
     if (tmp_profile && tmp_profile.userId) ProfileStore.getProfileReporterScreen(tmp_profile.userId)
-    ProfileStore.getProfileRequest()
+    ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore.profile.userId)
   }
 
   const onRefreshTruckSummary = () => {
     let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
-    ProfileStore.getProfileRequest()
+    ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore.profile.userId)
     if (tmp_profile && tmp_profile.userId) ProfileStore.getProfileReporterScreen(tmp_profile.userId)
     ProfileStore.getTruckSummary()
   }
@@ -439,10 +440,10 @@ export const ProfileScreen = observer(function ProfileScreen() {
         <View style={VIEW_PROFILE}>
 
           {avatar ? <Image source={{
-            uri: avatar,
+            uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + avatar,
             method: 'GET',
             headers: {
-              Authorization: `Bearer ${token}`
+              "Accept": "image/*"
             },
           }} style={PROFILE_IMG} /> : <View>
             <Ionicons name="person-circle-sharp" size={85} color={color.line} />

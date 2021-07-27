@@ -7,7 +7,7 @@
 import React from "react"
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import { ProfileScreen, UpdateProfileScreen, UploadVehicleScreen, SuccessUpload, MyVehicle, 
-  VehicleDetailScreen, SelectTruckTypeScreen, SelectProvinceScreen } from "../screens"
+  VehicleDetailScreen, SelectTruckTypeScreen, SelectProvinceScreen, JobDetailScreen, CarrierProfileScreen } from "../screens"
 import { HeaderCenter, HeaderLeft, RenderHeader, RenderHeaderProfile } from "../components"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -30,6 +30,8 @@ export type PrimaryProfileParamList = {
   myVehicle: undefined
   selectTruckTypeProfile: undefined
   selectProvinceScreen:  undefined
+  truckShowJobDetailScreen: undefined
+  bookerProfileScreen: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -109,6 +111,20 @@ export function ProfileNavigator() {
         component={SelectTruckTypeScreen}
         options={({ navigation, route }) => ({
           headerCenter: () => <HeaderCenter tx={"postJobScreen.selectVehicleType"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+      <Stack.Screen
+        name="truckShowJobDetailScreen"
+        component={JobDetailScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"jobDetailScreen.jobDetail"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+       <Stack.Screen name="bookerProfileScreen" component={CarrierProfileScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"feedbackScreen.yourOpinion"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
       />

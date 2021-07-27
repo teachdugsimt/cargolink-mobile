@@ -53,7 +53,7 @@ export class AddressApi {
                 "Accept-Language": params,
                 // Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2MTIiLCJBVVRIIjpbeyJhdXRob3JpdHkiOiJSRVNFVF9QV0QifSx7ImF1dGhvcml0eSI6IlZJRVdfVkVISUNMRSJ9LHsiYXV0aG9yaXR5IjoiQUREX09SREVSIn0seyJhdXRob3JpdHkiOiJMSVNUX1RSSVAifSx7ImF1dGhvcml0eSI6IlJFR19BQ0MifSx7ImF1dGhvcml0eSI6Ik1PRElGWV9EUklWRVIifSx7ImF1dGhvcml0eSI6IlJPTEVfU0hJUFBFUiJ9LHsiYXV0aG9yaXR5IjoiTU9ESUZZX1JPVVRFIn0seyJhdXRob3JpdHkiOiJTT0ZUX0RFTEVURV9WRUhJQ0xFIn0seyJhdXRob3JpdHkiOiJTT0ZUX0RFTEVURV9ST1VURSJ9LHsiYXV0aG9yaXR5IjoiUk9MRV9DQVJSSUVSIn0seyJhdXRob3JpdHkiOiJDT05GSVJNX09SREVSIn0seyJhdXRob3JpdHkiOiJNT0RJRllfSU5GTyJ9LHsiYXV0aG9yaXR5IjoiU09GVF9ERUxFVEVfT1JERVIifSx7ImF1dGhvcml0eSI6IlNJR05PVVQifSx7ImF1dGhvcml0eSI6IlJFUExZX09SREVSIn0seyJhdXRob3JpdHkiOiJSRVBPUlRfVFJBTlMifSx7ImF1dGhvcml0eSI6IlZFUklGWV9DT05UQUNUIn0seyJhdXRob3JpdHkiOiJBRERfVFJJUCJ9LHsiYXV0aG9yaXR5IjoiTElTVF9WRUhJQ0xFIn0seyJhdXRob3JpdHkiOiJVUERBVEVfUFJPRklMRSJ9LHsiYXV0aG9yaXR5IjoiTElTVF9EUklWRVIifSx7ImF1dGhvcml0eSI6IkFERF9EUklWRVIifSx7ImF1dGhvcml0eSI6IkNIQU5HRV9QV0QifSx7ImF1dGhvcml0eSI6IkRFVEFJTF9UUkFOUyJ9LHsiYXV0aG9yaXR5IjoiTU9ESUZZX09SREVSIn0seyJhdXRob3JpdHkiOiJTSUdOSU4ifSx7ImF1dGhvcml0eSI6IlNPRlRfREVMRVRFX0RSSVZFUiJ9LHsiYXV0aG9yaXR5IjoiTU9ESUZZX1ZFSElDTEUifSx7ImF1dGhvcml0eSI6IlVQTE9BRF9ET0NTIn0seyJhdXRob3JpdHkiOiJBRERfVFJBTlMifSx7ImF1dGhvcml0eSI6IkFERF9WRUhJQ0xFIn0seyJhdXRob3JpdHkiOiJBU1NJR05fVkVISUNMRV9EUklWRVIifSx7ImF1dGhvcml0eSI6IkxJU1RfT1JERVIifSx7ImF1dGhvcml0eSI6IkFERF9ST1VURSJ9XSwiZXhwIjoxNjEwMDQ2MzUxfQ.dQT87bAXnrb0qbvwmcSwxXYiVXKh8EX0YbRg7csl6Lm9Qb7WLmQnjpLOOMAKJuEfwRCN7FONhyNF5F0yxZ94RA`
                 // Authorization: `Bearer ${token}`
-                Authorization: `Bearer ${to}`
+                Authorization: `${to}`
             },
         })
     }
@@ -64,7 +64,7 @@ export class AddressApi {
         // make the api call
         // console.log("Filter truck type  :: ", filter)
         try {
-            const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/multi-roles/province', filter)
+            const response: ApiResponse<any> = await this.apisauce.get('/api/v1/master-data/province', filter)
             // the typical ways to die when calling an api
             console.log("Response get province :: ", response)
             if (!response.ok) {
@@ -84,7 +84,7 @@ export class AddressApi {
         // make the api call
         // console.log("Filter truck type  :: ", filter)
         try {
-            const response: ApiResponse<any> = await this.apisauce.get('/api/v1/mobile/multi-roles/zone')
+            const response: ApiResponse<any> = await this.apisauce.get('/api/v1/master-data/zone')
             // the typical ways to die when calling an api
             console.log("Response get region :: ", response)
             if (!response.ok) {

@@ -49,14 +49,15 @@ export class CarriersHistoryCallAPI {
       timeout: this.config.timeout,
       headers: {
         Accept: "application/json",
-        Authorization: `Bearer ${to}`
+        Authorization: `${to}`
       },
     })
   }
 
   async find(filter: any = {}): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/mobile/carriers/history/call', filter)
+      // const response: ApiResponse<any> = await this.apisauce.get('/api/v1/mobile/carriers/history/call', filter)
+      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/history/call/jobs', filter)
       console.log("Carriers history api [find] : ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
@@ -71,7 +72,8 @@ export class CarriersHistoryCallAPI {
 
   async add(data: Types.CarriersHistoryCallAdd): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/carriers/history/call/add', data)
+      // const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/carriers/history/call/add', data)
+      const response: ApiResponse<any> = await this.apisauce.post('/api/v1/history/call/jobs', data)
       console.log("Carriers history api [Add] : ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)

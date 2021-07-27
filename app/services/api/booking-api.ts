@@ -50,14 +50,16 @@ export class BookingApi {
       headers: {
         Accept: "application/json",
         "Accept-Language": params,
-        Authorization: `Bearer ${to}`
+        // Authorization: `Bearer ${to}`
+        Authorization: `${to}`
       },
     })
   }
 
   async addCarrierJobBookingOne(body: BookingBody): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/mobile/carriers/job/booking`, body)
+      // const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/mobile/carriers/job/booking`, body)
+      const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/booking`, body)
       console.log("Response addCarrierJobBookingOne :: ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
@@ -87,7 +89,8 @@ export class BookingApi {
 
   async updateBooking(data: BookingBody): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/mobile/shippers/truck/booking`, data)
+      // const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/mobile/shippers/truck/booking`, data)
+      const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/booking`, data)
       console.log("Response updateBooking :: ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
@@ -131,9 +134,10 @@ export class BookingApi {
 
 
 
-  async findShipperJobBookingAccept(id: string): Promise<any> {
+  async findShipperJobBookingAccept(id: string, status: string): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/shippers/jobs/booking/accept/${id}`)
+      // const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/shippers/jobs/booking/accept/${id}`)
+      const response: ApiResponse<any> = await this.apisauce.patch(`api/v1/booking/${id}`, { status })
       console.log("Response findShipperJobBookingAccept :: ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
@@ -145,9 +149,10 @@ export class BookingApi {
       return error
     }
   }
-  async findShipperJobBookingReject(id: string): Promise<any> {
+  async findShipperJobBookingReject(id: string, status: string): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/shippers/jobs/booking/reject/${id}`)
+      // const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/shippers/jobs/booking/reject/${id}`)
+      const response: ApiResponse<any> = await this.apisauce.patch(`api/v1/booking/${id}`, { status })
       console.log("Response findShipperJobBookingReject :: ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
@@ -159,9 +164,10 @@ export class BookingApi {
       return error
     }
   }
-  async findCarrierTruckBookingAccept(id: string): Promise<any> {
+  async findCarrierTruckBookingAccept(id: string, status: string): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/carriers/truck/booking/accept/${id}`)
+      // const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/carriers/truck/booking/accept/${id}`)
+      const response: ApiResponse<any> = await this.apisauce.patch(`api/v1/booking/${id}`, { status })
       console.log("Response findCarrierTruckBookingAccept :: ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
@@ -173,9 +179,10 @@ export class BookingApi {
       return error
     }
   }
-  async findCarrierTruckBookingReject(id: string): Promise<any> {
+  async findCarrierTruckBookingReject(id: string, status: string): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/carriers/truck/booking/reject/${id}`)
+      // const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/carriers/truck/booking/reject/${id}`)
+      const response: ApiResponse<any> = await this.apisauce.patch(`api/v1/booking/${id}`, { status })
       console.log("Response findCarrierTruckBookingReject :: ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)

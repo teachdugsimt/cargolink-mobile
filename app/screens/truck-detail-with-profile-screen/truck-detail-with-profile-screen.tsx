@@ -32,7 +32,7 @@ import BookingStore from "../../store/booking-store/booking-store"
 import TruckDetailStore from "../../store/free-store/truck-detail-store"
 import LottieView from 'lottie-react-native';
 import ShippersHistoryCallStore from '../../store/shippers-history-call-store/shippers-history-call-store'
-
+import { API_URL } from '../../config/'
 interface ImageInfo {
   width: number
   height: number
@@ -271,11 +271,12 @@ export const TruckDetailWithProfile = observer(function TruckDetailWithProfile()
   useEffect(() => {
     const imageSource = profile?.avatar?.object && profile?.avatar?.token ? {
       source: {
-        uri: profile?.avatar?.object || '',
+        uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + profile?.avatar?.object || '',
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${profile?.avatar?.token || ''}`,
-          adminAuth: profile?.avatar?.token
+          Accept: 'image/*'
+          // Authorization: `Bearer ${profile?.avatar?.token || ''}`,
+          // adminAuth: profile?.avatar?.token || ''
         },
       },
       resizeMode: 'cover'
@@ -443,6 +444,7 @@ export const TruckDetailWithProfile = observer(function TruckDetailWithProfile()
   }, [])
 
   let outImage: Array<any> = truckPhotos
+  console.log("Out image  :: ", outImage)
   const transformImage = outImage &&
     Object.keys(outImage).length ?
     Object.entries(outImage).map(img => {
@@ -451,13 +453,14 @@ export const TruckDetailWithProfile = observer(function TruckDetailWithProfile()
         height: 720,
         title: `img-${img[0]}`
       }
-      if (img[1] && img[1].object) {
+      if (img[1] && img[1]) {
         imageInfo.source = {
-          uri: img[1].object,
+          uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + img[1],
           method: 'GET',
           headers: {
-            Authorization: img[1].token,
-            adminAuth: img[1].token
+            Accept: 'image/*'
+            // Authorization: img[1].token,
+            // adminAuth: img[1].token || ''
           }
         }
       } else {
@@ -480,11 +483,12 @@ export const TruckDetailWithProfile = observer(function TruckDetailWithProfile()
 
   const imageProps = {
     source: {
-      uri: truckData?.owner?.avatar?.object,
+      uri: truckData?.owner?.avatar?.object ? `${API_URL}/api/v1/media/file-stream?attachCode=` + truckData?.owner?.avatar?.object : "",
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${truckData?.owner?.avatar?.token || ''}`,
-        adminAuth: truckData?.owner?.avatar?.token
+        Accept: 'image/*'
+        // Authorization: `Bearer ${truckData?.owner?.avatar?.token || ''}`,
+        // adminAuth: truckData?.owner?.avatar?.token || ''
       },
     },
     resizeMode: 'cover'

@@ -3,7 +3,7 @@ import { ShipperTruckAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
 import FavoriteTruckStore from "./favorite-truck-store"
 import * as storage from "../../utils/storage"
-
+import _ from 'lodash'
 const shipperTruckApi = new ShipperTruckAPI()
 
 const defaultModel = {
@@ -14,6 +14,7 @@ const defaultModel = {
   createdAt: types.maybeNull(types.string),
   updatedAt: types.maybeNull(types.string),
   approveStatus: types.maybeNull(types.string),
+  quotationNumber: types.maybeNull(types.string),
   registrationNumber: types.maybeNull(types.array(types.string)),
   tipper: types.maybeNull(types.boolean),
   phoneNumber: types.maybeNull(types.string),
@@ -75,10 +76,14 @@ const ImageModel = types.model({
 const ShipperJobFull = types.model({
   ...defaultModel,
   truckPhotos: types.maybeNull(types.model({
-    front: types.maybeNull(ImageModel),
-    back: types.maybeNull(ImageModel),
-    left: types.maybeNull(ImageModel),
-    right: types.maybeNull(ImageModel),
+    // front: types.maybeNull(ImageModel),
+    // back: types.maybeNull(ImageModel),
+    // left: types.maybeNull(ImageModel),
+    // right: types.maybeNull(ImageModel),
+    front: types.maybeNull(types.string),
+    back: types.maybeNull(types.string),
+    left: types.maybeNull(types.string),
+    right: types.maybeNull(types.string),
   })),
   truckTypeName: types.maybeNull(types.string),
   createdFrom: types.maybeNull(types.number),
@@ -116,7 +121,8 @@ const ShipperTruckStore = types
   })
   .actions((self) => ({
     find: flow(function* find(filter: Types.ShipperJobRequest = {}) {
-      shipperTruckApi.setup()
+      console.log("Filter find truck :: ", filter)
+      yield shipperTruckApi.setup()
       self.loading = true
       try {
         self.previousListLength = self.list.length
@@ -128,11 +134,12 @@ const ShipperTruckStore = types
 
           let arrMerge = []
           if (!filter.page) {
-            arrMerge = [...response.data.content]
+            arrMerge = [...response.data.data]
           } else {
-            arrMerge = [...self.list, ...response.data.content]
+            arrMerge = _.unionBy(JSON.parse(JSON.stringify(self.list)), response.data.data, 'id')
+            // arrMerge = [...self.list, ...response.data.data]
           }
-
+          console.log("Step 2 : ", self.mainList)
           if (!(yield isAutenticated())) {
             self.list = cast(arrMerge)
           } else {
@@ -147,12 +154,12 @@ const ShipperTruckStore = types
                   isLiked: favoriteList.some(val => val.id === attr.id)
                 }
               }))
+              console.log("Step 3 : ", JSON.parse(JSON.stringify(result)))
               self.list = JSON.parse(JSON.stringify(result))
             } else {
               self.list = cast(arrMerge)
             }
           }
-
           self.loading = false
         } else {
           self.loading = false
@@ -165,14 +172,15 @@ const ShipperTruckStore = types
     }),
 
     findOne: flow(function* findOne(id: string) {
-      shipperTruckApi.setup()
+      yield shipperTruckApi.setup()
       self.loading = true
       try {
         yield FavoriteTruckStore.find()
         const response = yield shipperTruckApi.findOne(id)
         console.log("Response call api get shipper truck : : ", JSON.stringify(response))
         if (response.kind === 'ok') {
-          const result = response.data || {}
+          const parseResponse = JSON.parse(JSON.stringify(response.data))
+          const result = parseResponse.data || {}
           const isLiked = FavoriteTruckStore.list.find(({ id }) => id === result.id)?.isLiked
           self.data = { ...result, isLiked: isLiked || false, truckTypeName: self.truckTypeName }
         } else {
