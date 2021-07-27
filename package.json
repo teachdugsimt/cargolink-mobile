@@ -152,7 +152,8 @@
     "util": "~0.10.3",
     "react-native-tcp": "^3.2.1",
     "vm-browserify": "0.0.4",
-    "readable-stream": "1.0.33"
+    "readable-stream": "1.0.33",
+    "punycode": "^1.2.4"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

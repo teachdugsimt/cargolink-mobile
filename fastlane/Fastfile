@@ -116,7 +116,7 @@ lane :changelog do |options|
   end
 
   display = "\n===========Changelog===========\n" + 
-  cl + 
+  cl.to_s + 
   "\n===============================\n"
 
   if !UI.confirm(display + "\nIs this correct changelog ?" )
