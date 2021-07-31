@@ -224,7 +224,7 @@ const HeaderComponent = observer(function HeaderComponent() {
                     if (MyVehicleStore.data.id && image && !!image.url) onViewer(index)
                   }}>
                     <Image style={IMAGE} source={MyVehicleStore.data.id && image && !!image.url ? {
-                      uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + image.url,
+                      uri: image.url,
                       method: 'GET',
                       headers: {
                         Accept: 'image/*'
