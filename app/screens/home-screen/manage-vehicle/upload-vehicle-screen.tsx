@@ -948,7 +948,7 @@ export const UploadVehicleScreen = observer(() => {
       let tmpTruckType = slotTruck.name.replace(/\s+/g, '').toLowerCase();
       if (tmpTruckType.includes("trailer") || tmpTruckType.includes("เทรเลอร์") || tmpTruckType.includes("18ล้อ")
         || tmpTruckType.includes("หัวลาก") || tmpTruckType.includes("รถพ่วง")) {
-        if (Number(truckType) == 42) requiredStallHeight = true
+        if (Number(truckType) == 23) requiredStallHeight = true
         let lowTrailer = " (1.50 - 1.80 m)"
         let mediumTrailer = " (1.80 - 2.00 m)"
         let heightTrailer = " (2.20 - 2.50 m)"
@@ -958,21 +958,21 @@ export const UploadVehicleScreen = observer(() => {
         res.push(low, medium, height)
       }
       else if (tmpTruckType.includes("4wheels") || tmpTruckType.includes("4ล้อ")) {
-        if (Number(truckType) == 49) requiredStallHeight = true
+        if (Number(truckType) == 3) requiredStallHeight = true
         let low4Wheels = " (~ 1.4 m)"
         let height4Wheels = " (~ 2.1 m)"
         low.label = low.label + low4Wheels
         height.label = height.label + height4Wheels
         res.push(low, height)
       } else if (tmpTruckType.includes("6wheels") || tmpTruckType.includes("6ล้อ")) {
-        if (Number(truckType) == 3) requiredStallHeight = true
+        if (Number(truckType) == 9) requiredStallHeight = true
         let low6Wheels = " (~ 2.0 m)"
         let height6Wheels = " (~ 3.0 m)"
         low.label = low.label + low6Wheels
         height.label = height.label + height6Wheels
         res.push(low, height)
       } else if (tmpTruckType.includes("10wheels") || tmpTruckType.includes("10ล้อ")) {
-        if (Number(truckType) == 26 || Number(truckType) == 36) requiredStallHeight = true
+        if (Number(truckType) == 15 || Number(truckType) == 24) requiredStallHeight = true
         let medium10Wheels = " (~ 2.5 m)"
         medium.label = medium.label + medium10Wheels
         res.push(medium)
