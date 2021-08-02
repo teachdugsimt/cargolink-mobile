@@ -10,6 +10,21 @@ const apiMyVehicle = new MyVehicleAPI()
 const apiCarriersJob = new CarriersJobAPI()
 const apiGoogleMap = new GoogleMapAPI()
 
+const mapQuotationTruckImageObj = (Obj: any) => {
+  const tmpJobDetails = JSON.parse(JSON.stringify(Obj))
+  tmpJobDetails.quotations = Obj.quotations.map(quo => {
+    let slotQuo = quo
+    if (slotQuo?.truck && slotQuo?.truck?.truckPhotos && Object.keys(slotQuo?.truck?.truckPhotos).length > 0) {
+      Object.keys(slotQuo.truck.truckPhotos).map(keyQ => {
+        slotQuo.truck.truckPhotos[keyQ] = { object: quo.truck.truckPhotos[keyQ], token: null }
+      })
+      return slotQuo
+    } else return slotQuo
+  })
+  console.log("Parse tmp detail :: ", tmpJobDetails)
+  return tmpJobDetails
+}
+
 const ImageModel = types.model({
   object: types.maybeNull(types.string),
   token: types.maybeNull(types.string),
@@ -69,7 +84,7 @@ const QuotationField = types.model({
     approveStatus: types.maybeNull(types.string),
     phoneNumber: types.maybeNull(types.string),
     registrationNumber: types.maybeNull(types.array(types.maybeNull(types.string))),
-    truckPhotos: types.maybeNull(types.model({
+    truckPhotos: types.maybeNull(types.model({  // Error HERE
       front: types.maybeNull(ImageModel),
       back: types.maybeNull(ImageModel),
       left: types.maybeNull(ImageModel),
@@ -137,6 +152,8 @@ const CarriersJob = types.model({
   truckType: types.maybeNull(types.string),
   weight: types.maybeNull(types.number),
   requiredTruckAmount: types.maybeNull(types.number),
+  publicAsCgl: types.maybeNull(types.boolean),
+  status: types.maybeNull(types.string),
   from: types.maybeNull(types.model({
     name: types.maybeNull(types.string),
     dateTime: types.maybeNull(types.string),
@@ -324,7 +341,8 @@ const CarriersJobStore = types
             const tmpResult = { ...result, isLiked: isLiked || false }
             // tmpResult.trips = null
             // tmpResult.quotations = null
-            self.data = tmpResult
+            const parseTruckImageObject = tmpResult?.quotations && tmpResult?.quotations.length ? mapQuotationTruckImageObj(tmpResult) : tmpResult
+            self.data = parseTruckImageObject
             // self.data = { ...result, isLiked: isLiked || false }
           }
         } else {
