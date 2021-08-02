@@ -152,7 +152,7 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
   }, [truckID, truckData])
 
   useEffect(() => {
-    const imageSource = profile?.avatar?.object && profile?.avatar?.token ? {
+    const imageSource = profile?.avatar?.object ? {
       source: {
         uri: (profile?.avatar?.object ? `${API_URL}/api/v1/media/file-stream?attachCode=` + profile?.avatar?.object : '') || '',
         method: 'GET',
@@ -331,9 +331,10 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
         height: 720,
         title: `img-${img[0]}`
       }
-      if (img[1] && img[1]) {
+      if (img[1] && img[1] && img[1].object) {
+        console.log("Image : 1 ", img[1])
         imageInfo.source = {
-          uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + img[1],
+          uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + img[1].object,
           method: 'GET',
           headers: {
             Accept: 'image/*'
@@ -346,7 +347,7 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
       }
       return imageInfo
     }) : []
-  __DEV__ && console.tron.log("Transform Image :: ", transformImage)
+  console.log("Transform Image :: ", transformImage)
   const truckImage = MapTruckImageName(+truckType)
 
   const workingZoneStr = workingZones?.length ? workingZones.map(zone => {

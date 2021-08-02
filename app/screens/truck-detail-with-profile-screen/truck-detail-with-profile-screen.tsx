@@ -269,7 +269,7 @@ export const TruckDetailWithProfile = observer(function TruckDetailWithProfile()
   }, [truckID, truckData])
 
   useEffect(() => {
-    const imageSource = profile?.avatar?.object && profile?.avatar?.token ? {
+    const imageSource = profile?.avatar?.object ? {
       source: {
         uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + profile?.avatar?.object || '',
         method: 'GET',
@@ -453,9 +453,9 @@ export const TruckDetailWithProfile = observer(function TruckDetailWithProfile()
         height: 720,
         title: `img-${img[0]}`
       }
-      if (img[1] && img[1]) {
+      if (img[1] && img[1] && img[1].object) {
         imageInfo.source = {
-          uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + img[1],
+          uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + img[1].object,
           method: 'GET',
           headers: {
             Accept: 'image/*'
@@ -469,6 +469,7 @@ export const TruckDetailWithProfile = observer(function TruckDetailWithProfile()
       return imageInfo
     }) : []
   const truckImage = MapTruckImageName(+truckType)
+    console.log("transform image with profile : ",transformImage)
 
   const workingZoneStr = workingZones?.length ? workingZones.map(zone => {
     let reg = GetRegion(zone.region, i18n.locale)
