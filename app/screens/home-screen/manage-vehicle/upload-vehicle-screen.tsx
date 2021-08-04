@@ -483,7 +483,6 @@ export const UploadVehicleScreen = observer(() => {
   }
 
   const [submitReady, setsubmitReady] = useState(false)
-
   const onSubmit = data => {
     let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
     setinputRegistration(data)
@@ -505,8 +504,7 @@ export const UploadVehicleScreen = observer(() => {
     }
 
     const data_mock_call: any = {
-      // carrierId: editStatus == "add" ? tokenStore.profile.id : MyVehicleStore.data.id,
-      carrierId: tokenStore.profile.id,
+      carrierId: tokenStore.profile.userId,
       truckType: data['vehicle-type'],
 
       loadingWeight: 1,
@@ -652,7 +650,7 @@ export const UploadVehicleScreen = observer(() => {
 
     data_mock_call.registrationNumber = tmp_registration
 
-    __DEV__ && console.tron.log("Finish FINAL submit data :: ", data_mock_call)
+    console.log("Finish FINAL submit data :: ", data_mock_call)
     if (editStatus && editStatus == "add") {
       CreateVehicleStore.createVehicleProfile(data_mock_call)
       setsubmitReady(true)
