@@ -17,6 +17,7 @@ import i18n from 'i18n-js'
 import StatusStore from '../../store/post-job-store/job-status-store'
 import AuthStore from "../../store/auth-store/auth-store"
 import { API_URL } from '../../config/'
+import _ from 'lodash'
 
 const { width, height } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -247,7 +248,8 @@ export const ProfileScreen = observer(function ProfileScreen() {
     if (tmp_report && tmp_report.trucks && tmp_report.trucks.length > 0) {
       let all_car = tmp_report.trucks.reduce((prev, next) => prev + next.total, 0)
       mappingSectionTruckType(tmp_report.trucks)
-      mappingRegionProvince(tmp_report.workingZones)
+      // mappingRegionProvince(tmp_report.workingZones)
+      mappingRegionProvince2(tmp_report.workingZones)
       mappingWorkingReport(tmp_report.totalJob)
       setallCar(all_car)
     } else {
@@ -268,6 +270,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
     let list_all_region = i18n.locale == "th" ? regionListTh : regionListEn
     let tmp = []
     // wait for remove duplicate
+    console.log("Working zone :: ", workingZones)
     workingZones.forEach((e, i) => {
       if (tmp.find(item => item.id == e.region)) { // old region
         let index = tmp.findIndex(p => p.id == e.region)
@@ -286,6 +289,36 @@ export const ProfileScreen = observer(function ProfileScreen() {
         })
       }
     })
+    // console.log("Tmp :: ", tmp)
+    let tmp_section = arrSection
+    tmp_section[1].data = tmp
+    console.log("tmmp section :: ", tmp_section)
+    setarrSection(tmp_section)
+    setswipe(!swipe)
+  }
+
+  const mappingRegionProvince2 = (workingZones) => {
+    let list_all_province = i18n.locale == "th" ? provinceListTh : provinceListEn
+    let list_all_region = i18n.locale == "th" ? regionListTh : regionListEn
+
+    // wait for remove duplicate
+    const tmpWorkingZones = JSON.parse(JSON.stringify(workingZones))
+    console.log("Working zone :: ", workingZones)
+
+    const uniqueWorkZoneRegion = _.uniqBy(JSON.parse(JSON.stringify(workingZones)), 'region')
+    const tmp = uniqueWorkZoneRegion.map((e, i) => {
+      const regionObj = list_all_region.find(reg => e.region == reg.value)
+      const provinceListId = tmpWorkingZones.filter(wr => wr.region == e.region)
+      const nameProvinceList = provinceListId.map(pl => list_all_province.find(la => la.value == pl.province).label)
+      return {
+        id: e.region,
+        name: regionObj?.label || translate("common.notFound"),
+        province_list: nameProvinceList,
+        province_number: provinceListId.length
+      }
+    })
+
+    console.log("Tmp 2 :: ", tmp)
     let tmp_section = arrSection
     tmp_section[1].data = tmp
     setarrSection(tmp_section)
@@ -319,7 +352,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
         mappingSectionTruckType(tmp_report.trucks)
       }
       if (tmp_report && tmp_report.workingZones && tmp_report.workingZones.length > 0) {
-        mappingRegionProvince(tmp_report.workingZones)
+        mappingRegionProvince2(tmp_report.workingZones)
       }
       settmpListTruckType(tmp_list_all)
     }

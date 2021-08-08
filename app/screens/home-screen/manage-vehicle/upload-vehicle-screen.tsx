@@ -236,8 +236,8 @@ export const UploadVehicleScreen = observer(() => {
 
   const dump = [{ id: 1, label: 'common.dump', active: true },
   { id: 2, label: 'common.notDump', active: false }]
-  const truckIsDump: Array<number> = [26, 42, 36]
-  const truckReqHeight: Array<number> = [3, 26, 36, 42, 49]
+  const truckIsDump: Array<number> = [15, 23, 24]
+  const truckReqHeight: Array<number> = [9, 15, 24, 23, 3]
   const [visibleModal, setvisibleModal] = useState(initModal)
   const [arrDump, setArrDump] = useState(dump)
   const [reqHeight, setreqHeight] = useState(false)
@@ -483,7 +483,6 @@ export const UploadVehicleScreen = observer(() => {
   }
 
   const [submitReady, setsubmitReady] = useState(false)
-
   const onSubmit = data => {
     let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
     setinputRegistration(data)
@@ -505,8 +504,7 @@ export const UploadVehicleScreen = observer(() => {
     }
 
     const data_mock_call: any = {
-      // carrierId: editStatus == "add" ? tokenStore.profile.id : MyVehicleStore.data.id,
-      carrierId: tokenStore.profile.id,
+      carrierId: tokenStore.profile.userId,
       truckType: data['vehicle-type'],
 
       loadingWeight: 1,
@@ -652,7 +650,7 @@ export const UploadVehicleScreen = observer(() => {
 
     data_mock_call.registrationNumber = tmp_registration
 
-    __DEV__ && console.tron.log("Finish FINAL submit data :: ", data_mock_call)
+    console.log("Finish FINAL submit data :: ", data_mock_call)
     if (editStatus && editStatus == "add") {
       CreateVehicleStore.createVehicleProfile(data_mock_call)
       setsubmitReady(true)
@@ -948,7 +946,7 @@ export const UploadVehicleScreen = observer(() => {
       let tmpTruckType = slotTruck.name.replace(/\s+/g, '').toLowerCase();
       if (tmpTruckType.includes("trailer") || tmpTruckType.includes("เทรเลอร์") || tmpTruckType.includes("18ล้อ")
         || tmpTruckType.includes("หัวลาก") || tmpTruckType.includes("รถพ่วง")) {
-        if (Number(truckType) == 42) requiredStallHeight = true
+        if (Number(truckType) == 23) requiredStallHeight = true
         let lowTrailer = " (1.50 - 1.80 m)"
         let mediumTrailer = " (1.80 - 2.00 m)"
         let heightTrailer = " (2.20 - 2.50 m)"
@@ -958,21 +956,21 @@ export const UploadVehicleScreen = observer(() => {
         res.push(low, medium, height)
       }
       else if (tmpTruckType.includes("4wheels") || tmpTruckType.includes("4ล้อ")) {
-        if (Number(truckType) == 49) requiredStallHeight = true
+        if (Number(truckType) == 3) requiredStallHeight = true
         let low4Wheels = " (~ 1.4 m)"
         let height4Wheels = " (~ 2.1 m)"
         low.label = low.label + low4Wheels
         height.label = height.label + height4Wheels
         res.push(low, height)
       } else if (tmpTruckType.includes("6wheels") || tmpTruckType.includes("6ล้อ")) {
-        if (Number(truckType) == 3) requiredStallHeight = true
+        if (Number(truckType) == 9) requiredStallHeight = true
         let low6Wheels = " (~ 2.0 m)"
         let height6Wheels = " (~ 3.0 m)"
         low.label = low.label + low6Wheels
         height.label = height.label + height6Wheels
         res.push(low, height)
       } else if (tmpTruckType.includes("10wheels") || tmpTruckType.includes("10ล้อ")) {
-        if (Number(truckType) == 26 || Number(truckType) == 36) requiredStallHeight = true
+        if (Number(truckType) == 15 || Number(truckType) == 24) requiredStallHeight = true
         let medium10Wheels = " (~ 2.5 m)"
         medium.label = medium.label + medium10Wheels
         res.push(medium)
@@ -1253,7 +1251,7 @@ export const UploadVehicleScreen = observer(() => {
                       )}
                       key={"registration-key-" + index}
                       name={"registration-" + index}
-                      rules={{ required: true, pattern: /^\S+$/ }}
+                      rules={{ required: true, pattern: /^[^,]*$/ }}
                       defaultValue=""
                     />
                     {index != 0 && index == textInput.length - 1 && <TouchableOpacity style={DELETE_RERGIS_BUTTON} onPress={() => _deleteRregistration(index)}>

@@ -129,16 +129,11 @@ export class MyVehicleAPI {
       }
     }
   */
-  parseParameters(params: any) {
-    let tmpObject = params
-    if(tmpObject['carrierId']) tmpObject['carrierId'] = Number(params['carrierId'])
-    return tmpObject
-  }
 
   async createVehicleProfile(params: any): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.post(`api/v1/trucks`, this.parseParameters(params))
+      const response: ApiResponse<any> = await this.apisauce.post(`api/v1/trucks`, params)
       // the typical ways to die when calling an api
       console.log("Response call api create upload vehicle profile (MOCK) : ", response)
       if (!response.ok) {

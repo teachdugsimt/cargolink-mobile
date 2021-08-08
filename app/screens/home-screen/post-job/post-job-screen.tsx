@@ -143,7 +143,7 @@ const CALL_TEXT: TextStyle = {
 
 export const PostJobScreen = observer(function PostJobScreen() {
   const MAX_LENGTH: number = 120
-  const truckIsDump: Array<number> = [26, 42, 36]
+  const truckIsDump: Array<number> = [15, 23, 24]
   const dump = [{ id: 1, label: 'common.dump', active: true },
   { id: 2, label: 'common.notDump', active: false }]
 
