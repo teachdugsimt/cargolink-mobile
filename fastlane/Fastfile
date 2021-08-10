@@ -222,6 +222,15 @@ platform :android do
   desc 'Ship to Playstore Beta.'
   lane :beta do
     ensure_git
+
+    if ENV["IS_PRODUCTION"] == "true"
+      api_environment = "production"
+    end
+    ENV["ENVFILE"]=".env.#{api_environment}"
+    puts "API_URL: #{ENV['API_URL']}"
+    puts "IS_PRODUCTION: #{ENV['IS_PRODUCTION']}"
+    puts "ENVFILE: #{ENV['ENVFILE']}"
+
     build
     supply(track: 'beta', track_promote_to: 'beta')
     gradle(task: 'clean', project_dir: 'android/')
