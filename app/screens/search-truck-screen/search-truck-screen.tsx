@@ -7,14 +7,14 @@ import { useFocusEffect, useNavigation, useIsFocused } from '@react-navigation/n
 import { translate } from '../../i18n';
 import ShipperTruckStore from '../../store/shipper-truck-store/shipper-truck-store'
 import i18n from 'i18n-js'
-import { GetRegion } from "../../utils/get-region";
+import { GetRegion, MapUniqRegion } from "../../utils/get-region";
 import AdvanceSearchStore from '../../store/shipper-truck-store/advance-search-store';
 import FavoriteTruckStore from '../../store/shipper-truck-store/favorite-truck-store';
 import { MapTruckImageName } from '../../utils/map-truck-image-name';
 import { GetTruckType } from '../../utils/get-truck-type';
 import { useStores } from "../../models/root-store/root-store-context";
-import analytics from '@react-native-firebase/analytics';
 import { API_URL } from '../../config/'
+
 
 const RESULT_CONTAINER: ViewStyle = {
   flex: 1,
@@ -180,9 +180,10 @@ export const SearchTruckScreen = observer(function SearchTruckScreen() {
     }
   }, [JSON.stringify(versatileStore.list)])
 
-  const renderItem = ({ item }) => (
-    <Item {...item} />
-  )
+  const renderItem = ({ item }) => {
+    const newItem = MapUniqRegion(item)
+    return <Item {...newItem} />
+  }
 
   const onScrollList = () => {
     if (!onEndReachedCalledDuringMomentum

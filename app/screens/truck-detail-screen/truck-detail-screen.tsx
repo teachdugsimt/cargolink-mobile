@@ -34,7 +34,7 @@ import UserTruckStore from '../../store/user-truck-store/user-truck-store'
 import UserJobStore from '../../store/user-job-store/user-job-store'
 import ProfileStore from '../../store/profile-store/profile-store'
 import i18n from 'i18n-js'
-import { GetRegion } from "../../utils/get-region"
+import { GetRegion, MapUniqRegion } from "../../utils/get-region"
 import CallDetectorManager from 'react-native-call-detection'
 import { API_URL } from '../../config/'
 
@@ -328,8 +328,8 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
     isCrown: false,
     image: JSON.parse(ShipperTruckStore.profile.imageProps),
   }
-
-  const workingZoneStr = workingZones?.length ? workingZones.map(zone => {
+  const newWorkingZone = MapUniqRegion(workingZones)
+  const workingZoneStr = newWorkingZone?.length ? newWorkingZone.map(zone => {
     let reg = GetRegion(zone.region, i18n.locale)
     return reg?.label || ''
   }).join(', ') : translate('common.notSpecified')
