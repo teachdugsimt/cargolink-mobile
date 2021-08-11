@@ -309,7 +309,9 @@ export const ProfileScreen = observer(function ProfileScreen() {
     const tmp = uniqueWorkZoneRegion.map((e, i) => {
       const regionObj = list_all_region.find(reg => e.region == reg.value)
       const provinceListId = tmpWorkingZones.filter(wr => wr.region == e.region)
-      const nameProvinceList = provinceListId.map(pl => list_all_province.find(la => la.value == pl.province).label)
+      console.log("Province List :: ", provinceListId)
+      const tmpProvinceListFilterHaveProvince = provinceListId.filter(tmpProvince => tmpProvince.province)
+      const nameProvinceList = tmpProvinceListFilterHaveProvince.map(pl => list_all_province.find(la => la.value == pl.province).label)
       return {
         id: e.region,
         name: regionObj?.label || translate("common.notFound"),
