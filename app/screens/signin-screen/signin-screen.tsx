@@ -14,7 +14,7 @@ import {
   Alert,
 } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Button, HeaderLeft, Icon, ModalAlert, Screen, Text } from "../../components"
+import { Button, HeaderLeft, Icon, ModalAlert, Screen, Text, ModalLoading } from "../../components"
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import CountryPicker, { Country, CountryCode, DEFAULT_THEME, FlagButton } from 'react-native-country-picker-modal'
 import { color, spacing, images } from '../../theme'
@@ -212,7 +212,11 @@ export const SigninScreen = observer(function SigninScreen() {
       navigation.navigate("confirmCode")
     }
     else if (pressSignin && error_signin && !AuthStore.loading) {
-      AlertMessage("common.somethingWrong", "common.InvalidPhoneNumber", true)
+      console.log("Error signin screen :: ", error_signin)
+      if (error_signin.includes('timeout'))
+        AlertMessage("common.somethingWrong", "common.timeout", true)
+      else
+        AlertMessage("common.somethingWrong", "common.InvalidPhoneNumber", true)
     }
   }, [pressSignin, AuthStore.error, JSON.stringify(AuthStore.data)])
 
@@ -274,6 +278,7 @@ export const SigninScreen = observer(function SigninScreen() {
       <View testID="Logo" style={LOGO_PART}>
         <Image source={images.logoNewYellow} style={LOGO} resizeMode={"contain"} />
       </View>
+      <ModalLoading visible={AuthStore.loading} size={'large'} />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View testID="MobileForm" style={MOBILE_FORM_PART}>
           <Text style={LABEL} text={translate("signinScreen.enterYourPhoneNumber")} />

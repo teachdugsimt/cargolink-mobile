@@ -1,5 +1,6 @@
 {
   "common": {
+    "timeout": "Timeout connection, please try again",
     "reject": "Reject",
     "approve": "Approve",
     "ok": "OK!",
