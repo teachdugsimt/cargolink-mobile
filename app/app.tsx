@@ -12,7 +12,7 @@
 
 import "./utils/ignore-warnings"
 import { ModalPortal } from 'react-native-modals';
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect, useRef, useCallback } from "react"
 import { NavigationContainerRef } from "@react-navigation/native"
 import { SafeAreaProvider, initialWindowSafeAreaInsets } from "react-native-safe-area-context"
 import SplashScreen from 'react-native-splash-screen'
@@ -40,6 +40,12 @@ import "./i18n"
 import { translate } from "./i18n";
 enableScreens()
 
+import {
+  getTrackingStatus,
+  requestTrackingPermission,
+  TrackingStatus,
+} from 'react-native-tracking-transparency';
+
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 
 /**
@@ -48,6 +54,9 @@ export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 function App(props: any) {
   const navigationRef = useRef<NavigationContainerRef>()
   const [rootStore, setRootStore] = useState<RootStore | undefined>(undefined)
+  const [trackingStatus, setTrackingStatus] = React.useState<
+    TrackingStatus | '(loading)'
+  >('(loading)');
 
   setRootNavigation(navigationRef)
   useBackButtonHandler(navigationRef, canExit)
@@ -62,9 +71,34 @@ function App(props: any) {
       setupRootStore().then(setRootStore)
     })()
     SplashScreen.hide()
-    // crashlytics().crash()
-    // crashlytics().log('App mounted.')
+
+    const appleTrackingTransparency = async () => {
+      try {
+        const trackingStatus = await getTrackingStatus();
+        console.log('TRACKING', trackingStatus)
+        if (trackingStatus === 'unavailable' || trackingStatus === 'not-determined') {
+          await requestTracking()
+        } else {
+          setTrackingStatus(trackingStatus);
+        }
+      } catch (e) {
+        Alert.alert('Error', e?.toString?.() ?? e);
+      }
+    }
+
+    appleTrackingTransparency()
+
   }, [])
+
+  const requestTracking = React.useCallback(async () => {
+    console.log('Start Request Tracking')
+    try {
+      const status = await requestTrackingPermission();
+      setTrackingStatus(status);
+    } catch (e) {
+      Alert.alert('Error', e?.toString?.() ?? e);
+    }
+  }, []);
 
   // Before we show the app, we have to wait for our state to be ready.
   // In the meantime, don't render anything. This will be the background
@@ -73,7 +107,6 @@ function App(props: any) {
   if (!rootStore) return null
 
   console.log("App js props : ", props)
-
 
   console.log(VersionCheck.getPackageName());        // com.reactnative.app
   console.log(VersionCheck.getCurrentBuildNumber()); // 10
