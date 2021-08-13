@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.2](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v2.0.1...v2.0.2) (2021-08-13)
+
+
+### Bug Fixes
+
+* **ios:** add apple tracking transparency ([3151421](https://git-codecommit.ap-southeast-1.amazonaws.com///commit/3151421da72e4a6f7dfdcb84e01a49ded965136f))
+
 ### [2.0.1](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v1.2.0...v2.0.1) (2021-08-12)
 
 ## [2.0.0](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v1.2.0...v2.0.0) (2021-08-08)
