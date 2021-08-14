@@ -105,7 +105,7 @@
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 	<key>NSUserTrackingUsageDescription</key>
-	<string>Your data will be used to deliver personalized ads to you.</string>
+	<string>CargoLink requires your permission to track in order to show you more relevant ads.</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>
