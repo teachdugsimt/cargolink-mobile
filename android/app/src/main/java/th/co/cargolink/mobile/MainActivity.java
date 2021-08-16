@@ -46,6 +46,6 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "CargoLinkMobile";
+    return "CargoLink";
   }
 }

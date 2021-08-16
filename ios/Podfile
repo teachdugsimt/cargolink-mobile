@@ -3,7 +3,7 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 platform :ios, '11.0'
 
-target 'CargoLinkMobile' do
+target 'CargoLink' do
   config = use_native_modules!
   rn_maps_path = '../node_modules/react-native-maps'
 
@@ -31,7 +31,7 @@ target 'CargoLinkMobile' do
 
   pod 'react-native-randombytes', :path => '../node_modules/react-native-randombytes'
 
-  target 'CargoLinkMobileTests' do
+  target 'CargoLinkTests' do
     inherit! :complete
     # Pods for testing
   end
@@ -49,10 +49,10 @@ target 'CargoLinkMobile' do
   end
 end
 
-target 'CargoLinkMobile-tvOS' do
-  # Pods for CargoLinkMobile-tvOS
+target 'CargoLink-tvOS' do
+  # Pods for CargoLink-tvOS
 
-  target 'CargoLinkMobile-tvOSTests' do
+  target 'CargoLink-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
   end

@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "650335395397",
+    "project_id": "cargolink-18c1a",
+    "storage_bucket": "cargolink-18c1a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:650335395397:android:fdbf8a8bc2b4c74ef50d2c",
+        "android_client_info": {
+          "package_name": "th.co.cargolink.mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "650335395397-1cjaekmlevflhehjo4che7cmh9g4hume.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlVXHYzLsbYcTIyjFmrbl4AIWowB-7kvE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "650335395397-1cjaekmlevflhehjo4che7cmh9g4hume.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "650335395397-u434dtpnps9vffq90kd6dntsk1cfg9dg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "th.co.cargolink.pushtest"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:650335395397:android:2c20db6a4e1bff15f50d2c",
+        "android_client_info": {
+          "package_name": "th.co.cargolink.pushtest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "650335395397-1cjaekmlevflhehjo4che7cmh9g4hume.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlVXHYzLsbYcTIyjFmrbl4AIWowB-7kvE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "650335395397-1cjaekmlevflhehjo4che7cmh9g4hume.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "650335395397-u434dtpnps9vffq90kd6dntsk1cfg9dg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "th.co.cargolink.pushtest"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
