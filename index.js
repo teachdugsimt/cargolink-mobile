@@ -37,19 +37,19 @@ if (__DEV__ && SHOW_STORYBOOK) {
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('Message handled in the background!', remoteMessage);
 
-  // PushNotification.localNotification({
-  //     /* Android Only Properties */
-  //     channelId: "new-job", // (required) channelId, if the channel doesn't exist, notification will not trigger.
-  //     ticker: "My Notification Ticker",
-  //     // vibration: 300, // vibration length in milliseconds, ignored if vibrate=false, default: 1000
+  PushNotification.localNotification({
+    /* Android Only Properties */
+    channelId: "new-job", // (required) channelId, if the channel doesn't exist, notification will not trigger.
+    // ticker: "My Notification Ticker",
+    // vibration: 300, // vibration length in milliseconds, ignored if vibrate=false, default: 1000
+    priority: "max",
+    visibility: "public",
+    /* iOS and Android properties */
+    title: remoteMessage.notification.title,
+    message: remoteMessage.notification.body,
+    actions: ['ดูข้อมูล']
 
-  //     /* iOS and Android properties */
-  //     title: "My Notification Title", // (optional)
-  //     message: "My Notification Message", // (required)
-
-  // });
+  });
 });
-
-
 
 AppRegistry.registerComponent(APP_NAME, () => RootComponent)

@@ -43,7 +43,7 @@ const TruckTypeStore = types
       self.loading = true
       try {
         const response = yield truckTypeApi.getTruckTypeDropdown(filter)
-        console.log("Response call api get truck type : : ", response)
+        // console.log("Response call api get truck type : : ", response)
         self.list = response.data
         self.loading = false
       } catch (error) {
@@ -58,7 +58,7 @@ const TruckTypeStore = types
       self.loading = true
       try {
         const response = yield truckTypeApi.getGroup(filter)
-        console.log("Response call api get truck type group : : ", response)
+        // console.log("Response call api get truck type group : : ", response)
         if (response.kind === 'ok') {
           self.listGroup = response.data
         } else {

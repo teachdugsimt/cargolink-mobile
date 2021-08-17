@@ -31,7 +31,7 @@ const HandleTokenStore = types
       self.loading = true
       try {
         const response = yield truckTypeApi.getTruckTypeDropdown(filter)
-        console.log("Response call api get truck type BY Handle Problem : : ", response)
+        // console.log("Response call api get truck type BY Handle Problem : : ", response)
         self.list = response.data
         self.loading = false
       } catch (error) {

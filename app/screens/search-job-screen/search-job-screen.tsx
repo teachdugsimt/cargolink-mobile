@@ -64,6 +64,7 @@ const Item = (data) => {
 
     CarriersJobStore.setProfile({ ...owner, imageProps: JSON.stringify(imageSource) })
     CarriersJobStore.findOne(id)
+    console.log('---------- job id', id)
     navigation.navigate('jobDetail')
   }
 

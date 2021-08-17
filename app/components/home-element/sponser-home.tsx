@@ -6,6 +6,7 @@ import {
 import { images } from "../../theme"
 import { Text } from '../text/text'
 import { useStores } from "../../models/root-store/root-store-context";
+import { LocalNotification } from "../../services/push/LocalPushController";
 const { width } = Dimensions.get('window')
 
 
@@ -44,7 +45,11 @@ export function SponserHome(props: any) {
       <View>
         <Text tx="homeScreen.newPromotion" preset="topic" />
       </View>
-      <TouchableOpacity style={[PADDING_TOP_10, { overflow: "hidden", borderRadius: 10 }]} onPress={() => onCall(versatileStore.partnerPhoneNumber)}>
+      <TouchableOpacity style={[PADDING_TOP_10, { overflow: "hidden", borderRadius: 10 }]}
+        onPress={() => {
+          // onCall(versatileStore.partnerPhoneNumber)
+          LocalNotification()
+        }}>
         <Image source={images.sponser} style={IMAGE_NEWS} resizeMode="stretch" />
       </TouchableOpacity>
     </View>

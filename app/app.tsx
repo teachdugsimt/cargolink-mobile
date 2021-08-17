@@ -15,6 +15,7 @@ import { ModalPortal } from 'react-native-modals';
 import React, { useState, useEffect, useRef, useCallback } from "react"
 import { NavigationContainerRef } from "@react-navigation/native"
 import { SafeAreaProvider, initialWindowSafeAreaInsets } from "react-native-safe-area-context"
+
 import SplashScreen from 'react-native-splash-screen'
 import * as storage from "./utils/storage"
 import {
@@ -50,57 +51,62 @@ export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 
 // import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import PushNotification, { Importance } from "react-native-push-notification";
+import { LocalNotification } from "./services/push/LocalPushController";
+import RemotePushController from "./services/push/RemotePushController";
+// import messaging from '@react-native-firebase/messaging';
 
 // Must be outside of any component LifeCycle (such as `componentDidMount`).
-PushNotification.configure({
-  // (optional) Called when Token is generated (iOS and Android)
-  onRegister: function (token) {
-    console.log("TOKEN:", token);
-  },
+// PushNotification.configure({
+//   // (optional) Called when Token is generated (iOS and Android)
+//   onRegister: function (token) {
+//     console.log("TOKEN:", token);
+//   },
 
-  // (required) Called when a remote is received or opened, or local notification is opened
-  onNotification: function (notification) {
-    console.log("NOTIFICATION:", notification);
+//   // (required) Called when a remote is received or opened, or local notification is opened
+//   onNotification: function (notification) {
+//     console.log("NOTIFICATION:", notification);
 
-    // process the notification
+//     // process the notification
 
-    // (required) Called when a remote is received or opened, or local notification is opened
-    // notification.finish(PushNotificationIOS.FetchResult.NoData);
-  },
+//     // (required) Called when a remote is received or opened, or local notification is opened
+//     // notification.finish(PushNotificationIOS.FetchResult.NoData);
+//   },
 
-  // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
-  onAction: function (notification) {
-    console.log("ACTION:", notification.action);
-    console.log("NOTIFICATION:", notification);
+//   // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
+//   onAction: function (notification) {
+//     console.log("ACTION:", notification.action);
+//     console.log("NOTIFICATION:", notification);
 
-    // process the action
-  },
+//     // process the action
+//   },
 
-  // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
-  onRegistrationError: function (err) {
-    console.error(err.message, err);
-  },
+//   // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
+//   onRegistrationError: function (err) {
+//     console.error(err.message, err);
+//   },
 
-  // IOS ONLY (optional): default: all - Permissions to register.
-  permissions: {
-    alert: true,
-    badge: true,
-    sound: true,
-  },
+//   // IOS ONLY (optional): default: all - Permissions to register.
+//   permissions: {
+//     alert: true,
+//     badge: true,
+//     sound: true,
+//   },
 
-  // Should the initial notification be popped automatically
-  // default: true
-  popInitialNotification: true,
+//   // Should the initial notification be popped automatically
+//   // default: true
+//   popInitialNotification: true,
 
-  /**
-   * (optional) default: true
-   * - Specified if permissions (ios) and token (android and ios) will requested or not,
-   * - if not, you must call PushNotificationsHandler.requestPermissions() later
-   * - if you are not using remote notification or do not have Firebase installed, use this:
-   *     requestPermissions: Platform.OS === 'ios'
-   */
-  requestPermissions: true,
-});
+//   invokeApp: false,
+
+//   /**
+//    * (optional) default: true
+//    * - Specified if permissions (ios) and token (android and ios) will requested or not,
+//    * - if not, you must call PushNotificationsHandler.requestPermissions() later
+//    * - if you are not using remote notification or do not have Firebase installed, use this:
+//    *     requestPermissions: Platform.OS === 'ios'
+//    */
+//   requestPermissions: true,
+// });
 
 PushNotification.createChannel(
   {
@@ -156,7 +162,11 @@ function App(props: any) {
 
     appleTrackingTransparency()
 
+    // LocalNotification()
+
   }, [])
+
+
 
   const requestTracking = React.useCallback(async () => {
     console.log('Start Request Tracking')
@@ -206,9 +216,13 @@ function App(props: any) {
   }).catch(async err => {
     console.log(err)
   });
-
-
   // otherwise, we're ready to render the app
+
+  // if (navigationRef.current) {
+  // const state = navigationRef.current?.getRootState()
+  // console.log('NAV STATE', state)
+  // }
+
   return (
     <RootStoreProvider value={rootStore}>
       <SafeAreaProvider initialSafeAreaInsets={initialWindowSafeAreaInsets}>
@@ -222,6 +236,7 @@ function App(props: any) {
           initialState={initialNavigationState}
           onStateChange={onNavigationStateChange}
         />
+        <RemotePushController />
         <ModalPortal />
       </SafeAreaProvider>
     </RootStoreProvider>

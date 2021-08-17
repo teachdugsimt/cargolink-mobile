@@ -5,12 +5,13 @@
  * will use once logged in.
  */
 import React from "react"
-import { StatusBar } from 'react-native'
+import { StatusBar, Text } from 'react-native'
 import { NavigationContainer, NavigationContainerRef, DefaultTheme } from "@react-navigation/native"
 
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import { PrimaryNavigator } from "./primary-navigator"
 import { color } from '../theme'
+// import util from 'util'
 
 // import BottomNavigator from './bottom-navigator'
 /**
@@ -65,8 +66,34 @@ export const RootNavigator = React.forwardRef<
   NavigationContainerRef,
   Partial<React.ComponentProps<typeof NavigationContainer>>
 >((props, ref) => {
+
+  // console.log('NAV STATE', state)
+  const config = {
+    screens: {
+      primaryStack: {
+        screens: {
+          home: {
+            screens: {
+              Home: {
+                screens: {
+                  jobDetail: {
+                    path: 'job/detail/:jobId',
+                  }
+                }
+              }
+            }
+          }
+        },
+      },
+    },
+  };
+  const linking = {
+    prefixes: ["cgl://"],
+    config
+  };
+
   return (
-    <NavigationContainer {...props} theme={MyTheme} ref={ref}>
+    <NavigationContainer {...props} theme={MyTheme} ref={ref} linking={linking} fallback={<Text>Loading...</Text>}>
       <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" animated={true} />
       <RootStack />
     </NavigationContainer>
