@@ -15,6 +15,7 @@ import { ModalPortal } from 'react-native-modals';
 import React, { useState, useEffect, useRef, useCallback } from "react"
 import { NavigationContainerRef } from "@react-navigation/native"
 import { SafeAreaProvider, initialWindowSafeAreaInsets } from "react-native-safe-area-context"
+
 import SplashScreen from 'react-native-splash-screen'
 import * as storage from "./utils/storage"
 import {
@@ -47,6 +48,105 @@ import {
 } from 'react-native-tracking-transparency';
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
+
+// import PushNotificationIOS from "@react-native-community/push-notification-ios";
+// import PushNotification, { Importance } from "react-native-push-notification";
+// import { LocalNotification } from "./services/push/LocalPushController";
+// import RemotePushController from "./services/push/RemotePushController";
+import messaging from '@react-native-firebase/messaging';
+
+const requestUserPermission = async () => {
+
+  const authStatus = await messaging().requestPermission({
+    provisional: true,
+  });
+
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+  __DEV__ && console.tron.log('AUTH STATUS:', enabled)
+  if (enabled) {
+    console.log('Authorization status:', authStatus);
+
+    messaging()
+      .getToken()
+      .then(async token => {
+        // let uniqueId = DeviceInfo.getUniqueId();
+        // let bundleId = DeviceInfo.getBundleId();
+        console.log("FCM Token", token)
+        // console.log("Device UUID", uniqueId)
+        // console.log("Bundle Id", bundleId)
+
+      });
+  }
+}
+// Must be outside of any component LifeCycle (such as `componentDidMount`).
+// PushNotification.configure({
+//   // (optional) Called when Token is generated (iOS and Android)
+//   onRegister: function (token) {
+//     console.log("TOKEN:", token);
+//   },
+
+//   // (required) Called when a remote is received or opened, or local notification is opened
+//   onNotification: function (notification) {
+//     console.log("NOTIFICATION:", notification);
+
+//     // process the notification
+
+//     // (required) Called when a remote is received or opened, or local notification is opened
+//     // notification.finish(PushNotificationIOS.FetchResult.NoData);
+//   },
+
+//   // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
+//   onAction: function (notification) {
+//     console.log("ACTION:", notification.action);
+//     console.log("NOTIFICATION:", notification);
+
+//     // process the action
+//   },
+
+//   // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
+//   onRegistrationError: function (err) {
+//     console.error(err.message, err);
+//   },
+
+//   // IOS ONLY (optional): default: all - Permissions to register.
+//   permissions: {
+//     alert: true,
+//     badge: true,
+//     sound: true,
+//   },
+
+//   // Should the initial notification be popped automatically
+//   // default: true
+//   popInitialNotification: true,
+
+//   invokeApp: false,
+
+//   /**
+//    * (optional) default: true
+//    * - Specified if permissions (ios) and token (android and ios) will requested or not,
+//    * - if not, you must call PushNotificationsHandler.requestPermissions() later
+//    * - if you are not using remote notification or do not have Firebase installed, use this:
+//    *     requestPermissions: Platform.OS === 'ios'
+//    */
+//   requestPermissions: true,
+// });
+
+// PushNotification.createChannel(
+//   {
+//     channelId: "new-job", // (required)
+//     channelName: "New Job", // (required)
+//     channelDescription: "A channel to notify the new job.", // (optional) default: undefined.
+//     playSound: true, // (optional) default: true
+//     soundName: "default", // (optional) See `soundName` parameter of `localNotification` function
+//     importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
+//     vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
+//   },
+//   (created) => console.log(`createChannel returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
+// );
+
 
 /**
  * This is the root component of our app.
@@ -88,7 +188,20 @@ function App(props: any) {
 
     appleTrackingTransparency()
 
+    requestUserPermission()
+
+
+    // const unsubscribe = messaging().onMessage(async remoteMessage => {
+    //   Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    // });
+
+
+    // return unsubscribe;
+
+
   }, [])
+
+
 
   const requestTracking = React.useCallback(async () => {
     console.log('Start Request Tracking')
@@ -138,9 +251,13 @@ function App(props: any) {
   }).catch(async err => {
     console.log(err)
   });
-
-
   // otherwise, we're ready to render the app
+
+  // if (navigationRef.current) {
+  // const state = navigationRef.current?.getRootState()
+  // console.log('NAV STATE', state)
+  // }
+
   return (
     <RootStoreProvider value={rootStore}>
       <SafeAreaProvider initialSafeAreaInsets={initialWindowSafeAreaInsets}>
