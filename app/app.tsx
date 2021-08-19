@@ -50,11 +50,37 @@ import {
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 
 // import PushNotificationIOS from "@react-native-community/push-notification-ios";
-import PushNotification, { Importance } from "react-native-push-notification";
-import { LocalNotification } from "./services/push/LocalPushController";
-import RemotePushController from "./services/push/RemotePushController";
-// import messaging from '@react-native-firebase/messaging';
+// import PushNotification, { Importance } from "react-native-push-notification";
+// import { LocalNotification } from "./services/push/LocalPushController";
+// import RemotePushController from "./services/push/RemotePushController";
+import messaging from '@react-native-firebase/messaging';
 
+const requestUserPermission = async () => {
+
+  const authStatus = await messaging().requestPermission({
+    provisional: true,
+  });
+
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+  __DEV__ && console.tron.log('AUTH STATUS:', enabled)
+  if (enabled) {
+    console.log('Authorization status:', authStatus);
+
+    messaging()
+      .getToken()
+      .then(async token => {
+        // let uniqueId = DeviceInfo.getUniqueId();
+        // let bundleId = DeviceInfo.getBundleId();
+        console.log("FCM Token", token)
+        // console.log("Device UUID", uniqueId)
+        // console.log("Bundle Id", bundleId)
+
+      });
+  }
+}
 // Must be outside of any component LifeCycle (such as `componentDidMount`).
 // PushNotification.configure({
 //   // (optional) Called when Token is generated (iOS and Android)
@@ -108,18 +134,18 @@ import RemotePushController from "./services/push/RemotePushController";
 //   requestPermissions: true,
 // });
 
-PushNotification.createChannel(
-  {
-    channelId: "new-job", // (required)
-    channelName: "New Job", // (required)
-    channelDescription: "A channel to notify the new job.", // (optional) default: undefined.
-    playSound: true, // (optional) default: true
-    soundName: "default", // (optional) See `soundName` parameter of `localNotification` function
-    importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
-    vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
-  },
-  (created) => console.log(`createChannel returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
-);
+// PushNotification.createChannel(
+//   {
+//     channelId: "new-job", // (required)
+//     channelName: "New Job", // (required)
+//     channelDescription: "A channel to notify the new job.", // (optional) default: undefined.
+//     playSound: true, // (optional) default: true
+//     soundName: "default", // (optional) See `soundName` parameter of `localNotification` function
+//     importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
+//     vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
+//   },
+//   (created) => console.log(`createChannel returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
+// );
 
 
 /**
@@ -162,7 +188,16 @@ function App(props: any) {
 
     appleTrackingTransparency()
 
-    // LocalNotification()
+    requestUserPermission()
+
+
+    // const unsubscribe = messaging().onMessage(async remoteMessage => {
+    //   Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    // });
+
+
+    // return unsubscribe;
+
 
   }, [])
 
@@ -236,7 +271,6 @@ function App(props: any) {
           initialState={initialNavigationState}
           onStateChange={onNavigationStateChange}
         />
-        <RemotePushController />
         <ModalPortal />
       </SafeAreaProvider>
     </RootStoreProvider>

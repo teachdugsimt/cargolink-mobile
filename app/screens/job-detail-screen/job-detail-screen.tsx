@@ -1191,6 +1191,8 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   // console.log("JSON.parse(JSON.stringify(CarriersJobStore.directions)) : ", JSON.parse(JSON.stringify(CarriersJobStore.directions)))
   return (
     <View style={CONTAINER}>
+
+
       {isLoaded && <ModalLoading size={'large'} color={color.primary} visible={isLoaded} />}
       <View style={MAP_CONTAINER}>
         {from && !!from.lat && !!from.lng && !!CarriersJobStore.directions.length &&

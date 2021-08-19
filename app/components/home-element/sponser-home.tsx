@@ -47,8 +47,8 @@ export function SponserHome(props: any) {
       </View>
       <TouchableOpacity style={[PADDING_TOP_10, { overflow: "hidden", borderRadius: 10 }]}
         onPress={() => {
-          // onCall(versatileStore.partnerPhoneNumber)
-          LocalNotification()
+          onCall(versatileStore.partnerPhoneNumber)
+          // LocalNotification()
         }}>
         <Image source={images.sponser} style={IMAGE_NEWS} resizeMode="stretch" />
       </TouchableOpacity>

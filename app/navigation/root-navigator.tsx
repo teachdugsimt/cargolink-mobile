@@ -4,13 +4,16 @@
  * and a "main" flow (which is contained in your PrimaryNavigator) which the user
  * will use once logged in.
  */
-import React from "react"
+import React, { useEffect } from "react"
 import { StatusBar, Text } from 'react-native'
 import { NavigationContainer, NavigationContainerRef, DefaultTheme } from "@react-navigation/native"
 
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import { PrimaryNavigator } from "./primary-navigator"
 import { color } from '../theme'
+import RemotePushController from "../services/push/RemotePushController"
+import messaging from '@react-native-firebase/messaging';
+
 // import util from 'util'
 
 // import BottomNavigator from './bottom-navigator'
@@ -92,10 +95,36 @@ export const RootNavigator = React.forwardRef<
     config
   };
 
+  useEffect(() => {
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      console.log(
+        'Notification caused app to open from background state:',
+        remoteMessage.notification,
+      );
+      // navigation.navigate(remoteMessage.data.type);
+    });
+
+    // Check whether an initial notification is available
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        console.log("REMOTE", remoteMessage)
+        if (remoteMessage) {
+          console.log(
+            'Notification caused app to open from quit state:',
+            remoteMessage.notification,
+          );
+          // setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
+        }
+        // setLoading(false);
+      })
+  }, [])
+
   return (
     <NavigationContainer {...props} theme={MyTheme} ref={ref} linking={linking} fallback={<Text>Loading...</Text>}>
       <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" animated={true} />
       <RootStack />
+      <RemotePushController />
     </NavigationContainer>
   )
 })
