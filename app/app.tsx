@@ -25,7 +25,7 @@ import {
   setRootNavigation,
   useNavigationPersistence,
 } from "./navigation"
-import { RootStore, RootStoreProvider, setupRootStore } from "./models"
+import { RootStore, RootStoreProvider, setupRootStore, useStores } from "./models"
 import { Alert, Linking } from 'react-native';
 import VersionCheck from 'react-native-version-check';
 import ScreenOrientation, { PORTRAIT, LANDSCAPE } from "react-native-orientation-locker/ScreenOrientation";
@@ -53,34 +53,40 @@ export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 // import PushNotification, { Importance } from "react-native-push-notification";
 // import { LocalNotification } from "./services/push/LocalPushController";
 // import RemotePushController from "./services/push/RemotePushController";
-import messaging from '@react-native-firebase/messaging';
+// import messaging from '@react-native-firebase/messaging';
 
-const requestUserPermission = async () => {
+// const requestUserPermission = async () => {
 
-  const authStatus = await messaging().requestPermission({
-    provisional: true,
-  });
+//   const { messagingStore } = useStores()
 
-  const enabled =
-    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+//   const authStatus = await messaging().requestPermission({
+//     provisional: true,
+//   });
 
-  __DEV__ && console.tron.log('AUTH STATUS:', enabled)
-  if (enabled) {
-    console.log('Authorization status:', authStatus);
+//   const enabled =
+//     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+//     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-    messaging()
-      .getToken()
-      .then(async token => {
-        // let uniqueId = DeviceInfo.getUniqueId();
-        // let bundleId = DeviceInfo.getBundleId();
-        console.log("FCM Token", token)
-        // console.log("Device UUID", uniqueId)
-        // console.log("Bundle Id", bundleId)
+//   __DEV__ && console.tron.log('AUTH STATUS:', enabled)
+//   if (enabled) {
+//     console.log('Authorization status:', authStatus);
 
-      });
-  }
-}
+//     messaging()
+//       .getToken()
+//       .then(async token => {
+//         // let uniqueId = DeviceInfo.getUniqueId();
+//         // let bundleId = DeviceInfo.getBundleId();
+//         console.log("FCM Token", token)
+//         messagingStore.addFcmToken({
+
+//         })
+
+//         // console.log("Device UUID", uniqueId)
+//         // console.log("Bundle Id", bundleId)
+
+//       });
+//   }
+// }
 // Must be outside of any component LifeCycle (such as `componentDidMount`).
 // PushNotification.configure({
 //   // (optional) Called when Token is generated (iOS and Android)
@@ -188,7 +194,7 @@ function App(props: any) {
 
     appleTrackingTransparency()
 
-    requestUserPermission()
+    // requestUserPermission()
 
 
     // const unsubscribe = messaging().onMessage(async remoteMessage => {

@@ -12,6 +12,10 @@ import { useStores } from "../../models/root-store/root-store-context";
 import ProfileStore from '../../store/profile-store/profile-store'
 import './shim.js'
 import crypto from 'crypto'
+// import messaging from '@react-native-firebase/messaging';
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import PushNotification from 'react-native-push-notification'
+import MessagingStore from '../../store/messaging-store/messaging-store';
 
 const ROOT: ViewStyle = {
   height: Dimensions.get("window").height,
@@ -81,6 +85,69 @@ const initialState = {
   visibleModal: false,
 }
 
+const requestUserPermission = async (userId: string) => {
+
+
+  PushNotification.configure({
+    // (optional) Called when Token is generated (iOS and Android)
+    onRegister: function (token) {
+      console.log("TOKEN:", token);
+
+      MessagingStore.addFcmToken({
+        token: token.token,
+        userId,
+        platform: token.os
+      })
+    },
+    // priority: "max",
+    // visibility: "public",
+    // importance: "max",
+    // (required) Called when a remote is received or opened, or local notification is opened
+    onNotification: function (notification) {
+      console.log("REMOTE NOTIFICATION:", notification);
+
+      // (required) Called when a remote is received or opened, or local notification is opened
+      notification.finish(PushNotificationIOS.FetchResult.NoData);
+    },
+
+    actions: ['ดูข้อมูล'],
+    // // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
+    onAction: function (notification) {
+      console.log("ACTION:", notification.action);
+      console.log("REMOTE NOTIFICATION:", notification);
+
+      // process the action
+    },
+
+    // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
+    onRegistrationError: function (err) {
+      console.error(err.message, err);
+    },
+
+    // IOS ONLY (optional): default: all - Permissions to register.
+    permissions: {
+      alert: true,
+      badge: true,
+      sound: true,
+    },
+
+    // Should the initial notification be popped automatically
+    // default: true
+    popInitialNotification: true,
+
+    invokeApp: false,
+
+    /**
+     * (optional) default: true
+     * - Specified if permissions (ios) and token (android and ios) will requested or not,
+     * - if not, you must call PushNotificationsHandler.requestPermissions() later
+     * - if you are not using remote notification or do not have Firebase installed, use this:
+     *     requestPermissions: Platform.OS === 'ios'
+     */
+    requestPermissions: true,
+  });
+}
+
 export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
   const navigation = useNavigation()
   const { tokenStore } = useStores()
@@ -99,6 +166,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
   }
 
   const onChangeText = (code: string) => {
+
     setValue(code)
     if (code.length === 4) {
       setState(prevState => ({
@@ -149,6 +217,11 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
         if (profile && profile.termOfService) {
           tokenStore.setToken(profile.token || null)
           tokenStore.setProfile(profile.userProfile || null)
+
+          console.log('=====================================')
+          requestUserPermission(profile.userProfile.userId)
+
+
           let screen = 'acceptPolicy'
           if (profile.termOfService.accepted) {
             ProfileStore.getProfileRequest(profile.userProfile.userId)
@@ -186,6 +259,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
       ...prevState,
       isExpired: false
     }))
+
     return () => {
       clearState()
     }

@@ -226,6 +226,7 @@ export const HomeScreen = observer((props) => {
       duration: 600,
       useNativeDriver: true,
     }).start()
+
   }, [])
 
 

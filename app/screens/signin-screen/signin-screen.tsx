@@ -285,7 +285,7 @@ export const SigninScreen = observer(function SigninScreen() {
           <Text style={LABEL} text={translate("signinScreen.enterYourPhoneNumber")} />
           <View style={MOBILE_FORM}>
             <CountryPicker
-              countryCode={countryCode}
+              countryCode={countryCode ?? "TH"}
               withFilter={true}
               withFlag={true}
               withCountryNameButton={false}
