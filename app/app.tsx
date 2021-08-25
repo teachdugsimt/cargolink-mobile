@@ -50,7 +50,7 @@ import {
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 
 // import PushNotificationIOS from "@react-native-community/push-notification-ios";
-// import PushNotification, { Importance } from "react-native-push-notification";
+import PushNotification, { Importance } from "react-native-push-notification";
 // import { LocalNotification } from "./services/push/LocalPushController";
 // import RemotePushController from "./services/push/RemotePushController";
 // import messaging from '@react-native-firebase/messaging';
@@ -140,18 +140,18 @@ export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 //   requestPermissions: true,
 // });
 
-// PushNotification.createChannel(
-//   {
-//     channelId: "new-job", // (required)
-//     channelName: "New Job", // (required)
-//     channelDescription: "A channel to notify the new job.", // (optional) default: undefined.
-//     playSound: true, // (optional) default: true
-//     soundName: "default", // (optional) See `soundName` parameter of `localNotification` function
-//     importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
-//     vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
-//   },
-//   (created) => console.log(`createChannel returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
-// );
+PushNotification.createChannel(
+  {
+    channelId: "new-job", // (required)
+    channelName: "New Job", // (required)
+    channelDescription: "A channel to notify the new job.", // (optional) default: undefined.
+    playSound: true, // (optional) default: true
+    soundName: "default", // (optional) See `soundName` parameter of `localNotification` function
+    importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
+    vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
+  },
+  (created) => console.log(`createChannel returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
+);
 
 
 /**
