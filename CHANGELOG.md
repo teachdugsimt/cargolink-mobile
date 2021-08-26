@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.3](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v2.2.2...v2.2.3) (2021-08-26)
+
+
+### Bug Fixes
+
+* ขยาย timeout ของการร้องข้อ OTP ([b06a7b5](https://git-codecommit.ap-southeast-1.amazonaws.com///commit/b06a7b546a298740e8909a1d9c674b1c21d80480))
+
 ### [2.2.2](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v2.2.1...v2.2.2) (2021-08-25)
 
 
