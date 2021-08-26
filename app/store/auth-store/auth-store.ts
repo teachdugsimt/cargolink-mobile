@@ -269,6 +269,10 @@ const AuthStore = types
       self.countryCode = countryCode
     },
 
+    clearError() {
+      self.error = null
+    }
+
   }))
   .views((self) => ({
     get getAuthData() {

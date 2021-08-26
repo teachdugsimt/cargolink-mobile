@@ -240,6 +240,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
   }
 
   const onCloseModal = () => {
+    AuthStore.clearError()
     setState(prevState => ({
       ...prevState,
       visibleModal: !prevState.visibleModal
@@ -336,9 +337,9 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
           color: color.line,
           size: 100
         }}
-        header={translate('confirmCodeScreen.codeExpiredOrIncorrect')}
+        header={AuthStore.error == 'server' ? 'Internal server error' : translate('confirmCodeScreen.codeExpiredOrIncorrect')}
         headerStyle={{ padding: spacing[3], color: color.primary }}
-        content={translate('confirmCodeScreen.confirmOTPAgianOrRequestNewOTP')}
+        content={AuthStore.error == 'server' ? 'เกิดข้อผิดพลาดในระบบ กรุณาลองใหม่ในภายหลัง' : translate('confirmCodeScreen.confirmOTPAgianOrRequestNewOTP')}
         contentStyle={{ paddingTop: spacing[3], paddingBottom: spacing[5], paddingHorizontal: spacing[7], color: color.line }}
         buttonContainerStyle={{ width: '90%' }}
         buttonComponent={RenderButtonAlert}

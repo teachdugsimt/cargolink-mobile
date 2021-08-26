@@ -254,6 +254,7 @@ export const SigninScreen = observer(function SigninScreen() {
   }
 
   const onCloseModal = () => {
+    AuthStore.clearError()
     setState(prevState => ({
       ...prevState,
       visibleModal: false//!prevState.visibleModal
@@ -327,7 +328,7 @@ export const SigninScreen = observer(function SigninScreen() {
         />
       </View>
 
-      {isError && <ModalAlert // !!isError
+      {!!AuthStore.error && <ModalAlert // !!isError
         containerStyle={{ paddingVertical: spacing[3] }}
         iconName={'bell-alert-outline'}
         iconStyle={{
