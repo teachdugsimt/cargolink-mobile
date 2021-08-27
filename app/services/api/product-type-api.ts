@@ -56,7 +56,7 @@ export class ProductTypeAPI {
   async findAll(filter: any | {}): Promise<any> {
     try {
       const response: ApiResponse<any> = await this.apisauce.get('/api/v1/master-data/product-type', filter)
-      console.log("Response :: ", response)
+      // console.log("Response :: ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
         if (problem) return problem

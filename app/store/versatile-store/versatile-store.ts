@@ -50,7 +50,7 @@ export const VersatileStore = types.model({
     self.list_loading = true
     try {
       const response = yield truckTypeApi.getTruckTypeDropdown(filter)
-      console.log("Response call api get truck type : : ", response)
+      // console.log("Response call api get truck type : : ", response)
       self.list = response.data
       self.list_loading = false
     } catch (error) {
@@ -65,7 +65,7 @@ export const VersatileStore = types.model({
     self.list_group_loading = true
     try {
       const response = yield truckTypeApi.getGroup(filter)
-      console.log("Response call api get truck type group : : ", response)
+      // console.log("Response call api get truck type group : : ", response)
       if (response.kind === 'ok') {
         self.listGroup = response.data
       } else {
@@ -111,7 +111,7 @@ export const VersatileStore = types.model({
     self.product_type_loading = true
     try {
       const response = yield productTypeApi.findAll(filter)
-      console.log("Response call api get product type : : ", response)
+      // console.log("Response call api get product type : : ", response)
       if (response.kind === 'ok') {
         self.listProductType = response.data
       } else {

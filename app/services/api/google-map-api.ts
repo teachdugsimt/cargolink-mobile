@@ -49,7 +49,7 @@ export class GoogleMapAPI {
       const KEY = process.env.MAP_API_KEY || 'AIzaSyD_xZbQQVruH1NWLqCE2kgSWBPoWH7l3Sw'
       const response: ApiResponse<any> = await this.apisauce.get(`/maps/api/directions/json?origin=${startLoc}&destination=${destinationLoc}&key=${KEY}`)
       // the typical ways to die when calling an api
-      console.log("Google map api [getDirections] : ", JSON.stringify(response))
+      // console.log("Google map api [getDirections] : ", JSON.stringify(response))
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
         if (problem) return problem

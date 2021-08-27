@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-               BuildableName = "CargoLinkMobile-tvOS.app"
-               BlueprintName = "CargoLinkMobile-tvOS"
-               ReferencedContainer = "container:CargoLinkMobile.xcodeproj">
+               BuildableName = "CargoLink-tvOS.app"
+               BlueprintName = "CargoLink-tvOS"
+               ReferencedContainer = "container:CargoLink.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "CargoLinkMobile-tvOSTests.xctest"
-               BlueprintName = "CargoLinkMobile-tvOSTests"
-               ReferencedContainer = "container:CargoLinkMobile.xcodeproj">
+               BuildableName = "CargoLink-tvOSTests.xctest"
+               BlueprintName = "CargoLink-tvOSTests"
+               ReferencedContainer = "container:CargoLink.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "CargoLinkMobile-tvOS.app"
-            BlueprintName = "CargoLinkMobile-tvOS"
-            ReferencedContainer = "container:CargoLinkMobile.xcodeproj">
+            BuildableName = "CargoLink-tvOS.app"
+            BlueprintName = "CargoLink-tvOS"
+            ReferencedContainer = "container:CargoLink.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "CargoLinkMobile-tvOS.app"
-            BlueprintName = "CargoLinkMobile-tvOS"
-            ReferencedContainer = "container:CargoLinkMobile.xcodeproj">
+            BuildableName = "CargoLink-tvOS.app"
+            BlueprintName = "CargoLink-tvOS"
+            ReferencedContainer = "container:CargoLink.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

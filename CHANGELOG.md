@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.3](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v2.2.2...v2.2.3) (2021-08-26)
+
+
+### Bug Fixes
+
+* ขยาย timeout ของการร้องข้อ OTP ([b06a7b5](https://git-codecommit.ap-southeast-1.amazonaws.com///commit/b06a7b546a298740e8909a1d9c674b1c21d80480))
+
+### [2.2.2](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v2.2.1...v2.2.2) (2021-08-25)
+
+
+### Bug Fixes
+
+* automatic add notification channel-id ([dbfe747](https://git-codecommit.ap-southeast-1.amazonaws.com///commit/dbfe74788e85b8c801b34746d916d95e31ef8540))
+
+### [2.2.1](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v2.1.0...v2.2.1) (2021-08-24)
+
+
+### Features
+
+* submit fcm token ([9c8f1e3](https://git-codecommit.ap-southeast-1.amazonaws.com///commit/9c8f1e327abff486f5006fc548de2b64a7541d60))
+
+## [2.2.0](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v2.1.0...v2.2.0) (2021-08-22)
+
+## [2.1.0](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v2.0.4...v2.1.0) (2021-08-19)
+
+### [2.0.3](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v2.0.2...v2.0.3) (2021-08-14)
+
+### [2.0.2](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v2.0.1...v2.0.2) (2021-08-13)
+
+
+### Bug Fixes
+
+* **ios:** add apple tracking transparency ([3151421](https://git-codecommit.ap-southeast-1.amazonaws.com///commit/3151421da72e4a6f7dfdcb84e01a49ded965136f))
+
+### [2.0.1](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v1.2.0...v2.0.1) (2021-08-12)
+
+## [2.0.0](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v1.2.0...v2.0.0) (2021-08-08)
+
+### [1.3.2](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v1.2.0...v1.3.2) (2021-07-27)
+
+### [1.3.1](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v1.2.0...v1.3.1) (2021-07-27)
+
 ## [1.3.0](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v1.1.15...v1.3.0) (2021-07-26)
 
 

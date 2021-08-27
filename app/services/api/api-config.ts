@@ -31,5 +31,5 @@ export interface ApiConfig {
  */
 export const DEFAULT_API_CONFIG: ApiConfig = {
   url: API_URL || "https://staging.cargolink.co.th/",
-  timeout: 10000,
+  timeout: 30000,
 }

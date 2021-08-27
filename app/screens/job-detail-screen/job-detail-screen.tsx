@@ -34,6 +34,7 @@ import { MapTruckImageName } from '../../utils/map-truck-image-name'
 import { GetTruckType } from '../../utils/get-truck-type'
 import TruckDetailStore from '../../store/free-store/truck-detail-store'
 import { API_URL } from '../../config/'
+import util from 'util'
 
 interface JobDetailProps {
   booker?: Array<any>
@@ -42,7 +43,8 @@ interface JobDetailProps {
   quotationsID?: string
   actionStatus?: string
   statusScreen?: number
-  jobStatus?: number
+  jobStatus?: number,
+  jobId?: number
 }
 
 const deviceWidht = Dimensions.get('window').width
@@ -672,6 +674,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
   const navigation = useNavigation()
 
+
   const modalizeRef = useRef<Modalize>(null);
   const [coordinates, setCoordinates] = useState([])
   const [liked, setLiked] = useState<boolean>(false)
@@ -683,6 +686,8 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   const [visibleModalReject, setvisibleModalReject] = useState<boolean>(false)
 
   console.log("CarriersJobStore.data :: ", JSON.parse(JSON.stringify(CarriersJobStore.data)))
+
+  // console.log('JOB DETAIL PROPS', util.inspect(JSON.stringify(navigation), { showHidden: true, depth: null }))
 
   const {
     id,
@@ -712,6 +717,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     actionStatus,
     statusScreen,
     jobStatus,
+    jobId
   }: JobDetailProps = route?.params || {}
 
   const { versatileStore, tokenStore } = useStores()
@@ -733,6 +739,11 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
     if (!showOwnerAccount) {
       modalizeRef.current?.open();
+    }
+
+    if (jobId) {
+      console.log('=============== GET JOB by ID', jobId)
+      CarriersJobStore.findOne(jobId)
     }
 
     return () => {
@@ -1177,9 +1188,11 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   console.log("Job Detail data :: ", JSON.parse(JSON.stringify(CarriersJobStore.data)))
   console.log('route.name', route.name)
   console.log('actionStatus', actionStatus)
-  console.log("JSON.parse(JSON.stringify(CarriersJobStore.directions)) : ", JSON.parse(JSON.stringify(CarriersJobStore.directions)))
+  // console.log("JSON.parse(JSON.stringify(CarriersJobStore.directions)) : ", JSON.parse(JSON.stringify(CarriersJobStore.directions)))
   return (
     <View style={CONTAINER}>
+
+
       {isLoaded && <ModalLoading size={'large'} color={color.primary} visible={isLoaded} />}
       <View style={MAP_CONTAINER}>
         {from && !!from.lat && !!from.lng && !!CarriersJobStore.directions.length &&

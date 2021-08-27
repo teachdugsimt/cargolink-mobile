@@ -93,7 +93,7 @@ const FIRST_MOBILE_NO: string = "0"
 
 const initialState = {
   disabled: true,
-  buttonColor: color.line,
+  buttonColor: color.primary,
   value: '',
   visibleModal: true,
 }
@@ -254,9 +254,10 @@ export const SigninScreen = observer(function SigninScreen() {
   }
 
   const onCloseModal = () => {
+    AuthStore.clearError()
     setState(prevState => ({
       ...prevState,
-      visibleModal: !prevState.visibleModal
+      visibleModal: false//!prevState.visibleModal
     }))
   }
 
@@ -268,7 +269,8 @@ export const SigninScreen = observer(function SigninScreen() {
     onPress={() => onCloseModal()}
   />)
 
-  const isError = !!(AuthStore.error && AuthStore.error === 'SERVER_ERROR')
+  // const isError = !!(AuthStore.error && AuthStore.error === 'SERVER_ERROR')
+  const isError = !!AuthStore.error
 
   return (
     <Screen style={FULL} statusBar={'dark-content'}>
@@ -278,13 +280,13 @@ export const SigninScreen = observer(function SigninScreen() {
       <View testID="Logo" style={LOGO_PART}>
         <Image source={images.logoNewYellow} style={LOGO} resizeMode={"contain"} />
       </View>
-      <ModalLoading visible={AuthStore.loading} size={'large'} />
+      <ModalLoading color={color.primary} visible={AuthStore.loading} size={'large'} />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View testID="MobileForm" style={MOBILE_FORM_PART}>
           <Text style={LABEL} text={translate("signinScreen.enterYourPhoneNumber")} />
           <View style={MOBILE_FORM}>
             <CountryPicker
-              countryCode={countryCode}
+              countryCode={countryCode ?? "TH"}
               withFilter={true}
               withFlag={true}
               withCountryNameButton={false}
@@ -326,7 +328,7 @@ export const SigninScreen = observer(function SigninScreen() {
         />
       </View>
 
-      {isError && <ModalAlert // !!isError
+      {!!AuthStore.error && <ModalAlert // !!isError
         containerStyle={{ paddingVertical: spacing[3] }}
         iconName={'bell-alert-outline'}
         iconStyle={{
@@ -335,7 +337,8 @@ export const SigninScreen = observer(function SigninScreen() {
         }}
         header={'ไม่สามารถเข้าสู่ระบบได้'}
         headerStyle={{ paddingVertical: spacing[3], color: color.primary }}
-        content={'เนื่องจากมีการปิดปรับปรุงระบบในช่วงเวลา 12.00 - 20.00 น. คุณสามารถเข้าสู่ระบบหลังช่วงเวลาดังกล่าว'}
+        // content={'เนื่องจากมีการปิดปรับปรุงระบบในช่วงเวลา 12.00 - 20.00 น. คุณสามารถเข้าสู่ระบบหลังช่วงเวลาดังกล่าว'}
+        content={'มีข้อผิดพลาดเกิดขึ้นในระบบ กรุณาลองใหม่อีกครั้งในภายหลัง'}
         contentStyle={{ paddingTop: spacing[3], paddingBottom: spacing[5], paddingHorizontal: spacing[7], color: color.line }}
         buttonContainerStyle={{ width: '90%' }}
         buttonComponent={RenderButtonAlert}
