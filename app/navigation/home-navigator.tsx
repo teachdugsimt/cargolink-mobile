@@ -15,7 +15,9 @@ import {
   VehicleDetailScreen, CheckInformationScreen, SelectProvinceScreen,
   ShipperProfileScreen, ReceivePointScreen, FeedbackScreen, SearchTruckScreen,
   PostSuccessScreen, TruckDetailScreen, SelectJobScreen, CommentScreen,
-  CarrierProfileScreen, SelectTruckScreen, AdvanceSearchJobScreen, AdvanceSearchTruckItemScreen, SelectTruckTypeScreen, SelectProductTypeScreen, AdvanceSearchTruckScreen, AdvanceSearchJobItemScreen
+  CarrierProfileScreen, SelectTruckScreen, AdvanceSearchJobScreen, AdvanceSearchTruckItemScreen, 
+  SelectTruckTypeScreen, SelectProductTypeScreen, AdvanceSearchTruckScreen, AdvanceSearchJobItemScreen,
+  JobDetailOnlyScreen
 } from "../screens"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -61,6 +63,7 @@ export type PrimaryHomeParamList = {
   selectTruckType: undefined
   selectProductType: undefined
   selectProvinceHome:  undefined
+  jobDetailOnly:  undefined
   // addAddress: undefined
 }
 
@@ -289,6 +292,11 @@ export function HomeNavigator() {
           headerLeft: () => (null),
         })}
       />
+       <Stack.Screen name="jobDetailOnly" component={JobDetailOnlyScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"jobDetailScreen.jobDetail"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })} />
     </Stack.Navigator>
   )
 }

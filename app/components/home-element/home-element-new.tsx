@@ -4,6 +4,7 @@ import { color, spacing, typography, images } from "../../theme"
 import { SectionGrid, FlatGrid } from 'react-native-super-grid';
 import { Text } from '../text/text'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { Item } from "../../screens/favorite-screen/history-call/shipper-history-list";
 const { width, height } = Dimensions.get('window')
 
 const POST_CARD: ViewStyle = {
@@ -72,47 +73,95 @@ const PADDING_RIGHT20: ViewStyle = { paddingRight: 20 }
  */
 export function GridNew(props: any) {
 
-  return (
-    <SectionGrid
-      itemDimension={(width / 2) - 60}
-      sections={props.data}
-      renderItem={({ item, index }) => {
-        if (item.id != 3)
-          return <TouchableOpacity testID={'touch-home-grid'} onPress={() => item.onPressButton()} style={[VIEW_CARD, { marginLeft: index % 2 == 0 ? 10 : 0 }]}>
-            <View style={SUB_VIEW}>
-              <View style={VIEW_IMG_MENU}>
-                <Image style={IMAGE_ICON}
-                  resizeMode='stretch' source={item.img} />
-              </View>
-              <View style={[VIEW_TEXT_MENU]}>
-                <Text tx={item.name} style={TEXT_STYLE}></Text>
-              </View>
-              <View style={BOTTOM_LINE}></View>
-            </View>
-          </TouchableOpacity>
-        else return <View testID={'touch-home-grid'} style={[POST_CARD]}>
-          <View style={SUB_VIEW_POST_CARD}>
-            <View style={VIEW_BUTTON_POSTJOB}>
-              <Text tx={"homeScreen.wannaFindCar"} preset="topic"></Text>
-              <TouchableOpacity style={BUTTON_POST_JOB} onPress={() => item.onPressButton()}>
-                <Text tx={"homeScreen.postJobNow"} preset="topic" />
-                <Ionicons name="chevron-forward" size={18} style={PADDING_TOP25} />
-              </TouchableOpacity>
-            </View>
-            <View style={PADDING_RIGHT20}>
-              <Image style={IMAGE_ICON}
-                resizeMode='stretch' source={item.img} />
-            </View>
-            {/* <View style={VIEW_IMG_MENU}>
-              
-            </View>
-            <View style={VIEW_TEXT_MENU}>
-              <Text tx={item.name} style={TEXT_STYLE}></Text>
-            </View> */}
+  const _renderNormalBox = (item, index) => (
+    <View key={`grid-normal-box-${index}`} style={{ flex: 1, marginRight: index % 2 == 0 ? 10 : 20 }}>
+      <TouchableOpacity testID={'touch-home-grid'} onPress={() => item.onPressButton()} style={[VIEW_CARD, { marginLeft: index % 2 == 0 ? 10 : 0 }]}>
+        <View style={SUB_VIEW}>
+          <View style={VIEW_IMG_MENU}>
+            <Image style={IMAGE_ICON}
+              resizeMode='stretch' source={item.img} />
           </View>
+          <View style={[VIEW_TEXT_MENU]}>
+            <Text tx={item.name} style={TEXT_STYLE}></Text>
+          </View>
+          <View style={BOTTOM_LINE}></View>
         </View>
-      }}
-    />
+      </TouchableOpacity>
+    </View>
+  )
+
+  const _renderLargeBox = (item, index) => (
+    <View key={`grid-large-box-${index}`} testID={'touch-home-grid'} style={[POST_CARD]}>
+      <View style={SUB_VIEW_POST_CARD}>
+        <View style={VIEW_BUTTON_POSTJOB}>
+          <Text tx={"homeScreen.wannaFindCar"} preset="topic"></Text>
+          <TouchableOpacity style={BUTTON_POST_JOB} onPress={() => item.onPressButton()}>
+            <Text tx={"homeScreen.postJobNow"} preset="topic" />
+            <Ionicons name="chevron-forward" size={18} style={PADDING_TOP25} />
+          </TouchableOpacity>
+        </View>
+        <View style={PADDING_RIGHT20}>
+          <Image style={IMAGE_ICON}
+            resizeMode='stretch' source={item.img} />
+        </View>
+      </View>
+    </View>
+  )
+
+  return (
+    <View style={{ flex: 1 }}>
+      {props.data.map((e, i) => {
+        if (i == 0)
+          return <View key={'main-view-normal-menu-' + i} style={{ flex: 1, flexDirection: 'row', width: '100%', margin: 10 }}>
+            {e.data.map((item, index) => _renderNormalBox(item, index))}
+          </View>
+        else return <View key={'main-view-large-menu-' + i} style={{ flex: 1, width: '100%', margin: 10 }}>
+          {e.data.map((item, index) => _renderLargeBox(item, index))}
+        </View>
+      })}
+    </View>
+
+
+    // <SectionGrid
+    //   scrollEnabled={false}
+    //   renderScrollComponent={() => <></>}
+    //   nestedScrollEnabled={false}
+    //   showsVerticalScrollIndicator={false}
+    //   showsHorizontalScrollIndicator={false}
+    //   disableScrollViewPanResponder={true}
+    //   itemDimension={(width / 2) - 60}
+    //   sections={props.data}
+    //   renderItem={({ item, index }) => {
+    //     if (item.id != 3)
+    //       return <TouchableOpacity testID={'touch-home-grid'} onPress={() => item.onPressButton()} style={[VIEW_CARD, { marginLeft: index % 2 == 0 ? 10 : 0 }]}>
+    //         <View style={SUB_VIEW}>
+    //           <View style={VIEW_IMG_MENU}>
+    //             <Image style={IMAGE_ICON}
+    //               resizeMode='stretch' source={item.img} />
+    //           </View>
+    //           <View style={[VIEW_TEXT_MENU]}>
+    //             <Text tx={item.name} style={TEXT_STYLE}></Text>
+    //           </View>
+    //           <View style={BOTTOM_LINE}></View>
+    //         </View>
+    //       </TouchableOpacity>
+    //     else return <View testID={'touch-home-grid'} style={[POST_CARD]}>
+    //       <View style={SUB_VIEW_POST_CARD}>
+    //         <View style={VIEW_BUTTON_POSTJOB}>
+    //           <Text tx={"homeScreen.wannaFindCar"} preset="topic"></Text>
+    //           <TouchableOpacity style={BUTTON_POST_JOB} onPress={() => item.onPressButton()}>
+    //             <Text tx={"homeScreen.postJobNow"} preset="topic" />
+    //             <Ionicons name="chevron-forward" size={18} style={PADDING_TOP25} />
+    //           </TouchableOpacity>
+    //         </View>
+    //         <View style={PADDING_RIGHT20}>
+    //           <Image style={IMAGE_ICON}
+    //             resizeMode='stretch' source={item.img} />
+    //         </View>
+    //       </View>
+    //     </View>
+    //   }}
+    // />
 
   )
 }

@@ -14,8 +14,9 @@ import './shim.js'
 import crypto from 'crypto'
 
 const ROOT: ViewStyle = {
-  height: Dimensions.get("window").height,
-  paddingTop: 50,
+  // height: Dimensions.get("window").height,
+  height: '100%',
+  paddingTop: 0,
   backgroundColor: color.backgroundWhite
 }
 const CODE_FIELD_ROOT: TextStyle = {
