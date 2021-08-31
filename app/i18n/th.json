@@ -520,5 +520,7 @@
     "truckAmountRequired": "จำนวนรถที่ต้องการ",
     "allProductType": "ประเภทสินค้าทั้งหมด",
     "ton": "ตัน"
-  }
+  },
+  "registerCargolinkPremium": "สมัครคาร์โก้ลิ้งค์พรีเมียม",
+  "acceptPremiumConsent": "ยอมรับเงื่อนไขการใช้บริการ"
 }

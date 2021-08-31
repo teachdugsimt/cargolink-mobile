@@ -15,7 +15,7 @@ import {
   VehicleDetailScreen, CheckInformationScreen, SelectProvinceScreen,
   ShipperProfileScreen, ReceivePointScreen, FeedbackScreen, SearchTruckScreen,
   PostSuccessScreen, TruckDetailScreen, SelectJobScreen, CommentScreen,
-  CarrierProfileScreen, SelectTruckScreen, AdvanceSearchJobScreen, AdvanceSearchTruckItemScreen, SelectTruckTypeScreen, SelectProductTypeScreen, AdvanceSearchTruckScreen, AdvanceSearchJobItemScreen
+  CarrierProfileScreen, SelectTruckScreen, AdvanceSearchJobScreen, AdvanceSearchTruckItemScreen, SelectTruckTypeScreen, SelectProductTypeScreen, AdvanceSearchTruckScreen, AdvanceSearchJobItemScreen, PremiumDetailScreen, PremiumConsentScreen, PremiumRegisterScreen
 } from "../screens"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -60,8 +60,11 @@ export type PrimaryHomeParamList = {
   advanceSearchJobItem: undefined
   selectTruckType: undefined
   selectProductType: undefined
-  selectProvinceHome:  undefined
+  selectProvinceHome: undefined
   // addAddress: undefined
+  premiumDetail: undefined
+  premiumConsent: undefined
+  premiumRegister: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -269,7 +272,7 @@ export function HomeNavigator() {
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
       />
-       <Stack.Screen name="selectProvinceHome" component={SelectProvinceScreen}
+      <Stack.Screen name="selectProvinceHome" component={SelectProvinceScreen}
         options={({ navigation, route }) => ({
           // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
           headerCenter: () => <HeaderCenter tx={"uploadVehicleScreen.workZone"} />,
@@ -289,6 +292,21 @@ export function HomeNavigator() {
           headerLeft: () => (null),
         })}
       />
+
+      <Stack.Screen name="premiumDetail" component={PremiumDetailScreen}
+        options={() => ({
+          headerCenter: () => <HeaderCenter text={"Cargolink Premium"} />
+        })} />
+
+      <Stack.Screen name="premiumConsent" component={PremiumConsentScreen}
+        options={() => ({
+          headerCenter: () => <HeaderCenter text={"ข้อตกลงการใช้บริการ"} />
+        })} />
+
+      <Stack.Screen name="premiumRegister" component={PremiumRegisterScreen}
+        options={() => ({
+          headerCenter: () => <HeaderCenter text={"สมัครใช้บริการ"} />
+        })} />
     </Stack.Navigator>
   )
 }

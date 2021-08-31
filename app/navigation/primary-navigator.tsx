@@ -9,7 +9,8 @@ import React from "react"
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import {
   ConfirmCodeScreen, AcceptPolicyScreen, SigninScreen, LocationPickerScreen,
-  AddAddressScreen
+  AddAddressScreen,
+  PremiumDetailScreen
 } from "../screens"
 import { Text, HeaderCenter, HeaderLeft } from "../components"
 import BottomNavigator from './bottom-navigator'
@@ -32,6 +33,7 @@ export type PrimaryParamList = {
   home: undefined
   locationPicker: undefined
   addAddress: undefined
+  // premiumDetail: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -62,6 +64,7 @@ export function PrimaryNavigator() {
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
       />
+
     </Stack.Navigator>
   )
 }

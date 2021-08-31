@@ -31,7 +31,7 @@ export const typography = {
 
   mediumIcon: 20,
 
-
+  bigText: 30,
   menu: 20,
   mainTitle: 18,
   title: 16,

@@ -258,6 +258,14 @@ export const HomeScreen = observer((props) => {
           </View>
         </View>
 
+        {/* <View style={{
+          height: 90, backgroundColor: 'white',
+          marginHorizontal: 20, marginVertical: 10,
+          borderRadius: 15, padding: 20
+        }}>
+          <Text style={{ fontSize: 18 }}>เข้าร่วมเป็นคู่ค้ากับเรา</Text>
+        </View> */}
+
         <SponserHome />
 
         <ModalLoading
