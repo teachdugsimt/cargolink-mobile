@@ -9,7 +9,7 @@ import React from "react"
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import {
   ConfirmCodeScreen, AcceptPolicyScreen, SigninScreen, LocationPickerScreen,
-  AddAddressScreen
+  AddAddressScreen, UpdateProfileScreen
 } from "../screens"
 import { Text, HeaderCenter, HeaderLeft } from "../components"
 import BottomNavigator from './bottom-navigator'
@@ -32,11 +32,12 @@ export type PrimaryParamList = {
   home: undefined
   locationPicker: undefined
   addAddress: undefined
+  updateProfileWithoutBottomTab: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
 const Stack = createNativeStackNavigator<PrimaryParamList>()
-
+const initProps: any = { fromOtp: true }
 export function PrimaryNavigator() {
 
   return (
@@ -53,6 +54,12 @@ export function PrimaryNavigator() {
       <Stack.Screen name="acceptPolicy" component={AcceptPolicyScreen} />
       <Stack.Screen name="home" component={BottomNavigator} />
       <Stack.Screen name="locationPicker" component={LocationPickerScreen} />
+      <Stack.Screen name="updateProfileWithoutBottomTab"
+        options={({ navigation, route }) => ({
+          headerShown: true,
+          headerCenter: () => <HeaderCenter tx={"profileScreen.profile"} />,
+          headerLeft: () => (<></>),
+        })} component={UpdateProfileScreen} initialParams={initProps} />
       <Stack.Screen
         name="addAddress"
         component={AddAddressScreen}

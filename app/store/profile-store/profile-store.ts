@@ -11,7 +11,8 @@ const Profile = types.model({
   "approveStatus": types.maybeNull(types.string),
   "avatar": types.maybeNull(types.string),
   "id": types.maybeNull(types.number),
-  "userId": types.maybeNull(types.string)
+  "userId": types.maybeNull(types.string),
+  "userType": types.maybeNull(types.number),
 })
 
 const TruckSummary = types.model({
@@ -254,6 +255,8 @@ const ProfileStore = types.model({
     data_profile['phone-number'] = self.data?.phoneNumber || ''
     data_profile['email'] = self.data?.email || ''
     data_profile['avatar'] = self.data?.avatar || ''
+    data_profile['avatar'] = self.data?.avatar || ''
+    data_profile['user-type'] = self.data?.userType || ''
     return data_profile
   }
 }))

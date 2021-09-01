@@ -1,6 +1,7 @@
 import { types, flow, cast } from "mobx-state-tree"
 import { AuthAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
+import ProfileStore from "../profile-store/profile-store"
 const apiAuth = new AuthAPI()
 
 const InvalidPhone = "Invalid entry for your phone number"
@@ -109,10 +110,11 @@ const OTPVerify = types.model({
       id: types.maybeNull(types.string),
       userId: types.maybeNull(types.string),
       companyName: types.maybeNull(types.string),
-      fullname: types.maybeNull(types.string),
+      fullName: types.maybeNull(types.string),
       mobileNo: types.maybeNull(types.string),
       email: types.maybeNull(types.string),
-      avatar: types.maybeNull(types.string)
+      avatar: types.maybeNull(types.string),
+      userType: types.maybeNull(types.number)
       // language: types.maybeNull(types.string),
     }),
   ),
@@ -202,6 +204,7 @@ const AuthStore = types
         const response = yield apiAuth.verifyOTP(data)
         console.log("response otpVerifyRequest :>> ", response)
         if (response.kind === 'ok') {
+          __DEV__ && console.tron.log("OtpVerify.Data : ", response.data)
           self.profile = response.data || {}
           self.policyData = response.data?.termOfService || {}
           self.error = '' // Clear error when signin success

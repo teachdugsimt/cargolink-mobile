@@ -1,3 +1,5 @@
+import { ViewStyle } from "react-native";
+
 export interface NormalDropdownProps {
   items?: Array<Object>
   value?: string
@@ -6,4 +8,6 @@ export interface NormalDropdownProps {
   onChange?: any
   placeholder?: string
   underline?: boolean | number
+  border?: boolean
+  containerStyle?: ViewStyle
 }

@@ -92,7 +92,9 @@
     "add": "add ",
     "round": "Round",
     "ton": "Ton",
-    "anonymous": "Anonymous"
+    "anonymous": "Anonymous",
+    "userType": "user type",
+    "userTypeSelect": "please select user type"
   },
   "commentScreen": {
     "yourComment": "Your Comment",
@@ -143,6 +145,7 @@
     "findCar": "Find Trucks",
     "carriers": "Carriers",
     "shippers": "Shippers",
+    "both": "Both",
     "wannaFindCar": "You want to find truck?",
     "postJobNow": "Post job now"
   },

@@ -4,7 +4,7 @@ import {
   SafeAreaView, Dimensions, Image, KeyboardAvoidingView, Alert, Platform, PermissionsAndroid
 } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Text, TextInputTheme, RoundedButton, ModalLoading, Screen } from "../../components"
+import { Text, TextInputTheme, RoundedButton, ModalLoading, Screen, NormalDropdown } from "../../components"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { useForm, Controller } from "react-hook-form";
@@ -18,6 +18,7 @@ import { AlertMessage } from "../../utils/alert-form";
 import { translate } from "../../i18n"
 import AuthStore from "../../store/auth-store/auth-store"
 import { API_URL } from '../../config/'
+import { useRoute } from '@react-navigation/core';
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -55,6 +56,7 @@ const CONTAINER_MODAL: ViewStyle = {
   ...FULL,
   ...WIDTH_WITH_MARGIN
 }
+const RED_COLOR: ViewStyle = { color: color.red }
 const MARGIN_TOP_EXTRA: ViewStyle = { marginTop: 20 }
 const BORDER_MODAL_BUTTON: ViewStyle = {
   borderBottomWidth: 1,
@@ -108,6 +110,11 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
   const [selectCapture, setSelectCapture] = useState(false)
   const [imageProfile, setImageProfile] = useState(null)
   const { tokenStore } = useStores()
+
+  const route = useRoute()
+  const { fromOtp } = route?.params ? JSON.parse(JSON.stringify(route?.params)) : { fromOtp: null }
+
+  __DEV__ && console.tron.logImportant(`FROM OTP : ${fromOtp}` || 'NO FROM OTP')
 
   const _uploadFile = (response) => {
     __DEV__ && console.tron.log("Response File before upload :: ", response)
@@ -239,6 +246,7 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
   const { control, handleSubmit, errors } = useForm({
     defaultValues: ProfileStore.ProfileData
   });
+  
   const onSubmit = (data) => {
     __DEV__ && console.tron.log("Raw data :: ", data)
     let tmp_profile_store = JSON.parse(JSON.stringify(ProfileStore.data))
@@ -247,18 +255,24 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
       "phoneNumber": data["phone-number"],
       "avatar": null,
       "email": data["email"],
-      "userId": tokenStore.profile.userId
+      "userId": tokenStore.profile.userId,
+      "userType": data["user-type"]
     }
     if (imageProfile) finalData['avatar'] = ProfileStore?.data_upload_picture?.token || tmp_profile_store.avatar
     ProfileStore.updateProfile(finalData)
   }
 
   useEffect(() => {
+    // if (fromOtp) ProfileStore.getProfileRequest(fromOtp)
     return () => {
       ProfileStore.clearData()
       ProfileStore.getProfileRequest(AuthStore.profile.userProfile.userId)
     }
   }, [])
+
+  useEffect(() => {
+    // if (fromOtp) ProfileStore.getProfileRequest("DLG448ZX")
+  }, [fromOtp])
 
   useEffect(() => {
     let tmp_update = JSON.parse(JSON.stringify(ProfileStore.data_update_profile))
@@ -284,6 +298,10 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
   let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
   __DEV__ && console.tron.logImportant("Profile Data :: ", tmp_profile)
 
+  const role_array = [{ label: translate('homeScreen.carriers'), value: 0 },
+  { label: translate('homeScreen.shippers'), value: 1 },
+  { label: translate('homeScreen.both'), value: 2 }]
+
   return (
     <View testID="UpdateProfileScreen" style={FULL}>
       <Screen preset={'scroll'} unsafe>
@@ -297,7 +315,7 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
 
           <ModalLoading
             containerStyle={{ zIndex: 2 }}
-            size={'large'} color={color.primary} visible={ProfileStore.loading_update_profile} />
+            size={'large'} color={color.primary} visible={(ProfileStore.loading || ProfileStore.loading_update_profile)} />
 
           <Modal
             visible={selectCapture}
@@ -417,6 +435,29 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
                     name={"email"}
                     defaultValue=""
                   />
+                </View>
+
+                <View style={PADDING_TOP_10}>
+                  <Text tx={"common.userType"} />
+                  <Controller
+                    control={control}
+                    render={({ onChange, onBlur, value }) => (
+                      <NormalDropdown
+                        key={'common.userTypeSelect'}
+                        value={value || ""}
+                        onChange={onChange}
+                        items={role_array}
+                        placeholder={"common.userTypeSelect"}
+                        border={true}
+                        containerStyle={{ height: 65, paddingHorizontal: 0, paddingVertical: 10 }}
+                      />
+                    )}
+                    key={'dropdown-user-type'}
+                    name={"user-type"}
+                    rules={{ required: true }}
+                    defaultValue=""
+                  />
+                  {errors['user-type'] && <Text style={RED_COLOR} tx={"common.userTypeSelect"} />}
                 </View>
 
               </View>

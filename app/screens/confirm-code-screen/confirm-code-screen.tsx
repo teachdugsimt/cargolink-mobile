@@ -202,6 +202,46 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
     }))
   }
 
+  useEffect(() => {
+    let profile = JSON.parse(JSON.stringify(AuthStore.profile))
+    __DEV__ && console.tron.log("OTP VERIFY DATA PROFILE :: ", AuthStore.profile)
+    if (profile && profile.termOfService) {
+      tokenStore.setToken(profile.token || null)
+      tokenStore.setProfile(profile.userProfile || null)
+
+      console.log('=====================================')
+      requestUserPermission(profile.userProfile.userId)
+
+      let screen = 'acceptPolicy'
+      let propsOtp: any = {}
+      if (profile.termOfService.accepted) {
+        if (!profile.userProfile.fullName || !profile.userProfile.userType) {
+          ProfileStore.getProfileRequest(profile.userProfile.userId)
+          screen = 'updateProfileWithoutBottomTab'
+          propsOtp.fromOtp = profile.userProfile.userId
+        }
+        else {
+          ProfileStore.getProfileRequest(profile.userProfile.userId)
+          screen = 'home'
+        }
+      }
+      else { // don't ever accept policy
+        if (!profile.userProfile.fullName || !profile.userProfile.userType) {
+          ProfileStore.getProfileRequest(profile.userProfile.userId)
+          screen = 'updateProfileWithoutBottomTab'
+          propsOtp.fromOtp = profile.userProfile.userId
+        }
+      }
+      clearState()
+      navigation.navigate(screen)
+    }
+    setState(prevState => ({
+      ...prevState,
+      isLoading: false,
+      visibleModal: true,
+    }))
+  }, [JSON.stringify(AuthStore.profile)])
+
   const onPress = (value: string) => {
     setState(prevState => ({
       ...prevState,
@@ -212,32 +252,46 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
       countryCode: AuthStore.countryCode,
       phoneNumber: AuthStore.phoneNumber
     })
-      .then(() => {
-        let profile = JSON.parse(JSON.stringify(AuthStore.profile))
-        __DEV__ && console.tron.log(profile)
-        if (profile && profile.termOfService) {
-          tokenStore.setToken(profile.token || null)
-          tokenStore.setProfile(profile.userProfile || null)
+    // .then(() => {
+    //   let profile = JSON.parse(JSON.stringify(AuthStore.profile))
+    //   __DEV__ && console.tron.log("OTP VERIFY DATA PROFILE :: ", AuthStore.profile)
+    //   if (profile && profile.termOfService) {
+    //     tokenStore.setToken(profile.token || null)
+    //     tokenStore.setProfile(profile.userProfile || null)
 
-          console.log('=====================================')
-          requestUserPermission(profile.userProfile.userId)
+    //     console.log('=====================================')
+    //     requestUserPermission(profile.userProfile.userId)
 
-
-          let screen = 'acceptPolicy'
-          if (profile.termOfService.accepted) {
-            ProfileStore.getProfileRequest(profile.userProfile.userId)
-            screen = 'home'
-          }
-          clearState()
-          navigation.navigate(screen)
-          return;
-        }
-        setState(prevState => ({
-          ...prevState,
-          isLoading: false,
-          visibleModal: true,
-        }))
-      })
+    //     let screen = 'acceptPolicy'
+    //     let propsOtp: any = {}
+    //     if (profile.termOfService.accepted) {
+    //       if (!profile.userProfile.fullName || !profile.userProfile.userType) {
+    //         ProfileStore.getProfileRequest(profile.userProfile.userId)
+    //         screen = 'updateProfileWithoutBottomTab'
+    //         propsOtp.fromOtp = profile.userProfile.userId
+    //       }
+    //       else {
+    //         ProfileStore.getProfileRequest(profile.userProfile.userId)
+    //         screen = 'home'
+    //       }
+    //     }
+    //     else { // don't ever accept policy
+    //       if (!profile.userProfile.fullName || !profile.userProfile.userType) {
+    //         ProfileStore.getProfileRequest(profile.userProfile.userId)
+    //         screen = 'updateProfileWithoutBottomTab'
+    //         propsOtp.fromOtp = profile.userProfile.userId
+    //       }
+    //     }
+    //     clearState()
+    //     navigation.navigate(screen)
+    //     return;
+    //   }
+    //   setState(prevState => ({
+    //     ...prevState,
+    //     isLoading: false,
+    //     visibleModal: true,
+    //   }))
+    // })
   }
 
   const onCloseModal = () => {
@@ -283,7 +337,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
 
   return (
     <Screen style={ROOT} statusBar={'dark-content'}>
-      <ModalLoading size={'large'} color={color.primary} visible={isLoading || (AuthStore.loading || AuthStore.loadingApple)} />
+      <ModalLoading size={'large'} color={color.primary} visible={isLoading || (AuthStore.loading || AuthStore.loadingApple || ProfileStore.loading)} />
 
       <TouchableOpacity style={{ paddingLeft: spacing[4] + spacing[1] }} onPress={() => navigation.goBack()}>
         <HeaderLeft onLeftPress={() => navigation.goBack()} />
