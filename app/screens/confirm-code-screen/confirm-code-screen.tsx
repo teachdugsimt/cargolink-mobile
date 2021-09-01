@@ -213,24 +213,14 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
       requestUserPermission(profile.userProfile.userId)
 
       let screen = 'acceptPolicy'
-      let propsOtp: any = {}
       if (profile.termOfService.accepted) {
-        if (!profile.userProfile.fullName || !profile.userProfile.userType) {
-          ProfileStore.getProfileRequest(profile.userProfile.userId)
+        if (!profile.userProfile.fullName || !profile.userProfile.userType)
           screen = 'updateProfileWithoutBottomTab'
-          propsOtp.fromOtp = profile.userProfile.userId
-        }
-        else {
-          ProfileStore.getProfileRequest(profile.userProfile.userId)
-          screen = 'home'
-        }
+        else screen = 'home'
       }
       else { // don't ever accept policy
-        if (!profile.userProfile.fullName || !profile.userProfile.userType) {
-          ProfileStore.getProfileRequest(profile.userProfile.userId)
+        if (!profile.userProfile.fullName || !profile.userProfile.userType)
           screen = 'updateProfileWithoutBottomTab'
-          propsOtp.fromOtp = profile.userProfile.userId
-        }
       }
       clearState()
       navigation.navigate(screen)

@@ -255,7 +255,6 @@ const ProfileStore = types.model({
     data_profile['phone-number'] = self.data?.phoneNumber || ''
     data_profile['email'] = self.data?.email || ''
     data_profile['avatar'] = self.data?.avatar || ''
-    data_profile['avatar'] = self.data?.avatar || ''
     data_profile['user-type'] = self.data?.userType || ''
     return data_profile
   }

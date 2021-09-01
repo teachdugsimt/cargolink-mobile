@@ -284,6 +284,16 @@ const AuthStore = types
     get getOtpVerifyData() {
       return self.profile
     },
+    get ProfileData() {
+      let data_profile = {}
+      data_profile['name-lastname'] = self.profile.userProfile?.fullName || ''
+      data_profile['phone-number'] = self.profile.userProfile?.mobileNo || ''
+      data_profile['email'] = self.profile.userProfile?.email || ''
+      data_profile['avatar'] = self.profile.userProfile?.avatar || ''
+      data_profile['user-type'] = self.profile.userProfile?.userType || ''
+      data_profile['accept-policies'] = self.profile.termOfService.accepted
+      return data_profile
+    }
   }))
   .create({
     // IMPORTANT !!
