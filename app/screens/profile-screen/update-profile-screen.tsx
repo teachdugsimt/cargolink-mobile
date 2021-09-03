@@ -258,18 +258,30 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
       "userId": tokenStore.profile.userId,
       "userType": data["user-type"]
     }
-    if (imageProfile) finalData['avatar'] = ProfileStore?.data_upload_picture?.token || tmp_profile_store.avatar
+    if (!fromOtp && imageProfile) finalData['avatar'] = ProfileStore?.data_upload_picture?.token || tmp_profile_store.avatar
+    else if (fromOtp && imageProfile) {
+      let tmpProfileFromOtp: any = AuthStore.ProfileData
+      finalData['avatar'] = ProfileStore?.data_upload_picture?.token || tmpProfileFromOtp.avatar
+    }
     ProfileStore.updateProfile(finalData)
 
-    if(fromOtp) {
+    if (fromOtp) {
       let profileFromOtp = AuthStore.ProfileData
-      if(profileFromOtp['accept-policies']) navigation.navigate('Home', { screen: 'home' })
+      if (profileFromOtp['accept-policies']) navigation.navigate('Home', { screen: 'home' })
       else navigation.navigate('acceptPolicy')
     }
   }
 
   useEffect(() => {
     // if (fromOtp) ProfileStore.getProfileRequest(fromOtp)
+    let tmp_profile: any = AuthStore.ProfileData
+    if (tmp_profile && tmp_profile.avatar) setImageProfile({
+      uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + tmp_profile.avatar,
+      method: 'GET',
+      headers: {
+        Accept: 'image/*'
+      },
+    })
     return () => {
       ProfileStore.clearData()
       ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore.profile.userId)

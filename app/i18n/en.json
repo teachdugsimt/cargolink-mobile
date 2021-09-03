@@ -228,6 +228,8 @@
     "confirmRemoveJob": "Confirm delete of this job."
   },
   "uploadVehicleScreen": {
+    "uploadVehicleDocument": "Upload vehicle document",
+    "vehicleDocument": "Vehicle document",
     "placeholderRegistration": "xx - xxxx",
     "addVehicle": "Add Vehicle",
     "selectVehicleType": "Select your truck type",

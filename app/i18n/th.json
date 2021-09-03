@@ -230,6 +230,8 @@
     "confirmRemoveJob": "ยืนยันการลบงานนี้"
   },
   "uploadVehicleScreen": {
+    "uploadVehicleDocument": "อัพโหลดเอกสารรถ",
+    "vehicleDocument": "เอกสารรถ",
     "placeholderRegistration": "xx - xxxx",
     "addVehicle": "เพิ่มรถ",
     "selectVehicleType": "ประเภทรถที่ต้องการ",
