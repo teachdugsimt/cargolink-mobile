@@ -36,7 +36,8 @@ import ScreenOrientation, { PORTRAIT, LANDSCAPE } from "react-native-orientation
 // stack navigation, use `createNativeStackNavigator` in place of `createStackNavigator`:
 // https://github.com/kmagiera/react-native-screens#using-native-stack-navigator
 import { enableScreens } from "react-native-screens"
-import 'moment/locale/th';
+// import moment from 'moment'
+// import 'moment/locale/th';
 import "./i18n"
 import { translate } from "./i18n";
 enableScreens()
