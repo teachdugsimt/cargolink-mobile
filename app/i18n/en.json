@@ -256,6 +256,8 @@
     "reqHeight": "please select truck height"
   },
   "profileScreen": {
+    "idCard": "Id card",
+    "uploadIdCard": "Please upload your id card",
     "checkPickupDate": "please check pickup-loading date",
     "everLogin": "You are not logged in ",
     "loginRegister": " Login / Register",

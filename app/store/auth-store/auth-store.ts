@@ -113,8 +113,9 @@ const OTPVerify = types.model({
       fullName: types.maybeNull(types.string),
       mobileNo: types.maybeNull(types.string),
       email: types.maybeNull(types.string),
+      attachCodeCitizenId: types.maybeNull(types.string),
       avatar: types.maybeNull(types.string),
-      userType: types.maybeNull(types.number)
+      userType: types.maybeNull(types.string)
       // language: types.maybeNull(types.string),
     }),
   ),
@@ -291,7 +292,8 @@ const AuthStore = types
       data_profile['email'] = self.profile.userProfile?.email || ''
       data_profile['avatar'] = self.profile.userProfile?.avatar || ''
       data_profile['user-type'] = self.profile.userProfile?.userType || ''
-      data_profile['accept-policies'] = self.profile.termOfService.accepted
+      data_profile['id-card'] = self.profile.userProfile?.attachCodeCitizenId || ''
+      data_profile['accept-policies'] = self.profile.termOfService?.accepted || ''
       return data_profile
     }
   }))

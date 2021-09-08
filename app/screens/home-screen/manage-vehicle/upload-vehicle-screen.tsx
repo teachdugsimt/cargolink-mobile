@@ -463,6 +463,12 @@ export const UploadVehicleScreen = observer(() => {
     return;
   }
 
+  const getDocumentAttachCode = (document) => {
+    let result: string[] = []
+    Object.keys(document).map(e => result.push(document[e]))
+    return result
+  }
+
   const [submitReady, setsubmitReady] = useState(false)
   const onSubmit = data => {
     let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
@@ -483,7 +489,7 @@ export const UploadVehicleScreen = observer(() => {
       _alert(translate('uploadVehicleScreen.region'))
       return;
     }
-
+    const statusAction = JSON.parse(JSON.stringify(StatusStore.status))
     const data_mock_call: any = {
       carrierId: tokenStore.profile.userId,
       truckType: data['vehicle-type'],
@@ -493,7 +499,7 @@ export const UploadVehicleScreen = observer(() => {
 
       tipper: data['dump-field'] && data['dump-field'] == 1 ? true : false,
       registrationNumber: [],
-      document: vehicleDoc && Object.keys(vehicleDoc).length > 0 ?
+      document: vehicleDoc && Object.keys(vehicleDoc).length > 0 && statusAction != "edit" ?
         [UploadFileStore.uploadVehicleDocument.token] : null,
       truckPhotos: {
         front: null,
@@ -520,11 +526,16 @@ export const UploadVehicleScreen = observer(() => {
     __DEV__ && console.tron.log("Upload file data onSubmit Form :: ", uploadData)
     __DEV__ && console.log("Upload file data onSubmit Form :: ", uploadData)
     // ** EDIT 2
-    const statusAction = JSON.parse(JSON.stringify(StatusStore.status))
-    if (statusAction && statusAction == "edit") {
 
+    if (statusAction && statusAction == "edit") {
       // DELETE ZONE - NEW ZONE
       let initData = JSON.parse(JSON.stringify(MyVehicleStore.data))
+      let initUploadDocument = JSON.parse(JSON.stringify(UploadFileStore.uploadVehicleDocument))
+      console.log("")
+      data_mock_call['document'] = (!initUploadDocument || Object.keys(initUploadDocument).length < 1) ?
+        (initData.document && Object.keys(initData.document).length > 0 ? [initData.document["0"]] :
+          null) : (initUploadDocument.attachCode ? [initUploadDocument.attachCode] : null)
+
       data_mock_call.id = initData.id
       let objectTmpImage = {
         front: fileFront.uri ? fileFront.uri : null,
@@ -794,7 +805,7 @@ export const UploadVehicleScreen = observer(() => {
         })
       }
 
-      if(initData.document) setvehicleDoc({
+      if (initData.document) setvehicleDoc({
         uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + initData.document['0'],
         method: 'GET',
         headers: {
@@ -849,6 +860,7 @@ export const UploadVehicleScreen = observer(() => {
 
     return () => {
       UploadFileStore.deleteUploadData()
+      UploadFileStore.deleteUploadDocument()
       initForm = 0
       settextInput([])
       setrenderNew(false)

@@ -66,6 +66,7 @@ export const images = {
   facebookLogo: require("../images/facebookbanner4x.png"),
   sponser: require("../images/sponser/sponser.jpg"),
   vehicleDocument:  require("../images/vehicle-document2.png"),
+  idCard:  require("../images/id_card_holder.png"),
 
   "-1many": require("../images/product-type-icons/-1many.png"),
   "1construction": require("../images/product-type-icons/1construction.png"),

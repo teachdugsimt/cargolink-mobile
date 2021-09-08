@@ -94,7 +94,7 @@ const UploadFileStore = types
       self.data = cast([])
     },
     deleteUploadDocument() {
-      self.uploadVehicleDocument = cast ({})
+      self.uploadVehicleDocument = cast({})
     }
   }))
   .create({
