@@ -93,7 +93,9 @@
     "add": "เพิ่ม",
     "round": "เที่ยว",
     "ton": "ตัน",
-    "anonymous": "ไม่ระบุชื่อ"
+    "anonymous": "ไม่ระบุชื่อ",
+    "userType": "ประเภทของผู้ใช้งาน",
+    "userTypeSelect": "กรุณาเลือกประเภท"
   },
   "commentScreen": {
     "yourComment": "ความคิดเห็นของคุณ",
@@ -144,6 +146,7 @@
     "findCar": "หารถ",
     "carriers": "ผู้ให้บริการขนส่ง / Carriers",
     "shippers": "เจ้าของสินค้า / Shippers",
+    "both": "ทั้งคู่ / Both",
     "wannaFindCar": "คุณต้องการหารถใช่ไหม?",
     "postJobNow": "โพสต์งานเลย"
   },
@@ -227,6 +230,8 @@
     "confirmRemoveJob": "ยืนยันการลบงานนี้"
   },
   "uploadVehicleScreen": {
+    "uploadVehicleDocument": "อัพโหลดเอกสารรถ",
+    "vehicleDocument": "เอกสารรถ",
     "placeholderRegistration": "xx - xxxx",
     "addVehicle": "เพิ่มรถ",
     "selectVehicleType": "ประเภทรถที่ต้องการ",
@@ -253,6 +258,8 @@
     "reqHeight": "กรุณาเลือกความสูงคอกรถ"
   },
   "profileScreen": {
+    "idCard": "บัตรประจำตัวประชาชน",
+    "uploadIdCard": "กรุณาอัพโหลดบัตรประจำตัวประชาชน",
     "everLogin": "คุณยังไม่ได้เข้าสู่ระบบ?",
     "loginRegister": " เข้าสู่ระบบ/สมัครสมาชิก",
     "nophone": "ไม่ระบุ",

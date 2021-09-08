@@ -92,7 +92,9 @@
     "add": "add ",
     "round": "Round",
     "ton": "Ton",
-    "anonymous": "Anonymous"
+    "anonymous": "Anonymous",
+    "userType": "user type",
+    "userTypeSelect": "please select user type"
   },
   "commentScreen": {
     "yourComment": "Your Comment",
@@ -143,6 +145,7 @@
     "findCar": "Find Trucks",
     "carriers": "Carriers",
     "shippers": "Shippers",
+    "both": "Both",
     "wannaFindCar": "You want to find truck?",
     "postJobNow": "Post job now"
   },
@@ -225,6 +228,8 @@
     "confirmRemoveJob": "Confirm delete of this job."
   },
   "uploadVehicleScreen": {
+    "uploadVehicleDocument": "Upload vehicle document",
+    "vehicleDocument": "Vehicle document",
     "placeholderRegistration": "xx - xxxx",
     "addVehicle": "Add Vehicle",
     "selectVehicleType": "Select your truck type",
@@ -251,6 +256,8 @@
     "reqHeight": "please select truck height"
   },
   "profileScreen": {
+    "idCard": "Id card",
+    "uploadIdCard": "Please upload your id card",
     "checkPickupDate": "please check pickup-loading date",
     "everLogin": "You are not logged in ",
     "loginRegister": " Login / Register",

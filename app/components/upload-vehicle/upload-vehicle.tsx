@@ -1,6 +1,6 @@
-import React, { useState } from "react"
+import React from "react"
 import { TouchableOpacity, View, ViewStyle, Image, ImageStyle, TextStyle, Dimensions } from "react-native"
-import { color, images, spacing, typography } from "../../theme"
+import { color, typography } from "../../theme"
 import { Text } from '../text/text'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 /**

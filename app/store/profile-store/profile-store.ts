@@ -5,13 +5,15 @@ const apiUsers = new ProfileApi()
 const fileUploadApi = new FileUploadApi()
 
 const Profile = types.model({
+  "attachCodeCitizenId": types.maybeNull(types.string),
   "fullName": types.maybeNull(types.string),
   "phoneNumber": types.maybeNull(types.string),
   "email": types.maybeNull(types.string),
   "approveStatus": types.maybeNull(types.string),
   "avatar": types.maybeNull(types.string),
   "id": types.maybeNull(types.number),
-  "userId": types.maybeNull(types.string)
+  "userId": types.maybeNull(types.string),
+  "userType": types.maybeNull(types.string),
 })
 
 const TruckSummary = types.model({
@@ -75,6 +77,7 @@ const ProfileStore = types.model({
   loading_update_profile: types.boolean,
   error_update_profile: types.maybeNull(types.string),
 
+  data_upload_id_card: types.maybeNull(PictureProfile),
   data_upload_picture: types.maybeNull(PictureProfile),
   loading_update_picture: types.boolean,
   error_update_picture: types.maybeNull(types.string),
@@ -181,7 +184,7 @@ const ProfileStore = types.model({
     self.loading_update_profile = true
     try {
       const response = yield apiUsers.updateProfile(params)
-      __DEV__ && console.tron.log("Response call updateProfile : : ", response)
+      __DEV__ && console.tron.log("Response call updateProfile :: ", response)
       if (response.ok) {
         self.data_update_profile = response.data || null
         self.loading_update_profile = false
@@ -199,7 +202,7 @@ const ProfileStore = types.model({
     self[name] = null
   },
 
-  uploadPicture: flow(function* updateProfile(file) { // <- note the star, this a generator function!
+  uploadPicture: flow(function* updateProfile(file, type?: string) { // <- note the star, this a generator function!
     yield fileUploadApi.setup()
     self.loading_update_picture = true
     try {
@@ -211,11 +214,13 @@ const ProfileStore = types.model({
         width: file.width,
         size: file.fileSize
       })
-      formData.append("path", "USER_AVATAR/INPROGRESS/")
+      formData.append("path", !type ? "USER_AVATAR/INPROGRESS/" : "USER_AVATAR/INPROGRESS/")
       const response = yield fileUploadApi.uploadVehiclePicture(formData)
       __DEV__ && console.tron.log("Response call uploadPicture : : ", response)
       if (response.ok) {
-        self.data_upload_picture = response.data || {}
+        if (!type)
+          self.data_upload_picture = response.data || {}
+        else self.data_upload_id_card = response.data || {}
       } else {
         self.error_update_profile = "error fetch uploadPictures"
       }
@@ -233,6 +238,10 @@ const ProfileStore = types.model({
   clearData() {
     self.data_update_profile = null
     self.data_upload_picture = null
+    self.data_upload_id_card = null
+  },
+  clearUploadIdCard() {
+    self.data_upload_id_card = null
   },
   clearAllData() {
     self.data = null
@@ -254,6 +263,8 @@ const ProfileStore = types.model({
     data_profile['phone-number'] = self.data?.phoneNumber || ''
     data_profile['email'] = self.data?.email || ''
     data_profile['avatar'] = self.data?.avatar || ''
+    data_profile['user-type'] = self.data?.userType || ''
+    data_profile['id-card'] = self.data?.attachCodeCitizenId || ''
     return data_profile
   }
 }))
@@ -271,6 +282,7 @@ const ProfileStore = types.model({
     loading_update_profile: false,
     error_update_profile: null,
 
+    data_upload_id_card: null,
     data_upload_picture: null,
     loading_update_picture: false,
     error_update_picture: null,

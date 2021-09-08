@@ -4,6 +4,7 @@ import * as Types from "../../services/api/api.types"
 import { vehicleEn, vehicleTh } from '../../screens/home-screen/manage-vehicle/datasource'
 import _ from 'lodash'
 import { type } from "ramda"
+import { domainToUnicode } from "url"
 const apiMyVehicle = new MyVehicleAPI()
 
 const Region = types.model({
@@ -42,7 +43,10 @@ const vehicleModel = {
   workingZones: types.optional(types.array(types.model({
     region: types.maybeNull(types.number),
     province: types.maybeNull(types.number),
-  })), [])
+  })), []),
+  document: types.maybeNull(types.model({
+    "0": types.maybeNull(types.string)
+  }))
 }
 
 const JobDetail = types.model({

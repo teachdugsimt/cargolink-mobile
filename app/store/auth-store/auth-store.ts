@@ -1,6 +1,7 @@
 import { types, flow, cast } from "mobx-state-tree"
 import { AuthAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
+import ProfileStore from "../profile-store/profile-store"
 const apiAuth = new AuthAPI()
 
 const InvalidPhone = "Invalid entry for your phone number"
@@ -109,10 +110,12 @@ const OTPVerify = types.model({
       id: types.maybeNull(types.string),
       userId: types.maybeNull(types.string),
       companyName: types.maybeNull(types.string),
-      fullname: types.maybeNull(types.string),
+      fullName: types.maybeNull(types.string),
       mobileNo: types.maybeNull(types.string),
       email: types.maybeNull(types.string),
-      avatar: types.maybeNull(types.string)
+      attachCodeCitizenId: types.maybeNull(types.string),
+      avatar: types.maybeNull(types.string),
+      userType: types.maybeNull(types.string)
       // language: types.maybeNull(types.string),
     }),
   ),
@@ -202,6 +205,7 @@ const AuthStore = types
         const response = yield apiAuth.verifyOTP(data)
         console.log("response otpVerifyRequest :>> ", response)
         if (response.kind === 'ok') {
+          __DEV__ && console.tron.log("OtpVerify.Data : ", response.data)
           self.profile = response.data || {}
           self.policyData = response.data?.termOfService || {}
           self.error = '' // Clear error when signin success
@@ -281,6 +285,17 @@ const AuthStore = types
     get getOtpVerifyData() {
       return self.profile
     },
+    get ProfileData() {
+      let data_profile = {}
+      data_profile['name-lastname'] = self.profile.userProfile?.fullName || ''
+      data_profile['phone-number'] = self.profile.userProfile?.mobileNo || ''
+      data_profile['email'] = self.profile.userProfile?.email || ''
+      data_profile['avatar'] = self.profile.userProfile?.avatar || ''
+      data_profile['user-type'] = self.profile.userProfile?.userType || ''
+      data_profile['id-card'] = self.profile.userProfile?.attachCodeCitizenId || ''
+      data_profile['accept-policies'] = self.profile.termOfService?.accepted || ''
+      return data_profile
+    }
   }))
   .create({
     // IMPORTANT !!
