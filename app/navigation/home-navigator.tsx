@@ -295,18 +295,21 @@ export function HomeNavigator() {
       />
 
       <Stack.Screen name="premiumDetail" component={PremiumDetailScreen}
-        options={() => ({
-          headerCenter: () => <HeaderCenter text={"Cargolink Premium"} />
+        options={({ navigation }) => ({
+          headerCenter: () => <HeaderCenter text={"Cargolink Premium"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })} />
 
       <Stack.Screen name="premiumConsent" component={PremiumConsentScreen}
-        options={() => ({
-          headerCenter: () => <HeaderCenter text={"ข้อตกลงการใช้บริการ"} />
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter text={"ข้อตกลงการใช้บริการ"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })} />
 
       <Stack.Screen name="premiumRegister" component={PremiumRegisterScreen}
-        options={() => ({
-          headerCenter: () => <HeaderCenter text={"สมัครใช้บริการ"} />
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter text={"สมัครใช้บริการ"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })} />
       <Stack.Screen name="jobDetailOnly" component={JobDetailOnlyScreen}
         options={({ navigation, route }) => ({

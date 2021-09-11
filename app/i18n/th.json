@@ -528,6 +528,12 @@
     "allProductType": "ประเภทสินค้าทั้งหมด",
     "ton": "ตัน"
   },
-  "registerCargolinkPremium": "สมัครคาร์โก้ลิ้งค์พรีเมียม",
-  "acceptPremiumConsent": "ยอมรับเงื่อนไขการใช้บริการ"
+  "partnerRegister": {
+    "pending": "รออนุมัติ",
+    "registerCargolinkPremium": "สมัครคาร์โก้ลิ้งค์พรีเมียม",
+    "acceptPremiumConsent": "ยอมรับเงื่อนไขการใช้บริการ",
+    "uploadDocument": "อัพโหลดเอกสาร",
+    "addFieldDocument": "เพิ่มพื้นที่อัพโหลดเอกสาร",
+    "idCard&CompanyDocument": "สำเนาบัตรประชาชน / เอกสารบริษัท"
+  }
 }
