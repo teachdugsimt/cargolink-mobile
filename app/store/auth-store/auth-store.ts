@@ -140,6 +140,8 @@ const AuthStore = types
     loading: types.boolean,
     error: types.maybeNull(types.string),
 
+    errorOtpVerify: types.maybeNull(types.string),
+
     dataApple: AppleProfile,
     loadingApple: types.boolean,
     errorApple: types.maybeNull(types.string),
@@ -209,17 +211,24 @@ const AuthStore = types
           self.profile = response.data || {}
           self.policyData = response.data?.termOfService || {}
           self.error = '' // Clear error when signin success
+          self.errorOtpVerify  = '' // Clear error when signin success
           self.phoneNumber = null // Clear phoneNumber when signin success
         } else {
           self.error = response?.data?.message || response?.kind
+          self.errorOtpVerify = response?.data?.message || response?.kind
         }
         self.loading = false
       } catch (error) {
         console.log('error otpVerifyRequest :>> ', error);
         self.loading = false
         self.error = "error fetch api otp verify"
+        self.errorOtpVerify = "error fetch api otp verify"
       }
     }),
+    clearErrorOtpVerify() {
+      self.errorOtpVerify = ""
+      self.loading = false
+    },
     /*
         getPolicyRequest: flow(function* getPolicyRequest(id: number) {
           apiAuth.setup()
@@ -306,6 +315,7 @@ const AuthStore = types
     countryCode: '',
     loading: false,
     error: "",
+    errorOtpVerify: "",
     dataApple: null,
     loadingApple: false,
     errorApple: ''

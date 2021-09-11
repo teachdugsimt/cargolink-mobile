@@ -16,6 +16,7 @@ import crypto from 'crypto'
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import PushNotification from 'react-native-push-notification'
 import MessagingStore from '../../store/messaging-store/messaging-store';
+import { AlertMessage } from '../../utils/alert-form';
 
 const ROOT: ViewStyle = {
   // height: Dimensions.get("window").height,
@@ -201,6 +202,18 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
       visibleModal: true
     }))
   }
+
+  useEffect(() => {
+    const tmp_error = JSON.parse(JSON.stringify(AuthStore.errorOtpVerify))
+    if (tmp_error && tmp_error != null) {
+      AlertMessage("common.somethingWrong", "common.InvalidPhoneNumber", true)
+      AuthStore.clearErrorOtpVerify()
+      setState(prevState => ({
+        ...prevState,
+        isLoading: false,
+      }))
+    }
+  }, [AuthStore.errorOtpVerify])
 
   useEffect(() => {
     let profile = JSON.parse(JSON.stringify(AuthStore.profile))
