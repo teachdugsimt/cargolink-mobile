@@ -501,6 +501,7 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
                       rules={{}}
                       defaultValue=""
                     />
+                    <View style={{ flex: 0.8 }} />
                   </View>
                 </View>
               </View>

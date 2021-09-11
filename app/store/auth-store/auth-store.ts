@@ -107,7 +107,7 @@ const OTPVerify = types.model({
   responseCode: types.maybeNull(types.number),
   userProfile: types.maybeNull(
     types.model({
-      id: types.maybeNull(types.string),
+      id: types.maybeNull(types.number),
       userId: types.maybeNull(types.string),
       companyName: types.maybeNull(types.string),
       fullName: types.maybeNull(types.string),
@@ -115,8 +115,8 @@ const OTPVerify = types.model({
       email: types.maybeNull(types.string),
       attachCodeCitizenId: types.maybeNull(types.string),
       avatar: types.maybeNull(types.string),
-      userType: types.maybeNull(types.string)
-      // language: types.maybeNull(types.string),
+      userType: types.maybeNull(types.string),
+      documentStatus: types.maybeNull(types.string)
     }),
   ),
   termOfService: types.maybeNull(Policy),

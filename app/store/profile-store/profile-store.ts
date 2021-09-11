@@ -14,6 +14,8 @@ const Profile = types.model({
   "id": types.maybeNull(types.number),
   "userId": types.maybeNull(types.string),
   "userType": types.maybeNull(types.string),
+  // "document": types.maybeNull(types.map(types.string)),
+  "documentStatus": types.maybeNull(types.string)
 })
 
 const TruckSummary = types.model({

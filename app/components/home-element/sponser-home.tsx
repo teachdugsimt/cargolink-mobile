@@ -7,9 +7,13 @@ import { images } from "../../theme"
 import { Text } from '../text/text'
 import { useStores } from "../../models/root-store/root-store-context";
 import { LocalNotification } from "../../services/push/LocalPushController";
+import { useNavigation } from "@react-navigation/native"
+
 const { width } = Dimensions.get('window')
 
-
+interface PropsPremium {
+  onPress: () => void;
+}
 
 /**
  * A component which has a label and an input together.
@@ -21,8 +25,8 @@ const IMAGE_NEWS: ImageStyle = {
   height: width / 3,
   borderRadius: 10,
 }
-export function SponserHome(props: any) {
-  const { versatileStore } = useStores()
+export function SponserHome(props: PropsPremium) {
+  const navigation = useNavigation()
 
   const onCall = (phone: string) => {
     let phoneNumber = Platform.OS !== 'android' ? `telprompt:${phone}` : `tel:${phone}`
@@ -46,10 +50,7 @@ export function SponserHome(props: any) {
         <Text tx="homeScreen.newPromotion" preset="topic" />
       </View>
       <TouchableOpacity style={[PADDING_TOP_10, { overflow: "hidden", borderRadius: 10 }]}
-        onPress={() => {
-          onCall(versatileStore.partnerPhoneNumber)
-          // LocalNotification()
-        }}>
+        onPress={props.onPress}>
         <Image source={images.sponser} style={IMAGE_NEWS} resizeMode="stretch" />
       </TouchableOpacity>
     </View>

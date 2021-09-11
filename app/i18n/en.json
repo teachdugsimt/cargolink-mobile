@@ -523,5 +523,13 @@
     "truckAmountRequired": "Amount of truck required",
     "allProductType": "All productt type",
     "ton": "Ton"
+  },
+  "partnerRegister": {  
+    "pending": "Pending",
+    "registerCargolinkPremium": "Register Cargolink Premium",
+    "acceptPremiumConsent": "Accept term & condition",
+    "uploadDocument": "Upload document",
+    "addFieldDocument": "Add document field",
+    "idCard&CompanyDocument": "Id card / company document"
   }
 }

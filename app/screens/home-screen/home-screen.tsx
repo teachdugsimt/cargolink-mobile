@@ -10,8 +10,6 @@ import { ModalLoading, Text, SponserHome } from '../../components/'
 import TruckTypeStore from "../../store/truck-type-store/truck-type-store"
 import ProductTypeStore from "../../store/product-type-store/product-type-store"
 import StatusStore from '../../store/post-job-store/job-status-store'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import FontIcon from 'react-native-vector-icons/FontAwesome5'
 import ProfileStore from "../../store/profile-store/profile-store"
 import jwtDecode, { JwtPayload } from "jwt-decode";
 import i18n from 'i18n-js'
@@ -206,6 +204,11 @@ export const HomeScreen = observer((props) => {
   // __DEV__ && console.tron.log("List Group (render) home screen :: ", versatileStore.listGroup)
   __DEV__ && console.tron.log("Token Store :: ", tokenStore.token)
 
+  const _onPressPremium = () => {
+    if (!token || !ProfileStore.data) navigation.navigate("signin")
+    else navigation.navigate("premiumDetail")
+  }
+
   const [topBackgroundValue] = useState(new Animated.Value(-backgrounTopHeight))
   const [leftValue] = useState(new Animated.Value(-(width / 2)))
   const [rightValue] = useState(new Animated.Value(width / 2))
@@ -258,7 +261,15 @@ export const HomeScreen = observer((props) => {
           </View>
         </View>
 
-        <SponserHome />
+        {/* <View style={{
+          height: 90, backgroundColor: 'white',
+          marginHorizontal: 20, marginVertical: 10,
+          borderRadius: 15, padding: 20
+        }}>
+          <Text style={{ fontSize: 18 }}>เข้าร่วมเป็นคู่ค้ากับเรา</Text>
+        </View> */}
+
+        <SponserHome onPress={_onPressPremium}/>
 
         <ModalLoading
           containerStyle={{ zIndex: 2 }}

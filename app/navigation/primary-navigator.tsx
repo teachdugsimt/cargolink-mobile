@@ -11,7 +11,7 @@ import {
   ConfirmCodeScreen, AcceptPolicyScreen, SigninScreen, LocationPickerScreen,
   AddAddressScreen, UpdateProfileScreen
 } from "../screens"
-import { Text, HeaderCenter, HeaderLeft } from "../components"
+import { HeaderCenter, HeaderLeft } from "../components"
 import BottomNavigator from './bottom-navigator'
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -32,6 +32,7 @@ export type PrimaryParamList = {
   home: undefined
   locationPicker: undefined
   addAddress: undefined
+  // premiumDetail: undefined
   updateProfileWithoutBottomTab: undefined
 }
 
@@ -69,6 +70,7 @@ export function PrimaryNavigator() {
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
       />
+
     </Stack.Navigator>
   )
 }
