@@ -206,7 +206,10 @@ export const HomeScreen = observer((props) => {
 
   const _onPressPremium = () => {
     if (!token || !ProfileStore.data) navigation.navigate("signin")
-    else navigation.navigate("premiumDetail")
+    else {
+      ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore.profile.userId)
+      navigation.navigate("premiumDetail")
+    }
   }
 
   const [topBackgroundValue] = useState(new Animated.Value(-backgrounTopHeight))
@@ -269,7 +272,7 @@ export const HomeScreen = observer((props) => {
           <Text style={{ fontSize: 18 }}>เข้าร่วมเป็นคู่ค้ากับเรา</Text>
         </View> */}
 
-        <SponserHome onPress={_onPressPremium}/>
+        <SponserHome onPress={_onPressPremium} />
 
         <ModalLoading
           containerStyle={{ zIndex: 2 }}
