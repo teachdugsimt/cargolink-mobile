@@ -40,7 +40,7 @@ export class ProfileApi {
     return data
   }
 
-  async setup() {
+  async setup(tokeny?: string) {
     let to = await this.getToken()
       .then(val => {
         return val?.tokenStore?.token?.accessToken || ''
@@ -52,7 +52,7 @@ export class ProfileApi {
       headers: {
         Accept: "application/json",
         // Authorization: `Bearer ${to}`
-        Authorization: `${to}`
+        Authorization: `${tokeny || to}`
       },
     })
   }

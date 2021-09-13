@@ -28,7 +28,7 @@ import {
 import { RootStore, RootStoreProvider, setupRootStore, useStores } from "./models"
 import { Alert, Linking } from 'react-native';
 import VersionCheck from 'react-native-version-check';
-import ScreenOrientation, { PORTRAIT, LANDSCAPE } from "react-native-orientation-locker/ScreenOrientation";
+// import ScreenOrientation, { PORTRAIT, LANDSCAPE } from "react-native-orientation-locker/ScreenOrientation";
 
 // import crashlytics from '@react-native-firebase/crashlytics';
 
@@ -267,11 +267,11 @@ function App(props: any) {
   return (
     <RootStoreProvider value={rootStore}>
       <SafeAreaProvider initialSafeAreaInsets={initialWindowSafeAreaInsets}>
-        <ScreenOrientation
+        {/* <ScreenOrientation
           orientation={PORTRAIT}
           onChange={orientation => console.log('onChange', orientation)}
           onDeviceChange={orientation => console.log('onDeviceChange', orientation)}
-        />
+        /> */}
         <RootNavigator
           ref={navigationRef}
           initialState={initialNavigationState}

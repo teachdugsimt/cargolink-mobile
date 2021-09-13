@@ -94,8 +94,8 @@ const ProfileStore = types.model({
 
 
 }).actions(self => ({
-  getProfileRequest: flow(function* getProfileRequest(userId: string) { // <- note the star, this a generator function!
-    yield apiUsers.setup()
+  getProfileRequest: flow(function* getProfileRequest(userId: string, token?: string) { // <- note the star, this a generator function!
+    yield apiUsers.setup(token)
     self.loading = true
     try {
       const response = yield apiUsers.getProfile(userId)

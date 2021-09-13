@@ -95,7 +95,8 @@
     "ton": "ตัน",
     "anonymous": "ไม่ระบุชื่อ",
     "userType": "ประเภทของผู้ใช้งาน",
-    "userTypeSelect": "กรุณาเลือกประเภท"
+    "userTypeSelect": "กรุณาเลือกประเภท",
+    "fileMoreThan5": "ขนาดของไฟล์ไม่เกิน 5 mb"
   },
   "commentScreen": {
     "yourComment": "ความคิดเห็นของคุณ",
@@ -529,6 +530,7 @@
     "ton": "ตัน"
   },
   "partnerRegister": {
+    "pickFile": "เลือกไฟล์เอกสาร",
     "pending": "รออนุมัติ",
     "verify": "อนุมัติ",
     "registerCargolinkPremium": "สมัครเป็นคู่ค้ากับคาร์โก้ลิ้งค์ ",
