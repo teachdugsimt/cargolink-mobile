@@ -28,6 +28,7 @@ import { useStores } from "../../../models/root-store/root-store-context";
 import { API_URL } from '../../../config/'
 import _ from 'lodash'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { AlertMessage } from "../../../utils/alert-form";
 
 const { width, height } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -655,20 +656,20 @@ export const UploadVehicleScreen = observer(() => {
   }
 
   // ******* ALERT ERROR API ******** //
-  // useEffect(() => {
-  //   let error_fetch = JSON.parse(JSON.stringify(CreateVehicleStore.error))
-  //   if(error_fetch){
-  //     AlertMessage()
-  //     CreateVehicleStore.clearValue("error")
-  //   }
-  // }, [CreateVehicleStore.error])
-  // useEffect(() => {
-  //   let error_fetch = JSON.parse(JSON.stringify(CreateVehicleStore.errorPatchMyVehicle))
-  //   if(error_fetch){
-  //     AlertMessage()
-  //     CreateVehicleStore.clearValue("error")
-  //   }
-  // }, [CreateVehicleStore.errorPatchMyVehicle])
+  useEffect(() => {
+    let error_fetch = JSON.parse(JSON.stringify(CreateVehicleStore.error))
+    if(error_fetch){
+      AlertMessage("common.somethingWrong", "common.pleaseCheckYourData", true)
+      CreateVehicleStore.clearValue("error")
+    }
+  }, [CreateVehicleStore.error])
+  useEffect(() => {
+    let error_fetch = JSON.parse(JSON.stringify(CreateVehicleStore.errorPatchMyVehicle))
+    if(error_fetch){
+      AlertMessage("common.somethingWrong", "common.pleaseCheckYourData", true)
+      CreateVehicleStore.clearValue("error")
+    }
+  }, [CreateVehicleStore.errorPatchMyVehicle])
   // ******* ALERT ERROR API ******** //
 
   useEffect(() => {
