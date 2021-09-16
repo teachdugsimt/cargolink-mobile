@@ -467,12 +467,13 @@ export const ProfileScreen = observer(function ProfileScreen() {
   }
 
   const { fullName, phoneNumber, avatar } = JSON.parse(JSON.stringify(ProfileStore.data)) || {}
-  // __DEV__ && console.tron.log("Profile data :: ", JSON.parse(JSON.stringify(ProfileStore.data)))
+  __DEV__ && console.tron.log("Profile data :: ", JSON.parse(JSON.stringify(ProfileStore.data)))
 
   __DEV__ && console.tron.log("Report data :: ", JSON.parse(JSON.stringify(ProfileStore.data_report_profile_screen)))
 
 
   let token = tokenStore?.token?.accessToken || ''
+
   return (
     <View testID="ProfileScreen" style={FULL}>
       <View style={TOP_VIEW}>

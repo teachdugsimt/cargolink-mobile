@@ -94,7 +94,8 @@
     "ton": "Ton",
     "anonymous": "Anonymous",
     "userType": "user type",
-    "userTypeSelect": "please select user type"
+    "userTypeSelect": "please select user type",
+    "fileMoreThan5": "file size must be less than 5 mb"
   },
   "commentScreen": {
     "yourComment": "Your Comment",
@@ -525,6 +526,7 @@
     "ton": "Ton"
   },
   "partnerRegister": {
+    "pickFile": "Pick document file",
     "pending": "Pending",
     "verify": "Approve",
     "registerCargolinkPremium": "Register Cargolink Premium",

@@ -12,7 +12,7 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { useForm, Controller } from "react-hook-form";
-import { useNavigation, useTheme } from "@react-navigation/native"
+import { useNavigation } from "@react-navigation/native"
 import { color, images, typography } from "../../theme"
 import { Modal } from 'react-native-modals';
 import { ScrollView } from "react-native-gesture-handler"
@@ -22,6 +22,11 @@ import { AlertMessage } from "../../utils/alert-form";
 import { translate } from "../../i18n"
 import { API_URL } from '../../config/'
 import PartnerRegisterStore from "../../store/profile-store/partner-register-store"
+import DocumentPicker, {
+  DirectoryPickerResponse,
+  DocumentPickerResponse,
+  types,
+} from 'react-native-document-picker'
 
 
 const { width } = Dimensions.get("window")
@@ -70,9 +75,13 @@ const WIDTH_WITH_MARGIN: ViewStyle = {
 const MARGIN_MEDIUM: ViewStyle = {
   marginVertical: 10
 }
-const SAFE_AREA_MODAL: ViewStyle = {
+const SAFE_AREA_MODAL0: ViewStyle = {
   ...WIDTH_WITH_MARGIN,
   height: 100
+}
+const SAFE_AREA_MODAL: ViewStyle = {
+  ...WIDTH_WITH_MARGIN,
+  height: 150
 }
 const CONTAINER_MODAL: ViewStyle = {
   ...FULL,
@@ -210,16 +219,7 @@ export const PremiumRegisterScreen = observer(function PremiumRegisterScreen() {
         Accept: 'image/*'
       },
     })
-    // if (tmp_profile && tmp_profile.attachCodeCitizenId) {
-    //   control.setValue('id-card', tmp_profile.attachCodeCitizenId)
-    //   setidCard({
-    //     uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + tmp_profile.attachCodeCitizenId,
-    //     method: 'GET',
-    //     headers: {
-    //       Accept: 'image/*'
-    //     },
-    //   })
-    // }
+
   }, [ProfileStore.data])
 
   const requestCameraPermission = async () => {
@@ -295,10 +295,6 @@ export const PremiumRegisterScreen = observer(function PremiumRegisterScreen() {
           _uploadFile(response)
           setImageProfile(response);
         }
-        // else if (typeImage && typeImage == 'id_card') {
-        //   _uploadFile(response, typeImg)
-        //   setidCard(response);
-        // } 
         else {
           control.setValue(`document-${typeImage}`, response)
         }
@@ -339,16 +335,34 @@ export const PremiumRegisterScreen = observer(function PremiumRegisterScreen() {
         _uploadFile(response)
         setImageProfile(response);
       }
-      // else if (typeImage && typeImage == 'id_card') {
-      //   _uploadFile(response, typeImg)
-      //   setidCard(response);
-      // }
       else {
         control.setValue(`document-${typeImage}`, response)
       }
     });
 
   };
+
+  const pickerFile = (typeImg?: string) => {
+    setSelectCapture(false)
+    DocumentPicker.pickSingle()
+      .then((pickerResult) => {
+        console.log("Picker file result :: ", pickerResult)
+        const response: any = {
+          uri: pickerResult.uri,
+          fileSize: pickerResult.size,
+          type: pickerResult.type,
+          fileName: pickerResult.name,
+        }
+        if (!typeImg) {
+          _uploadFile(response)
+          setImageProfile(response);
+        }
+        else {
+          control.setValue(`document-${typeImage}`, response)
+        }
+      })
+      .catch(handleError)
+  }
 
   const { control, handleSubmit, errors } = useForm({ defaultValues: ProfileStore.ProfileData })
 
@@ -360,11 +374,11 @@ export const PremiumRegisterScreen = observer(function PremiumRegisterScreen() {
     let tmp_raw_data = data
     let documentFile = []
     Object.keys(tmp_raw_data).map(e => {
-      if (e.includes('document-')) documentFile.push(tmp_raw_data[e])
+      if (e.includes('document-') && tmp_raw_data[e]) documentFile.push(tmp_raw_data[e])
     })
     console.log("Array Document File List : ", documentFile)
 
-    
+
 
     let finalData = {
       "fullName": data["name-lastname"],
@@ -373,34 +387,29 @@ export const PremiumRegisterScreen = observer(function PremiumRegisterScreen() {
       "email": data["email"],
       "userId": tokenStore.profile.userId,
       "userType": data["user-type"],
-      // "attachCodeCitizenId": data["id-card"] && data["id-card"] != "" ? data["id-card"] : null
     }
     if (imageProfile) finalData['avatar'] = ProfileStore?.data_upload_picture?.token || tmp_profile_store.avatar
 
-    PartnerRegisterStore.processDocumentFile(documentFile, finalData)
+    let sumFile = 0
+    documentFile.map(e => {
+      sumFile += e.fileSize
+    })
+    console.log("sumFile : ", sumFile)
+    if (sumFile > 5000000) AlertMessage(translate('common.somethingWrong'), translate('common.fileMoreThan5'))
+    else PartnerRegisterStore.processDocumentFile(documentFile, finalData)
+
     console.log("Final data :: ", finalData)
-    // ProfileStore.updateProfile(finalData)
   }
 
   useEffect(() => {
     let tmp_update_profile = JSON.parse(JSON.stringify(PartnerRegisterStore.data_update_profile))
-    if(tmp_update_profile) {
+    if (tmp_update_profile) {
       AlertMessage(translate('common.successTransaction'), translate('common.updateSuccess'))
       PartnerRegisterStore.clearUpdateData('data_update_profile')
     }
   }, [JSON.stringify(PartnerRegisterStore.data_update_profile)])
 
   useEffect(() => {
-    // if (tmp_profile && tmp_profile['id-card']) {
-    //   control.setValue('id-card', tmp_profile['id-card'])
-    //   setidCard({
-    //     uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + tmp_profile['id-card'],
-    //     method: 'GET',
-    //     headers: {
-    //       Accept: 'image/*'
-    //     },
-    //   })
-    // }
 
     return () => {
       ProfileStore.clearData()
@@ -427,17 +436,16 @@ export const PremiumRegisterScreen = observer(function PremiumRegisterScreen() {
     }
   }, [ProfileStore.error_update_profile])
 
-  // useEffect(() => {
-  //   const dataUploadIdCard = JSON.parse(JSON.stringify(ProfileStore.data_upload_id_card))
-  //   if (dataUploadIdCard && Object.keys(dataUploadIdCard).length > 0) {
-  //     control.setValue('id-card', dataUploadIdCard.attachCode)
-  //   } else {
-  //     control.setValue('id-card', '')
-  //   }
-  // }, [JSON.stringify(ProfileStore.data_upload_id_card)])
 
+  const handleError = (err: Error) => {
+    if (DocumentPicker.isCancel(err)) {
+      console.warn('cancelled')
+      // User cancelled the picker, exit any dialogs or menus and move on
+    } else {
+      throw err
+    }
+  }
 
-  // const [idCard, setidCard] = useState<any>({})
   const [typeImage, settypeImage] = useState<string>("")
 
   let formControllerValue = control.getValues()
@@ -474,18 +482,23 @@ export const PremiumRegisterScreen = observer(function PremiumRegisterScreen() {
             swipeDirection={['up', 'down']} // can be string or an array
             swipeThreshold={100} // default 100
           >
-            <SafeAreaView style={SAFE_AREA_MODAL}>
+            <SafeAreaView style={[!!typeImage ? SAFE_AREA_MODAL : SAFE_AREA_MODAL0]}>
               <View style={CONTAINER_MODAL}>
                 <TouchableOpacity style={BUTTON_MODAL1} onPress={() => captureImage(typeImage)}>
                   <View style={ROW_TEXT}>
                     <Ionicons name="camera" size={20} color={color.primary} />
                     <Text style={TEXT_MODAL_BUTTON} tx={"uploadVehicleScreen.captureNew"} /></View>
                 </TouchableOpacity>
-                <TouchableOpacity style={BUTTON_MODAL2} onPress={() => chooseFile(typeImage)}>
+                <TouchableOpacity style={[!!typeImage ? BUTTON_MODAL1 : BUTTON_MODAL2]} onPress={() => chooseFile(typeImage)}>
                   <View style={ROW_TEXT}>
                     <Ionicons name="library" size={20} color={color.primary} />
                     <Text style={TEXT_MODAL_BUTTON} tx={"uploadVehicleScreen.selectFromLibrary"} /></View>
                 </TouchableOpacity>
+                {!!typeImage && <TouchableOpacity style={BUTTON_MODAL2} onPress={() => pickerFile(typeImage)}>
+                  <View style={ROW_TEXT}>
+                    <Ionicons name="documents" size={20} color={color.primary} />
+                    <Text style={TEXT_MODAL_BUTTON} tx={"partnerRegister.pickFile"} /></View>
+                </TouchableOpacity>}
               </View>
             </SafeAreaView>
           </Modal>
@@ -524,53 +537,6 @@ export const PremiumRegisterScreen = observer(function PremiumRegisterScreen() {
                   <Text>2.</Text>
                   <Text tx={"profileScreen.inputMoreDetail"} />
                 </View>
-
-
-
-
-                {/* 
-                <View style={PADDING_TOP_10}>
-                  <View style={{ flexDirection: 'row' }}>
-                    <Text tx={"profileScreen.idCard"} />
-                    <Text style={{ color: color.error }}> *</Text>
-                  </View>
-                  <View style={{ ...MARGIN_TOP_BIG, ...COLUMN_UPLOAD }}>
-                    <View style={ROW_UPLOAD}>
-                      <Controller
-                        control={control}
-                        render={({ onChange, onBlur, value }) => (
-                          <UploadVehicle
-                            key={'vehicle-document'}
-                            haveImage={Object.keys(idCard).length ? true : false}
-                            deleteImage={() => {
-                              setidCard({})
-                              ProfileStore.clearUploadIdCard()
-                            }}
-                            onPress={() => {
-                              settypeImage('id_card')
-                              setSelectCapture(true)
-                            }}
-                            viewImageStyle={Object.keys(idCard).length ? MARGIN_TOP_EXTRA : MARGIN_TOP_MEDIUM}
-                            tx={Object.keys(idCard).length ? '' : "profileScreen.uploadIdCard"}
-                            txStyle={Object.keys(idCard).length ? {} : { ...PADDING_TOP_5 }}
-                            uploadStyle={UPLOAD_IMG_STY}
-                            source={Object.keys(idCard).length ? idCard : images.idCard}
-                            imageStyle={Object.keys(idCard).length ? {} : PLACEHOLDER_VEHICLE_DOC} />
-                        )}
-                        key={"key-id-card"}
-                        name={"id-card"}
-                        rules={{}}
-                        defaultValue=""
-                      />
-                      <View style={{ flex: 0.8 }} />
-                    </View>
-                  </View>
-                </View> */}
-
-
-
-
-
 
                 <View style={PADDING_TOP_10}>
                   <View style={{ flexDirection: 'row' }}>

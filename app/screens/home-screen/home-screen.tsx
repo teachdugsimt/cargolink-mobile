@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useCallback } from "react"
 import { View, ViewStyle, TouchableOpacity, Image, ImageStyle, Dimensions, Platform, Linking, Alert, Animated } from "react-native"
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation, useFocusEffect } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
 import { images, color } from '../../theme'
 import { useStores } from "../../models/root-store/root-store-context";
@@ -73,7 +73,20 @@ export const HomeScreen = observer((props) => {
   const { tokenStore, versatileStore } = useStores()
   const navigation = useNavigation()
 
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     // when back from other screen 
+  //     __DEV__ && console.tron.logImportant("COME useCallback useCallback useCallback useCallback")
+  //     if (AuthStore.profile?.userProfile?.userId || tokenStore?.profile?.userId)
+  //       ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore.profile.userId)
+  //     return () => {
+  //       // before go Other screen 
+  //     }
+  //   }, [])
+  // );
+
   useEffect(() => {
+    __DEV__ && console.tron.logImportant("COME USE EFFECT HOME")
     console.log("Persist Language :: ", versatileStore.language)
     if (versatileStore.language) i18n.locale = versatileStore.language
     versatileStore.findGroup()

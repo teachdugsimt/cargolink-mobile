@@ -1,6 +1,6 @@
 import React from "react"
 import { TouchableOpacity, View, ViewStyle, Image, ImageStyle, TextStyle, Dimensions } from "react-native"
-import { color, typography } from "../../theme"
+import { color, images, typography } from "../../theme"
 import { Text } from '../text/text'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 /**
@@ -57,6 +57,16 @@ const DELETE_BLOCK: ViewStyle = {
 export function UploadVehicle(props: any) {
   const { uploadStyle, source, imageStyle, tx, onPress, viewImageStyle, txStyle, deleteImage, haveImage,
     showDeleteBlock, onPressDeleteBlock } = props
+
+  const _renderImage = (source: any) => {
+    if (typeof source == 'object' && source && source?.type.toString().includes("image"))
+      return <Image source={source} style={{ ...IMAGE_PLACHOLDER, ...imageStyle }} resizeMode={'stretch'}></Image>
+    else if (typeof source != 'object' && source)
+      return <Image source={source} style={{ ...IMAGE_PLACHOLDER, ...imageStyle }} resizeMode={'stretch'}></Image>
+    else
+      return <Text style={{ paddingHorizontal: 2.5 }} text={source?.fileName || 'unknow_file'} />
+  }
+
   return (
     <View style={{ ...ROOT_STYLE, ...uploadStyle }}>
       <TouchableOpacity style={UPLOAD_BUTTON} onPress={onPress} testID={"select-image"}>
@@ -67,7 +77,7 @@ export function UploadVehicle(props: any) {
 
           <View style={{ ...IMAGE_AND_TEXT, ...viewImageStyle }}>
             {haveImage && <TouchableOpacity onPress={deleteImage} style={DELETE_BUTTON}><Ionicons name={"close"} size={22} color={color.error} /></TouchableOpacity>}
-            <Image source={source} style={{ ...IMAGE_PLACHOLDER, ...imageStyle }} resizeMode={'stretch'}></Image>
+            {_renderImage(source)}
             <Text tx={tx} style={{ ...CONTENT_TEXT, ...txStyle }} />
           </View>
         </View>

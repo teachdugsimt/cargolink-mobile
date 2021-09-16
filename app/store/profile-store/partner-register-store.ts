@@ -2,7 +2,6 @@ import { types, flow } from "mobx-state-tree"
 import { ProfileApi, FileUploadApi } from '../../services/api'
 import { Platform } from "react-native"
 import { zip } from 'react-native-zip-archive'
-// import { Image } from 'react-native-compressor';
 
 const apiUsers = new ProfileApi()
 const fileUploadApi = new FileUploadApi()
@@ -96,17 +95,27 @@ const PartnerRegisterStore = types.model({
     self.loading_upload_document = true
     yield fileUploadApi.setup()
     try {
-      if (documentFile.length > 0) {
+      if (documentFile.length > 0 && documentFile.length > 1) {
         const file_name = "partner-document.zip"
-        let sourceFolder: string = ''
-        const arrUri: Array<string> = documentFile.map(e => e.uri)
-        sourceFolder = documentFile[0].uri
-        let splitUrl = sourceFolder.split("/")
-        splitUrl.splice(splitUrl.length - 1, 1)
-        let mergeUrl = splitUrl.join("/")
-        console.log("Merge url :: ", mergeUrl)
 
-        const result = yield zip(arrUri, mergeUrl + `/${file_name}`)
+        let minUri = ''
+        let minLength = 9999
+        const arrUri: Array<string> = documentFile.map(e => {
+          const spliter = e.uri.split('/')
+          spliter.splice(spliter.length - 1, 1)
+          let joinUrl = spliter.join("/")
+
+          if (spliter.length < minLength) {
+            minUri = joinUrl
+            minLength = spliter.length
+          }
+
+          return decodeURIComponent(e.uri)
+        })
+        console.log("Arr URI :: ", arrUri)
+        console.log("Min path URI :: ", minUri)
+
+        const result = yield zip(arrUri, minUri + `/${file_name}`)
           .then((path) => {
             console.log(`zip completed at : ${path}`)
             return path
@@ -123,7 +132,17 @@ const PartnerRegisterStore = types.model({
         }
         console.log("Zip file RESULT : ", result)
         yield PartnerRegisterStore.uploadZipDocument(fileObj, profile)
-
+      } else {
+        if (documentFile.length == 1) {
+          const fileObj = {
+            fileName: documentFile[0]?.fileName || "unknowfile.png",
+            uri: documentFile[0],
+            type: documentFile[0]?.type || 'image/png',
+          }
+          yield PartnerRegisterStore.uploadZipDocument(fileObj, profile)
+        } else {
+          yield PartnerRegisterStore.uploadZipDocument(null, profile)
+        }
       }
     } catch (error) {
       console.error("Failed to store value get PartnerTermAndCondition : ", error)
@@ -133,26 +152,32 @@ const PartnerRegisterStore = types.model({
   uploadZipDocument: flow(function* uploadZipDocument(file, profile) { // <- note the star, this a generator function!
     yield fileUploadApi.setup()
     try {
-      let formData = new FormData();
-      formData.append("file", {
-        name: file.fileName,
-        uri: Platform.OS == 'ios' ? file.uri.replace("file://", "") : file.uri,
-        type: file.type,
-      })
+      if (file) {
+        let formData = new FormData();
+        formData.append("file", {
+          name: file.fileName,
+          uri: Platform.OS == 'ios' ? file.uri.replace("file://", "") : file.uri,
+          type: file.type,
+        })
 
-      formData.append("path", "USER_DOC/INPROGRESS/")
-      const response = yield fileUploadApi.uploadVehiclePicture(formData)
-      console.log("Response call uploadZipDocument : : ", response)
-      if (response.ok) {
+        formData.append("path", "USER_DOC/INPROGRESS/")
+        const response = yield fileUploadApi.uploadVehiclePicture(formData)
+        console.log("Response call uploadZipDocument : : ", response)
+        if (response.ok) {
 
-        // self.data_upload_document = response.data || {}
-        let tmp_profile_data = profile
-        tmp_profile_data.url = [response.data.attachCode]
-        yield PartnerRegisterStore.updateProfile(tmp_profile_data)
+          // self.data_upload_document = response.data || {}
+          let tmp_profile_data = profile
+          tmp_profile_data.url = [response.data.attachCode]
+          yield PartnerRegisterStore.updateProfile(tmp_profile_data)
 
+        } else {
+          self.loading_upload_document = false
+          self.error_upload_document = "error fetch uploadPictures"
+        }
       } else {
-        self.loading_upload_document = false
-        self.error_upload_document = "error fetch uploadPictures"
+        let tmp_profile_data = profile
+        tmp_profile_data.url = []
+        yield PartnerRegisterStore.updateProfile(tmp_profile_data)
       }
     } catch (error) {
       console.error("Failed to store value get profile : ", error)
