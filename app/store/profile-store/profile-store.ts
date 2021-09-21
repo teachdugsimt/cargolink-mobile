@@ -15,7 +15,20 @@ const Profile = types.model({
   "userId": types.maybeNull(types.string),
   "userType": types.maybeNull(types.string),
   "document": types.maybeNull(types.map(types.string)),
-  "documentStatus": types.maybeNull(types.string)
+  "documentStatus": types.maybeNull(types.string),
+
+  "confirmationToken": types.maybeNull(types.string),
+  "enabled": types.maybeNull(types.boolean),
+  "deviceToken": types.maybeNull(types.string),
+  "createdAt": types.maybeNull(types.string),
+  "updatedAt": types.maybeNull(types.string),
+  "createdBy": types.maybeNull(types.string),
+  "updatedBy": types.maybeNull(types.string),
+  "status": types.maybeNull(types.string),
+  "legalType": types.maybeNull(types.string),
+  "files": types.maybeNull(types.array(types.string)),
+  "roleName": types.maybeNull(types.array(types.string)),
+
 })
 
 const TruckSummary = types.model({

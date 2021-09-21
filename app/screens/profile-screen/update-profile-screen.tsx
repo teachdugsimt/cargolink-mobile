@@ -142,6 +142,7 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
 
   useEffect(() => {
     let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
+    __DEV__ && console.tron.log("Profile data : ", tmp_profile)
     if (tmp_profile && tmp_profile.avatar) setImageProfile({
       uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + tmp_profile.avatar,
       method: 'GET',
@@ -316,6 +317,7 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
   useEffect(() => {
     // if (fromOtp) ProfileStore.getProfileRequest(fromOtp)
     let tmp_profile: any = AuthStore.ProfileData
+    __DEV__ && console.tron.log("Auth data : ", tmp_profile)
     if (tmp_profile && tmp_profile.avatar) setImageProfile({
       uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + tmp_profile.avatar,
       method: 'GET',
@@ -379,7 +381,6 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
   __DEV__ && console.tron.logImportant("Form in render :: ", formControllerValue)
 
   let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
-  __DEV__ && console.tron.logImportant("Profile Data :: ", tmp_profile)
 
   const role_array = [{ label: translate('homeScreen.carriers'), value: "CARRIER" },
   { label: translate('homeScreen.shippers'), value: "SHIPPER" },
@@ -389,6 +390,8 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
     setSelectCapture(false)
     settypeImage('')
   }
+
+  __DEV__ && console.tron.logImportant("ID CARD Data :: ", idCard)
 
   return <View testID="UpdateProfileScreen" style={FULL}>
     <Screen preset={'scroll'} unsafe>

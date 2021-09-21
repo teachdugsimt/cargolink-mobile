@@ -59,7 +59,10 @@ export function UploadVehicle(props: any) {
     showDeleteBlock, onPressDeleteBlock } = props
 
   const _renderImage = (source: any) => {
-    if (typeof source == 'object' && source && source?.type.toString().includes("image"))
+    __DEV__ && console.tron.logImportant("Source image : ", source, typeof source)
+    if (typeof source == 'object' && source && source?.type && source?.type.toString().includes("image"))
+      return <Image source={source} style={{ ...IMAGE_PLACHOLDER, ...imageStyle }} resizeMode={'stretch'}></Image>
+    else if (typeof source == 'object' && source.method && source.method == 'GET')
       return <Image source={source} style={{ ...IMAGE_PLACHOLDER, ...imageStyle }} resizeMode={'stretch'}></Image>
     else if (typeof source != 'object' && source)
       return <Image source={source} style={{ ...IMAGE_PLACHOLDER, ...imageStyle }} resizeMode={'stretch'}></Image>
