@@ -7,7 +7,7 @@ import { useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
 import { Text } from "../../../components"
 import { translate } from "../../../i18n"
-import { AddJobElement, Screen, RoundedButton, Icon, } from '../../../components'
+import { AddJobElement, Screen, RoundedButton, Icon, ModalLoading } from '../../../components'
 import { AlertMessage } from "../../../utils/alert-form";
 import * as moment from 'moment'
 // import 'moment/locale/th';
@@ -349,7 +349,9 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
 
 
 
-
+            <ModalLoading
+              containerStyle={{ zIndex: 2 }}
+              size={'large'} color={color.primary} visible={(PostJobStore.loading)} />
 
 
             <View style={TOP_VIEW_2}>
