@@ -214,7 +214,7 @@ const AuthStore = types
           self.error = '' // Clear error when signin success
           self.errorOtpVerify  = '' // Clear error when signin success
           self.phoneNumber = null // Clear phoneNumber when signin success
-          yield ProfileStore.getProfileRequest(response.data.userProfile.userId, response.data.token.accessToken)
+          // yield ProfileStore.getProfileRequest(response.data.userProfile.userId, response.data.token.accessToken)
         } else {
           self.error = response?.data?.message || response?.kind
           self.errorOtpVerify = response?.data?.message || response?.kind
@@ -229,6 +229,7 @@ const AuthStore = types
     }),
     clearErrorOtpVerify() {
       self.errorOtpVerify = ""
+      self.error = ""
       self.loading = false
     },
     /*

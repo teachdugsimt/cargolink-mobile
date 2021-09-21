@@ -93,7 +93,7 @@ export const HomeScreen = observer((props) => {
     versatileStore.find()
     versatileStore.findProductType()
     if (AuthStore.profile?.userProfile?.userId || tokenStore?.profile?.userId)
-      ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore.profile.userId)
+      ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore?.profile?.userId, AuthStore?.profile?.token?.accessToken || tokenStore?.token?.accessToken)
     console.log("TOKEN STORE :: => ", JSON.parse(JSON.stringify(tokenStore.profile)))
 
     AuthStore.clearError()

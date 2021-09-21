@@ -190,7 +190,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
         isLoading: false,
         visibleModal: true,
       }))
-
+      AuthStore.clearErrorOtpVerify()
     }
   }, [AuthStore.errorOtpVerify])
 
@@ -221,7 +221,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
       else
         navigation.navigate(screen)
     }
-  
+
   }, [JSON.stringify(AuthStore.profile)])
 
   const onPress = (value: string) => {
@@ -260,6 +260,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
 
     return () => {
       clearState()
+      ProfileStore.getProfileRequest(AuthStore.profile.userProfile.userId, AuthStore.profile.token.accessToken)
     }
   }, [])
 
@@ -327,7 +328,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
         </TouchableOpacity>
       </View>
 
-      {!tokenStore.token && (isExpired || !!AuthStore.error) && <ModalAlert // !!isError
+      <ModalAlert // !!isError
         containerStyle={{ paddingVertical: spacing[5] }}
         iconName={'bell-alert-outline'}
         iconStyle={{
@@ -341,7 +342,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
         buttonContainerStyle={{ width: '90%' }}
         buttonComponent={RenderButtonAlert}
         visible={visibleModal}
-      />}
+      />
 
 
       <View testID="ConfirmCodeRoot" style={CONFIRM_CODE_ROOT}>
