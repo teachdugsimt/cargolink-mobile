@@ -60,7 +60,7 @@ export class ProfileApi {
   async getProfile(params: any = null): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/users/me', { userId: params })
+      const response: ApiResponse<any> = await this.apisauce.get('/api/v2/users/me', { userId: params })
       __DEV__ && console.tron.log("Response call api get PROFILE : ", response)
       // if (!response.ok) {
       //   const problem = getGeneralApiProblem(response)

@@ -307,11 +307,11 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
     console.log("FINAL DATA :: ", finalData)
     ProfileStore.updateProfile(finalData)
 
-    if (fromOtp) {
-      let profileFromOtp = AuthStore.ProfileData
-      if (profileFromOtp['accept-policies']) navigation.navigate('Home', { screen: 'home' })
-      else navigation.navigate('acceptPolicy')
-    }
+    // if (fromOtp) {
+    //   let profileFromOtp = AuthStore.ProfileData
+    //   if (profileFromOtp['accept-policies']) navigation.navigate('Home', { screen: 'home' })
+    //   else navigation.navigate('acceptPolicy')
+    // }
   }
 
   useEffect(() => {
@@ -350,8 +350,28 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
   useEffect(() => {
     let tmp_update = JSON.parse(JSON.stringify(ProfileStore.data_update_profile))
     if (tmp_update && tmp_update != null) {
-      AlertMessage(translate('common.successTransaction'), translate('common.updateSuccess'))
+      if (!fromOtp)
+        AlertMessage(translate('common.successTransaction'), translate('common.updateSuccess'))
       ProfileStore.clearUpdateData('data_update_profile')
+
+      if (fromOtp) {
+        Alert.alert(
+          translate('common.successTransaction'), translate('common.updateSuccess'),
+          [
+            {
+              text: "OK", onPress: () => {
+                let profileFromOtp = AuthStore.ProfileData
+                if (profileFromOtp['accept-policies']) navigation.navigate('Home', { screen: 'home' })
+                else navigation.navigate('acceptPolicy')
+              }
+            }
+          ],
+          {
+            cancelable: false
+          }
+        );
+
+      }
     }
   }, [ProfileStore.data_update_profile])
 
