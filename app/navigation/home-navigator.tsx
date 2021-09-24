@@ -7,15 +7,15 @@
 import React from "react"
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import { Text, HeaderCenter, HeaderLeft } from "../components"
-import { color } from '../theme'
-import Ionicons from 'react-native-vector-icons/Ionicons'
 import {
-  DetailScreen, HomeScreen, JobDetailScreen, MyVehicle, PostJobScreen, SearchJobScreen,
+  DetailScreen, HomeScreen, JobDetailScreen, PostJobScreen, SearchJobScreen,
   UploadVehicleScreen, SuccessUpload,
-  VehicleDetailScreen, CheckInformationScreen, SelectProvinceScreen,
+  CheckInformationScreen, SelectProvinceScreen,
   ShipperProfileScreen, ReceivePointScreen, FeedbackScreen, SearchTruckScreen,
   PostSuccessScreen, TruckDetailScreen, SelectJobScreen, CommentScreen,
-  CarrierProfileScreen, SelectTruckScreen, AdvanceSearchJobScreen, AdvanceSearchTruckItemScreen, SelectTruckTypeScreen, SelectProductTypeScreen, AdvanceSearchTruckScreen, AdvanceSearchJobItemScreen
+  CarrierProfileScreen, SelectTruckScreen, AdvanceSearchJobScreen, AdvanceSearchTruckItemScreen, SelectTruckTypeScreen, SelectProductTypeScreen, AdvanceSearchTruckScreen,
+  AdvanceSearchJobItemScreen, PremiumDetailScreen, PremiumConsentScreen, PremiumRegisterScreen,
+  JobDetailOnlyScreen
 } from "../screens"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -60,8 +60,12 @@ export type PrimaryHomeParamList = {
   advanceSearchJobItem: undefined
   selectTruckType: undefined
   selectProductType: undefined
-  selectProvinceHome:  undefined
+  selectProvinceHome: undefined
+  jobDetailOnly: undefined
   // addAddress: undefined
+  premiumDetail: undefined
+  premiumConsent: undefined
+  premiumRegister: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -269,7 +273,7 @@ export function HomeNavigator() {
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
       />
-       <Stack.Screen name="selectProvinceHome" component={SelectProvinceScreen}
+      <Stack.Screen name="selectProvinceHome" component={SelectProvinceScreen}
         options={({ navigation, route }) => ({
           // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
           headerCenter: () => <HeaderCenter tx={"uploadVehicleScreen.workZone"} />,
@@ -289,7 +293,30 @@ export function HomeNavigator() {
           headerLeft: () => (null),
         })}
       />
-    </Stack.Navigator>
+
+      <Stack.Screen name="premiumDetail" component={PremiumDetailScreen}
+        options={({ navigation }) => ({
+          headerCenter: () => <HeaderCenter text={"Cargolink Premium"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })} />
+
+      <Stack.Screen name="premiumConsent" component={PremiumConsentScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter text={"ข้อตกลงการใช้บริการ"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })} />
+
+      <Stack.Screen name="premiumRegister" component={PremiumRegisterScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter text={"สมัครใช้บริการ"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })} />
+      <Stack.Screen name="jobDetailOnly" component={JobDetailOnlyScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"jobDetailScreen.jobDetail"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })} />
+    </Stack.Navigator >
   )
 }
 

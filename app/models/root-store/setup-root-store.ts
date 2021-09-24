@@ -39,9 +39,12 @@ let initialData = {
     error: "",
   },
   tokenStore: {
-    idToken: null,
-    accessToken: null,
-    refreshToken: null
+    token: {
+      idToken: null,
+      accessToken: null,
+      refreshToken: null
+    },
+    profile: {}
   }
 }
 

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react"
 import {
   View, ViewStyle, TextStyle,
-  ScrollView, Switch, Dimensions, Platform, Alert, ImageStyle, PermissionsAndroid,
+  ScrollView, Dimensions, Platform, Alert, ImageStyle, PermissionsAndroid,
   SafeAreaView, Image, TouchableOpacity
 } from "react-native"
 import { useForm, Controller } from "react-hook-form";
 import { observer } from "mobx-react-lite"
 import {
-  Text, TextInputTheme, Button, UploadVehicle, RoundedButton, HeaderCenter, MultiSelector, ModalLoading,
-  ModalTruckType, NormalDropdown, RadioButton, TextInputNew
+  Text, Button, UploadVehicle, RoundedButton, HeaderCenter, ModalLoading,
+  NormalDropdown, RadioButton, TextInputNew
 } from "../../../components"
 import { spacing, color, typography, images } from "../../../theme"
 import { translate } from "../../../i18n"
@@ -23,13 +23,12 @@ import MyVehicleStore from '../../../store/my-vehicle-store/my-vehicle-store'
 import StatusStore from '../../../store/my-vehicle-store/status-vehicle-store'
 import UploadFileStore from '../../../store/my-vehicle-store/upload-file-store'
 import AddressStore from '../../../store/my-vehicle-store/address-store'
-import { Modal, ModalContent } from 'react-native-modals';
+import { Modal } from 'react-native-modals';
 import { useStores } from "../../../models/root-store/root-store-context";
-import { FlatList } from "react-native-gesture-handler";
-import { AlertMessage } from "../../../utils/alert-form";
 import { API_URL } from '../../../config/'
 import _ from 'lodash'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { AlertMessage } from "../../../utils/alert-form";
 
 const { width, height } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -67,7 +66,6 @@ const BUTTON_MODAL2: ViewStyle = {
 const TEXT_MODAL_BUTTON: TextStyle = {
   color: color.black, paddingLeft: 20
 }
-const PADDING_TOP_10: ViewStyle = { paddingTop: 10 }
 const PADDING_TOP_5: ViewStyle = { paddingTop: 5 }
 
 const PADDING_LEFT5: TextStyle = {
@@ -87,7 +85,6 @@ const WRAPPER_TOP: ViewStyle = {
 const ALIGN_RIGHT: TextStyle = {
   color: color.line
 }
-const PRIMARY_COLOR: TextStyle = { color: color.primary }
 const MARGIN_TOP_BIG: ViewStyle = { marginTop: 10 }
 const MARGIN_TOP_MEDIUM: ViewStyle = { marginTop: 15 }
 const MARGIN_TOP_EXTRA: ViewStyle = { marginTop: 20 }
@@ -102,12 +99,6 @@ const CONTENT_TEXT: TextStyle = {
   fontFamily: 'Kanit-Medium',
   color: color.black,
   fontSize: typography.content
-}
-const HAVE_DUMP_VIEW: ViewStyle = {
-  flexDirection: 'row',
-  width: '100%',
-  justifyContent: 'space-between',
-  paddingTop: 20
 }
 const COLUMN_UPLOAD: ViewStyle = {
   justifyContent: 'center',
@@ -125,7 +116,7 @@ const ADD_VEHICLE_BUTTON: ViewStyle = {
   borderColor: color.mainGrey,
   backgroundColor: color.textWhite
 }
-const RED_COLOR: ViewStyle = { color: color.red }
+const RED_COLOR: TextStyle = { color: color.red }
 const ROW_UPLOAD: ViewStyle = {
   flexDirection: 'row',
   justifyContent: 'center',
@@ -139,11 +130,13 @@ const ROUND_BUTTON_TEXT: TextStyle = {
 }
 const WRAP_DROPDOWN: ViewStyle = {
   flex: 1, borderColor: color.mainGrey, borderBottomWidth: 1, padding: Platform.OS == "ios" ? 7.5 : 0,
-  // paddingVertical: 10,
   borderRadius: 2.5
 }
 const PLACEHOLDER_IMAGE: ImageStyle = {
   width: 50, height: 75
+}
+const PLACEHOLDER_VEHICLE_DOC: ImageStyle = {
+  width: 75, height: 75
 }
 const PLACEHOLDER_IMAGE2: ImageStyle = {
   width: 95, height: 37.5
@@ -152,23 +145,12 @@ const LAYOUT_REGISTRATION_FIELD: TextStyle = {
   textAlign: 'right', paddingRight: 10,
 }
 
-const ADD_DROPDOWN_REGION: ViewStyle = {
-  alignSelf: 'flex-end',
-  paddingLeft: 10,
-  justifyContent: 'center',
-}
-
-const WRAPPER_REGION_DROPDOWN: ViewStyle = {
-  ...MARGIN_BOTTOM_BIG,
-  ...ROW_UPLOAD,
-}
 const ROW_TEXT: ViewStyle = {
   flexDirection: 'row',
 }
 const JUSTIFY_BETWEEN: ViewStyle = {
   justifyContent: 'space-between',
 }
-const PADDING_TOP: ViewStyle = { marginTop: 10 }
 const PADDING_CHEVRON: ViewStyle = { paddingRight: Platform.OS == "ios" ? 0 : 5 }
 const ROOT_FLAT_LIST: ViewStyle = {
   width: '100%',
@@ -176,21 +158,13 @@ const ROOT_FLAT_LIST: ViewStyle = {
   flexDirection: 'row',
   justifyContent: 'center', alignItems: 'center'
 }
-const ROOT_FLAT_LIST2: ViewStyle = {
-  width: '100%',
-  height: 60,
-  flexDirection: 'row',
-  alignItems: 'center',
-}
 const VIEW_LIST_IMAGE: ViewStyle = { alignSelf: 'flex-start', justifyContent: 'center', height: '100%' }
 const BORDER_BOTTOM: ViewStyle = {
   ...ROOT_FLAT_LIST,
   width: '100%',
   flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-  // borderBottomWidth: 1, borderBottomColor: color.mainGrey,
   marginHorizontal: 10,
 }
-const ERROR_REGION: TextStyle = { color: color.error, paddingLeft: 5, marginTop: -10, marginBottom: 5 }
 const UPLOAD_IMG_STY: ViewStyle = { padding: 5, minHeight: 120 }
 const IMAGE_LIST: ImageStyle = {
   backgroundColor: color.line, padding: 10,
@@ -226,7 +200,6 @@ const SUB_MENU_SELECTED: ViewStyle = {
 }
 
 let initForm = 0
-let initModal = Array(77).fill(false)
 export const UploadVehicleScreen = observer(() => {
   const navigation = useNavigation()
   const route = useRoute()
@@ -238,7 +211,6 @@ export const UploadVehicleScreen = observer(() => {
   { id: 2, label: 'common.notDump', active: false }]
   const truckIsDump: Array<number> = [15, 23, 24]
   const truckReqHeight: Array<number> = [9, 15, 24, 23, 3]
-  const [visibleModal, setvisibleModal] = useState(initModal)
   const [arrDump, setArrDump] = useState(dump)
   const [reqHeight, setreqHeight] = useState(false)
 
@@ -362,6 +334,10 @@ export const UploadVehicleScreen = observer(() => {
           newImageResize.id = 3
           _uploadFile(response, 'right')
           setfileRight(newImageResize);
+        } else {
+          newImageResize.id = 10
+          _uploadFile(response, 'vehicle_document')
+          setvehicleDoc(newImageResize);
         }
 
         // setFilePath(response);
@@ -427,6 +403,10 @@ export const UploadVehicleScreen = observer(() => {
         newImageResize.id = 3
         _uploadFile(response, 'right')
         setfileRight(newImageResize);
+      } else {
+        newImageResize.id = 10
+        _uploadFile(response, 'vehicle_document')
+        setvehicleDoc(newImageResize);
       }
     });
 
@@ -440,12 +420,14 @@ export const UploadVehicleScreen = observer(() => {
 
 
   const [visible, setvisible] = useState(false)
-  const [visible0, setvisible0] = useState(false)
+  const [visible0, setvisible0] = useState<boolean>(false)
 
   const [fileFront, setfileFront] = useState<any>({});
-  const [fileBack, setfileBack] = useState({});
-  const [fileLeft, setfileLeft] = useState({});
-  const [fileRight, setfileRight] = useState({});
+  const [fileBack, setfileBack] = useState<any>({});
+  const [fileLeft, setfileLeft] = useState<any>({});
+  const [fileRight, setfileRight] = useState<any>({});
+
+  const [vehicleDoc, setvehicleDoc] = useState<any>({});
 
   const [positionFile, setpositionFile] = useState(null)
 
@@ -482,6 +464,12 @@ export const UploadVehicleScreen = observer(() => {
     return;
   }
 
+  const getDocumentAttachCode = (document) => {
+    let result: string[] = []
+    Object.keys(document).map(e => result.push(document[e]))
+    return result
+  }
+
   const [submitReady, setsubmitReady] = useState(false)
   const onSubmit = data => {
     let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
@@ -502,7 +490,7 @@ export const UploadVehicleScreen = observer(() => {
       _alert(translate('uploadVehicleScreen.region'))
       return;
     }
-
+    const statusAction = JSON.parse(JSON.stringify(StatusStore.status))
     const data_mock_call: any = {
       carrierId: tokenStore.profile.userId,
       truckType: data['vehicle-type'],
@@ -512,7 +500,8 @@ export const UploadVehicleScreen = observer(() => {
 
       tipper: data['dump-field'] && data['dump-field'] == 1 ? true : false,
       registrationNumber: [],
-
+      document: vehicleDoc && Object.keys(vehicleDoc).length > 0 && statusAction != "edit" ?
+        [UploadFileStore.uploadVehicleDocument.token] : null,
       truckPhotos: {
         front: null,
         back: null,
@@ -538,11 +527,16 @@ export const UploadVehicleScreen = observer(() => {
     __DEV__ && console.tron.log("Upload file data onSubmit Form :: ", uploadData)
     __DEV__ && console.log("Upload file data onSubmit Form :: ", uploadData)
     // ** EDIT 2
-    const statusAction = JSON.parse(JSON.stringify(StatusStore.status))
-    if (statusAction && statusAction == "edit") {
 
+    if (statusAction && statusAction == "edit") {
       // DELETE ZONE - NEW ZONE
       let initData = JSON.parse(JSON.stringify(MyVehicleStore.data))
+      let initUploadDocument = JSON.parse(JSON.stringify(UploadFileStore.uploadVehicleDocument))
+      console.log("")
+      data_mock_call['document'] = (!initUploadDocument || Object.keys(initUploadDocument).length < 1) ?
+        (initData.document && Object.keys(initData.document).length > 0 ? [initData.document["0"]] :
+          null) : (initUploadDocument.attachCode ? [initUploadDocument.attachCode] : null)
+
       data_mock_call.id = initData.id
       let objectTmpImage = {
         front: fileFront.uri ? fileFront.uri : null,
@@ -662,20 +656,20 @@ export const UploadVehicleScreen = observer(() => {
   }
 
   // ******* ALERT ERROR API ******** //
-  // useEffect(() => {
-  //   let error_fetch = JSON.parse(JSON.stringify(CreateVehicleStore.error))
-  //   if(error_fetch){
-  //     AlertMessage()
-  //     CreateVehicleStore.clearValue("error")
-  //   }
-  // }, [CreateVehicleStore.error])
-  // useEffect(() => {
-  //   let error_fetch = JSON.parse(JSON.stringify(CreateVehicleStore.errorPatchMyVehicle))
-  //   if(error_fetch){
-  //     AlertMessage()
-  //     CreateVehicleStore.clearValue("error")
-  //   }
-  // }, [CreateVehicleStore.errorPatchMyVehicle])
+  useEffect(() => {
+    let error_fetch = JSON.parse(JSON.stringify(CreateVehicleStore.error))
+    if(error_fetch){
+      AlertMessage("common.somethingWrong", "common.pleaseCheckYourData", true)
+      CreateVehicleStore.clearValue("error")
+    }
+  }, [CreateVehicleStore.error])
+  useEffect(() => {
+    let error_fetch = JSON.parse(JSON.stringify(CreateVehicleStore.errorPatchMyVehicle))
+    if(error_fetch){
+      AlertMessage("common.somethingWrong", "common.pleaseCheckYourData", true)
+      CreateVehicleStore.clearValue("error")
+    }
+  }, [CreateVehicleStore.errorPatchMyVehicle])
   // ******* ALERT ERROR API ******** //
 
   useEffect(() => {
@@ -812,6 +806,14 @@ export const UploadVehicleScreen = observer(() => {
         })
       }
 
+      if (initData.document) setvehicleDoc({
+        uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + initData.document['0'],
+        method: 'GET',
+        headers: {
+          Accept: "image/*"
+        },
+      })
+
       if (initData.workingZones && initData.workingZones.length) {
         let tmpDropdownRegion = ddRegion
         let tmpDropdownProvince = ddProvince
@@ -859,6 +861,7 @@ export const UploadVehicleScreen = observer(() => {
 
     return () => {
       UploadFileStore.deleteUploadData()
+      UploadFileStore.deleteUploadDocument()
       initForm = 0
       settextInput([])
       setrenderNew(false)
@@ -866,7 +869,7 @@ export const UploadVehicleScreen = observer(() => {
   }, [])
 
 
-  const [valRegion, setvalRegion] = useState([])
+  const [valRegion] = useState([])
   const [ddRegion, setddRegion] = useState([])
 
   const [ddProvince, setddProvince] = useState([])
@@ -882,23 +885,6 @@ export const UploadVehicleScreen = observer(() => {
     })
     setddRegion(tmpDropdownRegion)
     setrenderNewRegion(!renderNewRegion)
-  }
-  const _deleteDropdown = (regionObj) => {
-    let tmpDropdownRegion = ddRegion
-    let tmpDropdownProvince = ddProvince
-    let last_province_data = tmpDropdownProvince[tmpDropdownProvince.length - 1]
-    if (last_province_data && last_province_data.id && last_province_data.id == regionObj.id) {
-      tmpDropdownProvince.pop()
-    }
-    tmpDropdownRegion.pop()
-    setddRegion(tmpDropdownRegion)
-    setddProvince(tmpDropdownProvince)
-    setrenderNewRegion(!renderNewRegion)
-  }
-
-  const _onPressSectionModal = (onChange, item) => {
-    onChange(item.id)
-    setvisible0(false)
   }
 
   const _renderSelectedList = (item, section) => {
@@ -985,13 +971,6 @@ export const UploadVehicleScreen = observer(() => {
       setreqHeight(requiredStallHeight)
       return default_height
     }
-  }
-
-  const _updateVisibleModal = (visibleX, index) => {
-    let tmp = visibleModal
-    tmp[index] = visibleX
-    setvisible(!visible)
-    setvisibleModal(tmp)
   }
 
   const _deleteRregistration = (index) => {
@@ -1267,14 +1246,6 @@ export const UploadVehicleScreen = observer(() => {
               <Ionicons name={"add-circle-outline"} size={spacing[5]} color={color.line} />
               <Text text={translate("uploadVehicleScreen.addVehicleRegistration") + " " + (textInput.length + 1)} style={{ ...CONTENT_TEXT, ...GREY_TEXT, ...PADDING_LEFT5 }} />
             </Button>
-
-
-
-
-
-
-
-
           </View>
         </View>
 
@@ -1331,10 +1302,47 @@ export const UploadVehicleScreen = observer(() => {
 
 
 
+
+
+
+
         <View style={{ ...TOP_VIEW, ...MARGIN_TOP }}>
           <View style={WRAPPER_TOP}>
-            <Text tx={"uploadVehicleScreen.uploadVehicleImage"} style={{ ...TITLE_TOPIC, ...MARGIN_TOP_EXTRA }} />
-            <View style={{ ...MARGIN_TOP_EXTRA, ...COLUMN_UPLOAD, ...MARGIN_BOTTOM_BIG }}>
+            <Text tx={"uploadVehicleScreen.uploadVehicleDocument"} style={{ ...TITLE_TOPIC, ...MARGIN_BOTTOM_BIG }} />
+            <View style={{ ...MARGIN_TOP_BIG, ...COLUMN_UPLOAD }}>
+              <View style={ROW_UPLOAD}>
+                <UploadVehicle
+                  key={'vehicle-document'}
+                  haveImage={Object.keys(vehicleDoc).length ? true : false}
+                  deleteImage={() => {
+                    setvehicleDoc({})
+                    UploadFileStore.deleteUploadDocument()
+                  }}
+                  onPress={() => _chooseFile('vehicle_document')}
+                  viewImageStyle={Object.keys(vehicleDoc).length ? MARGIN_TOP_EXTRA : MARGIN_TOP_MEDIUM}
+                  tx={Object.keys(vehicleDoc).length ? '' : "uploadVehicleScreen.vehicleDocument"}
+                  txStyle={Object.keys(vehicleDoc).length ? {} : { ...PADDING_TOP_5 }}
+                  uploadStyle={UPLOAD_IMG_STY}
+                  source={Object.keys(vehicleDoc).length ? vehicleDoc : images.vehicleDocument}
+                  imageStyle={Object.keys(vehicleDoc).length ? {} : PLACEHOLDER_VEHICLE_DOC} />
+              </View>
+            </View>
+          </View>
+        </View>
+
+
+
+
+
+
+
+
+
+
+        <View style={{ ...TOP_VIEW, ...MARGIN_TOP }}>
+          <View style={WRAPPER_TOP}>
+            <Text tx={"uploadVehicleScreen.uploadVehicleImage"} style={{ ...TITLE_TOPIC, ...MARGIN_BOTTOM_BIG }} />
+            <View style={{ ...MARGIN_TOP_BIG, ...COLUMN_UPLOAD }}>
               <View style={ROW_UPLOAD}>
                 <UploadVehicle
                   key={'front-image-upload'}
@@ -1386,17 +1394,6 @@ export const UploadVehicleScreen = observer(() => {
             </View>
           </View>
         </View>
-
-
-
-
-
-
-
-
-
-
-
         <View style={{ ...TOP_VIEW, ...MARGIN_TOP_EXTRA }}>
           <View style={WRAPPER_TOP}>
             <RoundedButton testID={"submit-vehicle"} onPress={handleSubmit(onSubmit)} text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />

@@ -39,7 +39,7 @@ export function ModalAlert(props: ModalAlertProps) {
     content,
     contentTranslate,
     contentTranslateOptions,
-    visible = false,
+    visible,
     buttonContainerStyle,
     buttonComponent = null,
     imageComponent = null,

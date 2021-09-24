@@ -47,6 +47,7 @@ export * from './job-detail-screen/select-truck-screen/select-truck-screen'
 
 
 export * from './free-screen/truck-detail-only-screen'
+export * from './free-screen/job-detail-only-screen'
 
 export * from './truck-detail-with-profile-screen/truck-detail-with-profile-screen'
 
@@ -54,3 +55,6 @@ export * from './advance-search-screen/advance-search-job-screen'
 export * from './advance-search-screen/advance-search-truck-screen'
 export * from './advance-search-screen/advance-search-truck-item-screen'
 export * from './advance-search-screen/advance-search-job-item-screen'
+export * from "./premium-detail-screen/premium-detail-screen"
+export * from "./premium-consent-screen/premium-consent-screen"
+export * from "./premium-register-screen/premium-register-screen"

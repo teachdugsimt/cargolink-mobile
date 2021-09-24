@@ -30,10 +30,14 @@ const UNDER_LINE: ViewStyle = {
 }
 export function NormalDropdown(props: NormalDropdownProps) {
 
-  const { value, onChange, items, placeholder, keyer, underline = true } = props
+  const { value, onChange, items, placeholder, keyer, underline = true, border = false, containerStyle } = props
 
+  const borderStyle: ViewStyle = border ?
+    { borderWidth: 1, borderColor: color.disable, borderRadius: spacing[1] } : {}
+
+  const mixStyle: ViewStyle = containerStyle ? { ...WRAP_DROPDOWN, ...containerStyle } : { ...WRAP_DROPDOWN }
   return (
-    <View style={[WRAP_DROPDOWN, underline ? UNDER_LINE : {}]} key={'view-dropdown-vehicle-height-' + keyer}>
+    <View style={[mixStyle, underline ? UNDER_LINE : {}]} key={'view-dropdown-vehicle-height-' + keyer}>
       <RNPickerSelect
         value={value || ''}
         onValueChange={(val) => {
@@ -49,7 +53,7 @@ export function NormalDropdown(props: NormalDropdownProps) {
         style={{
           inputAndroid: { ...CONTENT_TEXT }, inputIOS: { ...CONTENT_TEXT },
           iconContainer: Platform.OS == "ios" ? {} : { ...DROPDOWN_ICON_CONTAINER },
-          viewContainer: { flex: 1, justifyContent: 'center' },
+          viewContainer: { flex: 1, justifyContent: 'center', ...borderStyle },
           placeholder: { color: color.black }
         }}
         Icon={() => {

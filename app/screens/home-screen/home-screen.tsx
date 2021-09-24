@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useCallback } from "react"
 import { View, ViewStyle, TouchableOpacity, Image, ImageStyle, Dimensions, Platform, Linking, Alert, Animated } from "react-native"
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation, useFocusEffect } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
 import { images, color } from '../../theme'
 import { useStores } from "../../models/root-store/root-store-context";
@@ -10,12 +10,10 @@ import { ModalLoading, Text, SponserHome } from '../../components/'
 import TruckTypeStore from "../../store/truck-type-store/truck-type-store"
 import ProductTypeStore from "../../store/product-type-store/product-type-store"
 import StatusStore from '../../store/post-job-store/job-status-store'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import FontIcon from 'react-native-vector-icons/FontAwesome5'
 import ProfileStore from "../../store/profile-store/profile-store"
 import jwtDecode, { JwtPayload } from "jwt-decode";
 import i18n from 'i18n-js'
-import 'moment/locale/th';
+// import 'moment/locale/th';
 import AuthStore from "../../store/auth-store/auth-store"
 
 const { width } = Dimensions.get('window')
@@ -75,14 +73,27 @@ export const HomeScreen = observer((props) => {
   const { tokenStore, versatileStore } = useStores()
   const navigation = useNavigation()
 
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     // when back from other screen 
+  //     __DEV__ && console.tron.logImportant("COME useCallback useCallback useCallback useCallback")
+  //     if (AuthStore.profile?.userProfile?.userId || tokenStore?.profile?.userId)
+  //       ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore.profile.userId)
+  //     return () => {
+  //       // before go Other screen 
+  //     }
+  //   }, [])
+  // );
+
   useEffect(() => {
+    __DEV__ && console.tron.logImportant("COME USE EFFECT HOME")
     console.log("Persist Language :: ", versatileStore.language)
     if (versatileStore.language) i18n.locale = versatileStore.language
     versatileStore.findGroup()
     versatileStore.find()
     versatileStore.findProductType()
     if (AuthStore.profile?.userProfile?.userId || tokenStore?.profile?.userId)
-      ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore.profile.userId)
+      ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore?.profile?.userId, AuthStore?.profile?.token?.accessToken || tokenStore?.token?.accessToken)
     console.log("TOKEN STORE :: => ", JSON.parse(JSON.stringify(tokenStore.profile)))
 
     AuthStore.clearError()
@@ -206,6 +217,14 @@ export const HomeScreen = observer((props) => {
   // __DEV__ && console.tron.log("List Group (render) home screen :: ", versatileStore.listGroup)
   __DEV__ && console.tron.log("Token Store :: ", tokenStore.token)
 
+  const _onPressPremium = () => {
+    if (!token || !ProfileStore.data) navigation.navigate("signin")
+    else {
+      ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore.profile.userId)
+      navigation.navigate("premiumDetail")
+    }
+  }
+
   const [topBackgroundValue] = useState(new Animated.Value(-backgrounTopHeight))
   const [leftValue] = useState(new Animated.Value(-(width / 2)))
   const [rightValue] = useState(new Animated.Value(width / 2))
@@ -258,7 +277,15 @@ export const HomeScreen = observer((props) => {
           </View>
         </View>
 
-        <SponserHome />
+        {/* <View style={{
+          height: 90, backgroundColor: 'white',
+          marginHorizontal: 20, marginVertical: 10,
+          borderRadius: 15, padding: 20
+        }}>
+          <Text style={{ fontSize: 18 }}>เข้าร่วมเป็นคู่ค้ากับเรา</Text>
+        </View> */}
+
+        <SponserHome onPress={_onPressPremium} />
 
         <ModalLoading
           containerStyle={{ zIndex: 2 }}

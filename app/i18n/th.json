@@ -93,7 +93,10 @@
     "add": "เพิ่ม",
     "round": "เที่ยว",
     "ton": "ตัน",
-    "anonymous": "ไม่ระบุชื่อ"
+    "anonymous": "ไม่ระบุชื่อ",
+    "userType": "ประเภทของผู้ใช้งาน",
+    "userTypeSelect": "กรุณาเลือกประเภท",
+    "fileMoreThan5": "ขนาดของไฟล์ไม่เกิน 5 mb"
   },
   "commentScreen": {
     "yourComment": "ความคิดเห็นของคุณ",
@@ -144,6 +147,7 @@
     "findCar": "หารถ",
     "carriers": "ผู้ให้บริการขนส่ง / Carriers",
     "shippers": "เจ้าของสินค้า / Shippers",
+    "both": "ทั้งคู่ / Both",
     "wannaFindCar": "คุณต้องการหารถใช่ไหม?",
     "postJobNow": "โพสต์งานเลย"
   },
@@ -227,6 +231,8 @@
     "confirmRemoveJob": "ยืนยันการลบงานนี้"
   },
   "uploadVehicleScreen": {
+    "uploadVehicleDocument": "อัพโหลดเอกสารรถ",
+    "vehicleDocument": "เอกสารรถ",
     "placeholderRegistration": "xx - xxxx",
     "addVehicle": "เพิ่มรถ",
     "selectVehicleType": "ประเภทรถที่ต้องการ",
@@ -253,6 +259,8 @@
     "reqHeight": "กรุณาเลือกความสูงคอกรถ"
   },
   "profileScreen": {
+    "idCard": "บัตรประจำตัวประชาชน",
+    "uploadIdCard": "กรุณาอัพโหลดบัตรประจำตัวประชาชน",
     "everLogin": "คุณยังไม่ได้เข้าสู่ระบบ?",
     "loginRegister": " เข้าสู่ระบบ/สมัครสมาชิก",
     "nophone": "ไม่ระบุ",
@@ -520,5 +528,47 @@
     "truckAmountRequired": "จำนวนรถที่ต้องการ",
     "allProductType": "ประเภทสินค้าทั้งหมด",
     "ton": "ตัน"
+  },
+  "partnerRegister": {
+    "pickFile": "เลือกไฟล์เอกสาร",
+    "pending": "รออนุมัติ",
+    "verify": "อนุมัติ",
+    "registerCargolinkPremium": "สมัครเป็นคู่ค้ากับคาร์โก้ลิ้งค์ ",
+    "acceptPremiumConsent": "ยอมรับเงื่อนไขการใช้บริการ",
+    "uploadDocument": "อัพโหลดเอกสาร",
+    "addFieldDocument": "เพิ่มพื้นที่อัพโหลดเอกสาร",
+    "idCard&CompanyDocument": "สำเนาบัตรประชาชน / เอกสารบริษัท",
+    
+    "partnerUsefull": "สมัครเป็น Partner แล้วได้อะไร",
+    "ownerProduct": "สำหรับเจ้าของสินค้า",
+    "findTruckEasy": "- หารถได้ง่าย มีรถขนสินค้าทุกประเภท",
+    "easyToUse": "- ใช้งานสะดวกรวดเร็ว ประหยัดเวลา",
+    "reduceMoney": "- ลดต้นทุนค่าขนส่ง",
+    "reduceManageTime": "- ลดค่าบริหารจัดการ",
+    "realTimeTracking": "- ติดตามสถานะรถได้บน Mobile Application",
+    "haveEmployeeManage": "- มีเจ้าหน้าที่ประสานงานจัดหารถ",
+
+    "ownerTruck": "สำหรับเจ้าของรถ",
+    "easyToFindJob": "- หางาน และกดรับงานง่าย ผ่าน Mobile Application",
+    "reduceTimeToUse": "- ใช้งานสะดวกรวดเร็ว ประหยัดเวลา",
+    "rateUpForFindSalary": "- เพิ่มโอกาสหารายได้มากขึ้น",
+    "reduceFreeTrip": "- ลดปัญหาการวิ่งรถเที่ยวเปล่า",
+    "reduceCheat": "- ลดปัญหาการถูกเบี้ยวค่าขนส่ง มั่นใจคาร์โก้ลิ้งค์ดูแลให้",
+    "haveStaffPrepare": "- มีเจ้าหน้าที่ประสานงานจัดหางาน",
+
+    "property": "คุณสมบัติผู้สมัคร",
+    "regionThai": "- สัญชาติไทย",
+    "18+": "- อายุ 18 ปีขึ้นไป",
+
+    "documentRegister": "เอกสารที่ใช้ในการสมัคร",
+    "ownerProductDoc": "สำหรับเจ้าของสินค้า",
+    "ownerProductDoc1": "- สำเนา/รูปถ่าย บัตรประชาชน หรือ หนังสือรับรองบริษัทกรณีเป็นนิติบุคคล",
+    "ownerProductDoc2": "- หน้าสมุดบัญชีธนาคาร (ส่งเอกสารภายหลังจากได้รับอนุมัติเป็นคู่ค้ากับคาร์โก้ลิ้งค์แล้ว)",
+
+    "ownerTruckDoc": "สำหรับเจ้าของรถ",
+    "ownerTruckDoc1": "- สำเนา/รูปถ่าย บัตรประชาชน หรือ หนังสือรับรองบริษัทกรณีเป็นนิติบุคคล",
+    "ownerTruckDoc2": "- สำเนาทะเบียนรถ (ส่งเอกสารภายหลังจากได้รับอนุมัติเป็นคู่ค้ากับคาร์โก้ลิ้งค์แล้ว)",
+    "ownerTruckDoc3": "- หน้าสมุดบัญชีธนาคาร (ส่งเอกสารภายหลังจากได้รับอนุมัติเป็นคู่ค้ากับคาร์โก้ลิ้งค์แล้ว)",
+    "ownerTruckDoc4": "- สำเนาใบขับขี่คนขับรถ (ส่งเอกสารภายหลังจากได้รับอนุมัติเป็นคู่ค้ากับคาร์โก้ลิ้งค์แล้ว) "
   }
 }

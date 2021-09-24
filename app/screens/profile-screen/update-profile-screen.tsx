@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react"
 import {
   View, ViewStyle, TextStyle, TouchableOpacity,
-  SafeAreaView, Dimensions, Image, KeyboardAvoidingView, Alert, Platform, PermissionsAndroid
+  SafeAreaView, Dimensions, Image, KeyboardAvoidingView, Alert, Platform, PermissionsAndroid,
+  ImageStyle,
 } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Text, TextInputTheme, RoundedButton, ModalLoading, Screen } from "../../components"
+import {
+  Text, TextInputTheme, RoundedButton, ModalLoading, Screen, NormalDropdown,
+  UploadVehicle
+} from "../../components"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { useForm, Controller } from "react-hook-form";
@@ -18,6 +22,7 @@ import { AlertMessage } from "../../utils/alert-form";
 import { translate } from "../../i18n"
 import AuthStore from "../../store/auth-store/auth-store"
 import { API_URL } from '../../config/'
+import { useRoute } from '@react-navigation/core';
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -26,16 +31,28 @@ const COLOR_LINE: TextStyle = { color: color.line }
 const PADDING_VERTICAL: TextStyle = { paddingVertical: 10 }
 const PADDING_TOP_10: ViewStyle = { paddingTop: 10 }
 const PADDING_TOP_20: ViewStyle = { paddingTop: 20 }
+const PADDING_TOP_5: ViewStyle = { paddingTop: 5 }
 const MARGIN_HORI_10: ViewStyle = { marginHorizontal: 10 }
+const MARGIN_TOP_MEDIUM: ViewStyle = { marginTop: 15 }
+const MARGIN_TOP_BIG: ViewStyle = { marginTop: 10 }
 const BORDER_BOTTOM: ViewStyle = { borderBottomWidth: 1, borderBottomColor: color.mainGrey }
 const VIEW_SUGGEST: ViewStyle = { ...MARGIN_HORI_10, ...BORDER_BOTTOM }
 const ROW_TEXT: ViewStyle = {
   flexDirection: 'row',
 }
+const COLUMN_UPLOAD: ViewStyle = {
+  justifyContent: 'center',
+  alignItems: 'center'
+}
+const ROW_UPLOAD: ViewStyle = {
+  flexDirection: 'row',
+  justifyContent: 'center',
+}
 
 const TOP_VIEW_2: ViewStyle = {
   backgroundColor: color.textWhite,
 }
+const UPLOAD_IMG_STY: ViewStyle = { padding: 5, minHeight: 120 }
 const CONTENT_TEXT: TextStyle = {
   fontFamily: 'Kanit-Medium',
   color: color.black,
@@ -55,6 +72,7 @@ const CONTAINER_MODAL: ViewStyle = {
   ...FULL,
   ...WIDTH_WITH_MARGIN
 }
+const RED_COLOR: TextStyle = { color: color.red }
 const MARGIN_TOP_EXTRA: ViewStyle = { marginTop: 20 }
 const BORDER_MODAL_BUTTON: ViewStyle = {
   borderBottomWidth: 1,
@@ -85,7 +103,9 @@ const BUTTON_MODAL2: ViewStyle = {
   justifyContent: 'center',
   alignItems: 'center',
 }
-
+const PLACEHOLDER_VEHICLE_DOC: ImageStyle = {
+  width: 75, height: 50
+}
 const ROUND_BUTTON_CONTAINER: ViewStyle = {
   backgroundColor: color.primary, borderColor: color.transparent
 }
@@ -109,14 +129,20 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
   const [imageProfile, setImageProfile] = useState(null)
   const { tokenStore } = useStores()
 
-  const _uploadFile = (response) => {
+  const route = useRoute()
+  const { fromOtp } = route?.params ? JSON.parse(JSON.stringify(route?.params)) : { fromOtp: null }
+
+  __DEV__ && console.tron.logImportant(`FROM OTP : ${fromOtp}` || 'NO FROM OTP')
+
+  const _uploadFile = (response: any, type?: string) => {
+    console.log("Type image final :: ", type)
     __DEV__ && console.tron.log("Response File before upload :: ", response)
-    // UploadFileStore.uploadImage(file, position)
-    ProfileStore.uploadPicture(response)
+    ProfileStore.uploadPicture(response, type)
   }
 
   useEffect(() => {
     let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
+    __DEV__ && console.tron.log("Profile data : ", tmp_profile)
     if (tmp_profile && tmp_profile.avatar) setImageProfile({
       uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + tmp_profile.avatar,
       method: 'GET',
@@ -124,6 +150,16 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
         Accept: 'image/*'
       },
     })
+    if (tmp_profile && tmp_profile.attachCodeCitizenId) {
+      control.setValue('id-card', tmp_profile.attachCodeCitizenId)
+      setidCard({
+        uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + tmp_profile.attachCodeCitizenId,
+        method: 'GET',
+        headers: {
+          Accept: 'image/*'
+        },
+      })
+    }
   }, [ProfileStore.data])
 
   const requestCameraPermission = async () => {
@@ -165,7 +201,7 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
     } else return true;
   };
 
-  const captureImage = async () => {
+  const captureImage = async (typeImg?: string) => {
     setSelectCapture(false)
 
     let isCameraPermitted = await requestCameraPermission();
@@ -195,14 +231,20 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
         console.log('type -> ', response.type);
         console.log('fileName -> ', response.fileName);
 
-        _uploadFile(response)
-        setImageProfile(response);
+        if (!typeImg) {
+          _uploadFile(response)
+          setImageProfile(response);
+        }
+        else {
+          _uploadFile(response, typeImg)
+          setidCard(response);
+        }
 
       });
     }
   };
 
-  const chooseFile = () => {
+  const chooseFile = (typeImg?: string) => {
     setSelectCapture(false)
     launchImageLibrary(options, (response) => {
       console.log('Response = ', response);
@@ -230,15 +272,21 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
       console.log('type -> ', response.type);
       console.log('fileName -> ', response.fileName);
 
-      _uploadFile(response)
-      setImageProfile(response);
+      if (!typeImg) {
+        _uploadFile(response)
+        setImageProfile(response);
+      } else {
+        _uploadFile(response, typeImg)
+        setidCard(response);
+      }
     });
 
   };
 
-  const { control, handleSubmit, errors } = useForm({
+  const { control, handleSubmit, errors } = ProfileStore?.data?.id ? useForm({
     defaultValues: ProfileStore.ProfileData
-  });
+  }) : useForm({ defaultValues: AuthStore.ProfileData })
+
   const onSubmit = (data) => {
     __DEV__ && console.tron.log("Raw data :: ", data)
     let tmp_profile_store = JSON.parse(JSON.stringify(ProfileStore.data))
@@ -247,18 +295,57 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
       "phoneNumber": data["phone-number"],
       "avatar": null,
       "email": data["email"],
-      "userId": tokenStore.profile.userId
+      "userId": tokenStore.profile.userId,
+      "userType": data["user-type"],
+      "attachCodeCitizenId": data["id-card"] && data["id-card"] != "" ? data["id-card"] : null
     }
-    if (imageProfile) finalData['avatar'] = ProfileStore?.data_upload_picture?.token || tmp_profile_store.avatar
+    if (!fromOtp && imageProfile) finalData['avatar'] = ProfileStore?.data_upload_picture?.token || tmp_profile_store.avatar
+    else if (fromOtp && imageProfile) {
+      let tmpProfileFromOtp: any = AuthStore.ProfileData
+      finalData['avatar'] = ProfileStore?.data_upload_picture?.token || tmpProfileFromOtp.avatar
+    }
+    console.log("FINAL DATA :: ", finalData)
     ProfileStore.updateProfile(finalData)
+
+    if (fromOtp) {
+      let profileFromOtp = AuthStore.ProfileData
+      if (profileFromOtp['accept-policies']) navigation.navigate('Home', { screen: 'home' })
+      else navigation.navigate('acceptPolicy')
+    }
   }
 
   useEffect(() => {
+    // if (fromOtp) ProfileStore.getProfileRequest(fromOtp)
+    let tmp_profile: any = AuthStore.ProfileData
+    __DEV__ && console.tron.log("Auth data : ", tmp_profile)
+    if (tmp_profile && tmp_profile.avatar) setImageProfile({
+      uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + tmp_profile.avatar,
+      method: 'GET',
+      headers: {
+        Accept: 'image/*'
+      },
+    })
+
+    if (tmp_profile && tmp_profile['id-card']) {
+      control.setValue('id-card', tmp_profile['id-card'])
+      setidCard({
+        uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + tmp_profile['id-card'],
+        method: 'GET',
+        headers: {
+          Accept: 'image/*'
+        },
+      })
+    }
+
     return () => {
       ProfileStore.clearData()
-      ProfileStore.getProfileRequest(AuthStore.profile.userProfile.userId)
+      ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore.profile.userId)
     }
   }, [])
+
+  useEffect(() => {
+    // if (fromOtp) ProfileStore.getProfileRequest("DLG448ZX")
+  }, [fromOtp])
 
   useEffect(() => {
     let tmp_update = JSON.parse(JSON.stringify(ProfileStore.data_update_profile))
@@ -277,161 +364,255 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
     }
   }, [ProfileStore.error_update_profile])
 
+  useEffect(() => {
+    const dataUploadIdCard = JSON.parse(JSON.stringify(ProfileStore.data_upload_id_card))
+    if (dataUploadIdCard && Object.keys(dataUploadIdCard).length > 0) {
+      control.setValue('id-card', dataUploadIdCard.attachCode)
+    } else {
+      control.setValue('id-card', '')
+    }
+  }, [JSON.stringify(ProfileStore.data_upload_id_card)])
+
+
+  const [idCard, setidCard] = useState<any>({})
+  const [typeImage, settypeImage] = useState<string>("")
 
   let formControllerValue = control.getValues()
   __DEV__ && console.tron.logImportant("Form in render :: ", formControllerValue)
 
   let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
-  __DEV__ && console.tron.logImportant("Profile Data :: ", tmp_profile)
 
-  return (
-    <View testID="UpdateProfileScreen" style={FULL}>
-      <Screen preset={'scroll'} unsafe>
-        <ScrollView style={FULL}>
-          <View style={[PADDING_TOP_20, BACKGROUND_WHITE]}>
-            <View style={VIEW_SUGGEST}>
-              <Text tx={"profileScreen.weSuggest"} style={COLOR_PRIMARY} />
-              <Text tx={"profileScreen.fullSuggestText"} style={[COLOR_LINE, PADDING_VERTICAL]} />
-            </View>
+  const role_array = [{ label: translate('homeScreen.carriers'), value: "CARRIER" },
+  { label: translate('homeScreen.shippers'), value: "SHIPPER" },
+  { label: translate('homeScreen.both'), value: 'BOTH' }]
+
+  const closeModal = () => {
+    setSelectCapture(false)
+    settypeImage('')
+  }
+
+  __DEV__ && console.tron.logImportant("ID CARD Data :: ", idCard)
+
+  return <View testID="UpdateProfileScreen" style={FULL}>
+    <Screen preset={'scroll'} unsafe>
+      <ScrollView style={FULL}>
+        <View style={[PADDING_TOP_20, BACKGROUND_WHITE]}>
+          <View style={VIEW_SUGGEST}>
+            <Text tx={"profileScreen.weSuggest"} style={COLOR_PRIMARY} />
+            <Text tx={"profileScreen.fullSuggestText"} style={[COLOR_LINE, PADDING_VERTICAL]} />
           </View>
+        </View>
 
-          <ModalLoading
-            containerStyle={{ zIndex: 2 }}
-            size={'large'} color={color.primary} visible={ProfileStore.loading_update_profile} />
+        <ModalLoading
+          containerStyle={{ zIndex: 2 }}
+          size={'large'} color={color.primary} visible={(ProfileStore.loading || ProfileStore.loading_update_picture || ProfileStore.loading_update_profile)} />
 
-          <Modal
-            visible={selectCapture}
-            onTouchOutside={() => setSelectCapture(false)}
-            onSwipeOut={() => setSelectCapture(false)}
-            onDismiss={() => setSelectCapture(false)}
-            swipeDirection={['up', 'down']} // can be string or an array
-            swipeThreshold={100} // default 100
-          >
-            <SafeAreaView style={SAFE_AREA_MODAL}>
-              <View style={CONTAINER_MODAL}>
-                <TouchableOpacity style={BUTTON_MODAL1} onPress={() => captureImage()}>
-                  <View style={ROW_TEXT}>
-                    <Ionicons name="camera" size={20} color={color.primary} />
-                    <Text style={TEXT_MODAL_BUTTON} tx={"uploadVehicleScreen.captureNew"} /></View>
-                </TouchableOpacity>
-                <TouchableOpacity style={BUTTON_MODAL2} onPress={() => chooseFile()}>
-                  <View style={ROW_TEXT}>
-                    <Ionicons name="library" size={20} color={color.primary} />
-                    <Text style={TEXT_MODAL_BUTTON} tx={"uploadVehicleScreen.selectFromLibrary"} /></View>
-                </TouchableOpacity>
-              </View>
-            </SafeAreaView>
-          </Modal>
-
-          <View style={[FULL, BACKGROUND_WHITE]}>
-
-
-            <View style={MARGIN_HORI_10}>
-              <View style={PADDING_TOP_20}>
-
-                <View style={{ flexDirection: 'row' }}>
-                  <Text>1.</Text>
-                  <Text tx={"profileScreen.uploadYourPic"} />
-                </View>
-
-                <View style={{ alignItems: 'center', paddingTop: 20 }}>
-                  <TouchableOpacity onPress={() => setSelectCapture(true)}>
-                    <View>
-                      {!!imageProfile && <TouchableOpacity style={{ alignItems: 'flex-end', position: 'absolute', top: 0, right: 0, zIndex: 2 }} onPress={() => setImageProfile(null)}>
-                        <Ionicons name={"close"} size={22} color={color.error} />
-                      </TouchableOpacity>}
-                      {/* <Image source={imageProfile ? imageProfile : images.addProfilePic} resizeMode="stretch" style={{ maxHeight: 120, maxWidth: 120 }} /> */}
-                      <Image source={(imageProfile ? imageProfile : images.addProfilePic)} resizeMode="stretch" style={{ width: 120, height: 120 }} />
-                    </View>
-                  </TouchableOpacity>
-                </View>
-
-              </View>
+        <Modal
+          visible={selectCapture}
+          onTouchOutside={closeModal}
+          onSwipeOut={closeModal}
+          onDismiss={closeModal}
+          swipeDirection={['up', 'down']} // can be string or an array
+          swipeThreshold={100} // default 100
+        >
+          <SafeAreaView style={SAFE_AREA_MODAL}>
+            <View style={CONTAINER_MODAL}>
+              <TouchableOpacity style={BUTTON_MODAL1} onPress={() => captureImage(typeImage)}>
+                <View style={ROW_TEXT}>
+                  <Ionicons name="camera" size={20} color={color.primary} />
+                  <Text style={TEXT_MODAL_BUTTON} tx={"uploadVehicleScreen.captureNew"} /></View>
+              </TouchableOpacity>
+              <TouchableOpacity style={BUTTON_MODAL2} onPress={() => chooseFile(typeImage)}>
+                <View style={ROW_TEXT}>
+                  <Ionicons name="library" size={20} color={color.primary} />
+                  <Text style={TEXT_MODAL_BUTTON} tx={"uploadVehicleScreen.selectFromLibrary"} /></View>
+              </TouchableOpacity>
             </View>
+          </SafeAreaView>
+        </Modal>
 
-            <View style={MARGIN_HORI_10}>
-              <View style={PADDING_TOP_20}>
-                <View style={{ flexDirection: 'row' }}>
-                  <Text>2.</Text>
-                  <Text tx={"profileScreen.inputMoreDetail"} />
-                </View>
+        <View style={[FULL, BACKGROUND_WHITE]}>
 
 
-                <View style={PADDING_TOP_10}>
-                  <View style={{ flexDirection: 'row' }}>
-                    <Text tx={"profileScreen.nameLastName"} />
-                    <Text style={{ color: color.error }}> *</Text>
+          <View style={MARGIN_HORI_10}>
+            <View style={PADDING_TOP_20}>
+
+              <View style={{ flexDirection: 'row' }}>
+                <Text>1.</Text>
+                <Text tx={"profileScreen.uploadYourPic"} />
+              </View>
+
+              <View style={{ alignItems: 'center', paddingTop: 20 }}>
+                <TouchableOpacity onPress={() => {
+                  settypeImage(null)
+                  setSelectCapture(true)
+                }}>
+                  <View>
+                    {!!imageProfile && <TouchableOpacity style={{ alignItems: 'flex-end', position: 'absolute', top: 0, right: 0, zIndex: 2 }} onPress={() => setImageProfile(null)}>
+                      <Ionicons name={"close"} size={22} color={color.error} />
+                    </TouchableOpacity>}
+                    {/* <Image source={imageProfile ? imageProfile : images.addProfilePic} resizeMode="stretch" style={{ maxHeight: 120, maxWidth: 120 }} /> */}
+                    <Image source={(imageProfile ? imageProfile : images.addProfilePic)} resizeMode="stretch" style={{ width: 120, height: 120 }} />
                   </View>
-                  <Controller
-                    control={control}
-                    render={({ onChange, onBlur, value }) => (
-                      <TextInputTheme
-                        testID={"name-lastname-input"}
-                        inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
-                        onBlur={onBlur}
-                        onChangeText={value => onChange(value)}
-                        value={value}
-                      />
-                    )}
-                    key={"key-name-lastname"}
-                    name={"name-lastname"}
-                    rules={{ required: true }}
-                    defaultValue=""
-                  />
-                </View>
-                {errors['name-lastname'] && <Text style={{ color: color.red }} tx={"profileScreen.inputName"} />}
-
-                <View style={PADDING_TOP_10}>
-                  <Text tx={"profileScreen.phoneNumber"} />
-                  <Controller
-                    control={control}
-                    render={({ onChange, onBlur, value }) => (
-                      <TextInputTheme
-                        testID={"phone-number-input"}
-                        inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
-                        onBlur={onBlur}
-                        onChangeText={value => onChange(value)}
-                        value={value}
-                      />
-                    )}
-                    key={"key-phone-number"}
-                    name={"phone-number"}
-                    defaultValue=""
-                  />
-                </View>
-
-                <View style={PADDING_TOP_10}>
-                  <Text tx={"profileScreen.email"} />
-                  <Controller
-                    control={control}
-                    render={({ onChange, onBlur, value }) => (
-                      <TextInputTheme
-                        testID={"email-input"}
-                        inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
-                        onBlur={onBlur}
-                        onChangeText={value => onChange(value)}
-                        value={value}
-                      />
-                    )}
-                    key={"key-email"}
-                    name={"email"}
-                    defaultValue=""
-                  />
-                </View>
-
+                </TouchableOpacity>
               </View>
-            </View>
 
-          </View>
-
-          <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_EXTRA }}>
-            <View style={WRAPPER_TOP}>
-              <RoundedButton onPress={handleSubmit(onSubmit)} text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
             </View>
           </View>
 
-        </ScrollView>
-      </Screen>
-    </View>
-  )
+          <View style={MARGIN_HORI_10}>
+            <View style={PADDING_TOP_20}>
+              <View style={{ flexDirection: 'row' }}>
+                <Text>2.</Text>
+                <Text tx={"profileScreen.inputMoreDetail"} />
+              </View>
+
+
+
+
+
+              <View style={PADDING_TOP_10}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text tx={"profileScreen.idCard"} />
+                  <Text style={{ color: color.error }}> *</Text>
+                </View>
+                <View style={{ ...MARGIN_TOP_BIG, ...COLUMN_UPLOAD }}>
+                  <View style={ROW_UPLOAD}>
+                    <Controller
+                      control={control}
+                      render={({ onChange, onBlur, value }) => (
+                        <UploadVehicle
+                          key={'vehicle-document'}
+                          haveImage={Object.keys(idCard).length ? true : false}
+                          deleteImage={() => {
+                            setidCard({})
+                            ProfileStore.clearUploadIdCard()
+                          }}
+                          onPress={() => {
+                            settypeImage('id_card')
+                            setSelectCapture(true)
+                          }}
+                          viewImageStyle={Object.keys(idCard).length ? MARGIN_TOP_EXTRA : MARGIN_TOP_MEDIUM}
+                          tx={Object.keys(idCard).length ? '' : "profileScreen.uploadIdCard"}
+                          txStyle={Object.keys(idCard).length ? {} : { ...PADDING_TOP_5 }}
+                          uploadStyle={UPLOAD_IMG_STY}
+                          source={Object.keys(idCard).length ? idCard : images.idCard}
+                          imageStyle={Object.keys(idCard).length ? {} : PLACEHOLDER_VEHICLE_DOC} />
+                      )}
+                      key={"key-id-card"}
+                      name={"id-card"}
+                      rules={{}}
+                      defaultValue=""
+                    />
+                    <View style={{ flex: 0.8 }} />
+                  </View>
+                </View>
+              </View>
+
+
+
+
+
+
+              <View style={PADDING_TOP_10}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text tx={"profileScreen.nameLastName"} />
+                  <Text style={{ color: color.error }}> *</Text>
+                </View>
+                <Controller
+                  control={control}
+                  render={({ onChange, onBlur, value }) => (
+                    <TextInputTheme
+                      testID={"name-lastname-input"}
+                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
+                      onBlur={onBlur}
+                      onChangeText={value => onChange(value)}
+                      value={value}
+                    />
+                  )}
+                  key={"key-name-lastname"}
+                  name={"name-lastname"}
+                  rules={{ required: true }}
+                  defaultValue=""
+                />
+              </View>
+              {errors['name-lastname'] && <Text style={{ color: color.red }} tx={"profileScreen.inputName"} />}
+
+              <View style={PADDING_TOP_10}>
+                <Text tx={"profileScreen.phoneNumber"} />
+                <Controller
+                  control={control}
+                  render={({ onChange, onBlur, value }) => (
+                    <TextInputTheme
+                      testID={"phone-number-input"}
+                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
+                      onBlur={onBlur}
+                      onChangeText={value => onChange(value)}
+                      value={value}
+                    />
+                  )}
+                  key={"key-phone-number"}
+                  name={"phone-number"}
+                  defaultValue=""
+                />
+              </View>
+
+              <View style={PADDING_TOP_10}>
+                <Text tx={"profileScreen.email"} />
+                <Controller
+                  control={control}
+                  render={({ onChange, onBlur, value }) => (
+                    <TextInputTheme
+                      testID={"email-input"}
+                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
+                      onBlur={onBlur}
+                      onChangeText={value => onChange(value)}
+                      value={value}
+                    />
+                  )}
+                  key={"key-email"}
+                  name={"email"}
+                  defaultValue=""
+                />
+              </View>
+
+              <View style={PADDING_TOP_10}>
+                <Text tx={"common.userType"} />
+                <Controller
+                  control={control}
+                  render={({ onChange, onBlur, value }) => (
+                    <NormalDropdown
+                      key={'common.userTypeSelect'}
+                      value={value || ""}
+                      onChange={onChange}
+                      items={role_array}
+                      placeholder={"common.userTypeSelect"}
+                      border={true}
+                      underline={false}
+                      containerStyle={{ height: 65, paddingHorizontal: 0, paddingVertical: 10 }}
+                    />
+                  )}
+                  key={'dropdown-user-type'}
+                  name={"user-type"}
+                  rules={{ required: true }}
+                  defaultValue=""
+                />
+                {errors['user-type'] && !formControllerValue['user-type'] && <Text style={[RED_COLOR, fromOtp ? { paddingBottom: 10 } : {}]} tx={"common.userTypeSelect"} />}
+              </View>
+
+            </View>
+          </View>
+
+        </View>
+
+        <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_EXTRA }}>
+          <View style={WRAPPER_TOP}>
+            <RoundedButton onPress={handleSubmit(onSubmit)} text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
+          </View>
+        </View>
+
+      </ScrollView>
+    </Screen>
+  </View>
+
 })

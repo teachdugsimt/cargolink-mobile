@@ -228,15 +228,19 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
   const onRefresh = () => {
     let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
-    if (tmp_profile && tmp_profile.userId) ProfileStore.getProfileReporterScreen(tmp_profile.userId)
-    ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore.profile.userId)
+    if (tokenStore.token) {
+      if (tmp_profile && tmp_profile.userId) ProfileStore.getProfileReporterScreen(tmp_profile.userId)
+      ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore.profile.userId)
+    }
   }
 
   const onRefreshTruckSummary = () => {
     let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
-    ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore.profile.userId)
-    if (tmp_profile && tmp_profile.userId) ProfileStore.getProfileReporterScreen(tmp_profile.userId)
-    ProfileStore.getTruckSummary()
+    if (tokenStore.token) {
+      ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore.profile.userId)
+      if (tmp_profile && tmp_profile.userId) ProfileStore.getProfileReporterScreen(tmp_profile.userId)
+      ProfileStore.getTruckSummary()
+    }
   }
 
   const [provinceTmp, setprovinceTmp] = useState(null)
@@ -463,12 +467,13 @@ export const ProfileScreen = observer(function ProfileScreen() {
   }
 
   const { fullName, phoneNumber, avatar } = JSON.parse(JSON.stringify(ProfileStore.data)) || {}
-  // __DEV__ && console.tron.log("Profile data :: ", JSON.parse(JSON.stringify(ProfileStore.data)))
+  __DEV__ && console.tron.log("Profile data :: ", JSON.parse(JSON.stringify(ProfileStore.data)))
 
   __DEV__ && console.tron.log("Report data :: ", JSON.parse(JSON.stringify(ProfileStore.data_report_profile_screen)))
 
 
   let token = tokenStore?.token?.accessToken || ''
+
   return (
     <View testID="ProfileScreen" style={FULL}>
       <View style={TOP_VIEW}>

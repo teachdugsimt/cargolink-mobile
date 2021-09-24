@@ -1,6 +1,7 @@
 import { types, flow, cast } from "mobx-state-tree"
 import { AuthAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
+import ProfileStore from "../profile-store/profile-store"
 const apiAuth = new AuthAPI()
 
 const InvalidPhone = "Invalid entry for your phone number"
@@ -106,14 +107,17 @@ const OTPVerify = types.model({
   responseCode: types.maybeNull(types.number),
   userProfile: types.maybeNull(
     types.model({
-      id: types.maybeNull(types.string),
+      id: types.maybeNull(types.number),
       userId: types.maybeNull(types.string),
       companyName: types.maybeNull(types.string),
-      fullname: types.maybeNull(types.string),
+      fullName: types.maybeNull(types.string),
       mobileNo: types.maybeNull(types.string),
       email: types.maybeNull(types.string),
-      avatar: types.maybeNull(types.string)
-      // language: types.maybeNull(types.string),
+      attachCodeCitizenId: types.maybeNull(types.string),
+      avatar: types.maybeNull(types.string),
+      userType: types.maybeNull(types.string),
+      document: types.maybeNull(types.map(types.string)),
+      documentStatus: types.maybeNull(types.string)
     }),
   ),
   termOfService: types.maybeNull(Policy),
@@ -136,6 +140,8 @@ const AuthStore = types
     policyData: types.maybeNull(Policy),
     loading: types.boolean,
     error: types.maybeNull(types.string),
+
+    errorOtpVerify: types.maybeNull(types.string),
 
     dataApple: AppleProfile,
     loadingApple: types.boolean,
@@ -202,20 +208,30 @@ const AuthStore = types
         const response = yield apiAuth.verifyOTP(data)
         console.log("response otpVerifyRequest :>> ", response)
         if (response.kind === 'ok') {
+          __DEV__ && console.tron.log("OtpVerify.Data : ", response.data)
           self.profile = response.data || {}
           self.policyData = response.data?.termOfService || {}
           self.error = '' // Clear error when signin success
+          self.errorOtpVerify  = '' // Clear error when signin success
           self.phoneNumber = null // Clear phoneNumber when signin success
+          // yield ProfileStore.getProfileRequest(response.data.userProfile.userId, response.data.token.accessToken)
         } else {
           self.error = response?.data?.message || response?.kind
+          self.errorOtpVerify = response?.data?.message || response?.kind
         }
         self.loading = false
       } catch (error) {
         console.log('error otpVerifyRequest :>> ', error);
         self.loading = false
         self.error = "error fetch api otp verify"
+        self.errorOtpVerify = "error fetch api otp verify"
       }
     }),
+    clearErrorOtpVerify() {
+      self.errorOtpVerify = ""
+      self.error = ""
+      self.loading = false
+    },
     /*
         getPolicyRequest: flow(function* getPolicyRequest(id: number) {
           apiAuth.setup()
@@ -281,6 +297,17 @@ const AuthStore = types
     get getOtpVerifyData() {
       return self.profile
     },
+    get ProfileData() {
+      let data_profile = {}
+      data_profile['name-lastname'] = self.profile.userProfile?.fullName || ''
+      data_profile['phone-number'] = self.profile.userProfile?.mobileNo || ''
+      data_profile['email'] = self.profile.userProfile?.email || ''
+      data_profile['avatar'] = self.profile.userProfile?.avatar || ''
+      data_profile['user-type'] = self.profile.userProfile?.userType || ''
+      data_profile['id-card'] = self.profile.userProfile?.attachCodeCitizenId || ''
+      data_profile['accept-policies'] = self.profile.termOfService?.accepted || ''
+      return data_profile
+    }
   }))
   .create({
     // IMPORTANT !!
@@ -291,6 +318,7 @@ const AuthStore = types
     countryCode: '',
     loading: false,
     error: "",
+    errorOtpVerify: "",
     dataApple: null,
     loadingApple: false,
     errorApple: ''

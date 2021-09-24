@@ -40,7 +40,7 @@ export class ProfileApi {
     return data
   }
 
-  async setup() {
+  async setup(tokeny?: string) {
     let to = await this.getToken()
       .then(val => {
         return val?.tokenStore?.token?.accessToken || ''
@@ -52,7 +52,7 @@ export class ProfileApi {
       headers: {
         Accept: "application/json",
         // Authorization: `Bearer ${to}`
-        Authorization: `${to}`
+        Authorization: `${tokeny || to}`
       },
     })
   }
@@ -98,7 +98,7 @@ export class ProfileApi {
     try {
       // const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/multi-roles/profile', params)
       const response: ApiResponse<any> = await this.apisauce.patch('/api/v1/users/me', params)
-      console.log("Response call api get PROFILE : ", response)
+      console.log("Response call api patch profile : ", response)
       // if (!response.ok) {
       //   const problem = getGeneralApiProblem(response)
       //   if (problem) return problem
@@ -126,9 +126,20 @@ export class ProfileApi {
       console.log("Error call api get getUserReport: ", error)
       return error
     }
-
   }
 
+
+  async getPartnerTermAndCondition(id: string): Promise<any> {
+    // make the api call
+    try {
+      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/users/${id}/term-of-service-partner`)
+      console.log("Response call api get getPartnerTermAndCondition : ", response)
+      return response
+    } catch (error) {
+      console.log("Error call api get getUserReport: ", error)
+      return error
+    }
+  }
 
 
 }
