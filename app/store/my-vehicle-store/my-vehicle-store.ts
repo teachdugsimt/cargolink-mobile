@@ -44,9 +44,7 @@ const vehicleModel = {
     region: types.maybeNull(types.number),
     province: types.maybeNull(types.number),
   })), []),
-  document: types.maybeNull(types.model({
-    "0": types.maybeNull(types.string)
-  }))
+  document: types.maybeNull(types.map(types.string)),
 }
 
 const JobDetail = types.model({

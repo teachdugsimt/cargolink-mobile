@@ -63,7 +63,7 @@ const SECOND_VIEW_ADD_DOCUMENT: ViewStyle = {
 const TOP_VIEW_2: ViewStyle = {
   backgroundColor: color.textWhite,
 }
-const UPLOAD_IMG_STY: ViewStyle = { padding: 5, minHeight: 120 }
+const UPLOAD_IMG_STY: ViewStyle = { padding: 5, minHeight: 120, margin: 5 }
 const CONTENT_TEXT: TextStyle = {
   fontFamily: 'Kanit-Medium',
   color: color.black,
@@ -199,7 +199,7 @@ export const PremiumRegisterScreen = observer(function PremiumRegisterScreen() {
   }
 
   const _renderPlusField = (item, index) => (<View key={`${JSON.stringify(item)}-${"" + index}`} style={[FULL, UPLOAD_IMG_STY]}>
-    <TouchableOpacity style={[FULL, ADD_DOCUMENT_CONTAINER, UPLOAD_IMG_STY]} onPress={() => addDocumentField()}
+    <TouchableOpacity style={[FULL, ADD_DOCUMENT_CONTAINER]} onPress={() => addDocumentField()}
       testID={"select-image"}>
       <View style={SECOND_VIEW_ADD_DOCUMENT}>
         <View style={{ ...COLUMN_UPLOAD, ...MARGIN_TOP_BIG }}>
@@ -377,7 +377,10 @@ export const PremiumRegisterScreen = observer(function PremiumRegisterScreen() {
       if (e.includes('document-') && tmp_raw_data[e]) documentFile.push(tmp_raw_data[e])
     })
     console.log("Array Document File List : ", documentFile)
-
+    if (documentFile.length == 0 || (documentFile.length == 1 && Object.keys(documentFile[0]).length == 0)) {
+      AlertMessage(translate('common.somethingWrong'), translate('common.atLeastDocument'))
+      return ;
+    }
 
 
     let finalData = {
@@ -420,21 +423,13 @@ export const PremiumRegisterScreen = observer(function PremiumRegisterScreen() {
   }, [])
 
   useEffect(() => {
-    let tmp_update = JSON.parse(JSON.stringify(ProfileStore.data_update_profile))
-    if (tmp_update && tmp_update != null) {
-      AlertMessage(translate('common.successTransaction'), translate('common.updateSuccess'))
-      ProfileStore.clearUpdateData('data_update_profile')
-    }
-  }, [ProfileStore.data_update_profile])
-
-  useEffect(() => {
-    let error_update = JSON.parse(JSON.stringify(ProfileStore.error_update_profile))
+    let error_update = JSON.parse(JSON.stringify(PartnerRegisterStore.error_update_profile))
     if (error_update && error_update != null) {
       if (error_update == "Invalid entry for email address") AlertMessage(translate('common.somethingWrong'), translate('common.invalidEmail'))
       else AlertMessage(translate('common.somethingWrong'), translate('common.pleaseCheckYourData'))
-      ProfileStore.clearUpdateData('error_update_profile')
+      PartnerRegisterStore.clearUpdateData('error_update_profile')
     }
-  }, [ProfileStore.error_update_profile])
+  }, [PartnerRegisterStore.error_update_profile])
 
 
   const handleError = (err: Error) => {
@@ -577,8 +572,10 @@ export const PremiumRegisterScreen = observer(function PremiumRegisterScreen() {
                     )}
                     key={"key-phone-number"}
                     name={"phone-number"}
+                    rules={{ required: true }}
                     defaultValue=""
                   />
+                  {errors['phone-number'] && !formControllerValue['phone-number'] && <Text style={[RED_COLOR]} tx={"postJobScreen.validateReceiveTel"} />}
                 </View>
 
                 <View style={PADDING_TOP_10}>
@@ -656,11 +653,10 @@ export const PremiumRegisterScreen = observer(function PremiumRegisterScreen() {
                               )}
                               key={"key-document-" + sub}
                               name={"document-" + sub}
-                              rules={{}}
+                              rules={{ required: true }}
                               defaultValue={{}}
                             />
                           </View>
-
                           else return _renderPlusField(sub, subi)
                         })}
                       </View>

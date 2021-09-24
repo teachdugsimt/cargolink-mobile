@@ -80,7 +80,7 @@ export class MyVehicleAPI {
   async findOne(id: string): Promise<any> {
     try {
       // const response: ApiResponse<any> = await this.apisauce.get(`api/v1/mobile/carriers/truck/${id}`)
-      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/trucks/${id}`)
+      const response: ApiResponse<any> = await this.apisauce.get(`/api/v2/trucks/${id}`)
 
       console.log("Response call api get truck ttype by id : ", response)
       if (!response.ok) {

@@ -40,7 +40,8 @@ export const SelectProvinceScreen = observer(function () {
   const [itemSelected, setItemSelected] = useState<any>({})
   const [isFirstRender, setIsFirstRender] = useState<boolean>(true)
 
-  const list_region = JSON.parse(JSON.stringify(AddressStore.workZone))
+  const tmp_regions = JSON.parse(JSON.stringify(AddressStore.workZone))
+  const list_region = tmp_regions.filter(e => e.value != 5)
 
   const selectItemOnce = (province: any, mainIndex: number) => {
     let tmp_list = list_region
