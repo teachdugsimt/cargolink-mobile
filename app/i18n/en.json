@@ -95,7 +95,8 @@
     "anonymous": "Anonymous",
     "userType": "user type",
     "userTypeSelect": "please select user type",
-    "fileMoreThan5": "file size must be less than 5 mb"
+    "fileMoreThan5": "file size must be less than 5 mb",
+    "atLeastDocument": "Please upload document."
   },
   "commentScreen": {
     "yourComment": "Your Comment",
@@ -543,6 +544,11 @@
     "reduceManageTime": "- ลดค่าบริหารจัดการ",
     "realTimeTracking": "- ติดตามสถานะรถได้บน Mobile Application",
     "haveEmployeeManage": "- มีเจ้าหน้าที่ประสานงานจัดหารถ",
+    "useFullShipper1": "- หารถง่าย มีรถขนสินค้าทุกประเภท",
+    "useFullShipper2": "- ได้รถวิ่งงานขากลับ ลดต้นทุนค่าขนส่ง",
+    "useFullShipper3": "- ติดตามรถที่วิ่งงานได้ตลอดเวลาบน Mobile Application",
+    "useFullShipper4": "- ลดค่าใช้จ่ายในการจ้างพนักงานประสานงานรถ",
+    "useFullShipper5": "- ทำการตลาดหารถให้และมีทีมงานดูแลจนจบงาน",
 
     "ownerTruck": "สำหรับเจ้าของรถ",
     "easyToFindJob": "- หางาน และกดรับงานง่าย ผ่าน Mobile Application",
@@ -551,6 +557,11 @@
     "reduceFreeTrip": "- ลดปัญหาการวิ่งรถเที่ยวเปล่า",
     "reduceCheat": "- ลดปัญหาการถูกเบี้ยวค่าขนส่ง มั่นใจคาร์โก้ลิ้งค์ดูแลให้",
     "haveStaffPrepare": "- มีเจ้าหน้าที่ประสานงานจัดหางาน",
+    "useFullCarrier1": "- หางาน และกดรับงานได้ทันที บน Mobile Application",
+    "useFullCarrier2": "- มีงานทั่วประเทศ หลากหลายประเภทให้เลือก",
+    "useFullCarrier3": "- วิ่งงานได้ต่อเนื่องตลอดทั้งปี",
+    "useFullCarrier4": "- สร้างรายได้มากขึ้น จากรถว่างขากลับ",
+    "useFullCarrier5": "- ลดปัญหาการถูกเบี้ยวค่าขนส่ง มั่นใจคาร์โก้ลิ้งค์ดูแลให้",
 
     "property": "คุณสมบัติผู้สมัคร",
     "regionThai": "- สัญชาติไทย",
@@ -559,12 +570,14 @@
     "documentRegister": "เอกสารที่ใช้ในการสมัคร",
     "ownerProductDoc": "สำหรับเจ้าของสินค้า",
     "ownerProductDoc1": "- สำเนา/รูปถ่าย บัตรประชาชน หรือ หนังสือรับรองบริษัทกรณีเป็นนิติบุคคล",
-    "ownerProductDoc2": "- หน้าสมุดบัญชีธนาคาร (ส่งเอกสารภายหลังจากได้รับอนุมัติเป็นคู่ค้ากับคาร์โก้ลิ้งค์แล้ว)",
+    "ownerProductDoc2": "- หน้าสมุดบัญชีธนาคาร",
 
     "ownerTruckDoc": "สำหรับเจ้าของรถ",
     "ownerTruckDoc1": "- สำเนา/รูปถ่าย บัตรประชาชน หรือ หนังสือรับรองบริษัทกรณีเป็นนิติบุคคล",
-    "ownerTruckDoc2": "- สำเนาทะเบียนรถ (ส่งเอกสารภายหลังจากได้รับอนุมัติเป็นคู่ค้ากับคาร์โก้ลิ้งค์แล้ว)",
-    "ownerTruckDoc3": "- หน้าสมุดบัญชีธนาคาร (ส่งเอกสารภายหลังจากได้รับอนุมัติเป็นคู่ค้ากับคาร์โก้ลิ้งค์แล้ว)",
-    "ownerTruckDoc4": "- สำเนาใบขับขี่คนขับรถ (ส่งเอกสารภายหลังจากได้รับอนุมัติเป็นคู่ค้ากับคาร์โก้ลิ้งค์แล้ว) "
+    "ownerTruckDoc2": "- สำเนาทะเบียนรถ",
+    "ownerTruckDoc3": "- หน้าสมุดบัญชีธนาคาร",
+    "ownerTruckDoc4": "- สำเนาใบขับขี่คนขับรถ",
+
+    "sendDocument": " (ส่งเอกสารภายหลังจากได้รับอนุมัติเป็นคู่ค้ากับคาร์โก้ลิ้งค์แล้ว)"
   }
 }

@@ -658,14 +658,14 @@ export const UploadVehicleScreen = observer(() => {
   // ******* ALERT ERROR API ******** //
   useEffect(() => {
     let error_fetch = JSON.parse(JSON.stringify(CreateVehicleStore.error))
-    if(error_fetch){
+    if (error_fetch) {
       AlertMessage("common.somethingWrong", "common.pleaseCheckYourData", true)
       CreateVehicleStore.clearValue("error")
     }
   }, [CreateVehicleStore.error])
   useEffect(() => {
     let error_fetch = JSON.parse(JSON.stringify(CreateVehicleStore.errorPatchMyVehicle))
-    if(error_fetch){
+    if (error_fetch) {
       AlertMessage("common.somethingWrong", "common.pleaseCheckYourData", true)
       CreateVehicleStore.clearValue("error")
     }
@@ -1325,6 +1325,7 @@ export const UploadVehicleScreen = observer(() => {
                   uploadStyle={UPLOAD_IMG_STY}
                   source={Object.keys(vehicleDoc).length ? vehicleDoc : images.vehicleDocument}
                   imageStyle={Object.keys(vehicleDoc).length ? {} : PLACEHOLDER_VEHICLE_DOC} />
+                <View style={{ flex: 0.8 }} />
               </View>
             </View>
           </View>

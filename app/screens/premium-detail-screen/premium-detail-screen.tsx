@@ -1,13 +1,14 @@
 import React, { useEffect } from "react"
 import { observer } from "mobx-react-lite"
-import { View, ViewStyle, TextStyle, Dimensions, ScrollView } from "react-native"
-import { RoundedButton, Screen, Text } from "../../components"
+import { View, ViewStyle, TextStyle, Dimensions, ScrollView, Text as Wording } from "react-native"
+import { RoundedButton, Screen, Text, ModalLoading } from "../../components"
 import { useNavigation } from "@react-navigation/native"
 import { useStores } from "../../models/root-store/root-store-context";
 import { color } from "../../theme"
 import ProfileStore from "../../store/profile-store/profile-store"
 import PartnerRegisterStore from "../../store/profile-store/partner-register-store"
 import LottieView from 'lottie-react-native';
+import { translate } from "../../i18n"
 
 
 const { width, height } = Dimensions.get("window")
@@ -28,9 +29,10 @@ const ROOT: ViewStyle = {
 const FULL: ViewStyle = {
   flex: 1
 }
-
-const PADDING10: ViewStyle = {
-  padding: 10
+const KANIT: TextStyle = { fontFamily: "Kanit-Medium" }
+const FONT_DETAIL: TextStyle = { color: color.line, ...KANIT }
+const ROW_STYLE: ViewStyle = {
+  flexDirection: 'row'
 }
 
 const PENDING_TEXT: TextStyle = { color: color.darkGreen }
@@ -38,8 +40,8 @@ const PENDING_TEXT: TextStyle = { color: color.darkGreen }
 const ROUND_BUTTON_CONTAINER: ViewStyle = {
   backgroundColor: color.darkGreen,
   borderColor: color.transparent,
-  width: '100%',
-  borderRadius: 10
+  borderRadius: 10,
+  margin: 10
 }
 const ROUND_BUTTON_TEXT: TextStyle = {
   color: color.snow,
@@ -49,7 +51,7 @@ const ROUND_BUTTON_TEXT: TextStyle = {
 const CONTAINER_TEXT: ViewStyle = {
   ...FULL,
   backgroundColor: 'white', borderRadius: 10,
-  marginTop: 10, padding: 20, marginBottom: 10
+  marginTop: 10, padding: 20, marginHorizontal: 10
 }
 
 const partnerWording = [
@@ -57,21 +59,19 @@ const partnerWording = [
     id: 1, header: 'partnerRegister.partnerUsefull', items: [
       {
         id: 11,
-        topic: "partnerRegister.ownerProduct", details: ["partnerRegister.findTruckEasy",
-          "partnerRegister.easyToUse",
-          "partnerRegister.reduceMoney",
-          "partnerRegister.reduceManageTime",
-          "partnerRegister.realTimeTracking",
-          "partnerRegister.haveEmployeeManage",]
+        topic: "partnerRegister.ownerProduct", details: ["partnerRegister.useFullShipper1",
+          "partnerRegister.useFullShipper2",
+          "partnerRegister.useFullShipper3",
+          "partnerRegister.useFullShipper4",
+          "partnerRegister.useFullShipper5",]
       },
       {
         id: 12,
-        topic: "partnerRegister.ownerTruck", details: ["partnerRegister.easyToFindJob",
-          "partnerRegister.reduceTimeToUse",
-          "partnerRegister.rateUpForFindSalary",
-          "partnerRegister.reduceFreeTrip",
-          "partnerRegister.reduceCheat",
-          "partnerRegister.haveStaffPrepare",]
+        topic: "partnerRegister.ownerTruck", details: ["partnerRegister.useFullCarrier1",
+          "partnerRegister.useFullCarrier2",
+          "partnerRegister.useFullCarrier3",
+          "partnerRegister.useFullCarrier4",
+          "partnerRegister.useFullCarrier5",]
       }
     ]
   },
@@ -102,6 +102,9 @@ const partnerWording = [
   }
 ]
 
+const listAddSubWording: string[] = ['ownerProductDoc2', 'ownerTruckDoc1', 'ownerTruckDoc2',
+  'ownerTruckDoc3', 'ownerTruckDoc4',]
+
 export const PremiumDetailScreen = observer(function PremiumDetailScreen() {
   const { tokenStore } = useStores()
 
@@ -114,7 +117,7 @@ export const PremiumDetailScreen = observer(function PremiumDetailScreen() {
     }
   }, [])
 
-  const _renderPremiumUseful = () => (<>
+  const _renderPremiumUseful = () => (<View style={{ paddingBottom: 40 }}>
     {partnerWording.map((e, i) => {
       console.log("E : ", e)
       return <View key={'root-text-' + i} style={{ paddingTop: 10 }}>
@@ -123,52 +126,57 @@ export const PremiumDetailScreen = observer(function PremiumDetailScreen() {
           return <View key={`topic-view-${twoi}`}>
             <Text key={`topic-text-${twoi}`} tx={two.topic} preset="topicExtra" style={{ marginTop: two.topic ? 5 : -7.5 }} />
             {two.details.map((thd, thdi) => {
-              return <Text key={`content-text-${thdi}`} tx={thd} />
+              if (listAddSubWording.filter(word => thd.includes(word)).length > 0)
+                return <View style={ROW_STYLE}>
+                  <Wording key={`content-text-${thdi}`} style={KANIT}>{translate(thd)}
+                    <Wording key={`sub-content-text-${thdi}`}
+                      style={FONT_DETAIL} >{translate('partnerRegister.sendDocument')}</Wording>
+                  </Wording>
+                </View>
+              else
+                return <Text key={`content-text-${thdi}`} tx={thd} />
             })}
           </View>
         })}
       </View>
     })}
-  </>)
+  </View>)
 
   const navigation = useNavigation()
   return (
     <Screen style={ROOT} unsafe>
-      <View style={[FULL, PADDING10]}>
-        <ScrollView showsVerticalScrollIndicator={false} style={FULL}>
-          <View style={CONTAINER_TEXT}>
+      <ScrollView style={[FULL, CONTAINER_TEXT,
+        tmp_data?.documentStatus && tmp_data.documentStatus == "NO_DOCUMENT" ?
+          {} : { marginBottom: 10 }]}>
+        <ModalLoading size={'large'} color={color.primary} visible={PartnerRegisterStore.loading} />
+        {tmp_data?.documentStatus && tmp_data.documentStatus == "NO_DOCUMENT" ?
+          _renderPremiumUseful() : <View style={[FULL]}>
 
-            {tmp_data?.documentStatus && tmp_data.documentStatus == "NO_DOCUMENT" ?
-              _renderPremiumUseful() : <View style={FULL}>
+            {!!tmp_data && !!tmp_data.userType && tmp_data.documentStatus == "WAIT_FOR_VERIFIED" ? <View
+              style={[FULL]}>
+              <Text tx={"partnerRegister.pending"} preset={"header"} style={PENDING_TEXT} />
+              <View style={{ width: width - 40, height: height / 4.2, alignItems: 'center' }}>
+                <PendingStatus />
+              </View>
+            </View>
 
-                {!!tmp_data && !!tmp_data.userType && tmp_data.documentStatus == "WAIT_FOR_VERIFIED" ? <View
-                  style={[FULL]}>
-                  <Text tx={"partnerRegister.pending"} preset={"header"} style={PENDING_TEXT} />
-                  <View style={{ width: width - 40, height: height / 4.2, alignItems: 'center' }}>
-                    <PendingStatus />
-                  </View>
+              :
+
+              <View style={[FULL]}>
+                {tmp_data && <Text tx={"partnerRegister.verify"} preset={"header"} style={PENDING_TEXT} />}
+                <View style={{ width: width - 40, height: height / 4.2 }}>
+                  <PartnerStatus />
                 </View>
-
-                  :
-
-                  <View style={[FULL]}>
-                    {tmp_data && <Text tx={"partnerRegister.verify"} preset={"header"} style={PENDING_TEXT} />}
-                    <View style={{ width: width - 40, height: height / 4.2 }}>
-                      <PartnerStatus />
-                    </View>
-                  </View>}
-
               </View>}
 
-          </View>
-          {tmp_data?.documentStatus && tmp_data.documentStatus == "NO_DOCUMENT" && <RoundedButton onPress={() => {
-            navigation.navigate('premiumConsent')
-          }}
-            text={"partnerRegister.registerCargolinkPremium"}
-            containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT}
-          />}
-        </ScrollView>
-      </View>
+          </View>}
+      </ScrollView>
+      {tmp_data?.documentStatus && tmp_data.documentStatus == "NO_DOCUMENT" && <RoundedButton onPress={() => {
+        navigation.navigate('premiumConsent')
+      }}
+        text={"partnerRegister.registerCargolinkPremium"}
+        containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT}
+      />}
     </Screen>
   )
 })

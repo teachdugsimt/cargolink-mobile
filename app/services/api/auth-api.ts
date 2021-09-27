@@ -80,7 +80,7 @@ export class AuthAPI {
     // make the api call
     try {
       const response: ApiResponse<any> = await this.apisauce.post(
-        'api/v1/auth/otp-verify',
+        'api/v2/auth/otp-verify',
         data,
       )
       // the typical ways to die when calling an api

@@ -13,19 +13,6 @@ const PartnerTermCondition = types.maybeNull(types.model({
   data: types.maybeNull(types.string)
 }))
 
-const Profile = types.model({
-  "attachCodeCitizenId": types.maybeNull(types.string),
-  "fullName": types.maybeNull(types.string),
-  "phoneNumber": types.maybeNull(types.string),
-  "email": types.maybeNull(types.string),
-  "approveStatus": types.maybeNull(types.string),
-  "avatar": types.maybeNull(types.string),
-  "id": types.maybeNull(types.number),
-  "userId": types.maybeNull(types.string),
-  "userType": types.maybeNull(types.string),
-  "documentStatus": types.maybeNull(types.string),
-})
-
 const DataUpdateProfile = types.model({
   "id": types.maybeNull(types.number),
   "userId": types.maybeNull(types.string),
@@ -46,11 +33,6 @@ const PictureProfile = types.model({
   token: types.maybeNull(types.string),
   uploadedDate: types.maybeNull(types.string),
 })
-
-const ListAttachCode = types.array(types.model({
-  id: types.number,
-  attachCode: types.string
-}))
 
 const PartnerRegisterStore = types.model({
   data: PartnerTermCondition,
