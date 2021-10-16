@@ -114,13 +114,6 @@ const OPN_CALL_BUTTON: ViewStyle = {
   backgroundColor: color.success,
 }
 
-const dateFormat = (date: string) => {
-  if (!date) return ''
-  const newDate = DateAndTime.parse(date, 'DD-MM-YYYY HH:mm')
-  const dateFormat = DateAndTime.format(newDate, 'YYYY-MM-DDTHH:mm:ss')
-  return dateFormat
-}
-
 const RenderButtonAlert = ({ onConfirmJob, onCloseModal }) => {
   const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.mainGrey, backgroundColor: color.transparent }
   const btnConfirmStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.primary, backgroundColor: color.primary }
@@ -197,7 +190,7 @@ const RenderOpinionButton = ({ onSubmit }) => {
   )
 }
 
-const Item = (data) => {
+const Item = (data: any) => {
   const {
     id,
     productTypeId,
@@ -257,7 +250,8 @@ const Item = (data) => {
       "PER_TRIP": 1,
       "PER_TON": 2
     }
-    console.log("Vehicle Types  : ", truckType)
+    console.log("From :: ", from)
+    console.log("TO :: ", to)
     const jobInfoFirstTab: any = {
       "vehicle-type": +truckType,
       "car-num": requiredTruckAmount.toString(),
@@ -269,37 +263,43 @@ const Item = (data) => {
     }
     if (tipper == true || tipper == false) jobInfoFirstTab['dump-field'] = tipper == true ? 1 : 2
 
-    const shippings = to?.map(shipping => {
+    const destination = JSON.parse(JSON.stringify(to))
+    const shippings = destination?.map((shipping: any) => {
+      const itemDestination = JSON.parse(JSON.stringify(shipping))
       return {
-        "shipping-address": shipping?.name || '',
-        "shipping-date": dateFormat(shipping?.dateTime || ''),
-        "shipping-time": dateFormat(shipping?.dateTime || ''),
-        "shipping-name": shipping?.contactName || '',
-        "shipping-tel-no": shipping?.contactMobileNo || '',
+        "shipping-address": itemDestination?.name || '',
+        "shipping-date": itemDestination?.dateTime || '',
+        "shipping-time": itemDestination?.dateTime || '',
+        "shipping-name": itemDestination?.contactName || '',
+        "shipping-tel-no": itemDestination?.contactMobileNo || '',
         "shipping-region": {
-          "latitude": +shipping?.lat || 0,
-          "longitude": +shipping?.lng || 0,
+          "latitude": +itemDestination?.lat || 0,
+          "longitude": +itemDestination?.lng || 0,
           "latitudeDelta": 0.0058863476810167015,
           "longitudeDelta": 0.005000643432154561,
         }
       }
     }) || []
 
+    const parseForm = JSON.parse(JSON.stringify(from))
+    console.log("Parse FROM :: ", parseForm)
     const jobInfoSecondTab = {
       "receive-region": {
-        "latitude": +from?.lat || 0,
-        "longitude": +from?.lng || 0,
+        "latitude": +parseForm?.lat || 0,
+        "longitude": +parseForm?.lng || 0,
         "latitudeDelta": 0.005878748388420618,
         "longitudeDelta": 0.004999972879886627,
       },
-      "receive-location": from?.name || '',
-      "receive-date": dateFormat(from?.dateTime || ''),
-      "receive-time": dateFormat(from?.dateTime || ''),
-      "receive-name": from?.contactName || '',
-      "receive-tel-no": from?.contactMobileNo || '',
+      "receive-location": parseForm?.name || '',
+      "receive-date": parseForm?.dateTime || '',
+      "receive-time": parseForm?.dateTime || '',
+      "receive-name": parseForm?.contactName || '',
+      "receive-tel-no": parseForm?.contactMobileNo || '',
       "shipping-information": shippings
     }
 
+    console.log("Data before edit 1 : ", jobInfoFirstTab)
+    console.log("Data before edit 2 : ", jobInfoSecondTab)
     PostJobStore.setPostJob(1, jobInfoFirstTab)
     PostJobStore.setPostJob(2, jobInfoSecondTab)
     PostJobStore.setJobId(id)
@@ -647,9 +647,10 @@ export const MyJobScreen = observer(function MyJobScreen(props: any) {
 
   console.log("Loading Booking Store :: ", BookingStore.loading)
 
-  const _renderFlatList = (data) => (
-    <FlatList
-      data={data}
+  const _renderFlatList = (data) => {
+    const parseDataToList = JSON.parse(JSON.stringify(data))
+    return <FlatList
+      data={parseDataToList}
       renderItem={renderItem}
       keyExtractor={item => item.id}
       onEndReached={() => onScrollList()}
@@ -664,8 +665,8 @@ export const MyJobScreen = observer(function MyJobScreen(props: any) {
           onRefresh={onRefresh}
         />
       }
-    />)
-
+    />
+  }
   const renderTabBar = props => {
     return <TabBar
       {...props}
