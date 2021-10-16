@@ -18,6 +18,7 @@ const tabStatus = {
 const mapActionsStatus = (data) => {
   let tmp = data
   tmp.map(e => {
+    console.log("E store : ", e)
     let slot = e
     // if (e.status == 1 && e.type == "REQUEST_FROM_SHIPPER") { // (ฉันเป็นเจ้าของรถและมีงานมาขอจอง)
     //   slot.actionStatus = "IM_OWN_CAR_AND_HAVE_JOB_ASK_FOR_BOOKING"
@@ -73,6 +74,10 @@ const mapActionsStatus = (data) => {
 
     e.from.lat = "" + e.from.lat
     e.from.lng = "" + e.from.lng
+    e.from.dateTime = e.from.datetime
+    e.from.contactName = e.from.contact_name
+    e.from.contactMobileNo = e.from.contact_mobile_no
+
     // delete e.from 
     // delete e.to
     // delete e.quotations
