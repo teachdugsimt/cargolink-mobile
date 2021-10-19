@@ -77,7 +77,7 @@ const PartnerRegisterStore = types.model({
     self.loading_upload_document = true
     yield fileUploadApi.setup()
     try {
-      if (documentFile.length > 0 && documentFile.length > 1) {
+      if (documentFile.length > 1) {
         const file_name = "partner-document.zip"
 
         let minUri = ''
@@ -115,10 +115,11 @@ const PartnerRegisterStore = types.model({
         console.log("Zip file RESULT : ", result)
         yield PartnerRegisterStore.uploadZipDocument(fileObj, profile)
       } else {
+        console.log("DOCUMENT HERE:: ", documentFile)
         if (documentFile.length == 1) {
           const fileObj = {
             fileName: documentFile[0]?.fileName || "unknowfile.png",
-            uri: documentFile[0],
+            uri: documentFile[0].uri,
             type: documentFile[0]?.type || 'image/png',
           }
           yield PartnerRegisterStore.uploadZipDocument(fileObj, profile)
