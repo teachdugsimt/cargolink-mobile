@@ -379,7 +379,7 @@ export const PremiumRegisterScreen = observer(function PremiumRegisterScreen() {
     console.log("Array Document File List : ", documentFile)
     if (documentFile.length == 0 || (documentFile.length == 1 && Object.keys(documentFile[0]).length == 0)) {
       AlertMessage(translate('common.somethingWrong'), translate('common.atLeastDocument'))
-      return ;
+      return;
     }
 
 
@@ -419,6 +419,9 @@ export const PremiumRegisterScreen = observer(function PremiumRegisterScreen() {
       PartnerRegisterStore.clearUpdateData('data_update_profile')
       PartnerRegisterStore.clearAllError()
       ProfileStore.getProfileRequest(tokenStore.profile.userId)
+      setuploadDocumentField(initFeidlGrid)
+      setSelectCapture(false)
+      setImageProfile(null)
     }
   }, [])
 
