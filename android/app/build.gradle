@@ -151,7 +151,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 103
-        versionName "2.3.3"
+        versionName "2.3.4"
         testBuildType System.getProperty('testBuildType', 'debug')  // This will later be used to control the test apk build type
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         resValue "string", "build_config_package", "th.co.cargolink.mobile"
