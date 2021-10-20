@@ -407,7 +407,7 @@ export const PremiumRegisterScreen = observer(function PremiumRegisterScreen() {
   useEffect(() => {
     let tmp_update_profile = JSON.parse(JSON.stringify(PartnerRegisterStore.data_update_profile))
     if (tmp_update_profile) {
-      AlertMessage(translate('common.successTransaction'), translate('common.updateSuccess'))
+      AlertMessage(translate('common.successTransaction'), translate('common.updateSuccess'), false, () => navigation.navigate('home'))
       PartnerRegisterStore.clearUpdateData('data_update_profile')
     }
   }, [JSON.stringify(PartnerRegisterStore.data_update_profile)])
@@ -470,7 +470,8 @@ export const PremiumRegisterScreen = observer(function PremiumRegisterScreen() {
         <ScrollView style={FULL}>
           <ModalLoading
             containerStyle={{ zIndex: 2 }}
-            size={'large'} color={color.primary} visible={(ProfileStore.loading || ProfileStore.loading_update_picture || ProfileStore.loading_update_profile)} />
+            size={'large'} color={color.primary} visible={(ProfileStore.loading || ProfileStore.loading_update_picture
+              || ProfileStore.loading_update_profile || PartnerRegisterStore.loading_upload_document)} />
 
           <Modal
             visible={selectCapture}
