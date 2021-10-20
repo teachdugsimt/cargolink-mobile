@@ -15,12 +15,14 @@ const API_URL = config.api.host
 const GOOGLE_API_KEY = config.service.googleApiKey
 const APPLE_USER = config.service.appleUser
 const APPLE_PASSWORD = config.service.applePassword
+const ENVIRONMENT = env.ENVIRONMENT
 console.log("FLUXXXER ENV :: ", env.APPLE_USER)
 export {
   API_URL,
   GOOGLE_API_KEY,
   APPLE_USER,
-  APPLE_PASSWORD
+  APPLE_PASSWORD,
+  ENVIRONMENT
 }
 
 export default config

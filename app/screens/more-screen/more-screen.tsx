@@ -11,6 +11,8 @@ import AuthStore from "../../store/auth-store/auth-store"
 import ProfileStore from "../../store/profile-store/profile-store"
 import ShipperJobStore from "../../store/shipper-job-store/shipper-job-store"
 import FavoriteJobStore from "../../store/carriers-job-store/favorite-job-store"
+import { ENVIRONMENT } from "../../config"
+var pkg = require('../../../package.json');
 
 interface SubMenuProps {
   key?: string
@@ -254,7 +256,14 @@ export const MoreScreen = observer(function MoreScreen() {
               </View>
             )
           })}
+          <View style={{ height: 40, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
+            {
+              ENVIRONMENT != 'production' && <Text style={{ color: 'grey' }}>{ENVIRONMENT} / </Text>
+            }
+            <Text style={{ color: 'grey' }}>v{pkg.version}</Text>
+          </View>
         </View>
+
 
         <View style={{
           // ...GROUP, justifyContent: 'flex-end',
