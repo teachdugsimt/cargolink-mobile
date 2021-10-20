@@ -128,12 +128,14 @@ const PartnerRegisterStore = types.model({
         }
       }
     } catch (error) {
+      self.loading_upload_document = false
       console.error("Failed to store value get PartnerTermAndCondition : ", error)
     }
   }),
 
   uploadZipDocument: flow(function* uploadZipDocument(file, profile) { // <- note the star, this a generator function!
     yield fileUploadApi.setup()
+    // self.loading_upload_document = true
     try {
       if (file) {
         let formData = new FormData();
@@ -171,6 +173,7 @@ const PartnerRegisterStore = types.model({
 
   updateProfile: flow(function* updateProfile(params) { // <- note the star, this a generator function!
     yield apiUsers.setup()
+    // self.loading_upload_document = true
     try {
       const response = yield apiUsers.updateProfile(params)
       __DEV__ && console.tron.log("Response call updateProfile :: ", response)

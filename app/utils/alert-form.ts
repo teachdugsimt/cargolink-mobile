@@ -18,7 +18,7 @@ export const AlertForm = (field) => {
 export const AlertFormDate = (param = true) => {
   Alert.alert(
     translate('common.pleaseInputCorrect'),
-    translate(param ? "postJobScreen.receiveDateMoreThan": "postJobScreen.checkPickupDate"),
+    translate(param ? "postJobScreen.receiveDateMoreThan" : "postJobScreen.checkPickupDate"),
     [
       {
         text: translate('common.ok'), onPress: () => { }
@@ -29,14 +29,15 @@ export const AlertFormDate = (param = true) => {
   return;
 }
 
-export const AlertMessage = (title = null, text = null, trans = false) => {
+export const AlertMessage = (title = null, text = null, trans = false, onOk = null) => {
   Alert.alert(
     trans && title ? translate(title) : (title || translate('common.somethingWrong')),
     trans && text ? translate(text) : (text || translate("common.pleaseCheckYourData")),
     [
       {
-        text: translate('common.ok'), onPress: () => { }
-      }
+        text: translate('common.ok'),
+        onPress: onOk ? onOk : () => { }
+      },
     ]
     , { cancelable: false }
   )

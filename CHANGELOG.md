@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.3.5](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v2.3.4...v2.3.5) (2021-10-20)
+
 ### [2.3.4](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v2.3.3...v2.3.4) (2021-10-19)
 
 ### [2.3.3](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v2.3.2...v2.3.3) (2021-10-16)
