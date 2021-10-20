@@ -228,7 +228,8 @@ export const SigninScreen = observer(function SigninScreen() {
       tokenStore.setToken(data_signinApple.token || null)
       tokenStore.setProfile(data_signinApple.userProfile || null)
       navigation.navigate("home", { screen: 'Home' })
-      ProfileStore.getProfileRequest(AuthStore.profile.userProfile.userId)
+      if (AuthStore?.profile?.userProfile?.userId)
+        ProfileStore.getProfileRequest(AuthStore.profile.userProfile.userId)
       console.log("Local navigate to home ")
     }
     else if (pressApple && error_signinApple && !AuthStore.loading) AlertMessage("common.somethingWrong", "common.InvalidPhoneNumber", true)

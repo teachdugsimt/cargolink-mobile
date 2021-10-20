@@ -161,7 +161,8 @@ const AuthStore = types
           // tmpAppleData.token = response.headers.authorization
           // self.dataApple = tmpAppleData
           // self.errorApple = ""
-
+          if (response?.data?.userProfile?.id)
+            response.data.userProfile.id = +response.data.userProfile.id
           self.profile = response.data || {}
           self.policyData = response.data.termOfService || {}
           self.error = '' // Clear error when signin success
@@ -212,7 +213,7 @@ const AuthStore = types
           self.profile = response.data || {}
           self.policyData = response.data?.termOfService || {}
           self.error = '' // Clear error when signin success
-          self.errorOtpVerify  = '' // Clear error when signin success
+          self.errorOtpVerify = '' // Clear error when signin success
           self.phoneNumber = null // Clear phoneNumber when signin success
           // yield ProfileStore.getProfileRequest(response.data.userProfile.userId, response.data.token.accessToken)
         } else {
