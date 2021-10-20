@@ -9,8 +9,8 @@ import { Text } from "../../../components"
 import { translate } from "../../../i18n"
 import { AddJobElement, Screen, RoundedButton, Icon, ModalLoading } from '../../../components'
 import { AlertMessage } from "../../../utils/alert-form";
-import 'moment/locale/th';
-import moment from 'moment-timezone'
+import * as moment from 'moment'
+// import 'moment/locale/th';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { color } from "../../../theme"
 import date from 'date-and-time';

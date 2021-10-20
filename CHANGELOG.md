@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.3.3](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v2.3.2...v2.3.3) (2021-10-16)
+
+### [2.3.1](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v2.3.0...v2.3.1) (2021-09-24)
+
+
+### Bug Fixes
+
+* merge conflict ([c11e98c](https://git-codecommit.ap-southeast-1.amazonaws.com///commit/c11e98c86a8bbf88b6871df20915b7a893f53970))
+
+## [2.3.0](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v2.2.3...v2.3.0) (2021-09-21)
+
+
+### Features
+
+* **register-partner:** add new 3 screens ([2b69953](https://git-codecommit.ap-southeast-1.amazonaws.com///commit/2b69953aecfcdb00cdf86b45c76664115f8d5f80))
+
+
+### Bug Fixes
+
+* moment ([6db7524](https://git-codecommit.ap-southeast-1.amazonaws.com///commit/6db7524c5ffe9c0b27c52b603ee541c9df370e87))
+* xcode script ([4a0e9e9](https://git-codecommit.ap-southeast-1.amazonaws.com///commit/4a0e9e993f2eb4bf23c3b79833a92e2bbd255a31))
+
+### [2.2.4](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v2.2.3...v2.2.4) (2021-09-21)
+
+
+### Features
+
+* **register-partner:** add new 3 screens ([2b69953](https://git-codecommit.ap-southeast-1.amazonaws.com///commit/2b69953aecfcdb00cdf86b45c76664115f8d5f80))
+
+
+### Bug Fixes
+
+* moment ([6db7524](https://git-codecommit.ap-southeast-1.amazonaws.com///commit/6db7524c5ffe9c0b27c52b603ee541c9df370e87))
+* xcode script ([4a0e9e9](https://git-codecommit.ap-southeast-1.amazonaws.com///commit/4a0e9e993f2eb4bf23c3b79833a92e2bbd255a31))
+
 ### [2.2.3](https://git-codecommit.ap-southeast-1.amazonaws.com///compare/v2.2.2...v2.2.3) (2021-08-26)
 
 

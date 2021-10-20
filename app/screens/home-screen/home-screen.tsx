@@ -13,7 +13,7 @@ import StatusStore from '../../store/post-job-store/job-status-store'
 import ProfileStore from "../../store/profile-store/profile-store"
 import jwtDecode, { JwtPayload } from "jwt-decode";
 import i18n from 'i18n-js'
-import 'moment/locale/th';
+// import 'moment/locale/th';
 import AuthStore from "../../store/auth-store/auth-store"
 
 const { width } = Dimensions.get('window')
