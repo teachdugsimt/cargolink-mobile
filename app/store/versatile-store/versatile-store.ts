@@ -1,7 +1,6 @@
 import { types, flow, cast } from "mobx-state-tree"
 import { TruckTypeApi, ProductTypeAPI } from "../../services/api"
 import i18n from "i18n-js"
-import { boolean } from "mobx-state-tree/dist/internal"
 
 const truckTypeApi = new TruckTypeApi()
 const productTypeApi = new ProductTypeAPI()

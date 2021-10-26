@@ -52,7 +52,7 @@ export const SelectProductTypeScreen = () => {
       <View style={BORDER_BOTTOM}>
         <View style={VIEW_LIST_IMAGE}>
           {/* {Platform.OS == "ios" ?  */}
-          <Image source={images[`${item.id}${item.image}`]} style={IMAGE_LIST} height={40} width={40} resizeMode="stretch" />
+          <Image source={images[`${item.image}`]} style={IMAGE_LIST} height={40} width={40} resizeMode="stretch" />
           {/* : <Image source={images[`${item.id}${item.image}`]} style={IMAGE_LIST} height={40} width={40} /> */}
 
         </View>
