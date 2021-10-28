@@ -400,7 +400,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = 24JTRGFS23;
+						DevelopmentTeam = MQ4JC4U4A6;
 						LastSwiftMigration = 1250;
 						ProvisioningStyle = Automatic;
 					};
@@ -884,7 +884,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 107;
-				DEVELOPMENT_TEAM = 24JTRGFS23;
+				DEVELOPMENT_TEAM = MQ4JC4U4A6;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = CargoLinkMobile/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -893,7 +893,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = th.co.cargolink.mobile;
+				PRODUCT_BUNDLE_IDENTIFIER = "-4JTRGFS23";
 				PRODUCT_NAME = CargoLinkMobile;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "CargoLinkMobile-Bridging-Header.h";
@@ -912,7 +912,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 107;
-				DEVELOPMENT_TEAM = 24JTRGFS23;
+				DEVELOPMENT_TEAM = MQ4JC4U4A6;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = CargoLinkMobile/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -921,7 +921,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = th.co.cargolink.mobile;
+				PRODUCT_BUNDLE_IDENTIFIER = "-4JTRGFS23";
 				PRODUCT_NAME = CargoLinkMobile;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "CargoLinkMobile-Bridging-Header.h";
