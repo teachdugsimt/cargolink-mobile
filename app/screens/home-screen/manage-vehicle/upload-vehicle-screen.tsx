@@ -209,8 +209,8 @@ export const UploadVehicleScreen = observer(() => {
 
   const dump = [{ id: 1, label: 'common.dump', active: true },
   { id: 2, label: 'common.notDump', active: false }]
-  const truckIsDump: Array<number> = [29, 28, 8]
-  const truckReqHeight: Array<number> = [9, 29, 8, 28]
+  const truckIsDump: Array<number> = [15, 23, 24]
+  const truckReqHeight: Array<number> = [9, 15, 24, 23, 3]
   const [arrDump, setArrDump] = useState(dump)
   const [reqHeight, setreqHeight] = useState(false)
 
