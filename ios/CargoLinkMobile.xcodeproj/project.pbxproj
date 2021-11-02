@@ -883,8 +883,13 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+<<<<<<< HEAD
 				CURRENT_PROJECT_VERSION = 107;
 				DEVELOPMENT_TEAM = MQ4JC4U4A6;
+=======
+				CURRENT_PROJECT_VERSION = 108;
+				DEVELOPMENT_TEAM = 24JTRGFS23;
+>>>>>>> 266533a8aebbcf9ddf3e34445e6b41d014223e8b
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = CargoLinkMobile/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -911,8 +916,8 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 107;
-				DEVELOPMENT_TEAM = MQ4JC4U4A6;
+				CURRENT_PROJECT_VERSION = 108;
+				DEVELOPMENT_TEAM = 24JTRGFS23;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = CargoLinkMobile/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
