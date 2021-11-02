@@ -141,5 +141,42 @@ export class ProfileApi {
     }
   }
 
+  async deleteUserDocument(userId: string, params: { docId: string }): Promise<any> {
+    // make the api call
+    try {
+      const response: ApiResponse<any> = await this.apisauce.delete(`/api/v1/users/${userId}/document`, params)
+      console.log("Response call api get delte user document : ", response)
+      return response
+    } catch (error) {
+      console.log("Error call api delete user document : ", error)
+      return error
+    }
+  }
 
+
+  async getFileByAttachCode(params: string[]): Promise<any> {
+    try {
+      const response: ApiResponse<any> = await this.apisauce.get(`api/v1/media/file-by-attach-code`, params)
+      console.log("Response call get file by attach code : ", response)
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+      return response
+    } catch (error) {
+      __DEV__ && console.tron.log("Error call api get file by attach code : ", error)
+      return error
+    }
+  }
+
+}
+
+
+export interface IFileObject {
+  "attach_code": string
+  "file_name": string
+  "expire": number | null
+  "status": "ACTIVE" | "INPROGRESS"
+  "type": "USER_DOC" | "USER_AVATAR" | "VEHICLE_DOC" | "VEHICLE_IMAGE"
+  "url": string
 }

@@ -299,7 +299,11 @@ const AuthStore = types
       return self.profile
     },
     get ProfileData() {
+
       let data_profile = {}
+      let tmpDocument = self.profile.userProfile?.document ? self.profile.userProfile.document : null
+      let parseTmpDocument = tmpDocument ? JSON.parse(JSON.stringify(tmpDocument)) : null
+
       data_profile['name-lastname'] = self.profile.userProfile?.fullName || ''
       data_profile['phone-number'] = self.profile.userProfile?.mobileNo || ''
       data_profile['email'] = self.profile.userProfile?.email || ''
@@ -307,6 +311,8 @@ const AuthStore = types
       data_profile['user-type'] = self.profile.userProfile?.userType || ''
       data_profile['id-card'] = self.profile.userProfile?.attachCodeCitizenId || ''
       data_profile['accept-policies'] = self.profile.termOfService?.accepted || ''
+      data_profile['document'] = self.profile.userProfile?.document ? self.profile.userProfile?.document : null
+      data_profile['files'] = parseTmpDocument ? Object.values(parseTmpDocument) : null
       return data_profile
     }
   }))

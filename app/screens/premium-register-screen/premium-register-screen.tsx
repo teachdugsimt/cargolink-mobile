@@ -63,7 +63,7 @@ const SECOND_VIEW_ADD_DOCUMENT: ViewStyle = {
 const TOP_VIEW_2: ViewStyle = {
   backgroundColor: color.textWhite,
 }
-const UPLOAD_IMG_STY: ViewStyle = { padding: 5, minHeight: 120, margin: 5 }
+const UPLOAD_IMG_STY: ViewStyle = { paddingTop: 5, paddingBottom: 5, minHeight: 120, marginTop: 5, marginBottom: 5 }
 const CONTENT_TEXT: TextStyle = {
   fontFamily: 'Kanit-Medium',
   color: color.black,
@@ -138,9 +138,9 @@ const options: Options = {
   quality: 1,
 };
 
-const initFeidlGrid: any = [{ id: 1, items: [1, null] }]
 
 export const PremiumRegisterScreen = observer(function PremiumRegisterScreen() {
+  const initFeidlGrid: any = [{ id: 1, items: [1, null] }]
 
   const navigation = useNavigation()
   const [selectCapture, setSelectCapture] = useState(false)
@@ -422,6 +422,7 @@ export const PremiumRegisterScreen = observer(function PremiumRegisterScreen() {
       setuploadDocumentField(initFeidlGrid)
       setSelectCapture(false)
       setImageProfile(null)
+      setswipe(!swipe)
     }
   }, [])
 

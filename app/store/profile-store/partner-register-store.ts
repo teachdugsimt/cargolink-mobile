@@ -1,5 +1,5 @@
 import { types, flow } from "mobx-state-tree"
-import { ProfileApi, FileUploadApi } from '../../services/api'
+import { ProfileApi, FileUploadApi, } from '../../services/api'
 import { Platform } from "react-native"
 import { zip } from 'react-native-zip-archive'
 
@@ -34,6 +34,15 @@ const PictureProfile = types.model({
   uploadedDate: types.maybeNull(types.string),
 })
 
+const FileObject = types.model({
+  "attach_code": types.maybeNull(types.string),
+  "file_name": types.maybeNull(types.string),
+  "expire": types.maybeNull(types.number),
+  "status": types.maybeNull(types.string),
+  "type": types.maybeNull(types.string),
+  "url": types.maybeNull(types.string),
+})
+
 const PartnerRegisterStore = types.model({
   data: PartnerTermCondition,
   loading: types.boolean,
@@ -45,6 +54,9 @@ const PartnerRegisterStore = types.model({
 
   data_update_profile: types.maybeNull(DataUpdateProfile),
   error_update_profile: types.maybeNull(types.string),
+
+  data_list_file: types.maybeNull(types.array(types.maybeNull(FileObject))),
+  error_list_file: types.maybeNull(types.string)
 
 
 }).actions(self => ({
@@ -173,8 +185,11 @@ const PartnerRegisterStore = types.model({
 
   updateProfile: flow(function* updateProfile(params) { // <- note the star, this a generator function!
     yield apiUsers.setup()
-    // self.loading_upload_document = true
+    self.loading_upload_document = true
     try {
+      // if (params.url && params?.url?.length) {
+      //   yield apiUsers.deleteUserDocument(userId, { docId: params.url[0] })
+      // }
       const response = yield apiUsers.updateProfile(params)
       __DEV__ && console.tron.log("Response call updateProfile :: ", response)
       if (response.ok) {
@@ -195,7 +210,29 @@ const PartnerRegisterStore = types.model({
     self.error_update_profile = ""
     self.error_upload_document = ""
     self.error = ""
-  }
+  },
+
+
+  getFileByAttachCode: flow(function* getFileByAttachCode(params: string[]) { // <- note the star, this a generator function!
+    yield apiUsers.setup()
+    self.loading = true
+    try {
+      const response = yield apiUsers.getFileByAttachCode(params)
+      __DEV__ && console.tron.log("Get File by attach code :: ", response)
+      if (response.ok) {
+        self.data_list_file = response.data?.data || null
+      } else {
+        self.data_list_file = null
+        self.error_list_file = "error to update profile"
+      }
+      self.loading = false
+    } catch (error) {
+      console.error("Failed to store value get profile : ", error)
+      self.loading = false
+      self.error_list_file = "set up state mobx error"
+    }
+  }),
+
 
 })).views(self => ({
   // get ProfileData() {
@@ -221,6 +258,9 @@ const PartnerRegisterStore = types.model({
 
     data_update_profile: null,
     error_update_profile: null,
+
+    data_list_file: null,
+    error_list_file: ''
 
   })
 

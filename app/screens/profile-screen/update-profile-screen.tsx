@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react"
 import {
   View, ViewStyle, TextStyle, TouchableOpacity,
-  SafeAreaView, Dimensions, Image, KeyboardAvoidingView, Alert, Platform, PermissionsAndroid,
+  SafeAreaView, Dimensions, Image, Alert, Platform, PermissionsAndroid,
   ImageStyle,
 } from "react-native"
 import { observer } from "mobx-react-lite"
 import {
   Text, TextInputTheme, RoundedButton, ModalLoading, Screen, NormalDropdown,
-  UploadVehicle
+  UploadVehicle, ListFile
 } from "../../components"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
@@ -20,9 +20,17 @@ import ProfileStore from '../../store/profile-store/profile-store'
 import { useStores } from "../../models/root-store/root-store-context";
 import { AlertMessage } from "../../utils/alert-form";
 import { translate } from "../../i18n"
-import AuthStore from "../../store/auth-store/auth-store"
 import { API_URL } from '../../config/'
+import PartnerRegisterStore from "../../store/profile-store/partner-register-store"
 import { useRoute } from '@react-navigation/core';
+import DocumentPicker, {
+  DirectoryPickerResponse,
+  DocumentPickerResponse,
+  types,
+} from 'react-native-document-picker'
+import AuthStore from "../../store/auth-store/auth-store"
+import { IFileObject } from "../../services/api"
+
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -36,7 +44,6 @@ const MARGIN_HORI_10: ViewStyle = { marginHorizontal: 10 }
 const MARGIN_TOP_MEDIUM: ViewStyle = { marginTop: 15 }
 const MARGIN_TOP_BIG: ViewStyle = { marginTop: 10 }
 const BORDER_BOTTOM: ViewStyle = { borderBottomWidth: 1, borderBottomColor: color.mainGrey }
-const VIEW_SUGGEST: ViewStyle = { ...MARGIN_HORI_10, ...BORDER_BOTTOM }
 const ROW_TEXT: ViewStyle = {
   flexDirection: 'row',
 }
@@ -49,10 +56,16 @@ const ROW_UPLOAD: ViewStyle = {
   justifyContent: 'center',
 }
 
+const ADD_DOCUMENT_CONTAINER: ViewStyle = { width: (width / 2) - 15 }
+const SECOND_VIEW_ADD_DOCUMENT: ViewStyle = {
+  ...FULL, ...COLUMN_UPLOAD, borderWidth: 2, borderColor: color.mainGrey,
+  borderRadius: 10, overflow: 'hidden', borderStyle: 'dashed', maxHeight: 120,
+  maxWidth: (width / 2) - 10
+}
 const TOP_VIEW_2: ViewStyle = {
   backgroundColor: color.textWhite,
 }
-const UPLOAD_IMG_STY: ViewStyle = { padding: 5, minHeight: 120 }
+const UPLOAD_IMG_STY: ViewStyle = { paddingTop: 5, paddingBottom: 5, minHeight: 120, marginTop: 5, marginBottom: 5 }
 const CONTENT_TEXT: TextStyle = {
   fontFamily: 'Kanit-Medium',
   color: color.black,
@@ -64,9 +77,13 @@ const WIDTH_WITH_MARGIN: ViewStyle = {
 const MARGIN_MEDIUM: ViewStyle = {
   marginVertical: 10
 }
-const SAFE_AREA_MODAL: ViewStyle = {
+const SAFE_AREA_MODAL0: ViewStyle = {
   ...WIDTH_WITH_MARGIN,
   height: 100
+}
+const SAFE_AREA_MODAL: ViewStyle = {
+  ...WIDTH_WITH_MARGIN,
+  height: 150
 }
 const CONTAINER_MODAL: ViewStyle = {
   ...FULL,
@@ -122,45 +139,81 @@ const options: Options = {
   maxHeight: 1024,
   quality: 1,
 };
+
+
 export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
+  const initFeidlGrid: any = [{ id: 1, items: [1, null] }]
 
   const navigation = useNavigation()
   const [selectCapture, setSelectCapture] = useState(false)
   const [imageProfile, setImageProfile] = useState(null)
+  const [uploadDocumentField, setuploadDocumentField] = useState(initFeidlGrid)
+  const [swipe, setswipe] = useState<boolean>(false)
   const { tokenStore } = useStores()
 
   const route = useRoute()
   const { fromOtp } = route?.params ? JSON.parse(JSON.stringify(route?.params)) : { fromOtp: null }
-
-  __DEV__ && console.tron.logImportant(`FROM OTP : ${fromOtp}` || 'NO FROM OTP')
 
   const _uploadFile = (response: any, type?: string) => {
     console.log("Type image final :: ", type)
     __DEV__ && console.tron.log("Response File before upload :: ", response)
     ProfileStore.uploadPicture(response, type)
   }
-
-  useEffect(() => {
-    let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
-    __DEV__ && console.tron.log("Profile data : ", tmp_profile)
-    if (tmp_profile && tmp_profile.avatar) setImageProfile({
-      uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + tmp_profile.avatar,
-      method: 'GET',
-      headers: {
-        Accept: 'image/*'
-      },
+  const findLengthDocumentField = () => {
+    let cnt = 0
+    uploadDocumentField.forEach(e => e.items.forEach(el => el && cnt++))
+    return cnt
+  }
+  const addDocumentField = () => {
+    let tmpField = uploadDocumentField
+    const lengthAll = (findLengthDocumentField()) + 1
+    tmpField.forEach((e: any, i: number) => {
+      if (i == uploadDocumentField.length - 1) {
+        if (e.items[0] && !e.items[1]) {
+          e.items = [e.items[0], lengthAll]
+          tmpField.push({ id: e.id + 1, items: [null] })
+        }
+        else if (!e.items[0]) {
+          e.items[0] = lengthAll
+          e.items[1] = null
+        }
+        else if (e.items[0] && e.items[1]) {
+          tmpField.push({ id: e.id + 1, items: [lengthAll, null] })
+        }
+      }
     })
-    if (tmp_profile && tmp_profile.attachCodeCitizenId) {
-      control.setValue('id-card', tmp_profile.attachCodeCitizenId)
-      setidCard({
-        uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + tmp_profile.attachCodeCitizenId,
-        method: 'GET',
-        headers: {
-          Accept: 'image/*'
-        },
-      })
+
+    console.log("Tmp Field after add field :: ", tmpField)
+    setuploadDocumentField(tmpField)
+    setswipe(!swipe)
+  }
+
+  const _deleteField = () => {
+    let tmpField: any = uploadDocumentField
+    let lastIndex = tmpField.length - 1
+    if (!tmpField[lastIndex].items[0]) {
+      tmpField[lastIndex - 1].items[1] = null
+      tmpField.splice(lastIndex, 1)
+    } else if (!tmpField[lastIndex].items[1]) {
+      tmpField[lastIndex].items[0] = null
+      tmpField[lastIndex].items.splice(1, 1)
     }
-  }, [ProfileStore.data])
+    console.log("Temp field after delete :: ", tmpField)
+    setuploadDocumentField(tmpField)
+    setswipe(!swipe)
+  }
+
+  const _renderPlusField = (item, index) => (<View key={`${JSON.stringify(item)}-${"" + index}`} style={[FULL, UPLOAD_IMG_STY]}>
+    <TouchableOpacity style={[FULL, ADD_DOCUMENT_CONTAINER]} onPress={() => addDocumentField()}
+      testID={"select-image"}>
+      <View style={SECOND_VIEW_ADD_DOCUMENT}>
+        <View style={{ ...COLUMN_UPLOAD, ...MARGIN_TOP_BIG }}>
+          <Ionicons name={"add-circle-outline"} size={22} color={color.line} />
+          <Text tx={"partnerRegister.addFieldDocument"} />
+        </View>
+      </View>
+    </TouchableOpacity>
+  </View>)
 
   const requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
@@ -236,8 +289,7 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
           setImageProfile(response);
         }
         else {
-          _uploadFile(response, typeImg)
-          setidCard(response);
+          control.setValue(`document-${typeImage}`, response)
         }
 
       });
@@ -275,21 +327,52 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
       if (!typeImg) {
         _uploadFile(response)
         setImageProfile(response);
-      } else {
-        _uploadFile(response, typeImg)
-        setidCard(response);
+      }
+      else {
+        control.setValue(`document-${typeImage}`, response)
       }
     });
 
   };
+
+  const pickerFile = (typeImg?: string) => {
+    setSelectCapture(false)
+    DocumentPicker.pickSingle()
+      .then((pickerResult) => {
+        console.log("Picker file result :: ", pickerResult)
+        const response: any = {
+          uri: pickerResult.uri,
+          fileSize: pickerResult.size,
+          type: pickerResult.type,
+          fileName: pickerResult.name,
+        }
+        if (!typeImg) {
+          _uploadFile(response)
+          setImageProfile(response);
+        }
+        else {
+          control.setValue(`document-${typeImage}`, response)
+        }
+      })
+      .catch(handleError)
+  }
 
   const { control, handleSubmit, errors } = ProfileStore?.data?.id ? useForm({
     defaultValues: ProfileStore.ProfileData
   }) : useForm({ defaultValues: AuthStore.ProfileData })
 
   const onSubmit = (data) => {
+    console.log("Raw data : ", data)
     __DEV__ && console.tron.log("Raw data :: ", data)
     let tmp_profile_store = JSON.parse(JSON.stringify(ProfileStore.data))
+
+    let tmp_raw_data = data
+    let documentFile = []
+    Object.keys(tmp_raw_data).map(e => {
+      if (e.includes('document-') && tmp_raw_data[e]) documentFile.push(tmp_raw_data[e])
+    })
+    console.log("Array Document File List : ", documentFile)
+
     let finalData = {
       "fullName": data["name-lastname"],
       "phoneNumber": data["phone-number"],
@@ -297,59 +380,33 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
       "email": data["email"],
       "userId": tokenStore.profile.userId,
       "userType": data["user-type"],
-      "attachCodeCitizenId": data["id-card"] && data["id-card"] != "" ? data["id-card"] : null
     }
     if (!fromOtp && imageProfile) finalData['avatar'] = ProfileStore?.data_upload_picture?.token || tmp_profile_store.avatar
     else if (fromOtp && imageProfile) {
       let tmpProfileFromOtp: any = AuthStore.ProfileData
       finalData['avatar'] = ProfileStore?.data_upload_picture?.token || tmpProfileFromOtp.avatar
     }
-    console.log("FINAL DATA :: ", finalData)
-    ProfileStore.updateProfile(finalData)
 
-    // if (fromOtp) {
-    //   let profileFromOtp = AuthStore.ProfileData
-    //   if (profileFromOtp['accept-policies']) navigation.navigate('Home', { screen: 'home' })
-    //   else navigation.navigate('acceptPolicy')
-    // }
+    if (documentFile.length == 0 || (documentFile.length == 1 && Object.keys(documentFile[0]).length == 0)) {
+      PartnerRegisterStore.updateProfile(finalData)
+    } else {
+
+      let sumFile = 0
+      documentFile.map(e => {
+        sumFile += e.fileSize
+      })
+      console.log("sumFile : ", sumFile)
+      if (sumFile > 5000000) AlertMessage(translate('common.somethingWrong'), translate('common.fileMoreThan5'))
+      else PartnerRegisterStore.processDocumentFile(documentFile, finalData)
+
+      console.log("Final data :: ", finalData)
+    }
   }
 
   useEffect(() => {
-    // if (fromOtp) ProfileStore.getProfileRequest(fromOtp)
-    let tmp_profile: any = AuthStore.ProfileData
-    __DEV__ && console.tron.log("Auth data : ", tmp_profile)
-    if (tmp_profile && tmp_profile.avatar) setImageProfile({
-      uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + tmp_profile.avatar,
-      method: 'GET',
-      headers: {
-        Accept: 'image/*'
-      },
-    })
+    let tmp_update_profile = JSON.parse(JSON.stringify(PartnerRegisterStore.data_update_profile))
+    if (tmp_update_profile) {
 
-    if (tmp_profile && tmp_profile['id-card']) {
-      control.setValue('id-card', tmp_profile['id-card'])
-      setidCard({
-        uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + tmp_profile['id-card'],
-        method: 'GET',
-        headers: {
-          Accept: 'image/*'
-        },
-      })
-    }
-
-    return () => {
-      ProfileStore.clearData()
-      ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore.profile.userId)
-    }
-  }, [])
-
-  useEffect(() => {
-    // if (fromOtp) ProfileStore.getProfileRequest("DLG448ZX")
-  }, [fromOtp])
-
-  useEffect(() => {
-    let tmp_update = JSON.parse(JSON.stringify(ProfileStore.data_update_profile))
-    if (tmp_update && tmp_update != null) {
       if (!fromOtp)
         AlertMessage(translate('common.successTransaction'), translate('common.updateSuccess'))
       ProfileStore.clearUpdateData('data_update_profile')
@@ -372,35 +429,94 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
         );
 
       }
+
+
     }
-  }, [ProfileStore.data_update_profile])
+  }, [JSON.stringify(PartnerRegisterStore.data_update_profile)])
 
   useEffect(() => {
-    let error_update = JSON.parse(JSON.stringify(ProfileStore.error_update_profile))
+    let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
+    if (tmp_profile && tmp_profile.avatar) setImageProfile({
+      uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + tmp_profile.avatar,
+      method: 'GET',
+      headers: {
+        Accept: 'image/*'
+      },
+    })
+
+    // ID CARD 1
+    if (tmp_profile?.files && tmp_profile.files &&
+      typeof tmp_profile.files == 'object' && Object.keys(tmp_profile.files).length > 0)
+      PartnerRegisterStore.getFileByAttachCode({
+        url: JSON.stringify(Object.values(tmp_profile.files))
+      })
+
+  }, [ProfileStore.data])
+
+
+  useEffect(() => {
+    console.log("Document field :: ", uploadDocumentField)
+    if (fromOtp) {
+      let tmp_profile: any = AuthStore.ProfileData
+      console.log(`🚀  ->  tmp_profile`, tmp_profile);
+      __DEV__ && console.tron.log("Auth data : ", tmp_profile)
+      if (tmp_profile && tmp_profile.avatar) setImageProfile({
+        uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + tmp_profile.avatar,
+        method: 'GET',
+        headers: {
+          Accept: 'image/*'
+        },
+      })
+
+      // ID CARD 2
+      if (tmp_profile?.document && tmp_profile.document &&
+        typeof tmp_profile.document == 'object' && Object.keys(tmp_profile.document).length > 0) {
+        PartnerRegisterStore.getFileByAttachCode({
+          url: JSON.stringify(tmp_profile.files)
+        })
+      }
+    }
+
+    return () => {
+      ProfileStore.clearData()
+      PartnerRegisterStore.clearUpdateData('data_update_profile')
+      PartnerRegisterStore.clearUpdateData('data_list_file')
+      PartnerRegisterStore.clearAllError()
+      ProfileStore.getProfileRequest(tokenStore.profile.userId)
+      setuploadDocumentField(initFeidlGrid)
+      setSelectCapture(false)
+      setImageProfile(null)
+      setswipe(!swipe)
+    }
+  }, [])
+
+  useEffect(() => {
+    let error_update = JSON.parse(JSON.stringify(PartnerRegisterStore.error_update_profile))
     if (error_update && error_update != null) {
       if (error_update == "Invalid entry for email address") AlertMessage(translate('common.somethingWrong'), translate('common.invalidEmail'))
       else AlertMessage(translate('common.somethingWrong'), translate('common.pleaseCheckYourData'))
-      ProfileStore.clearUpdateData('error_update_profile')
+      PartnerRegisterStore.clearUpdateData('error_update_profile')
     }
-  }, [ProfileStore.error_update_profile])
+  }, [PartnerRegisterStore.error_update_profile])
 
-  useEffect(() => {
-    const dataUploadIdCard = JSON.parse(JSON.stringify(ProfileStore.data_upload_id_card))
-    if (dataUploadIdCard && Object.keys(dataUploadIdCard).length > 0) {
-      control.setValue('id-card', dataUploadIdCard.attachCode)
+
+  const handleError = (err: Error) => {
+    if (DocumentPicker.isCancel(err)) {
+      console.warn('cancelled')
+      // User cancelled the picker, exit any dialogs or menus and move on
     } else {
-      control.setValue('id-card', '')
+      throw err
     }
-  }, [JSON.stringify(ProfileStore.data_upload_id_card)])
+  }
 
-
-  const [idCard, setidCard] = useState<any>({})
   const [typeImage, settypeImage] = useState<string>("")
 
   let formControllerValue = control.getValues()
+  console.log("Form Value :: ", formControllerValue)
   __DEV__ && console.tron.logImportant("Form in render :: ", formControllerValue)
 
   let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
+  __DEV__ && console.tron.logImportant("Profile Data :: ", tmp_profile)
 
   const role_array = [{ label: translate('homeScreen.carriers'), value: "CARRIER" },
   { label: translate('homeScreen.shippers'), value: "SHIPPER" },
@@ -411,228 +527,230 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
     settypeImage('')
   }
 
-  __DEV__ && console.tron.logImportant("ID CARD Data :: ", idCard)
+  const lengthDocumentField = findLengthDocumentField()
 
-  return <View testID="UpdateProfileScreen" style={FULL}>
-    <Screen preset={'scroll'} unsafe>
-      <ScrollView style={FULL}>
-        <View style={[PADDING_TOP_20, BACKGROUND_WHITE]}>
-          <View style={VIEW_SUGGEST}>
-            <Text tx={"profileScreen.weSuggest"} style={COLOR_PRIMARY} />
-            <Text tx={"profileScreen.fullSuggestText"} style={[COLOR_LINE, PADDING_VERTICAL]} />
-          </View>
-        </View>
+  return (
+    <View testID="UpdateProfileScreen" style={FULL}>
+      <Screen preset={'scroll'} unsafe>
+        <ScrollView style={FULL}>
+          <ModalLoading
+            containerStyle={{ zIndex: 2 }}
+            size={'large'} color={color.primary} visible={(ProfileStore.loading || ProfileStore.loading_update_picture
+              || ProfileStore.loading_update_profile || PartnerRegisterStore.loading_upload_document || PartnerRegisterStore.loading_upload_document)} />
 
-        <ModalLoading
-          containerStyle={{ zIndex: 2 }}
-          size={'large'} color={color.primary} visible={(ProfileStore.loading || ProfileStore.loading_update_picture || ProfileStore.loading_update_profile)} />
-
-        <Modal
-          visible={selectCapture}
-          onTouchOutside={closeModal}
-          onSwipeOut={closeModal}
-          onDismiss={closeModal}
-          swipeDirection={['up', 'down']} // can be string or an array
-          swipeThreshold={100} // default 100
-        >
-          <SafeAreaView style={SAFE_AREA_MODAL}>
-            <View style={CONTAINER_MODAL}>
-              <TouchableOpacity style={BUTTON_MODAL1} onPress={() => captureImage(typeImage)}>
-                <View style={ROW_TEXT}>
-                  <Ionicons name="camera" size={20} color={color.primary} />
-                  <Text style={TEXT_MODAL_BUTTON} tx={"uploadVehicleScreen.captureNew"} /></View>
-              </TouchableOpacity>
-              <TouchableOpacity style={BUTTON_MODAL2} onPress={() => chooseFile(typeImage)}>
-                <View style={ROW_TEXT}>
-                  <Ionicons name="library" size={20} color={color.primary} />
-                  <Text style={TEXT_MODAL_BUTTON} tx={"uploadVehicleScreen.selectFromLibrary"} /></View>
-              </TouchableOpacity>
-            </View>
-          </SafeAreaView>
-        </Modal>
-
-        <View style={[FULL, BACKGROUND_WHITE]}>
-
-
-          <View style={MARGIN_HORI_10}>
-            <View style={PADDING_TOP_20}>
-
-              <View style={{ flexDirection: 'row' }}>
-                <Text>1.</Text>
-                <Text tx={"profileScreen.uploadYourPic"} />
-              </View>
-
-              <View style={{ alignItems: 'center', paddingTop: 20 }}>
-                <TouchableOpacity onPress={() => {
-                  settypeImage(null)
-                  setSelectCapture(true)
-                }}>
-                  <View>
-                    {!!imageProfile && <TouchableOpacity style={{ alignItems: 'flex-end', position: 'absolute', top: 0, right: 0, zIndex: 2 }} onPress={() => setImageProfile(null)}>
-                      <Ionicons name={"close"} size={22} color={color.error} />
-                    </TouchableOpacity>}
-                    {/* <Image source={imageProfile ? imageProfile : images.addProfilePic} resizeMode="stretch" style={{ maxHeight: 120, maxWidth: 120 }} /> */}
-                    <Image source={(imageProfile ? imageProfile : images.addProfilePic)} resizeMode="stretch" style={{ width: 120, height: 120 }} />
-                  </View>
+          <Modal
+            visible={selectCapture}
+            onTouchOutside={closeModal}
+            onSwipeOut={closeModal}
+            onDismiss={closeModal}
+            swipeDirection={['up', 'down']} // can be string or an array
+            swipeThreshold={100} // default 100
+          >
+            <SafeAreaView style={[!!typeImage ? SAFE_AREA_MODAL : SAFE_AREA_MODAL0]}>
+              <View style={CONTAINER_MODAL}>
+                <TouchableOpacity style={BUTTON_MODAL1} onPress={() => captureImage(typeImage)}>
+                  <View style={ROW_TEXT}>
+                    <Ionicons name="camera" size={20} color={color.primary} />
+                    <Text style={TEXT_MODAL_BUTTON} tx={"uploadVehicleScreen.captureNew"} /></View>
                 </TouchableOpacity>
+                <TouchableOpacity style={[!!typeImage ? BUTTON_MODAL1 : BUTTON_MODAL2]} onPress={() => chooseFile(typeImage)}>
+                  <View style={ROW_TEXT}>
+                    <Ionicons name="library" size={20} color={color.primary} />
+                    <Text style={TEXT_MODAL_BUTTON} tx={"uploadVehicleScreen.selectFromLibrary"} /></View>
+                </TouchableOpacity>
+                {!!typeImage && <TouchableOpacity style={BUTTON_MODAL2} onPress={() => pickerFile(typeImage)}>
+                  <View style={ROW_TEXT}>
+                    <Ionicons name="documents" size={20} color={color.primary} />
+                    <Text style={TEXT_MODAL_BUTTON} tx={"partnerRegister.pickFile"} /></View>
+                </TouchableOpacity>}
               </View>
+            </SafeAreaView>
+          </Modal>
 
-            </View>
-          </View>
-
-          <View style={MARGIN_HORI_10}>
-            <View style={PADDING_TOP_20}>
-              <View style={{ flexDirection: 'row' }}>
-                <Text>2.</Text>
-                <Text tx={"profileScreen.inputMoreDetail"} />
-              </View>
+          <View style={[FULL, BACKGROUND_WHITE]}>
 
 
+            <View style={MARGIN_HORI_10}>
+              <View style={PADDING_TOP_20}>
 
-
-
-              <View style={PADDING_TOP_10}>
                 <View style={{ flexDirection: 'row' }}>
-                  <Text tx={"profileScreen.idCard"} />
-                  <Text style={{ color: color.error }}> *</Text>
+                  <Text>1.</Text>
+                  <Text tx={"profileScreen.uploadYourPic"} />
                 </View>
-                <View style={{ ...MARGIN_TOP_BIG, ...COLUMN_UPLOAD }}>
-                  <View style={ROW_UPLOAD}>
-                    <Controller
-                      control={control}
-                      render={({ onChange, onBlur, value }) => (
-                        <UploadVehicle
-                          key={'vehicle-document'}
-                          haveImage={Object.keys(idCard).length ? true : false}
-                          deleteImage={() => {
-                            setidCard({})
-                            ProfileStore.clearUploadIdCard()
-                          }}
-                          onPress={() => {
-                            settypeImage('id_card')
-                            setSelectCapture(true)
-                          }}
-                          viewImageStyle={Object.keys(idCard).length ? MARGIN_TOP_EXTRA : MARGIN_TOP_MEDIUM}
-                          tx={Object.keys(idCard).length ? '' : "profileScreen.uploadIdCard"}
-                          txStyle={Object.keys(idCard).length ? {} : { ...PADDING_TOP_5 }}
-                          uploadStyle={UPLOAD_IMG_STY}
-                          source={Object.keys(idCard).length ? idCard : images.idCard}
-                          imageStyle={Object.keys(idCard).length ? {} : PLACEHOLDER_VEHICLE_DOC} />
-                      )}
-                      key={"key-id-card"}
-                      name={"id-card"}
-                      rules={{}}
-                      defaultValue=""
-                    />
-                    <View style={{ flex: 0.8 }} />
+
+                <View style={{ alignItems: 'center', paddingTop: 20 }}>
+                  <TouchableOpacity onPress={() => {
+                    settypeImage(null)
+                    setSelectCapture(true)
+                  }}>
+                    <View>
+                      {!!imageProfile && <TouchableOpacity style={{ alignItems: 'flex-end', position: 'absolute', top: 0, right: 0, zIndex: 2 }} onPress={() => setImageProfile(null)}>
+                        <Ionicons name={"close"} size={22} color={color.error} />
+                      </TouchableOpacity>}
+                      <Image source={(imageProfile ? imageProfile : images.addProfilePic)} resizeMode="stretch" style={{ width: 120, height: 120 }} />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+
+              </View>
+            </View>
+
+            <View style={MARGIN_HORI_10}>
+              <View style={PADDING_TOP_20}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text>2.</Text>
+                  <Text tx={"profileScreen.inputMoreDetail"} />
+                </View>
+
+                <View style={PADDING_TOP_10}>
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text tx={"profileScreen.nameLastName"} />
+                    <Text style={{ color: color.error }}> *</Text>
                   </View>
+                  <Controller
+                    control={control}
+                    render={({ onChange, onBlur, value }) => (
+                      <TextInputTheme
+                        testID={"name-lastname-input"}
+                        inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
+                        onBlur={onBlur}
+                        onChangeText={value => onChange(value)}
+                        value={value}
+                      />
+                    )}
+                    key={"key-name-lastname"}
+                    name={"name-lastname"}
+                    rules={{ required: true }}
+                    defaultValue=""
+                  />
                 </View>
-              </View>
+                {errors['name-lastname'] && <Text style={{ color: color.red }} tx={"profileScreen.inputName"} />}
 
-
-
-
-
-
-              <View style={PADDING_TOP_10}>
-                <View style={{ flexDirection: 'row' }}>
-                  <Text tx={"profileScreen.nameLastName"} />
-                  <Text style={{ color: color.error }}> *</Text>
+                <View style={PADDING_TOP_10}>
+                  <Text tx={"profileScreen.phoneNumber"} />
+                  <Controller
+                    control={control}
+                    render={({ onChange, onBlur, value }) => (
+                      <TextInputTheme
+                        testID={"phone-number-input"}
+                        inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
+                        onBlur={onBlur}
+                        onChangeText={value => onChange(value)}
+                        value={value}
+                      />
+                    )}
+                    key={"key-phone-number"}
+                    name={"phone-number"}
+                    rules={{ required: true }}
+                    defaultValue=""
+                  />
+                  {errors['phone-number'] && !formControllerValue['phone-number'] && <Text style={[RED_COLOR]} tx={"postJobScreen.validateReceiveTel"} />}
                 </View>
-                <Controller
-                  control={control}
-                  render={({ onChange, onBlur, value }) => (
-                    <TextInputTheme
-                      testID={"name-lastname-input"}
-                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
-                      onBlur={onBlur}
-                      onChangeText={value => onChange(value)}
-                      value={value}
-                    />
-                  )}
-                  key={"key-name-lastname"}
-                  name={"name-lastname"}
-                  rules={{ required: true }}
-                  defaultValue=""
-                />
-              </View>
-              {errors['name-lastname'] && <Text style={{ color: color.red }} tx={"profileScreen.inputName"} />}
 
-              <View style={PADDING_TOP_10}>
-                <Text tx={"profileScreen.phoneNumber"} />
-                <Controller
-                  control={control}
-                  render={({ onChange, onBlur, value }) => (
-                    <TextInputTheme
-                      testID={"phone-number-input"}
-                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
-                      onBlur={onBlur}
-                      onChangeText={value => onChange(value)}
-                      value={value}
-                    />
-                  )}
-                  key={"key-phone-number"}
-                  name={"phone-number"}
-                  defaultValue=""
-                />
-              </View>
+                <View style={PADDING_TOP_10}>
+                  <Text tx={"profileScreen.email"} />
+                  <Controller
+                    control={control}
+                    render={({ onChange, onBlur, value }) => (
+                      <TextInputTheme
+                        testID={"email-input"}
+                        inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
+                        onBlur={onBlur}
+                        onChangeText={value => onChange(value)}
+                        value={value}
+                      />
+                    )}
+                    key={"key-email"}
+                    name={"email"}
+                    defaultValue=""
+                  />
+                </View>
 
-              <View style={PADDING_TOP_10}>
-                <Text tx={"profileScreen.email"} />
-                <Controller
-                  control={control}
-                  render={({ onChange, onBlur, value }) => (
-                    <TextInputTheme
-                      testID={"email-input"}
-                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
-                      onBlur={onBlur}
-                      onChangeText={value => onChange(value)}
-                      value={value}
-                    />
-                  )}
-                  key={"key-email"}
-                  name={"email"}
-                  defaultValue=""
-                />
-              </View>
+                <View style={PADDING_TOP_10}>
+                  <Text tx={"common.userType"} />
+                  <Controller
+                    control={control}
+                    render={({ onChange, onBlur, value }) => (
+                      <NormalDropdown
+                        key={'common.userTypeSelect'}
+                        value={value || ""}
+                        onChange={onChange}
+                        items={role_array}
+                        placeholder={"common.userTypeSelect"}
+                        border={true}
+                        underline={false}
+                        containerStyle={{ height: 65, paddingHorizontal: 0, paddingVertical: 10 }}
+                      />
+                    )}
+                    key={'dropdown-user-type'}
+                    name={"user-type"}
+                    rules={{ required: true }}
+                    defaultValue=""
+                  />
+                  {errors['user-type'] && !formControllerValue['user-type'] && <Text style={[RED_COLOR]} tx={"common.userTypeSelect"} />}
+                </View>
 
-              <View style={PADDING_TOP_10}>
-                <Text tx={"common.userType"} />
-                <Controller
-                  control={control}
-                  render={({ onChange, onBlur, value }) => (
-                    <NormalDropdown
-                      key={'common.userTypeSelect'}
-                      value={value || ""}
-                      onChange={onChange}
-                      items={role_array}
-                      placeholder={"common.userTypeSelect"}
-                      border={true}
-                      underline={false}
-                      containerStyle={{ height: 65, paddingHorizontal: 0, paddingVertical: 10 }}
-                    />
-                  )}
-                  key={'dropdown-user-type'}
-                  name={"user-type"}
-                  rules={{ required: true }}
-                  defaultValue=""
-                />
-                {errors['user-type'] && !formControllerValue['user-type'] && <Text style={[RED_COLOR, fromOtp ? { paddingBottom: 10 } : {}]} tx={"common.userTypeSelect"} />}
-              </View>
 
+                <View style={PADDING_TOP_10}>
+                  <Text tx={"partnerRegister.idCard&CompanyDocument"} />
+
+                  {PartnerRegisterStore.data_list_file && PartnerRegisterStore.data_list_file.length > 0 && <View>
+                    <ListFile list={PartnerRegisterStore.data_list_file} />
+                  </View>}
+                  <View style={[FULL]}>
+                    {uploadDocumentField.map((e: any, i: number) => {
+                      return <View key={`root-upload-document-${e.id}`} style={{ flexDirection: 'row', width: '100%' }}>
+                        {e.items.map((sub: any, subi: number) => {
+                          if (sub) return <View key={`sub-upload-document-${sub || '999'}`} style={FULL}>
+                            <Controller
+                              control={control}
+                              render={({ onChange, onBlur, value }) => (
+                                <UploadVehicle
+                                  key={'document-' + sub}
+                                  haveImage={Object.keys(value).length > 0 ? true : false}
+                                  deleteImage={() => {
+                                    onChange({})
+                                  }}
+                                  onPress={() => {
+                                    settypeImage("" + sub)
+                                    setSelectCapture(true)
+                                  }}
+                                  showDeleteBlock={lengthDocumentField > 1 && lengthDocumentField == sub ? true : false}
+                                  onPressDeleteBlock={_deleteField}
+                                  viewImageStyle={Object.keys(value).length > 0 ? MARGIN_TOP_EXTRA : MARGIN_TOP_MEDIUM}
+                                  tx={Object.keys(value).length > 0 ? '' : "partnerRegister.uploadDocument"}
+                                  txStyle={Object.keys(value).length > 0 ? {} : { ...PADDING_TOP_5 }}
+                                  uploadStyle={{ ...UPLOAD_IMG_STY, ...ADD_DOCUMENT_CONTAINER }}
+                                  source={Object.keys(value).length > 0 ? value : images.vehicleDocument}
+                                  imageStyle={Object.keys(value).length > 0 ? {} : PLACEHOLDER_VEHICLE_DOC} />
+                              )}
+                              key={"key-document-" + sub}
+                              name={"document-" + sub}
+                              rules={{ required: true }}
+                              defaultValue={{}}
+                            />
+                          </View>
+                          else return _renderPlusField(sub, subi)
+                        })}
+                      </View>
+                    })}
+                  </View>
+
+                </View>
+
+              </View>
+            </View>
+
+          </View>
+
+          <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_EXTRA }}>
+            <View style={WRAPPER_TOP}>
+              <RoundedButton onPress={handleSubmit(onSubmit)} text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
             </View>
           </View>
 
-        </View>
-
-        <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_EXTRA }}>
-          <View style={WRAPPER_TOP}>
-            <RoundedButton onPress={handleSubmit(onSubmit)} text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
-          </View>
-        </View>
-
-      </ScrollView>
-    </Screen>
-  </View>
-
+        </ScrollView>
+      </Screen>
+    </View>
+  )
 })
