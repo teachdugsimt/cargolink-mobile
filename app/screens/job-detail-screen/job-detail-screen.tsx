@@ -1485,7 +1485,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
       </Modalize>
 
       {showOwnerAccount && (<View style={BOTTOM_ROOT}>
-        {/* <Button
+        <Button
           testID="call-with-owner"
           style={[BTN_STYLE, { backgroundColor: color.blue }]}
           children={
@@ -1494,8 +1494,8 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
               <Text style={CALL_TEXT} tx={'jobDetailScreen.call'} />
             </View>
           }
-          onPress={() => onCall(id, owner.mobileNo)}
-        /> */}
+          onPress={() => onCall(id, versatileStore.phoneNumber)}
+        />
         {ownerUserId !== myUserId && <Button
           testID="book-a-job"
           style={[BTN_STYLE, { backgroundColor: color.primary }]}

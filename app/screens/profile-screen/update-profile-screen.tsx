@@ -536,7 +536,8 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
           <ModalLoading
             containerStyle={{ zIndex: 2 }}
             size={'large'} color={color.primary} visible={(ProfileStore.loading || ProfileStore.loading_update_picture
-              || ProfileStore.loading_update_profile || PartnerRegisterStore.loading_upload_document || PartnerRegisterStore.loading_upload_document)} />
+              || ProfileStore.loading_update_profile || PartnerRegisterStore.loading_upload_document
+              || PartnerRegisterStore.loading_upload_document || PartnerRegisterStore.loading)} />
 
           <Modal
             visible={selectCapture}
