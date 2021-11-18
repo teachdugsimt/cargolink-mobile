@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { observer } from "mobx-react-lite"
-import { useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
+// import { useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
 import { Dimensions, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { Button, CountDown, HeaderLeft, ModalAlert, ModalLoading, Screen, Text } from '../../components';
 import { color, spacing } from '../../theme';
@@ -15,7 +15,7 @@ import crypto from 'crypto'
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import PushNotification from 'react-native-push-notification'
 import MessagingStore from '../../store/messaging-store/messaging-store';
-import { AlertMessage } from '../../utils/alert-form';
+// import { AlertMessage } from '../../utils/alert-form';
 
 const ROOT: ViewStyle = {
   height: '100%',
@@ -134,11 +134,11 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
   const { tokenStore } = useStores()
 
   const [value, setValue] = useState<string>('');
-  const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
-  const [props, getCellOnLayoutHandler] = useClearByFocusCell({
-    value,
-    setValue,
-  });
+  // const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
+  // const [props, getCellOnLayoutHandler] = useClearByFocusCell({
+  //   value,
+  //   setValue,
+  // });
   const [{ isExpired, disabled, buttonColor, resendCode, autoFocus, isLoading, visibleModal }, setState] = useState(initialState)
   const [isShow, setIsShow] = useState(true)
 
@@ -214,12 +214,14 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
         if (!profile.userProfile.fullName || !profile.userProfile.userType)
           screen = 'updateProfileWithoutBottomTab'
       }
-      clearState()
 
+      clearState()
       if (screen == 'Home')
         navigation.navigate(screen, { screen: "home" })
       else
         navigation.navigate(screen)
+
+      console.log("State Modal AFTER NAVIGATE :: ", visibleModal)
     }
 
   }, [JSON.stringify(AuthStore.profile)])
@@ -259,6 +261,8 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
     }))
 
     return () => {
+      console.log("Component WILL  UNMOUNT !!!")
+      // ** TRIGGER ON NAVIGATE TO other nav file (If destination screen is in primary nav t isn't trigger)
       clearState()
       ProfileStore.getProfileRequest(AuthStore.profile.userProfile.userId, AuthStore.profile.token.accessToken)
     }
