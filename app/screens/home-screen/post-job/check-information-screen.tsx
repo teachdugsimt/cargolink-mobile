@@ -112,12 +112,14 @@ export const CheckInformationScreen = observer(function CheckInformationScreen(p
     })
     return tmp
   }
+  // const initialData = {}
   const initialData = _mappingObject(PostJobStore.MappingInitValue) || {}
 
   console.log("Initial Value Check Information :: ", initialData)
 
 
   useEffect(() => {
+    console.log("COME Check information screen !!")
     let tmp_field = fieldShippingCheck
     let postjob2_data = JSON.parse(JSON.stringify(PostJobStore.postjob2)) || null
 

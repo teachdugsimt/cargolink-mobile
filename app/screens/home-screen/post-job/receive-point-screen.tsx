@@ -1,28 +1,25 @@
 import React, { useEffect, useState } from "react"
 import {
-  View, ViewStyle, TextStyle, Platform, ImageStyle, SafeAreaView, Dimensions,
-  KeyboardAvoidingView, TouchableOpacity, ScrollView
+  View, ViewStyle, TextStyle, Platform, ImageStyle,
+  TouchableOpacity,
 } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { useForm, Controller } from "react-hook-form";
 import { observer } from "mobx-react-lite"
 import { Text } from "../../../components"
 import {
-  AddJobElement, TextInputTheme, RoundedButton, Icon, DatePickerRemake, TimePickerRemake,
-  LocationPicker, Screen, TextInputColumn, TextInputNew
+  AddJobElement, RoundedButton, Icon, DatePickerRemake, TimePickerRemake,
+  Screen, TextInputColumn, TextInputNew
 } from '../../../components'
-import { color, typography } from "../../../theme"
+import { color } from "../../../theme"
 import PostJobStore from "../../../store/post-job-store/post-job-store";
 import _ from 'lodash'
-import { Modal, ModalContent } from 'react-native-modals';
 import { AlertForm, AlertFormDate } from "../../../utils/alert-form";
 import StatusStore from '../../../store/post-job-store/job-status-store'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 
-const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
-const JUSTIFY_CENTER: ViewStyle = { justifyContent: 'center' }
 const ALIGN_ITEMS: ViewStyle = { alignItems: 'center' }
 const PRIMARY_COLOR: ViewStyle = { backgroundColor: color.primary }
 const GREY_TEXT: ViewStyle = { backgroundColor: color.line }
@@ -33,12 +30,6 @@ const BORDER_RADIUS_20: ViewStyle = {
 }
 const VERTICAL_10: TextStyle = { paddingVertical: 10 }
 const VIEW_VERTICAL_10: ViewStyle = { paddingVertical: 10 }
-const ADD_NEW_POINT: ViewStyle = {
-  backgroundColor: color.primary,
-  borderWidth: 1,
-  borderColor: color.primary,
-  ...BORDER_RADIUS_20
-}
 
 const TOP_VIEW: ViewStyle = {
   paddingTop: Platform.OS == "ios" ? 10 : 10,
@@ -62,7 +53,6 @@ const CONTENT_TEXT: TextStyle = {
   fontFamily: 'Kanit-Medium',
   color: color.black,
 }
-const MARGIN_HORIZONTTAL_MEDIUM: ViewStyle = { paddingHorizontal: 10 }
 const MARGIN_LEFT_SMALL: ViewStyle = { paddingLeft: 5 }
 const MARGIN_TOP: ViewStyle = { marginTop: 5 }
 const MARGIN_TOP_BIG: ViewStyle = { marginTop: 10 }
@@ -91,8 +81,6 @@ const RED_DOT: TextStyle = {
   paddingTop: 10, paddingLeft: 7.5
 }
 const ICON_PIN_YELLOW: ImageStyle = { height: 45, width: 40, }
-const PADDING_RIGHT_SMALL: ViewStyle = { paddingRight: 5 }
-const PADDING_LEFT_SMALL: ViewStyle = { paddingLeft: 5 }
 const BUTTON_MAP: ViewStyle = {
   padding: 10, paddingLeft: 0,
   borderBottomWidth: 1, borderBottomColor: color.mainGrey
@@ -112,7 +100,6 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
   const [rerenderTime, setrerenderTime] = useState(false)
   const [initDatePicker] = useState(new Date());
 
-  const [visibleMap, setvisibleMap] = useState(false)
 
   const [swipe, setswipe] = useState(false)
 
@@ -253,8 +240,9 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
     PostJobStore.setPostJob(2, final)
     console.log("position final for REACEIVE POINT :: => ,", final)
     let status_action = JSON.parse(JSON.stringify(StatusStore.status))
+    console.log(`🚀  ->  status_action`, status_action);
     if (status_action == "add")
-      navigation.navigate("Home", { screen: "checkInformation" })
+      navigation.navigate("checkInformationHome")
     else navigation.navigate("MyJob", { screen: "checkInformation" })
   }
 

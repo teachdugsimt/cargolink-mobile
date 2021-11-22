@@ -1,4 +1,4 @@
-import { types, destroy, flow } from "mobx-state-tree"
+import { types, destroy, flow, unprotect } from "mobx-state-tree"
 import { PostJobAPI } from '../../services/api'
 const postjobAPI = new PostJobAPI()
 
@@ -141,7 +141,7 @@ const PostJobStore = types.model({
       if (self.postjob1 && self.postjob2) {
         // return self.postjob2
         let tmpPostJob2 = self.postjob2
-        __DEV__ && console.tron.log("RAW DATA POSTJOB2 :: ", tmpPostJob2)
+        console.log("RAW DATA POSTJOB2 :: ", tmpPostJob2)
         if (tmpPostJob2["shipping-information"]) {
 
           self.postjob2["shipping-information"].forEach((e, i) => {
@@ -153,13 +153,13 @@ const PostJobStore = types.model({
             tmpPostJob2[`shipping-region-${i + 1}`] = e["shipping-region"]
           })
         }
-        __DEV__ && console.tron.log("After parse object MOBX :: ", tmpPostJob2)
+        console.log("After parse object MOBX :: ", tmpPostJob2)
 
         let newPostJob2 = tmpPostJob2
-        __DEV__ && console.tron.log("Post job2 data in mobx :: ", newPostJob2)
+        console.log("Post job2 data in mobx :: ", newPostJob2)
 
         let initialVlaue = { ...self.postjob1, ...tmpPostJob2 }
-        __DEV__ && console.tron.log("Final data in mobx :: ", initialVlaue)
+        console.log("Final data in mobx :: ", initialVlaue)
 
         return initialVlaue
       } else return {}
@@ -194,6 +194,8 @@ const PostJobStore = types.model({
     data_postjob: null,
     vehicle_type: null,
   })
+
+unprotect(PostJobStore)
 
 export default PostJobStore
 // Type 2 : not persist store

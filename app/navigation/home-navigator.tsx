@@ -46,7 +46,7 @@ export type PrimaryHomeParamList = {
   feedback: undefined
   // advanceSearchJob: undefined
   truckDetail: undefined,
-  checkInformation: undefined
+  checkInformationHome: undefined
   postSuccess: undefined
   comment: undefined
   myJobList: undefined
@@ -122,7 +122,7 @@ export function HomeNavigator() {
           headerHideShadow: true
         })}
       />
-      <Stack.Screen name="checkInformation" component={CheckInformationScreen}
+      <Stack.Screen name="checkInformationHome" component={CheckInformationScreen}
         options={({ navigation, route }) => ({
           // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
           headerCenter: () => <HeaderCenter tx={"postJobScreen.postjob"} />,

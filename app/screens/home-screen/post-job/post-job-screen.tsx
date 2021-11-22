@@ -221,7 +221,7 @@ export const PostJobScreen = observer(function PostJobScreen() {
       <View style={{ ...BORDER_BOTTOM }}>
         <View style={[VIEW_LIST_IMAGE]}>
           {/* {Platform.OS == "ios" ? */}
-          <Image source={section == 1 ? images[MapTruckImageName(item?.id)] : images[`${item?.id}${item?.image}`]}
+          <Image source={section == 1 ? images[MapTruckImageName(item?.id)] : images[`${item?.image}`]}
             style={[IMAGE_LIST, { borderRadius: 0, backgroundColor: '#ffff', borderWidth: 0 }]} height={40} width={section == 1 ? 40 : 40}
             resizeMode={section == 1 ? "contain" : "stretch"} />
           {/* : <Image source={section == 1 ? images[MapTruckImageName(item.id)] : images[`${item.id}${item.image}`]}
