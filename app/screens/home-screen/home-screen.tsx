@@ -1,27 +1,27 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useCallback } from "react"
 import { View, ViewStyle, TouchableOpacity, Image, ImageStyle, Dimensions, Platform, Linking, Alert, Animated } from "react-native"
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation, useFocusEffect } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
-import { images, color, spacing } from '../../theme'
+import { images, color } from '../../theme'
 import { useStores } from "../../models/root-store/root-store-context";
-import { GridView } from '../../components/home-element/home-element'
-import { ModalLoading, Text } from '../../components/'
-import MyVehicleStore from "../../store/my-vehicle-store/my-vehicle-store"
+// import { GridView } from '../../components/home-element/home-element'
+import { GridNew, Screen } from '../../components'
+import { ModalLoading, Text, SponserHome } from '../../components/'
 import TruckTypeStore from "../../store/truck-type-store/truck-type-store"
 import ProductTypeStore from "../../store/product-type-store/product-type-store"
 import StatusStore from '../../store/post-job-store/job-status-store'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import FontIcon from 'react-native-vector-icons/FontAwesome5'
 import ProfileStore from "../../store/profile-store/profile-store"
 import jwtDecode, { JwtPayload } from "jwt-decode";
 import i18n from 'i18n-js'
+// import 'moment/locale/th';
+import AuthStore from "../../store/auth-store/auth-store"
 
 const { width } = Dimensions.get('window')
 const FULL: ViewStyle = { flex: 1 }
 const ROW: ViewStyle = { flexDirection: 'row' }
 const ALL_CENTER: ViewStyle = { justifyContent: 'center', alignItems: Platform.OS == "android" ? 'flex-start' : 'center' }
 
-const backgrounTopHeight = 160
+const backgrounTopHeight = Platform.OS == 'android' ? 200 : 240
 
 const TOP_VIEW: ViewStyle = {
   height: backgrounTopHeight,
@@ -34,7 +34,8 @@ const TOP_VIEW: ViewStyle = {
 const BOTTOM_VIEW: ViewStyle = {
   flex: 2,
   // backgroundColor: 'red',
-  paddingTop: spacing[5]
+  // paddingTop: spacing[5]
+  marginTop: Platform.OS == 'android' ? -56 : -68
 }
 
 const IMAGE_LOGO: ImageStyle = {
@@ -48,30 +49,54 @@ const VIEW_GRID_BOX: ViewStyle = {
 
 const ROOT_HOME: ViewStyle = {
   ...FULL,
+  backgroundColor: color.mainBackgrorund
 }
 const VIEW_ICON: ViewStyle = {
-  borderRadius: 20, height: 40, width: 40,
+  borderRadius: 20,
   justifyContent: 'center', alignItems: 'center',
   backgroundColor: color.disable,
-  marginHorizontal: 15
+  marginLeft: 15, marginRight: 10
+}
+const VIEW_ICON2: ViewStyle = {
+  borderRadius: 20,
+  justifyContent: 'center', alignItems: 'center',
+  backgroundColor: color.disable,
+  marginLeft: 10, marginRight: 15
 }
 
 const CONTACT_VIEW: ViewStyle = {
-  flex: Platform.OS == "android" ? 0.5 : 0.6,
-  alignItems: 'center'
+  flex: Platform.OS == "android" ? 0.9 : 0.6,
+  alignItems: 'center',
+  paddingVertical: 20,
 }
 export const HomeScreen = observer((props) => {
   const { tokenStore, versatileStore } = useStores()
   const navigation = useNavigation()
 
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     // when back from other screen 
+  //     __DEV__ && console.tron.logImportant("COME useCallback useCallback useCallback useCallback")
+  //     if (AuthStore.profile?.userProfile?.userId || tokenStore?.profile?.userId)
+  //       ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore.profile.userId)
+  //     return () => {
+  //       // before go Other screen 
+  //     }
+  //   }, [])
+  // );
+
   useEffect(() => {
+    __DEV__ && console.tron.logImportant("COME USE EFFECT HOME")
     console.log("Persist Language :: ", versatileStore.language)
     if (versatileStore.language) i18n.locale = versatileStore.language
     versatileStore.findGroup()
     versatileStore.find()
     versatileStore.findProductType()
-    ProfileStore.getProfileRequest()
-    console.log("TOKEN STORE :: => ", JSON.parse(JSON.stringify(tokenStore.token)))
+    if (AuthStore.profile?.userProfile?.userId || tokenStore?.profile?.userId)
+      ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore?.profile?.userId, AuthStore?.profile?.token?.accessToken || tokenStore?.token?.accessToken)
+    console.log("TOKEN STORE :: => ", JSON.parse(JSON.stringify(tokenStore.profile)))
+
+    AuthStore.clearError()
   }, [])
 
   const [swipe, setswipe] = useState(false)
@@ -156,45 +181,49 @@ export const HomeScreen = observer((props) => {
   const dataTest: List[] = [
     {
       title: "homeScreen.carriers",
-      data: [{
-        id: 1, name: "homeScreen.manageCar", onPressButton: () => {
-          if (!token || !ProfileStore.data) navigation.navigate("signin")
-          else {
-            MyVehicleStore.findRequest({ page: 1 })
-            navigation.navigate("myVehicle")
-          }
+      data: [
+        {
+          id: 4, name: "homeScreen.findCar", onPressButton: () => {
+            if (!token || !ProfileStore.data) navigation.navigate("signin")
+            else navigation.navigate("searchTruck")
+          }, img: images.findTruck
         },
-        img: images.manageTruck
-      },
-      {
-        id: 2, name: "homeScreen.findJob", onPressButton: () => {
-          navigation.navigate("searchJob")
-        }, img: images.findJob
-      }]
+        {
+          id: 2, name: "homeScreen.findJob", onPressButton: () => {
+            if (!token || !ProfileStore.data) navigation.navigate("signin")
+            else navigation.navigate("searchJob")
+          }, img: images.findJob
+        }]
     },
     {
       title: "homeScreen.shippers",
-      data: [{
-        id: 3, name: "homeScreen.postJob", onPressButton: () => {
-          if (!token || !ProfileStore.data) navigation.navigate("signin")
-          else {
-            StatusStore.setStatusScreen('add')
-            navigation.navigate("postjob")
-          }
+      data: [
+        {
+          id: 3, name: "homeScreen.postJob", onPressButton: () => {
+            if (!token || !ProfileStore.data) navigation.navigate("signin")
+            else {
+              StatusStore.setStatusScreen('add')
+              navigation.navigate("postjob")
+            }
+          },
+          img: images.postjob
         },
-        img: images.postjob
-      },
-      {
-        id: 4, name: "homeScreen.findCar", onPressButton: () => {
-          navigation.navigate("searchTruck")
-        }, img: images.findTruck
-      }]
+
+      ]
     }
   ]
 
   // __DEV__ && console.tron.log("List (render) home screen :: ", versatileStore.list)
   // __DEV__ && console.tron.log("List Group (render) home screen :: ", versatileStore.listGroup)
   __DEV__ && console.tron.log("Token Store :: ", tokenStore.token)
+
+  const _onPressPremium = () => {
+    if (!token || !ProfileStore.data) navigation.navigate("signin")
+    else {
+      ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore.profile.userId)
+      navigation.navigate("premiumDetail")
+    }
+  }
 
   const [topBackgroundValue] = useState(new Animated.Value(-backgrounTopHeight))
   const [leftValue] = useState(new Animated.Value(-(width / 2)))
@@ -218,11 +247,15 @@ export const HomeScreen = observer((props) => {
       duration: 600,
       useNativeDriver: true,
     }).start()
+
   }, [])
 
 
   return (
-    <>
+    <Screen preset="scroll" unsafe backgroundColor={color.mainBackgrorund}
+      statusBar={'dark-content'} bounch={false}
+      showsVerticalScrollIndicator={false}
+    >
       <View testID="HomeScreen" style={ROOT_HOME}>
         {/* <View style={TOP_VIEW}>
           <Image style={IMAGE_LOGO} width={width / 1.5} height={width / 3.24}
@@ -234,17 +267,25 @@ export const HomeScreen = observer((props) => {
             translateY: topBackgroundValue
           }]
         }]}>
-          <Image style={IMAGE_LOGO} width={width / 1.5} height={width / 3.24}
+          <Image style={IMAGE_LOGO} width={width / 1.8} height={width / 3.22}
             resizeMode='stretch'
             source={images.logoNew} />
         </Animated.View>
         <View style={BOTTOM_VIEW}>
           <View style={VIEW_GRID_BOX}>
-            {/* {swipe ? <GridView data={dataTest} /> : <GridView data={dataTest} />} */}
-            <GridView data={dataTest} />
+            <GridNew data={dataTest} />
           </View>
         </View>
 
+        {/* <View style={{
+          height: 90, backgroundColor: 'white',
+          marginHorizontal: 20, marginVertical: 10,
+          borderRadius: 15, padding: 20
+        }}>
+          <Text style={{ fontSize: 18 }}>เข้าร่วมเป็นคู่ค้ากับเรา</Text>
+        </View> */}
+
+        <SponserHome onPress={_onPressPremium} />
 
         <ModalLoading
           containerStyle={{ zIndex: 2 }}
@@ -252,22 +293,25 @@ export const HomeScreen = observer((props) => {
             versatileStore.list_group_loading || versatileStore.product_type_loading || ProfileStore.loading} />
 
         <View style={CONTACT_VIEW}>
-          <View style={[ROW, ALL_CENTER, { height: 40 }]}>
-            <Animated.View style={{ transform: [{ translateX: leftValue }] }} >
-              <TouchableOpacity style={VIEW_ICON} onPress={() => Linking.openURL(versatileStore.fblink)}>
-                <FontIcon name={"facebook"} size={40} color={color.facebook} />
+          <Text tx={'moreScreen.contactUs'} style={{ paddingBottom: 10, alignSelf: 'flex-start', marginLeft: 20 }}></Text>
+          <View style={[ROW, ALL_CENTER]}>
+            <Animated.View style={{ transform: [{ translateX: leftValue }] }}>
+              <TouchableOpacity style={VIEW_ICON} onPress={() => onCall(versatileStore.phoneNumber)}>
+                <View style={{ position: 'absolute', justifyContent: 'center', left: 5, zIndex: 5 }}>
+                  <Text style={{ color: color.textWhite, paddingLeft: 2.5, fontSize: 16 }} preset="small">02-106-5312</Text>
+                </View>
+                <Image source={images.callCenter} style={{ height: 37.5, width: (width / 2) - 30 }} resizeMode="stretch" />
               </TouchableOpacity>
             </Animated.View>
-            {/* <TouchableOpacity style={VIEW_ICON} onPress={() => console.log("LINE PRESS")}>
-              <FontIcon name={"line"} size={24} />
-            </TouchableOpacity> */}
             <Animated.View style={{ transform: [{ translateX: rightValue }] }} >
-              <TouchableOpacity style={VIEW_ICON} onPress={() => onCall(versatileStore.phoneNumber)}>
-                <Ionicons name={"call"} size={22} color={color.primary} />
+              <TouchableOpacity style={VIEW_ICON2} onPress={() => Linking.openURL(versatileStore.fblink)}>
+                <View style={{ position: 'absolute', justifyContent: 'center', left: 5, zIndex: 5 }}>
+                  <Text style={{ color: color.textWhite, paddingLeft: 2.5, fontSize: 18 }} preset='small'>Facebook</Text>
+                </View>
+                <Image source={images.facebookLogo} style={{ height: 37.5, width: (width / 2) - 30 }} resizeMode="stretch" />
               </TouchableOpacity>
             </Animated.View>
           </View>
-          <Text tx={'moreScreen.contactUs'} style={{ marginTop: 10 }}></Text>
         </View>
 
         {/* <TouchableOpacity onPress={() => navigation.navigate("comment")}>
@@ -275,6 +319,6 @@ export const HomeScreen = observer((props) => {
         </TouchableOpacity> */}
 
       </View>
-    </>
+    </Screen>
   )
 })

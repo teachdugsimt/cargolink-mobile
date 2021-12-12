@@ -50,7 +50,7 @@ export class ShipperJobAPI {
       timeout: this.config.timeout,
       headers: {
         Accept: "application/json",
-        Authorization: `Bearer ${to}`
+        Authorization: `${to}`
       },
     })
   }
@@ -60,7 +60,8 @@ export class ShipperJobAPI {
   async find(filter: Types.ShipperJobRequest | {} = {}): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/shippers/jobs/list', filter)
+      // const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/shippers/jobs/list', filter)
+      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/booking/my-job', filter)
       // the typical ways to die when calling an api
       console.log("Shipper job api [find] : ", response)
       if (!response.ok) {
@@ -123,6 +124,45 @@ export class ShipperJobAPI {
       // transform the data into the format we are expecting
     } catch (error) {
       console.log("Error call api create shipper job : ", error)
+      return error
+    }
+  }
+
+  async delete(id: string): Promise<any> {
+    // make the api call
+    try {
+      const response: ApiResponse<any> = await this.apisauce.delete(`/api/v1/mobile/shippers/jobs/delete/${id}`)
+      // the typical ways to die when calling an api
+      console.log("Shipper job api [delete] : ", JSON.stringify(response))
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+      return { kind: "ok", data: response.data }
+      // transform the data into the format we are expecting
+    } catch (error) {
+      console.log("Error call api delete shipper job : ", error)
+      return error
+    }
+  }
+
+  async rating(data: Types.RatingBody): Promise<any> {
+    // make the api call
+    const tmp: any = data
+    tmp.reason = data.doneFrom
+    try {
+      // const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/mobile/shippers/jobs/rating`, data)
+      const response: ApiResponse<any> = await this.apisauce.patch(`/api/v1/jobs/${data.jobId}/done`, tmp)
+      // the typical ways to die when calling an api
+      console.log("Shipper job api [rating] : ", JSON.stringify(response))
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+      return { kind: "ok", data: response.data }
+      // transform the data into the format we are expecting
+    } catch (error) {
+      console.log("Error call api rating shipper job : ", error)
       return error
     }
   }

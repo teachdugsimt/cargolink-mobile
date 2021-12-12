@@ -11,6 +11,8 @@ import AuthStore from "../../store/auth-store/auth-store"
 import ProfileStore from "../../store/profile-store/profile-store"
 import ShipperJobStore from "../../store/shipper-job-store/shipper-job-store"
 import FavoriteJobStore from "../../store/carriers-job-store/favorite-job-store"
+import { ENVIRONMENT } from "../../config"
+var pkg = require('../../../package.json');
 
 interface SubMenuProps {
   key?: string
@@ -51,7 +53,7 @@ const MENU: ViewStyle = {
   paddingTop: spacing[2],
   marginBottom: spacing[2],
   borderBottomWidth: 1,
-  borderColor: color.line
+  borderColor: color.mainGrey
 }
 const ROUND_BUTTON_CONTAINER: ViewStyle = {
   backgroundColor: color.primary, borderColor: color.transparent
@@ -124,7 +126,7 @@ export const MoreScreen = observer(function MoreScreen() {
   console.log("Locale language :: ", i18n.locale)
   const [list, setlist] = useState([
     { label: 'moreScreen.Thai', value: 'th', active: (!versatileStore.language || versatileStore.language == "th") ? true : false },
-    { label: 'moreScreen.English', value: 'en', active: (versatileStore.language && versatileStore.language == "th") ? false : true },
+    { label: 'moreScreen.English', value: 'en', active: (versatileStore.language && versatileStore.language == "th") ? false : (!versatileStore.language ? false : true) },
   ])
   const [renderNew, setrenderNew] = useState(false)
 
@@ -254,7 +256,14 @@ export const MoreScreen = observer(function MoreScreen() {
               </View>
             )
           })}
+          <View style={{ height: 40, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
+            {
+              ENVIRONMENT != 'production' && <Text style={{ color: 'grey' }}>{ENVIRONMENT} / </Text>
+            }
+            <Text style={{ color: 'grey' }}>v{pkg.version}</Text>
+          </View>
         </View>
+
 
         <View style={{
           // ...GROUP, justifyContent: 'flex-end',

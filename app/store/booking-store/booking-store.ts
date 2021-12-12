@@ -5,6 +5,7 @@ import { BookingApi, ShipperJobAPI } from "../../services/api"
 import * as Types from "../../services/api/api.types"
 import * as storage from "../../utils/storage"
 import _ from 'lodash'
+import { ScreenStackHeaderLeftView } from "react-native-screens"
 
 const bookingAPI = new BookingApi()
 const apiShipperJob = new ShipperJobAPI()
@@ -17,22 +18,70 @@ const tabStatus = {
 const mapActionsStatus = (data) => {
   let tmp = data
   tmp.map(e => {
+    console.log("E store : ", e)
     let slot = e
-    if (e.status == 1 && e.type == "REQUEST_FROM_SHIPPER") { // (ฉันเป็นเจ้าของรถและมีงานมาขอจอง)
+    // if (e.status == 1 && e.type == "REQUEST_FROM_SHIPPER") { // (ฉันเป็นเจ้าของรถและมีงานมาขอจอง)
+    //   slot.actionStatus = "IM_OWN_CAR_AND_HAVE_JOB_ASK_FOR_BOOKING"
+    // }
+    // else if (e.status == 3 && !e.type && Number(e?.quotationNumber) >= 1) {  // (ฉันเป็นเจ้าของงานและมีคนมาขอจอง)
+    //   slot.actionStatus = "IM_OWN_JOB_AND_HAVE_CAR_ASK_FOR_BOOKING"
+    // }
+    // else if (e.status == 3 && e.type == "WAITING_FOR_APPROVAL") { //  (ฉันเป็นเจ้าของรถและไปขอจองงานคนอื่น)
+    //   slot.actionStatus = "IM_OWN_CAR_AND_ASK_FOR_BOOKING_HIM_JOB"
+    // }
+    // else if (e.status == 1 && !e.type && !e.quotationNumber) { // (ฉันเป็นเจ้าของงาน ไม่มีใครมาขอจอง)
+    //   slot.actionStatus = "IM_OWN_JOB"
+    // }
+    // else if (e.status == 1 && !e.type && Number(e?.quotationNumber) >= 1) { // (ฉันเป็นเจ้าของงานและไปขอจองรถ)
+    //   slot.actionStatus = "IM_OWN_JOB_AND_ASK_FOR_BOOKING_HIM_CAR"
+    // }
+    if (e.type && e.type == "IM_OWNER_CAR_HAVE_JOB_ASK_FOR_BOOKING") { // (ฉันเป็นเจ้าของรถและมีงานมาขอจอง)
+      slot.status = 1
+      slot.type = "REQUEST_FROM_SHIPPER"
       slot.actionStatus = "IM_OWN_CAR_AND_HAVE_JOB_ASK_FOR_BOOKING"
     }
-    else if (e.status == 3 && !e.type && Number(e?.quotationNumber) >= 1) {  // (ฉันเป็นเจ้าของงานและมีคนมาขอจอง)
+    else if (e.type && e.type == "IM_OWNER_JOB_HAVE_CAR_ASK_FOR_BOOKING") {  // (ฉันเป็นเจ้าของงานและมีคนมาขอจอง)
+      e.status = 3
+      e.type = null;
       slot.actionStatus = "IM_OWN_JOB_AND_HAVE_CAR_ASK_FOR_BOOKING"
     }
-    else if (e.status == 3 && e.type == "WAITING_FOR_APPROVAL") { //  (ฉันเป็นเจ้าของรถและไปขอจองงานคนอื่น)
+    else if (e.type == "IM_OWNER_CAR_REQUEST_BOOKING_OTHER_MAN_JOB") { //  (ฉันเป็นเจ้าของรถและไปขอจองงานคนอื่น)
+      e.status = 3
+      e.type = "WAITING_FOR_APPROVAL"
       slot.actionStatus = "IM_OWN_CAR_AND_ASK_FOR_BOOKING_HIM_JOB"
     }
-    else if (e.status == 1 && !e.type && !e.quotationNumber) { // (ฉันเป็นเจ้าของงาน ไม่มีใครมาขอจอง)
+    else if (e.type == "IM_OWNER_JOB") { // (ฉันเป็นเจ้าของงาน ไม่มีใครมาขอจอง)
+      e.status == 1
+      e.type = null
+      e.quotationNumber = 0
       slot.actionStatus = "IM_OWN_JOB"
     }
-    else if (e.status == 1 && !e.type && Number(e?.quotationNumber) >= 1) { // (ฉันเป็นเจ้าของงานและไปขอจองรถ)
+    else if (e.type == "IM_OWNER_JOB_REQUEST_BOOKING_OTHER_MAN_CAR") { // (ฉันเป็นเจ้าของงานและไปขอจองรถ)
+      e.status = 1
+      e.type = null
+      // Number(e?.quotationNumber) >= 1
       slot.actionStatus = "IM_OWN_JOB_AND_ASK_FOR_BOOKING_HIM_CAR"
     }
+    if (e.quotations && Array.isArray(e.quotations) && e.quotations.length > 0) {
+      e.quotations.map(qu => {
+        delete qu.truck
+        delete qu.avatar
+      })
+    }
+    e.truckType = JSON.stringify(e.truckType)
+    e.weight = Number(e.weight)
+    e.price = Number(e.price)
+
+    e.from.lat = "" + e.from.lat
+    e.from.lng = "" + e.from.lng
+    e.from.dateTime = e.from.datetime
+    e.from.contactName = e.from.contact_name
+    e.from.contactMobileNo = e.from.contact_mobile_no
+
+    // delete e.from 
+    // delete e.to
+    // delete e.quotations
+    // delete e.owner
     return slot
   })
   // console.log("Tmp after mapping :: ", tmp)
@@ -49,7 +98,7 @@ const JobModel = {
   id: types.maybeNull(types.string),
   productTypeId: types.maybeNull(types.number),
   productName: types.maybeNull(types.string),
-  truckType: types.maybeNull(types.string),
+  truckType: types.maybeNull(types.string), // here
   weight: types.maybeNull(types.number),
   requiredTruckAmount: types.maybeNull(types.number),
   from: types.maybeNull(types.model({
@@ -80,6 +129,9 @@ const JobModel = {
       token: types.maybeNull(types.string),
     }))
   })),
+  price: types.maybeNull(types.number),
+  priceType: types.maybeNull(types.string),
+  tipper: types.maybeNull(types.boolean)
 }
 
 const ShipperJob = types.maybeNull(types.model({
@@ -241,7 +293,7 @@ const BookingStore = types
       self.loading_approve_booking = true
       try {
         if (who == "shipper") {
-          const response = status == "accept" ? yield bookingAPI.findShipperJobBookingAccept(id) : yield bookingAPI.findShipperJobBookingReject(id)
+          const response = status == "accept" ? yield bookingAPI.findShipperJobBookingAccept(id, "ACCEPTED") : yield bookingAPI.findShipperJobBookingReject(id, "REJECTED")
           console.log(`Response call api ${who} ${status}Booking :: `, response)
           if (response.kind === 'ok') {
             self.data_approve_booking = response.data || null
@@ -249,7 +301,7 @@ const BookingStore = types
             self.error_approve_booking = response?.data?.message || response.kind
           }
         } else if (who == "carrier") {
-          const response = status == "accept" ? yield bookingAPI.findCarrierTruckBookingAccept(id) : yield bookingAPI.findCarrierTruckBookingReject(id)
+          const response = status == "accept" ? yield bookingAPI.findCarrierTruckBookingAccept(id, "ACCEPTED") : yield bookingAPI.findCarrierTruckBookingReject(id, "REJECTED")
           console.log(`Response call api ${who} ${status}Booking :: `, response)
           if (response.kind === 'ok') {
             self.data_approve_booking = response.data || null
@@ -298,34 +350,38 @@ const BookingStore = types
       self.loading = true
       try {
         const response = yield apiShipperJob.find(filter)
-        let otherList: any = []
-        if (filter.type == tabStatus.first) otherList = yield bookingAPI.findCarrierMyJob()
-        else if (filter.type == tabStatus.second) otherList = yield bookingAPI.findCarrierJob({ type: 1, page: filter.page })
+        // let otherList: any = []
+        // if (filter.type == tabStatus.first) otherList = yield bookingAPI.findCarrierMyJob()
+        // else if (filter.type == tabStatus.second) otherList = yield bookingAPI.findCarrierJob({ type: 1, page: filter.page })
         console.log("++ Response normal list : : ", response)
-        console.log("++ Response my carrier list :: ", otherList)
+        // console.log("++ Response my carrier list :: ", otherList)
         if (response.kind === 'ok') {
 
 
-          let carrierList = []
-          if (filter.type == tabStatus.second) {
-            carrierList = otherList.data && otherList.data.content && Array.isArray(otherList.data.content) ?
-              JSON.parse(JSON.stringify(otherList.data.content)) : []
-          } else if (filter.type == tabStatus.first) {
-            carrierList = otherList.data && otherList.data && Array.isArray(otherList.data) ?
-              JSON.parse(JSON.stringify(otherList.data)) : []
-          }
+          // let carrierList = []
+          // if (filter.type == tabStatus.second) {
+          //   carrierList = otherList.data && otherList.data.content && Array.isArray(otherList.data.content) ?
+          //     JSON.parse(JSON.stringify(otherList.data.content)) : []
+          // } else if (filter.type == tabStatus.first) {
+          //   carrierList = otherList.data && otherList.data && Array.isArray(otherList.data) ?
+          //     JSON.parse(JSON.stringify(otherList.data)) : []
+          // }
 
           let arrMerge = []
           if (!filter.page) {
-            arrMerge = _.unionBy(response.data, carrierList, 'id')
+            // arrMerge = _.unionBy(response.data.data, carrierList, 'id')
+            arrMerge = response.data.data
           } else {
             let parseSelfList = JSON.parse(JSON.stringify(self.list))
-            let parseShipperList = JSON.parse(JSON.stringify(response.data))
-            arrMerge = _.unionBy(parseSelfList, _.unionBy(parseShipperList, carrierList, 'id'), 'id')
-            // arrMerge = _.unionBy(arrMerge, carrierList, 'id')
+            let parseShipperList = JSON.parse(JSON.stringify(response.data.data))
+            // arrMerge = _.unionBy(parseSelfList, _.unionBy(parseShipperList, carrierList, 'id'), 'id')
+            arrMerge = _.unionBy(parseSelfList, parseShipperList, 'id')
           }
-          console.log("Summary List :: ", arrMerge)
-          self.list = mapActionsStatus(JSON.parse(JSON.stringify(arrMerge)))
+          // console.log("Summary List :: ", arrMerge)
+          // self.list = cast(arrMerge)
+          let summary_array = mapActionsStatus(JSON.parse(JSON.stringify(arrMerge)))
+          console.log("Summary List :: ", summary_array)
+          self.list = summary_array
         }
         self.loading = false
       } catch (error) {

@@ -22,7 +22,7 @@ export const typography = {
   /**
    * An alternate font used for perhaps titles and stuff.
    */
-  secondary: Platform.select({ ios: "Kanit-Bold", android: "Kanit-Bold" }),
+  secondary: Platform.select({ ios: "Kanit-Regular", android: "Kanit-Regular" }),
 
   /**
    * Lets get fancy with a monospace font!
@@ -31,11 +31,11 @@ export const typography = {
 
   mediumIcon: 20,
 
-
+  bigText: 30,
   menu: 20,
   mainTitle: 18,
   title: 16,
   content: 14,
   small: 12,
-  
+
 }

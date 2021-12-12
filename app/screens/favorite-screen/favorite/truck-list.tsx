@@ -12,7 +12,7 @@ import i18n from "i18n-js"
 import { MapTruckImageName } from "../../../utils/map-truck-image-name"
 import { observer } from "mobx-react-lite"
 import { useStores } from "../../../models"
-
+import { API_URL } from '../../../config/'
 interface JobProps {
   id?: string
   productName?: string
@@ -54,13 +54,14 @@ export const Item = (data: JobProps) => {
   const navigation = useNavigation()
 
   const onPress = () => {
-    const imageSource = owner?.avatar?.object && owner?.avatar?.token ? {
+    const imageSource = owner?.avatar?.object ? {
       source: {
-        uri: owner?.avatar?.object || '',
+        uri: (owner?.avatar?.object ? `${API_URL}/api/v1/media/file-stream?attachCode=` + owner?.avatar?.object : '') || '',
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-          adminAuth: owner?.avatar?.token
+          Accept: 'image/*'
+          // Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+          // adminAuth: owner?.avatar?.token || ''
         },
       },
       resizeMode: 'cover'
@@ -85,13 +86,14 @@ export const Item = (data: JobProps) => {
   }).join(', ') : translate('common.notSpecified')
 
   const truckImage = MapTruckImageName(+truckType)
-  const imageSource: ImageProps = owner?.avatar?.object && owner?.avatar?.token ? {
+  const imageSource: ImageProps = owner?.avatar?.object ? {
     source: {
-      uri: owner?.avatar?.object || '',
+      uri: (owner?.avatar?.object ? `${API_URL}/api/v1/media/file-stream?attachCode=` + owner?.avatar?.object : '') || '',
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-        adminAuth: owner?.avatar?.token
+        Accept: 'image/*'
+        // Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+        // adminAuth: owner?.avatar?.token || ''
       },
     },
     resizeMode: 'cover'

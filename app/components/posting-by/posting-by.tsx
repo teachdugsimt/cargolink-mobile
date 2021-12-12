@@ -4,6 +4,8 @@ import { PostingByProps } from './posting-by.props'
 import { color, spacing } from '../../theme';
 import { Icon } from '../icon/icon';
 import { Text } from '../text/text';
+import { translate } from '../../i18n';
+import { API_URL } from '../../config/'
 
 const PADDING_LEFT = { paddingLeft: spacing[1] }
 const PADDING_RIGHT = { paddingRight: spacing[1] }
@@ -63,20 +65,23 @@ export function PostingBy(props: PostingByProps) {
     style: LOGO,
     resizeMode: 'contain',
     source: {
-      uri: image
+      uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + image,
+      method: 'GET', headers: { Accept: 'image/*' }
     }
   } : {
-      style: LOGO,
-      resizeMode: 'contain',
-      ...image
-    }
+    style: LOGO,
+    resizeMode: 'contain',
+    ...image
+  }
+
+  const postByName: string = postBy ? postBy : translate('common.anonymous')
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={1} style={{ flex: 1 }}>
       <View style={FILL}>
         <View style={ACCOUNT_VIEW}>
           <View style={ACCOUNT_DETAIL}>
-            <Text numberOfLines={1} ellipsizeMode={'tail'} style={{ ...PADDING_RIGHT, flex: 1, textAlign: 'right' }} text={postBy} />
+            <Text numberOfLines={1} ellipsizeMode={'tail'} style={{ ...PADDING_RIGHT, flex: 1, textAlign: 'right' }} text={postByName} />
             <Icon icon={isVerified ? "checkActive" : "checkInactive"} style={SMALL_ICON} containerStyle={{ ...PADDING_RIGHT }} />
             {isCrown && <Icon icon="crown" style={SMALL_ICON} containerStyle={{ ...PADDING_RIGHT }} />}
           </View>

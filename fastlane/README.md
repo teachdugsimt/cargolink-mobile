@@ -19,7 +19,17 @@ or alternatively using `brew install fastlane`
 ```
 fastlane bump_version
 ```
-Bump build numbers, and set the version to match the pacakage.json version.
+Bump version numbers, and set the version to match the pacakage.json version.
+### distribute
+```
+fastlane distribute
+```
+Distribute app to firebase
+### changelog
+```
+fastlane changelog
+```
+
 
 ----
 
@@ -34,6 +44,11 @@ Fetch certificates and provisioning profiles
 fastlane ios beta
 ```
 Ship to Testflight.
+### ios distribute
+```
+fastlane ios distribute
+```
+Distribute app to firebase
 
 ----
 
@@ -43,9 +58,14 @@ Ship to Testflight.
 fastlane android beta
 ```
 Ship to Playstore Beta.
+### android distribute
+```
+fastlane android distribute
+```
+Distribute app to firebase
 
 ----
 
-This README.md is auto-generated and will be re-generated every time [fastlane](https://fastlane.tools) is run.
+This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
 More information about fastlane can be found on [fastlane.tools](https://fastlane.tools).
 The documentation of fastlane can be found on [docs.fastlane.tools](https://docs.fastlane.tools).

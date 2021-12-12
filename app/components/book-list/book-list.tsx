@@ -7,6 +7,7 @@ import { color, images } from "../../theme"
 import { RoundedButton } from '../rounded-button/rounded-button'
 import { Text } from '../text/text'
 import { BookListProps } from './book-list.props'
+import { API_URL } from '../../config/'
 /**
  * A component which has a label and an input together.
  */
@@ -24,7 +25,7 @@ const ROUND_BUTTON_TEXT: TextStyle = {
   marginLeft: 5,
   marginTop: -2.5
 }
-const MAIN_VIEW: ViewStyle = { ...FULL, borderBottomColor: color.line, borderBottomWidth: 1 }
+const MAIN_VIEW: ViewStyle = { ...FULL, borderBottomColor: color.mainGrey, borderBottomWidth: 1 }
 const SUB_VIEW: ViewStyle = { ...FULL, flexDirection: 'row', alignItems: 'center' }
 const IMG_VIEW: ViewStyle = { width: 60, height: 60 }
 const IMG_PURE_VIEW: ImageStyle = { height: 60, width: 60, borderRadius: 30 }
@@ -41,8 +42,8 @@ export function BookList(props: BookListProps) {
       <View style={SUB_VIEW}>
 
         <View style={IMG_VIEW}>
-          {Platform.OS == "ios" ? <Image source={item.img ? { uri: item.img } : images.greyMock}
-            resizeMode={"stretch"} style={IMG_PURE_VIEW} /> : <Image source={item.img ? { uri: item.img } : images.greyMock}
+          {Platform.OS == "ios" ? <Image source={item.img ? { uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + item.img, method: 'GET', headers: { Accept: 'image/*' } } : images.greyMock}
+            resizeMode={"stretch"} style={IMG_PURE_VIEW} /> : <Image source={item.img ? { uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + item.img, method: 'GET', headers: { Accept: 'image/*' } } : images.greyMock}
               style={IMG_PURE_VIEW} />}
         </View>
 

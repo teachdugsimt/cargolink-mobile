@@ -1,0 +1,2 @@
+Bug fixes:
+- automatic add notification channel-id

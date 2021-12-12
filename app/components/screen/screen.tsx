@@ -31,6 +31,8 @@ function ScreenWithScrolling(props: ScreenProps) {
   const style = props.style || {}
   const backgroundStyle = props.backgroundColor ? { backgroundColor: props.backgroundColor } : {}
   const insetStyle = { paddingTop: props.unsafe ? 0 : insets.top }
+  const bounch = props.bounch == undefined ? true : props.bounch
+  const showsVerticalScrollIndicator = props.showsVerticalScrollIndicator == undefined ? true : props.showsVerticalScrollIndicator
 
   return (
     <KeyboardAvoidingView
@@ -38,9 +40,17 @@ function ScreenWithScrolling(props: ScreenProps) {
       behavior={isIos ? "padding" : null}
       keyboardVerticalOffset={offsets[props.keyboardOffset || "none"]}
     >
-      <StatusBar barStyle={props.statusBar || "light-content"} />
+      <StatusBar barStyle={props.statusBar || "dark-content"} />
+
       <View style={[preset.outer, backgroundStyle, insetStyle]}>
+        <View style={{
+          position: 'absolute',
+          top: 0, right: 0, bottom: 0, left: 0,
+          backgroundColor: 'red'
+        }}></View>
         <ScrollView
+          bounces={bounch}
+          showsVerticalScrollIndicator={showsVerticalScrollIndicator}
           style={[preset.outer, backgroundStyle]}
           contentContainerStyle={[preset.inner, style]}
         >

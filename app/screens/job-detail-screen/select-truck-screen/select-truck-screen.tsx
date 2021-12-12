@@ -69,7 +69,7 @@ const RenderImageAlert = () => (<Image source={images['truckYellowIcon']} width=
 
 const RenderButtonAlert = (props) => {
 
-  const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.line, backgroundColor: color.transparent }
+  const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.mainGrey, backgroundColor: color.transparent }
   const btnConfirmStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.primary, backgroundColor: color.primary }
   return (
     <View style={{ ...BOTTOM_ROOT, paddingVertical: spacing[2] }}>
@@ -208,7 +208,9 @@ export const SelectTruckScreen = observer(function MyJobScreen() {
   const onConfirmJob = () => {
     BookingStore.addCarrierJobBookingOne({
       jobId: CarriersJobStore.data.id,
-      truckId: truckId
+      truckId: truckId,
+      requesterType: 'TRUCK_OWNER',
+      accepterUserId: CarriersJobStore.data?.owner?.userId
     })
     setIsBooking(true)
     // onCloseModal()
@@ -221,7 +223,7 @@ export const SelectTruckScreen = observer(function MyJobScreen() {
 
   const addNewTruck = () => {
     StatusVehicleStore.setStatusScreen('add')
-    navigation.navigate('uploadVehicle')
+    navigation.navigate('uploadVehicleHome', { from: 'home' })
   }
 
   const modalProps = {
@@ -248,7 +250,7 @@ export const SelectTruckScreen = observer(function MyJobScreen() {
   }
 
   console.log('JSON.parse(JSON.stringify(MyVehicleStore.list))', JSON.parse(JSON.stringify(MyVehicleStore.list)))
-
+  // console.log("CarrierStore data parse json :: ", JSON.parse(JSON.stringify(CarriersJobStore.data)))
   return (
     <View style={FULL}>
       <View style={HEADER}>

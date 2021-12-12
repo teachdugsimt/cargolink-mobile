@@ -1,0 +1,2 @@
+Bug fixes:
+- ขยาย timeout ของการร้องข้อ OTP

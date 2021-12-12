@@ -18,14 +18,14 @@ const FULL: ViewStyle = { flex: 1 }
 const MAIN_VIEW: ViewStyle = { backgroundColor: color.textWhite, paddingBottom: 20 }
 const PADDING_TOP_20: ViewStyle = { paddingTop: 20 }
 const COLOR_LINE: TextStyle = { color: color.line }
-const MARGIN_TOP_EXTRA: ViewStyle = { marginTop: 20 }
+const MARGIN_TOP_BIG: ViewStyle = { marginTop: 10 }
 const MARGIN_HORI_20: ViewStyle = { marginHorizontal: 20 }
 
 const TOP_VIEW_2: ViewStyle = { backgroundColor: color.textWhite, }
 const ROUND_BUTTON_CONTAINER: ViewStyle = { backgroundColor: color.primary, borderColor: color.transparent }
 const ROUND_BUTTON_TEXT: TextStyle = { color: color.textWhite }
 const WRAPPER_TOP: ViewStyle = { padding: 10 }
-const TEXT_INPUT: ViewStyle = { height: 80, borderWidth: 1, borderRadius: 2.5, borderColor: color.line, padding: 10 }
+const TEXT_INPUT: ViewStyle = { height: 80, borderWidth: 1, borderRadius: 2.5, borderColor: color.mainGrey, padding: 10 }
 
 export const ReportScreen = observer(function ReportScreen() {
   const navigation = useNavigation()
@@ -105,7 +105,7 @@ export const ReportScreen = observer(function ReportScreen() {
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
 
-      <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_EXTRA }}>
+      <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_BIG }}>
         <View style={WRAPPER_TOP}>
           <RoundedButton onPress={handleSubmit(onSubmit)} text={"common.confirm"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
         </View>

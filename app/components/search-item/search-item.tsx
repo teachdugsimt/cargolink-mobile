@@ -15,6 +15,8 @@ const truckBackImage = require("./truck-back.png")
 
 const FONT_SIZE_SMALL = 15
 
+const { width, height } = Dimensions.get('window')
+
 const PADDING_TOP = { paddingTop: spacing[1] }
 const PADDING_BOTTOM = { paddingBottom: spacing[1] }
 const PADDING_LEFT = { paddingLeft: spacing[2] }
@@ -38,10 +40,11 @@ const BACKGROUND: ImageStyle = {
 }
 const TOP_ROOT: ViewStyle = {
   flex: 3,
+  position: 'relative',
   flexDirection: "row",
   paddingBottom: spacing[2],
   borderBottomWidth: 1,
-  borderBottomColor: color.disable,
+  borderBottomColor: color.mainGrey,
   marginLeft: spacing[1],
   marginRight: spacing[1],
   ...PADDING_LEFT,
@@ -121,6 +124,20 @@ const TEXT_VIEW: TextStyle = {
   paddingHorizontal: 0,
   paddingVertical: 0
 }
+const PRICE: ViewStyle = {
+  position: 'absolute',
+  right: 0,
+  bottom: 0,
+  backgroundColor: color.blue,
+  borderTopLeftRadius: width / 2,
+  borderBottomLeftRadius: width / 2,
+  paddingVertical: spacing[1] + 2,
+  paddingHorizontal: spacing[4],
+  marginBottom: spacing[2],
+}
+const PRICE_TEXT: TextStyle = {
+  color: color.textWhite
+}
 
 export function SearchItem(props: SearchItemProps) {
   const {
@@ -148,6 +165,8 @@ export function SearchItem(props: SearchItemProps) {
     image,
     containerStyle,
     requiredTouchableOpacityGesture = false,
+    price = 0,
+    priceType = translate('common.round'),
     bottomComponent,
     onPress,
     onToggleHeart
@@ -169,7 +188,7 @@ export function SearchItem(props: SearchItemProps) {
   const MainTouchableOpacity = requiredTouchableOpacityGesture ? TouchableOpacityGesture : TouchableOpacity
 
   return (
-    <View style={{ ...CONTAINER, ...containerStyle }}>
+    <View style={{ ...CONTAINER, ...containerStyle, overflow: 'hidden' }}>
       <MainTouchableOpacity style={TOP_ROOT} activeOpacity={1} onPress={onPress}>
         <ImageBackground source={truckBackImage} style={BACKGROUND} ></ImageBackground>
         <View style={CONTENT}>
@@ -211,12 +230,12 @@ export function SearchItem(props: SearchItemProps) {
                 style={TEXT}
                 text={`${translate('common.amount')} : `}
               />
-              <Text style={TEXT} text={count.toString()} />
+              {!!count && <Text style={TEXT} text={count.toString()} />}
             </View>
           </View>
         </View>
         <View style={CONTENT_RIGHT}>
-          {showFavoriteIcon && <MainTouchableOpacity onPress={onSelectedHeart}>
+          {showFavoriteIcon && <MainTouchableOpacity style={{ backgroundColor: color.backgroundWhite }} onPress={onSelectedHeart}>
             <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} size={24} color={isLike ? color.red : color.line} />
           </MainTouchableOpacity>}
           {isRecommened &&
@@ -227,6 +246,11 @@ export function SearchItem(props: SearchItemProps) {
               />
             </View>}
         </View>
+
+        <View style={PRICE}>
+          <Text text={`${price ? price.toString() : '-'} ${'\u0E3F'} / ${priceType}`} style={PRICE_TEXT} preset={'topic'} />
+        </View>
+
       </MainTouchableOpacity>
       {renderButtom || (<MainTouchableOpacity style={BUTTOM_ROOT} activeOpacity={1} onPress={onPress}>
         <View style={VIEW_DETAIL_ROOT}>

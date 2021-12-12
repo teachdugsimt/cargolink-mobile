@@ -14,12 +14,15 @@ export interface AuthReponse {
 export interface AuthRequest {
   phoneNumber: string
   countryCode: string
-  userType: number
+  userType?: number
 }
 
 export interface OTPVerifyRequest {
-  token: string
-  otp: string
+  // token: string
+  // otp: string
+  phoneNumber: string
+  countryCode: string
+  variant: string
 }
 
 export interface OTPVerifyResponse {
@@ -54,9 +57,8 @@ export interface TermAndService {
   version: string
 }
 export interface AppleSignin {
-  loginId: string
+  email: string
   password: string
-  userType: number
 }
 
 
@@ -252,6 +254,13 @@ export interface UserJobFilter {
   rowsPerPage?: number
 }
 
+export interface UserJobListFilter {
+  userId?: string
+  page?: number
+  rowsPerPage?: number
+  status?: 'NEW' | 'DONE' | 'INPROGRESS'
+}
+
 export interface UserTruckFilter {
   truckAmount?: number
   truckTypes?: number[]
@@ -264,6 +273,16 @@ export interface UserTruckFilter {
 export interface BookingBody {
   jobId: string
   truckId: string
+  accepterUserId?: string | undefined | number
+  requesterType?: 'JOB_OWNER' | 'TRUCK_OWNER'
+}
+
+export interface RatingBody {
+  jobId: string
+  doneFrom: "CARGOLINK" | "OTHER" | "CANCELJOB"
+  rating?: number
+  dealingPrice?: number
+  opinion?: string
 }
 
 export type GetUsersResult = { kind: "ok"; users: User[] } | GeneralApiProblem

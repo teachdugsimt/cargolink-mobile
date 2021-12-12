@@ -49,14 +49,15 @@ export class ShippersHistoryCallAPI {
       timeout: this.config.timeout,
       headers: {
         Accept: "application/json",
-        Authorization: `Bearer ${to}`
+        Authorization: `${to}`
       },
     })
   }
 
   async find(filter: any = {}): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/mobile/shippers/history/call', filter)
+      // const response: ApiResponse<any> = await this.apisauce.get('/api/v1/mobile/shippers/history/call', filter)
+      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/history/call/trucks', filter)
       console.log("Shippers history api [find] : ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
@@ -71,7 +72,8 @@ export class ShippersHistoryCallAPI {
 
   async add(data: Types.ShippersHistoryCallAdd): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/shippers/history/call/add', data)
+      // const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/shippers/history/call/add', data)
+      const response: ApiResponse<any> = await this.apisauce.post('/api/v1/history/call/trucks', data)
       console.log("Shippers history api [Add] : ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)

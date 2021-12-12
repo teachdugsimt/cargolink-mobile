@@ -6,9 +6,9 @@
  */
 import React from "react"
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
-import { ProfileScreen, UpdateProfileScreen } from "../screens"
-import { color } from "../theme"
-import { HeaderCenter, HeaderLeft, HeaderRight, RenderHeader, RenderHeaderProfile } from "../components"
+import { ProfileScreen, UpdateProfileScreen, UploadVehicleScreen, SuccessUpload, MyVehicle, 
+  VehicleDetailScreen, SelectTruckTypeScreen, SelectProvinceScreen, JobDetailScreen, CarrierProfileScreen } from "../screens"
+import { HeaderCenter, HeaderLeft, RenderHeader, RenderHeaderProfile } from "../components"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
  * as well as what properties (if any) they might take when navigating to them.
@@ -24,6 +24,14 @@ import { HeaderCenter, HeaderLeft, HeaderRight, RenderHeader, RenderHeaderProfil
 export type PrimaryProfileParamList = {
   profile: undefined
   updateProfile: undefined
+  uploadVehicle: undefined
+  uploadSuccess: undefined
+  vehicleDetail: undefined
+  myVehicle: undefined
+  selectTruckTypeProfile: undefined
+  selectProvinceScreen:  undefined
+  truckShowJobDetailScreen: undefined
+  bookerProfileScreen: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -56,6 +64,68 @@ export function ProfileNavigator() {
           headerCenter: () => <HeaderCenter tx={"profileScreen.profile"} />,
           headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
           // headerHideShadow: true,
+        })}
+      />
+
+
+      <Stack.Screen
+        name="myVehicle"
+        component={MyVehicle}
+        options={({ navigation, route }) => ({
+          // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
+          headerCenter: () => <HeaderCenter tx={"myVehicleScreen.myTruckHeader"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+      <Stack.Screen
+        name="vehicleDetail"
+        component={VehicleDetailScreen}
+        options={({ navigation, route }) => ({
+          // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
+          headerCenter: () => <HeaderCenter tx={"myVehicleScreen.myTruckHeader"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+      <Stack.Screen name="uploadVehicle" component={UploadVehicleScreen}
+        options={({ navigation, route }) => ({
+          // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
+          headerCenter: () => <HeaderCenter tx={"uploadVehicleScreen.addVehicle"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })} />
+      <Stack.Screen name="selectProvinceScreen" component={SelectProvinceScreen}
+        options={({ navigation, route }) => ({
+          // headerRight: () => <HeaderRight iconName={"notifications-outline"} iconSize={24} iconColor={'red'} onRightPress={() => console.log("Right press:::")}/>,
+          headerCenter: () => <HeaderCenter tx={"uploadVehicleScreen.workZone"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })} />
+      <Stack.Screen
+        name="uploadSuccess"
+        component={SuccessUpload}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"myVehicleScreen.addNewCar"} />,
+          headerLeft: () => (null),
+        })}
+      />
+      <Stack.Screen
+        name="selectTruckTypeProfile"
+        component={SelectTruckTypeScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"postJobScreen.selectVehicleType"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+      <Stack.Screen
+        name="truckShowJobDetailScreen"
+        component={JobDetailScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"jobDetailScreen.jobDetail"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
+        })}
+      />
+       <Stack.Screen name="bookerProfileScreen" component={CarrierProfileScreen}
+        options={({ navigation, route }) => ({
+          headerCenter: () => <HeaderCenter tx={"feedbackScreen.yourOpinion"} />,
+          headerLeft: () => (<HeaderLeft onLeftPress={() => navigation.goBack()} />),
         })}
       />
       {/* <Stack.Screen name="detail" component={DetailScreen} /> */}

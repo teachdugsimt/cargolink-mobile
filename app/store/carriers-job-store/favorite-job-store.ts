@@ -68,7 +68,7 @@ const FavoriteJobStore = types
           const response = yield favoriteJobApi.find(filter)
           console.log("Response call api get favorite jobs : : ", response)
           if (response.kind === 'ok') {
-            self.list = response.data || []
+            self.list = response.data.data || []
           } else if (response.kind === 'unauthorized') {
             self.list = cast([])
             self.error = response.kind

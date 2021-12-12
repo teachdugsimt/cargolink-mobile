@@ -177,7 +177,7 @@ const Truck = ({ truckType, total }) => {
   const truckTypeName = GetTruckType(+truckType)?.name || translate('common.notSpecified')
   const truckImage = MapTruckImageName(+truckType)
 
-  return (<View style={{ ...ROW, paddingHorizontal: spacing[2], paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.disable }}>
+  return (<View style={{ ...ROW, paddingHorizontal: spacing[2], paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.mainGrey }}>
     <View style={{ flex: 2 }}>
       <View style={OUTER_CIRCLE}>
         <Image source={imageComponent[truckImage && truckImage !== 'greyMock' ? truckImage : '']} style={TRUCK_IMAGE} />
@@ -211,7 +211,7 @@ const Rating = ({ show, count }) => (
 
 const RenderButtonAlert = ({ onCloseModal, onConfirmJob }) => {
 
-  const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.line, backgroundColor: color.transparent }
+  const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.mainGrey, backgroundColor: color.transparent }
   const btnConfirmStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.primary, backgroundColor: color.primary }
   return (
     <View style={{ ...BOTTOM_ROOT, paddingVertical: spacing[2] }}>
@@ -370,7 +370,7 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
           <Image {...imageProps} style={PROFILE_IMAGE} resizeMode={'cover'} />
         </View>
         <View style={{ flex: 3 }}>
-          <Text text={ShipperTruckStore.profile?.companyName || ''} style={TEXT} preset={'topicExtra'} />
+          <Text text={ShipperTruckStore.profile?.companyName || ShipperTruckStore.data?.owner?.companyName || translate('common.anonymous')} style={TEXT} preset={'topicExtra'} />
           <Verified isVerified={false} />
         </View>
       </View>
@@ -387,7 +387,7 @@ export const ShipperProfileScreen = observer(function ShipperProfileScreen() {
         <Tab.Navigator
           initialRouteName={'new'}
           tabBarOptions={{
-            style: { backgroundColor: color.primary, borderColor: color.line, borderBottomColor: color.line },
+            style: { backgroundColor: color.primary, borderColor: color.mainGrey, borderBottomColor: color.mainGrey },
             activeTintColor: color.textWhite,
             inactiveTintColor: color.textBlack,
             labelStyle: { fontFamily: "Kanit-Medium", fontSize: 16 },

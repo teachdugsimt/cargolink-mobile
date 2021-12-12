@@ -74,7 +74,7 @@ const CreateVehicleStore = types.model({
       const response = yield apiMyVehicle.createVehicleProfile(params)
       console.log("Response call create upload vehicle : : ", response)
       if (response.ok) {
-        self.data = response.data || {}
+        self.data = response.data.data || {}
         self.loading = false
       } else {
         self.loading = false

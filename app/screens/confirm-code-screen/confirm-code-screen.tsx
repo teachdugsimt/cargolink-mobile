@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { observer } from "mobx-react-lite"
-import { useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
+// import { useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
 import { Dimensions, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { Button, CountDown, HeaderLeft, ModalAlert, ModalLoading, Screen, Text } from '../../components';
 import { color, spacing } from '../../theme';
@@ -10,10 +10,16 @@ import AuthStore from '../../store/auth-store/auth-store'
 import OTPInputView from '@twotalltotems/react-native-otp-input'
 import { useStores } from "../../models/root-store/root-store-context";
 import ProfileStore from '../../store/profile-store/profile-store'
+import './shim.js'
+import crypto from 'crypto'
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import PushNotification from 'react-native-push-notification'
+import MessagingStore from '../../store/messaging-store/messaging-store';
+// import { AlertMessage } from '../../utils/alert-form';
 
 const ROOT: ViewStyle = {
-  height: Dimensions.get("window").height,
-  paddingTop: 50,
+  height: '100%',
+  paddingTop: 0,
   backgroundColor: color.backgroundWhite
 }
 const CODE_FIELD_ROOT: TextStyle = {
@@ -79,16 +85,60 @@ const initialState = {
   visibleModal: false,
 }
 
+const requestUserPermission = async (userId: string) => {
+
+
+  PushNotification.configure({
+    onRegister: function (token) {
+      console.log("TOKEN:", token);
+
+      MessagingStore.addFcmToken({
+        token: token.token,
+        userId,
+        platform: token.os
+      })
+    },
+    onNotification: function (notification) {
+      console.log("REMOTE NOTIFICATION:", notification);
+
+      notification.finish(PushNotificationIOS.FetchResult.NoData);
+    },
+
+    actions: ['ดูข้อมูล'],
+    onAction: function (notification) {
+      console.log("ACTION:", notification.action);
+      console.log("REMOTE NOTIFICATION:", notification);
+
+      // process the action
+    },
+
+    // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
+    onRegistrationError: function (err) {
+      console.error(err.message, err);
+    },
+
+    // IOS ONLY (optional): default: all - Permissions to register.
+    permissions: {
+      alert: true,
+      badge: true,
+      sound: true,
+    },
+    popInitialNotification: true,
+    invokeApp: false,
+    requestPermissions: true,
+  });
+}
+
 export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
   const navigation = useNavigation()
   const { tokenStore } = useStores()
 
   const [value, setValue] = useState<string>('');
-  const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
-  const [props, getCellOnLayoutHandler] = useClearByFocusCell({
-    value,
-    setValue,
-  });
+  // const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
+  // const [props, getCellOnLayoutHandler] = useClearByFocusCell({
+  //   value,
+  //   setValue,
+  // });
   const [{ isExpired, disabled, buttonColor, resendCode, autoFocus, isLoading, visibleModal }, setState] = useState(initialState)
   const [isShow, setIsShow] = useState(true)
 
@@ -97,6 +147,7 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
   }
 
   const onChangeText = (code: string) => {
+
     setValue(code)
     if (code.length === 4) {
       setState(prevState => ({
@@ -131,41 +182,67 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
     }))
   }
 
+  useEffect(() => {
+    const tmp_error = JSON.parse(JSON.stringify(AuthStore.errorOtpVerify))
+    if (tmp_error && tmp_error != null) {
+      setState(prevState => ({
+        ...prevState,
+        isLoading: false,
+        visibleModal: true,
+      }))
+      AuthStore.clearErrorOtpVerify()
+    }
+  }, [AuthStore.errorOtpVerify])
+
+  useEffect(() => {
+    let profile = JSON.parse(JSON.stringify(AuthStore.profile))
+    __DEV__ && console.tron.log("OTP VERIFY DATA PROFILE :: ", AuthStore.profile)
+    if (profile && profile.termOfService) {
+      tokenStore.setToken(profile.token || null)
+      tokenStore.setProfile(profile.userProfile || null)
+
+      console.log('=====================================')
+      requestUserPermission(profile.userProfile.userId)
+
+      let screen = 'acceptPolicy'
+      if (profile.termOfService.accepted) {
+        if (!profile.userProfile.fullName || !profile.userProfile.userType)
+          screen = 'updateProfileWithoutBottomTab'
+        else screen = 'Home'
+      }
+      else { // don't ever accept policy
+        if (!profile.userProfile.fullName || !profile.userProfile.userType)
+          screen = 'updateProfileWithoutBottomTab'
+      }
+
+      clearState()
+      if (screen == 'Home')
+        navigation.navigate(screen, { screen: "home" })
+      else
+        navigation.navigate(screen)
+
+      console.log("State Modal AFTER NAVIGATE :: ", visibleModal)
+    }
+
+  }, [JSON.stringify(AuthStore.profile)])
+
   const onPress = (value: string) => {
     setState(prevState => ({
       ...prevState,
       isLoading: true,
     }))
     AuthStore.otpVerifyRequest({
-      token: AuthStore.getAuthData.token,
-      otp: value
+      variant: crypto.createHmac('sha256', `${AuthStore?.data?.refCode}${AuthStore.countryCode}${AuthStore.phoneNumber}${value}`).digest('hex'),
+      countryCode: AuthStore.countryCode,
+      phoneNumber: AuthStore.phoneNumber
     })
-      .then(() => {
-        let profile = JSON.parse(JSON.stringify(AuthStore.profile))
-        if (profile && profile.termOfService) {
-          tokenStore.setToken(profile.token || null)
-          tokenStore.setProfile(profile.userProfile || null)
-          let screen = 'acceptPolicy'
-          if (profile.termOfService.accepted) {
-            ProfileStore.getProfileRequest()
-            screen = 'home'
-          }
-          clearState()
-          navigation.navigate(screen)
-          return;
-        }
-        setState(prevState => ({
-          ...prevState,
-          isLoading: false,
-          visibleModal: true,
-        }))
-      })
   }
 
   const onCloseModal = () => {
+    AuthStore.clearErrorOtpVerify()
     setState(prevState => ({
       ...prevState,
-      visibleModal: !prevState.visibleModal
+      visibleModal: false
     }))
   }
 
@@ -182,8 +259,12 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
       ...prevState,
       isExpired: false
     }))
+
     return () => {
+      console.log("Component WILL  UNMOUNT !!!")
+      // ** TRIGGER ON NAVIGATE TO other nav file (If destination screen is in primary nav t isn't trigger)
       clearState()
+      ProfileStore.getProfileRequest(AuthStore.profile.userProfile.userId, AuthStore.profile.token.accessToken)
     }
   }, [])
 
@@ -196,14 +277,14 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
   }, [resendCode, isExpired, autoFocus])
 
   useEffect(() => {
-    if (AuthStore.getAuthData && AuthStore.getAuthData.token) {
+    if (AuthStore.getAuthData && AuthStore.getAuthData.refCode) {
       console.log('AuthStore.getAuthData :>> ', JSON.parse(JSON.stringify(AuthStore.getAuthData)));
     }
   }, [AuthStore.getAuthData])
 
   return (
     <Screen style={ROOT} statusBar={'dark-content'}>
-      <ModalLoading size={'large'} color={color.primary} visible={isLoading} />
+      <ModalLoading size={'large'} color={color.primary} visible={isLoading || (AuthStore.loading || AuthStore.loadingApple || ProfileStore.loading)} />
 
       <TouchableOpacity style={{ paddingLeft: spacing[4] + spacing[1] }} onPress={() => navigation.goBack()}>
         <HeaderLeft onLeftPress={() => navigation.goBack()} />
@@ -251,22 +332,22 @@ export const ConfirmCodeScreen = observer(function ConfirmCodeScreen() {
         </TouchableOpacity>
       </View>
 
-      {!tokenStore.token && (isExpired || !!AuthStore.error) && <ModalAlert // !!isError
+      <ModalAlert // !!isError
         containerStyle={{ paddingVertical: spacing[5] }}
         iconName={'bell-alert-outline'}
         iconStyle={{
           color: color.line,
           size: 100
         }}
-        header={translate('confirmCodeScreen.codeExpiredOrIncorrect')}
+        header={AuthStore.error == 'server' ? 'Internal server error' : translate('confirmCodeScreen.codeExpiredOrIncorrect')}
         headerStyle={{ padding: spacing[3], color: color.primary }}
-        content={translate('confirmCodeScreen.confirmOTPAgianOrRequestNewOTP')}
+        content={AuthStore.error == 'server' ? 'เกิดข้อผิดพลาดในระบบ กรุณาลองใหม่ในภายหลัง' : translate('confirmCodeScreen.confirmOTPAgianOrRequestNewOTP')}
         contentStyle={{ paddingTop: spacing[3], paddingBottom: spacing[5], paddingHorizontal: spacing[7], color: color.line }}
         buttonContainerStyle={{ width: '90%' }}
         buttonComponent={RenderButtonAlert}
         visible={visibleModal}
       />
-      }
+
 
       <View testID="ConfirmCodeRoot" style={CONFIRM_CODE_ROOT}>
         <Button

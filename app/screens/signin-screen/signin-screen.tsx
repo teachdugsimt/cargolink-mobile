@@ -14,7 +14,7 @@ import {
   Alert,
 } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Button, HeaderLeft, Icon, ModalAlert, Screen, Text } from "../../components"
+import { Button, HeaderLeft, Icon, ModalAlert, Screen, Text, ModalLoading } from "../../components"
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import CountryPicker, { Country, CountryCode, DEFAULT_THEME, FlagButton } from 'react-native-country-picker-modal'
 import { color, spacing, images } from '../../theme'
@@ -24,7 +24,8 @@ import AuthStore from '../../store/auth-store/auth-store'
 import { AlertMessage } from "../../utils/alert-form";
 import { useStores } from "../../models/root-store/root-store-context";
 import ProfileStore from '../../store/profile-store/profile-store'
-import { APPLE_USER } from '../../config/env'
+// import { APPLE_USER } from '../../config/env'
+import { APPLE_USER, APPLE_PASSWORD } from '../../config'
 
 i18n.defaultLocale = 'th'
 i18n.locale = 'th'
@@ -92,7 +93,7 @@ const FIRST_MOBILE_NO: string = "0"
 
 const initialState = {
   disabled: true,
-  buttonColor: color.line,
+  buttonColor: color.primary,
   value: '',
   visibleModal: true,
 }
@@ -206,11 +207,17 @@ export const SigninScreen = observer(function SigninScreen() {
 
   useEffect(() => {
     let error_signin = AuthStore.error
-    let data_signin = AuthStore.data
-    console.log("Auth Store in signin screen :: ", AuthStore)
-    if (pressSignin && !error_signin && data_signin && !AuthStore.loading)
+    let data_signin = AuthStore.data.refCode
+    if (pressSignin && !error_signin && data_signin && !AuthStore.loading) {
       navigation.navigate("confirmCode")
-    else if (pressSignin && error_signin && !AuthStore.loading) AlertMessage("common.somethingWrong", "common.InvalidPhoneNumber", true)
+    }
+    else if (pressSignin && error_signin && !AuthStore.loading) {
+      console.log("Error signin screen :: ", error_signin)
+      if (error_signin.includes('timeout'))
+        AlertMessage("common.somethingWrong", "common.timeout", true)
+      else
+        AlertMessage("common.somethingWrong", "common.InvalidPhoneNumber", true)
+    }
   }, [pressSignin, AuthStore.error, JSON.stringify(AuthStore.data)])
 
   useEffect(() => {
@@ -221,7 +228,8 @@ export const SigninScreen = observer(function SigninScreen() {
       tokenStore.setToken(data_signinApple.token || null)
       tokenStore.setProfile(data_signinApple.userProfile || null)
       navigation.navigate("home", { screen: 'Home' })
-      ProfileStore.getProfileRequest()
+      if (AuthStore?.profile?.userProfile?.userId)
+        ProfileStore.getProfileRequest(AuthStore.profile.userProfile.userId)
       console.log("Local navigate to home ")
     }
     else if (pressApple && error_signinApple && !AuthStore.loading) AlertMessage("common.somethingWrong", "common.InvalidPhoneNumber", true)
@@ -233,23 +241,24 @@ export const SigninScreen = observer(function SigninScreen() {
     if (phoneNumber.toString().includes("011223344")) {
       setPressApple(true)
       AuthStore.AppleSignin({
-        "loginId": APPLE_USER || "+66906083288",
-        "password": "123456aA",
-        "userType": 2
+        "email": APPLE_USER || "admin.test@cargolink.co.th",
+        "password": APPLE_PASSWORD || "123456aQ@"
       })
     }
     else {
+      console.log("Counttry Code :: ", countryCode)
       AuthStore.setPhoneNumber(phoneNumber, countryCode)
-      AuthStore.signInRequest({ phoneNumber, countryCode, userType: 7 })
+      AuthStore.signInRequest({ phoneNumber, countryCode })
       setState(initialState)
       setPressSignin(true)
     }
   }
 
   const onCloseModal = () => {
+    AuthStore.clearError()
     setState(prevState => ({
       ...prevState,
-      visibleModal: !prevState.visibleModal
+      visibleModal: false//!prevState.visibleModal
     }))
   }
 
@@ -261,7 +270,8 @@ export const SigninScreen = observer(function SigninScreen() {
     onPress={() => onCloseModal()}
   />)
 
-  const isError = !!(AuthStore.error && AuthStore.error === 'SERVER_ERROR')
+  // const isError = !!(AuthStore.error && AuthStore.error === 'SERVER_ERROR')
+  const isError = !!AuthStore.error
 
   return (
     <Screen style={FULL} statusBar={'dark-content'}>
@@ -271,12 +281,13 @@ export const SigninScreen = observer(function SigninScreen() {
       <View testID="Logo" style={LOGO_PART}>
         <Image source={images.logoNewYellow} style={LOGO} resizeMode={"contain"} />
       </View>
+      <ModalLoading color={color.primary} visible={AuthStore.loading} size={'large'} />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View testID="MobileForm" style={MOBILE_FORM_PART}>
           <Text style={LABEL} text={translate("signinScreen.enterYourPhoneNumber")} />
           <View style={MOBILE_FORM}>
             <CountryPicker
-              countryCode={countryCode}
+              countryCode={countryCode ?? "TH"}
               withFilter={true}
               withFlag={true}
               withCountryNameButton={false}
@@ -318,7 +329,7 @@ export const SigninScreen = observer(function SigninScreen() {
         />
       </View>
 
-      {isError && <ModalAlert // !!isError
+      {!!AuthStore.error && <ModalAlert // !!isError
         containerStyle={{ paddingVertical: spacing[3] }}
         iconName={'bell-alert-outline'}
         iconStyle={{
@@ -327,7 +338,8 @@ export const SigninScreen = observer(function SigninScreen() {
         }}
         header={'ไม่สามารถเข้าสู่ระบบได้'}
         headerStyle={{ paddingVertical: spacing[3], color: color.primary }}
-        content={'เนื่องจากมีการปิดปรับปรุงระบบในช่วงเวลา 12.00 - 20.00 น. คุณสามารถเข้าสู่ระบบหลังช่วงเวลาดังกล่าว'}
+        // content={'เนื่องจากมีการปิดปรับปรุงระบบในช่วงเวลา 12.00 - 20.00 น. คุณสามารถเข้าสู่ระบบหลังช่วงเวลาดังกล่าว'}
+        content={'มีข้อผิดพลาดเกิดขึ้นในระบบ กรุณาลองใหม่อีกครั้งในภายหลัง'}
         contentStyle={{ paddingTop: spacing[3], paddingBottom: spacing[5], paddingHorizontal: spacing[7], color: color.line }}
         buttonContainerStyle={{ width: '90%' }}
         buttonComponent={RenderButtonAlert}

@@ -52,7 +52,7 @@ export class TruckTypeApi {
       headers: {
         Accept: "application/json",
         "Accept-Language": params,
-        Authorization: `Bearer ${to}`
+        Authorization: `${to}`
       },
     })
   }
@@ -63,9 +63,9 @@ export class TruckTypeApi {
     // make the api call
     // console.log("Filter truck type  :: ", filter)
     try {
-      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/mobile/mst/truck/truck-type')
+      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/master-data/truck-type')
       // the typical ways to die when calling an api
-      console.log("Response :: ", response)
+      // console.log("Response :: ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
         if (problem) return problem
@@ -82,8 +82,8 @@ export class TruckTypeApi {
 
   async getGroup(filter: any = {}): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/mobile/mst/truck/truck-type/group', filter)
-      console.log("Response :: ", response)
+      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/master-data/truck-type/group', filter)
+      // console.log("Response :: ", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)
         if (problem) return problem

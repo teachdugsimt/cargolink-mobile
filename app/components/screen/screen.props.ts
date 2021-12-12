@@ -36,4 +36,8 @@ export interface ScreenProps {
    * By how much should we offset the keyboard? Defaults to none.
    */
   keyboardOffset?: KeyboardOffsets
+
+  bounch?: boolean
+
+  showsVerticalScrollIndicator?: boolean
 }

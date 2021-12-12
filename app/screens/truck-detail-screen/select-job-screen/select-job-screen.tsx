@@ -9,11 +9,13 @@ import { MapTruckImageName } from "../../../utils/map-truck-image-name";
 import { Button, EmptyListMessage, ModalAlert, SearchItem, Text } from "../../../components";
 import { translate } from '../../../i18n';
 import AdvanceSearchStore from '../../../store/shipper-job-store/advance-search-store'
+import { useStores } from "../../../models/root-store/root-store-context";
 import TruckTypeStore from '../../../store/truck-type-store/truck-type-store'
 import LottieView from 'lottie-react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import BookingStore from "../../../store/booking-store/booking-store";
 import ShipperTruckStore from '../../../store/shipper-truck-store/shipper-truck-store'
+import UserJobStore from '../../../store/user-job-store/user-job-store';
 
 const FULL: ViewStyle = { flex: 1 }
 const HEADER: ViewStyle = {
@@ -67,7 +69,7 @@ const RenderImageAlert = () => (<Image source={images['truckYellowIcon']} width=
 
 const RenderButtonAlert = (props) => {
 
-  const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.line, backgroundColor: color.transparent }
+  const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.mainGrey, backgroundColor: color.transparent }
   const btnConfirmStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.primary, backgroundColor: color.primary }
   return (
     <View style={{ ...BOTTOM_ROOT, paddingVertical: spacing[2] }}>
@@ -98,6 +100,8 @@ const Item = (data) => {
     from,
     to,
     owner,
+    price,
+    priceType,
     onVisibleModal
   } = data
 
@@ -138,6 +142,8 @@ const Item = (data) => {
             paddingTop: spacing[2],
             borderRadius: 6
           },
+          price: price,
+          priceType: priceType === 'PER_TRIP' ? translate('common.round') : translate('common.ton'),
           onPress: () => onVisibleModal(id),
           onToggleHeart,
           bottomComponent: () => <RenderBottom />
@@ -148,11 +154,11 @@ const Item = (data) => {
   )
 }
 
-let PAGE = 0
+let PAGE = 1
 
 export const SelectJobScreen = observer(function MyJobScreen() {
   const navigation = useNavigation()
-
+  const { tokenStore } = useStores()
   const [visibleModal, setVisibleModal] = useState<boolean>(false)
   const [isBokking, setIsBooking] = useState<boolean>(false)
   const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState<boolean>(true)
@@ -163,9 +169,11 @@ export const SelectJobScreen = observer(function MyJobScreen() {
     if (!TruckTypeStore.list.length) {
       TruckTypeStore.find()
     }
-    ShipperJobStore.find()
+    UserJobStore.findUserJob({ page: PAGE, rowsPerPage: 10, status: 'NEW', userId: tokenStore.profile.userId })
     return () => {
-      ShipperJobStore.setDefaultOfList()
+      PAGE = 1
+      // ShipperJobStore.setDefaultOfList()
+      UserJobStore.setDefaultOfList()
     }
   }, [])
 
@@ -173,16 +181,16 @@ export const SelectJobScreen = observer(function MyJobScreen() {
 
   const onScrollList = () => {
     console.log('onScrollList')
-    if (!onEndReachedCalledDuringMomentum && !ShipperJobStore.loading) {
-      PAGE += 10
-      const advSearch = { ...JSON.parse(JSON.stringify(AdvanceSearchStore.filter)), page: PAGE }
-      ShipperJobStore.find(advSearch)
+    if (!onEndReachedCalledDuringMomentum && !UserJobStore.userJobLoading) {
+      PAGE += 1
+      UserJobStore.findUserJob({ page: PAGE, rowsPerPage: 10, status: 'NEW', userId: tokenStore.profile.userId })
       setOnEndReachedCalledDuringMomentum(true)
     }
   }
 
   const onRefresh = () => {
-
+    PAGE = 1
+    UserJobStore.findUserJob({ page: PAGE, rowsPerPage: 10, status: 'NEW', userId: tokenStore.profile.userId })
   }
 
   const onCloseModal = () => {
@@ -196,9 +204,12 @@ export const SelectJobScreen = observer(function MyJobScreen() {
   }
 
   const onConfirmJob = () => {
+    const ownerTruckProfile = JSON.parse(JSON.stringify(ShipperTruckStore.data))
     BookingStore.updateBooking({
       truckId: ShipperTruckStore.data.id,
-      jobId: jobId
+      jobId: jobId,
+      requesterType: 'JOB_OWNER',
+      accepterUserId: ownerTruckProfile?.owner?.userId
     })
     setIsBooking(true)
     // onCloseModal()
@@ -231,7 +242,7 @@ export const SelectJobScreen = observer(function MyJobScreen() {
     buttonComponent: () => !isBokking ? <RenderButtonAlert onCloseModal={onCloseModal} onConfirmJob={onConfirmJob} /> : null,
     visible: visibleModal,
   }
-
+  console.log("Select job for booking truck ::")
   return (
     <View style={FULL}>
       <View style={HEADER}>
@@ -239,7 +250,7 @@ export const SelectJobScreen = observer(function MyJobScreen() {
       </View>
       <View style={LIST}>
         <FlatList
-          data={ShipperJobStore.list}
+          data={UserJobStore.userJobList}
           renderItem={renderItem}
           keyExtractor={item => item.id}
           onEndReached={() => onScrollList()}
@@ -249,7 +260,7 @@ export const SelectJobScreen = observer(function MyJobScreen() {
           onMomentumScrollBegin={() => setOnEndReachedCalledDuringMomentum(false)}
           refreshControl={
             <RefreshControl
-              refreshing={ShipperJobStore.loading}
+              refreshing={UserJobStore.userJobLoading}
               onRefresh={onRefresh}
             />
           }

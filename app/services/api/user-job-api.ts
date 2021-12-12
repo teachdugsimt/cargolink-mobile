@@ -45,7 +45,29 @@ export class UserJobAPI {
    */
   async find(filter: Types.UserJobFilter = {}): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/job/list/user', filter)
+      const tmp: any = filter
+      if (tmp?.type) {
+        tmp.status = filter.type == 1 ? "INPROGRESS" : (filter.type == 2 ? "DONE" : "NEW")
+        // tmp.rowsPerPage = 500
+        // tmp.page = 1
+      }
+      // const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/job/list/user', filter)
+      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/jobs/list/user', tmp)
+      console.log("User job list api [find] :", response)
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+      return { kind: "ok", data: response.data }
+    } catch (error) {
+      console.log("Error call api find all user job list :", error)
+      return error
+    }
+  }
+
+  async findUserJob(filter: Types.UserJobListFilter = {}): Promise<any> {
+    try {
+      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/jobs/list/user', filter)
       console.log("User job list api [find] :", response)
       if (!response.ok) {
         const problem = getGeneralApiProblem(response)

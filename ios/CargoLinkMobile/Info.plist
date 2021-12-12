@@ -19,11 +19,26 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.36</string>
+	<string>2.3.5</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>cgl</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>cgl</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
-	<string>60</string>
+	<string>108</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -40,17 +55,19 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>App needs Camera Access Permission</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>App needs location access</string>
+	<string>The app needs a camera to take your photo to set as a personal profile or photo of trucks when you want to add your trucks. </string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>App needs always location access when usage</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>App needs location access</string>
+	<string>App needs location access to get your current location and automatically set to pick up point or drop point.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>App needs location access to get your current location and automatically set to pick up point or drop point.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>App needs photo library Access</string>
+	<string>App needs photo library access to set as a personal profile or photo of trucks when you want to add your trucks. </string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Photo Library Access Warning</string>
+	<string>App needs photo library access to set as a personal profile or photo of trucks when you want to add your trucks. </string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>CargoLinkMobile requires your permission to track in order to show you more relevant ads.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
@@ -102,8 +119,6 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>

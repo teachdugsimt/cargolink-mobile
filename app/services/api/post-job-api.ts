@@ -46,10 +46,11 @@ export class PostJobAPI {
     // construct the apisauce instance
     this.apisauce = create({
       baseURL: this.config.url,
-      timeout: this.config.timeout,
+      // timeout: this.config.timeout,
+      timeout: 60000,
       headers: {
         Accept: "application/json",
-        Authorization: `Bearer ${to}`
+        Authorization: `${to}`
       },
     })
   }
@@ -60,7 +61,7 @@ export class PostJobAPI {
   async createPostJob(params: any): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.post(`api/v1/mobile/shippers/jobs`, params)
+      const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/jobs`, params)
       // the typical ways to die when calling an api
       __DEV__ && console.tron.log("Response call api create POSTJOB  : ", response)
       console.log("Response call api create POSTJOB  : ", response)
@@ -78,7 +79,7 @@ export class PostJobAPI {
 
   async updateJob(id: string, data?: any): Promise<any> {
     try {
-      const response: ApiResponse<any> = await this.apisauce.put(`/api/v1/mobile/shippers/jobs/${id}`, data)
+      const response: ApiResponse<any> = await this.apisauce.patch(`/api/v1/jobs/${id}`, data)
 
       console.log("Shipper job api [update] : ", JSON.stringify(response))
       // if (!response.ok) {

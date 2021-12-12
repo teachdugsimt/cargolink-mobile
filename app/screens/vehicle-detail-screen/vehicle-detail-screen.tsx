@@ -24,6 +24,7 @@ import { useStores } from "../../models/root-store/root-store-context";
 import { MapTruckImageName } from '../../utils/map-truck-image-name'
 import CarriersJobStore from "../../store/carriers-job-store/carriers-job-store"
 import myVehicle from "../../services/api/mock-data/my-vehicle"
+import { API_URL } from '../../config/'
 
 const deviceWidht = Dimensions.get("window").width
 const deviceHeight = Dimensions.get("window").height
@@ -78,7 +79,7 @@ const TEXT_OF_VALUE: TextStyle = {
   textAlign: "right",
   borderWidth: 1,
   borderRadius: 4,
-  borderColor: color.line,
+  borderColor: color.mainGrey,
   padding: spacing[3],
 }
 const SUB_TOPIC_ROOT: ViewStyle = {
@@ -162,7 +163,7 @@ const HeaderComponent = observer(function HeaderComponent() {
   }
 
   const _pushEmptyImage = (arr) => {
-    __DEV__ && console.tron.log("Arr Tranform already :: ", arr)
+   console.log("Arr Tranform already :: ", arr)
     let tmp = arr.map((e, i) => {
       if (!e || !e.url) {
         return {
@@ -176,7 +177,7 @@ const HeaderComponent = observer(function HeaderComponent() {
           uri: e.url,
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${tokenStore.token.accessToken}`
+            Accept: 'image/*'
           }
         },
         width: 1024,
@@ -185,25 +186,25 @@ const HeaderComponent = observer(function HeaderComponent() {
       }
 
     })
-    __DEV__ && console.tron.log("Arr after parse for IMAGE VIEWER :: ", tmp)
+   console.log("Arr after parse for IMAGE VIEWER :: ", tmp)
     return tmp
   }
 
   const raw_image = truckPhotos &&
     Object.keys(truckPhotos).length ?
     Object.entries(truckPhotos).map(img => {
+      console.log("Image [1] : ", `${API_URL}/api/v1/media/file-stream?attachCode=` + img[1])
       return {
-        url: img[1],
+        url: img[1] ? `${API_URL}/api/v1/media/file-stream?attachCode=` + img[1] : null,
       }
     }) : []
-  __DEV__ && console.tron.log("RAW Image Photos :: ", raw_image)
   const transformImage = swap(raw_image, 0, 1)
+  console.log("Transform Image :: ", transformImage)
   const viewListImage = _pushEmptyImage(transformImage)
-  __DEV__ && console.tron.log("Transform Image Photos :: ", transformImage)
   const txtTruckType = GetTruckType(+truckType)
 
-  __DEV__ && console.tron.log("MyVehicleStore data id ::  ", JSON.parse(JSON.stringify(MyVehicleStore.data)))
-  __DEV__ && console.tron.display({ name: 'truck type', value: truckType })
+ console.log("MyVehicleStore data id ::  ", JSON.parse(JSON.stringify(MyVehicleStore.data)))
+ console.log({ name: 'truck type', value: truckType })
 
   return (
     <View style={CONTAINER}>
@@ -217,7 +218,7 @@ const HeaderComponent = observer(function HeaderComponent() {
           <View style={IMAGES}>
             {!!transformImage &&
               transformImage.map((image, index) => {
-                __DEV__ && console.tron.log("Each Image render ::  ", image) // undefined || {url: "xxxxx"}
+               console.log("Each Image render ::  ", image) // undefined || {url: "xxxxx"}
                 return (
                   <TouchableOpacity style={TOUCHABLE} key={index} onPress={() => {
                     if (MyVehicleStore.data.id && image && !!image.url) onViewer(index)
@@ -226,7 +227,7 @@ const HeaderComponent = observer(function HeaderComponent() {
                       uri: image.url,
                       method: 'GET',
                       headers: {
-                        Authorization: `Bearer ${tokenStore.token.accessToken}`
+                        Accept: 'image/*'
                       },
                     } : imageComponent["noImageAvailable"]} key={index} />
                   </TouchableOpacity>
@@ -316,7 +317,7 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
   const {
     id = ''
   }: VehicleProps = route?.params || {}
-  
+
   const _renderListBooking = (booker, index) => {
     console.log("booker object :: ", JSON.parse(JSON.stringify(booker)))
     return (<>
@@ -331,14 +332,15 @@ export const VehicleDetailScreen = observer(function VehicleDetailScreen() {
           topic={booker.fullName}
           detail={booker.bookingDatetime}
           btnTxt={translate('myJobScreen.accept')}
-          containerStyle={{ paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.disable, backgroundColor: color.textWhite }}
+          containerStyle={{ paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.mainGrey, backgroundColor: color.textWhite }}
           topicStyle={{ fontSize: 14, paddingBottom: spacing[1] }}
           detailStyle={{ color: color.line }}
           btnStyle={{ paddingVertical: 2, paddingHorizontal: spacing[2] }}
           btnTextStyle={{ fontSize: 12, paddingLeft: spacing[1] }}
           onToggle={() => {
+            console.log("When navigate to job detail quotation ID :: ", booker.id) // quotation id
             CarriersJobStore.getJobDetail(booker.id)
-            navigation.navigate('jobDetail', {
+            navigation.navigate('truckShowJobDetailScreen', {
               showOwnerAccount: false,
               fromManageCar: true,
               quotationsID: booker.id

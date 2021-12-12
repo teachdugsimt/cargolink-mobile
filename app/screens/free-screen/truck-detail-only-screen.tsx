@@ -31,6 +31,7 @@ import TruckDetailStore from '../../store/free-store/truck-detail-store'
 import FavoriteTruckStore from "../../store/shipper-truck-store/favorite-truck-store"
 import UserJobStore from "../../store/user-job-store/user-job-store"
 import ShippersHistoryCallStore from '../../store/shippers-history-call-store/shippers-history-call-store'
+import { API_URL } from '../../config/'
 
 interface ImageInfo {
   width: number
@@ -151,13 +152,14 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
   }, [truckID, truckData])
 
   useEffect(() => {
-    const imageSource = profile?.avatar?.object && profile?.avatar?.token ? {
+    const imageSource = profile?.avatar?.object ? {
       source: {
-        uri: profile?.avatar?.object || '',
+        uri: (profile?.avatar?.object ? `${API_URL}/api/v1/media/file-stream?attachCode=` + profile?.avatar?.object : '') || '',
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${profile?.avatar?.token || ''}`,
-          adminAuth: profile?.avatar?.token
+          Accept: 'image/*'
+          // Authorization: `Bearer ${profile?.avatar?.token || ''}`,
+          // adminAuth: profile?.avatar?.token || ''
         },
       },
       resizeMode: 'cover'
@@ -329,13 +331,15 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
         height: 720,
         title: `img-${img[0]}`
       }
-      if (img[1] && img[1].object) {
+      if (img[1] && img[1] && img[1].object) {
+        console.log("Image : 1 ", img[1])
         imageInfo.source = {
-          uri: img[1].object,
+          uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + img[1].object,
           method: 'GET',
           headers: {
-            Authorization: img[1].token,
-            adminAuth: img[1].token
+            Accept: 'image/*'
+            // Authorization: img[1].token,
+            // adminAuth: img[1].token || ''
           }
         }
       } else {
@@ -343,7 +347,7 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
       }
       return imageInfo
     }) : []
-  __DEV__ && console.tron.log("Transform Image :: ", transformImage)
+  console.log("Transform Image :: ", transformImage)
   const truckImage = MapTruckImageName(+truckType)
 
   const workingZoneStr = workingZones?.length ? workingZones.map(zone => {
@@ -433,7 +437,7 @@ export const TruckDetailOnlyScreen = observer(function TruckDetailOnlyScreen() {
       {ownerUserId !== myUserId && <View style={BOTTOM_ROOT}>
         <Button
           testID="call-with-owner"
-          style={[BTN_STYLE, { backgroundColor: color.line }]}
+          style={[BTN_STYLE, { backgroundColor: color.blue }]}
           children={
             <View style={{ alignItems: 'center', flexDirection: 'row' }}>
               <MaterialCommunityIcons name={'phone'} size={24} color={color.textWhite} style={{ paddingRight: spacing[2] }} />

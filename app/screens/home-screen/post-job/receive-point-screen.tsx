@@ -1,41 +1,40 @@
 import React, { useEffect, useState } from "react"
 import {
-  View, ViewStyle, TextStyle, Platform, ImageStyle, SafeAreaView, Dimensions,
-  KeyboardAvoidingView, TouchableOpacity, ScrollView
+  View, ViewStyle, TextStyle, Platform, ImageStyle,
+  TouchableOpacity,
 } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { useForm, Controller } from "react-hook-form";
 import { observer } from "mobx-react-lite"
 import { Text } from "../../../components"
 import {
-  AddJobElement, TextInputTheme, RoundedButton, Icon, DatePickerRemake, TimePickerRemake,
-  LocationPicker, Screen
+  AddJobElement, RoundedButton, Icon, DatePickerRemake, TimePickerRemake,
+  Screen, TextInputColumn, TextInputNew
 } from '../../../components'
-import { color, typography } from "../../../theme"
+import { color } from "../../../theme"
 import PostJobStore from "../../../store/post-job-store/post-job-store";
 import _ from 'lodash'
-import { Modal, ModalContent } from 'react-native-modals';
 import { AlertForm, AlertFormDate } from "../../../utils/alert-form";
 import StatusStore from '../../../store/post-job-store/job-status-store'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
 
-const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
+const ALIGN_ITEMS: ViewStyle = { alignItems: 'center' }
 const PRIMARY_COLOR: ViewStyle = { backgroundColor: color.primary }
 const GREY_TEXT: ViewStyle = { backgroundColor: color.line }
+const LINE_TEXT: TextStyle = { color: color.line }
+const JUSTIFY_BETWEEN: ViewStyle = { justifyContent: 'space-between', alignItems: 'center' }
 const BORDER_RADIUS_20: ViewStyle = {
   borderRadius: 20,
 }
-const ADD_NEW_POINT: ViewStyle = {
-  backgroundColor: color.primary,
-  borderWidth: 1,
-  borderColor: color.primary,
-  ...BORDER_RADIUS_20
-}
+const VERTICAL_10: TextStyle = { paddingVertical: 10 }
+const VIEW_VERTICAL_10: ViewStyle = { paddingVertical: 10 }
 
 const TOP_VIEW: ViewStyle = {
-  paddingTop: Platform.OS == "ios" ? 10 : 0,
+  paddingTop: Platform.OS == "ios" ? 10 : 10,
   flex: Platform.OS == "ios" ? 0.65 : 0.85,
-  backgroundColor: color.mainTheme,
+  backgroundColor: color.textWhite,
   justifyContent: 'center',
 }
 const BOTTOM_VIEW: ViewStyle = {
@@ -53,13 +52,12 @@ const WRAPPER_TOP: ViewStyle = {
 const CONTENT_TEXT: TextStyle = {
   fontFamily: 'Kanit-Medium',
   color: color.black,
-  fontSize: typography.title
 }
-const MARGIN_HORIZONTTAL_MEDIUM: ViewStyle = { paddingHorizontal: 10 }
 const MARGIN_LEFT_SMALL: ViewStyle = { paddingLeft: 5 }
 const MARGIN_TOP: ViewStyle = { marginTop: 5 }
 const MARGIN_TOP_BIG: ViewStyle = { marginTop: 10 }
 const MARGIN_TOP_EXTRA: ViewStyle = { marginTop: 20 }
+const BORDER_BOTTOM_STYLE: ViewStyle = { borderBottomColor: color.mainGrey, borderBottomWidth: 1 }
 const LAYOUT_REGISTRATION_FIELD: TextStyle = {
   textAlign: 'right', paddingRight: 10,
 }
@@ -82,18 +80,17 @@ const RED_DOT: TextStyle = {
   color: color.red,
   paddingTop: 10, paddingLeft: 7.5
 }
-const ICON_PIN_YELLOW: ImageStyle = {
-  height: 20, width: 20,
-  marginTop: 10
+const ICON_PIN_YELLOW: ImageStyle = { height: 45, width: 40, }
+const BUTTON_MAP: ViewStyle = {
+  padding: 10, paddingLeft: 0,
+  borderBottomWidth: 1, borderBottomColor: color.mainGrey
 }
-const PADDING_RIGHT_SMALL: ViewStyle = { paddingRight: 5 }
-const PADDING_LEFT_SMALL: ViewStyle = { paddingLeft: 5 }
-const BUTTON_MAP: ViewStyle = { padding: 10, borderWidth: 1, borderRadius: 2.5, borderColor: color.line }
 const initField = [{
   id: 1,
   showDate: false,
   showTime: false,
 }]
+const MAX_LENGTH: number = 120
 
 export const ReceivePointScreen = observer(function ReceivePointScreen() {
   const navigation = useNavigation()
@@ -103,7 +100,6 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
   const [rerenderTime, setrerenderTime] = useState(false)
   const [initDatePicker] = useState(new Date());
 
-  const [visibleMap, setvisibleMap] = useState(false)
 
   const [swipe, setswipe] = useState(false)
 
@@ -123,17 +119,18 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
     defaultValues: StatusStore.status && JSON.parse(JSON.stringify(StatusStore.status)) == "add" ? {} : initialData
   });
 
-  const _submitLocation = (addr, region) => {
-    if (statusMap.includes('receive')) {
+  const _submitLocation = (addr, region, pathControl) => {
+    console.log("SUbmit Location Field HERERERER TRIGGER :: =>>>>", pathControl, addr, region)
+    if (pathControl.includes('receive')) {
       control.setValue("receive-location", addr)
       control.setValue("receive-region", region)
-      setvisibleMap(false)
+      setswipe(!swipe)
     } else {
-      let splitPath = statusMap.split("-")
+      let splitPath = pathControl.split("-")
       let path = "shipping-region-" + splitPath[splitPath.length - 1]
-      control.setValue(statusMap, addr)
+      control.setValue(pathControl, addr)
       control.setValue(path, region)
-      setvisibleMap(false)
+      setswipe(!swipe)
     }
   }
 
@@ -145,7 +142,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
     console.log("Postjob 2 data :: => ", data_post2)
     console.log("Actions status 2 data :: => ", status_action)
     if (status_action && status_action == "edit") {
-      if (data_post2 && data_post2 != null && data_post2['shipping-information'] && data_post2['shipping-information'].length > 0) {
+      if (data_post2 && data_post2 != null && data_post2['shipping-information'] && Array.isArray(data_post2['shipping-information']) && data_post2['shipping-information'].length > 0) {
 
         let tmp_field_level = []
         data_post2['shipping-information'].map((e, i) => {
@@ -182,6 +179,24 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
     const receiveDateForCheck = tmpCheckDate.setHours(data['receive-time'].getHours(), data['receive-time'].getMinutes(), data['receive-time'].getSeconds());
     console.log("Full receive date/time :: ", receiveDateForCheck)
 
+
+
+    let tmpData = JSON.parse(JSON.stringify(data))
+    let checkDate = false
+    Object.keys(tmpData).forEach(e => {
+      if (e.includes("shipping-date-")) {
+        let tmpShippingDate = data[e]
+        let keyIndex = e.split("-")[e.split("-").length - 1]
+        const shippingDateForCheck = tmpShippingDate.setHours(data[`shipping-time-${keyIndex}`].getHours(), data[`shipping-time-${keyIndex}`].getMinutes(), data['receive-time'].getSeconds());
+        console.log("Full shipping date/time :: ", shippingDateForCheck)
+        if (receiveDateForCheck >= shippingDateForCheck) checkDate = true
+
+      }
+    })
+
+
+
+    if (checkDate) { AlertFormDate(false); return; }
     if (receiveDateForCheck < expiredDate) { AlertFormDate(); return; }
     if (!data['receive-location']) { AlertForm("postJobScreen.receiveLocation"); return; }
     else if (!data['receive-date']) { AlertForm("postJobScreen.receiveDate"); return; }
@@ -225,8 +240,9 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
     PostJobStore.setPostJob(2, final)
     console.log("position final for REACEIVE POINT :: => ,", final)
     let status_action = JSON.parse(JSON.stringify(StatusStore.status))
+    console.log(`🚀  ->  status_action`, status_action);
     if (status_action == "add")
-      navigation.navigate("checkInformation")
+      navigation.navigate("checkInformationHome")
     else navigation.navigate("MyJob", { screen: "checkInformation" })
   }
 
@@ -237,6 +253,12 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
       showDate: false,
       showTime: false,
     })
+    setfieldShipping(tmp_field_level)
+    setswipe(!swipe)
+  }
+  const _deleteField = (index: number) => {
+    let tmp_field_level: any = fieldShipping
+    tmp_field_level.pop()
     setfieldShipping(tmp_field_level)
     setswipe(!swipe)
   }
@@ -257,9 +279,10 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
   let formControllerValue = control.getValues()
   let fromNow2Days = addDays(initDatePicker, 2)
   let addOneHours = new Date(fromNow2Days.setHours(fromNow2Days.getHours() + 1))
+  console.log("Form Control :: ", formControllerValue)
   // const { longitude, latitude } = position?.coords || {}
   return (
-    <Screen unsafe>
+    <Screen unsafe keyboardOffset="little" preset="scroll" bounch={false}>
 
       <View testID="ReceivePointScreen" style={FULL}>
         <View style={TOP_VIEW}>
@@ -267,32 +290,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
         </View>
 
         <View style={BOTTOM_VIEW}>
-          <ScrollView style={FULL}>
-            <Modal
-              visible={visibleMap}
-              onTouchOutside={() => setvisibleMap(false)}
-              onSwipeOut={() => setvisibleMap(false)}>
-              <ModalContent >
-                <View style={{ width: (width / 1), height: '100%', justifyContent: 'flex-start' }}>
-                  <SafeAreaView style={{ flex: 1 }}>
-                    <View style={{ flex: 1, position: 'relative' }}>
-
-                      {statusMap && <LocationPicker
-                        onCloseModal={() => setvisibleMap(false)}
-                        banner={statusMap.includes('receive') ? "postJobScreen.receiveLocation" : "postJobScreen.shippingLocation"}
-                        onSubmitMap={(addr, region) => _submitLocation(addr, region)} />}
-
-                    </View>
-
-                  </SafeAreaView>
-
-                </View>
-              </ModalContent>
-            </Modal>
-
-
-
-
+          <View style={FULL}>
 
 
             <View style={TOP_VIEW_2}>
@@ -301,9 +299,6 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                   <Icon icon={'pinDropYellow'} style={ICON_PIN_YELLOW} />
                   <Text tx={"postJobScreen.acceptPointProduct"} preset={'topic'} style={[MARGIN_TOP_BIG, MARGIN_LEFT_SMALL]} />
                   <Text preset={'topic'} style={RED_DOT} >*</Text>
-                </View>
-                <View style={ROW_TEXT}>
-                  <Text tx={"postJobScreen.inputLocationReceive"} preset={'topic'} style={[MARGIN_TOP_BIG, MARGIN_LEFT_SMALL]} />
                 </View>
 
                 <Controller
@@ -322,12 +317,20 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                     <>
                       <TouchableOpacity
                         onPress={() => {
-                          setvisibleMap(true)
+                          // setvisibleMap(true)
                           setstatusMap('receive-location')
+                          navigation.navigate("locationPicker", {
+                            banner: "postJobScreen.receiveLocation",
+                            path: "receive-location",
+                            onSubmitMap: (addr, region, path) => _submitLocation(addr, region, path)
+                          })
                         }}
                         style={BUTTON_MAP}>
-                        {!formControllerValue["receive-location"] && <Text tx={"postJobScreen.receiveLocation"} />}
-                        {!!formControllerValue["receive-location"] && <Text>{formControllerValue["receive-location"]}</Text>}
+                        {!formControllerValue["receive-location"] && <View style={[ROW_TEXT, JUSTIFY_BETWEEN, VIEW_VERTICAL_10]}>
+                          <Text tx={"postJobScreen.fromMap"} style={LINE_TEXT} />
+                          <Ionicons name="chevron-forward" size={24} color={color.line} />
+                        </View>}
+                        {!!formControllerValue["receive-location"] && <Text style={VERTICAL_10}>{formControllerValue["receive-location"]}</Text>}
                       </TouchableOpacity>
                     </>
                   )}
@@ -339,9 +342,23 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                 {(errors['receive-location'] && !formControllerValue["receive-location"]) && <Text style={{ color: color.red }} tx={"postJobScreen.validateReceiveLocation"} />}
 
 
-                <View style={ROW_TEXT}>
-                  <View style={[FULL, PADDING_RIGHT_SMALL]}>
-                    <Text tx={"postJobScreen.dateReceive"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+
+
+
+
+
+
+
+
+
+
+                <View style={[ROW_TEXT, JUSTIFY_BETWEEN, BORDER_BOTTOM_STYLE]}>
+                  <View style={[FULL, ROW_TEXT, ALIGN_ITEMS]}>
+                    {Platform.OS == "ios" && <FontAwesome name="calendar-o" size={22} />}
+                    <Text tx={"postJobScreen.dateReceive"} style={{ ...CONTENT_TEXT, paddingLeft: Platform.OS == "ios" ? 10 : 0 }} />
+                  </View>
+                  <View style={FULL}></View>
+                  <View style={{}}>
                     <Controller
                       control={control}
                       render={({ onChange, onBlur, value }) => (
@@ -362,8 +379,14 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                       defaultValue={fromNow2Days}
                     />
                   </View>
-                  <View style={[FULL, PADDING_LEFT_SMALL]}>
-                    <Text tx={"postJobScreen.timeReceive"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                </View>
+                <View style={[ROW_TEXT, JUSTIFY_BETWEEN, BORDER_BOTTOM_STYLE]}>
+                  <View style={[FULL, ROW_TEXT, ALIGN_ITEMS]}>
+                    {Platform.OS == "ios" && <FontAwesome name="clock-o" size={22} />}
+                    <Text tx={"postJobScreen.timeReceive"} style={{ ...CONTENT_TEXT, paddingLeft: Platform.OS == "ios" ? 10 : 0 }} />
+                  </View>
+                  <View style={FULL}></View>
+                  <View style={{}}>
                     <Controller
                       control={control}
                       render={({ onChange, onBlur, value }) => (
@@ -388,33 +411,50 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
 
 
 
-                <Text tx={"postJobScreen.receiverInfo"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
-                <Text tx={"postJobScreen.receiverName"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+
+
+
+
+
+
+                <Text tx={"postJobScreen.receiverInfo"} style={{ ...MARGIN_TOP_EXTRA }} preset="topic" />
+                <View style={MARGIN_TOP_BIG} />
                 <Controller
                   control={control}
                   render={({ onChange, onBlur, value }) => (
-                    <TextInputTheme
-                      testID={"receive-name"}
-                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                    <TextInputColumn
+                      testID={"item-name"}
+                      topic={"postJobScreen.contactName"}
+                      actualPlaceholder="postJobScreen.inputName"
+                      underline={true}
+                      length={value ? value.length : 0} maxLength={MAX_LENGTH}
+                      inputStyle={{ ...MARGIN_MEDIUM, ...CONTENT_TEXT }}
+                      value={value} onChangeText={(text) => onChange(text)} />
                   )}
                   key={'text-input-receive-name'}
+                  rules={{ required: true }}
                   name={"receive-name"}
                   defaultValue=""
                 />
+                {errors['receive-name'] && <Text style={{ color: color.red }} tx={"postJobScreen.validateReceiveName"} />}
 
-
-                <Text tx={"postJobScreen.receiverTel"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
                 <Controller
                   control={control}
                   render={({ onChange, onBlur, value }) => (
-                    <TextInputTheme
-                      testID={"receive-tel-no"}
+                    <TextInputNew
+                      key="text-input-item-weight"
                       keyboardType="numeric"
-                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                      prefix="postJobScreen.phoneNumber"
+                      actualPlaceholder={Platform.OS == "ios" ? "postJobScreen.mockPhoneNumber" : "postJobScreen.mockPhoneAndroid"}
+                      underline={false}
+                      prefixIcon="call"
+                      prefixIconColor={color.textBlack}
+                      inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
+                      value={value} onChangeText={(text) => onChange(text)} />
                   )}
                   key={'text-input-receive-tel-no'}
                   name={"receive-tel-no"}
-                  rules={{ pattern: /^\(?([0]{1})\)?([0-9]{9})$/ }}
+                  rules={{ pattern: /^\(?([0]{1})\)?([0-9]{8,10})$/ }}
                   defaultValue=""
                 />
                 {errors['receive-tel-no'] && <Text style={{ color: color.red }} tx={"postJobScreen.validateReceiveTel"} />}
@@ -446,14 +486,25 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
             {fieldShipping && fieldShipping.length > 0 && fieldShipping.map((e, i) => {
               return <View style={[TOP_VIEW_2, MARGIN_TOP]} key={`view-shippping-${i + 1}`}>
                 <View key={`view-shippping-wrapper-top-${i + 1}`} style={WRAPPER_TOP}>
-                  <View style={ROW_TEXT}>
-                    <Icon icon={'pinDropGreen'} style={ICON_PIN_YELLOW} />
-                    <Text tx={"postJobScreen.shipingPoint"} preset={'topic'} style={MARGIN_TOP_BIG} />
-                    <Text preset={'topic'} style={MARGIN_TOP_BIG}>{i + 1}</Text>
-                    <Text preset={'topic'} style={RED_DOT} >*</Text>
+                  <View style={[ROW_TEXT, JUSTIFY_BETWEEN]}>
+
+                    <View style={ROW_TEXT}>
+                      <Icon icon={'pinDropGreen'} style={ICON_PIN_YELLOW} />
+                      <Text tx={"postJobScreen.shipingPoint"} preset={'topic'} style={MARGIN_TOP_BIG} />
+                      <Text preset={'topic'} style={MARGIN_TOP_BIG}>{" "}{i + 1}</Text>
+                      <Text preset={'topic'} style={RED_DOT} >*</Text>
+                    </View>
+
+                    {i == 0 && <TouchableOpacity style={[ROW_TEXT, { alignItems: 'center' }]} onPress={() => _addFieldInputShipping()}>
+                      <Ionicons name="add-circle-outline" size={20} color={color.primary} />
+                      <Text tx={"postJobScreen.addDelivery"} style={{ color: color.primary }} preset={'topic'} />
+                    </TouchableOpacity>}
+                    {i != 0 && i == fieldShipping.length - 1 && <TouchableOpacity style={[ROW_TEXT, { alignItems: 'center' }]} onPress={() => _deleteField(i)}>
+                      <Ionicons name="close" size={20} color={color.line} />
+                      <Text tx={"common.delete"} style={{ color: color.line }} preset={'topic'} />
+                    </TouchableOpacity>}
                   </View>
 
-                  <Text tx={"postJobScreen.shippingAddr"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
                   <Controller
                     control={control}
                     render={({ onChange, onBlur, value }) => (
@@ -470,12 +521,20 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                       <>
                         <TouchableOpacity
                           onPress={() => {
-                            setvisibleMap(true)
+                            // setvisibleMap(true)
                             setstatusMap("shipping-address-" + e.id)
+                            navigation.navigate("locationPicker", {
+                              banner: "postJobScreen.shipingPoint",
+                              path: "shipping-address-" + e.id,
+                              onSubmitMap: (addr, region, path) => _submitLocation(addr, region, path)
+                            })
                           }}
                           style={BUTTON_MAP}>
-                          {!formControllerValue["shipping-address-" + e.id] && <Text tx={"postJobScreen.shippingLocation"} />}
-                          {!!formControllerValue["shipping-address-" + e.id] && <Text>{formControllerValue["shipping-address-" + e.id]}</Text>}
+                          {!formControllerValue["shipping-address-" + e.id] && <View style={[ROW_TEXT, JUSTIFY_BETWEEN, VIEW_VERTICAL_10]}>
+                            <Text tx={"postJobScreen.fromMap"} style={{ color: color.line }} />
+                            <Ionicons name="chevron-forward" size={24} color={color.line} />
+                          </View>}
+                          {!!formControllerValue["shipping-address-" + e.id] && <Text style={VERTICAL_10}>{formControllerValue["shipping-address-" + e.id]}</Text>}
                         </TouchableOpacity>
                       </>
                     )}
@@ -486,9 +545,18 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                   />
                   {errors["shipping-address-" + e.id] && !formControllerValue["shipping-address-" + e.id] && <Text style={{ color: color.red }} tx={"postJobScreen.validateShippingLocation"} />}
 
-                  <View style={ROW_TEXT}>
-                    <View style={[FULL, PADDING_RIGHT_SMALL]}>
-                      <Text tx={"postJobScreen.dateShipping"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+
+
+
+
+
+                  <View style={[ROW_TEXT, JUSTIFY_BETWEEN, BORDER_BOTTOM_STYLE]}>
+                    <View style={[FULL, ROW_TEXT, ALIGN_ITEMS]}>
+                      {Platform.OS == "ios" && <FontAwesome name="calendar-o" size={22} />}
+                      <Text tx={"postJobScreen.dateShipping"} style={{ ...CONTENT_TEXT, paddingLeft: Platform.OS == "ios" ? 10 : 0 }} />
+                    </View>
+                    <View style={FULL}></View>
+                    <View style={{}}>
                       <Controller
                         control={control}
                         render={({ onChange, onBlur, value }) => (
@@ -509,9 +577,17 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                         name={"shipping-date-" + e.id}
                         defaultValue={addDays(initDatePicker, 3)}
                       />
+
                     </View>
-                    <View style={[FULL, PADDING_LEFT_SMALL]}>
-                      <Text tx={"postJobScreen.timeShipping"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+                  </View>
+
+                  <View style={[ROW_TEXT, JUSTIFY_BETWEEN, BORDER_BOTTOM_STYLE]}>
+                    <View style={[FULL, ROW_TEXT, ALIGN_ITEMS]}>
+                      {Platform.OS == "ios" && <FontAwesome name="clock-o" size={22} />}
+                      <Text tx={"postJobScreen.timeShipping"} style={{ ...CONTENT_TEXT, paddingLeft: Platform.OS == "ios" ? 10 : 0 }} />
+                    </View>
+                    <View style={FULL}></View>
+                    <View style={{}}>
                       <Controller
                         control={control}
                         render={({ onChange, onBlur, value }) => (
@@ -534,33 +610,52 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                     </View>
                   </View>
 
-                  <Text tx={"postJobScreen.shipperInfo"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
-                  <Text tx={"postJobScreen.shipperName"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
+
+
+
+
+
+
+                  <Text tx={"postJobScreen.shipperInfo"} style={{ ...MARGIN_TOP_EXTRA }} preset="topic" />
+                  {/* <Text tx={"postJobScreen.shipperName"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} /> */}
+                  <View style={MARGIN_TOP_BIG} />
                   <Controller
                     control={control}
                     render={({ onChange, onBlur, value }) => (
-                      <TextInputTheme
+                      <TextInputColumn
                         testID={"shipping-name-" + e.id}
-                        inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                        topic={"postJobScreen.contactName"}
+                        actualPlaceholder="postJobScreen.inputName"
+                        underline={true}
+                        length={value ? value.length : 0} maxLength={MAX_LENGTH}
+                        inputStyle={{ ...MARGIN_MEDIUM, ...CONTENT_TEXT }}
+                        value={value} onChangeText={(text) => onChange(text)} />
                     )}
                     key={'text-input-shipping-name-' + e.id}
+                    rules={{ required: true }}
                     name={"shipping-name-" + e.id}
                     defaultValue=""
                   />
+                  {errors["shipping-name-" + e.id] && <Text style={{ color: color.red }} tx={"postJobScreen.validateShippingName"} />}
 
-
-                  <Text tx={"postJobScreen.shipperTel"} style={{ ...CONTENT_TEXT, ...MARGIN_TOP_EXTRA }} />
                   <Controller
                     control={control}
                     render={({ onChange, onBlur, value }) => (
-                      <TextInputTheme
+                      <TextInputNew
+                        key={"shipping-tel-no-" + e.id}
                         testID={"shipping-tel-no-" + e.id}
                         keyboardType="numeric"
-                        inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }} value={value} onChangeText={(text) => onChange(text)} />
+                        prefix="postJobScreen.phoneNumber"
+                        actualPlaceholder={Platform.OS == "ios" ? "postJobScreen.mockPhoneNumber" : "postJobScreen.mockPhoneAndroid"}
+                        underline={false}
+                        prefixIcon="call"
+                        prefixIconColor={color.textBlack}
+                        inputStyle={{ ...MARGIN_MEDIUM, ...LAYOUT_REGISTRATION_FIELD, ...CONTENT_TEXT }}
+                        value={value} onChangeText={(text) => onChange(text)} />
                     )}
                     key={'text-input-shipping-tel-no-' + e.id}
                     name={"shipping-tel-no-" + e.id}
-                    rules={{ pattern: /^\(?([0]{1})\)?([0-9]{9})$/ }}
+                    rules={{ pattern: /^\(?([0]{1})\)?([0-9]{8,10})$/ }}
                     defaultValue=""
                   />
                   {errors["shipping-tel-no-" + e.id] && <Text style={{ color: color.red }} tx={"postJobScreen.validateReceiveTel"} />}
@@ -579,7 +674,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
 
 
 
-            <View style={[MARGIN_TOP_EXTRA, MARGIN_HORIZONTTAL_MEDIUM]}>
+            {/* <View style={[MARGIN_TOP_EXTRA, MARGIN_HORIZONTTAL_MEDIUM]}>
               <RoundedButton
                 style={ADD_NEW_POINT}
                 onPress={() => _addFieldInputShipping()} text={"postJobScreen.addShippingPoint"}
@@ -587,11 +682,11 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
                 leftIconName="add-circle-outline"
                 leftIconColor={color.textBlack}
               />
-            </View>
+            </View> */}
 
 
 
-            <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_EXTRA }}>
+            <View style={{ ...TOP_VIEW_2, ...MARGIN_TOP_BIG }}>
               <View style={ROW_TEXT}>
                 <View style={[WRAPPER_TOP, FULL]}>
                   <RoundedButton style={[FULL, BORDER_RADIUS_20, GREY_TEXT]} onPress={() => navigation.goBack()} text={"common.back"} containerStyle={ROUND_BUTTON_CONTAINER} textStyle={ROUND_BUTTON_TEXT} />
@@ -603,7 +698,7 @@ export const ReceivePointScreen = observer(function ReceivePointScreen() {
             </View>
 
 
-          </ScrollView>
+          </View>
         </View>
       </View>
     </Screen>

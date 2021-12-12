@@ -1,0 +1,6 @@
+Features:
+- register-partner: add new 3 screens
+
+Bug fixes:
+- moment
+- xcode script

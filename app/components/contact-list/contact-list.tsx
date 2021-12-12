@@ -3,6 +3,7 @@ import { ImageStyle, View, ViewStyle, Image, ImageProps, Dimensions } from 'reac
 import { ContactListProps } from './contact-list.props';
 import { color, spacing } from '../../theme';
 import { Text } from "../text/text";
+import {API_URL} from '../../config/'
 
 const FULL: ViewStyle = {
   flex: 1
@@ -53,13 +54,13 @@ export function ContactList(props: ContactListProps) {
     style: imgStyle,
     resizeMode: 'contain',
     source: {
-      uri: imageSource
+      uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + imageSource, method: 'GET', headers: { Accept: 'image/*' }
     }
   } : {
-      style: imgStyle,
-      resizeMode: 'contain',
-      ...imageSource
-    }
+    style: imgStyle,
+    resizeMode: 'contain',
+    ...imageSource
+  }
 
   const renderContent = content ? content((comp) => comp) : null
   const renderContentRight = contentRight ? contentRight((comp) => comp) : null

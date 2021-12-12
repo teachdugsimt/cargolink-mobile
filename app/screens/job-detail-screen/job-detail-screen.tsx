@@ -33,6 +33,8 @@ import { GetRegion } from '../../utils/get-region'
 import { MapTruckImageName } from '../../utils/map-truck-image-name'
 import { GetTruckType } from '../../utils/get-truck-type'
 import TruckDetailStore from '../../store/free-store/truck-detail-store'
+import { API_URL } from '../../config/'
+import util from 'util'
 
 interface JobDetailProps {
   booker?: Array<any>
@@ -41,7 +43,8 @@ interface JobDetailProps {
   quotationsID?: string
   actionStatus?: string
   statusScreen?: number
-  jobStatus?: number
+  jobStatus?: number,
+  jobId?: number
 }
 
 const deviceWidht = Dimensions.get('window').width
@@ -53,7 +56,7 @@ const PADDING_LEFT = { paddingLeft: spacing[1] }
 const MARGIN_BOTTOM = { marginBottom: spacing[1] }
 const BACKGROUND_COLOR = { backgroundColor: color.backgroundWhite }
 const BOTTOM_LINE = {
-  borderBottomColor: color.disable,
+  borderBottomColor: color.mainGrey,
   borderBottomWidth: 1,
 }
 
@@ -83,6 +86,7 @@ const LOCATION_BOX: ViewStyle = {
   paddingRight: spacing[0]
 }
 const PRODUCT_ROOT: ViewStyle = {
+  position: 'relative',
   flexDirection: 'column',
   paddingVertical: spacing[3],
   paddingHorizontal: spacing[5],
@@ -138,7 +142,7 @@ const BOTTOM_ROOT: ViewStyle = {
 }
 const BTN_STYLE: ViewStyle = {
   flex: 1,
-  borderRadius: Dimensions.get('window').width / 2,
+  borderRadius: deviceWidht / 2,
   marginHorizontal: spacing[3]
 }
 const CALL_TEXT: TextStyle = {
@@ -166,14 +170,14 @@ const CONTENT_SMALL: ViewStyle = {
   paddingTop: spacing[1],
 }
 const FLOAT_CONTAINER: ViewStyle = {
-  width: Math.floor(Dimensions.get('window').width * (3 / 4)),
+  width: Math.floor(deviceWidht * (3 / 4)),
   position: 'absolute',
   justifyContent: 'center',
   alignItems: 'center',
   top: -18,
   left: '50%',
   transform: [{
-    translateX: -Math.floor(Dimensions.get('window').width / 3),
+    translateX: -Math.floor(deviceWidht / 3),
   }],
   height: 0,
   borderBottomWidth: 100,
@@ -211,7 +215,7 @@ const LOGO_ROOT: ViewStyle = {
 const LOGO: ImageStyle = {
   width: 40,
   height: 40,
-  borderRadius: Math.round(Dimensions.get('window').width + Dimensions.get('window').height) / 2,
+  borderRadius: Math.round(deviceWidht + deviceHeight) / 2,
 }
 const TRANSPORT_BY: ViewStyle = {
   flexDirection: 'row',
@@ -226,7 +230,7 @@ const PHONE: ViewStyle = {
   alignItems: 'center',
   marginLeft: spacing[2],
   padding: spacing[1],
-  borderRadius: Dimensions.get('window').width / 2,
+  borderRadius: deviceWidht / 2,
   backgroundColor: color.line,
 }
 const BTN_VIEW_TRUCK: ViewStyle = {
@@ -234,6 +238,20 @@ const BTN_VIEW_TRUCK: ViewStyle = {
   paddingVertical: spacing[1],
   backgroundColor: color.primary,
   borderRadius: 4,
+}
+const PRICE: ViewStyle = {
+  position: 'absolute',
+  right: 0,
+  top: 0,
+  backgroundColor: color.blue,
+  borderTopLeftRadius: deviceWidht / 2,
+  borderBottomLeftRadius: deviceWidht / 2,
+  paddingVertical: spacing[1] + 2,
+  paddingHorizontal: spacing[4],
+  marginTop: spacing[3],
+}
+const PRICE_TEXT: TextStyle = {
+  color: color.textWhite
 }
 
 const Dot = (data) => (<LottieView
@@ -288,7 +306,7 @@ const PickUpPoint = ({ to, from, distances, onPress, containerStyle = {}, status
           <Dot color={color.primary} />
           <Text
             text={`${translate('common.from')}  :`}
-            style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 40 : 48, justifyContent: 'flex-end' }}
+            style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 50 : 48, justifyContent: 'flex-end' }}
           />
           <View style={{ flexShrink: 1 }}>
             <View style={{ width: '80%' }}>
@@ -326,7 +344,7 @@ const PickUpPoint = ({ to, from, distances, onPress, containerStyle = {}, status
                 <Dot color={color.success} />
                 <Text
                   text={`${translate('common.to')}  :`}
-                  style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 40 : 48 }}
+                  style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 50 : 48 }}
                 />
                 <View style={{ flexShrink: 1 }}>
                   <View>
@@ -393,7 +411,7 @@ const PickUpPointSmall = ({ to, from, distances, containerStyle = {} }) => {
           <Dot color={color.primary} />
           <Text
             text={`${translate('common.from')}  :`}
-            style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 40 : 48, justifyContent: 'flex-end' }}
+            style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 50 : 48, justifyContent: 'flex-end' }}
           />
           <View style={{ flexShrink: 1, flexDirection: 'row' }}>
             <Text text={fromProvinceHeader} style={[LOCATION_TEXT, { width: '80%' }]} numberOfLines={1} />
@@ -405,7 +423,7 @@ const PickUpPointSmall = ({ to, from, distances, containerStyle = {} }) => {
             <Dot color={color.success} />
             <Text
               text={`${translate('common.to')}  :`}
-              style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 40 : 48 }}
+              style={{ ...LOCATION_TEXT, width: i18n.locale === 'th' ? 50 : 48 }}
             />
             <View style={{ flexShrink: 1, flexDirection: 'row' }}>
               <Text text={toProvinceHeader} style={LOCATION_TEXT} numberOfLines={1} />
@@ -423,7 +441,7 @@ const PickUpPointSmall = ({ to, from, distances, containerStyle = {} }) => {
 }
 
 const RenderButtonAlert = ({ onConfirm, onCloseModal }) => {
-  const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.line, backgroundColor: color.transparent }
+  const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.mainGrey, backgroundColor: color.transparent }
   const btnConfirmStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.primary, backgroundColor: color.primary }
   return (
     <View style={{ ...BOTTOM_ROOT, paddingVertical: spacing[2] }}>
@@ -514,13 +532,14 @@ const TruckItem = (data) => {
   }).join(', ') : translate('common.notSpecified')
 
   const truckImage = MapTruckImageName(+truckType)
-  const imageSource: ImageProps = owner?.avatar?.object && owner?.avatar?.token ? {
+  const imageSource: ImageProps = owner?.avatar?.object ? {
     source: {
-      uri: owner?.avatar?.object || '',
+      uri: (owner?.avatar?.object ? `${API_URL}/api/v1/media/file-stream?attachCode=` + owner?.avatar?.object : '') || '',
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-        adminAuth: owner?.avatar?.token
+        Accept: 'image/*'
+        // Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+        // adminAuth: owner?.avatar?.token || ''
       },
     },
     resizeMode: 'cover'
@@ -587,13 +606,14 @@ const RenderOwnerTruck = ({ truck }) => {
   }: JobDetailProps = route?.params || {}
 
   const openProfile = (id: string) => {
-    const imageSource = truck?.owner?.avatar?.object && truck?.owner?.avatar?.token ? {
+    const imageSource = truck?.owner?.avatar?.object ? {
       source: {
-        uri: truck?.owner?.avatar?.object || '',
+        uri: (truck?.owner?.avatar?.object ? `${API_URL}/api/v1/media/file-stream?attachCode=` + truck?.owner?.avatar?.object : '') || '',
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${truck?.owner?.avatar?.token || ''}`,
-          adminAuth: truck?.owner?.avatar?.token
+          Accept: 'image/*'
+          // Authorization: `Bearer ${truck?.owner?.avatar?.token || ''}`,
+          // adminAuth: truck?.owner?.avatar?.token || ''
         },
       },
       resizeMode: 'cover'
@@ -625,17 +645,18 @@ const RenderOwnerTruck = ({ truck }) => {
       onPress={() => openProfile(truck?.owner?.userId)}
     >
       <View>
-        <Image
+        {truck?.owner?.avatar?.object && <Image
           style={LOGO}
           source={{
-            uri: truck?.owner?.avatar?.object || null,
+            uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + truck?.owner?.avatar?.object || null,
             method: 'GET',
             headers: {
-              Authorization: `Bearer ${truck?.owner?.avatar?.token || null}`,
-              adminAuth: truck?.owner?.avatar?.token || null
+              Accept: 'image/*'
+              // Authorization: `Bearer ${truck?.owner?.avatar?.token || null}`,
+              // adminAuth: truck?.owner?.avatar?.token || null
             },
           }}
-          resizeMode={'cover'} />
+          resizeMode={'cover'} />}
       </View>
       <Text text={truck?.owner?.companyName || ''} style={{ paddingLeft: spacing[2] }} />
     </TouchableOpacity>
@@ -653,6 +674,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
   const navigation = useNavigation()
 
+
   const modalizeRef = useRef<Modalize>(null);
   const [coordinates, setCoordinates] = useState([])
   const [liked, setLiked] = useState<boolean>(false)
@@ -662,6 +684,11 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   const [region, setRegion] = useState(null)
   const [scrollY, setScrollY] = useState<number>(0)
   const [visibleModalReject, setvisibleModalReject] = useState<boolean>(false)
+
+  console.log("CarriersJobStore.data :: ", JSON.parse(JSON.stringify(CarriersJobStore.data)))
+
+  // console.log('JOB DETAIL PROPS', util.inspect(JSON.stringify(navigation), { showHidden: true, depth: null }))
+
   const {
     id,
     from,
@@ -675,6 +702,8 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     owner,
     quotations,
     truck,
+    price,
+    priceType = translate('common.round'),
   } = JSON.parse(JSON.stringify(CarriersJobStore.data))
 
   const route = useRoute()
@@ -688,6 +717,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     actionStatus,
     statusScreen,
     jobStatus,
+    jobId
   }: JobDetailProps = route?.params || {}
 
   const { versatileStore, tokenStore } = useStores()
@@ -709,6 +739,11 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
     if (!showOwnerAccount) {
       modalizeRef.current?.open();
+    }
+
+    if (jobId) {
+      console.log('=============== GET JOB by ID', jobId)
+      CarriersJobStore.findOne(jobId)
     }
 
     return () => {
@@ -791,13 +826,14 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   }
 
   const onPress = () => {
-    const imageSource = owner?.avatar?.object && owner?.avatar?.token ? {
+    const imageSource = owner?.avatar?.object ? {
       source: {
-        uri: owner?.avatar?.object || '',
+        uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + owner?.avatar?.object || '',
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-          adminAuth: owner?.avatar?.token
+          Accept: 'image/*'
+          // Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+          // adminAuth: owner?.avatar?.token || ''
         },
       },
       resizeMode: 'cover'
@@ -814,12 +850,14 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     //   type: 1,
     // })
     modalizeRef.current?.close();
+    console.log("Route name my job screen : ", route)
     if (route.name === 'jobDetail') {
       navigation.navigate('carrierProfile')
     } else if (route.name === 'favoriteJobDetail') {
       navigation.navigate('favoriteCarrierProfile')
     } else {
-      navigation.navigate('bookerProfile', { statusScreen })
+      if (fromManageCar) navigation.navigate('bookerProfileScreen')
+      else navigation.navigate('bookerProfile', { statusScreen })
     }
   }
 
@@ -950,11 +988,12 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     const imageToken = truckOwner?.avatar?.token
     const imageSource = imageUrl && imageToken ? {
       source: {
-        uri: imageUrl,
+        uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + imageUrl,
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${imageToken}`,
-          adminAuth: imageToken
+          Accept: 'image/*'
+          // Authorization: `Bearer ${imageToken}`,
+          // adminAuth: imageToken || ''
         },
       },
       resizeMode: 'cover'
@@ -980,11 +1019,12 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
     const imageSource = ownerData?.avatar?.object && ownerData?.avatar?.token ? {
       source: {
-        uri: ownerData?.avatar?.object || '',
+        uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + ownerData?.avatar?.object || '',
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${ownerData?.avatar?.token || ''}`,
-          adminAuth: ownerData?.avatar?.token
+          Accept: 'image/*'
+          // Authorization: `Bearer ${ownerData?.avatar?.token || ''}`,
+          // adminAuth: ownerData?.avatar?.token || ''
         },
       },
       resizeMode: 'cover'
@@ -1014,7 +1054,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   }
 
   const RenderButtonAlert = () => {
-    const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.line, backgroundColor: color.transparent }
+    const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.mainGrey, backgroundColor: color.transparent }
     const btnConfirmStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.primary, backgroundColor: color.primary }
     return (
       <View style={{ ...BOTTOM_ROOT, paddingVertical: spacing[2] }}>
@@ -1035,8 +1075,9 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
       </View>
     )
   }
+
   const RenderButtonAlertReject = () => {
-    const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.line, backgroundColor: color.transparent }
+    const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.mainGrey, backgroundColor: color.transparent }
     const btnRejectStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.red, backgroundColor: color.red }
     return (
       <View style={{ ...BOTTOM_ROOT, paddingVertical: spacing[2] }}>
@@ -1129,11 +1170,12 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
     ratingCount: '0',
     image: JSON.parse(CarriersJobStore.profile.imageProps) || {
       source: {
-        uri: CarriersJobStore.data?.owner?.avatar?.object,
+        uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + CarriersJobStore.data?.owner?.avatar?.object || "",
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${CarriersJobStore.data?.owner?.avatar?.token || ''}`,
-          adminAuth: CarriersJobStore.data?.owner?.avatar?.token
+          Accept: 'image/*'
+          // Authorization: `Bearer ${CarriersJobStore.data?.owner?.avatar?.token || ''}`,
+          // adminAuth: CarriersJobStore.data?.owner?.avatar?.token || ""
         },
       },
       resizeMode: 'cover'
@@ -1146,8 +1188,11 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
   console.log("Job Detail data :: ", JSON.parse(JSON.stringify(CarriersJobStore.data)))
   console.log('route.name', route.name)
   console.log('actionStatus', actionStatus)
+  // console.log("JSON.parse(JSON.stringify(CarriersJobStore.directions)) : ", JSON.parse(JSON.stringify(CarriersJobStore.directions)))
   return (
     <View style={CONTAINER}>
+
+
       {isLoaded && <ModalLoading size={'large'} color={color.primary} visible={isLoaded} />}
       <View style={MAP_CONTAINER}>
         {from && !!from.lat && !!from.lng && !!CarriersJobStore.directions.length &&
@@ -1186,6 +1231,13 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
               containerStyle={{
                 overflow: 'hidden'
               }}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity activeOpacity={1} style={PRICE} onPress={onOpenModalize} onPressOut={onOpenModalize}>
+            <Text
+              text={`${price ? price.toString() : '-'} ${'\u0E3F'} / ${priceType === 'PER_TRIP' ? translate('common.round') : translate('common.ton')}`}
+              style={PRICE_TEXT} preset={'topicExtra'}
             />
           </TouchableOpacity>
 
@@ -1265,6 +1317,14 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                 <Text text={`${translate('jobDetailScreen.weightTon')} : ${weight}`} style={TEXT} />
               </View>
             </View>
+
+            <View style={PRICE}>
+              <Text
+                text={`${price ? price.toString() : '-'} ${'\u0E3F'} / ${priceType === 'PER_TRIP' ? translate('common.round') : translate('common.ton')}`}
+                style={PRICE_TEXT} preset={'topicExtra'}
+              />
+            </View>
+
           </View>
 
         </View>
@@ -1314,7 +1374,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
               topic={booker.name}
               detail={booker.date}
               btnTxt={translate('myJobScreen.accept')}
-              containerStyle={{ paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.disable }}
+              containerStyle={{ paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.mainGrey }}
               topicStyle={{ fontSize: 14, paddingBottom: spacing[1] }}
               detailStyle={{ color: color.line }}
               btnStyle={{ paddingVertical: 2, paddingHorizontal: spacing[2] }}
@@ -1369,7 +1429,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
 
         {/* {actionStatus === 'IM_OWN_JOB' && (<View></View>)} */}
 
-        {statusScreen === 1 && jobStatus !== 2 && (<View>
+        {statusScreen === 1 && jobStatus !== 2 && truck && (<View>
           <View style={TRANSPORT_BY}>
             <View>
               <Text tx={'myJobScreen.transportBy'} style={{ color: color.line }} />
@@ -1377,17 +1437,18 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
             <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} activeOpacity={1} onPress={() => visibleProfile(truck?.owner)} >
               <Text text={truck?.owner?.companyName || ''} style={{ paddingRight: spacing[2] }} />
               <View style={LOGO_ROOT}>
-                <Image
+                {truck?.owner?.avatar?.object && <Image
                   style={LOGO}
                   source={{
-                    uri: truck?.owner?.avatar?.object || null,
+                    uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + truck?.owner?.avatar?.object || null,
                     method: 'GET',
                     headers: {
-                      Authorization: `Bearer ${truck?.owner?.avatar?.token || null}`,
-                      adminAuth: truck?.owner?.avatar?.token || null
+                      Accept: 'image/*'
+                      // Authorization: `Bearer ${truck?.owner?.avatar?.token || null}`,
+                      // adminAuth: truck?.owner?.avatar?.token || null
                     },
                   }}
-                  resizeMode={'cover'} />
+                  resizeMode={'cover'} />}
               </View>
             </TouchableOpacity>
           </View>
@@ -1395,7 +1456,7 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
         </View>)}
 
         {/* render carrier profile and truck list */}
-        {statusScreen === 2 && jobStatus !== 2 && (<View>
+        {statusScreen === 2 && jobStatus !== 2 && truck && (<View>
           <View style={TRANSPORT_BY}>
             <View>
               <Text tx={'myJobScreen.transportBy'} style={{ color: color.line }} />
@@ -1406,11 +1467,12 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
                 <Image
                   style={LOGO}
                   source={{
-                    uri: truck?.owner?.avatar?.object || null,
+                    uri: (truck?.owner?.avatar?.object ? `${API_URL}/api/v1/media/file-stream?attachCode=` + truck?.owner?.avatar?.object : '') || null,
                     method: 'GET',
                     headers: {
-                      Authorization: `Bearer ${truck?.owner?.avatar?.token || null}`,
-                      adminAuth: truck?.owner?.avatar?.token || null
+                      Accept: 'image/*'
+                      // Authorization: `Bearer ${truck?.owner?.avatar?.token || null}`,
+                      // adminAuth: truck?.owner?.avatar?.token || null
                     },
                   }}
                   resizeMode={'cover'} />
@@ -1425,14 +1487,14 @@ export const JobDetailScreen = observer(function JobDetailScreen() {
       {showOwnerAccount && (<View style={BOTTOM_ROOT}>
         <Button
           testID="call-with-owner"
-          style={[BTN_STYLE, { backgroundColor: color.line }]}
+          style={[BTN_STYLE, { backgroundColor: color.blue }]}
           children={
             <View style={{ alignItems: 'center', flexDirection: 'row' }}>
               <MaterialCommunityIcons name={'phone'} size={24} color={color.textWhite} style={{ paddingRight: spacing[2] }} />
               <Text style={CALL_TEXT} tx={'jobDetailScreen.call'} />
             </View>
           }
-          onPress={() => onCall(id, owner.mobileNo)}
+          onPress={() => onCall(id, versatileStore.phoneNumber)}
         />
         {ownerUserId !== myUserId && <Button
           testID="book-a-job"

@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react"
 import {
   View, ViewStyle, TextStyle, TouchableOpacity,
-  SafeAreaView, Dimensions, Image, KeyboardAvoidingView, Alert, Platform, PermissionsAndroid
+  SafeAreaView, Dimensions, Image, Alert, Platform, PermissionsAndroid,
+  ImageStyle,
 } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Text, TextInputTheme, RoundedButton, ModalLoading, Screen } from "../../components"
+import {
+  Text, TextInputTheme, RoundedButton, ModalLoading, Screen, NormalDropdown,
+  UploadVehicle, ListFile
+} from "../../components"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { useForm, Controller } from "react-hook-form";
@@ -16,6 +20,17 @@ import ProfileStore from '../../store/profile-store/profile-store'
 import { useStores } from "../../models/root-store/root-store-context";
 import { AlertMessage } from "../../utils/alert-form";
 import { translate } from "../../i18n"
+import { API_URL } from '../../config/'
+import PartnerRegisterStore from "../../store/profile-store/partner-register-store"
+import { useRoute } from '@react-navigation/core';
+import DocumentPicker, {
+  DirectoryPickerResponse,
+  DocumentPickerResponse,
+  types,
+} from 'react-native-document-picker'
+import AuthStore from "../../store/auth-store/auth-store"
+import { IFileObject } from "../../services/api"
+
 
 const { width } = Dimensions.get("window")
 const FULL: ViewStyle = { flex: 1 }
@@ -24,16 +39,33 @@ const COLOR_LINE: TextStyle = { color: color.line }
 const PADDING_VERTICAL: TextStyle = { paddingVertical: 10 }
 const PADDING_TOP_10: ViewStyle = { paddingTop: 10 }
 const PADDING_TOP_20: ViewStyle = { paddingTop: 20 }
+const PADDING_TOP_5: ViewStyle = { paddingTop: 5 }
 const MARGIN_HORI_10: ViewStyle = { marginHorizontal: 10 }
-const BORDER_BOTTOM: ViewStyle = { borderBottomWidth: 1, borderBottomColor: color.line }
-const VIEW_SUGGEST: ViewStyle = { ...MARGIN_HORI_10, ...BORDER_BOTTOM }
+const MARGIN_TOP_MEDIUM: ViewStyle = { marginTop: 15 }
+const MARGIN_TOP_BIG: ViewStyle = { marginTop: 10 }
+const BORDER_BOTTOM: ViewStyle = { borderBottomWidth: 1, borderBottomColor: color.mainGrey }
 const ROW_TEXT: ViewStyle = {
   flexDirection: 'row',
 }
+const COLUMN_UPLOAD: ViewStyle = {
+  justifyContent: 'center',
+  alignItems: 'center'
+}
+const ROW_UPLOAD: ViewStyle = {
+  flexDirection: 'row',
+  justifyContent: 'center',
+}
 
+const ADD_DOCUMENT_CONTAINER: ViewStyle = { width: (width / 2) - 15 }
+const SECOND_VIEW_ADD_DOCUMENT: ViewStyle = {
+  ...FULL, ...COLUMN_UPLOAD, borderWidth: 2, borderColor: color.mainGrey,
+  borderRadius: 10, overflow: 'hidden', borderStyle: 'dashed', maxHeight: 120,
+  maxWidth: (width / 2) - 10
+}
 const TOP_VIEW_2: ViewStyle = {
   backgroundColor: color.textWhite,
 }
+const UPLOAD_IMG_STY: ViewStyle = { paddingTop: 5, paddingBottom: 5, minHeight: 120, marginTop: 5, marginBottom: 5 }
 const CONTENT_TEXT: TextStyle = {
   fontFamily: 'Kanit-Medium',
   color: color.black,
@@ -45,18 +77,23 @@ const WIDTH_WITH_MARGIN: ViewStyle = {
 const MARGIN_MEDIUM: ViewStyle = {
   marginVertical: 10
 }
-const SAFE_AREA_MODAL: ViewStyle = {
+const SAFE_AREA_MODAL0: ViewStyle = {
   ...WIDTH_WITH_MARGIN,
   height: 100
+}
+const SAFE_AREA_MODAL: ViewStyle = {
+  ...WIDTH_WITH_MARGIN,
+  height: 150
 }
 const CONTAINER_MODAL: ViewStyle = {
   ...FULL,
   ...WIDTH_WITH_MARGIN
 }
+const RED_COLOR: TextStyle = { color: color.red }
 const MARGIN_TOP_EXTRA: ViewStyle = { marginTop: 20 }
 const BORDER_MODAL_BUTTON: ViewStyle = {
   borderBottomWidth: 1,
-  borderBottomColor: color.line
+  borderBottomColor: color.mainGrey
 }
 const WRAPPER_TOP: ViewStyle = {
   padding: 10
@@ -83,7 +120,9 @@ const BUTTON_MODAL2: ViewStyle = {
   justifyContent: 'center',
   alignItems: 'center',
 }
-
+const PLACEHOLDER_VEHICLE_DOC: ImageStyle = {
+  width: 75, height: 50
+}
 const ROUND_BUTTON_CONTAINER: ViewStyle = {
   backgroundColor: color.primary, borderColor: color.transparent
 }
@@ -100,29 +139,81 @@ const options: Options = {
   maxHeight: 1024,
   quality: 1,
 };
+
+
 export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
+  const initFeidlGrid: any = [{ id: 1, items: [1, null] }]
 
   const navigation = useNavigation()
   const [selectCapture, setSelectCapture] = useState(false)
   const [imageProfile, setImageProfile] = useState(null)
+  const [uploadDocumentField, setuploadDocumentField] = useState(initFeidlGrid)
+  const [swipe, setswipe] = useState<boolean>(false)
   const { tokenStore } = useStores()
 
-  const _uploadFile = (response) => {
+  const route = useRoute()
+  const { fromOtp } = route?.params ? JSON.parse(JSON.stringify(route?.params)) : { fromOtp: null }
+
+  const _uploadFile = (response: any, type?: string) => {
+    console.log("Type image final :: ", type)
     __DEV__ && console.tron.log("Response File before upload :: ", response)
-    // UploadFileStore.uploadImage(file, position)
-    ProfileStore.uploadPicture(response)
+    ProfileStore.uploadPicture(response, type)
+  }
+  const findLengthDocumentField = () => {
+    let cnt = 0
+    uploadDocumentField.forEach(e => e.items.forEach(el => el && cnt++))
+    return cnt
+  }
+  const addDocumentField = () => {
+    let tmpField = uploadDocumentField
+    const lengthAll = (findLengthDocumentField()) + 1
+    tmpField.forEach((e: any, i: number) => {
+      if (i == uploadDocumentField.length - 1) {
+        if (e.items[0] && !e.items[1]) {
+          e.items = [e.items[0], lengthAll]
+          tmpField.push({ id: e.id + 1, items: [null] })
+        }
+        else if (!e.items[0]) {
+          e.items[0] = lengthAll
+          e.items[1] = null
+        }
+        else if (e.items[0] && e.items[1]) {
+          tmpField.push({ id: e.id + 1, items: [lengthAll, null] })
+        }
+      }
+    })
+
+    console.log("Tmp Field after add field :: ", tmpField)
+    setuploadDocumentField(tmpField)
+    setswipe(!swipe)
   }
 
-  useEffect(() => {
-    let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
-    if (tmp_profile && tmp_profile.avatar) setImageProfile({
-      uri: tmp_profile.avatar,
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${tokenStore.token.accessToken}`
-      },
-    })
-  }, [ProfileStore.data])
+  const _deleteField = () => {
+    let tmpField: any = uploadDocumentField
+    let lastIndex = tmpField.length - 1
+    if (!tmpField[lastIndex].items[0]) {
+      tmpField[lastIndex - 1].items[1] = null
+      tmpField.splice(lastIndex, 1)
+    } else if (!tmpField[lastIndex].items[1]) {
+      tmpField[lastIndex].items[0] = null
+      tmpField[lastIndex].items.splice(1, 1)
+    }
+    console.log("Temp field after delete :: ", tmpField)
+    setuploadDocumentField(tmpField)
+    setswipe(!swipe)
+  }
+
+  const _renderPlusField = (item, index) => (<View key={`${JSON.stringify(item)}-${"" + index}`} style={[FULL, UPLOAD_IMG_STY]}>
+    <TouchableOpacity style={[FULL, ADD_DOCUMENT_CONTAINER]} onPress={() => addDocumentField()}
+      testID={"select-image"}>
+      <View style={SECOND_VIEW_ADD_DOCUMENT}>
+        <View style={{ ...COLUMN_UPLOAD, ...MARGIN_TOP_BIG }}>
+          <Ionicons name={"add-circle-outline"} size={22} color={color.line} />
+          <Text tx={"partnerRegister.addFieldDocument"} />
+        </View>
+      </View>
+    </TouchableOpacity>
+  </View>)
 
   const requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
@@ -163,7 +254,7 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
     } else return true;
   };
 
-  const captureImage = async () => {
+  const captureImage = async (typeImg?: string) => {
     setSelectCapture(false)
 
     let isCameraPermitted = await requestCameraPermission();
@@ -193,14 +284,19 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
         console.log('type -> ', response.type);
         console.log('fileName -> ', response.fileName);
 
-        _uploadFile(response)
-        setImageProfile(response);
+        if (!typeImg) {
+          _uploadFile(response)
+          setImageProfile(response);
+        }
+        else {
+          control.setValue(`document-${typeImage}`, response)
+        }
 
       });
     }
   };
 
-  const chooseFile = () => {
+  const chooseFile = (typeImg?: string) => {
     setSelectCapture(false)
     launchImageLibrary(options, (response) => {
       console.log('Response = ', response);
@@ -228,94 +324,246 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
       console.log('type -> ', response.type);
       console.log('fileName -> ', response.fileName);
 
-      _uploadFile(response)
-      setImageProfile(response);
+      if (!typeImg) {
+        _uploadFile(response)
+        setImageProfile(response);
+      }
+      else {
+        control.setValue(`document-${typeImage}`, response)
+      }
     });
 
   };
 
-  const { control, handleSubmit, errors } = useForm({
+  const pickerFile = (typeImg?: string) => {
+    setSelectCapture(false)
+    DocumentPicker.pickSingle()
+      .then((pickerResult) => {
+        console.log("Picker file result :: ", pickerResult)
+        const response: any = {
+          uri: pickerResult.uri,
+          fileSize: pickerResult.size,
+          type: pickerResult.type,
+          fileName: pickerResult.name,
+        }
+        if (!typeImg) {
+          _uploadFile(response)
+          setImageProfile(response);
+        }
+        else {
+          control.setValue(`document-${typeImage}`, response)
+        }
+      })
+      .catch(handleError)
+  }
+
+  const { control, handleSubmit, errors } = ProfileStore?.data?.id ? useForm({
     defaultValues: ProfileStore.ProfileData
-  });
+  }) : useForm({ defaultValues: AuthStore.ProfileData })
+
   const onSubmit = (data) => {
+    console.log("Raw data : ", data)
     __DEV__ && console.tron.log("Raw data :: ", data)
     let tmp_profile_store = JSON.parse(JSON.stringify(ProfileStore.data))
+
+    let tmp_raw_data = data
+    let documentFile = []
+    Object.keys(tmp_raw_data).map(e => {
+      if (e.includes('document-') && tmp_raw_data[e]) documentFile.push(tmp_raw_data[e])
+    })
+    console.log("Array Document File List : ", documentFile)
+
     let finalData = {
       "fullName": data["name-lastname"],
       "phoneNumber": data["phone-number"],
       "avatar": null,
-      "email": data["email"]
+      "email": data["email"],
+      "userId": tokenStore.profile.userId,
+      "userType": data["user-type"],
     }
-    if (imageProfile) finalData['avatar'] = ProfileStore?.data_upload_picture?.fileUrl || tmp_profile_store.avatar
-    ProfileStore.updateProfile(finalData)
+    if (!fromOtp && imageProfile) finalData['avatar'] = ProfileStore?.data_upload_picture?.token || tmp_profile_store.avatar
+    else if (fromOtp && imageProfile) {
+      let tmpProfileFromOtp: any = AuthStore.ProfileData
+      finalData['avatar'] = ProfileStore?.data_upload_picture?.token || tmpProfileFromOtp.avatar
+    }
+
+    if (documentFile.length == 0 || (documentFile.length == 1 && Object.keys(documentFile[0]).length == 0)) {
+      PartnerRegisterStore.updateProfile(finalData)
+    } else {
+
+      let sumFile = 0
+      documentFile.map(e => {
+        sumFile += e.fileSize
+      })
+      console.log("sumFile : ", sumFile)
+      if (sumFile > 5000000) AlertMessage(translate('common.somethingWrong'), translate('common.fileMoreThan5'))
+      else PartnerRegisterStore.processDocumentFile(documentFile, finalData)
+
+      console.log("Final data :: ", finalData)
+    }
   }
 
   useEffect(() => {
+    let tmp_update_profile = JSON.parse(JSON.stringify(PartnerRegisterStore.data_update_profile))
+    if (tmp_update_profile) {
+
+      if (!fromOtp)
+        AlertMessage(translate('common.successTransaction'), translate('common.updateSuccess'))
+      ProfileStore.clearUpdateData('data_update_profile')
+
+      if (fromOtp) {
+        Alert.alert(
+          translate('common.successTransaction'), translate('common.updateSuccess'),
+          [
+            {
+              text: "OK", onPress: () => {
+                let profileFromOtp = AuthStore.ProfileData
+                if (profileFromOtp['accept-policies']) navigation.navigate('Home', { screen: 'home' })
+                else navigation.navigate('acceptPolicy')
+              }
+            }
+          ],
+          {
+            cancelable: false
+          }
+        );
+
+      }
+
+
+    }
+  }, [JSON.stringify(PartnerRegisterStore.data_update_profile)])
+
+  useEffect(() => {
+    let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
+    if (tmp_profile && tmp_profile.avatar) setImageProfile({
+      uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + tmp_profile.avatar,
+      method: 'GET',
+      headers: {
+        Accept: 'image/*'
+      },
+    })
+
+    // ID CARD 1
+    if (tmp_profile?.files && tmp_profile.files &&
+      typeof tmp_profile.files == 'object' && Object.keys(tmp_profile.files).length > 0)
+      PartnerRegisterStore.getFileByAttachCode({
+        url: JSON.stringify(Object.values(tmp_profile.files))
+      })
+
+  }, [ProfileStore.data])
+
+
+  useEffect(() => {
+    console.log("Document field :: ", uploadDocumentField)
+    if (fromOtp) {
+      let tmp_profile: any = AuthStore.ProfileData
+      console.log(`🚀  ->  tmp_profile`, tmp_profile);
+      __DEV__ && console.tron.log("Auth data : ", tmp_profile)
+      if (tmp_profile && tmp_profile.avatar) setImageProfile({
+        uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + tmp_profile.avatar,
+        method: 'GET',
+        headers: {
+          Accept: 'image/*'
+        },
+      })
+
+      // ID CARD 2
+      if (tmp_profile?.document && tmp_profile.document &&
+        typeof tmp_profile.document == 'object' && Object.keys(tmp_profile.document).length > 0) {
+        PartnerRegisterStore.getFileByAttachCode({
+          url: JSON.stringify(tmp_profile.files)
+        })
+      }
+    }
+
     return () => {
       ProfileStore.clearData()
-      ProfileStore.getProfileRequest()
+      PartnerRegisterStore.clearUpdateData('data_update_profile')
+      PartnerRegisterStore.clearUpdateData('data_list_file')
+      PartnerRegisterStore.clearAllError()
+      ProfileStore.getProfileRequest(tokenStore.profile.userId)
+      setuploadDocumentField(initFeidlGrid)
+      setSelectCapture(false)
+      setImageProfile(null)
+      setswipe(!swipe)
     }
   }, [])
 
   useEffect(() => {
-    let tmp_update = JSON.parse(JSON.stringify(ProfileStore.data_update_profile))
-    if (tmp_update && tmp_update != null) {
-      AlertMessage(translate('common.successTransaction'), translate('common.updateSuccess'))
-      ProfileStore.clearUpdateData('data_update_profile')
-    }
-  }, [ProfileStore.data_update_profile])
-
-  useEffect(() => {
-    let error_update = JSON.parse(JSON.stringify(ProfileStore.error_update_profile))
+    let error_update = JSON.parse(JSON.stringify(PartnerRegisterStore.error_update_profile))
     if (error_update && error_update != null) {
       if (error_update == "Invalid entry for email address") AlertMessage(translate('common.somethingWrong'), translate('common.invalidEmail'))
       else AlertMessage(translate('common.somethingWrong'), translate('common.pleaseCheckYourData'))
-      ProfileStore.clearUpdateData('error_update_profile')
+      PartnerRegisterStore.clearUpdateData('error_update_profile')
     }
-  }, [ProfileStore.error_update_profile])
+  }, [PartnerRegisterStore.error_update_profile])
 
+
+  const handleError = (err: Error) => {
+    if (DocumentPicker.isCancel(err)) {
+      console.warn('cancelled')
+      // User cancelled the picker, exit any dialogs or menus and move on
+    } else {
+      throw err
+    }
+  }
+
+  const [typeImage, settypeImage] = useState<string>("")
 
   let formControllerValue = control.getValues()
+  console.log("Form Value :: ", formControllerValue)
   __DEV__ && console.tron.logImportant("Form in render :: ", formControllerValue)
 
   let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
   __DEV__ && console.tron.logImportant("Profile Data :: ", tmp_profile)
 
+  const role_array = [{ label: translate('homeScreen.carriers'), value: "CARRIER" },
+  { label: translate('homeScreen.shippers'), value: "SHIPPER" },
+  { label: translate('homeScreen.both'), value: 'BOTH' }]
+
+  const closeModal = () => {
+    setSelectCapture(false)
+    settypeImage('')
+  }
+
+  const lengthDocumentField = findLengthDocumentField()
+
   return (
     <View testID="UpdateProfileScreen" style={FULL}>
       <Screen preset={'scroll'} unsafe>
         <ScrollView style={FULL}>
-          <View style={[PADDING_TOP_20, BACKGROUND_WHITE]}>
-            <View style={VIEW_SUGGEST}>
-              <Text tx={"profileScreen.weSuggest"} style={COLOR_PRIMARY} />
-              <Text tx={"profileScreen.fullSuggestText"} style={[COLOR_LINE, PADDING_VERTICAL]} />
-            </View>
-          </View>
-
           <ModalLoading
             containerStyle={{ zIndex: 2 }}
-            size={'large'} color={color.primary} visible={ProfileStore.loading_update_profile} />
+            size={'large'} color={color.primary} visible={(ProfileStore.loading || ProfileStore.loading_update_picture
+              || ProfileStore.loading_update_profile || PartnerRegisterStore.loading_upload_document
+              || PartnerRegisterStore.loading_upload_document || PartnerRegisterStore.loading)} />
 
           <Modal
             visible={selectCapture}
-            onTouchOutside={() => setSelectCapture(false)}
-            onSwipeOut={() => setSelectCapture(false)}
-            onDismiss={() => setSelectCapture(false)}
+            onTouchOutside={closeModal}
+            onSwipeOut={closeModal}
+            onDismiss={closeModal}
             swipeDirection={['up', 'down']} // can be string or an array
             swipeThreshold={100} // default 100
           >
-            <SafeAreaView style={SAFE_AREA_MODAL}>
+            <SafeAreaView style={[!!typeImage ? SAFE_AREA_MODAL : SAFE_AREA_MODAL0]}>
               <View style={CONTAINER_MODAL}>
-                <TouchableOpacity style={BUTTON_MODAL1} onPress={() => captureImage()}>
+                <TouchableOpacity style={BUTTON_MODAL1} onPress={() => captureImage(typeImage)}>
                   <View style={ROW_TEXT}>
                     <Ionicons name="camera" size={20} color={color.primary} />
                     <Text style={TEXT_MODAL_BUTTON} tx={"uploadVehicleScreen.captureNew"} /></View>
                 </TouchableOpacity>
-                <TouchableOpacity style={BUTTON_MODAL2} onPress={() => chooseFile()}>
+                <TouchableOpacity style={[!!typeImage ? BUTTON_MODAL1 : BUTTON_MODAL2]} onPress={() => chooseFile(typeImage)}>
                   <View style={ROW_TEXT}>
                     <Ionicons name="library" size={20} color={color.primary} />
                     <Text style={TEXT_MODAL_BUTTON} tx={"uploadVehicleScreen.selectFromLibrary"} /></View>
                 </TouchableOpacity>
+                {!!typeImage && <TouchableOpacity style={BUTTON_MODAL2} onPress={() => pickerFile(typeImage)}>
+                  <View style={ROW_TEXT}>
+                    <Ionicons name="documents" size={20} color={color.primary} />
+                    <Text style={TEXT_MODAL_BUTTON} tx={"partnerRegister.pickFile"} /></View>
+                </TouchableOpacity>}
               </View>
             </SafeAreaView>
           </Modal>
@@ -332,12 +580,14 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
                 </View>
 
                 <View style={{ alignItems: 'center', paddingTop: 20 }}>
-                  <TouchableOpacity onPress={() => setSelectCapture(true)}>
+                  <TouchableOpacity onPress={() => {
+                    settypeImage(null)
+                    setSelectCapture(true)
+                  }}>
                     <View>
                       {!!imageProfile && <TouchableOpacity style={{ alignItems: 'flex-end', position: 'absolute', top: 0, right: 0, zIndex: 2 }} onPress={() => setImageProfile(null)}>
                         <Ionicons name={"close"} size={22} color={color.error} />
                       </TouchableOpacity>}
-                      {/* <Image source={imageProfile ? imageProfile : images.addProfilePic} resizeMode="stretch" style={{ maxHeight: 120, maxWidth: 120 }} /> */}
                       <Image source={(imageProfile ? imageProfile : images.addProfilePic)} resizeMode="stretch" style={{ width: 120, height: 120 }} />
                     </View>
                   </TouchableOpacity>
@@ -352,7 +602,6 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
                   <Text>2.</Text>
                   <Text tx={"profileScreen.inputMoreDetail"} />
                 </View>
-
 
                 <View style={PADDING_TOP_10}>
                   <View style={{ flexDirection: 'row' }}>
@@ -393,8 +642,10 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
                     )}
                     key={"key-phone-number"}
                     name={"phone-number"}
+                    rules={{ required: true }}
                     defaultValue=""
                   />
+                  {errors['phone-number'] && !formControllerValue['phone-number'] && <Text style={[RED_COLOR]} tx={"postJobScreen.validateReceiveTel"} />}
                 </View>
 
                 <View style={PADDING_TOP_10}>
@@ -414,6 +665,78 @@ export const UpdateProfileScreen = observer(function UpdateProfileScreen() {
                     name={"email"}
                     defaultValue=""
                   />
+                </View>
+
+                <View style={PADDING_TOP_10}>
+                  <Text tx={"common.userType"} />
+                  <Controller
+                    control={control}
+                    render={({ onChange, onBlur, value }) => (
+                      <NormalDropdown
+                        key={'common.userTypeSelect'}
+                        value={value || ""}
+                        onChange={onChange}
+                        items={role_array}
+                        placeholder={"common.userTypeSelect"}
+                        border={true}
+                        underline={false}
+                        containerStyle={{ height: 65, paddingHorizontal: 0, paddingVertical: 10 }}
+                      />
+                    )}
+                    key={'dropdown-user-type'}
+                    name={"user-type"}
+                    rules={{ required: true }}
+                    defaultValue=""
+                  />
+                  {errors['user-type'] && !formControllerValue['user-type'] && <Text style={[RED_COLOR]} tx={"common.userTypeSelect"} />}
+                </View>
+
+
+                <View style={PADDING_TOP_10}>
+                  <Text tx={"partnerRegister.idCard&CompanyDocument"} />
+
+                  {PartnerRegisterStore.data_list_file && PartnerRegisterStore.data_list_file.length > 0 && <View>
+                    <ListFile list={PartnerRegisterStore.data_list_file} />
+                  </View>}
+                  <View style={[FULL]}>
+                    {uploadDocumentField.map((e: any, i: number) => {
+                      return <View key={`root-upload-document-${e.id}`} style={{ flexDirection: 'row', width: '100%' }}>
+                        {e.items.map((sub: any, subi: number) => {
+                          if (sub) return <View key={`sub-upload-document-${sub || '999'}`} style={FULL}>
+                            <Controller
+                              control={control}
+                              render={({ onChange, onBlur, value }) => (
+                                <UploadVehicle
+                                  key={'document-' + sub}
+                                  haveImage={Object.keys(value).length > 0 ? true : false}
+                                  deleteImage={() => {
+                                    onChange({})
+                                  }}
+                                  onPress={() => {
+                                    settypeImage("" + sub)
+                                    setSelectCapture(true)
+                                  }}
+                                  showDeleteBlock={lengthDocumentField > 1 && lengthDocumentField == sub ? true : false}
+                                  onPressDeleteBlock={_deleteField}
+                                  viewImageStyle={Object.keys(value).length > 0 ? MARGIN_TOP_EXTRA : MARGIN_TOP_MEDIUM}
+                                  tx={Object.keys(value).length > 0 ? '' : "partnerRegister.uploadDocument"}
+                                  txStyle={Object.keys(value).length > 0 ? {} : { ...PADDING_TOP_5 }}
+                                  uploadStyle={{ ...UPLOAD_IMG_STY, ...ADD_DOCUMENT_CONTAINER }}
+                                  source={Object.keys(value).length > 0 ? value : images.vehicleDocument}
+                                  imageStyle={Object.keys(value).length > 0 ? {} : PLACEHOLDER_VEHICLE_DOC} />
+                              )}
+                              key={"key-document-" + sub}
+                              name={"document-" + sub}
+                              rules={{ required: true }}
+                              defaultValue={{}}
+                            />
+                          </View>
+                          else return _renderPlusField(sub, subi)
+                        })}
+                      </View>
+                    })}
+                  </View>
+
                 </View>
 
               </View>

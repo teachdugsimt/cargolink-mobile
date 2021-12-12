@@ -72,12 +72,12 @@ export const AcceptPolicyScreen = observer(function AcceptPolicyScreen() {
     setState({
       isLoading: true,
     })
-    AuthStore.updatePolicyStatusRequest(AuthStore.profile.userProfile.id, {
+    AuthStore.updatePolicyStatusRequest(AuthStore.profile.token.accessToken, AuthStore.profile.userProfile.userId, {
       accept: true,
       version: AuthStore.profile.termOfService.version
     }).then(() => {
       clearState()
-      ProfileStore.getProfileRequest()
+      ProfileStore.getProfileRequest(AuthStore.profile.userProfile.userId)
       navigation.navigate("home")
     })
   }

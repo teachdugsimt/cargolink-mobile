@@ -1,11 +1,16 @@
 import { StyleSheet } from 'react-native'
 import { color } from '../../theme';
 export default StyleSheet.create({
+  rowCenter: { flexDirection: 'row', justifyContent: 'center' },
+  buttonBack: {
+    borderRadius: 11, backgroundColor: color.disable, position: 'absolute', left: 10, top: 10
+  },
+  paddingTop10: { paddingTop: 7.5 },
   map: {
     flex: 1
   },
   marker: {
-    width: 30, height: 30
+    width: 30, height: 45
   },
   markerFixed: {
     left: "50%",
@@ -16,10 +21,16 @@ export default StyleSheet.create({
   },
   addressText: {
     color: "black",
-    marginLeft: 3,
-    marginTop: 12,
+    marginLeft: 12.5,
+    marginTop: 5,
     fontSize: 18,
     fontFamily: "Kanit-Medium",
+  },
+  star: {
+    marginTop: 5,
+    fontSize: 18,
+    color: color.red,
+    marginLeft: 3,
   },
   footer: {
     backgroundColor: "white",
@@ -74,6 +85,7 @@ export default StyleSheet.create({
     alignContent: "flex-start",
     textAlignVertical: "top",
     fontFamily: "Kanit-Medium",
+    backgroundColor: color.disable
   }
 });
 

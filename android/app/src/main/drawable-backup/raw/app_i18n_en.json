@@ -76,10 +76,10 @@
   },
   "postJobScreen": {
     "postjob": "post job",
-    "vehicleDetailAndProduct": "product detail",
+    "vehicleDetailAndProduct": "Product detail",
     "getProductLocation": "receive point",
-    "checkInformation": "check detail",
-    "success": "success",
+    "checkInformation": "Preview",
+    "success": "Success",
     "selectVehicleType": "Select vehicle ttype",
     "pleaseSelectVehicleType": "please select vehicle type",
     "vehicleNum": "How many cars",
@@ -139,7 +139,7 @@
     "allYourVehicle": "all your vehicle",
     "workZone": "work zone",
     "allVehicle": " all vehicle",
-    "unit": "คัน",
+    "unit": "",
     "allProvinceSouth": "all south province"
   },
   "storybook": {

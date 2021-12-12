@@ -32,7 +32,7 @@ import BookingStore from "../../store/booking-store/booking-store"
 import TruckDetailStore from "../../store/free-store/truck-detail-store"
 import LottieView from 'lottie-react-native';
 import ShippersHistoryCallStore from '../../store/shippers-history-call-store/shippers-history-call-store'
-
+import { API_URL } from '../../config/'
 interface ImageInfo {
   width: number
   height: number
@@ -190,7 +190,7 @@ const CheckMark = (data) => (<LottieView
 
 const RenderButtonAlert = ({ onCloseModal, onConfirmJob }) => {
 
-  const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.line, backgroundColor: color.transparent }
+  const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.mainGrey, backgroundColor: color.transparent }
   const btnConfirmStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.primary, backgroundColor: color.primary }
   return (
     <View style={{ ...BOTTOM_ROOT, paddingVertical: spacing[2] }}>
@@ -216,7 +216,7 @@ const Truck = ({ truckType, total }) => {
   const truckTypeName = GetTruckType(+truckType)?.name || translate('common.notSpecified')
   const truckImage = MapTruckImageName(+truckType)
 
-  return (<View style={{ ...ROW, paddingHorizontal: spacing[2], paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.disable }}>
+  return (<View style={{ ...ROW, paddingHorizontal: spacing[2], paddingVertical: spacing[3], borderBottomWidth: 1, borderBottomColor: color.mainGrey }}>
     <View style={{ flex: 2 }}>
       <View style={OUTER_CIRCLE}>
         <Image source={imageComponent[truckImage && truckImage !== 'greyMock' ? truckImage : '']} style={TRUCK_IMAGE} />
@@ -269,13 +269,14 @@ export const TruckDetailWithProfile = observer(function TruckDetailWithProfile()
   }, [truckID, truckData])
 
   useEffect(() => {
-    const imageSource = profile?.avatar?.object && profile?.avatar?.token ? {
+    const imageSource = profile?.avatar?.object ? {
       source: {
-        uri: profile?.avatar?.object || '',
+        uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + profile?.avatar?.object || '',
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${profile?.avatar?.token || ''}`,
-          adminAuth: profile?.avatar?.token
+          Accept: 'image/*'
+          // Authorization: `Bearer ${profile?.avatar?.token || ''}`,
+          // adminAuth: profile?.avatar?.token || ''
         },
       },
       resizeMode: 'cover'
@@ -443,6 +444,7 @@ export const TruckDetailWithProfile = observer(function TruckDetailWithProfile()
   }, [])
 
   let outImage: Array<any> = truckPhotos
+  console.log("Out image  :: ", outImage)
   const transformImage = outImage &&
     Object.keys(outImage).length ?
     Object.entries(outImage).map(img => {
@@ -451,13 +453,14 @@ export const TruckDetailWithProfile = observer(function TruckDetailWithProfile()
         height: 720,
         title: `img-${img[0]}`
       }
-      if (img[1] && img[1].object) {
+      if (img[1] && img[1] && img[1].object) {
         imageInfo.source = {
-          uri: img[1].object,
+          uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + img[1].object,
           method: 'GET',
           headers: {
-            Authorization: img[1].token,
-            adminAuth: img[1].token
+            Accept: 'image/*'
+            // Authorization: img[1].token,
+            // adminAuth: img[1].token || ''
           }
         }
       } else {
@@ -466,6 +469,7 @@ export const TruckDetailWithProfile = observer(function TruckDetailWithProfile()
       return imageInfo
     }) : []
   const truckImage = MapTruckImageName(+truckType)
+    console.log("transform image with profile : ",transformImage)
 
   const workingZoneStr = workingZones?.length ? workingZones.map(zone => {
     let reg = GetRegion(zone.region, i18n.locale)
@@ -480,11 +484,12 @@ export const TruckDetailWithProfile = observer(function TruckDetailWithProfile()
 
   const imageProps = {
     source: {
-      uri: truckData?.owner?.avatar?.object,
+      uri: truckData?.owner?.avatar?.object ? `${API_URL}/api/v1/media/file-stream?attachCode=` + truckData?.owner?.avatar?.object : "",
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${truckData?.owner?.avatar?.token || ''}`,
-        adminAuth: truckData?.owner?.avatar?.token
+        Accept: 'image/*'
+        // Authorization: `Bearer ${truckData?.owner?.avatar?.token || ''}`,
+        // adminAuth: truckData?.owner?.avatar?.token || ''
       },
     },
     resizeMode: 'cover'
@@ -591,7 +596,7 @@ export const TruckDetailWithProfile = observer(function TruckDetailWithProfile()
               <Image {...imageProps} style={PROFILE_IMAGE} resizeMode={'cover'} />
             </View>
             <View style={{ flex: 3 }}>
-              <Text text={profile?.companyName} style={TEXT} preset={'topicExtra'} />
+              <Text text={profile?.companyName || translate('common.anonymous')} style={TEXT} preset={'topicExtra'} />
               <Verified isVerified={false} />
             </View>
             <View style={{}}>
@@ -624,7 +629,7 @@ export const TruckDetailWithProfile = observer(function TruckDetailWithProfile()
       <View style={BOTTOM_ROOT}>
         <Button
           testID="cancel"
-          style={[BTN_STYLE, { backgroundColor: color.line }]}
+          style={[BTN_STYLE, { backgroundColor: color.blue }]}
           tx={'common.reject'}
           textStyle={CALL_TEXT}
           onPress={cancelBookAJob}

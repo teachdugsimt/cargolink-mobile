@@ -49,7 +49,7 @@ const TOP_ROOT: ViewStyle = {
   flexDirection: "row",
   paddingBottom: spacing[2],
   borderBottomWidth: 1,
-  borderBottomColor: color.disable,
+  borderBottomColor: color.mainGrey,
   marginLeft: spacing[1],
   marginRight: spacing[1],
   ...PADDING_LEFT,
@@ -171,7 +171,7 @@ export function SearchItemTruck(props: SearchItemProps) {
   const MainTouchableOpacity = requiredTouchableOpacityGesture ? TouchableOpacityGesture : TouchableOpacity
 
   return (
-    <TouchableOpacity style={{ ...CONTAINER, ...containerStyle }} activeOpacity={1} onPress={onPress}>
+    <TouchableOpacity style={{ ...CONTAINER, ...containerStyle, overflow: 'hidden' }} activeOpacity={1} onPress={onPress}>
       <View style={TOP_ROOT}>
         <View style={BACKGROUND_CONTAINER}>
           <ImageBackground source={backgroundImage} style={BACKGROUND} resizeMode={'contain'} />
@@ -204,7 +204,7 @@ export function SearchItemTruck(props: SearchItemProps) {
 
         </View>
         <View style={CONTENT_RIGHT}>
-          {showFavoriteIcon && <MainTouchableOpacity onPress={onSelectedHeart}>
+          {showFavoriteIcon && <MainTouchableOpacity style={{ backgroundColor: color.backgroundWhite }} onPress={onSelectedHeart}>
             <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} size={26} color={isLike ? color.red : color.line} />
           </MainTouchableOpacity>}
           {isRecommened &&

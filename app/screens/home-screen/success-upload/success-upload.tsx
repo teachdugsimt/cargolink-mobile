@@ -1,12 +1,15 @@
 import React, { useEffect } from "react"
 import { View, ViewStyle, TextStyle, Platform } from "react-native"
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation, useRoute } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
 import { Text, RoundedButton, HeaderCenter } from "../../../components"
 import { color } from "../../../theme"
 import StatusStore from '../../../store/my-vehicle-store/status-vehicle-store'
 import LottieView from 'lottie-react-native';
-import Icon from 'react-native-vector-icons/Ionicons'
+import ProfileStore from "../../../store/profile-store/profile-store"
+import AuthStore from "../../../store/auth-store/auth-store"
+import { useStores } from "../../../models/root-store/root-store-context";
+
 
 // const SuccessAnimmation = () => {
 //   return <LottieView source={require('../../../AnimationJson/order-packed.json')}
@@ -46,6 +49,10 @@ const TEXT_BUTTTON_STYLE: TextStyle = {
 }
 export const SuccessUpload = observer(function SuccessUpload() {
   const navigation = useNavigation()
+  const route = useRoute()
+  const { tokenStore } = useStores()
+  const { from = null }: any = route?.params || {}
+  let status = JSON.parse(JSON.stringify(StatusStore.status))
 
   useEffect(() => {
     let editStatus = JSON.parse(JSON.stringify(StatusStore.status))
@@ -56,9 +63,20 @@ export const SuccessUpload = observer(function SuccessUpload() {
         ),
       });
     }
+    return () => {
+      if (status != "edit") {
+        let tmp_profile = JSON.parse(JSON.stringify(ProfileStore.data))
+        if (tokenStore.token) {
+          ProfileStore.getProfileRequest(AuthStore.profile?.userProfile?.userId || tokenStore.profile.userId)
+          if (tmp_profile && tmp_profile.userId) ProfileStore.getProfileReporterScreen(tmp_profile.userId)
+          ProfileStore.getTruckSummary()
+        }
+      }
+    }
   }, [])
 
-  let status = JSON.parse(JSON.stringify(StatusStore.status))
+
+  console.log("Success upload :: screen")
   return (
     <View testID="SuccessUpload" style={FULL}>
 
@@ -82,7 +100,7 @@ export const SuccessUpload = observer(function SuccessUpload() {
       </View>
 
       <View style={VIEW_BUTTON}>
-        <RoundedButton testID={"success-vehicle-detail"} onPress={() => navigation.navigate("home")} text={"common.ok"} containerStyle={BUTTON_CONTAINER} textStyle={TEXT_BUTTTON_STYLE} />
+        <RoundedButton testID={"success-vehicle-detail"} onPress={() => navigation.navigate(from && from == "home" ? "home" : "profile")} text={"common.ok"} containerStyle={BUTTON_CONTAINER} textStyle={TEXT_BUTTTON_STYLE} />
       </View>
     </View>
   )

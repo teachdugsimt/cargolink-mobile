@@ -19,7 +19,7 @@ import ProfileStore from "../../store/profile-store/profile-store"
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import BookingStore from "../../store/booking-store/booking-store";
 import { TabView, TabBar } from 'react-native-tab-view';
-
+import { API_URL } from '../../config/'
 
 const COLOR_WHITE: TextStyle = { color: color.textWhite }
 const FULL: ViewStyle = { flex: 1 }
@@ -73,16 +73,49 @@ const LOGO: ImageStyle = {
   height: 40,
   borderRadius: Math.round(Dimensions.get('window').width + Dimensions.get('window').height) / 2,
 }
-
-const dateFormat = (date: string) => {
-  if (!date) return ''
-  const newDate = DateAndTime.parse(date, 'DD-MM-YYYY HH:mm')
-  const dateFormat = DateAndTime.format(newDate, 'YYYY-MM-DDTHH:mm:ss')
-  return dateFormat
+const OPN_ROW: ViewStyle = {
+  paddingTop: spacing[4],
+  paddingBottom: spacing[1],
+  paddingHorizontal: spacing[4],
+  marginVertical: spacing[1] - 2,
+  backgroundColor: color.backgroundWhite,
+}
+const OPN_BUTTON: ViewStyle = {
+  // flex: 1,
+  minWidth: '45%',
+  borderRadius: Dimensions.get('window').height / 2,
+  marginHorizontal: spacing[1],
+  marginVertical: spacing[1],
+  paddingVertical: spacing[1] + 2,
+  borderWidth: 1,
+  borderColor: color.dim,
+}
+const OPN_BUTTON_TEXT: TextStyle = {
+  color: color.textBlack,
+  fontSize: 12,
+}
+const OPN_ROW_CONTENT: ViewStyle = {
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  justifyContent: 'center',
+  paddingTop: spacing[4],
+  paddingBottom: spacing[2],
+}
+const OPN_BOTTOM_CONTAINER: ViewStyle = {
+  backgroundColor: color.backgroundWhite,
+  paddingHorizontal: spacing[4],
+  paddingTop: spacing[1],
+  paddingBottom: spacing[3],
+  marginTop: spacing[1] - 2,
+}
+const OPN_CALL_BUTTON: ViewStyle = {
+  width: '100%',
+  borderRadius: Dimensions.get('window').width / 2,
+  backgroundColor: color.success,
 }
 
 const RenderButtonAlert = ({ onConfirmJob, onCloseModal }) => {
-  const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.line, backgroundColor: color.transparent }
+  const btnCancleStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.mainGrey, backgroundColor: color.transparent }
   const btnConfirmStyle = { ...BTN_STYLE, borderWidth: 2, borderColor: color.primary, backgroundColor: color.primary }
   return (
     <View style={{ ...BOTTOM_ROOT, paddingVertical: spacing[2] }}>
@@ -104,7 +137,60 @@ const RenderButtonAlert = ({ onConfirmJob, onCloseModal }) => {
   )
 }
 
-const Item = (data) => {
+const RenderOpinionButton = ({ onSubmit }) => {
+  const [doneFrom, setDoneFrom] = useState<"CARGOLINK" | "OTHER" | "CANCELJOB">(null)
+
+  const BUTTON_SLECTE = [
+    {
+      id: 0,
+      value: 'CARGOLINK',
+      label: translate('feedbackScreen.rightFromApp'),
+    }, {
+      id: 1,
+      value: 'OTHER',
+      label: translate('feedbackScreen.notFromApp'),
+    }, {
+      id: 2,
+      value: 'CANCELJOB',
+      label: translate('feedbackScreen.cancel')
+    }
+  ]
+
+  return (
+    <View style={OPN_ROW}>
+      <Text text={translate('feedbackScreen.canYouAgreeJob')} style={{ textAlign: 'center' }} preset={'topic'} />
+      <View style={OPN_ROW_CONTENT}>
+        {BUTTON_SLECTE.length && BUTTON_SLECTE.map((button: any, index: number) => (
+          <Button
+            key={index}
+            activeOpacity={1}
+            testID={`btn-select-${index + 1}`}
+            text={button.label}
+            style={{
+              ...OPN_BUTTON,
+              backgroundColor: button.value === doneFrom ? color.primary : color.transparent,
+              borderColor: button.value === doneFrom ? color.primary : color.disable,
+            }}
+            textStyle={OPN_BUTTON_TEXT}
+            onPress={() => setDoneFrom(button.value)} />)
+        )}
+      </View>
+
+      <View style={OPN_BOTTOM_CONTAINER}>
+        <Button
+          disabled={!doneFrom}
+          testID="call-with-owner"
+          style={[OPN_CALL_BUTTON, { backgroundColor: !doneFrom ? color.line : color.success }]}
+          textStyle={CALL_TEXT}
+          text={translate('common.confirm')}
+          onPress={() => onSubmit(doneFrom)}
+        />
+      </View>
+    </View>
+  )
+}
+
+const Item = (data: any) => {
   const {
     id,
     productTypeId,
@@ -119,25 +205,31 @@ const Item = (data) => {
     quotationNumber,
     actionStatus,
     statusScreen,
-    onConfirm
+    onConfirm,
+    price,
+    priceType,
+    tipper,
+    onSubmitOpinion,
   } = data
 
   const myUserId = ProfileStore.data?.userId || ''
   const ownerUserId = owner?.userId || null
 
   const [visible, setVisible] = useState<boolean>(false)
+  const [isFinishedJob, setIsFinishedJob] = useState<boolean>(false)
 
   const navigation = useNavigation()
   const { tokenStore } = useStores()
 
   const onVisible = () => {
-    const imageSource = owner?.avatar?.object && owner?.avatar?.token ? {
+    const imageSource = owner?.avatar?.object ? {
       source: {
-        uri: owner?.avatar?.object || '',
+        uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + owner?.avatar?.object || '',
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-          adminAuth: owner?.avatar?.token || '',
+          Accept: 'image/*'
+          // Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+          // adminAuth: owner?.avatar?.token || '',
         },
       },
       resizeMode: 'cover'
@@ -154,45 +246,60 @@ const Item = (data) => {
   }
 
   const onEdit = () => {
-    const jobInfoFirstTab = {
+    const shipping_type = {
+      "PER_TRIP": 1,
+      "PER_TON": 2
+    }
+    console.log("From :: ", from)
+    console.log("TO :: ", to)
+    const jobInfoFirstTab: any = {
       "vehicle-type": +truckType,
       "car-num": requiredTruckAmount.toString(),
       "item-type": productTypeId,
       "item-name": productName,
       "item-weight": weight.toString(),
+      "shipping-rate": price + "",
+      "shipping-type": shipping_type[priceType],
     }
+    if (tipper == true || tipper == false) jobInfoFirstTab['dump-field'] = tipper == true ? 1 : 2
 
-    const shippings = to?.map(shipping => {
+    const destination = JSON.parse(JSON.stringify(to))
+    const shippings = destination?.map((shipping: any) => {
+      const itemDestination = JSON.parse(JSON.stringify(shipping))
       return {
-        "shipping-address": shipping?.name || '',
-        "shipping-date": dateFormat(shipping?.dateTime || ''),
-        "shipping-time": dateFormat(shipping?.dateTime || ''),
-        "shipping-name": shipping?.contactName || '',
-        "shipping-tel-no": shipping?.contactMobileNo || '',
+        "shipping-address": itemDestination?.name || '',
+        "shipping-date": itemDestination?.dateTime || '',
+        "shipping-time": itemDestination?.dateTime || '',
+        "shipping-name": itemDestination?.contactName || '',
+        "shipping-tel-no": itemDestination?.contactMobileNo || '',
         "shipping-region": {
-          "latitude": +shipping?.lat || 0,
-          "longitude": +shipping?.lng || 0,
+          "latitude": +itemDestination?.lat || 0,
+          "longitude": +itemDestination?.lng || 0,
           "latitudeDelta": 0.0058863476810167015,
           "longitudeDelta": 0.005000643432154561,
         }
       }
     }) || []
 
+    const parseForm = JSON.parse(JSON.stringify(from))
+    console.log("Parse FROM :: ", parseForm)
     const jobInfoSecondTab = {
       "receive-region": {
-        "latitude": +from?.lat || 0,
-        "longitude": +from?.lng || 0,
+        "latitude": +parseForm?.lat || 0,
+        "longitude": +parseForm?.lng || 0,
         "latitudeDelta": 0.005878748388420618,
         "longitudeDelta": 0.004999972879886627,
       },
-      "receive-location": from?.name || '',
-      "receive-date": dateFormat(from?.dateTime || ''),
-      "receive-time": dateFormat(from?.dateTime || ''),
-      "receive-name": from?.contactName || '',
-      "receive-tel-no": from?.contactMobileNo || '',
+      "receive-location": parseForm?.name || '',
+      "receive-date": parseForm?.dateTime || '',
+      "receive-time": parseForm?.dateTime || '',
+      "receive-name": parseForm?.contactName || '',
+      "receive-tel-no": parseForm?.contactMobileNo || '',
       "shipping-information": shippings
     }
 
+    console.log("Data before edit 1 : ", jobInfoFirstTab)
+    console.log("Data before edit 2 : ", jobInfoSecondTab)
     PostJobStore.setPostJob(1, jobInfoFirstTab)
     PostJobStore.setPostJob(2, jobInfoSecondTab)
     PostJobStore.setJobId(id)
@@ -208,11 +315,17 @@ const Item = (data) => {
   }
 
   const onConfirmJob = (id: string) => {
-    onConfirm(id)
-    setVisible(false)
+    onConfirm(id, statusScreen)
+    // setVisible(false)
+    setIsFinishedJob(true)
   }
 
   const onCloseModal = () => {
+    setVisible(false)
+  }
+
+  const onSubmit = (value: any) => {
+    onSubmitOpinion({ id, value })
     setVisible(false)
   }
 
@@ -222,16 +335,17 @@ const Item = (data) => {
         <Image
           style={LOGO}
           source={{
-            uri: owner?.avatar?.object || '',
+            uri: (owner?.avatar?.object ? `${API_URL}/api/v1/media/file-stream?attachCode=` + owner?.avatar?.object : '') || '',
             method: 'GET',
             headers: {
-              Authorization: `Bearer ${owner?.avatar?.token || ''}`,
-              adminAuth: owner?.avatar?.token
+              Accept: 'image/*'
+              // Authorization: `Bearer ${owner?.avatar?.token || ''}`,
+              // adminAuth: owner?.avatar?.token || ''
             },
           }}
           resizeMode={'cover'} />
       </View>
-      <Text text={owner?.fullName || ''} style={reverse ? { paddingRight: spacing[2] } : { paddingLeft: spacing[5] }} />
+      <Text text={owner?.fullName || (owner?.companyName || '')} style={reverse ? { paddingRight: spacing[2] } : { paddingLeft: spacing[5] }} />
     </View>
   )
 
@@ -246,7 +360,10 @@ const Item = (data) => {
         break;
       case 'IM_OWN_JOB_AND_HAVE_CAR_ASK_FOR_BOOKING':
         footer = (<>
-          <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={quotationNumber == 0 ? onEdit : null}>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN]} onPress={() => onFinishJob(id)}>
+            <Text tx={'myJobScreen.finishJob'} style={{ color: color.success, paddingLeft: spacing[2] }} />
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={quotationNumber == 0 ? onEdit : null}>
             <Text tx={'myJobScreen.editJob'} style={{ color: quotationNumber == 0 ? color.primary : color.line }} />
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onVisible}>
@@ -265,7 +382,11 @@ const Item = (data) => {
         break;
       case 'IM_OWN_JOB':
         footer = (<>
-          <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={quotationNumber == 0 ? onEdit : null}>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN]} onPress={() => onFinishJob(id)}>
+            {/* <MaterialCommunityIcons name={'checkbox-marked-circle-outline'} color={color.success} size={20} /> */}
+            <Text tx={'myJobScreen.finishJob'} style={{ color: color.success, paddingLeft: spacing[2] }} />
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={quotationNumber == 0 ? onEdit : null}>
             <Text tx={'myJobScreen.editJob'} style={{ color: color.primary }} />
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onVisible}>
@@ -275,7 +396,10 @@ const Item = (data) => {
         break;
       case 'IM_OWN_JOB_AND_ASK_FOR_BOOKING_HIM_CAR':
         footer = (<>
-          <TouchableOpacity activeOpacity={1} style={BTN_COLUMN} onPress={onEdit}>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN]} onPress={() => onFinishJob(id)}>
+            <Text tx={'myJobScreen.finishJob'} style={{ color: color.success, paddingLeft: spacing[2] }} />
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]} onPress={onEdit}>
             <Text tx={'myJobScreen.editJob'} style={{ color: color.primary }} />
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={1} style={[BTN_COLUMN, { borderLeftWidth: 1, borderLeftColor: color.disable }]}>
@@ -289,29 +413,6 @@ const Item = (data) => {
     }
 
     return footer
-  }
-
-  const modalProps = {
-    containerStyle: {
-      paddingTop: spacing[5],
-      paddingBottom: spacing[2]
-    },
-    // imageComponent: onAnimationFinish: () => onAnimationFinish }),
-    header: translate('myJobScreen.confirmFinishJob'),
-    headerStyle: {
-      paddingTop: spacing[3],
-      color: color.primary
-    },
-    content: translate('myJobScreen.confirmFinishJob'),
-    contentStyle: {
-      paddingTop: spacing[1],
-      paddingBottom: spacing[5],
-      paddingHorizontal: spacing[7],
-      color: color.line
-    },
-    buttonContainerStyle: { width: '90%' },
-    buttonComponent: () => <RenderButtonAlert onConfirmJob={() => onConfirmJob(id)} onCloseModal={onCloseModal} />,
-    visible: visible,
   }
 
   const RenderFooter = () => (
@@ -372,9 +473,41 @@ const Item = (data) => {
         </View>)}
       </>)}
 
-      <ModalAlert {...modalProps} />
     </View>
   )
+
+  const modalProps = {
+    containerStyle: {
+      paddingTop: spacing[5],
+      paddingBottom: spacing[2]
+    },
+    // imageComponent: onAnimationFinish: () => onAnimationFinish }),
+    header: translate('myJobScreen.confirmFinishJob'),
+    headerStyle: {
+      paddingTop: spacing[3],
+      color: color.primary
+    },
+    content: translate('myJobScreen.confirmFinishJob'),
+    contentStyle: {
+      paddingTop: spacing[1],
+      paddingBottom: spacing[5],
+      paddingHorizontal: spacing[7],
+      color: color.line
+    },
+    buttonContainerStyle: { width: '90%' },
+    buttonComponent: () => <RenderButtonAlert onConfirmJob={() => onConfirmJob(id)} onCloseModal={onCloseModal} />,
+    visible: visible,
+  }
+
+  const modalOpinionProps = {
+    containerStyle: {
+      paddingTop: spacing[2],
+      // paddingBottom: spacing[2]
+    },
+    buttonContainerStyle: { width: '100%' },
+    buttonComponent: () => <RenderOpinionButton onSubmit={onSubmit} />,
+    visible: visible,
+  }
 
   const typeOfTruck = GetTruckType(+truckType)?.name || `${translate('jobDetailScreen.truckType')} : ${translate('common.notSpecified')}`
 
@@ -399,12 +532,17 @@ const Item = (data) => {
             paddingTop: spacing[2],
             borderRadius: 6
           },
+          price: price,
+          priceType: priceType === 'PER_TRIP' ? translate('common.round') : translate('common.ton'),
           requiredTouchableOpacityGesture: true,
           onPress: () => onVisible(),
           bottomComponent: () => <RenderFooter />
         }
         }
       />
+
+      {!isFinishedJob ? <ModalAlert {...modalProps} /> : (statusScreen === 0 && <ModalAlert {...modalOpinionProps} />)}
+
     </View>
   )
 }
@@ -442,17 +580,28 @@ export const MyJobScreen = observer(function MyJobScreen(props: any) {
     // navigation.setOptions({
     //   headerCenter: () => (<RenderHeader text={"myJobScreen.myJob"} />),
     // });
+    onRefresh()
     if (!TruckTypeStore.list.length) {
       TruckTypeStore.find()
     }
   }, [])
 
-  const renderItem = ({ item }) => <Item {...item} statusScreen={index} onConfirm={(id: string) => onConfirm(id)} />
+  const renderItem = ({ item }) => <Item {...item} statusScreen={index} onConfirm={(id: string, statusScreen?: number) => onConfirm(id, statusScreen)} onSubmitOpinion={onSubmitOpinion} />
 
-  const onConfirm = (id: string) => {
+  const onConfirm = (id: string, statusScreen?: number) => {
     BookingStore.finishJob(id)
+    if (statusScreen && statusScreen === 1) {
+      onSubmitOpinion({ id: id, value: 'CARGOLINK' })
+    }
+    // navigation.navigate('myFeedback')
+  }
+
+  const onSubmitOpinion = ({ id, value }) => {
+    ShipperJobStore.rating({
+      jobId: id,
+      doneFrom: value
+    })
     onRefresh()
-    navigation.navigate('myFeedback')
   }
 
   const onScrollList = () => {
@@ -496,24 +645,28 @@ export const MyJobScreen = observer(function MyJobScreen(props: any) {
   //   });
   // }, [lang])
 
-  const _renderFlatList = (data) => (
-    <FlatList
-      data={data}
+  console.log("Loading Booking Store :: ", BookingStore.loading)
+
+  const _renderFlatList = (data) => {
+    const parseDataToList = JSON.parse(JSON.stringify(data))
+    return <FlatList
+      data={parseDataToList}
       renderItem={renderItem}
       keyExtractor={item => item.id}
       onEndReached={() => onScrollList()}
       onEndReachedThreshold={0.1}
-      contentContainerStyle={{ flexGrow: 1 }}
-      ListEmptyComponent={<EmptyListMessage />}
+      // contentContainerStyle={{ flexGrow: 1 }}
+      ListEmptyComponent={<EmptyListMessage containerStyle={{ marginTop: 50 }} />}
       onMomentumScrollBegin={() => setOnEndReachedCalledDuringMomentum(false)}
       refreshControl={
         <RefreshControl
+          style={!BookingStore.loading ? { display: 'none' } : {}}
           refreshing={BookingStore.loading}
           onRefresh={onRefresh}
         />
       }
-    />)
-
+    />
+  }
   const renderTabBar = props => {
     return <TabBar
       {...props}

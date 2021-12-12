@@ -35,14 +35,16 @@ export class AuthAPI {
    *
    * Be as quick as possible in here.
    */
-  setup() {
+  setup(accessToken?: string) {
     // construct the apisauce instance
+    let header: any = {
+      Accept: "application/json",
+    }
+    if (accessToken) header.authorization = accessToken
     this.apisauce = create({
       baseURL: this.config.url,
       timeout: this.config.timeout,
-      headers: {
-        Accept: "application/json",
-      },
+      headers: header,
     })
   }
 
@@ -53,7 +55,7 @@ export class AuthAPI {
     // make the api call
     try {
       const response: ApiResponse<any> = await this.apisauce.post(
-        'api/v1/users/auth/otp-request',
+        'api/v1/auth/otp-request',
         data,
       )
       // the typical ways to die when calling an api
@@ -62,12 +64,8 @@ export class AuthAPI {
         const problem = getGeneralApiProblem(response)
         if (problem) return problem
       }
-      const resultUser: Types.AuthReponse = {
-        status: response.data.status,
-        tokenCheckPhone: response.data.tokenCheckPhone,
-        token: response.data.token,
-      }
-      return { kind: "ok", data: resultUser }
+
+      return { kind: "ok", data: response }
       // transform the data into the format we are expecting
     } catch (error) {
       console.log("Error call api get user (MOCK): ", error)
@@ -82,7 +80,7 @@ export class AuthAPI {
     // make the api call
     try {
       const response: ApiResponse<any> = await this.apisauce.post(
-        'api/v1/users/auth/otp-verify',
+        'api/v2/auth/otp-verify',
         data,
       )
       // the typical ways to die when calling an api
@@ -129,11 +127,11 @@ export class AuthAPI {
   /**
    * Update status term and service of user
    */
-  async updatePolicy(id: number, data: Types.TermAndService): Promise<any> {
+  async updatePolicy(id: string, data: Types.TermAndService): Promise<any> {
     // make the api call
     try {
       const response: ApiResponse<any> = await this.apisauce.post(
-        `api/v1/users/${id}/term-of-service`, data)
+        `/api/v1/users/${id}/term-of-service`, data)
       // the typical ways to die when calling an api
       console.log("Response call api get user (MOCK) : ", response)
       if (!response.ok) {
@@ -151,7 +149,7 @@ export class AuthAPI {
   async appleSignin(data: Types.AppleSignin): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/users/auth/login`, data)
+      const response: ApiResponse<any> = await this.apisauce.post(`/api/v1/auth/login`, data)
       // the typical ways to die when calling an api
       console.log("Response call api appleSignin (MOCK) : ", response)
       if (!response.ok) {

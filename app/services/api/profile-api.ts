@@ -40,7 +40,7 @@ export class ProfileApi {
     return data
   }
 
-  async setup() {
+  async setup(tokeny?: string) {
     let to = await this.getToken()
       .then(val => {
         return val?.tokenStore?.token?.accessToken || ''
@@ -51,7 +51,8 @@ export class ProfileApi {
       timeout: this.config.timeout,
       headers: {
         Accept: "application/json",
-        Authorization: `Bearer ${to}`
+        // Authorization: `Bearer ${to}`
+        Authorization: `${tokeny || to}`
       },
     })
   }
@@ -59,7 +60,7 @@ export class ProfileApi {
   async getProfile(params: any = null): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/mobile/multi-roles/profile', params)
+      const response: ApiResponse<any> = await this.apisauce.get('/api/v2/users/me', { userId: params })
       __DEV__ && console.tron.log("Response call api get PROFILE : ", response)
       // if (!response.ok) {
       //   const problem = getGeneralApiProblem(response)
@@ -76,7 +77,8 @@ export class ProfileApi {
   async getTruckSummary(params: any = null): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/mobile/multi-roles/profile/truck-summary', params)
+      // const response: ApiResponse<any> = await this.apisauce.get('/api/v1/mobile/multi-roles/profile/truck-summary', params)
+      const response: ApiResponse<any> = await this.apisauce.get('/api/v1/trucks/my-truck', params)
       console.log("Response call api get PROFILE : ", response)
       // if (!response.ok) {
       //   const problem = getGeneralApiProblem(response)
@@ -94,8 +96,9 @@ export class ProfileApi {
   async updateProfile(params: any = {}): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/multi-roles/profile', params)
-      console.log("Response call api get PROFILE : ", response)
+      // const response: ApiResponse<any> = await this.apisauce.post('/api/v1/mobile/multi-roles/profile', params)
+      const response: ApiResponse<any> = await this.apisauce.patch('/api/v1/users/me', params)
+      console.log("Response call api patch profile : ", response)
       // if (!response.ok) {
       //   const problem = getGeneralApiProblem(response)
       //   if (problem) return problem
@@ -111,7 +114,8 @@ export class ProfileApi {
   async getUserReport(id: string | number): Promise<any> {
     // make the api call
     try {
-      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/user/profile/${id}`)
+      // const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/mobile/user/profile/${id}`)
+      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/users/${id}/profile-trucks`)
       console.log("Response call api get getUserReport : ", response)
       // if (!response.ok) {
       //   const problem = getGeneralApiProblem(response)
@@ -122,9 +126,57 @@ export class ProfileApi {
       console.log("Error call api get getUserReport: ", error)
       return error
     }
-
   }
 
 
+  async getPartnerTermAndCondition(id: string): Promise<any> {
+    // make the api call
+    try {
+      const response: ApiResponse<any> = await this.apisauce.get(`/api/v1/users/${id}/term-of-service-partner`)
+      console.log("Response call api get getPartnerTermAndCondition : ", response)
+      return response
+    } catch (error) {
+      console.log("Error call api get getUserReport: ", error)
+      return error
+    }
+  }
 
+  async deleteUserDocument(userId: string, params: { docId: string }): Promise<any> {
+    // make the api call
+    try {
+      const response: ApiResponse<any> = await this.apisauce.delete(`/api/v1/users/${userId}/document`, params)
+      console.log("Response call api get delte user document : ", response)
+      return response
+    } catch (error) {
+      console.log("Error call api delete user document : ", error)
+      return error
+    }
+  }
+
+
+  async getFileByAttachCode(params: string[]): Promise<any> {
+    try {
+      const response: ApiResponse<any> = await this.apisauce.get(`api/v1/media/file-by-attach-code`, params)
+      console.log("Response call get file by attach code : ", response)
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+      return response
+    } catch (error) {
+      __DEV__ && console.tron.log("Error call api get file by attach code : ", error)
+      return error
+    }
+  }
+
+}
+
+
+export interface IFileObject {
+  "attach_code": string
+  "file_name": string
+  "expire": number | null
+  "status": "ACTIVE" | "INPROGRESS"
+  "type": "USER_DOC" | "USER_AVATAR" | "VEHICLE_DOC" | "VEHICLE_IMAGE"
+  "url": string
 }

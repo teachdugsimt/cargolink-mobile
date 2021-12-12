@@ -13,6 +13,7 @@ import date from 'date-and-time';
 import Feather from 'react-native-vector-icons/Feather'
 import i18n from 'i18n-js'
 import ProfileStore from "../../store/profile-store/profile-store"
+import AddressStore from "../../store/my-vehicle-store/address-store"
 
 const CONTAINER: ViewStyle = {
   flex: 1,
@@ -27,7 +28,7 @@ const BUTTON_ADD: ViewStyle = {
   borderRadius: 25,
   borderColor: color.primary,
   borderWidth: 1,
-  height: 50,
+  height: 40,
   marginLeft: spacing[3],
   marginRight: spacing[3],
   marginTop: spacing[2],
@@ -35,7 +36,7 @@ const BUTTON_ADD: ViewStyle = {
 }
 const TEXT_ADD: TextStyle = {
   color: color.textBlack,
-  fontSize: 16,
+  fontSize: 14,
 }
 const EMPTY_CONTAINER_STYLE: ViewStyle = {
   flex: Platform.OS == "ios" ? 1 : 1.5,
@@ -46,8 +47,8 @@ const EMPTY_CONTAINER_STYLE: ViewStyle = {
 const EMPTY_TEXT_STYLE: TextStyle = {
   color: color.line,
 }
-let initCount = 0
-let count = 0
+let initCount = 1
+let count = 1
 
 export const MyVehicle = observer(function MyVehicle() {
   const navigation = useNavigation()
@@ -99,7 +100,7 @@ export const MyVehicle = observer(function MyVehicle() {
   const renderItem = ({ item }) => {
     const statusText = item.approveStatus === 'Approve' ? translate('myVehicleScreen.verified') : translate('myVehicleScreen.pending')
     const statusColor = item.approveStatus === 'Approve' ? color.success : color.primary
-    // const registrationNumber = item.registrationNumber.map((n: string) => `ทะเบียน ${n}`)
+    // // const registrationNumber = item.registrationNumber.map((n: string) => `ทะเบียน ${n}`)
     const registrationNumber = item.registrationNumber.join(', ')
     let list_all_truck = JSON.parse(JSON.stringify(versatileStore.list))
     let name = list_all_truck.find(e => item.truckType == e.id)

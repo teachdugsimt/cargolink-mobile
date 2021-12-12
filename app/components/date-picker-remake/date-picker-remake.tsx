@@ -16,7 +16,7 @@ const DATE_BUTTON: ViewStyle = {
   borderRadius: spacing[1],
   height: 40,
   borderWidth: 1,
-  borderColor: color.line,
+  borderColor: color.mainGrey,
   paddingLeft: 10
 }
 const MARGIN_MEDIUM: ViewStyle = {
@@ -31,7 +31,10 @@ export const DatePickerRemake = (props) => {
 
   const [show, setShow] = useState(showing);
 
-  const _openDatePicker = () => setShow(true)
+  const _openDatePicker = () => {
+    setShow(true)
+    // if(Platform.OS == "android") rerenderFunction()
+  }
 
   const { testID, value, onChange, label,
     rerender, rerenderFunction, mode, iconName, keyer
@@ -41,7 +44,7 @@ export const DatePickerRemake = (props) => {
     <View key={"root-date-picker-" + keyer} style={[FULL, MARGIN_MEDIUM]}>
 
       {Platform.OS == "android" && <TouchableOpacity key={"button-date-picker-" + keyer} style={DATE_BUTTON} onPress={_openDatePicker}>
-        <View style={[ROW_TEXT, SPACE_BETWEEN]}>
+        <View style={[ROW_TEXT, SPACE_BETWEEN, { paddingTop: 3 }]}>
           <View>
             {rerender ? <Text style={PADDING_PURE}>{label && typeof label != undefined ?
               date.format(label, "YYYY-MM-DD") : (value ? date.format(value, "YYYY-MM-DD") : '')}</Text> :
@@ -60,14 +63,18 @@ export const DatePickerRemake = (props) => {
             mode={mode}
             is24Hour={true}
             display="default"
+            style={{ alignSelf: 'flex-end', width: 130 }}
             timeZoneOffsetInMinutes={420}
             timeZoneOffsetInSeconds={25200}
             textColor={color.primary}
+            minimumDate={new  Date()}
             locale={i18n.locale == "th" ? 'th-TH' : 'en-EN'}
             onTouchCancel={() => setShow(Platform.OS === 'ios')}
             onChange={(event, selectedDate) => {
+              // console.log("Event date picker : ",event)
+              // console.log("Select day date picker : ",selectedDate)
+              setShow(Platform.OS === 'ios');
               if (selectedDate) {
-                setShow(Platform.OS === 'ios');
                 onChange(selectedDate)
                 rerenderFunction()
               }

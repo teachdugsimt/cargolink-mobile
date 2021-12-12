@@ -34,8 +34,9 @@ import UserTruckStore from '../../store/user-truck-store/user-truck-store'
 import UserJobStore from '../../store/user-job-store/user-job-store'
 import ProfileStore from '../../store/profile-store/profile-store'
 import i18n from 'i18n-js'
-import { GetRegion } from "../../utils/get-region"
+import { GetRegion, MapUniqRegion } from "../../utils/get-region"
 import CallDetectorManager from 'react-native-call-detection'
+import { API_URL } from '../../config/'
 
 interface ImageInfo {
   width: number
@@ -86,8 +87,6 @@ const BOTTOM_ROOT: ViewStyle = {
   flexDirection: 'row',
   alignItems: 'center',
   paddingVertical: spacing[3],
-  borderTopWidth: 0.5,
-  borderTopColor: color.line,
 }
 const CALL_TEXT: TextStyle = {
   color: color.textWhite,
@@ -146,8 +145,11 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
     truckPhotos,
     phoneNumber,
     workingZones,
-    owner
+    owner,
+    createdFrom
   } = ShipperTruckStore.data
+
+  console.log("shipper truck store :: ", JSON.parse(JSON.stringify(ShipperTruckStore.data)))
 
   const route = useRoute()
 
@@ -289,22 +291,25 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
     }
   }, [])
 
-  const transformImage = truckPhotos &&
-    Object.keys(truckPhotos).length ?
-    Object.entries(truckPhotos).map(img => {
+  console.log("Truck photos :: ", truckPhotos)
+  const parseJsonImage = JSON.parse(JSON.stringify(truckPhotos))
+  const transformImage = parseJsonImage &&
+    Object.keys(parseJsonImage).length ?
+    Object.entries(parseJsonImage).map(img => {
       //  __DEV__ &&  console.tron.log("Image MAPPING RAW :: ", img)
       let imageInfo: ImageInfo = {
         width: 1024,
         height: 720,
         title: `img-${img[0]}`
       }
-      if (img[1] && img[1].object) {
+      if (img[1] && img[1]) {
         imageInfo.source = {
-          uri: img[1].object,
+          uri: `${API_URL}/api/v1/media/file-stream?attachCode=` + img[1],
           method: 'GET',
           headers: {
-            Authorization: img[1].token,
-            adminAuth: img[1].token
+            Accept: 'image/*'
+            // Authorization: img[1].token,
+            // adminAuth: img[1].token || ''
           }
         }
       } else {
@@ -312,7 +317,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
       }
       return imageInfo
     }) : []
-  __DEV__ && console.tron.log("Transform Image :: ", transformImage)
+  console.log("Transform Image :: ", transformImage)
   const truckImage = MapTruckImageName(+truckType)
 
   const ownerProfile = {
@@ -323,15 +328,15 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
     isCrown: false,
     image: JSON.parse(ShipperTruckStore.profile.imageProps),
   }
-
-  const workingZoneStr = workingZones?.length ? workingZones.map(zone => {
+  const newWorkingZone = MapUniqRegion(workingZones)
+  const workingZoneStr = newWorkingZone?.length ? newWorkingZone.map(zone => {
     let reg = GetRegion(zone.region, i18n.locale)
     return reg?.label || ''
   }).join(', ') : translate('common.notSpecified')
 
   const ownerUserId = owner?.userId || ''
   const myUserId = ProfileStore.data?.userId || ''
-
+  console.log("Truck detail screen :: ", JSON.parse(JSON.stringify(ShipperTruckStore.data)))
   return (
     <View style={CONTAINER}>
       {ShipperTruckStore.loading && <ModalLoading size={'large'} color={color.primary} visible={ShipperTruckStore.loading} />}
@@ -416,7 +421,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
       <View style={BOTTOM_ROOT}>
         <Button
           testID="call-with-owner"
-          style={[BTN_STYLE, { backgroundColor: color.line }]}
+          style={[BTN_STYLE, { backgroundColor: color.blue }]}
           children={
             <View style={{ alignItems: 'center', flexDirection: 'row' }}>
               <MaterialCommunityIcons name={'phone'} size={24} color={color.textWhite} style={{ paddingRight: spacing[2] }} />
@@ -425,7 +430,7 @@ export const TruckDetailScreen = observer(function TruckDetailScreen() {
           }
           onPress={() => onCall(id, phoneNumber)}
         />
-        {ownerUserId !== myUserId && <Button
+        {ownerUserId !== myUserId && createdFrom === 1 && <Button
           testID="book-a-job"
           style={[BTN_STYLE, { backgroundColor: color.primary }]}
           children={

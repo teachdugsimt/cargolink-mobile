@@ -4,6 +4,7 @@ import * as Types from "../../services/api/api.types"
 import { vehicleEn, vehicleTh } from '../../screens/home-screen/manage-vehicle/datasource'
 import _ from 'lodash'
 import { type } from "ramda"
+import { domainToUnicode } from "url"
 const apiMyVehicle = new MyVehicleAPI()
 
 const Region = types.model({
@@ -32,7 +33,7 @@ const vehicleModel = {
   createdAt: types.maybeNull(types.string),
   id: types.maybeNull(types.string), // [PENDING] types.number
   updatedAt: types.maybeNull(types.string),
-  registrationNumber: types.maybeNull(types.array(types.string)),
+  registrationNumber: types.maybeNull(types.array(types.maybeNull(types.string))),
   truckType: types.maybeNull(types.number),
   stallHeight: types.maybeNull(types.string),
   tipper: types.maybeNull(types.boolean),
@@ -42,7 +43,8 @@ const vehicleModel = {
   workingZones: types.optional(types.array(types.model({
     region: types.maybeNull(types.number),
     province: types.maybeNull(types.number),
-  })), [])
+  })), []),
+  document: types.maybeNull(types.map(types.string)),
 }
 
 const JobDetail = types.model({
@@ -112,12 +114,12 @@ const MyVehicleStore = types
       try {
         const response = yield apiMyVehicle.find(filter)
         console.log("Response call api find My Vehicle Request ::  ", response)
-        const parseResponse = response.data || []
-        let tmp
+        const parseResponse = response.data?.data || []
 
+        let tmp
         if (filter.page == 0) {
           tmp = parseResponse
-        } else tmp = _.unionBy(self.list, parseResponse, 'id')
+        } else tmp = _.unionBy(JSON.parse(JSON.stringify(self.list)), parseResponse, 'id')
 
         self.list = tmp
         self.loading = false
@@ -143,7 +145,7 @@ const MyVehicleStore = types
           //         return { url: img[1] }
           //     }) : []
           const data = {
-            ...response.data,
+            ...response.data.data,
             // imageTransform: images
           }
           self.data = data || {}

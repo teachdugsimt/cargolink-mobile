@@ -1,4 +1,4 @@
-import { types, destroy, flow } from "mobx-state-tree"
+import { types, destroy, flow, unprotect } from "mobx-state-tree"
 import { PostJobAPI } from '../../services/api'
 const postjobAPI = new PostJobAPI()
 
@@ -16,7 +16,10 @@ const PostJob1 = types.model({
   "item-name": types.maybeNull(types.string),
   "item-type": types.maybeNull(types.number),
   "item-weight": types.maybeNull(types.string),
-  "vehicle-type": types.maybeNull(types.number)
+  "vehicle-type": types.maybeNull(types.number),
+  "dump-field": types.maybeNull(types.number),
+  "shipping-rate": types.maybeNull(types.string),
+  "shipping-type": types.maybeNull(types.number)
 })
 
 const Shipping = types.model({
@@ -50,8 +53,12 @@ const PostJobStore = types.model({
   data_postjob: types.maybeNull(types.union(types.string, types.number)),
 
   job_id: types.maybeNull(types.string),
+  vehicle_type: types.maybeNull(types.number)
 })
   .actions(self => ({
+    setVehicleType(params: number) {
+      self.vehicle_type = params
+    },
     setPostJob(params: number, data: any) {
       if (params == 1) {
         self.postjob1 = data
@@ -66,19 +73,14 @@ const PostJobStore = types.model({
       try {
         // ... yield can be used in async/await style
         const response = yield postjobAPI.createPostJob(params)
-        __DEV__ && console.tron.log("Response call create post job : : ", response)
         console.log("Response call create post job : : ", response)
         if (response.ok) {
-          self.data_postjob = response.data || "success"
+          self.data_postjob = response.data?.id || "success"
           self.loading = false
         } else {
           self.loading = false
-          __DEV__ && console.tron.log("Response ERROR POST JOB :: ", response)
-          if (response.data && response.data.validMsgList && response.data.validMsgList['from.datetime'] &&
-            response.data.validMsgList['from.datetime'][0] && (response.data.validMsgList['from.datetime'][0]
-              == dateError || response.data.validMsgList['from.datetime'][0] == dateError2)) {
-            __DEV__ && console.tron.log("Error : : Call API post job :: ", response)
-            self.error = response.data.validMsgList['from.datetime'][0]
+          if (response.data && response.data.validMsgList) {
+            self.error = JSON.stringify(response.data.validMsgList)
           } else
             self.error = "error fetch create post job"
         }
@@ -105,11 +107,8 @@ const PostJobStore = types.model({
         } else {
           self.loading = false
           __DEV__ && console.tron.log("Response ERROR POST JOB :: ", response)
-          if (response.data && response.data.validMsgList && response.data.validMsgList['from.datetime'] &&
-            response.data.validMsgList['from.datetime'][0] && (response.data.validMsgList['from.datetime'][0]
-              == dateError || response.data.validMsgList['from.datetime'][0] == dateError2)) {
-            __DEV__ && console.tron.log("Error : : Call API post job :: ", response)
-            self.error = response.data.validMsgList['from.datetime'][0]
+          if (response.data && response.data.validMsgList) {
+            self.error = JSON.stringify(response.data.validMsgList)
           } else
             self.error = "error fetch update post job"
         }
@@ -142,7 +141,7 @@ const PostJobStore = types.model({
       if (self.postjob1 && self.postjob2) {
         // return self.postjob2
         let tmpPostJob2 = self.postjob2
-        __DEV__ && console.tron.log("RAW DATA POSTJOB2 :: ", tmpPostJob2)
+        console.log("RAW DATA POSTJOB2 :: ", tmpPostJob2)
         if (tmpPostJob2["shipping-information"]) {
 
           self.postjob2["shipping-information"].forEach((e, i) => {
@@ -154,13 +153,13 @@ const PostJobStore = types.model({
             tmpPostJob2[`shipping-region-${i + 1}`] = e["shipping-region"]
           })
         }
-        __DEV__ && console.tron.log("After parse object MOBX :: ", tmpPostJob2)
+        console.log("After parse object MOBX :: ", tmpPostJob2)
 
         let newPostJob2 = tmpPostJob2
-        __DEV__ && console.tron.log("Post job2 data in mobx :: ", newPostJob2)
+        console.log("Post job2 data in mobx :: ", newPostJob2)
 
         let initialVlaue = { ...self.postjob1, ...tmpPostJob2 }
-        __DEV__ && console.tron.log("Final data in mobx :: ", initialVlaue)
+        console.log("Final data in mobx :: ", initialVlaue)
 
         return initialVlaue
       } else return {}
@@ -193,7 +192,10 @@ const PostJobStore = types.model({
     loading: false,
     error: '',
     data_postjob: null,
+    vehicle_type: null,
   })
+
+unprotect(PostJobStore)
 
 export default PostJobStore
 // Type 2 : not persist store

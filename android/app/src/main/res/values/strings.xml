@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Cargo Link</string>
+    <string name="default_notification_channel_id">new-job</string>
 </resources>
